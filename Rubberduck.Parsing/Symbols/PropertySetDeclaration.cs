@@ -50,7 +50,7 @@ namespace Rubberduck.Parsing.Symbols
                 module.QualifyMemberName(member.Name),
                 parent,
                 parent,
-                string.Empty, //TODO:  Need to get the types for these.
+                member.AsTypeName.TypeName,
                 Accessibility.Global,
                 null,
                 Selection.Home,

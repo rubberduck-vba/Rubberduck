@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {

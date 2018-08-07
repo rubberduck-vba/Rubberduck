@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.Extensions;
 
 namespace RubberduckTests

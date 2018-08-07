@@ -13,13 +13,13 @@ namespace Rubberduck.SmartIndenter
 
         public IndenterSettings Create()
         {
-            var prototype = new IndenterSettings();
+            var prototype = new IndenterSettings(false);
             return _persister.Load(prototype) ?? prototype;
         }
 
         public IndenterSettings CreateDefaults()
         {
-            return new IndenterSettings();
+            return new IndenterSettings(false);
         }
 
         public void Save(IndenterSettings settings)

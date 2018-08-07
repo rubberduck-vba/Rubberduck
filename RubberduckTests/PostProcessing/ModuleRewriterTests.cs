@@ -8,7 +8,10 @@ using Moq;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
 using RubberduckTests.Mocks;
 
 // ReSharper disable InvokeAsExtensionMethod
@@ -21,11 +24,15 @@ namespace RubberduckTests.PostProcessing
         [Category("TokenStreamRewriter")]
         public void RewriteClearsEntireModule()
         {
-            var module = new Mock<ICodeModule>();
-            module.Setup(m => m.Clear());
+            var codeModule = new Mock<ICodeModule>();
+            codeModule.Setup(m => m.Clear());
 
-            var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
-            var sut = new ModuleRewriter(module.Object, rewriter);
+            var module = new QualifiedModuleName("TestProject", string.Empty,"TestModule");
+            var projectsProvider = TestProvider(module, codeModule.Object);
+            var codePaneSourceHandler = new CodePaneSourceCodeHandler(projectsProvider);
+            var tokenStream = new CommonTokenStream(new ListTokenSource(new List<IToken>()));
+
+            var sut = new ModuleRewriter(module, tokenStream, codePaneSourceHandler);
             sut.InsertAfter(0, "test");
 
             if (!sut.IsDirty)
@@ -34,22 +41,26 @@ namespace RubberduckTests.PostProcessing
             }
             sut.Rewrite();
 
-            module.Verify(m => m.Clear());
+            codeModule.Verify(m => m.Clear());
         }
 
         [Test]
         [Category("TokenStreamRewriter")]
         public void RewriteDoesNotRewriteIfNotDirty()
         {
-            var module = new Mock<ICodeModule>();
-            module.Setup(m => m.Content()).Returns(string.Empty);
-            module.Setup(m => m.Clear());
+            var codeModule = new Mock<ICodeModule>();
+            codeModule.Setup(m => m.Content()).Returns(string.Empty);
+            codeModule.Setup(m => m.Clear());
 
-            var rewriter = new TokenStreamRewriter(new CommonTokenStream(new ListTokenSource(new List<IToken>())));
-            var sut = new ModuleRewriter(module.Object, rewriter);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+            var projectsProvider = TestProvider(module, codeModule.Object);
+            var codePaneSourceHandler = new CodePaneSourceCodeHandler(projectsProvider);
+            var tokenStream = new CommonTokenStream(new ListTokenSource(new List<IToken>()));
+
+            var sut = new ModuleRewriter(module, tokenStream, codePaneSourceHandler);
 
             sut.Rewrite();
-            module.Verify(m => m.Clear(), Times.Never);
+            codeModule.Verify(m => m.Clear(), Times.Never);
         }
 
         [Test]
@@ -83,8 +94,7 @@ namespace RubberduckTests.PostProcessing
             const string content = @"
 Private foo As String
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -115,8 +125,7 @@ Private foo As String
             const string content = @"
 Private Const foo As String = ""Something""
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -151,8 +160,7 @@ Sub DoSomething()
 Dim foo As String
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -187,8 +195,7 @@ Sub DoSomething()
 Const foo As String = ""Something""
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -223,8 +230,7 @@ End Sub
 Sub DoSomething(ByVal foo As Long)
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -256,8 +262,7 @@ Public Event SomeEvent()
             const string content = @"
 Public Event SomeEvent(ByVal foo As Long)
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -289,8 +294,7 @@ Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" () As Long
             const string content = @"
 Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" (ByVal bar As Long) As Long
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -326,8 +330,7 @@ Sub DoSomething()
 Dim foo As String, bar As Integer
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -363,8 +366,7 @@ Sub DoSomething()
 Const foo As String = ""Something"", bar As Integer = 42
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -398,8 +400,7 @@ End Sub
 Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -435,8 +436,7 @@ Sub DoSomething()
 Dim foo As String, bar As Integer
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -470,8 +470,7 @@ End Sub
 Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -507,8 +506,7 @@ Sub DoSomething()
 Const foo As String = ""Something"", bar As Integer = 42
 End Sub
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -541,8 +539,7 @@ Private foo _
   As _
     String
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -575,8 +572,7 @@ Private Const foo _
   As String = _
   ""Something""
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -608,8 +604,7 @@ Private foo As String, bar As Long
             const string expected = @"
 Private bar As Long
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -641,8 +636,7 @@ Private Const foo As String = ""Something"", bar As Long = 42
             const string expected = @"
 Private Const bar As Long = 42
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -674,8 +668,7 @@ Private foo As String, bar As Long
             const string expected = @"
 Private foo As String
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -707,8 +700,7 @@ Private Const foo As String = ""Something"", bar As Long = 42
             const string expected = @"
 Private Const foo As String = ""Something""
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -740,8 +732,7 @@ Private foo As String, bar As Long, buzz As Integer
             const string expected = @"
 Private foo As String, buzz As Integer
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -773,8 +764,7 @@ Private Const foo As String = ""Something"", bar As Long = 42, buzz As Integer =
             const string expected = @"
 Private Const foo As String = ""Something"", buzz As Integer = 12
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -809,8 +799,7 @@ Private foo As String, _
 Private foo As String, _
         buzz As Integer
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -848,8 +837,7 @@ Private Const foo _
           As String = ""Something"", _
         buzz As Integer = 12
 ";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
                 if (state.Status != ParserState.Ready)
@@ -869,6 +857,16 @@ Private Const foo _
 
                 Assert.AreEqual(expected, rewriter.GetText());
             }
+        }
+
+        private IProjectsProvider TestProvider(QualifiedModuleName module, ICodeModule testModule)
+        {
+            var component = new Mock<IVBComponent>();
+            component.Setup(c => c.CodeModule).Returns(testModule);
+            var provider = new Mock<IProjectsProvider>();
+            provider.Setup(p => p.Component(It.IsAny<QualifiedModuleName>()))
+                .Returns<QualifiedModuleName>(qmn => qmn.Equals(module) ? component.Object : null);
+            return provider.Object;
         }
     }
 }

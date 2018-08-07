@@ -43,6 +43,7 @@ namespace Rubberduck.Parsing.Annotations
         PredeclaredId = 1 << 16 | Attribute | ModuleAnnotation,
         [AttributeAnnotation("VB_Exposed", "True")]
         Exposed = 1 << 17 | Attribute | ModuleAnnotation,
+        Obsolete = 1 << 18 | MemberAnnotation
     }
 
     [AttributeUsage(AttributeTargets.Field)]

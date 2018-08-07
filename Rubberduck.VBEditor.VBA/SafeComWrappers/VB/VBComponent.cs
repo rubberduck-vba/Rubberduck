@@ -117,7 +117,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return fullPath;
         }
 
-        public IVBProject ParentProject => Collection.Parent;
+        public IVBProject ParentProject
+        {
+            get
+            {
+                using (var collection = Collection)
+                {
+                    return collection.Parent;
+                }
+            }
+        }
 
         private void ExportUserFormModule(string path)
         {

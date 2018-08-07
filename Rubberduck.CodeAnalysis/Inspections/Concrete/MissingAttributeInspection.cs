@@ -11,6 +11,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -23,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
             Listener = new MissingMemberAttributeListener(state);
         }
 
-        public override ParsePass Pass => ParsePass.AttributesPass;
+        public override CodeKind TargetKindOfCode => CodeKind.AttributesCode;
 
         public override IInspectionListener Listener { get; }
 

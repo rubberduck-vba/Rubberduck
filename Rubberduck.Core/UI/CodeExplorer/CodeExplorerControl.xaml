@@ -88,6 +88,12 @@
                 <Setter Property="ToolTip" Value="{Binding Name}" />
                 <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsObsolete}" Value="true">
+                        <Setter Property="Foreground" Value="Gray" />
+                        <Setter Property="TextDecorations" Value="Strikethrough" />
+                    </DataTrigger>
+                </Style.Triggers>
             </Style>
 
             <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
@@ -98,6 +104,12 @@
                 <Setter Property="ToolTip" Value="{Binding NameWithSignature}" />
                 <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
                 <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsObsolete}" Value="true">
+                        <Setter Property="Foreground" Value="Gray" />
+                        <Setter Property="TextDecorations" Value="Strikethrough" />
+                    </DataTrigger>
+                </Style.Triggers>
             </Style>
 
             <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">

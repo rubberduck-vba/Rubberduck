@@ -129,7 +129,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             throw new NotSupportedException("Export as source file is not supported in VB6");
         }
 
-        public IVBProject ParentProject => Collection.Parent;
+        public IVBProject ParentProject
+        {
+            get
+            {
+                using (var collection = Collection)
+                {
+                    return collection.Parent;
+                }
+            }
+        }
 
         public int FileCount => IsWrappingNullReference ? 0 : Target.FileCount;
 
