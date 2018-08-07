@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _parentDeclaration;
 
         private readonly IEnumerable<IAnnotation> _annotations;
-        private readonly IDictionary<Tuple<string, DeclarationType>, Attributes> _attributes;
+        private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> _attributes;
 
         private readonly List<Declaration> _createdDeclarations = new List<Declaration>();
         public IReadOnlyList<Declaration> CreatedDeclarations => _createdDeclarations;
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.Symbols
             RubberduckParserState state,
             QualifiedModuleName qualifiedModuleName,
             IEnumerable<IAnnotation> annotations,
-            IDictionary<Tuple<string, DeclarationType>,
+            IDictionary<(string scopeIdentifier, DeclarationType scopeType),
             Attributes> attributes,
             Declaration projectDeclaration)
         {
@@ -45,7 +45,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
 
-            var key = Tuple.Create(_qualifiedModuleName.ComponentName, declarationType);
+            var key = (_qualifiedModuleName.ComponentName, declarationType);
             var moduleAttributes = attributes.ContainsKey(key)
                 ? attributes[key]
                 : new Attributes();
@@ -214,7 +214,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else
             {
-                var key = Tuple.Create(identifierName, declarationType);
+                var key = (identifierName, declarationType);
                 Attributes attributes = null;
                 if (_attributes.ContainsKey(key))
                 {

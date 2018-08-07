@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {

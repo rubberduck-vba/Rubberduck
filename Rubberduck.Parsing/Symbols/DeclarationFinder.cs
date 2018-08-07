@@ -12,40 +12,11 @@ using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    internal static class DictionaryExtensions
-    {
-        public static IEnumerable<TValue> AllValues<TKey, TValue>(
-            this ConcurrentDictionary<TKey, ConcurrentBag<TValue>> source)
-        {
-            return source.SelectMany(item => item.Value).ToList();
-        }
-
-        public static IEnumerable<TValue> AllValues<TKey, TValue>(
-            this IDictionary<TKey, IList<TValue>> source)
-        {
-            return source.SelectMany(item => item.Value).ToList();
-        }
-
-        public static IEnumerable<TValue> AllValues<TKey, TValue>(
-            this IDictionary<TKey, List<TValue>> source)
-        {
-            return source.SelectMany(item => item.Value);
-        }
-
-        public static ConcurrentDictionary<TKey, ConcurrentBag<TValue>> ToConcurrentDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
-        {
-            return new ConcurrentDictionary<TKey, ConcurrentBag<TValue>>(source.Select(x => new KeyValuePair<TKey, ConcurrentBag<TValue>>(x.Key, new ConcurrentBag<TValue>(x))));
-        }
-
-        public static Dictionary<TKey, List<TValue>> ToDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
-        {
-            return source.ToDictionary(group => group.Key, group => group.ToList());
-        }
-    }
-
     public class DeclarationFinder
     {
         private static readonly SquareBracketedNameComparer NameComparer = new SquareBracketedNameComparer();

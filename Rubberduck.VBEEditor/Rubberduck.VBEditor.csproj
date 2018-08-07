@@ -59,16 +59,26 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComManagement\ComMessagePumper.cs" />
+    <Compile Include="ComManagement\TypeLibs\ITypeLibWrapper.cs" />
+    <Compile Include="ComManagement\TypeLibs\ITypeLibWrapperProvider.cs" />
     <Compile Include="ComManagement\TypeLibs\IVBETypeLibsAPI.cs" />
     <Compile Include="ComManagement\IComSafe.cs" />
+    <Compile Include="ComManagement\TypeLibs\TypeLibWrapperProvider.cs" />
     <Compile Include="Events\AutoCompleteEventArgs.cs" />
+    <Compile Include="Extensions\DictionaryExtensions.cs" />
     <Compile Include="Factories\AddInFactory.cs" />
     <Compile Include="Factories\ISafeComWrapperProvider.cs" />
     <Compile Include="Factories\VBEFactory.cs" />
     <Compile Include="HashCode.cs" />
-    <Compile Include="ISourceCodeHandler.cs" />
+    <Compile Include="SourceCodeHandling\SourceFileHandlerSourceCodeHandlerAdapter.cs" />
+    <Compile Include="SourceCodeHandling\CodePaneSourceCodeHandler.cs" />
+    <Compile Include="SourceCodeHandling\ISourceCodeHandler.cs" />
+    <Compile Include="SourceCodeHandling\ISourceCodeProvider.cs" />
+    <Compile Include="SourceCodeHandling\ISourceFileHandler.cs" />
+    <Compile Include="CommandBarLocation.cs" />
     <Compile Include="SafeComWrappers\Abstract\HostApplicationBase.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
+    <Compile Include="CommandBarSite.cs" />
     <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
     <Compile Include="SafeComWrappers\SafeRedirectedEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IHostApplication.cs" />

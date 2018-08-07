@@ -15,6 +15,7 @@ using Rubberduck.Parsing.Annotations;
 using NLog;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -618,9 +619,14 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        internal void SetModuleAttributes(QualifiedModuleName module, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
+        internal void AddModuleStateIfNotPresent(QualifiedModuleName module)
         {
-            _moduleStates.AddOrUpdate(module, new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
+            _moduleStates.AddOrUpdate(module, new ModuleState(ParserState.Pending), (c, s) => s);
+        }
+
+        internal void SetModuleAttributes(QualifiedModuleName module, IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes)
+        {
+            _moduleStates[module].SetModuleAttributes(attributes);
         }
 
         public List<CommentNode> AllComments
@@ -723,7 +729,7 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         public IEnumerable<Declaration> AllUserDeclarations => DeclarationFinder.AllUserDeclarations;
 
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(QualifiedModuleName module)
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> GetModuleAttributes(QualifiedModuleName module)
         {
             return _moduleStates[module].ModuleAttributes;
         }
@@ -832,28 +838,32 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
-        public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
+        public void SetCodePaneRewriter(QualifiedModuleName module, IModuleRewriter codePaneRewriter)
         {
-            _moduleStates[module].SetTokenStream(ProjectsProvider.Component(module).CodeModule, stream);
+            _moduleStates[module].SetCodePaneRewriter(module, codePaneRewriter);
+        }
+
+        public void SaveContentHash(QualifiedModuleName module)
+        {
             _moduleStates[module].SetModuleContentHashCode(GetModuleContentHash(module));
         }
 
-        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, ParsePass pass = ParsePass.CodePanePass)
+        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, CodeKind codeKind = CodeKind.CodePaneCode)
         {
             var key = module;
-            _moduleStates[key].SetParseTree(parseTree, pass);
+            _moduleStates[key].SetParseTree(parseTree, codeKind);
         }
 
-        public IParseTree GetParseTree(QualifiedModuleName module, ParsePass pass = ParsePass.CodePanePass)
+        public IParseTree GetParseTree(QualifiedModuleName module, CodeKind codeKind = CodeKind.CodePaneCode)
         {
-            switch (pass)
+            switch (codeKind)
             {
-                case ParsePass.AttributesPass:
+                case CodeKind.AttributesCode:
                     return _moduleStates[module].AttributesPassParseTree;
-                case ParsePass.CodePanePass:
+                case CodeKind.CodePaneCode:
                     return _moduleStates[module].ParseTree;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+                    throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
             }
         }
 

@@ -219,6 +219,7 @@ namespace RubberduckTests.SmartIndenter
             var expected = new[]
             {
                 "#Const Foo = Bar                                 'Comment",
+                "",
                 "Private Sub Test()",                
                 "End Sub"
             };

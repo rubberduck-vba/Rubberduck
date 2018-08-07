@@ -3,6 +3,7 @@ using Antlr4.Runtime.Tree;
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace RubberduckTests.Parsing
 {
@@ -72,7 +73,7 @@ Public Sub Foo
     MsgBox ""hi""
 End Sub";
             var parser = new VBACodeStringParser("test", inputCode);
-            
+
             Assert.IsInstanceOf<TokenStreamRewriter>(parser.Parse().rewriter);
         }
 

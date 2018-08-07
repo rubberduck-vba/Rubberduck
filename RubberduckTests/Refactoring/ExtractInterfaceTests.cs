@@ -63,9 +63,10 @@ End Sub
 
                 var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
                 refactoring.Refactor(qualifiedSelection);
+                var actualCode = component.CodeModule.Content();
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
-                Assert.AreEqual(expectedCode, component.CodeModule.Content());
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
