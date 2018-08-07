@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -27,5 +28,15 @@ namespace Rubberduck.Parsing.PreProcessing
         public short Win32 = 1;
         public short Win16 = 0;
         public short Mac = 0;
+
+        public IDictionary<string, short> AllPredefinedConstants => new Dictionary<string, short>
+        {
+            {VBA6_NAME, VBA6},
+            {VBA7_NAME, VBA7},
+            {WIN64_NAME, Win64},
+            {WIN32_NAME, Win32},
+            {WIN16_NAME, Win16},
+            {MAC_NAME, Mac}
+        };
     }
 }
