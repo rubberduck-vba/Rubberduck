@@ -1,6 +1,7 @@
 using System;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.Symbols.ParsingExceptions
 {
@@ -12,24 +13,24 @@ namespace Rubberduck.Parsing.Symbols.ParsingExceptions
     public class ParsePassSyntaxErrorException : SyntaxErrorException
     {
         public ParsePassSyntaxErrorException(ParsePassSyntaxErrorInfo info)
-            : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.ComponentName, info.ParsePass) { }
+            : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.ModuleName, info.CodeKind) { }
 
-        public ParsePassSyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, string componentName, ParsePass parsePass)
-            : base(message, innerException, offendingSymbol, line, position)
+        public ParsePassSyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, string moduleName, CodeKind codeKind)
+            : base(message, innerException, offendingSymbol, line, position, codeKind)
         {
-            ComponentName = componentName;
-            ParsePass = parsePass;
+            ModuleName = moduleName;
+            CodeKind = codeKind;
         }
 
-        public string ComponentName { get; }
-        public ParsePass ParsePass { get; }
+        public string ModuleName { get; }
+        public CodeKind CodeKind { get; }
 
         public override string ToString()
         {
-            var parsePassText = ParsePass == ParsePass.CodePanePass ? "code pane" : "exported";
+            var parsePassText = CodeKind == CodeKind.CodePaneCode ? "code pane" : "exported";
             var exceptionText = 
 $@"{base.ToString()}
-Component: {ComponentName} ({parsePassText} version)";
+Component: {ModuleName} ({parsePassText} version)";
             return exceptionText;
         }
     }

@@ -3,6 +3,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Linq;
 using System.Collections.Generic;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 
 namespace RubberduckTests.Parsing.Coordination
 {
