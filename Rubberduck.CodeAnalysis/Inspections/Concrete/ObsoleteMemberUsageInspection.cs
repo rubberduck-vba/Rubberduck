@@ -32,8 +32,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
 
                 issues.AddRange(declaration.References.Select(reference =>
                     new IdentifierReferenceInspectionResult(this,
-                        string.Format(InspectionResults.ObsoleteMemberUsageInspection, reference.IdentifierName,
-                            replacementDocumentation == "" ? "" : $" (Documentation: {replacementDocumentation})"),
+                        string.Format(InspectionResults.ObsoleteMemberUsageInspection, reference.IdentifierName, replacementDocumentation),
                         State, reference)));
             }
 
