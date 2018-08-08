@@ -40,7 +40,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
         public VBACodeStringParser(string moduleName, string moduleCodeString, ParserMode mode = ParserMode.Default)
         {
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
-            _tokenStream = tokenStreamProvider.Tokens(moduleCodeString);
+            _tokenStream = tokenStreamProvider.Tokens(moduleCodeString ?? string.Empty);
             _parser = new VBAParser(_tokenStream);
             _parser.AddErrorListener(new MainParseExceptionErrorListener(moduleName, CodeKind.SnippetCode));
             _moduleName = moduleName;
