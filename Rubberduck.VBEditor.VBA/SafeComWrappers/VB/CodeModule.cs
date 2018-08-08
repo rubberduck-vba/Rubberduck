@@ -128,8 +128,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void DeleteLines(int startLine, int count = 1)
         {
-            if (IsWrappingNullReference) return; 
-            Target.DeleteLines(startLine, count);
+            if (IsWrappingNullReference) return;
+            if (Target.CountOfLines > 0)
+            {
+                Target.DeleteLines(startLine, count);
+            }
         }
 
         public void ReplaceLine(int line, string content)
