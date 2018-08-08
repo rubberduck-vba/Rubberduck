@@ -1,4 +1,4 @@
-﻿using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Collections.Generic;

@@ -2,7 +2,7 @@
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 using System;
 using System.Linq;
@@ -52,7 +52,11 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
         {
             var nextPosition = original.CaretPosition.ShiftRight();
             var autoCode = new string(new[] { pair.OpeningChar, pair.ClosingChar });
-            return new CodeString(original.Code.Insert(original.CaretPosition.StartColumn, autoCode), nextPosition, original.SnippetPosition);
+            var lines = original.Code.Split('\n');
+            var line = lines[original.CaretPosition.StartLine];
+            lines[original.CaretPosition.StartLine] = line.Insert(original.CaretPosition.StartColumn, autoCode);
+
+            return new CodeString(string.Join("\n", lines), nextPosition, original.SnippetPosition);
         }
 
         private CodeString HandleClosingChar(SelfClosingPair pair, CodeString original)
@@ -113,15 +117,18 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
         private Selection FindMatchingTokenPosition(SelfClosingPair pair, CodeString original)
         {
-            var result = VBACodeStringParser.Parse(original.Code, p => p.blockStmt());
+            var result = VBACodeStringParser.Parse(original.Code, p => p.startRule());
             var visitor = new MatchingTokenVisitor(pair, original);
-            return visitor.Visit(result.parseTree);
+            visitor.Visit(result.parseTree);
+            return visitor.Result;
         }
 
         private class MatchingTokenVisitor : VBAParserBaseVisitor<Selection>
         {
             private readonly SelfClosingPair _pair;
             private readonly CodeString _code;
+
+            public Selection Result { get; private set; }
 
             public MatchingTokenVisitor(SelfClosingPair pair, CodeString code)
             {
@@ -137,7 +144,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                     if (_code.CaretPosition.StartLine == context.Start.Line - 1
                         && _code.CaretPosition.StartColumn == context.Start.Column + 1)
                     {
-                        return new Selection(context.Start.Line - 1, context.Stop.Column + context.Stop.Text.Length - 1);
+                        Result = new Selection(context.Start.Line - 1, context.Stop.Column + context.Stop.Text.Length - 1);
                     }
                 }
                 var inner = context.GetDescendents<VBAParser.LiteralExprContext>();
@@ -146,9 +153,9 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                     if (context != item)
                     {
                         var result = Visit(item);
-                        if (result != null)
+                        if (result != default)
                         {
-                            return result;
+                            Result = result;
                         }
                     }
                 }
@@ -165,7 +172,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                         && _code.CaretPosition.StartColumn == context.RPAREN().Symbol.Column)
                     {
                         var token = context.RPAREN().Symbol;
-                        return new Selection(token.Line - 1, token.Column);
+                        Result = new Selection(token.Line - 1, token.Column);
                     }
                 }
                 var inner = context.GetDescendents<VBAParser.IndexExprContext>();
@@ -174,9 +181,9 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                     if (context != item)
                     {
                         var result = Visit(item);
-                        if (result != null)
+                        if (result != default)
                         {
-                            return result;
+                            Result = result;
                         }
                     }
                 }
@@ -193,7 +200,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                         && _code.CaretPosition.StartColumn == context.Start.Column + 1)
                     {
                         var token = context.Stop;
-                        return new Selection(token.Line - 1, token.Column);
+                        Result = new Selection(token.Line - 1, token.Column);
                     }
                 }
                 var inner = context.GetDescendents<VBAParser.ArgListContext>();
@@ -202,9 +209,9 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                     if (context != item)
                     {
                         var result = Visit(item);
-                        if (result != null)
+                        if (result != default)
                         {
-                            return result;
+                            Result = result;
                         }
                     }
                 }
@@ -221,7 +228,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                         && _code.CaretPosition.StartColumn == context.Start.Column + 1)
                     {
                         var token = context.Stop;
-                        return new Selection(token.Line - 1, token.Column);
+                        Result = new Selection(token.Line - 1, token.Column);
                     }
                 }
                 var inner = context.GetDescendents<VBAParser.ParenthesizedExprContext>();
@@ -230,9 +237,9 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                     if (context != item)
                     {
                         var result = Visit(item);
-                        if (result != null)
+                        if (result != default)
                         {
-                            return result;
+                            Result = result;
                         }
                     }
                 }

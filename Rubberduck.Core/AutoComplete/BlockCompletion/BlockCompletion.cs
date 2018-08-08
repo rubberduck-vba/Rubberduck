@@ -1,6 +1,4 @@
-﻿using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;

@@ -6,7 +6,7 @@ using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 
-namespace Rubberduck.Parsing.VBA
+namespace Rubberduck.Parsing.VBA.Parsing
 {
     public delegate IParseTree ParserStartRule(VBAParser parser);
 
@@ -35,7 +35,7 @@ namespace Rubberduck.Parsing.VBA
         public static (IParseTree parseTree, TokenStreamRewriter rewriter) Parse(string code, ParserStartRule startRule, ParserMode mode = ParserMode.Default)
         {
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
-            var tokenStream = tokenStreamProvider.Tokens(code);
+            var tokenStream = tokenStreamProvider.Tokens(code ?? string.Empty);
             var parser = new VBAParser(tokenStream);
             try
             {

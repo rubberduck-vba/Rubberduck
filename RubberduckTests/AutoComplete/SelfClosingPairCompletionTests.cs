@@ -26,8 +26,17 @@ namespace RubberduckTests.AutoComplete
         {
             var pair = new SelfClosingPair('(', ')');
             var input = pair.ClosingChar;
-            var original = @"foo = MsgBox(|)".ToCodeString();
-            var expected = @"foo = MsgBox()|".ToCodeString();
+            var original = @"
+Sub Test()
+foo = MsgBox(|)
+End Sub
+"
+.ToCodeString();
+            var expected = @"
+Sub Test()
+foo = MsgBox()|
+End Sub
+".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
@@ -38,8 +47,16 @@ namespace RubberduckTests.AutoComplete
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;
-            var original = @"foo = (|2 + 2)".ToCodeString();
-            var expected = @"foo = |2 + 2".ToCodeString();
+            var original = @"
+Sub Test()
+foo = (|2 + 2)
+End Sub
+".ToCodeString();
+            var expected = @"
+Sub Test()
+foo = |2 + 2
+End Sub
+".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
@@ -50,8 +67,16 @@ namespace RubberduckTests.AutoComplete
         {
             var pair = new SelfClosingPair('"', '"');
             var input = Keys.Back;
-            var original = @"foo = ""|2 + 2""".ToCodeString();
-            var expected = @"foo = |2 + 2".ToCodeString();
+            var original = @"
+Sub Test()
+foo = ""|2 + 2""
+End Sub
+".ToCodeString();
+            var expected = @"
+Sub Test()
+foo = |2 + 2
+End Sub
+".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
@@ -62,8 +87,16 @@ namespace RubberduckTests.AutoComplete
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;
-            var original = @"foo = ((|2 + 2) + 42)".ToCodeString();
-            var expected = @"foo = (|2 + 2 + 42)".ToCodeString();
+            var original = @"
+Sub Test()
+foo = ((|2 + 2) + 42)
+End Sub
+".ToCodeString();
+            var expected = @"
+Sub Test()
+foo = (|2 + 2 + 42)
+End Sub
+".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
@@ -75,12 +108,18 @@ namespace RubberduckTests.AutoComplete
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;
             var original = @"
+Sub Test()
 foo = (| _
     (2 + 2) + 42 _
-)".ToCodeString();
+)
+End Sub
+".ToCodeString();
             var expected = @"
+Sub Test()
 foo = | _
     (2 + 2) + 42 _
+
+End Sub
 ".ToCodeString();
 
             var result = Run(pair, original, input);
@@ -92,8 +131,16 @@ foo = | _
         {
             var pair = new SelfClosingPair('(', ')');
             var input = pair.OpeningChar;
-            var original = @"foo = MsgBox(|)".ToCodeString();
-            var expected = @"foo = MsgBox((|))".ToCodeString();
+            var original = @"
+Sub Test()
+foo = MsgBox(|)
+End Sub
+".ToCodeString();
+            var expected = @"
+Sub Test()
+foo = MsgBox((|))
+End Sub
+".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
@@ -104,8 +151,36 @@ foo = | _
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;
-            var original = @"foo = MsgBox(|)".ToCodeString();
-            var expected = @"foo = MsgBox|".ToCodeString();
+            var original = @"
+Sub Test()
+foo = MsgBox(|)
+End Sub
+".ToCodeString();
+            var expected = @"
+Sub Test()
+foo = MsgBox|
+End Sub
+".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void WhenCaretBetweenOpeningAndClosingChars_BackspaceRemovesBoth_Indented()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = @"
+Sub Test()
+    foo = ""|""
+End Sub
+".ToCodeString();
+            var expected = @"
+Sub Test()
+    foo = |
+End Sub
+".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
@@ -116,7 +191,11 @@ foo = | _
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.A;
-            var original = @"MsgBox (|)".ToCodeString();
+            var original = @"
+Sub Test()
+MsgBox (|)
+End Sub
+".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.IsTrue(result == default);
@@ -127,7 +206,11 @@ foo = | _
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.A;
-            var original = @"MsgBox |".ToCodeString();
+            var original = @"
+Sub Test()
+MsgBox |
+End Sub
+".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.IsTrue(result == default);
