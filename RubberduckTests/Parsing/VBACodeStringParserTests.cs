@@ -3,6 +3,7 @@ using Antlr4.Runtime.Tree;
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace RubberduckTests.Parsing
 {
@@ -17,7 +18,8 @@ namespace RubberduckTests.Parsing
 Public Sub Foo
     MsgBox ""hi""
 End Sub";
-            Assert.IsInstanceOf<IParseTree>(VBACodeStringParser.Parse(inputCode, e => e.startRule()).parseTree);
+            var parser = new VBACodeStringParser("test", inputCode);
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
         }
 
         [Test]
@@ -30,7 +32,8 @@ Public Sub Foo
 
             Assert.Throws<MainParseSyntaxErrorException>(() =>
             {
-                VBACodeStringParser.Parse(inputCode, e => e.startRule());
+                var parser = new VBACodeStringParser("test", inputCode);
+                parser.Parse();
             });
         }
 
@@ -42,7 +45,8 @@ Public Sub Foo
 
             Assert.Throws<MainParseSyntaxErrorException>(() =>
             {
-                VBACodeStringParser.Parse(inputCode, e => e.startRule());
+                var parser = new VBACodeStringParser("test", inputCode);
+                parser.Parse();
             });
         }
 
@@ -54,8 +58,10 @@ Public Sub Foo
 Public Sub Foo
     MsgBox ""hi""
 End Sub";
-            var tree = VBACodeStringParser.Parse(inputCode, e => e.startRule());
-            Assert.AreEqual(inputCode + "<EOF>", tree.parseTree.GetChild(0).GetText());
+            var parser = new VBACodeStringParser("test", inputCode);
+            var tree = parser.Parse().parseTree;
+
+            Assert.AreEqual(inputCode + "<EOF>", tree.GetChild(0).GetText());
         }
 
         [Test]
@@ -66,9 +72,9 @@ End Sub";
 Public Sub Foo
     MsgBox ""hi""
 End Sub";
-            var tree = VBACodeStringParser.Parse(inputCode, e => e.startRule());
+            var parser = new VBACodeStringParser("test", inputCode);
 
-            Assert.IsInstanceOf<TokenStreamRewriter>(tree.rewriter);
+            Assert.IsInstanceOf<TokenStreamRewriter>(parser.Parse().rewriter);
         }
 
         [Test]
@@ -79,8 +85,9 @@ End Sub";
 Public Sub Foo
     MsgBox ""hi""
 End Sub";
-            var tree = VBACodeStringParser.Parse(inputCode, e => e.startRule());
-            Assert.IsInstanceOf<IParseTree>(tree);
+            var parser = new VBACodeStringParser("test", inputCode, VBACodeStringParser.ParserMode.Sll);
+
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
         }
 
         [Test]
@@ -91,8 +98,29 @@ End Sub";
 Public Sub Foo
     MsgBox ""hi""
 End Sub";
-            var tree = VBACodeStringParser.Parse(inputCode, e => e.startRule());
-            Assert.IsInstanceOf<IParseTree>(tree);
+            var parser = new VBACodeStringParser("test", inputCode, VBACodeStringParser.ParserMode.Ll);
+
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
+        }
+
+        [Test]
+        [Category("VBACodeStringParser_Tests")]
+        public void CanParseEmptyModule()
+        {
+            const string inputCode = @"";
+
+            var parser = new VBACodeStringParser("test", inputCode);
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
+        }
+
+        [Test]
+        [Category("VBACodeStringParser_Tests")]
+        public void CanParseNullInput()
+        {
+            const string inputCode = null;
+
+            var parser = new VBACodeStringParser("test", inputCode);
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
         }
     }
 }

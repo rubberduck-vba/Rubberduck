@@ -17,7 +17,7 @@ namespace Rubberduck.SmartIndenter
         private static readonly Regex ProcedureEndRegex = new Regex(@"^End\s(Sub|Function|Property)", RegexOptions.IgnoreCase);
         private static readonly Regex TypeEnumStartRegex = new Regex(@"^(Public\s|Private\s)?(Enum\s|Type\s)", RegexOptions.IgnoreCase);
         private static readonly Regex TypeEnumEndRegex = new Regex(@"^End\s(Enum|Type)", RegexOptions.IgnoreCase);
-        private static readonly Regex InProcedureInRegex = new Regex(@"^(Else)?If\s.*\sThen$|^Else$|^Case\s|^With|^For\s|^Do$|^Do\s|^While$|^While\s|^Select Case", RegexOptions.IgnoreCase);
+        private static readonly Regex InProcedureInRegex = new Regex(@"^(Else)?If\s.*\sThen$|^Else:?$|^Case\s|^With|^For\s|^Do$|^Do\s|^While$|^While\s|^Select Case", RegexOptions.IgnoreCase);
         private static readonly Regex InProcedureOutRegex = new Regex(@"^Else(If)?|^Case\s|^End With|^Next\s|^Next$|^Loop$|^Loop\s|^Wend$|^End If$|^End Select", RegexOptions.IgnoreCase);
         private static readonly Regex DeclarationRegex = new Regex(@"^(Dim|Const|Static|Public|Private)\s(.*(\sAs\s)?|_)", RegexOptions.IgnoreCase);
         private static readonly Regex PrecompilerInRegex = new Regex(@"^#(Else)?If\s.+Then$|^#Else$", RegexOptions.IgnoreCase);
@@ -159,7 +159,9 @@ namespace Rubberduck.SmartIndenter
 
         public bool IsPrecompilerDirective => _code.TrimStart().StartsWith("#");
 
-        public bool IsBareDebugStatement => _code.StartsWith("Debug.") || _code.Equals("Stop");
+        public bool IsBareDebugPrintStatement => _code.StartsWith("Debug.Print");
+        public bool IsBareDebugAssertStatement => _code.StartsWith("Debug.Assert");
+        public bool IsBareStopStatement => _code.Equals("Stop");
 
         public int EnumOrTypeStarts
         {
@@ -232,7 +234,9 @@ namespace Rubberduck.SmartIndenter
             }
 
             if ((IsPrecompilerDirective && _settings.ForceCompilerDirectivesInColumn1) ||
-                (IsBareDebugStatement && _settings.ForceDebugStatementsInColumn1) ||
+                (IsBareDebugPrintStatement && _settings.ForceDebugPrintInColumn1) ||
+                (IsBareDebugAssertStatement && _settings.ForceDebugAssertInColumn1) ||
+                (IsBareStopStatement && _settings.ForceStopInColumn1) ||
                 (atProcStart && !_settings.IndentFirstCommentBlock && ContainsOnlyComment) ||
                 (atProcStart && !_settings.IndentFirstDeclarationBlock && (IsDeclaration || IsDeclarationContinuation)))
             {

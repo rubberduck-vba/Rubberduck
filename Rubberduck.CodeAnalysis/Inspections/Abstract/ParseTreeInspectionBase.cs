@@ -1,5 +1,6 @@
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.Abstract
 {
@@ -9,6 +10,6 @@ namespace Rubberduck.Inspections.Abstract
             : base(state) { }
 
         public abstract IInspectionListener Listener { get; }
-        public virtual ParsePass Pass => ParsePass.CodePanePass;
+        public virtual CodeKind TargetKindOfCode => CodeKind.CodePaneCode;
     }
 }

@@ -33,19 +33,10 @@ namespace Rubberduck.VBEditor
             return new QualifiedModuleName(projectName, reference.FullPath, projectName).ProjectId;
         }
 
-        public static int GetModuleContentHash(IVBComponent component)
+        public static int GetContentHash(IVBComponent component)
         {
-            if (component == null || component.IsWrappingNullReference || !component.HasCodeModule)
-            {
-                return 0;
-            }
-
-            using (var codeModule = component.CodeModule)
-            {
-                return codeModule?.SimpleContentHash() ?? 0;
-            }
+            return component?.ContentHash() ?? 0;
         }
-
 
         public QualifiedModuleName(IVBProject project)
         {
@@ -54,7 +45,7 @@ namespace Rubberduck.VBEditor
             _projectName = project.Name;
             ProjectPath = string.Empty;
             ProjectId = GetProjectId(project);
-            ModuleContentHashOnCreation = GetModuleContentHash(null);
+            ModuleContentHashOnCreation = GetContentHash(null);
         }
 
         public QualifiedModuleName(IVBComponent component)
@@ -68,7 +59,7 @@ namespace Rubberduck.VBEditor
             //component seems to prevent this. 
             //This is a hack to open the code module on each component for which we get a QMN 
             //in a way that does not get optimized away.
-            ModuleContentHashOnCreation = GetModuleContentHash(component);
+            ModuleContentHashOnCreation = GetContentHash(component);
 
             using (var components = component.Collection)
             {
@@ -93,7 +84,7 @@ namespace Rubberduck.VBEditor
             ProjectId = $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             ComponentType = ComponentType.ComComponent;
-            ModuleContentHashOnCreation = GetModuleContentHash(null);
+            ModuleContentHashOnCreation = GetContentHash(null);
         }
 
         public QualifiedMemberName QualifyMemberName(string member)

@@ -1844,6 +1844,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore empty lines when locating first comment and declaration blocks.
+        /// </summary>
+        public static string IndenterSettings_IgnoreEmptyLinesInFirstBlocks {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IgnoreEmptyLinesInFirstBlocks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore operators.
         /// </summary>
         public static string IndenterSettings_IgnoreOperators {
@@ -2314,6 +2323,15 @@ namespace Rubberduck.Resources {
         public static string ParserProgress_ShowDetails {
             get {
                 return ResourceManager.GetString("ParserProgress_ShowDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Busy.
+        /// </summary>
+        public static string ParserState_Busy {
+            get {
+                return ResourceManager.GetString("ParserState_Busy", resourceCulture);
             }
         }
         

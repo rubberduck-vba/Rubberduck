@@ -9,6 +9,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.AutoComplete
 {

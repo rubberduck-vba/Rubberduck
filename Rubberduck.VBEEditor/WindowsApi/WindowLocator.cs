@@ -1,21 +1,44 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
     public static class WindowLocator
     {
-        public static IntPtr FindChildWindow(this IntPtr parentHandle, string caption)
+        public static bool IsChildOf(this IntPtr childHandle, IntPtr hWnd)
         {
-            return new ChildWindowFinder(parentHandle, caption).ResultHandle;
+            return hWnd.Equals(User32.GetAncestor(childHandle, User32.GetAncestorFlags.GetRoot));
         }
 
-        private class ChildWindowFinder
+        public static List<IntPtr> ChildWindows(this IntPtr hWnd)
+        {
+            var children = new List<IntPtr>();
+            var childAfter = IntPtr.Zero;
+            while (true)
+            {
+                var located = User32.FindWindowEx(hWnd, childAfter, null, null);
+                if (located == IntPtr.Zero)
+                {
+                    break;
+                }
+                children.Add(located);
+                childAfter = located;
+            }
+            return children;
+        }
+
+        public static IntPtr FindChildWindow(this IntPtr parentHandle, string caption)
+        {
+            return new ChildWindowCaptionFinder(parentHandle, caption).ResultHandle;
+        }
+
+        private class ChildWindowCaptionFinder
         {
             private readonly IntPtr _parentHandle;
             private readonly string _caption;
 
-            public ChildWindowFinder(IntPtr parentHandle, string caption)
+            public ChildWindowCaptionFinder(IntPtr parentHandle, string caption)
             {
                 _parentHandle = parentHandle;
                 _caption = caption;
