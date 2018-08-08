@@ -5,17 +5,26 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 {
     public class SelfClosingPairCompletionService
     {
-        public CodeString Execute(SelfClosingPair pair, CodeString original, char input)
+        public CodeString Execute(SelfClosingPair pair, CodeString original, char input, ICodeStringPrettifier prettifier = null)
         {
             if (input == pair.OpeningChar)
             {
-                return HandleOpeningChar(pair, original);
+                var result = HandleOpeningChar(pair, original);
+                if (result != default && prettifier != null)
+                {
+                    return prettifier.IsSpacingUnchanged(result) ? result : default;
+                }
+                else
+                {
+                    return result;
+                }
             }
             else if (input == pair.ClosingChar)
             {
@@ -43,15 +52,19 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
         {
             var nextPosition = original.CaretPosition.ShiftRight();
             var autoCode = new string(new[] { pair.OpeningChar, pair.ClosingChar });
-            return new CodeString(original.Code.Insert(original.CaretPosition.StartColumn, autoCode), nextPosition);
+            return new CodeString(original.Code.Insert(original.CaretPosition.StartColumn, autoCode), nextPosition, original.SnippetPosition);
         }
 
         private CodeString HandleClosingChar(SelfClosingPair pair, CodeString original)
         {
-            var nextPosition = original.CaretPosition.ShiftRight();
-            var newCode = original.Code;
+            if (original.Code.Count(c => c == pair.OpeningChar) == original.Code.Count(c => c == pair.ClosingChar))
+            {
+                var nextPosition = original.CaretPosition.ShiftRight();
+                var newCode = original.Code;
 
-            return new CodeString(newCode, nextPosition);
+                return new CodeString(newCode, nextPosition, original.SnippetPosition);
+            }
+            return default;
         }
 
         private CodeString HandleBackspace(SelfClosingPair pair, CodeString original)
@@ -68,7 +81,15 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             var lines = original.Lines;
 
             var previous = Math.Max(0, position.StartColumn - 1);
-            if (lines[original.CaretPosition.StartLine][previous] == pair.OpeningChar)
+            var next = previous + 1;
+
+            var line = lines[original.CaretPosition.StartLine];
+            if (original.CaretPosition.EndColumn < next && line[previous] == pair.OpeningChar && line[next] == pair.ClosingChar)
+            {
+                lines[original.CaretPosition.StartLine] = line.Remove(previous, 2);
+                return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
+            }
+            else if (line[previous] == pair.OpeningChar)
             {
                 var closingTokenPosition = FindMatchingTokenPosition(pair, original);
                 if (closingTokenPosition != default)
@@ -76,10 +97,10 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                     var closingLine = lines[closingTokenPosition.EndLine].Remove(closingTokenPosition.StartColumn, 1);
                     lines[closingTokenPosition.EndLine] = closingLine;
 
-                    var openingLine = lines[position.StartLine].Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
+                    var openingLine = lines[original.CaretPosition.StartLine].Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
                     lines[original.CaretPosition.StartLine] = openingLine;
 
-                    return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft());
+                    return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
                 }
 
                 return default;

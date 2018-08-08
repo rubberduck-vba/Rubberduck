@@ -20,7 +20,7 @@ namespace Rubberduck.Common
 
             var lines = code.Split('\n');
             var line = lines[zPosition.StartLine];
-            if (line[Math.Min(line.Length - 1, zPosition.StartColumn)] == '|')
+            if (line != string.Empty && line[Math.Min(line.Length - 1, zPosition.StartColumn)] == '|')
             {
                 Code = line.Remove(zPosition.StartColumn, 1);
             }

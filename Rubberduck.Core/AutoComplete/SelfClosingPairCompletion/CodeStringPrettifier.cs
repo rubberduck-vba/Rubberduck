@@ -7,27 +7,34 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 {
     public class CodeStringPrettifier : ICodeStringPrettifier
     {
-        public CodeString Run(CodeString code, ICodeModule module)
+        private readonly ICodeModule _module;
+
+        public CodeStringPrettifier(ICodeModule module)
         {
-            using (var pane = module.CodePane)
+            _module = module;
+        }
+
+        public bool IsSpacingUnchanged(CodeString code)
+        {
+            using (var pane = _module.CodePane)
             {
                 using (var window = pane.Window)
                 {
-                    window.ScreenUpdating = false;
-                    module.DeleteLines(code.SnippetPosition);
-                    module.InsertLines(code.SnippetPosition.StartLine, code.Code);
-                    pane.Selection = new Selection(code.SnippetPosition.StartLine, 1).Offset(code.CaretPosition);
-                    window.ScreenUpdating = true;
+                    //window.ScreenUpdating = false;
+                    _module.DeleteLines(code.SnippetPosition);
+                    _module.InsertLines(code.SnippetPosition.StartLine, code.Code);
+                    //window.ScreenUpdating = true;
 
-                    var lines = module.GetLines(code.SnippetPosition);
+                    pane.Selection = code.SnippetPosition.Offset(code.CaretPosition);
+
+                    var lines = _module.GetLines(code.SnippetPosition);
                     if (lines.Equals(code.Code, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        return code;
+                        return true;
                     }
                 }
             }
-
-            return default;
+            return false;
         }
     }
 }
