@@ -58,7 +58,12 @@
                 <Setter Property="Height" Value="16"/>
                 <Setter Property="Width" Value="16" />
             </Style>
-            
+
+
+            <Style TargetType="MenuItem">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -96,7 +101,7 @@
                 </Menu>
 
                 <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalAlignment="Center">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource GroupByImage}" />
                         </MenuItem.Icon>
@@ -122,57 +127,47 @@
                     </MenuItem>
                 </Menu>
 
+                <Separator />
+
                 <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI , Key=GroupingGrid_FilterBy}" VerticalAlignment="Center">
+                    <MenuItem x:Name="FilterInspectionByError"
+                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
+                              IsChecked="{Binding FilterInspectionsByError, UpdateSourceTrigger=PropertyChanged}"
+                              IsCheckable="True"
+                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource FilterByImage}"/>
+                            <Image Source="{StaticResource FilterByErrorImage}" />
                         </MenuItem.Icon>
+                    </MenuItem>
 
-                        <MenuItem x:Name="FilterInspectionByHint"
-                                  Style="{DynamicResource MenuItemStyle}"
-                                  Header="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=CodeInspectionSeverity_Hint}"
-                                  IsChecked="{Binding FilterInspectionsByHint, UpdateSourceTrigger=PropertyChanged}"
-                                  IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
-                            <MenuItem.Icon>
-                                <Image Source="{StaticResource FilterByHintImage}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
+                    <MenuItem x:Name="FilterInspectionByWarning"
+                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
+                              IsChecked="{Binding FilterInspectionsByWarning, UpdateSourceTrigger=PropertyChanged}"
+                              IsCheckable="True"
+                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource FilterByWarningImage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
 
-                        <MenuItem x:Name="FilterInspectionBySuggestion"
-                                  Style="{DynamicResource MenuItemStyle}"
-                                  Header="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=CodeInspectionSeverity_Suggestion}"
-                                  IsChecked="{Binding FilterInspectionsBySuggestion, UpdateSourceTrigger=PropertyChanged}"
-                                  IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
-                            <MenuItem.Icon>
-                                <Image Source="{StaticResource FilterBySuggestionImage}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
+                    <MenuItem x:Name="FilterInspectionBySuggestion"
+                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
+                              IsChecked="{Binding FilterInspectionsBySuggestion, UpdateSourceTrigger=PropertyChanged}"
+                              IsCheckable="True"
+                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource FilterBySuggestionImage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
 
-                        <MenuItem x:Name="FilterInspectionByWarning"
-                                  Style="{DynamicResource MenuItemStyle}"
-                                  VerticalAlignment="Center"
-                                  Header="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=CodeInspectionSeverity_Warning}"
-                                  IsChecked="{Binding FilterInspectionsByWarning, UpdateSourceTrigger=PropertyChanged}"
-                                  IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
-                            <MenuItem.Icon>
-                                <Image Source="{StaticResource FilterByWarningImage}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-
-                        <MenuItem x:Name="FilterInspectionByError"
-                                  Style="{DynamicResource MenuItemStyle}"
-                                  Header="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=CodeInspectionSeverity_Error}"
-                                  IsChecked="{Binding FilterInspectionsByError, UpdateSourceTrigger=PropertyChanged}"
-                                  IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
-                            <MenuItem.Icon>
-                                <Image Source="{StaticResource FilterByErrorImage}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-
+                    <MenuItem x:Name="FilterInspectionByHint"
+                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
+                              IsChecked="{Binding FilterInspectionsByHint, UpdateSourceTrigger=PropertyChanged}"
+                              IsCheckable="True"
+                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource FilterByHintImage}" />
+                        </MenuItem.Icon>
                     </MenuItem>
                 </Menu>
 
