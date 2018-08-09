@@ -17,7 +17,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public VBE(VB.VBE target, bool rewrapping = false)
             : base(target, rewrapping)
         {
-            TempSourceFileHandler = new TempSourceFileHandler();
+            TempSourceFileHandler = new ExternalFileTempSourceFileHandlerEmulator();
         }
 
         public VBEKind Kind => VBEKind.Standalone;

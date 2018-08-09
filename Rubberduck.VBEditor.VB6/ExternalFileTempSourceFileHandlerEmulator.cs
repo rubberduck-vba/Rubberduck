@@ -5,7 +5,7 @@ using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.VBEditor.VB6
 {
-    public class TempSourceFileHandler : ITempSourceFileHandler
+    public class ExternalFileTempSourceFileHandlerEmulator : ITempSourceFileHandler
     {
         public string Export(IVBComponent component)
         {
