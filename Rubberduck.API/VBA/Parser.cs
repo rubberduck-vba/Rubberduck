@@ -97,7 +97,7 @@ namespace Rubberduck.API.VBA
             _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents);
             _state.StateChanged += _state_StateChanged;
 
-            var sourceFileHandler = _vbe.SourceFileHandler;
+            var sourceFileHandler = _vbe.TempSourceFileHandler;
             var vbeVersion = double.Parse(_vbe.Version, CultureInfo.InvariantCulture);
             var predefinedCompilationConstants = new VBAPredefinedCompilationConstants(vbeVersion);
             var typeLibProvider = new TypeLibWrapperProvider(projectRepository);

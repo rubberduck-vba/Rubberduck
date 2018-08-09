@@ -22,7 +22,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
             using (var codeModule = component.CodeModule)
             {
-                return codeModule.Content();
+                return codeModule.Content() ?? string.Empty;
             }
         }
 

@@ -886,7 +886,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars));
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
-            container.Register(Component.For<ISourceFileHandler>().Instance(_vbe.SourceFileHandler));
+            container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler));
         }
 
         private void RegisterHotkeyFactory(IWindsorContainer container)
