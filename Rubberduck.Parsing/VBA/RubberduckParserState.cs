@@ -134,8 +134,6 @@ namespace Rubberduck.Parsing.VBA
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public readonly ConcurrentDictionary<IList<string>, Declaration> CoClasses = new ConcurrentDictionary<IList<string>, Declaration>();
-
         public bool IsEnabled { get; internal set; }
 
         public DeclarationFinder DeclarationFinder { get; private set; }
@@ -1064,7 +1062,6 @@ namespace Rubberduck.Parsing.VBA
                 item.Value.Dispose();
             }
 
-            CoClasses?.Clear();
             RemoveEventHandlers();
             VBEEvents.Terminate();
 

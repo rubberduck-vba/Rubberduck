@@ -141,14 +141,6 @@ namespace RubberduckTests.Mocks
         {
             var declarations = deserialized.Unwrap();
 
-            foreach (var members in declarations.Where(d => d.DeclarationType != DeclarationType.Project &&
-                                                            d.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
-                                                            ProceduralTypes.Contains(d.DeclarationType))
-                .GroupBy(d => d.ParentDeclaration))
-            {
-                state.CoClasses.TryAdd(members.Select(m => m.IdentifierName).ToList(), members.First().ParentDeclaration);
-            }
-
             foreach (var declaration in declarations)
             {
                 state.AddDeclaration(declaration);

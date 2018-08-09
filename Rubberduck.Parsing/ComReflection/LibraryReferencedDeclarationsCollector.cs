@@ -20,24 +20,23 @@ namespace Rubberduck.Parsing.ComReflection
             _comLibraryProvider = comLibraryProvider;
         }
 
-        public (IReadOnlyCollection<Declaration> declarations, Dictionary<IList<string>, Declaration> coClasses, SerializableProject serializableProject) CollectDeclarations(
+        public (IReadOnlyCollection<Declaration> declarations, SerializableProject serializableProject) CollectDeclarations(
             IReference reference)
         {
             return LoadDeclarationsFromLibrary(reference);
         }
 
-        private (List<Declaration> declarations, Dictionary<IList<string>, Declaration> coClasses, SerializableProject serializableProject) LoadDeclarationsFromLibrary(IReference reference)
+        private (List<Declaration> declarations, SerializableProject serializableProject) LoadDeclarationsFromLibrary(IReference reference)
         {
             var libraryPath = reference.FullPath;
             // Failure to load might mean that it's a "normal" VBProject that will get parsed by us anyway.
             var typeLibrary = GetTypeLibrary(libraryPath);
             if (typeLibrary == null)
             {
-                return (new List<Declaration>(), new Dictionary<IList<string>, Declaration>(), null) ;
+                return (new List<Declaration>(), null) ;
             }
 
             var declarations = new List<Declaration>();
-            var coClasses = new Dictionary<IList<string>,Declaration>();
 
             var type = new ComProject(typeLibrary, libraryPath);
 
@@ -59,22 +58,17 @@ namespace Rubberduck.Parsing.ComReflection
                                         : module.Name;
                 var moduleName = new QualifiedModuleName(reference.Name, libraryPath, moduleIdentifier);
 
-                var (moduleDeclarations, coClass, moduleTree) = GetDeclarationsForModule(module, moduleName, project);
+                var (moduleDeclarations, moduleTree) = GetDeclarationsForModule(module, moduleName, project);
                 declarations.AddRange(moduleDeclarations);
-                if (coClass.HasValue)
-                {
-                    coClasses[coClass.Value.Key] = coClass.Value.Value;
-                }
                 serialized.AddDeclaration(moduleTree);
             }
-            return (declarations, coClasses, serialized);
+            return (declarations, serialized);
         }
 
-        private static (ICollection<Declaration> declarations, KeyValuePair<IList<string>, Declaration>? coClass, SerializableDeclarationTree moduleTree) GetDeclarationsForModule(IComType module, QualifiedModuleName moduleName,
+        private static (ICollection<Declaration> declarations, SerializableDeclarationTree moduleTree) GetDeclarationsForModule(IComType module, QualifiedModuleName moduleName,
             ProjectDeclaration project)
         {
             var declarations = new List<Declaration>();
-            KeyValuePair<IList<string>, Declaration>? coClassItem = null;
 
             var attributes = GetModuleAttributes(module);
             var moduleDeclaration = CreateModuleDeclaration(module, moduleName, project, attributes);
@@ -98,9 +92,6 @@ namespace Rubberduck.Parsing.ComReflection
 
                     if (membered is ComCoClass coClass)
                     {
-                        var memberList = CoClassMemberList(coClass);
-                        coClassItem = new KeyValuePair<IList<string>, Declaration>(memberList, moduleDeclaration);
-
                         (memberDeclarations, defaultMember, memberTrees) = GetDeclarationsForMembers(coClass.SourceMembers,
                             moduleName, moduleDeclaration, coClass.DefaultMember, true);
                         declarations.AddRange(memberDeclarations);
@@ -151,7 +142,7 @@ namespace Rubberduck.Parsing.ComReflection
                 moduleTree.AddChildren(fieldDeclarations);
             }
 
-            return (declarations, coClassItem, moduleTree);
+            return (declarations, moduleTree);
         }
 
         private static void AssignDefaultMember(Declaration moduleDeclaration, Declaration defaultMember)
@@ -160,14 +151,6 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 classDeclaration.DefaultMember = defaultMember;
             }
-        }
-
-        private static List<string> CoClassMemberList(ComCoClass comCoClass)
-        {
-            return comCoClass.Members
-                .Where(m => !m.IsRestricted && !IgnoredInterfaceMembers.Contains(m.Name))
-                .Select(m => m.Name)
-                .ToList();
         }
 
         private ITypeLib GetTypeLibrary(string libraryPath)

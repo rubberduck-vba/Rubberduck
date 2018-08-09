@@ -14,8 +14,6 @@ namespace Rubberduck.Parsing.VBA
 {
     public abstract class COMReferenceSynchronizerBase : ICOMReferenceSynchronizer, IProjectReferencesProvider 
     {
-        private const string rubberduckGUID = "{E07C841C-14B4-4890-83E9-8C80B06DD59D}";
-
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
         private readonly IReferencedDeclarationsCollector _referencedDeclarationsCollector;
@@ -78,12 +76,9 @@ namespace Rubberduck.Parsing.VBA
                 unmapped.Add(item);
             }
 
-            if (unmapped.Any())
+            foreach (var reference in unmapped)
             {
-                foreach (var reference in unmapped)
-                {
-                    UnloadComReference(reference, projects);
-                }
+                UnloadComReference(reference, projects);
             }
         }
 
@@ -106,12 +101,7 @@ namespace Rubberduck.Parsing.VBA
                         continue;
                     }
 
-                    // skip loading Rubberduck.tlb (GUID is defined in AssemblyInfo.cs)
-                    if (reference.Guid == rubberduckGUID)
-                    {
-                        // todo: figure out why Rubberduck.tlb *sometimes* throws
-                        //continue;
-                    }
+                    // todo: figure out why Rubberduck.tlb *sometimes* throws
 
                     var referencedProjectId = GetReferenceProjectId(reference, projects);
                     var map = _projectReferences.FirstOrDefault(item => item.ReferencedProjectId == referencedProjectId);
@@ -181,15 +171,10 @@ namespace Rubberduck.Parsing.VBA
             Logger.Trace($"Loading referenced type '{localReference.Name}'.");            
             try
             {
-                var (declarations, coClasses, serializedProject) = _referencedDeclarationsCollector.CollectDeclarations(localReference);
+                var (declarations, serializedProject) = _referencedDeclarationsCollector.CollectDeclarations(localReference);
                 foreach (var declaration in declarations)
                 {
                     _state.AddDeclaration(declaration);
-                }
-
-                foreach (var key in coClasses.Keys)
-                {
-                    _state.CoClasses.AddOrUpdate(key, coClasses[key], (oldKey, value) => coClasses[oldKey]);
                 }
 
                 if (serializedProject != null)
