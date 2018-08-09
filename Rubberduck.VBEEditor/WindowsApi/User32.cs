@@ -62,6 +62,8 @@ namespace Rubberduck.VBEditor.WindowsApi
         [DllImport("user32.dll")]
         public static extern IntPtr GetFocus();
 
+        public const int MaxGetClassNameBufferSize = 255;
+
         /// <summary>
         /// Gets the underlying class name for a window handle.
         /// https://msdn.microsoft.com/en-us/library/windows/desktop/ms633582(v=vs.85).aspx
@@ -91,5 +93,31 @@ namespace Rubberduck.VBEditor.WindowsApi
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool IsWindow(IntPtr hWnd);
+
+        internal enum GetAncestorFlags
+        {
+            /// <summary>
+            /// Retrieves the parent window. This does not include the owner, as it does with the GetParent function.
+            /// </summary>
+            GetParent = 1,
+            /// <summary>
+            /// Retrieves the root window by walking the chain of parent windows.
+            /// </summary>
+            GetRoot = 2,
+            /// <summary>
+            /// Retrieves the owned root window by walking the chain of parent and owner windows returned by GetParent.
+            /// </summary>
+            GetRootOwner = 3
+        }
+
+        /// <summary>
+        /// Retrieves the handle to the ancestor of the specified window.
+        /// </summary>
+        /// <param name="hwnd">A handle to the window whose ancestor is to be retrieved.
+        /// If this parameter is the desktop window, the function returns NULL. </param>
+        /// <param name="flags">The ancestor to be retrieved.</param>
+        /// <returns>The return value is the handle to the ancestor window.</returns>
+        [DllImport("user32.dll", ExactSpelling = true)]
+        internal static extern IntPtr GetAncestor(IntPtr hwnd, GetAncestorFlags flags);
     }
 }

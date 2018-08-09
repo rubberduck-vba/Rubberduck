@@ -1,8 +1,9 @@
 using System;
+using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
-    public interface ICodePane : ISafeComWrapper, IEquatable<ICodePane>
+    public interface ICodePane : ISubclassAttachable, IEquatable<ICodePane>
     {
         IVBE VBE { get; }
         ICodePanes Collection { get; }

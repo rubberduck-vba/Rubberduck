@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -18,7 +15,6 @@ namespace Rubberduck.Parsing.VBA
     {
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
-        public ITokenStream TokenStream { get; private set; }
         public IModuleRewriter ModuleRewriter { get; private set; }
         public IModuleRewriter AttributesRewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
@@ -28,7 +24,7 @@ namespace Rubberduck.Parsing.VBA
         public List<CommentNode> Comments { get; private set; }
         public List<IAnnotation> Annotations { get; private set; }
         public SyntaxErrorException ModuleException { get; private set; }
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> ModuleAttributes { get; private set; }
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
 
         public bool IsNew { get; private set; }
 
@@ -36,14 +32,13 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = declarations;
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
 
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = null;
-            ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
 
             IsNew = true;
             State = ParserState.Pending;
@@ -53,14 +48,13 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
             State = state;
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = null;
-            ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
 
             IsNew = true;
         }
@@ -69,23 +63,21 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
             State = ParserState.Error;
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = moduleException;
-            ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
+            ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
 
             IsNew = true;
         }
 
-        public ModuleState(IDictionary<Tuple<string, DeclarationType>, Attributes> moduleAttributes)
+        public ModuleState(IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> moduleAttributes)
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
             State = ParserState.None;
             ModuleContentHashCode = 0;
@@ -97,26 +89,24 @@ namespace Rubberduck.Parsing.VBA
             IsNew = true;
         }
 
-        public ModuleState SetTokenStream(ICodeModule module, ITokenStream tokenStream)
+        public ModuleState SetCodePaneRewriter(QualifiedModuleName module, IModuleRewriter codePaneRewriter)
         {
-            TokenStream = tokenStream;
-            var tokenStreamRewriter = new TokenStreamRewriter(tokenStream);
-            ModuleRewriter = new ModuleRewriter(module, tokenStreamRewriter);
+            ModuleRewriter = codePaneRewriter;
             return this;
         }
 
-        public ModuleState SetParseTree(IParseTree parseTree, ParsePass pass)
+        public ModuleState SetParseTree(IParseTree parseTree, CodeKind codeKind)
         {
-            switch (pass)
+            switch (codeKind)
             {
-                case ParsePass.AttributesPass:
+                case CodeKind.AttributesCode:
                     AttributesPassParseTree = parseTree;
                     break;
-                case ParsePass.CodePanePass:
+                case CodeKind.CodePaneCode:
                     ParseTree = parseTree;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+                    throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
             }
             return this;
         }
@@ -152,7 +142,7 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState SetModuleAttributes(IDictionary<Tuple<string, DeclarationType>, Attributes> moduleAttributes)
+        public ModuleState SetModuleAttributes(IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> moduleAttributes)
         {
             ModuleAttributes = moduleAttributes;
             return this;
