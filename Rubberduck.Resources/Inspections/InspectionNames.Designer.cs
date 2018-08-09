@@ -412,6 +412,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of obsolete &apos;CDecl&apos; calling convention.
+        /// </summary>
+        public static string ObsoleteCallingConventionInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteCallingConventionInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use of obsolete &apos;Call&apos; statement.
         /// </summary>
         public static string ObsoleteCallStatementInspection {
