@@ -1225,16 +1225,17 @@ End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(5, 16))
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .AddProjectToVbeBuilder()
                 .Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object, serializedDeclarationsPath: null, testLibraries:new[] { "Excel.1.8.xml" });
-            
-            var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p => !p.IsUserDefined && p.IdentifierName=="Link" && p.ParentScope == "EXCEL.EXE;Excel.Worksheet.Paste");
-            var actual = state.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p => !p.IsUserDefined && p.IdentifierName == "Link" && p.ParentScope == "EXCEL.EXE;Excel.Worksheet.Paste");
+                var actual = state.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+                Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+            }
         }
 
         [Category("Resolver")]
@@ -1254,16 +1255,20 @@ End Sub";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("TestModule", ComponentType.StandardModule, code, new Selection(6, 22))
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8)
+                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .AddProjectToVbeBuilder()
                 .Build();
 
-            var state = MockParser.CreateAndParse(vbe.Object, serializedDeclarationsPath: null, testLibraries: new[] { "Excel.1.8.xml" });
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p =>
+                    !p.IsUserDefined && p.IdentifierName == "ColumnIndex" &&
+                    p.ParentScope == "EXCEL.EXE;Excel.Range._Default");
+                var actual = state.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
 
-            var expected = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Parameter).Single(p => !p.IsUserDefined && p.IdentifierName == "ColumnIndex" && p.ParentScope == "EXCEL.EXE;Excel.Range._Default");
-            var actual = state.DeclarationFinder.FindSelectedDeclaration(vbe.Object.ActiveCodePane);
-
-            Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType, actual.DeclarationType);
+                Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected.DeclarationType,
+                    actual.DeclarationType);
+            }
         }
 
         [Category("Resolver")]

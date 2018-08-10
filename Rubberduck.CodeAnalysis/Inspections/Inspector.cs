@@ -14,6 +14,7 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Settings;
 using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor;
@@ -88,12 +89,12 @@ namespace Rubberduck.Inspections
                 }
 
                 // Prepare ParseTreeWalker based inspections
-                var passes = Enum.GetValues(typeof(ParsePass)).Cast<ParsePass>();
+                var passes = Enum.GetValues(typeof(CodeKind)).Cast<CodeKind>();
                 foreach (var parsePass in passes)
                 {
                     try
                     {
-                        WalkTrees(config.UserSettings.CodeInspectionSettings, state, parseTreeInspections.Where(i => i.Pass == parsePass), parsePass);
+                        WalkTrees(config.UserSettings.CodeInspectionSettings, state, parseTreeInspections.Where(i => i.TargetKindOfCode == parsePass), parsePass);
                     }
                     catch (Exception e)
                     {
@@ -203,11 +204,11 @@ namespace Rubberduck.Inspections
                 }
             }
 
-            private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections, ParsePass pass)
+            private void WalkTrees(CodeInspectionSettings settings, RubberduckParserState state, IEnumerable<IParseTreeInspection> inspections, CodeKind codeKind)
             {
                 var listeners = inspections
                     .Where(i => i.Severity != CodeInspectionSeverity.DoNotShow
-                        && i.Pass == pass
+                        && i.TargetKindOfCode == codeKind
                         && !IsDisabled(settings, i))
                     .Select(inspection => inspection.Listener)
                     .ToList();
@@ -218,16 +219,16 @@ namespace Rubberduck.Inspections
                 }
 
                 List<KeyValuePair<QualifiedModuleName, IParseTree>> trees;
-                switch (pass)
+                switch (codeKind)
                 {
-                    case ParsePass.AttributesPass:
+                    case CodeKind.AttributesCode:
                         trees = state.AttributeParseTrees;
                         break;
-                    case ParsePass.CodePanePass:
+                    case CodeKind.CodePaneCode:
                         trees = state.ParseTrees;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+                        throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
                 }
 
                 foreach (var componentTreePair in trees)

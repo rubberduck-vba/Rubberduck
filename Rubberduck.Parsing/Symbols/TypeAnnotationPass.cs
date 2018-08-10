@@ -1,11 +1,10 @@
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.Symbols
 {

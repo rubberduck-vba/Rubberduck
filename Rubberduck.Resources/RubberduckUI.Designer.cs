@@ -1646,6 +1646,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By category.
+        /// </summary>
+        public static string GroupingStyle_ByCategory {
+            get {
+                return ResourceManager.GetString("GroupingStyle_ByCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By inspection type.
         /// </summary>
         public static string GroupingStyle_ByInspectionType {
@@ -1831,6 +1840,15 @@ namespace Rubberduck.Resources {
         public static string IndenterSettings_ForceDebugDirectivesToColumn1 {
             get {
                 return ResourceManager.GetString("IndenterSettings_ForceDebugDirectivesToColumn1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore empty lines when locating first comment and declaration blocks.
+        /// </summary>
+        public static string IndenterSettings_IgnoreEmptyLinesInFirstBlocks {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IgnoreEmptyLinesInFirstBlocks", resourceCulture);
             }
         }
         
@@ -2305,6 +2323,15 @@ namespace Rubberduck.Resources {
         public static string ParserProgress_ShowDetails {
             get {
                 return ResourceManager.GetString("ParserProgress_ShowDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Busy.
+        /// </summary>
+        public static string ParserState_Busy {
+            get {
+                return ResourceManager.GetString("ParserState_Busy", resourceCulture);
             }
         }
         

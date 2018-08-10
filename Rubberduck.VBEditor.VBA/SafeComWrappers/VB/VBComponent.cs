@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -116,7 +117,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return fullPath;
         }
 
-        public IVBProject ParentProject => Collection.Parent;
+        public IVBProject ParentProject
+        {
+            get
+            {
+                using (var collection = Collection)
+                {
+                    return collection.Parent;
+                }
+            }
+        }
 
         private void ExportUserFormModule(string path)
         {
@@ -218,6 +228,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public override int GetHashCode()
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
+        }
+
+        public int ContentHash()
+        {
+            if (IsWrappingNullReference || !HasCodeModule && !HasDesigner)
+            {
+                return 0;
+            }
+
+            var hashes = new List<int>();
+
+            using (var code = CodeModule)
+            {
+                hashes.Add(code?.ContentHash() ?? 0);
+            }
+
+            if (HasDesigner)
+            {
+                using (var controls = Controls)
+                {
+                    hashes.AddRange(controls.Select(control => control.Name.GetHashCode()));
+                }
+            }
+
+            return HashCode.Compute(hashes);
         }
     }
 }

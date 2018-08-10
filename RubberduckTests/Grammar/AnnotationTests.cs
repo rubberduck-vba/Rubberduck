@@ -39,7 +39,7 @@ namespace RubberduckTests.Grammar
         [Test]
         public void TestMethodAnnotation_TypeIsTestTest()
         {
-            var annotation = new TestMethodAnnotation(new QualifiedSelection(), null);
+            var annotation = new TestMethodAnnotation(new QualifiedSelection(), new[] { "param" });
             Assert.AreEqual(AnnotationType.TestMethod, annotation.AnnotationType);
         }
 
@@ -113,6 +113,60 @@ namespace RubberduckTests.Grammar
         {
             var annotation = new DescriptionAnnotation(new QualifiedSelection(), null);
             Assert.AreEqual(AnnotationType.Description, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void DefaultMemberAnnotation_TypeIsDefaultMember()
+        {
+            var annotation = new DefaultMemberAnnotation(new QualifiedSelection(), new[] { "param" });
+            Assert.AreEqual(AnnotationType.DefaultMember, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void EnumerationMemberAnnotation_TypeIsEnumerator()
+        {
+            var annotation = new EnumeratorMemberAnnotation(new QualifiedSelection(), new[] { "param" });
+            Assert.AreEqual(AnnotationType.Enumerator, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void ExposedModuleAnnotation_TypeIsExposed()
+        {
+            var annotation = new ExposedModuleAnnotation(new QualifiedSelection(), null);
+            Assert.AreEqual(AnnotationType.Exposed, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void IgnoreModuleAnnotation_TypeIsIgnoreModule()
+        {
+            var annotation = new IgnoreModuleAnnotation(new QualifiedSelection(), null);
+            Assert.AreEqual(AnnotationType.IgnoreModule, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void PredeclaredIdAnnotation_TypeIsPredeclaredId()
+        {
+            var annotation = new PredeclaredIdAnnotation(new QualifiedSelection(), null);
+            Assert.AreEqual(AnnotationType.PredeclaredId, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void ObsoleteAnnotation_TypeIsObsolete()
+        {
+            var annotation = new ObsoleteAnnotation(new QualifiedSelection(), new[] { "param" });
+            Assert.AreEqual(AnnotationType.Obsolete, annotation.AnnotationType);
         }
     }
 }

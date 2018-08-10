@@ -35,6 +35,22 @@ namespace RubberduckTests.Mocks
         public static readonly string LibraryPathAdoDb = @"C:\Program Files\Common Files\System\ado\msado15.dll";
         public static readonly string LibraryPathAdoRecordset = @"C:\Program Files\Common Files\System\ado\msador15.dll";
 
+        public static readonly Dictionary<string, string> LibraryPaths = new Dictionary<string, string>
+        {
+            ["VBA"] = LibraryPathVBA,
+            ["Excel"] = LibraryPathMsExcel,
+            ["Office"] = LibraryPathMsOffice,
+            ["stdole"] = LibraryPathStdOle,
+            ["MSForms"] = LibraryPathMsForms,
+            ["VBIDE"] = LibraryPathVBIDE,
+            ["Scripting"] = LibraryPathScripting,
+            ["VBScript_RegExp_55"] = LibraryPathRegex,
+            ["MSXML2"] = LibraryPathMsXml,
+            ["SHDocVw"] = LibraryPathShDoc,
+            ["ADODB"] = LibraryPathAdoDb,
+            ["ADOR"] = LibraryPathAdoRecordset
+        };
+
         //private Mock<IWindows> _vbWindows;
         private readonly Windows _windows = new Windows();
 
@@ -43,12 +59,6 @@ namespace RubberduckTests.Mocks
         
         private Mock<ICodePanes> _vbCodePanes;
         private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>();
-
-        private const int MenuBar = 1;
-        private const int CodeWindow = 9;
-        private const int ProjectWindow = 14;
-        private const int MsForms = 17;
-        private const int MsFormsControl = 18;
 
         public MockVbeBuilder()
         {
@@ -73,7 +83,6 @@ namespace RubberduckTests.Mocks
             }
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
-            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
 
             return this;
@@ -104,6 +113,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         public Mock<IVBE> Build()
         {
+            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             return _vbe;
         }
 
@@ -216,11 +226,7 @@ namespace RubberduckTests.Mocks
  
             var dummyCommandBar = DummyCommandBar();
 
-            commandBars.SetupGet(m => m[MenuBar]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[CodeWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[ProjectWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsForms]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsFormsControl]).Returns(dummyCommandBar);
+            commandBars.SetupGet(m => m[It.IsAny<int>()]).Returns(dummyCommandBar);
 
             return commandBars.Object;
         }

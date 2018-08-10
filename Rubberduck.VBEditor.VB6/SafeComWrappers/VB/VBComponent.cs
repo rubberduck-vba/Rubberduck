@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -128,7 +129,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             throw new NotSupportedException("Export as source file is not supported in VB6");
         }
 
-        public IVBProject ParentProject => Collection.Parent;
+        public IVBProject ParentProject
+        {
+            get
+            {
+                using (var collection = Collection)
+                {
+                    return collection.Parent;
+                }
+            }
+        }
 
         public int FileCount => IsWrappingNullReference ? 0 : Target.FileCount;
 
@@ -158,6 +168,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public override int GetHashCode()
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
+        }
+
+        public int ContentHash()
+        {
+            if (IsWrappingNullReference || !HasCodeModule && !HasDesigner)
+            {
+                return 0;
+            }
+
+            var hashes = new List<int>();
+
+            using (var code = CodeModule)
+            {
+                hashes.Add(code?.ContentHash() ?? 0);
+            }
+
+            if (HasDesigner)
+            {
+                using (var controls = Controls)
+                {
+                    hashes.AddRange(controls.Select(control => control.Name.GetHashCode()));
+                }
+            }
+
+            return HashCode.Compute(hashes);
         }
     }
 }
