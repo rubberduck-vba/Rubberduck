@@ -1,13 +1,12 @@
 ﻿using System.IO;
 using System.Text;
 using Rubberduck.Resources;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.VBEditor.VBA
 {
-    public class SourceFileHandler : ISourceFileHandler
+    public class TempSourceFileHandler : ITempSourceFileHandler
     {
         public string Export(IVBComponent component)
         {
@@ -15,35 +14,45 @@ namespace Rubberduck.VBEditor.VBA
             {
                 Directory.CreateDirectory(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
             }
-            var fileName = component.ExportAsSourceFile(ApplicationConstants.RUBBERDUCK_TEMP_PATH);
+            var fileName = component.ExportAsSourceFile(ApplicationConstants.RUBBERDUCK_TEMP_PATH, true, false);
 
             return File.Exists(fileName) 
                 ? fileName 
-                : null; // a document component without any code wouldn't be exported (file would be empty anyway).            
+                : null;         
         }
 
-        public void Import(IVBComponent component, string fileName)
+        public void ImportAndCleanUp(IVBComponent component, string fileName)
         {
+            if (fileName == null || !File.Exists(fileName))
+            {
+                return;
+            }
+
             using (var components = component.Collection)
             {
                 components.Remove(component);
                 components.ImportSourceFile(fileName);
+            }
+
+            try
+            {
+                File.Delete(fileName);
+            }
+            catch
+            {
+                // Meh.
             }
         }
 
         public string Read(IVBComponent component)
         {
             var fileName = Export(component);
-            if (fileName == null)
+            if (fileName == null || !File.Exists(fileName))
             {
                 return null;
             }
 
-            var encoding = component.QualifiedModuleName.ComponentType == ComponentType.Document
-                ? Encoding.UTF8
-                : Encoding.Default;
-
-            var code = File.ReadAllText(fileName, encoding);
+            var code = File.ReadAllText(fileName, Encoding.Default);
             try
             {
                 File.Delete(fileName);

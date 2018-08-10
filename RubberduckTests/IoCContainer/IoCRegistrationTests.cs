@@ -18,8 +18,8 @@ namespace RubberduckTests.IoCContainer
         {
             var vbeBuilder = new MockVbeBuilder();
             var ideMock = vbeBuilder.Build();
-            var sourceFileHandler = new Mock<ISourceFileHandler>().Object;
-            ideMock.Setup(m => m.SourceFileHandler).Returns(() => sourceFileHandler);
+            var sourceFileHandler = new Mock<ITempSourceFileHandler>().Object;
+            ideMock.Setup(m => m.TempSourceFileHandler).Returns(() => sourceFileHandler);
             var ide = ideMock.Object;
             var addInBuilder = new MockAddInBuilder();
             var addin = addInBuilder.Build().Object;
@@ -46,8 +46,8 @@ namespace RubberduckTests.IoCContainer
         {
             var vbeBuilder = new MockVbeBuilder();
             var ideMock = vbeBuilder.Build();
-            var sourceFileHandler = new Mock<ISourceFileHandler>().Object;
-            ideMock.Setup(m => m.SourceFileHandler).Returns(() => sourceFileHandler);
+            var sourceFileHandler = new Mock<ITempSourceFileHandler>().Object;
+            ideMock.Setup(m => m.TempSourceFileHandler).Returns(() => sourceFileHandler);
             var ide = ideMock.Object;
             var addInBuilder = new MockAddInBuilder();
             var addin = addInBuilder.Build().Object;
