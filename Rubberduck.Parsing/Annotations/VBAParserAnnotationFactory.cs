@@ -29,6 +29,7 @@ namespace Rubberduck.Parsing.Annotations
             _creators.Add(AnnotationType.DefaultMember.ToString().ToUpperInvariant(), typeof(DefaultMemberAnnotation));
             _creators.Add(AnnotationType.Enumerator.ToString().ToUpperInvariant(), typeof(EnumeratorMemberAnnotation));
             _creators.Add(AnnotationType.Exposed.ToString().ToUpperInvariant(), typeof (ExposedModuleAnnotation));
+            _creators.Add(AnnotationType.Obsolete.ToString().ToUpperInvariant(), typeof(ObsoleteAnnotation));
         }
 
         public IAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection)

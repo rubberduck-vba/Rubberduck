@@ -79,7 +79,9 @@
     <Compile Include="Inspections\Concrete\EmptyForLoopBlockInspection.cs" />
     <Compile Include="Inspections\Concrete\BooleanAssignedInIfElseInspection.cs" />
     <Compile Include="Inspections\Concrete\EmptyWhileWendBlockInspection.cs" />
+    <Compile Include="Inspections\Concrete\ObsoleteCallingConventionInspection.cs" />
     <Compile Include="Inspections\Concrete\ObsoleteErrorSyntaxInspection.cs" />
+    <Compile Include="Inspections\Concrete\ObsoleteMemberUsageInspection.cs" />
     <Compile Include="Inspections\Concrete\SheetAccessedUsingStringInspection.cs" />
     <Compile Include="Inspections\Concrete\StepIsNotSpecifiedInspection.cs" />
     <Compile Include="Inspections\Concrete\StepOneIsRedundantInspection.cs" />

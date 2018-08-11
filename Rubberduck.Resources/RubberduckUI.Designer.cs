@@ -1844,6 +1844,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignore empty lines when locating first comment and declaration blocks.
+        /// </summary>
+        public static string IndenterSettings_IgnoreEmptyLinesInFirstBlocks {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IgnoreEmptyLinesInFirstBlocks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ignore operators.
         /// </summary>
         public static string IndenterSettings_IgnoreOperators {

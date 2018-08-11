@@ -110,6 +110,7 @@ Dim d As Boolean
 
             var expected =
                 @"Option Explicit                                  ' at least I used it...
+
 Sub InverseIndent()
     Dim d As Boolean
     Dim s As Integer

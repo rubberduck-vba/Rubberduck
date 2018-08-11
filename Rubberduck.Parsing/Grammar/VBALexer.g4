@@ -80,6 +80,7 @@ BYREF : B Y R E F;
 BYTE : B Y T E;
 CALL : C A L L;
 CASE : C A S E;
+CDECL : C D E C L;
 CLASS : C L A S S;
 CLOSE : C L O S E;
 CONST : C O N S T;
