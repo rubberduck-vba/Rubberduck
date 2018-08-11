@@ -1,7 +1,4 @@
 ﻿using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.PreProcessing;
-using System;
-using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -37,6 +34,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     return ParseTreeValue.CreateExpression(result.value, Tokens.String);
                 }
+                if (result.derivedType.Equals(Tokens.Date))
+                {
+                    return CreateDate(valueToken);
+                }
                 return ParseTreeValue.CreateConstant(result.value, result.derivedType);
             }
             return ParseTreeValue.CreateExpression(valueToken, string.Empty);
@@ -44,7 +45,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IParseTreeValue CreateDeclaredType(string expression, string declaredTypeName)
         {
-            return new ParseTreeValue(expression, declaredTypeName);
+            if (TokenTypeResolver.TryConformTokenToType(expression, declaredTypeName, out string conformedText))
+            {
+                return ParseTreeValue.CreateConstant(conformedText, declaredTypeName);
+            }
+            return ParseTreeValue.CreateExpression(expression, declaredTypeName);
         }
 
         public IParseTreeValue CreateExpression(string expression, string declaredTypeName)
@@ -54,65 +59,49 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IParseTreeValue Create(byte value)
         {
-            return CreateConstant(value.ToString(), Tokens.Byte);
+            return ParseTreeValue.CreateConstant(value.ToString(), Tokens.Byte);
         }
 
         public IParseTreeValue Create(int value)
         {
-            return CreateConstant(value.ToString(), Tokens.Integer);
+            return ParseTreeValue.CreateConstant(value.ToString(), Tokens.Integer);
         }
 
         public IParseTreeValue Create(long value)
         {
-            return CreateConstant(value.ToString(), Tokens.Long);
+            return ParseTreeValue.CreateConstant(value.ToString(), Tokens.Long);
         }
 
         public IParseTreeValue Create(float value)
         {
-            return CreateConstant(value.ToString(), Tokens.Single);
+            return ParseTreeValue.CreateConstant(value.ToString(), Tokens.Single);
         }
 
         public IParseTreeValue Create(double value)
         {
-            return CreateConstant(value.ToString(), Tokens.Double);
+            return ParseTreeValue.CreateConstant(value.ToString(), Tokens.Double);
         }
 
         public IParseTreeValue Create(decimal value)
         {
-            return CreateConstant(value.ToString(), Tokens.Currency);
+            return ParseTreeValue.CreateConstant(value.ToString(), Tokens.Currency);
         }
 
         public IParseTreeValue Create(bool value)
         {
-            return CreateConstant(value ? Tokens.True : Tokens.False, Tokens.Boolean);
+            return ParseTreeValue.CreateConstant(value ? Tokens.True : Tokens.False, Tokens.Boolean);
         }
 
         public IParseTreeValue CreateDate(double value)
         {
-            var dv = new DateValue(DateTime.FromOADate(value));
-            var cdv = new ComparableDateValue(dv);
-            return CreateConstant(AnnotateAsDateLiteral(cdv.AsDate.ToString(CultureInfo.InvariantCulture)), Tokens.Date);
+            return new ParseTreeValue(value.ToString(), Tokens.Date);
         }
+
         public IParseTreeValue CreateDate(string value)
         {
-            return CreateConstant(value, Tokens.Date);
+            return new ParseTreeValue(value, Tokens.Date);
         }
 
         private bool IsStringConstant(string input) => input.StartsWith("\"") && input.EndsWith("\"");
-
-        private static string AnnotateAsDateLiteral(string input)
-        {
-            var result = input;
-            if (!input.StartsWith("#"))
-            {
-                result = $"#{result}";
-            }
-            if (!input.EndsWith("#"))
-            {
-                result = $"{result}#";
-            }
-            result.Replace(" 00:00:00", "");
-            return result;
-        }
     }
 }
