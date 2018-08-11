@@ -1499,6 +1499,42 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_EnumerationDefaultsRespectsPriorValues3()
+        {
+            const string inputCode =
+@"
+private Enum TestEnumVals
+    Foo = -42
+    PostFoo
+    Bar = 9
+    PostBar
+    Baz = 0
+    PostBaz
+End Enum
+
+Sub Foo(z As TestEnumVals)
+    Select Case z
+        Case TestEnumVals.PostFoo
+        'OK
+        Case -41
+        'Unreachable
+        Case TestEnumVals.PostBar
+        'OK
+        Case 10
+        'Unreachable
+        Case TestEnumVals.PostBaz
+        'OK
+        Case 1
+        'Unreachable
+    End Select
+End Sub";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 3);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         [Test]
         [Category("Inspections")]
         public void UnreachableCaseInspection_CaseElseByte()
