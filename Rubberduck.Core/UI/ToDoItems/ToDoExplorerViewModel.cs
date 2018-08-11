@@ -150,7 +150,8 @@ namespace Rubberduck.UI.ToDoItems
                         return;
                     }
 
-                    using (var module = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName).CodeModule)
+                    var component = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName);
+                    using (var module = component.CodeModule)
                     {
                         var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
                         var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
