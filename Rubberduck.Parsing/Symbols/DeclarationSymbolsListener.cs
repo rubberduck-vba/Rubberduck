@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _parentDeclaration;
 
         private readonly IEnumerable<IAnnotation> _annotations;
-        private readonly IDictionary<Tuple<string, DeclarationType>, Attributes> _attributes;
+        private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> _attributes;
 
         private readonly List<Declaration> _createdDeclarations = new List<Declaration>();
         public IReadOnlyList<Declaration> CreatedDeclarations => _createdDeclarations;
@@ -31,7 +31,7 @@ namespace Rubberduck.Parsing.Symbols
             RubberduckParserState state,
             QualifiedModuleName qualifiedModuleName,
             IEnumerable<IAnnotation> annotations,
-            IDictionary<Tuple<string, DeclarationType>, 
+            IDictionary<(string scopeIdentifier, DeclarationType scopeType),
             Attributes> attributes,
             Declaration projectDeclaration)
         {
@@ -45,7 +45,7 @@ namespace Rubberduck.Parsing.Symbols
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
 
-            var key = Tuple.Create(_qualifiedModuleName.ComponentName, declarationType);
+            var key = (_qualifiedModuleName.ComponentName, declarationType);
             var moduleAttributes = attributes.ContainsKey(key)
                 ? attributes[key]
                 : new Attributes();
@@ -136,41 +136,43 @@ namespace Rubberduck.Parsing.Symbols
         /// </remarks>
         private void DeclareControlsAsMembers(IVBComponent form)
         {
-            if (form.Controls == null) { return; }
-
-            var libraryQualifier = string.Empty;
-            if (_qualifiedModuleName.ComponentType == ComponentType.UserForm)
+            using (var controls = form.Controls)
             {
-                var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
-                //Debug.Assert(msFormsLib != null);
-                if (msFormsLib != null)
+                if (controls == null) { return; }
+
+                var libraryQualifier = string.Empty;
+                if (_qualifiedModuleName.ComponentType == ComponentType.UserForm)
                 {
-                    // given a UserForm component, MSForms reference is in use and cannot be removed.
-                    libraryQualifier = "MSForms.";
+                    var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
+                    if (msFormsLib != null)
+                    {
+                        // given a UserForm component, MSForms reference is in use and cannot be removed.
+                        libraryQualifier = "MSForms.";
+                    }
                 }
-            }
-            
-            foreach (var control in form.Controls)
-            {
-                var typeName = $"{libraryQualifier}{control.TypeName()}";
-                // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
-                var declaration = new Declaration(
-                    _qualifiedModuleName.QualifyMemberName(control.Name),
-                    _parentDeclaration,
-                    _currentScopeDeclaration,
-                    string.IsNullOrEmpty(typeName) ? "Control" : typeName,
-                    null,
-                    true,
-                    true,
-                    Accessibility.Public,
-                    DeclarationType.Control,
-                    null,
-                    Selection.Home,
-                    false,
-                    null,
-                    true);
 
-                AddDeclaration(declaration);
+                foreach (var control in controls)
+                {
+                    var typeName = $"{libraryQualifier}{control.TypeName()}";
+                    // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
+                    var declaration = new Declaration(
+                        _qualifiedModuleName.QualifyMemberName(control.Name),
+                        _parentDeclaration,
+                        _currentScopeDeclaration,
+                        string.IsNullOrEmpty(typeName) ? "Control" : typeName,
+                        null,
+                        true,
+                        true,
+                        Accessibility.Public,
+                        DeclarationType.Control,
+                        null,
+                        Selection.Home,
+                        false,
+                        null,
+                        true);
+
+                    AddDeclaration(declaration);
+                }
             }
         }
 
@@ -209,12 +211,12 @@ namespace Rubberduck.Parsing.Symbols
                     isParamArray);
                 if (_parentDeclaration is IParameterizedDeclaration)
                 {
-                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter((ParameterDeclaration) result);
+                    ((IParameterizedDeclaration)_parentDeclaration).AddParameter((ParameterDeclaration)result);
                 }
             }
             else
             {
-                var key = Tuple.Create(identifierName, declarationType);
+                var key = (identifierName, declarationType);
                 Attributes attributes = null;
                 if (_attributes.ContainsKey(key))
                 {
@@ -295,6 +297,22 @@ namespace Rubberduck.Parsing.Symbols
                 else if (declarationType == DeclarationType.PropertyLet)
                 {
                     result = new PropertyLetDeclaration(new QualifiedMemberName(_qualifiedModuleName, identifierName), _parentDeclaration, _currentScopeDeclaration, asTypeName, accessibility, context, selection, true, annotations, attributes);
+                }
+                else if (declarationType == DeclarationType.EnumerationMember)
+                {
+                    result = new ValuedDeclaration(
+                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                        _parentDeclaration, 
+                        _currentScope, 
+                        asTypeName, 
+                        asTypeContext, 
+                        typeHint, 
+                        annotations,
+                        accessibility, 
+                        declarationType,
+                        (context as VBAParser.EnumerationStmt_ConstantContext)?.expression()?.GetText() ?? string.Empty,
+                        context,
+                        selection);
                 }
                 else
                 {
@@ -741,7 +759,7 @@ namespace Rubberduck.Parsing.Symbols
             var value = context.expression().GetText();
             var constStmt = (VBAParser.ConstStmtContext)context.Parent;
 
-            var declaration = new ConstantDeclaration(
+            var declaration = new ValuedDeclaration(
                 new QualifiedMemberName(_qualifiedModuleName, name),
                 _parentDeclaration,
                 _currentScope,
@@ -772,7 +790,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             var identifier = Identifier.GetName(context.untypedIdentifier());
             var identifierSelection = Identifier.GetNameSelection(context.untypedIdentifier());
-            var accessibility = context.visibility()?.PRIVATE() != null ? Accessibility.Private : Accessibility.Public; 
+            var accessibility = context.visibility()?.PRIVATE() != null ? Accessibility.Private : Accessibility.Public;
             var declaration = CreateDeclaration(
                 identifier,
                 null,
@@ -869,7 +887,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override void EnterOptionPrivateModuleStmt(VBAParser.OptionPrivateModuleStmtContext context)
         {
-            ((ProceduralModuleDeclaration) _moduleDeclaration).IsPrivateModule = true;
+            ((ProceduralModuleDeclaration)_moduleDeclaration).IsPrivateModule = true;
         }
 
         private void AddDeclaration(Declaration declaration)

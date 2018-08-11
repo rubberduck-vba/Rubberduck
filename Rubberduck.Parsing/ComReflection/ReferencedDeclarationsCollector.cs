@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -9,6 +10,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
+using VARFLAGS = System.Runtime.InteropServices.ComTypes.VARFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -47,7 +50,7 @@ namespace Rubberduck.Parsing.ComReflection
         private readonly RubberduckParserState _state;
         private readonly string _serializedDeclarationsPath;
         private SerializableProject _serialized;
-        private readonly List<Declaration> _declarations = new List<Declaration>(); 
+        private readonly List<Declaration> _declarations = new List<Declaration>();
 
         private static readonly HashSet<string> IgnoredInterfaceMembers = new HashSet<string>
         {
@@ -74,7 +77,7 @@ namespace Rubberduck.Parsing.ComReflection
             _referenceMajor = reference.Major;
             _referenceMinor = reference.Minor;
         }
-        
+
         public bool SerializedVersionExists
         {
             get
@@ -98,18 +101,19 @@ namespace Rubberduck.Parsing.ComReflection
 
         public List<Declaration> LoadDeclarationsFromXml()
         {
-            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
-            var file = Path.Combine(path, string.Format("{0}.{1}.{2}", _referenceName, _referenceMajor, _referenceMinor) + ".xml");
+            var path = _serializedDeclarationsPath;
+            var filename = $"{_referenceName}.{_referenceMajor}.{_referenceMinor}.xml";
+            var file = Path.Combine(path, filename);
             var reader = new XmlPersistableDeclarations();
             var deserialized = reader.Load(file);
 
             var declarations = deserialized.Unwrap();
 
-            foreach (var members in declarations.Where(d => d.DeclarationType != DeclarationType.Project && 
+            foreach (var members in declarations.Where(d => d.DeclarationType != DeclarationType.Project &&
                                                             d.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
                                                             ProceduralTypes.Contains(d.DeclarationType))
                                                 .GroupBy(d => d.ParentDeclaration))
-            { 
+            {
                 _state.CoClasses.TryAdd(members.Select(m => m.IdentifierName).ToList(), members.First().ParentDeclaration);
             }
             return declarations;
@@ -125,7 +129,7 @@ namespace Rubberduck.Parsing.ComReflection
                 return _declarations;
             }
 
-            var type = new ComProject(typeLibrary) { Path = _path };
+            var type = new ComProject(typeLibrary, _path);
 
             var projectName = new QualifiedModuleName(type.Name, _path, type.Name);
             var project = new ProjectDeclaration(type, projectName);
@@ -153,6 +157,7 @@ namespace Rubberduck.Parsing.ComReflection
                 var membered = module as IComTypeWithMembers;
                 if (membered != null)
                 {
+                    CreatePropertyDeclarations(membered.Properties, moduleName, declaration, moduleTree);
                     CreateMemberDeclarations(membered.Members, moduleName, declaration, moduleTree, membered.DefaultMember);
                     var coClass = membered as ComCoClass;
                     if (coClass != null)
@@ -166,12 +171,13 @@ namespace Rubberduck.Parsing.ComReflection
                 {
                     var enumDeclaration = new Declaration(enumeration, declaration, moduleName);
                     _declarations.Add(enumDeclaration);
-                    var members = enumeration.Members.Select(e => new Declaration(e, enumDeclaration, moduleName)).ToList();
+                    var members = enumeration.Members.Select(e => new ValuedDeclaration(e, enumDeclaration, moduleName)).ToList();
                     _declarations.AddRange(members);
 
                     var enumTree = new SerializableDeclarationTree(enumDeclaration);
                     moduleTree.AddChildTree(enumTree);
                     enumTree.AddChildren(members);
+                    continue;
                 }
 
                 var structure = module as ComStruct;
@@ -185,6 +191,7 @@ namespace Rubberduck.Parsing.ComReflection
                     var typeTree = new SerializableDeclarationTree(typeDeclaration);
                     moduleTree.AddChildTree(typeTree);
                     typeTree.AddChildren(members);
+                    continue;
                 }
 
                 var fields = module as IComTypeWithFields;
@@ -192,7 +199,8 @@ namespace Rubberduck.Parsing.ComReflection
                 {
                     continue;
                 }
-                var declarations = fields.Fields.Select(f => new Declaration(f, declaration, projectName)).ToList();
+                var declarations = fields.Fields.Where(x => x.Type != DeclarationType.Constant).Select(f => new Declaration(f, declaration, projectName)).ToList();
+                declarations.AddRange(fields.Fields.Where(x => x.Type == DeclarationType.Constant).Select(f => new ValuedDeclaration(f, declaration, projectName)));
                 _declarations.AddRange(declarations);
                 moduleTree.AddChildren(declarations);
             }
@@ -244,6 +252,47 @@ namespace Rubberduck.Parsing.ComReflection
             }
         }
 
+        private void CreatePropertyDeclarations(IEnumerable<ComField> properties, QualifiedModuleName moduleName, Declaration declaration,
+            SerializableDeclarationTree moduleTree)
+        {
+            foreach (var item in properties.Where(x => !x.Flags.HasFlag(VARFLAGS.VARFLAG_FRESTRICTED)))
+            {
+                Debug.Assert(item.Type == DeclarationType.Property);
+                var attributes = GetPropertyAttibutes(item);
+
+                var getter = new PropertyGetDeclaration(item, declaration, moduleName, attributes);
+                _declarations.Add(getter);
+                var propertyTree = new SerializableDeclarationTree(getter);
+                moduleTree.AddChildTree(propertyTree);
+
+                var coClass = getter.ParentDeclaration as ClassModuleDeclaration;
+                if (coClass != null && attributes.HasDefaultMemberAttribute())
+                {
+                    coClass.DefaultMember = getter;
+                }
+
+                if (item.Flags.HasFlag(VARFLAGS.VARFLAG_FREADONLY))
+                {
+                    continue;
+                }
+
+                if (item.IsReferenceType)
+                {
+                    var setter = new PropertySetDeclaration(item, declaration, moduleName, attributes);
+                    _declarations.Add(setter);
+                    propertyTree = new SerializableDeclarationTree(setter);
+                    moduleTree.AddChildTree(propertyTree);
+                }
+                else
+                {
+                    var letter = new PropertyLetDeclaration(item, declaration, moduleName, attributes);
+                    _declarations.Add(letter);
+                    propertyTree = new SerializableDeclarationTree(letter);
+                    moduleTree.AddChildTree(propertyTree);
+                }
+            }
+        }
+
         private Declaration CreateModuleDeclaration(IComType module, QualifiedModuleName project, Declaration parent, Attributes attributes)
         {
             var enumeration = module as ComEnumeration;
@@ -260,7 +309,7 @@ namespace Rubberduck.Parsing.ComReflection
             var intrface = module as ComInterface;
             if (coClass != null || intrface != null)
             {
-                var output = coClass != null ? 
+                var output = coClass != null ?
                     new ClassModuleDeclaration(coClass, parent, project, attributes) :
                     new ClassModuleDeclaration(intrface, parent, project, attributes);
                 if (coClass != null)
@@ -319,6 +368,20 @@ namespace Rubberduck.Parsing.ComReflection
             else if (!string.IsNullOrEmpty(member.Documentation.DocString))
             {
                 attributes.AddMemberDescriptionAttribute(member.Name, member.Documentation.DocString);
+            }
+            return attributes;
+        }
+
+        private static Attributes GetPropertyAttibutes(ComField property)
+        {
+            var attributes = new Attributes();
+            if (property.Flags.HasFlag(VARFLAGS.VARFLAG_FDEFAULTBIND))
+            {
+                attributes.AddDefaultMemberAttribute(property.Name);
+            }
+            if (property.Flags.HasFlag(VARFLAGS.VARFLAG_FHIDDEN))
+            {
+                attributes.AddHiddenMemberAttribute(property.Name);
             }
             return attributes;
         }

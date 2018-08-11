@@ -412,7 +412,16 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Use of obsolete &apos;Call&apos; statement ähnelt.
+        ///   Looks up a localized string similar to Use of obsolete &apos;CDecl&apos; calling convention.
+        /// </summary>
+        public static string ObsoleteCallingConventionInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteCallingConventionInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use of obsolete &apos;Call&apos; statement.
         /// </summary>
         public static string ObsoleteCallStatementInspection {
             get {
@@ -457,7 +466,16 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die Obsolete Type hint usage ähnelt.
+        ///   Looks up a localized string similar to Member marked as &apos;@Obsolete&apos; is used.
+        /// </summary>
+        public static string ObsoleteMemberUsageInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteMemberUsageInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Obsolete Type hint usage.
         /// </summary>
         public static string ObsoleteTypeHintInspection {
             get {

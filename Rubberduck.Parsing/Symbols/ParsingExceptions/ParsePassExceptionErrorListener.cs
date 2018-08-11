@@ -1,23 +1,19 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.Symbols.ParsingExceptions
 {
-    public class ParsePassExceptionErrorListener : ExceptionErrorListener
+    public class ParsePassExceptionErrorListener : ParsePassErrorListenerBase
     {
-        protected readonly string ComponentName;
-        protected readonly ParsePass ParsePass;
-
-        public ParsePassExceptionErrorListener(string componentName, ParsePass parsePass)
-        {
-            ComponentName = componentName;
-            ParsePass = parsePass;
-        }
+        public ParsePassExceptionErrorListener(string moduleName, CodeKind codeKind)
+        :base(moduleName, codeKind)
+        {}
 
         public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
         {
             // adding 1 to line, because line is 0-based, but it's 1-based in the VBE
-            throw new ParsePassSyntaxErrorException(msg, e, offendingSymbol, line, charPositionInLine + 1, ComponentName, ParsePass);
+            throw new ParsePassSyntaxErrorException(msg, e, offendingSymbol, line, charPositionInLine + 1, ModuleName, CodeKind);
         }
     }
 }

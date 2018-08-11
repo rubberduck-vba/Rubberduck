@@ -32,6 +32,39 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void FirstMemberAnnotation_IsNotIllegal_InMultipleModules()
+        {
+            const string inputCode1 =
+                @"'@TestModule
+'@Folder(""Test"")
+Option Explicit
+
+'@ModuleInitialize
+Public Sub ModuleInitializeLegal()
+End Sub";
+            const string inputCode2 =
+                @"'@TestModule
+'@Folder(""Test"")
+Option Explicit
+
+'@ModuleInitialize
+Public Sub ModuleInitializeAlsoLegal()
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromStdModules(("Module1", inputCode1), ("Module2", inputCode2));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void GivenLegalModuleAnnotation_NoResult()
         {
             const string inputCode = @"
@@ -267,6 +300,28 @@ End Sub
             var inspection = new IllegalAnnotationInspection(null);
 
             Assert.AreEqual(inspectionName, inspection.Name);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void AnnotationIsCaseInsensitive()
+        {
+            const string inputCode =
+                @"'@folder ""Foo""
+Public Sub Foo()
+    Const const1 As Integer = 9
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
     }
 }

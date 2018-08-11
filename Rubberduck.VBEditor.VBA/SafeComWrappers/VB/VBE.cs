@@ -6,6 +6,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers.Office12;
+using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VBA;
 using Rubberduck.VBEditor.WindowsApi;
 using VB = Microsoft.Vbe.Interop;
@@ -18,12 +19,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public VBE(VB.VBE target, bool rewrapping = false)
             : base(target, rewrapping)
         {
-            SourceCodeHandler = new SourceCodeHandler();
+            TempSourceFileHandler = new TempSourceFileHandler();
         }
 
         public VBEKind Kind => VBEKind.Hosted;
         public object HardReference => Target;
-        public ISourceCodeHandler SourceCodeHandler { get; }
+        public ITempSourceFileHandler TempSourceFileHandler { get; }
 
         public string Version => IsWrappingNullReference ? string.Empty : Target.Version;
 

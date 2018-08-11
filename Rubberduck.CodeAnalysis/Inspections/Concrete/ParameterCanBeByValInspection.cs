@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
@@ -88,6 +89,9 @@ namespace Rubberduck.Inspections.Concrete
                         .OrderBy(o => o.Selection.StartLine)
                         .ThenBy(t => t.Selection.StartColumn)
                         .ToList();
+
+                    //If you hit this assert, reopen https://github.com/rubberduck-vba/Rubberduck/issues/3906
+                    Debug.Assert(parametersAreByRef.Count == parameters.Count);
 
                     for (var i = 0; i < parameters.Count; i++)
                     {

@@ -328,7 +328,10 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Excel already defines a globally scoped object variable with this reference. Consider using the sheet's 'CodeName' property.</value>
   </data>
-  <data name="UndeclaredRedimVariableInspection" xml:space="preserve">
-    <value>Code that declares variables using redim statements makes code more difficult to understand.</value>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>This member is marked '@Obsolete'. It should no longer be used, there should be a better alternative.</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Windows implementations of Visual Basic only support the StdCall calling convention, and use of of the CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - 'Bad DLL calling convention'. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled.</value>
   </data>
 </root>

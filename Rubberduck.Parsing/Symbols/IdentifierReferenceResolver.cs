@@ -744,8 +744,10 @@ namespace Rubberduck.Parsing.Symbols
             {
                 ResolveDefault(expr);
             }
-            ResolveTuple(context.tuple(0));
-            ResolveTuple(context.tuple(1));
+            foreach (var tuple in context.tuple())
+            {
+                ResolveTuple(tuple);
+            }
         }
 
         public void Resolve(VBAParser.CircleSpecialFormContext context)

@@ -17,10 +17,21 @@ namespace Rubberduck.Parsing.VBA
 
         public override IReadOnlyCollection<QualifiedModuleName> AllModules()
         {
-            return Projects.SelectMany(project => project.VBComponents)
-                            .Select(component => new QualifiedModuleName(component))
-                            .ToHashSet()
-                            .AsReadOnly(); ;
+            var modules = new HashSet<QualifiedModuleName>();
+            foreach(var project in Projects.Select(tpl => tpl.Project))
+            {
+                using (var components = project.VBComponents)
+                {
+                    foreach (var component in components)
+                    {
+                        using (component)
+                        {
+                            modules.Add(component.QualifiedModuleName);
+                        }
+                    }
+                }
+            }
+            return modules;
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Rubberduck.Parsing.Symbols
                 module.QualifyMemberName(member.Name),
                 parent,
                 parent,
-                string.Empty, //TODO:  Need to get the types for these.
+                member.AsTypeName.TypeName, 
                 Accessibility.Global,
                 null,
                 Selection.Home,
@@ -62,6 +62,21 @@ namespace Rubberduck.Parsing.Symbols
                 member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
                     .ToList(); 
         }
+
+        public PropertyLetDeclaration(ComField field, Declaration parent, QualifiedModuleName module,
+            Attributes attributes)
+            : this(
+                module.QualifyMemberName(field.Name),
+                parent,
+                parent,
+                field.ValueType,
+                Accessibility.Global,
+                null,
+                Selection.Home,
+                false,
+                null,
+                attributes)
+        { }
 
         public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
 

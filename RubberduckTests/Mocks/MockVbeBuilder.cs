@@ -20,20 +20,36 @@ namespace RubberduckTests.Mocks
         private readonly Mock<IVBEEvents> _vbeEvents;
 
         #region standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
-        public static readonly string LibraryPathVBA = @"C:\PROGRA~2\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
-        public static readonly string LibraryPathMsExcel = @"C:\Program Files (x86)\Microsoft Office\Office15\EXCEL.EXE";   // mock host application, priority locked
-        public static readonly string LibraryPathMsOffice = @"C:\Program Files (x86)\Common Files\Microsoft Shared\OFFICE15\MSO.DLL";
-        public static readonly string LibraryPathStdOle = @"C:\Windows\SysWOW64\stdole2.tlb";
-        public static readonly string LibraryPathMsForms = @"C:\Windows\SysWOW64\FM20.DLL"; // standard in projects with a UserForm module
+        public static readonly string LibraryPathVBA = @"C:\PROGRA~1\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
+        public static readonly string LibraryPathMsExcel = @"C:\Program Files\Microsoft Office\Office15\EXCEL.EXE";   // mock host application, priority locked
+        public static readonly string LibraryPathMsOffice = @"C:\Program Files\Common Files\Microsoft Shared\OFFICE15\MSO.DLL";
+        public static readonly string LibraryPathStdOle = @"C:\Windows\System32\stdole2.tlb";
+        public static readonly string LibraryPathMsForms = @"C:\Windows\system32\FM20.DLL"; // standard in projects with a UserForm module
         #endregion
 
         public static readonly string LibraryPathVBIDE = @"C:\Program Files (x86)\Common Files\Microsoft Shared\VBA\VBA6\VBE6EXT.OLB";
-        public static readonly string LibraryPathScripting = @"C:\Windows\SysWOW64\scrrun.dll";
-        public static readonly string LibraryPathRegex = @"C:\Windows\SysWOW64\vbscript.dll\3";
+        public static readonly string LibraryPathScripting = @"C:\Windows\System32\scrrun.dll";
+        public static readonly string LibraryPathRegex = @"C:\Windows\System32\vbscript.dll\3";
         public static readonly string LibraryPathMsXml = @"C:\Windows\System32\msxml6.dll";
-        public static readonly string LibraryPathShDoc = @"C:\Windows\SysWOW64\ieframe.dll";
-        public static readonly string LibraryPathAdoDb = @"C:\Program Files (x86)\Common Files\System\ado\msado15.dll";
-        public static readonly string LibraryPathAdoRecordset = @"C:\Program Files (x86)\Common Files\System\ado\msador15.dll";
+        public static readonly string LibraryPathShDoc = @"C:\Windows\System32\ieframe.dll";
+        public static readonly string LibraryPathAdoDb = @"C:\Program Files\Common Files\System\ado\msado15.dll";
+        public static readonly string LibraryPathAdoRecordset = @"C:\Program Files\Common Files\System\ado\msador15.dll";
+
+        public static readonly Dictionary<string, string> LibraryPaths = new Dictionary<string, string>
+        {
+            ["VBA"] = LibraryPathVBA,
+            ["Excel"] = LibraryPathMsExcel,
+            ["Office"] = LibraryPathMsOffice,
+            ["stdole"] = LibraryPathStdOle,
+            ["MSForms"] = LibraryPathMsForms,
+            ["VBIDE"] = LibraryPathVBIDE,
+            ["Scripting"] = LibraryPathScripting,
+            ["VBScript_RegExp_55"] = LibraryPathRegex,
+            ["MSXML2"] = LibraryPathMsXml,
+            ["SHDocVw"] = LibraryPathShDoc,
+            ["ADODB"] = LibraryPathAdoDb,
+            ["ADOR"] = LibraryPathAdoRecordset
+        };
 
         //private Mock<IWindows> _vbWindows;
         private readonly Windows _windows = new Windows();
@@ -43,12 +59,6 @@ namespace RubberduckTests.Mocks
         
         private Mock<ICodePanes> _vbCodePanes;
         private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>();
-
-        private const int MenuBar = 1;
-        private const int CodeWindow = 9;
-        private const int ProjectWindow = 14;
-        private const int MsForms = 17;
-        private const int MsFormsControl = 18;
 
         public MockVbeBuilder()
         {
@@ -73,7 +83,6 @@ namespace RubberduckTests.Mocks
             }
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
-            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
 
             return this;
@@ -104,6 +113,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         public Mock<IVBE> Build()
         {
+            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             return _vbe;
         }
 
@@ -216,11 +226,7 @@ namespace RubberduckTests.Mocks
  
             var dummyCommandBar = DummyCommandBar();
 
-            commandBars.SetupGet(m => m[MenuBar]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[CodeWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[ProjectWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsForms]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsFormsControl]).Returns(dummyCommandBar);
+            commandBars.SetupGet(m => m[It.IsAny<int>()]).Returns(dummyCommandBar);
 
             return commandBars.Object;
         }
