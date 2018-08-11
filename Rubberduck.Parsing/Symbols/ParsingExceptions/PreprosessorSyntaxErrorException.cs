@@ -1,6 +1,8 @@
 using System;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols.ParsingExceptions
 {
@@ -12,10 +14,10 @@ namespace Rubberduck.Parsing.Symbols.ParsingExceptions
     public class PreprocessorSyntaxErrorException : ParsePassSyntaxErrorException
     {
         public PreprocessorSyntaxErrorException(ParsePassSyntaxErrorInfo info)
-            : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.ComponentName, info.ParsePass) { }
+            : this(info.Message, info.Exception, info.OffendingSymbol, info.LineNumber, info.Position, info.ModuleName, info.CodeKind) { }
 
-        public PreprocessorSyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, string componentName, ParsePass parsePass)
-            : base(message, innerException, offendingSymbol, line, position, componentName, parsePass)
+        public PreprocessorSyntaxErrorException(string message, RecognitionException innerException, IToken offendingSymbol, int line, int position, string moduleName, CodeKind codeKind)
+            : base(message, innerException, offendingSymbol, line, position, moduleName, codeKind)
         {}
 
         public override string ToString()

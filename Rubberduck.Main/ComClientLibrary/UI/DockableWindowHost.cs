@@ -10,6 +10,7 @@ using User32 = Rubberduck.Common.WinAPI.User32;
 using NLog;
 using Rubberduck.Resources.Registration;
 using Rubberduck.UI.CustomComWrappers;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI
 {

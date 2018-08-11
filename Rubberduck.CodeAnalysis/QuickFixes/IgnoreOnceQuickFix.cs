@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.QuickFixes
 {

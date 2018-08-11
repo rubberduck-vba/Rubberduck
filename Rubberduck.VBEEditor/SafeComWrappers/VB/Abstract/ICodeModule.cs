@@ -18,8 +18,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         QualifiedModuleName QualifiedModuleName { get; }
         string Content();
         void Clear();
-        string ContentHash();
-        int SimpleContentHash();
+        int ContentHash();
 
         /// <summary>
         /// Adds the specified code to the module. If "require variable declaration" is on, code is added under Option Explicit and an extraneous empty line.

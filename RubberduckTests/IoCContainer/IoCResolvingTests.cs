@@ -8,7 +8,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Root;
-using Rubberduck.UI;
+using Rubberduck.VBEditor.SourceCodeHandling;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.IoCContainer
@@ -21,8 +21,12 @@ namespace RubberduckTests.IoCContainer
         public void ResolveInspections_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var ide = vbeBuilder.Build().Object;
-            var addin = new Mock<IAddIn>().Object;
+            var ideMock = vbeBuilder.Build();
+            var sourceFileHandler = new Mock<ITempSourceFileHandler>().Object;
+            ideMock.Setup(m => m.TempSourceFileHandler).Returns(() => sourceFileHandler);
+            var ide = ideMock.Object;
+            var addInBuilder = new MockAddInBuilder();
+            var addin = addInBuilder.Build().Object;
             var initialSettings = new GeneralSettings
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>
@@ -58,8 +62,12 @@ namespace RubberduckTests.IoCContainer
         public void ResolveRubberduckParserState_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var ide = vbeBuilder.Build().Object;
-            var addin = new Mock<IAddIn>().Object;
+            var ideMock = vbeBuilder.Build();
+            var sourceFileHandler = new Mock<ITempSourceFileHandler>().Object;
+            ideMock.Setup(m => m.TempSourceFileHandler).Returns(() => sourceFileHandler);
+            var ide = ideMock.Object;
+            var addInBuilder = new MockAddInBuilder();
+            var addin = addInBuilder.Build().Object;
             var initialSettings = new GeneralSettings
             {
                 EnableExperimentalFeatures = new List<ExperimentalFeatures>

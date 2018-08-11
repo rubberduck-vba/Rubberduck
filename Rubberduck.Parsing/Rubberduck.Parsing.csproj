@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>1</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
@@ -103,6 +103,7 @@
     <Compile Include="Annotations\ModuleInitializeAnnotation.cs" />
     <Compile Include="Annotations\IgnoreTestAnnotation.cs" />
     <Compile Include="Annotations\NoIndentAnnotation.cs" />
+    <Compile Include="Annotations\ObsoleteAnnotation.cs" />
     <Compile Include="Annotations\PredeclaredIdAnnotation.cs" />
     <Compile Include="Annotations\TestCleanupAnnotation.cs" />
     <Compile Include="Annotations\TestInitializeAnnotation.cs" />
@@ -143,6 +144,19 @@
     <Compile Include="Binding\Bindings\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="PreProcessing\CompilationArgumentsCache.cs" />
+    <Compile Include="PreProcessing\CompilationArgumentsProvider.cs" />
+    <Compile Include="PreProcessing\ICompilationArgumentsProvider.cs" />
+    <Compile Include="PreProcessing\ICompilationArgumentsCache.cs" />
+    <Compile Include="Rewriter\ModuleRewriterFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\ExceptionErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\PreprocessingParseErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\IRubberduckParserErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\MainParseErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\IParsePassErrorListenerFactory.cs" />
+    <Compile Include="Symbols\ParsingExceptions\ParsePassErrorListenerBase.cs" />
+    <Compile Include="Symbols\ParsingExceptions\IRubberduckParseErrorListener.cs" />
+    <Compile Include="Symbols\ParsingExceptions\RubberduckParseErrorListenerBase.cs" />
     <Compile Include="TokenStreamExtensions.cs" />
     <Compile Include="Common\DisabledAttribute.cs" />
     <Compile Include="ComReflection\ComTypeName.cs" />
@@ -182,13 +196,22 @@
     <Compile Include="Symbols\ParsingExceptions\PreprosessorSyntaxErrorException.cs" />
     <Compile Include="UIContext\IUiDispatcher.cs" />
     <Compile Include="UIContext\UiDispatcher.cs" />
+    <Compile Include="Rewriter\IModuleRewriterFactory.cs" />
+    <Compile Include="VBA\Parsing\IModuleParser.cs" />
+    <Compile Include="VBA\Parsing\TokenStreamParserStringParserAdapterWithPreprocessing.cs" />
+    <Compile Include="VBA\Parsing\TokenStreamParserStringParserAdapter.cs" />
+    <Compile Include="VBA\Parsing\IStringParser.cs" />
+    <Compile Include="VBA\Parsing\VBAPreprocessorParser.cs" />
+    <Compile Include="VBA\Parsing\VBATokenStreamParser.cs" />
+    <Compile Include="VBA\Parsing\TokenStreamParserBase.cs" />
+    <Compile Include="VBA\Parsing\ParserMode.cs" />
+    <Compile Include="VBA\Parsing\ITokenStreamParser.cs" />
     <Compile Include="VBA\RepositoryProjectManager.cs" />
-    <Compile Include="VBA\ParsePass.cs" />
+    <Compile Include="VBA\Parsing\CodeKind.cs" />
     <Compile Include="Inspections\CannotAnnotateAttribute.cs" />
     <Compile Include="Inspections\RequiredLibraryAttribute.cs" />
     <Compile Include="Inspections\CodeInspectionSeverity.cs" />
     <Compile Include="Inspections\CodeInspectionType.cs" />
-    <Compile Include="Rewriter\MemberAttributesRewriter.cs" />
     <Compile Include="Rewriter\RewriterInfo\ConstantRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\DefaultRewriterInfoFinder.cs" />
     <Compile Include="Rewriter\RewriterInfo\IRewriterInfoFinder.cs" />
@@ -200,7 +223,7 @@
     <Compile Include="Rewriter\RewriterInfo\VariableRewriterInfoFinder.cs" />
     <Compile Include="PreProcessing\ConditionalCompilationIfExpression.cs" />
     <Compile Include="PreProcessing\ConditionalCompilationConstantExpression.cs" />
-    <Compile Include="PreProcessing\IVBAPreprocessor.cs" />
+    <Compile Include="PreProcessing\ITokenStreamPreprocessor.cs" />
     <Compile Include="PreProcessing\LivelinessExpression.cs" />
     <Compile Include="ComReflection\ComField.cs" />
     <Compile Include="ComReflection\ComMember.cs" />
@@ -295,7 +318,6 @@
     <Compile Include="PreProcessing\UnaryNotExpression.cs" />
     <Compile Include="PreProcessing\ValueType.cs" />
     <Compile Include="PreProcessing\VBALibrary.cs" />
-    <Compile Include="PreProcessing\VBAPrecompilationParser.cs" />
     <Compile Include="PreProcessing\VBADateConstants.cs" />
     <Compile Include="PreProcessing\SymbolTable.cs" />
     <Compile Include="PreProcessing\VBAPredefinedCompilationConstants.cs" />
@@ -348,74 +370,71 @@
     <Compile Include="ComReflection\XmlPersistableDeclarations.cs" />
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
     <Compile Include="TokenExtensions.cs" />
-    <Compile Include="VBA\AttributeListener.cs" />
-    <Compile Include="VBA\AttributeParser.cs" />
+    <Compile Include="VBA\Parsing\AttributeListener.cs" />
     <Compile Include="VBA\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
     <Compile Include="PreProcessing\TokensValue.cs" />
-    <Compile Include="VBA\SupertypeClearer.cs" />
+    <Compile Include="VBA\ReferenceManagement\SupertypeClearer.cs" />
     <Compile Include="VBA\SynchronousParseCoordinator.cs" />
-    <Compile Include="VBA\SynchronousSupertypeClearer.cs" />
-    <Compile Include="VBA\SupertypeClearerBase.cs" />
-    <Compile Include="VBA\ISupertypeClearer.cs" />
+    <Compile Include="VBA\ReferenceManagement\SynchronousSupertypeClearer.cs" />
+    <Compile Include="VBA\ReferenceManagement\SupertypeClearerBase.cs" />
+    <Compile Include="VBA\ReferenceManagement\ISupertypeClearer.cs" />
     <Compile Include="VBA\ParsingCacheService.cs" />
     <Compile Include="VBA\IParsingCacheService.cs" />
-    <Compile Include="VBA\SimpleVBAModuleTokenStreamProvider.cs" />
-    <Compile Include="VBA\ICommonTokenStreamProvider.cs" />
-    <Compile Include="VBA\ModuleToModuleReferenceManager.cs" />
+    <Compile Include="VBA\Parsing\SimpleVBAModuleTokenStreamProvider.cs" />
+    <Compile Include="VBA\Parsing\ICommonTokenStreamProvider.cs" />
+    <Compile Include="VBA\ReferenceManagement\ModuleToModuleReferenceManager.cs" />
     <Compile Include="VBA\IDeclarationFinderProvider.cs" />
     <Compile Include="VBA\IParseTreeProvider.cs" />
     <Compile Include="VBA\ParsingStageService.cs" />
-    <Compile Include="VBA\CollectionExtensions.cs" />
+    <Compile Include="VBA\Extensions\CollectionExtensions.cs" />
     <Compile Include="VBA\IParsingStageService.cs" />
-    <Compile Include="VBA\IProjectReferencesProvider.cs" />
+    <Compile Include="VBA\ComReferenceLoading\IProjectReferencesProvider.cs" />
     <Compile Include="VBA\StateProjectManagerBase.cs" />
     <Compile Include="VBA\StateProjectManager.cs" />
-    <Compile Include="VBA\SynchronousReferenceRemover.cs" />
-    <Compile Include="VBA\ReferenceRemover.cs" />
-    <Compile Include="VBA\ReferenceRemoverBase.cs" />
+    <Compile Include="VBA\ReferenceManagement\SynchronousReferenceRemover.cs" />
+    <Compile Include="VBA\ReferenceManagement\ReferenceRemover.cs" />
+    <Compile Include="VBA\ReferenceManagement\ReferenceRemoverBase.cs" />
     <Compile Include="VBA\SynchronousStateProjectManager.cs" />
-    <Compile Include="VBA\SynchronousReferenceResolveRunner.cs" />
-    <Compile Include="VBA\ReferenceResolveRunner.cs" />
-    <Compile Include="VBA\ReferenceResolveRunnerBase.cs" />
-    <Compile Include="VBA\IReferenceRemover.cs" />
-    <Compile Include="VBA\SynchronousDeclarationResolveRunner.cs" />
-    <Compile Include="VBA\DeclarationResolveRunner.cs" />
-    <Compile Include="VBA\DeclarationResolveRunnerBase.cs" />
-    <Compile Include="VBA\SynchronousParseRunner.cs" />
-    <Compile Include="VBA\ParseRunner.cs" />
-    <Compile Include="VBA\ParseRunnerBase.cs" />
+    <Compile Include="VBA\ReferenceManagement\SynchronousReferenceResolveRunner.cs" />
+    <Compile Include="VBA\ReferenceManagement\ReferenceResolveRunner.cs" />
+    <Compile Include="VBA\ReferenceManagement\ReferenceResolveRunnerBase.cs" />
+    <Compile Include="VBA\ReferenceManagement\IReferenceRemover.cs" />
+    <Compile Include="VBA\DeclarationResolving\SynchronousDeclarationResolveRunner.cs" />
+    <Compile Include="VBA\DeclarationResolving\DeclarationResolveRunner.cs" />
+    <Compile Include="VBA\DeclarationResolving\DeclarationResolveRunnerBase.cs" />
+    <Compile Include="VBA\Parsing\SynchronousParseRunner.cs" />
+    <Compile Include="VBA\Parsing\ParseRunner.cs" />
+    <Compile Include="VBA\Parsing\ParseRunnerBase.cs" />
     <Compile Include="VBA\IBuiltInDeclarationLoader.cs" />
-    <Compile Include="VBA\SynchronousCOMReferenceSynchronizer.cs" />
-    <Compile Include="VBA\COMReferenceSynchronizer.cs" />
-    <Compile Include="VBA\COMReferenceSynchronizerBase.cs" />
+    <Compile Include="VBA\ComReferenceLoading\SynchronousCOMReferenceSynchronizer.cs" />
+    <Compile Include="VBA\ComReferenceLoading\COMReferenceSynchronizer.cs" />
+    <Compile Include="VBA\ComReferenceLoading\COMReferenceSynchronizerBase.cs" />
     <Compile Include="VBA\ParserStateManagerBase.cs" />
     <Compile Include="VBA\SynchronousParserStateManager.cs" />
     <Compile Include="VBA\ParserStateManager.cs" />
-    <Compile Include="VBA\ModuleToModuleReferenceManagerBase.cs" />
+    <Compile Include="VBA\ReferenceManagement\ModuleToModuleReferenceManagerBase.cs" />
     <Compile Include="VBA\CombinedParseTreeListener.cs" />
-    <Compile Include="VBA\ComponentParseTask.cs" />
-    <Compile Include="VBA\EnumerableExtensions.cs" />
-    <Compile Include="VBA\IAttributeParser.cs" />
-    <Compile Include="VBA\IModuleToModuleReferenceManager.cs" />
-    <Compile Include="VBA\IDeclarationResolveRunner.cs" />
-    <Compile Include="VBA\ICOMReferenceSynchronizer.cs" />
+    <Compile Include="VBA\Parsing\ModuleParser.cs" />
+    <Compile Include="VBA\Extensions\EnumerableExtensions.cs" />
+    <Compile Include="VBA\ReferenceManagement\IModuleToModuleReferenceManager.cs" />
+    <Compile Include="VBA\DeclarationResolving\IDeclarationResolveRunner.cs" />
+    <Compile Include="VBA\ComReferenceLoading\ICOMReferenceSynchronizer.cs" />
     <Compile Include="VBA\IProjectManager.cs" />
     <Compile Include="VBA\IParserStateManager.cs" />
-    <Compile Include="VBA\IReferenceResolveRunner.cs" />
-    <Compile Include="VBA\IParseRunner.cs" />
+    <Compile Include="VBA\ReferenceManagement\IReferenceResolveRunner.cs" />
+    <Compile Include="VBA\Parsing\IParseRunner.cs" />
     <Compile Include="VBA\ModuleState.cs" />
     <Compile Include="VBA\ParseErrorEventArgs.cs" />
     <Compile Include="VBA\ParserState.cs" />
-    <Compile Include="VBA\ReferencePriorityMap.cs" />
+    <Compile Include="VBA\ComReferenceLoading\ReferencePriorityMap.cs" />
     <Compile Include="VBA\ParseCoordinator.cs" />
     <Compile Include="VBA\RubberduckParserState.cs" />
-    <Compile Include="VBA\StringExtensions.cs" />
-    <Compile Include="VBA\VBACodeStringParser.cs" />
-    <Compile Include="VBA\VBALikePatternParser.cs" />
-    <Compile Include="VBA\VBADateLiteralParser.cs" />
-    <Compile Include="VBA\VBAExpressionParser.cs" />
-    <Compile Include="VBA\VBAModuleParser.cs" />
+    <Compile Include="VBA\Extensions\StringExtensions.cs" />
+    <Compile Include="VBA\Parsing\VBACodeStringParser.cs" />
+    <Compile Include="VBA\Parsing\VBALikePatternParser.cs" />
+    <Compile Include="VBA\Parsing\VBADateLiteralParser.cs" />
+    <Compile Include="VBA\Parsing\VBAExpressionParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
@@ -444,6 +463,7 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

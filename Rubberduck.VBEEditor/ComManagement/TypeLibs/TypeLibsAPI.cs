@@ -261,7 +261,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>object representing the VBA return value, if one was provided, or null otherwise.</returns>
         public object ExecuteCode(IVBComponent component, string procName, object[] args = null)
         {
-            return ExecuteCode(component.ParentProject, component.Name, procName, args);
+            using (var project = component.ParentProject)
+            {
+                return ExecuteCode(project, component.Name, procName, args);
+            }
         }
 
         /// <summary>
@@ -484,7 +487,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
         public DocClassType DetermineDocumentClassType(IVBComponent component)
         {
-            return DetermineDocumentClassType(component.ParentProject, component.Name);
+            using (var project = component.ParentProject)
+            {
+                return DetermineDocumentClassType(project, component.Name);
+            }
         }
 
         /// <summary>
@@ -548,7 +554,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
         public bool DoesClassImplementInterface(IVBComponent component, string interfaceProgID)
         {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceProgID);
+            using (var project = component.ParentProject)
+            {
+                return DoesClassImplementInterface(project, component.Name, interfaceProgID);
+            }
         }
 
         /// <summary>
@@ -617,7 +626,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
         public bool DoesClassImplementInterface(IVBComponent component, string[] interfaceProgIDs, out int matchedIndex)
         {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceProgIDs, out matchedIndex);
+            using (var project = component.ParentProject)
+            {
+                return DoesClassImplementInterface(project, component.Name, interfaceProgIDs, out matchedIndex);
+            }
         }
 
         /// <summary>
@@ -683,7 +695,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>bool indicating whether the class does inherit the specified interface</returns>
         public bool DoesClassImplementInterface(IVBComponent component, Guid interfaceIID)
         {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceIID);
+            using (var project = component.ParentProject)
+            {
+                return DoesClassImplementInterface(project, component.Name, interfaceIID);
+            }
         }
 
         /// <summary>
@@ -752,7 +767,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>bool indicating whether the class does inherit one of the specified interfaces</returns>
         public bool DoesClassImplementInterface(IVBComponent component, Guid[] interfaceIIDs, out int matchedIndex)
         {
-            return DoesClassImplementInterface(component.ParentProject, component.Name, interfaceIIDs, out matchedIndex);
+            using (var project = component.ParentProject)
+            {
+                return DoesClassImplementInterface(project, component.Name, interfaceIIDs, out matchedIndex);
+            }
         }
 
         /// <summary>
@@ -818,7 +836,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
         public string GetUserFormControlType(IVBComponent component, string controlName)
         {
-            return GetUserFormControlType(component.ParentProject, component.Name, controlName);
+            using (var project = component.ParentProject)
+            {
+                return GetUserFormControlType(project, component.Name, controlName);
+            }
         }
 
         /// <summary>
@@ -883,7 +904,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>string class progID of the specified control on a UserForm, e.g. "MSForms.CommandButton"</returns>
         public string GetDocumentClassControlType(IVBComponent component, string controlName)
         {
-            return GetDocumentClassControlType(component.ParentProject, component.Name, controlName);
+            using (var project = component.ParentProject)
+            {
+                return GetDocumentClassControlType(project, component.Name, controlName);
+            }
         }
 
         /// <summary>
@@ -944,7 +968,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <returns>ComTypes.TYPEFLAGS flags from the ITypeInfo</returns>
         public ComTypes.TYPEFLAGS GetComponentTypeFlags(IVBComponent component)
         {
-            return GetComponentTypeFlags(component.ParentProject, component.Name);
+            using (var project = component.ParentProject)
+            {
+                return GetComponentTypeFlags(project, component.Name);
+            }
         }
 
         /// <summary>

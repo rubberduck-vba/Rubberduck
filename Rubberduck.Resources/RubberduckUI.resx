@@ -1297,4 +1297,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>By category</value>
   </data>
+  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
+    <value>Ignore empty lines when locating first comment and declaration blocks</value>
+  </data>
 </root>

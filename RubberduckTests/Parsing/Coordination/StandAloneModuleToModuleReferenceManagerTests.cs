@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using RubberduckTests.Mocks;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 namespace RubberduckTests.Parsing.Coordination
