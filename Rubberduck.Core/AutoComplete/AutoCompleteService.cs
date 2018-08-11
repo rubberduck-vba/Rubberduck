@@ -157,7 +157,8 @@ namespace Rubberduck.AutoComplete
                 {
                     var left = code.Substring(0, e.CurrentSelection.StartColumn - 2);
                     var right = code.Substring(e.CurrentSelection.StartColumn);
-                    using (var pane = e.CodeModule.CodePane)
+                    using (var codeModule = e.CodeModule)
+                    using (var pane = codeModule.CodePane)
                     {
                         e.CodeModule.ReplaceLine(e.CurrentSelection.StartLine, left + right);
                         pane.Selection = new Selection(e.CurrentSelection.StartLine, e.CurrentSelection.StartColumn - 1);

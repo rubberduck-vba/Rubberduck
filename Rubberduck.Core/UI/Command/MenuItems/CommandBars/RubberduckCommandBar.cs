@@ -64,7 +64,11 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             if (string.IsNullOrEmpty(caption) && e.VBComponent != null)
             {
                 //Fallback caption for selections in the Project window.
-                caption = $"{e.VBComponent.ParentProject.Name}.{e.VBComponent.Name} ({e.VBComponent.Type})";
+                var component = e.VBComponent;
+                using (var parentProject = component.ParentProject)
+                {
+                    caption = $"{parentProject.Name}.{e.VBComponent.Name} ({e.VBComponent.Type})";
+                }
             }
 
             var refCount = e.Declaration?.References.Count() ?? 0;

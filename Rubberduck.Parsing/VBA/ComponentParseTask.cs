@@ -72,20 +72,24 @@ namespace Rubberduck.Parsing.VBA
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var attributesPassParseResults = RunAttributesPass(cancellationToken);
-                var rewriter = new MemberAttributesRewriter(_sourceCodeHandler, _projectsProvider.Component(_module).CodeModule, new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
+                var component = _projectsProvider.Component(_module);
+                using (var codeModule = component.CodeModule)
+                {
+                    var rewriter = new MemberAttributesRewriter(_sourceCodeHandler, component.CodeModule, new TokenStreamRewriter(attributesPassParseResults.tokenStream ?? tokenStream));
 
-                var completedHandler = ParseCompleted;
-                if (completedHandler != null && !cancellationToken.IsCancellationRequested)
-                    completedHandler.Invoke(this, new ParseCompletionArgs
-                    {
-                        ParseTree = codePaneParseResults.tree,
-                        AttributesTree = attributesPassParseResults.tree,
-                        Tokens = codePaneParseResults.tokenStream,
-                        AttributesRewriter = rewriter,
-                        Attributes = attributesPassParseResults.attributes,
-                        Comments = comments,
-                        Annotations = annotationListener.Annotations
-                    });
+                    var completedHandler = ParseCompleted;
+                    if (completedHandler != null && !cancellationToken.IsCancellationRequested)
+                        completedHandler.Invoke(this, new ParseCompletionArgs
+                        {
+                            ParseTree = codePaneParseResults.tree,
+                            AttributesTree = attributesPassParseResults.tree,
+                            Tokens = codePaneParseResults.tokenStream,
+                            AttributesRewriter = rewriter,
+                            Attributes = attributesPassParseResults.attributes,
+                            Comments = comments,
+                            Annotations = annotationListener.Annotations
+                        });
+                }
             }
             catch (COMException exception)
             {
