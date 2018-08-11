@@ -1,9 +1,6 @@
 extern alias Office_v8;
 using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Microsoft.CSharp.RuntimeBinder;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using MSO = Office_v8::Office;
@@ -22,11 +19,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
         // Command bar click event is sourced from VBE.Events.CommandBarEvents[index]
         // where index is the command bar button COM object.
         public CommandBarButton(MSO.CommandBarButton target, IVBE vbe, bool rewrapping = false) 
-            : base(target, ((VB.VBE)vbe.HardReference).Events.CommandBarEvents[target], rewrapping)
+            : base(target, rewrapping)
         {
             _control = new CommandBarControl(target, vbe, rewrapping);
             _vbe = vbe;
-
         }
         
         private MSO.CommandBarButton Button => Target;
@@ -266,7 +262,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
                     if (_click == null || _click.GetInvocationList().Length == 0)
                     {
                         DetachEvents();
-                    };
+                    }
                 }
             }
         }
@@ -295,6 +291,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
             Disposing?.Invoke(this, EventArgs.Empty);
             base.Dispose(disposing);
             _control.Dispose();
+        }
+
+        public override void AttachEvents()
+        {
+            using (var events = _vbe.Events)
+            {
+                // Note - disposal of buttonEvents is handled by the base class
+                var buttonEvents = events.CommandBarEvents[Target] as IEventSource<VB.CommandBarEvents>;
+                AttachEvents(buttonEvents, this);
+            }
         }
     }
 }

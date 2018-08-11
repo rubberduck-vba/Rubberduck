@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -13,25 +13,22 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         private const int NotAdvising = 0;
         private readonly object _lock = new object();
         private TEventSource _eventSource; // The event source
+        private TEventInterface _eventSink; // The event sink
         private IConnectionPoint _icp; // The connection point
-        private int _cookie = NotAdvising;     // The cookie for the connection
+        private int _cookie = NotAdvising; // The cookie for the connection
 
-        protected SafeRedirectedEventedComWrapper(TSource target, TEventSource eventSource, bool rewrapping = false) : base(target, rewrapping)
+        protected SafeRedirectedEventedComWrapper(TSource target, bool rewrapping = false) 
+            : base(target, rewrapping)
         {
-            _eventSource = eventSource;
         }
 
         protected override void Dispose(bool disposing)
         {
             DetachEvents();
-
-            Marshal.ReleaseComObject(_eventSource);
-            _eventSource = null;
-
             base.Dispose(disposing);
         }
 
-        public void AttachEvents()
+        protected void AttachEvents(IEventSource<TEventSource> eventSource, TEventInterface eventSink)
         {
             lock (_lock)
             {
@@ -45,23 +42,30 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                     return;
                 }
 
+                if (_eventSource != null)
+                {
+                    // Just in case this method called more than once
+                    Marshal.ReleaseComObject(_eventSource);
+                }
+
+                _eventSource = eventSource.EventSource;
+                _eventSink = eventSink;
+
                 // Call QueryInterface for IConnectionPointContainer
-                var icpc = (IConnectionPointContainer) _eventSource;
+                if (!(_eventSource is IConnectionPointContainer icpc))
+                {
+                    Debug.Assert(false, $"Unable to attach events - supplied type {_eventSource.GetType().Name} is not a connection point container.");
+                    return;
+                }
 
                 // Find the connection point for the source interface
                 var g = typeof(TEventInterface).GUID;
                 icpc.FindConnectionPoint(ref g, out _icp);
-
-                var sink = this as TEventInterface;
-
-                if (sink == null)
-                {
-                    throw new InvalidOperationException($"The class {this.GetType()} does not implement the required event interface {typeof(TEventInterface)}");
-                }
-                
-                _icp.Advise(sink, out _cookie);
+                _icp.Advise(_eventSink, out _cookie);
             }
         }
+
+        public abstract void AttachEvents();
 
         public void DetachEvents()
         {
@@ -79,7 +83,15 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 }
 
                 Marshal.ReleaseComObject(_icp);                
-                _icp = null;                
+                _icp = null;
+
+                if (_eventSource == null)
+                {
+                    return;
+                }
+
+                Marshal.ReleaseComObject(_eventSource);
+                _eventSource = null;
             }
         }
     }

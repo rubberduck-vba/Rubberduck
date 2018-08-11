@@ -19,6 +19,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         ICodePanes CodePanes { get; }
         ICommandBars CommandBars { get; }
         IWindows Windows { get; }
+        IEvents Events { get; }
         IHostApplication HostApplication();
         IWindow ActiveMDIChild();
         QualifiedSelection? GetActiveSelection();

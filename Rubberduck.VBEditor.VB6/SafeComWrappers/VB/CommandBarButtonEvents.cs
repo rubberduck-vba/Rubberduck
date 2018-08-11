@@ -1,0 +1,31 @@
+﻿using System;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using VB = Microsoft.Vbe.Interop.VB6;
+
+namespace Rubberduck.VBEditor.SafeComWrappers.VB6
+{
+    public class CommandBarButtonEvents : SafeComWrapper<VB.CommandBarEvents>, ICommandBarButtonEvents, IEventSource<VB.CommandBarEvents>
+    {
+        public CommandBarButtonEvents(VB.CommandBarEvents target, bool rewrapping = false)
+            : base(target, rewrapping)
+        {            
+        }
+
+        public VB.CommandBarEvents EventSource => Target;
+
+        public override bool Equals(ISafeComWrapper<VB.CommandBarEvents> other)
+        {
+            return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
+        }
+
+        public bool Equals(ICommandBarButtonEvents other)
+        {
+            return Equals(other as SafeComWrapper<VB.CommandBarEvents>);
+        }
+
+        public override int GetHashCode()
+        {
+            return IsWrappingNullReference ? 0 : Target.GetHashCode();
+        }
+    }
+}
