@@ -30,22 +30,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers
 
         protected void AttachEvents(IEventSource<TEventSource> eventSource, TEventInterface eventSink)
         {
+            Debug.Assert(eventSource != null, "Unable to attach events - eventSource is null");
+            Debug.Assert(eventSink != null, "Unable to attach events - eventSink is null");
+            if (eventSource == null || eventSink == null)
+            {
+                return;
+            }
+
+            // Only one event source and one event sink supported at any given time
+            DetachEvents();
+
             lock (_lock)
             {
                 if (IsWrappingNullReference)
                 {
                     return;
-                }
-
-                if (_cookie != NotAdvising)
-                {
-                    return;
-                }
-
-                if (_eventSource != null)
-                {
-                    // Just in case this method called more than once
-                    Marshal.ReleaseComObject(_eventSource);
                 }
 
                 _eventSource = eventSource.EventSource;
@@ -71,27 +70,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         {
             lock (_lock)
             {
-                if (_icp == null)
+                if (_icp != null)
                 {
-                    return;
+                    if (_cookie != NotAdvising)
+                    {
+                        _icp.Unadvise(_cookie);
+                        _cookie = NotAdvising;
+                    }
+
+                    Marshal.ReleaseComObject(_icp);
+                    _icp = null;
                 }
 
-                if (_cookie != NotAdvising)
+                if (_eventSource != null)
                 {
-                    _icp.Unadvise(_cookie);
-                    _cookie = NotAdvising;
+                    Marshal.ReleaseComObject(_eventSource);
+                    _eventSource = null;
                 }
-
-                Marshal.ReleaseComObject(_icp);                
-                _icp = null;
-
-                if (_eventSource == null)
-                {
-                    return;
-                }
-
-                Marshal.ReleaseComObject(_eventSource);
-                _eventSource = null;
             }
         }
     }
