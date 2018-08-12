@@ -5,7 +5,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public class ExpressionFilterBoolean : ExpressionFilter<bool>
     {
-        public ExpressionFilterBoolean(TokenToValue<bool> converter) : base(converter, Tokens.Boolean) { }
+        public ExpressionFilterBoolean(StringToValueConversion<bool> converter) : base(converter, Tokens.Boolean) { }
 
         public override IParseTreeValue SelectExpressionValue
         {

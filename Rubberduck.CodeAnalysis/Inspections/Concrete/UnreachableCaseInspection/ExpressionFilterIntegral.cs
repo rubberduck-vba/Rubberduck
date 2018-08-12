@@ -7,7 +7,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public class ExpressionFilterIntegral : ExpressionFilter<long>
     {
-        public ExpressionFilterIntegral(TokenToValue<long> converter) : base(converter, Tokens.Long) { }
+        public ExpressionFilterIntegral(StringToValueConversion<long> converter) : base(converter, Tokens.Long) { }
 
         public override bool FiltersAllValues => base.FiltersAllValues
             || Limits.HasMinAndMaxLimits && (Limits.Maximum - Limits.Minimum + 1 <= RangesValuesCount + SingleValues.Count());

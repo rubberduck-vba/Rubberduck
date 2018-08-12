@@ -1,12 +1,15 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public class ExpressionFilterDate : ExpressionFilter<ComparableDateValue>
     {
-        public ExpressionFilterDate(TokenToValue<ComparableDateValue> converter) : base(converter, Tokens.Date) { }
+        public ExpressionFilterDate(StringToValueConversion<ComparableDateValue> converter) : base(converter, Tokens.Date) { }
 
         public override bool FiltersAllValues => base.FiltersAllValues
             || Limits.HasMinAndMaxLimits && (Limits.Maximum.AsDecimal - Limits.Minimum.AsDecimal + 1 <= RangesValuesCount + SingleValues.Count());

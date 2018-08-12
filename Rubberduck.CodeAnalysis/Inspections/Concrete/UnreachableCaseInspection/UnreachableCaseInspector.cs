@@ -201,7 +201,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool TryDetectTypeHint(string content, out string typeName)
         {
             typeName = string.Empty;
-            if (TokenParser.TryParse(content, out ComparableDateValue _))
+            if (StringValueConverter.TryConvertString(content, out ComparableDateValue _))
             {
                 return false;
             }

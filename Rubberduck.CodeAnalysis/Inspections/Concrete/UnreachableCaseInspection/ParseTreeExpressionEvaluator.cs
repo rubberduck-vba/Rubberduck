@@ -98,12 +98,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Boolean))
                 {
-                    return _valueFactory.Create(Compare(LHS, RHS, (bool a, bool b) => { return a == b; }));
+                    var textResult = Compare(LHS, RHS, (bool a, bool b) => { return a == b ? Tokens.True : Tokens.False; });
+                    return _valueFactory.Create(textResult.Equals(Tokens.True));
                 }
                 var result = IsStringCompare(LHS, RHS) ? 
                             Compare(LHS, RHS, (string a, string b) => { return AreEqual(a,b); })
                             : Compare(LHS, RHS, (decimal a, decimal b) => { return a == b; }, (double a, double b) => { return a == b; });
-                return _valueFactory.Create(result.Equals(Tokens.True));
+                return _valueFactory.Create(result.Equals(Tokens.True)); //, opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(RelationalOperators.NEQ))
             {
@@ -121,7 +122,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Boolean))
                 {
-                    return _valueFactory.Create(Compare(LHS, RHS, (bool a, bool b) => { return a == true && b == false; }));
+                    var textResult = Compare(LHS, RHS, (bool a, bool b) => { return a == true && b == false ? Tokens.True : Tokens.False; });
+                    return _valueFactory.Create(textResult.Equals(Tokens.True));
                 }
                 var result = IsStringCompare(LHS, RHS) ?
                             Compare(LHS, RHS, (string a, string b) => { return IsLessThan(a, b); })
@@ -132,7 +134,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Boolean))
                 {
-                    return _valueFactory.Create(Compare(LHS, RHS, (bool a, bool b) => { return (a == true && b == false) || a == b; }));
+                    var textResult = Compare(LHS, RHS, (bool a, bool b) => { return (a == true && b == false) || a == b ? Tokens.True : Tokens.False; });
+                    return _valueFactory.Create(textResult.Equals(Tokens.True));
                 }
                 var result = IsStringCompare(LHS, RHS) ?
                             Compare(LHS, RHS, (string a, string b) => { return IsLessThan(a, b) || AreEqual(a,b); })
@@ -143,7 +146,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Boolean))
                 {
-                    return _valueFactory.Create(Compare(LHS, RHS, (bool a, bool b) => { return a == false && b == true; }));
+                    var textResult = Compare(LHS, RHS, (bool a, bool b) => { return a == false && b == true ? Tokens.True : Tokens.False; });
+                    return _valueFactory.Create(textResult.Equals(Tokens.True));
                 }
                 var result = IsStringCompare(LHS, RHS) ?
                             Compare(LHS, RHS, (string a, string b) => { return IsGreaterThan(a, b); })
@@ -154,7 +158,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Boolean))
                 {
-                    return _valueFactory.Create(Compare(LHS, RHS, (bool a, bool b) => { return a == false && b == true || a == b; }));
+                    var textResult = Compare(LHS, RHS, (bool a, bool b) => { return a == false && b == true || a == b ? Tokens.True : Tokens.False; });
+                    return _valueFactory.Create(textResult.Equals(Tokens.True));
                 }
                 var result = IsStringCompare(LHS, RHS) ?
                             Compare(LHS, RHS, (string a, string b) => { return IsGreaterThan(a, b) || AreEqual(a, b); })
@@ -188,7 +193,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return _valueFactory.CreateExpression($"{LogicalOperators.NOT} {parseTreeValue.ValueText}", opType);
             }
 
-            if (parseTreeValue.TryParse(out long value))
+            if (parseTreeValue.TryConvertValue(out long value))
             {
                 return _valueFactory.CreateDeclaredType((~value).ToString(CultureInfo.InvariantCulture), opProvider.OperatorDeclaredType);
             }
@@ -263,7 +268,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var effTypeName = opProvider.OperatorEffectiveType;
             if (effTypeName.Equals(Tokens.Date))
             {
-                if (parseTreeValue.TryParse(out double dValue))
+                if (parseTreeValue.TryConvertValue(out double dValue))
                 {
                     var result = DateTime.FromOADate(0 - dValue);
                     var date = new DateValue(result);
@@ -273,11 +278,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var declaredTypeName = opProvider.OperatorDeclaredType;
-            if (parseTreeValue.TryParse(out decimal decValue))
+            if (parseTreeValue.TryConvertValue(out decimal decValue))
             {
                 return _valueFactory.CreateDeclaredType((0 - decValue).ToString(CultureInfo.InvariantCulture), declaredTypeName);
             }
-            if (parseTreeValue.TryParse(out double dblValue))
+            if (parseTreeValue.TryConvertValue(out double dblValue))
             {
                 return _valueFactory.CreateDeclaredType((0 - dblValue).ToString(CultureInfo.InvariantCulture), declaredTypeName);
             }
@@ -312,64 +317,64 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (opSymbol.Equals(ArithmeticOperators.MULTIPLY))
             {
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a * b; }, (double a, double b) => { return a * b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a * b; }, (double a, double b) => { return a * b; }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.DIVIDE))
             {
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a / b; }, (double a, double b) => { return a / b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a / b; }, (double a, double b) => { return a / b; }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.INTEGER_DIVIDE))
             {
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, IntDivision, IntDivision), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, IntDivision, IntDivision), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.PLUS))
             {
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.String))
                 {
-                    return _valueFactory.CreateConstant(Concatenate(LHS, RHS), opProvider.OperatorDeclaredType);
+                    return _valueFactory.CreateDeclaredType(Concatenate(LHS, RHS), opProvider.OperatorDeclaredType);
                 }
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Date))
                 {
                     var result = _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, null, (double a, double b) => { return a + b; }), Tokens.Double);
-                    if (result.TryParse(out double value))
+                    if (result.TryConvertValue(out double value))
                     {
                         return _valueFactory.CreateDate(value);
                     }
                 }
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a + b; }, (double a, double b) => { return a + b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a + b; }, (double a, double b) => { return a + b; }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.MINUS))
             {
                 if (LHS.TypeName.Equals(Tokens.Date) && RHS.TypeName.Equals(Tokens.Date))
                 {
-                    if (LHS.TryParse(out double lhsValue) && RHS.TryParse(out double rhsValue))
+                    if (LHS.TryConvertValue(out double lhsValue) && RHS.TryConvertValue(out double rhsValue))
                     {
                         var diff = lhsValue - rhsValue;
                         return _valueFactory.CreateDate(diff);
                     }
                     throw new OverflowException();
                 }
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a - b; }, (double a, double b) => { return a - b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a - b; }, (double a, double b) => { return a - b; }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.EXPONENT))
             {
                 //Math.Pow only takes doubles, so the decimal conversion option is null
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, null, (double a, double b) => { return Math.Pow(a, b); }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, null, (double a, double b) => { return Math.Pow(a, b); }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.MODULO))
             {
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a % b; }, (double a, double b) => { return a % b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a % b; }, (double a, double b) => { return a % b; }), opProvider.OperatorDeclaredType);
             }
 
             //ArithmeticOperators.AMPERSAND
-            return _valueFactory.CreateConstant(Concatenate(LHS, RHS), opProvider.OperatorDeclaredType);
+            return _valueFactory.CreateDeclaredType(Concatenate(LHS, RHS), opProvider.OperatorDeclaredType);
         }
 
         private string Concatenate(IParseTreeValue LHS, IParseTreeValue RHS)
         {
             var lhs = StripDoubleQuotes(LHS.ValueText);
             var rhs = StripDoubleQuotes(RHS.ValueText);
-            return $"{ @""""}{lhs}{rhs}{ @""""}";
+            return Concat(lhs, rhs);
         }
 
         private static string StripDoubleQuotes(string input)
@@ -385,17 +390,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return input;
         }
 
+        private static string Concat<T, U>(T lhs, U rhs) => $"{ @""""}{lhs}{rhs}{ @""""}";
+
         private decimal IntDivision(decimal lhs, decimal rhs) => Math.Truncate(Convert.ToDecimal(Convert.ToInt64(lhs) / Convert.ToInt64(rhs)));
 
         private double IntDivision(double lhs, double rhs) => Math.Truncate(Convert.ToDouble(Convert.ToInt64(lhs) / Convert.ToInt64(rhs)));
 
         private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<decimal, decimal, decimal> DecimalCalc, Func<double, double, double> DoubleCalc)
         {
-            if (!(DecimalCalc is null) && LHS.TryParse(out decimal lhsValue) && RHS.TryParse(out decimal rhsValue))
+            if (!(DecimalCalc is null) && LHS.TryConvertValue(out decimal lhsValue) && RHS.TryConvertValue(out decimal rhsValue))
             {
                 return DecimalCalc(lhsValue, rhsValue).ToString();
             }
-            else if (!(DoubleCalc is null) && LHS.TryParse(out double lhsDblValue) && RHS.TryParse(out double rhsDblValue))
+            else if (!(DoubleCalc is null) && LHS.TryConvertValue(out double lhsDblValue) && RHS.TryConvertValue(out double rhsDblValue))
             {
                 return DoubleCalc(lhsDblValue, rhsDblValue).ToString();
             }
@@ -404,11 +411,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<decimal, decimal, bool> DecimalCompare, Func<double, double, bool> DoubleCompare)
         {
-            if (!(DecimalCompare is null) && LHS.TryParse(out decimal lhsValue) && RHS.TryParse(out decimal rhsValue))
+            if (!(DecimalCompare is null) && LHS.TryConvertValue(out decimal lhsValue) && RHS.TryConvertValue(out decimal rhsValue))
             {
                 return DecimalCompare(lhsValue, rhsValue) ? Tokens.True : Tokens.False;
             }
-            else if (!(DoubleCompare is null) && LHS.TryParse(out double lhsDblValue) && RHS.TryParse(out double rhsDblValue))
+            else if (!(DoubleCompare is null) && LHS.TryConvertValue(out double lhsDblValue) && RHS.TryConvertValue(out double rhsDblValue))
             {
                 return DoubleCompare(lhsDblValue, rhsDblValue) ? Tokens.True : Tokens.False;
             }
@@ -428,7 +435,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (BoolCompare != null)
             {
-                if (LHS.TryParse(out bool lhsValue) && RHS.TryParse(out bool rhsValue))
+                if (LHS.TryConvertValue(out bool lhsValue) && RHS.TryConvertValue(out bool rhsValue))
+                {
+                    return BoolCompare(lhsValue, rhsValue);
+                }
+                throw new OverflowException();
+            }
+            throw new ArgumentNullException();
+        }
+
+        //TODO: Replace completely with Func<bool,bool,bool> version
+        private string Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<bool, bool, string> BoolCompare)
+        {
+            if (BoolCompare != null)
+            {
+                if (LHS.TryConvertValue(out bool lhsValue) && RHS.TryConvertValue(out bool rhsValue))
                 {
                     return BoolCompare(lhsValue, rhsValue);
                 }
@@ -439,7 +460,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<long, long, long> LogicCalc)
         {
-            if (!(LogicCalc is null) && LHS.TryParse(out long lhsValue) && RHS.TryParse(out long rhsValue))
+            if (!(LogicCalc is null) && LHS.TryConvertValue(out long lhsValue) && RHS.TryConvertValue(out long rhsValue))
             {
                 return LogicCalc(lhsValue, rhsValue).ToString();
             }
@@ -448,7 +469,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<bool, bool, bool> LogicCalc)
         {
-            if (!(LogicCalc is null) && LHS.TryParse(out long lhsValue) && RHS.TryParse(out long rhsValue))
+            if (!(LogicCalc is null) && LHS.TryConvertValue(out long lhsValue) && RHS.TryConvertValue(out long rhsValue))
             {
                 return LogicCalc(lhsValue != 0, rhsValue != 0).ToString();
             }

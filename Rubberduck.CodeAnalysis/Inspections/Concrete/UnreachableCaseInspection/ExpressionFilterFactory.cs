@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.PreProcessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,13 +25,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
         {
             if (IntegralNumberExtents.Keys.Contains(typeName))
             {
-                var integralNumberFilter = new ExpressionFilterIntegral(TokenParser.TryParse);
+                var integralNumberFilter = new ExpressionFilterIntegral(StringValueConverter.TryConvertString);
                 integralNumberFilter.SetExtents(IntegralNumberExtents[typeName].typeMin, IntegralNumberExtents[typeName].typeMax);
                 return integralNumberFilter;
             }
             else if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single))
             {
-                var floatingPointNumberFilter = new ExpressionFilter<double>(TokenParser.TryParse, typeName);
+                var floatingPointNumberFilter = new ExpressionFilter<double>(StringValueConverter.TryConvertString, typeName);
                 if (typeName.Equals(Tokens.Single))
                 {
                     floatingPointNumberFilter.SetExtents(float.MinValue, float.MaxValue);
@@ -39,21 +40,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
             }
             else if (typeName.Equals(Tokens.Currency))
             {
-                var fixedPointNumberFilter = new ExpressionFilter<decimal>(TokenParser.TryParse, typeName);
+                var fixedPointNumberFilter = new ExpressionFilter<decimal>(StringValueConverter.TryConvertString, typeName);
                 fixedPointNumberFilter.SetExtents(CURRENCYMIN, CURRENCYMAX);
                 return fixedPointNumberFilter;
             }
             else if (typeName.Equals(Tokens.Boolean))
             {
-                return new ExpressionFilterBoolean(TokenParser.TryParse);
+                return new ExpressionFilterBoolean(StringValueConverter.TryConvertString);
             }
 
             else if (typeName.Equals(Tokens.Date))
             {
-                return new ExpressionFilterDate(TokenParser.TryParse);
+                return new ExpressionFilterDate(StringValueConverter.TryConvertString);
             }
 
-            return new ExpressionFilter<string>(TokenParser.TryParse, typeName);
+            return new ExpressionFilter<string>(StringValueConverter.TryConvertString, typeName);
         }
     }
 }

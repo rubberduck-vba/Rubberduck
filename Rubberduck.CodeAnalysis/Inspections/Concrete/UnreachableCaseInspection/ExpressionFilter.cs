@@ -62,13 +62,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private string _toString;
         protected IParseTreeValue _selectExpressionValue;
 
-        public ExpressionFilter(TokenToValue<T> converter, string typeName)
+        public ExpressionFilter(StringToValueConversion<T> converter, string typeName)
         {
             Converter = converter;
             _filterTypeName = typeName;
             _hashCode = _filterTypeName.GetHashCode();
-            converter(Tokens.True, out _trueValue);
-            converter(Tokens.False, out _falseValue);
+            converter(Tokens.True, out _trueValue, typeName);
+            converter(Tokens.False, out _falseValue, typeName);
             _selectExpressionValue = null;
         }
 
@@ -86,7 +86,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [VariableClauseTypes.Value] = new HashSet<string>(),
         };
 
-        protected TokenToValue<T> Converter { set; get; } = null;
+        protected StringToValueConversion<T> Converter { set; get; } = null;
 
         protected HashSet<T> SingleValues { set; get; } = new HashSet<T>();
 
