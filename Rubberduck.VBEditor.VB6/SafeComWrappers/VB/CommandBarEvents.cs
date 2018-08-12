@@ -11,7 +11,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
         }
 
-        public ICommandBarButtonEvents this[object button] => IsWrappingNullReference ? new CommandBarButtonEvents(null) : new CommandBarButtonEvents(Target.CommandBarEvents[button]);
+        public ICommandBarButtonEvents this[object button] => new CommandBarButtonEvents(IsWrappingNullReference ? null : Target.CommandBarEvents[button]);
 
         public override bool Equals(ISafeComWrapper<VB.Events> other)
         {

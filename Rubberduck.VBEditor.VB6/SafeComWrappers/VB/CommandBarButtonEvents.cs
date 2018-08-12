@@ -1,5 +1,4 @@
-﻿using System;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
@@ -11,7 +10,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {            
         }
 
-        public VB.CommandBarEvents EventSource => Target;
+        // Explicit implementation as usage should only be from within a SafeComWrapper
+        VB.CommandBarEvents IEventSource<VB.CommandBarEvents>.EventSource => Target;
 
         public override bool Equals(ISafeComWrapper<VB.CommandBarEvents> other)
         {

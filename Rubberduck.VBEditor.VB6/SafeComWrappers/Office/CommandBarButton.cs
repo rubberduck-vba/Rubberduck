@@ -295,9 +295,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
 
         public override void AttachEvents()
         {
-            using (var events = _vbe.Events)
+            // Cast to VB6 VBE SafeComWrapper as  events are not exposed on IVBE as they are only safe to use in VB6
+            using (var events = ((VB6.VBE)_vbe).Events)
             {
-                // Note - disposal of buttonEvents is handled by the base class
+                // Disposal of buttonEvents is handled by the base class
                 var buttonEvents = events.CommandBarEvents[Target] as IEventSource<VB.CommandBarEvents>;
                 AttachEvents(buttonEvents, this);
             }
