@@ -43,15 +43,15 @@ namespace Rubberduck.UI.Settings
             InspectionSettings.CommitEdit();
         }
 
-        private string _inspectionSettingsFilter;
-        public string InspectionSettingsFilter
+        private string _inspectionSettingsDescriptionFilter;
+        public string InspectionSettingsDescriptionFilter
         {
-            get => _inspectionSettingsFilter;
+            get => _inspectionSettingsDescriptionFilter;
             set
             {
-                if (_inspectionSettingsFilter != value)
+                if (_inspectionSettingsDescriptionFilter != value)
                 {
-                    _inspectionSettingsFilter = value;
+                    _inspectionSettingsDescriptionFilter = value;
                     OnPropertyChanged(nameof(InspectionSettings));
 
                     if (string.IsNullOrEmpty(value))
@@ -67,6 +67,39 @@ namespace Rubberduck.UI.Settings
                 }
             }
         }
+
+        private bool _areInspectionsFilteredBySeverity;
+        public bool AreInspectionsFilteredBySeverity
+        {
+            get => _areInspectionsFilteredBySeverity;
+            set
+            {
+                if (_areInspectionsFilteredBySeverity != value)
+                {
+                    _areInspectionsFilteredBySeverity = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private CodeInspectionSeverity _appliedSeverityFilter;
+        private List<CodeInspectionSeverity> _inspectionSettingsSeverityFilters = new List<CodeInspectionSeverity> { CodeInspectionSeverity.DoNotShow, CodeInspectionSeverity.Error, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Suggestion, CodeInspectionSeverity.Hint };
+        public List<CodeInspectionSeverity> InspectionSettingsSeverityFilters
+        {
+            get => _inspectionSettingsSeverityFilters;
+            set
+            {
+                
+                if (_inspectionSettingsSeverityFilters.Contains(value))
+                {
+                    _inspectionSettingsSeverityFilters = value;
+
+                    AreInspectionsFilteredBySeverity = true;
+
+                    OnPropertyChanged(nameof(InspectionSettings));
+                }
+            }
+        }        
 
         private ListCollectionView _inspectionSettings;
         public ListCollectionView InspectionSettings
