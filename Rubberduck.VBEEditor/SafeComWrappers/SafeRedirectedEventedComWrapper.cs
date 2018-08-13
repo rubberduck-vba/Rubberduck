@@ -35,15 +35,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             if (eventSource == null || eventSink == null)
             {
                 return;
-            }
-
-            // Only one event source and one event sink supported at any given time
-            DetachEvents();
+            }            
 
             lock (_lock)
             {
                 if (IsWrappingNullReference)
                 {
+                    return;
+                }
+                
+                // Check that events not already attached
+                if (_eventSource != null || _eventSink != null)
+                {                   
                     return;
                 }
 
