@@ -4,12 +4,11 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
 using Rubberduck.Common;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.WindowsApi;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.AutoComplete
 {
@@ -29,14 +28,31 @@ namespace Rubberduck.AutoComplete
 
         private AutoCompleteSettings _settings;
         private bool _popupShown;
+        private bool _enabled = false;
 
         public AutoCompleteService(IGeneralConfigService configService, SelfClosingPairCompletionService selfClosingPairCompletion)
         {
             _selfClosingPairCompletion = selfClosingPairCompletion;
             _configService = configService;
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
-            VBENativeServices.KeyDown += HandleKeyDown;
-            VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
+        }
+
+        public void Enable()
+        {
+            if (!_enabled)
+            {
+                VBENativeServices.KeyDown += HandleKeyDown;
+                VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
+            }
+        }
+
+        public void Disable()
+        {
+            if (_enabled)
+            {
+                VBENativeServices.KeyDown -= HandleKeyDown;
+                VBENativeServices.IntelliSenseChanged -= HandleIntelliSenseChanged;
+            }
         }
 
         private void HandleIntelliSenseChanged(object sender, IntelliSenseEventArgs e)
@@ -59,8 +75,16 @@ namespace Rubberduck.AutoComplete
                 if (setting != null && autoComplete.IsEnabled != setting.IsEnabled)
                 {
                     autoComplete.IsEnabled = setting.IsEnabled;
-                    continue;
                 }
+            }
+
+            if (_settings.IsEnabled)
+            {
+                Enable();
+            }
+            else
+            {
+                Disable();
             }
         }
 
@@ -98,6 +122,8 @@ namespace Rubberduck.AutoComplete
 
             var currentCode = e.CurrentLine;
             var currentSelection = e.CurrentSelection;
+            //var surroundingCode = GetSurroundingCode(module, currentSelection); // todo: find a way to parse the current instruction
+
             var original = new CodeString(currentCode, new Selection(0, currentSelection.EndColumn - 1), new Selection(pSelection.StartLine, 1));
 
             if (e.Character != default)
@@ -132,6 +158,24 @@ namespace Rubberduck.AutoComplete
             }
         }
 
+        private string GetSurroundingCode(ICodeModule module, Selection selection)
+        {
+            // throws AccessViolationException!
+            var declarationLines = module.CountOfDeclarationLines;
+            if (selection.StartLine <= declarationLines)
+            {
+                return module.GetLines(1, declarationLines);
+            }
+            else
+            {
+                var currentProc = module.GetProcOfLine(selection.StartLine);
+                var procKind = module.GetProcKindOfLine(selection.StartLine);
+                var procStart = module.GetProcStartLine(currentProc, procKind);
+                var lineCount = module.GetProcCountLines(currentProc, procKind);
+                return module.GetLines(procStart, lineCount);
+            }
+        }
+
         private bool IsInsideStringLiteral(Selection pSelection, ref string currentContent)
         {
             if (!currentContent.Contains("\"") || currentContent.StripStringLiterals().HasComment(out _))
@@ -156,7 +200,7 @@ namespace Rubberduck.AutoComplete
 
         public void Dispose()
         {
-            VBENativeServices.KeyDown -= HandleKeyDown;
+            Disable();
             if (_configService != null)
             {
                 _configService.SettingsChanged -= ConfigServiceSettingsChanged;

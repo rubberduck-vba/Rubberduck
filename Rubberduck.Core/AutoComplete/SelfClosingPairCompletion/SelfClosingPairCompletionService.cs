@@ -1,4 +1,5 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -118,6 +119,14 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
         private Selection FindMatchingTokenPosition(SelfClosingPair pair, CodeString original)
         {
             var result = VBACodeStringParser.Parse(original.Code, p => p.startRule());
+            if (((ParserRuleContext)result.parseTree).IsEmpty)
+            {
+                result = VBACodeStringParser.Parse(original.Code, p => p.blockStmt());
+                if (((ParserRuleContext)result.parseTree).IsEmpty)
+                {
+                    return default;
+                }
+            }
             var visitor = new MatchingTokenVisitor(pair, original);
             visitor.Visit(result.parseTree);
             return visitor.Result;
