@@ -38,9 +38,9 @@ namespace Rubberduck.Parsing.ComReflection
                 }
             }
 
-            foreach (var module in ProjectModules(projectName.ProjectId))
+            foreach (var module in ProjectModules(projectName))
             {
-                var serializableModule = SerializableModule(module, projectLevelDeclarationsByParent);
+                var serializableModule = SerializableModule(module, projectDeclaration, projectLevelDeclarationsByParent);
                 serializableProject.AddDeclaration(serializableModule);
             }
 
@@ -53,16 +53,19 @@ namespace Rubberduck.Parsing.ComReflection
             return _finder.Members(projectName);
         }
 
-        private IEnumerable<QualifiedModuleName> ProjectModules(string projectId)
+        private IEnumerable<QualifiedModuleName> ProjectModules(QualifiedModuleName projectName)
         {
-            return _finder.AllModules.Where(qmn => qmn.ProjectId == projectId);
+            return _finder.AllModules.Where(qmn => qmn.ProjectId == projectName.ProjectId && !qmn.Equals(projectName));
         }
 
-        private SerializableDeclarationTree SerializableModule(QualifiedModuleName module, Dictionary<Declaration, List<Declaration>> projectLevelDeclarationsByParent)
+        private SerializableDeclarationTree SerializableModule(QualifiedModuleName module, ProjectDeclaration project, Dictionary<Declaration, List<Declaration>> projectLevelDeclarationsByParent)
         {
             var members = _finder.Members(module).ToList();
-            var moduleDeclaration = members.Single(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module));
-            var membersByParent = members.GroupBy(declaration => declaration.ParentDeclaration).ToDictionary();
+            var membersByParent = members.Where(declaration => declaration.ParentDeclaration != null)
+                .GroupBy(declaration => declaration.ParentDeclaration)
+                .ToDictionary();
+
+            var moduleDeclaration = membersByParent[project].Single();
             var serializableModule = SerializableTree(moduleDeclaration, membersByParent);
 
             if (projectLevelDeclarationsByParent.TryGetValue(moduleDeclaration, out var memberDeclarationsOnProjectLevel))
