@@ -77,7 +77,7 @@ namespace Rubberduck.Parsing.ComReflection
     {
         public SerializableProject() { }
 
-        public SerializableProject(Declaration declaration)
+        public SerializableProject(ProjectDeclaration declaration)
         {
             Node = new SerializableDeclaration(declaration);
             var project = (ProjectDeclaration)declaration;
