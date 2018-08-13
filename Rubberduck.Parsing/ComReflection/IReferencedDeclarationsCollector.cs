@@ -6,6 +6,6 @@ namespace Rubberduck.Parsing.ComReflection
 {
     public interface IReferencedDeclarationsCollector
     {
-        (IReadOnlyCollection<Declaration> declarations, SerializableProject serializableProject) CollectDeclarations(IReference reference);
+        IReadOnlyCollection<Declaration> CollectedDeclarations(IReference reference);
     }
 }

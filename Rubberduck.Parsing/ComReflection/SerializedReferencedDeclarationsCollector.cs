@@ -15,16 +15,14 @@ namespace Rubberduck.Parsing.ComReflection
             _serializedDeclarationsPath = serializedDeclarationsPath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
         }
 
-        public (IReadOnlyCollection<Declaration> declarations, SerializableProject serializableProject)
-            CollectDeclarations(IReference reference)
+        public IReadOnlyCollection<Declaration> CollectedDeclarations(IReference reference)
         {
             if (!SerializedVersionExists(reference))
             {
-                return (new List<Declaration>(), null);
+                return new List<Declaration>();
             }
 
-            var declarations = LoadDeclarationsFromXml(reference);
-            return (declarations, null);
+            return LoadDeclarationsFromXml(reference);
         }
 
         private bool SerializedVersionExists(IReference reference)

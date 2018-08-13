@@ -20,20 +20,20 @@ namespace Rubberduck.Parsing.ComReflection
             _comLibraryProvider = comLibraryProvider;
         }
 
-        public (IReadOnlyCollection<Declaration> declarations, SerializableProject serializableProject) CollectDeclarations(
+        public IReadOnlyCollection<Declaration> CollectedDeclarations(
             IReference reference)
         {
             return LoadDeclarationsFromLibrary(reference);
         }
 
-        private (List<Declaration> declarations, SerializableProject serializableProject) LoadDeclarationsFromLibrary(IReference reference)
+        private List<Declaration> LoadDeclarationsFromLibrary(IReference reference)
         {
             var libraryPath = reference.FullPath;
             // Failure to load might mean that it's a "normal" VBProject that will get parsed by us anyway.
             var typeLibrary = GetTypeLibrary(libraryPath);
             if (typeLibrary == null)
             {
-                return (new List<Declaration>(), null) ;
+                return new List<Declaration>();
             }
 
             var declarations = new List<Declaration>();
@@ -42,13 +42,11 @@ namespace Rubberduck.Parsing.ComReflection
 
             var projectName = new QualifiedModuleName(type.Name, libraryPath, type.Name);
             var project = new ProjectDeclaration(type, projectName);
-            var serialized = new SerializableProject(project);
             declarations.Add(project);
 
             foreach (var alias in type.Aliases.Select(item => new AliasDeclaration(item, project, projectName)))
             {
                 declarations.Add(alias);
-                serialized.AddDeclaration(new SerializableDeclarationTree(alias));
             }
 
             foreach (var module in type.Members)
@@ -58,44 +56,39 @@ namespace Rubberduck.Parsing.ComReflection
                                         : module.Name;
                 var moduleName = new QualifiedModuleName(reference.Name, libraryPath, moduleIdentifier);
 
-                var (moduleDeclarations, moduleTree) = GetDeclarationsForModule(module, moduleName, project);
+                var moduleDeclarations = GetDeclarationsForModule(module, moduleName, project);
                 declarations.AddRange(moduleDeclarations);
-                serialized.AddDeclaration(moduleTree);
             }
-            return (declarations, serialized);
+
+            return declarations;
         }
 
-        private static (ICollection<Declaration> declarations, SerializableDeclarationTree moduleTree) GetDeclarationsForModule(IComType module, QualifiedModuleName moduleName,
-            ProjectDeclaration project)
+        private static ICollection<Declaration> GetDeclarationsForModule(IComType module, QualifiedModuleName moduleName, ProjectDeclaration project)
         {
             var declarations = new List<Declaration>();
 
             var attributes = GetModuleAttributes(module);
             var moduleDeclaration = CreateModuleDeclaration(module, moduleName, project, attributes);
-            var moduleTree = new SerializableDeclarationTree(moduleDeclaration);
             declarations.Add(moduleDeclaration);
 
             switch (module)
             {
                 case IComTypeWithMembers membered:
-                    var (memberDeclarations, defaultMember, memberTrees) =
+                    var (memberDeclarations, defaultMember) =
                         GetDeclarationsForProperties(membered.Properties, moduleName, moduleDeclaration);
                     declarations.AddRange(memberDeclarations);
-                    moduleTree.AddChildTrees(memberTrees);
                     AssignDefaultMember(moduleDeclaration, defaultMember);
 
-                    (memberDeclarations, defaultMember, memberTrees) = GetDeclarationsForMembers(membered.Members, moduleName,
+                    (memberDeclarations, defaultMember) = GetDeclarationsForMembers(membered.Members, moduleName,
                         moduleDeclaration, membered.DefaultMember);
                     declarations.AddRange(memberDeclarations);
-                    moduleTree.AddChildTrees(memberTrees);
                     AssignDefaultMember(moduleDeclaration, defaultMember);
 
                     if (membered is ComCoClass coClass)
                     {
-                        (memberDeclarations, defaultMember, memberTrees) = GetDeclarationsForMembers(coClass.SourceMembers,
+                        (memberDeclarations, defaultMember) = GetDeclarationsForMembers(coClass.SourceMembers,
                             moduleName, moduleDeclaration, coClass.DefaultMember, true);
                         declarations.AddRange(memberDeclarations);
-                        moduleTree.AddChildTrees(memberTrees);
                         AssignDefaultMember(moduleDeclaration, defaultMember);
                     }
 
@@ -104,25 +97,20 @@ namespace Rubberduck.Parsing.ComReflection
                 {
                     var enumDeclaration = new Declaration(enumeration, moduleDeclaration, moduleName);
                     declarations.Add(enumDeclaration);
-                    var members = enumeration.Members.Select(e => new ValuedDeclaration(e, enumDeclaration, moduleName))
+                    var members = enumeration.Members
+                        .Select(enumMember => new ValuedDeclaration(enumMember, enumDeclaration, moduleName))
                         .ToList();
                     declarations.AddRange(members);
-
-                    var enumTree = new SerializableDeclarationTree(enumDeclaration);
-                    moduleTree.AddChildTree(enumTree);
-                    enumTree.AddChildren(members);
                     break;
                 }
                 case ComStruct structure:
                 {
                     var typeDeclaration = new Declaration(structure, moduleDeclaration, moduleName);
                     declarations.Add(typeDeclaration);
-                    var members = structure.Fields.Select(f => new Declaration(f, typeDeclaration, moduleName)).ToList();
+                    var members = structure.Fields
+                        .Select(f => new Declaration(f, typeDeclaration, moduleName))
+                        .ToList();
                     declarations.AddRange(members);
-
-                    var typeTree = new SerializableDeclarationTree(typeDeclaration);
-                    moduleTree.AddChildTree(typeTree);
-                    typeTree.AddChildren(members);
                     break;
                 }
             }
@@ -139,10 +127,9 @@ namespace Rubberduck.Parsing.ComReflection
                 }
 
                 declarations.AddRange(fieldDeclarations);
-                moduleTree.AddChildren(fieldDeclarations);
             }
 
-            return (declarations, moduleTree);
+            return declarations;
         }
 
         private static void AssignDefaultMember(Declaration moduleDeclaration, Declaration defaultMember)
@@ -176,16 +163,15 @@ namespace Rubberduck.Parsing.ComReflection
             return attributes;
         }
 
-        private static (ICollection<Declaration> memberDeclarations, Declaration defaultMemberDeclaration, ICollection<SerializableDeclarationTree> memberTrees) GetDeclarationsForMembers(IEnumerable<ComMember> members, QualifiedModuleName moduleName, Declaration moduleDeclaration,
+        private static (ICollection<Declaration> memberDeclarations, Declaration defaultMemberDeclaration) GetDeclarationsForMembers(IEnumerable<ComMember> members, QualifiedModuleName moduleName, Declaration moduleDeclaration,
             ComMember defaultMember, bool eventHandlers = false)
         {
             var memberDeclarations = new List<Declaration>();
-            var memberTrees = new List<SerializableDeclarationTree>();
             Declaration defaultMemberDeclaration = null;
 
             foreach (var item in members.Where(m => !m.IsRestricted && !IgnoredInterfaceMembers.Contains(m.Name)))
             {
-                var (memberDeclaration, parameterDeclarations, memberTree) = GetDeclarationsForMember(moduleName, moduleDeclaration, eventHandlers, item);
+                var (memberDeclaration, parameterDeclarations) = GetDeclarationsForMember(moduleName, moduleDeclaration, eventHandlers, item);
                 memberDeclarations.Add(memberDeclaration);
                 memberDeclarations.AddRange(parameterDeclarations);
 
@@ -193,41 +179,36 @@ namespace Rubberduck.Parsing.ComReflection
                 {
                     defaultMemberDeclaration = memberDeclaration;
                 }
-
-                memberTrees.Add(memberTree);
             }
 
-            return (memberDeclarations, defaultMemberDeclaration, memberTrees);
+            return (memberDeclarations, defaultMemberDeclaration);
         }
 
-        private static (Declaration memberDeclaration, ICollection<Declaration> parameterDeclarations, SerializableDeclarationTree memberTree) GetDeclarationsForMember(QualifiedModuleName moduleName, 
-            Declaration declaration, bool eventHandlers, ComMember item)
+        private static (Declaration memberDeclaration, ICollection<Declaration> parameterDeclarations) GetDeclarationsForMember(QualifiedModuleName moduleName, 
+            Declaration parentDeclaration, bool eventHandlers, ComMember item)
         {
-            var memberDeclaration = CreateMemberDeclaration(item, moduleName, declaration, eventHandlers);
-            var memberTree = new SerializableDeclarationTree(memberDeclaration);
+            var memberDeclaration = CreateMemberDeclaration(item, moduleName, parentDeclaration, eventHandlers);
 
             var parameterDeclarations = new List<Declaration>();
             if (memberDeclaration is IParameterizedDeclaration hasParams)
             {
                 parameterDeclarations.AddRange(hasParams.Parameters);
-                memberTree.AddChildren(hasParams.Parameters);
             }
 
-            return (memberDeclaration, parameterDeclarations, memberTree);
+            return (memberDeclaration, parameterDeclarations);
         }
 
-        private static (ICollection<Declaration> propertyDeclarations, Declaration propertyMemberDeclaration, ICollection<SerializableDeclarationTree> propertyTrees) GetDeclarationsForProperties(
+        private static (ICollection<Declaration> propertyDeclarations, Declaration propertyMemberDeclaration) GetDeclarationsForProperties(
             IEnumerable<ComField> properties, QualifiedModuleName moduleName, Declaration moduleDeclaration)
         {
             var propertyDeclarations = new List<Declaration>();
-            var propertyTrees = new List<SerializableDeclarationTree>();
             Declaration defaultMemberDeclaration = null;
 
             foreach (var item in properties.Where(x => !x.Flags.HasFlag(VARFLAGS.VARFLAG_FRESTRICTED)))
             {
                 Debug.Assert(item.Type == DeclarationType.Property);
                 var attributes = GetPropertyAttibutes(item);
-                var (getter, writer, itemPropertyTrees) = GetDeclarationsForProperty(moduleName, moduleDeclaration, item, attributes);
+                var (getter, writer) = GetDeclarationsForProperty(moduleName, moduleDeclaration, item, attributes);
 
                 propertyDeclarations.Add(getter);
                 if (writer != null)
@@ -239,38 +220,28 @@ namespace Rubberduck.Parsing.ComReflection
                 {
                     defaultMemberDeclaration = getter;
                 }
-
-                propertyTrees.AddRange(itemPropertyTrees);
             }
 
-            return (propertyDeclarations, defaultMemberDeclaration, propertyTrees);
+            return (propertyDeclarations, defaultMemberDeclaration);
         }
 
-        private static (Declaration getter, Declaration writer, ICollection<SerializableDeclarationTree> propertyTrees) GetDeclarationsForProperty(QualifiedModuleName moduleName, Declaration moduleDeclaration, ComField item, Attributes attributes)
+        private static (Declaration getter, Declaration writer) GetDeclarationsForProperty(QualifiedModuleName moduleName, Declaration moduleDeclaration, ComField item, Attributes attributes)
         {
-            var propertyTrees = new List<SerializableDeclarationTree>();
-
             var getter = new PropertyGetDeclaration(item, moduleDeclaration, moduleName, attributes);
-            var getterTree = new SerializableDeclarationTree(getter);
-            propertyTrees.Add(getterTree);
 
             if (item.Flags.HasFlag(VARFLAGS.VARFLAG_FREADONLY))
             {
-                return (getter, null, propertyTrees);
+                return (getter, null);
             }
 
             if (item.IsReferenceType)
             {
                 var setter = new PropertySetDeclaration(item, moduleDeclaration, moduleName, attributes);
-                var setterTree = new SerializableDeclarationTree(setter);
-                propertyTrees.Add(setterTree);
-                return (getter, setter, propertyTrees);
+                return (getter, setter);
             }
 
             var letter = new PropertyLetDeclaration(item, moduleDeclaration, moduleName, attributes);
-            var letterTree = new SerializableDeclarationTree(letter);
-            propertyTrees.Add(letterTree);
-            return (getter, letter, propertyTrees);
+            return (getter, letter);
         }
 
         private static Declaration CreateModuleDeclaration(IComType module, QualifiedModuleName project, Declaration parent, Attributes attributes)

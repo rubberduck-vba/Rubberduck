@@ -25,14 +25,22 @@ namespace Rubberduck.Parsing.ComReflection
             var serializableProject = new SerializableProject(projectDeclaration);
 
             var projectName = projectDeclaration.QualifiedModuleName;
-            foreach (var projectLevelDeclaration in ProjectLevelDeclarations(projectName))
+            var projectLevelDeclarationsByParent = ProjectLevelDeclarations(projectName)
+                .Where(declaration => declaration.ParentDeclaration != null)
+                .GroupBy(declaration => declaration.ParentDeclaration)
+                .ToDictionary();
+
+            if(projectLevelDeclarationsByParent.TryGetValue(projectDeclaration, out var nonModuleProjectChildren))
             {
-                serializableProject.AddDeclaration(new SerializableDeclarationTree(projectLevelDeclaration));
+                foreach (var projectLevelDeclaration in nonModuleProjectChildren)
+                {
+                    serializableProject.AddDeclaration(new SerializableDeclarationTree(projectLevelDeclaration));
+                }
             }
 
             foreach (var module in ProjectModules(projectName.ProjectId))
             {
-                var serializableModule = SerializableModule(module);
+                var serializableModule = SerializableModule(module, projectLevelDeclarationsByParent);
                 serializableProject.AddDeclaration(serializableModule);
             }
 
@@ -50,12 +58,17 @@ namespace Rubberduck.Parsing.ComReflection
             return _finder.AllModules.Where(qmn => qmn.ProjectId == projectId);
         }
 
-        private SerializableDeclarationTree SerializableModule(QualifiedModuleName module)
+        private SerializableDeclarationTree SerializableModule(QualifiedModuleName module, Dictionary<Declaration, List<Declaration>> projectLevelDeclarationsByParent)
         {
             var members = _finder.Members(module).ToList();
             var moduleDeclaration = members.Single(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module));
             var membersByParent = members.GroupBy(declaration => declaration.ParentDeclaration).ToDictionary();
             var serializableModule = SerializableTree(moduleDeclaration, membersByParent);
+
+            if (projectLevelDeclarationsByParent.TryGetValue(moduleDeclaration, out var memberDeclarationsOnProjectLevel))
+            {
+                serializableModule.AddChildren(memberDeclarationsOnProjectLevel);
+            }
 
             return serializableModule;
         }

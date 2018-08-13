@@ -171,15 +171,10 @@ namespace Rubberduck.Parsing.VBA
             Logger.Trace($"Loading referenced type '{localReference.Name}'.");            
             try
             {
-                var (declarations, serializedProject) = _referencedDeclarationsCollector.CollectDeclarations(localReference);
+                var declarations = _referencedDeclarationsCollector.CollectedDeclarations(localReference);
                 foreach (var declaration in declarations)
                 {
                     _state.AddDeclaration(declaration);
-                }
-
-                if (serializedProject != null)
-                {
-                    _state.BuiltInDeclarationTrees.TryAdd(serializedProject);
                 }
             }
             catch (Exception exception)
@@ -234,6 +229,5 @@ namespace Rubberduck.Parsing.VBA
             var projectQMN = new QualifiedModuleName(projectName, reference.FullPath, projectName);
             _unloadedCOMReferences.Add(projectQMN);
         }
-
     }
 }
