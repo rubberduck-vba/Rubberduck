@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using NLog;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
     public abstract class SubclassingWindow : IDisposable
     {
-        private /*readonly*/ IntPtr _subclassId;
+        protected static readonly Logger SubclassLogger = LogManager.GetCurrentClassLogger();
+        public event EventHandler ReleasingHandle;
+        private readonly IntPtr _subclassId;
         private readonly SubClassCallback _wndProc;
         private bool _listening;
 
         private readonly object _subclassLock = new object();
 
         public delegate int SubClassCallback(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool IsWindow(IntPtr hWnd);
 
         [DllImport("ComCtl32.dll", CharSet = CharSet.Auto)]
         private static extern int SetWindowSubclass(IntPtr hWnd, SubClassCallback newProc, IntPtr uIdSubclass, IntPtr dwRefData);
@@ -27,13 +26,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         [DllImport("ComCtl32.dll", CharSet = CharSet.Auto)]
         private static extern int DefSubclassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam);
 
-
-        public IntPtr Hwnd { get; private set; }
-
-        protected SubclassingWindow()
-        {
-            _wndProc = SubClassProc;
-        }
+        public IntPtr Hwnd { get; }
 
         protected SubclassingWindow(IntPtr subclassId, IntPtr hWnd)
         {
@@ -41,20 +34,6 @@ namespace Rubberduck.VBEditor.WindowsApi
             _wndProc = SubClassProc;
             Hwnd = hWnd;
 
-            AssignHandle();
-        }
-
-
-        public void AssignHandle(IntPtr subclassId, IntPtr hWnd)
-        {
-            if (_listening)
-            {
-                return;
-                //throw new InvalidOperationException();
-            }
-
-            _subclassId = subclassId;
-            Hwnd = hWnd;
             AssignHandle();
         }
 
@@ -78,7 +57,7 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
         }
 
-        protected void ReleaseHandle()
+        private void ReleaseHandle()
         {
             lock (_subclassLock)
             {
@@ -92,6 +71,8 @@ namespace Rubberduck.VBEditor.WindowsApi
                 {
                     throw new Exception("RemoveWindowSubclass Failed");
                 }
+                ReleasingHandle?.Invoke(this, null);
+                ReleasingHandle = delegate { };
                 _listening = false;
             }
         }

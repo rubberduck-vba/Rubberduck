@@ -6,6 +6,7 @@ using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command

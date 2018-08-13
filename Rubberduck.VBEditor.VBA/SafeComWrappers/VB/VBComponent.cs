@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -95,7 +96,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// </summary>
         /// <param name="folder">Destination folder for the resulting source file.</param>
         /// <param name="tempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
-        public string ExportAsSourceFile(string folder, bool tempFile = false)
+        /// <param name="specialCaseDocumentModules">If reimpot of a document file is required later, it has to receive special treatment.</param>
+        public string ExportAsSourceFile(string folder, bool tempFile = false, bool specialCaseDocumentModules = true)
         {
             var fullPath = tempFile
                 ? Path.Combine(folder, Path.GetRandomFileName())
@@ -106,7 +108,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     ExportUserFormModule(fullPath);
                     break;
                 case ComponentType.Document:
-                    ExportDocumentModule(fullPath);
+                    if(specialCaseDocumentModules)
+                    {
+                        ExportDocumentModule(fullPath);
+                    }
+                    else
+                    {
+                        Export(fullPath);
+                    }
                     break;
                 default:
                     Export(fullPath);
@@ -116,7 +125,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return fullPath;
         }
 
-        public IVBProject ParentProject => Collection.Parent;
+        public IVBProject ParentProject
+        {
+            get
+            {
+                using (var collection = Collection)
+                {
+                    return collection.Parent;
+                }
+            }
+        }
 
         private void ExportUserFormModule(string path)
         {
@@ -218,6 +236,31 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public override int GetHashCode()
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
+        }
+
+        public int ContentHash()
+        {
+            if (IsWrappingNullReference || !HasCodeModule && !HasDesigner)
+            {
+                return 0;
+            }
+
+            var hashes = new List<int>();
+
+            using (var code = CodeModule)
+            {
+                hashes.Add(code?.ContentHash() ?? 0);
+            }
+
+            if (HasDesigner)
+            {
+                using (var controls = Controls)
+                {
+                    hashes.AddRange(controls.Select(control => control.Name.GetHashCode()));
+                }
+            }
+
+            return HashCode.Compute(hashes);
         }
     }
 }

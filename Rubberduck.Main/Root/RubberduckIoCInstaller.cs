@@ -50,6 +50,16 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.ComReferenceLoading;
+using Rubberduck.Parsing.VBA.DeclarationResolving;
+using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Root
 {
@@ -58,12 +68,6 @@ namespace Rubberduck.Root
         private readonly IVBE _vbe;
         private readonly IAddIn _addin;
         private readonly GeneralSettings _initialSettings;
-
-        private const int MenuBar = 1;
-        private const int CodeWindow = 9;
-        private const int ProjectWindow = 14;
-        private const int MsForms = 17;
-        private const int MsFormsControl = 18;
 
         public RubberduckIoCInstaller(IVBE vbe, IAddIn addin, GeneralSettings initialSettings)
         {
@@ -263,6 +267,20 @@ namespace Rubberduck.Root
             container.Register(Component.For<IFolderBrowserFactory>()
                 .ImplementedBy<DialogFactory>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IModuleRewriterFactory>()
+                .ImplementedBy<ModuleRewriterFactory>()
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeHandler", typeof(CodePaneSourceCodeHandler)),
+                    Dependency.OnComponent("attributesSourceCodeHandler", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
+                .LifestyleSingleton());
+            container.Register(Component.For<IRubberduckParserErrorListenerFactory>()
+                .ImplementedBy<ExceptionErrorListenerFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IParsePassErrorListenerFactory>()
+                .ImplementedBy<MainParseErrorListenerFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<PreprocessingParseErrorListenerFactory>()
+                .ImplementedBy<PreprocessingParseErrorListenerFactory>()
+                .LifestyleSingleton());
         }
 
         private void RegisterQuickFixes(IWindsorContainer container, Assembly[] assembliesToRegister)
@@ -319,9 +337,9 @@ namespace Rubberduck.Root
 
         private void RegisterRubberduckMenu(IWindsorContainer container)
         {
-            const int windowMenuId = 30009;
-            var controls = MainCommandBarControls(MenuBar);
-            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, windowMenuId);
+            var location = _addin.CommandBarLocations[CommandBarSite.MenuBar];
+            var controls = MainCommandBarControls(location.ParentId);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = RubberduckMenuItems();
             RegisterMenu<RubberduckParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
@@ -385,9 +403,9 @@ namespace Rubberduck.Root
 
         private void RegisterCodePaneContextMenu(IWindsorContainer container)
         {
-            const int listMembersMenuId = 2529;
-            var controls = MainCommandBarControls(CodeWindow);
-            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, listMembersMenuId);
+            var location = _addin.CommandBarLocations[CommandBarSite.CodeWindow];
+            var controls = MainCommandBarControls(location.ParentId);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = CodePaneContextMenuItems();
             RegisterMenu<CodePaneContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
@@ -406,9 +424,9 @@ namespace Rubberduck.Root
 
         private void RegisterFormDesignerContextMenu(IWindsorContainer container)
         {
-            const int viewCodeMenuId = 2558;
-            var controls = MainCommandBarControls(MsForms);
-            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, viewCodeMenuId);
+            var location = _addin.CommandBarLocations[CommandBarSite.MsForm];
+            var controls = MainCommandBarControls(location.ParentId);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = FormDesignerContextMenuItems();
             RegisterMenu<FormDesignerContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
@@ -424,18 +442,18 @@ namespace Rubberduck.Root
 
         private void RegisterFormDesignerControlContextMenu(IWindsorContainer container)
         {
-            const int viewCodeMenuId = 2558;
-            var controls = MainCommandBarControls(MsFormsControl);
-            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, viewCodeMenuId);
+            var location = _addin.CommandBarLocations[CommandBarSite.MsFormControl];
+            var controls = MainCommandBarControls(location.ParentId);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = FormDesignerContextMenuItems();
             RegisterMenu<FormDesignerControlContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
 
         private void RegisterProjectExplorerContextMenu(IWindsorContainer container)
         {
-            const int projectPropertiesMenuId = 2578;
-            var controls = MainCommandBarControls(ProjectWindow);
-            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, projectPropertiesMenuId);
+            var location = _addin.CommandBarLocations[CommandBarSite.ProjectExplorer];
+            var controls = MainCommandBarControls(location.ParentId);
+            var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = ProjectWindowContextMenuItems();
             RegisterMenu<ProjectWindowContextParentMenu>(container, controls, beforeIndex, menuItemTypes);
         }
@@ -734,6 +752,10 @@ namespace Rubberduck.Root
         {
             RegisterCustomDeclarationLoadersToParser(container);
 
+            container.Register(Component.For<ICompilationArgumentsProvider, ICompilationArgumentsCache>()
+                .ImplementedBy<CompilationArgumentsCache>()
+                .DependsOn(Dependency.OnComponent<ICompilationArgumentsProvider,CompilationArgumentsProvider>())
+                .LifestyleSingleton());
             container.Register(Component.For<ICOMReferenceSynchronizer, IProjectReferencesProvider>()
                 .ImplementedBy<COMReferenceSynchronizer>()
                 .DependsOn(Dependency.OnValue<string>(null))
@@ -780,9 +802,32 @@ namespace Rubberduck.Root
             container.Register(Component.For<IReferencedDeclarationsCollector>()
                 .ImplementedBy<LibraryReferencedDeclarationsCollector>()
                 .LifestyleSingleton());
-
-            container.Register(Component.For<Func<IVBAPreprocessor>>()
-                .Instance(() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture))));
+            container.Register(Component.For<ITokenStreamPreprocessor>()
+                .ImplementedBy<VBAPreprocessor>()
+                .DependsOn(Dependency.OnComponent<ITokenStreamParser, VBAPreprocessorParser>())
+                .LifestyleSingleton());
+            container.Register(Component.For<VBAPredefinedCompilationConstants>()
+                .ImplementedBy<VBAPredefinedCompilationConstants>()
+                .DependsOn(Dependency.OnValue<double>(double.Parse(_vbe.Version, CultureInfo.InvariantCulture)))
+                .LifestyleSingleton());
+            container.Register(Component.For<VBAPreprocessorParser>()
+                .ImplementedBy<VBAPreprocessorParser>()
+                .DependsOn(Dependency.OnComponent<IParsePassErrorListenerFactory, PreprocessingParseErrorListenerFactory>())
+                .LifestyleSingleton());
+            container.Register(Component.For<ICommonTokenStreamProvider>()
+                .ImplementedBy<SimpleVBAModuleTokenStreamProvider>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IStringParser>()
+                .ImplementedBy<TokenStreamParserStringParserAdapterWithPreprocessing>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IModuleParser>()
+                .ImplementedBy<ModuleParser>()
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodePaneSourceCodeHandler)),
+                    Dependency.OnComponent("attributesSourceCodeProvider", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
+                .LifestyleSingleton());
+            container.Register(Component.For<ITypeLibWrapperProvider>()
+                .ImplementedBy<TypeLibWrapperProvider>()
+                .LifestyleSingleton());
         }
 
         private void RegisterTypeLibApi(IWindsorContainer container)
@@ -847,6 +892,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars));
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
+            container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler));
         }
 
         private void RegisterHotkeyFactory(IWindsorContainer container)
