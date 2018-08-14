@@ -11,6 +11,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Commands
 {
@@ -251,6 +252,33 @@ Private Assert As Object
                 // mock suite auto-assigns "TestModule1" to the first component when we create the mock
                 var project = state.DeclarationFinder.FindProject("TestProject1");
                 var module = state.DeclarationFinder.FindStdModule("TestModule2", project);
+                Assert.IsTrue(module.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
+            }
+        }
+
+        [Category("Commands")]
+        [Test]
+        public void AddsTestModuleNextAvailableNumber()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, string.Empty)
+                .AddComponent("TestModule3", ComponentType.StandardModule, string.Empty)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var messageBox = new Mock<IMessageBox>();
+                var settings = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
+                var config = GetUnitTestConfig();
+                settings.Setup(x => x.LoadConfiguration()).Returns(config);
+
+                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, settings.Object, messageBox.Object);
+                addTestModuleCommand.Execute(null);
+
+                var declaration = state.DeclarationFinder.FindProject("TestProject1");
+                var module = state.DeclarationFinder.FindStdModule("TestModule2", declaration);
                 Assert.IsTrue(module.Annotations.Any(a => a.AnnotationType == AnnotationType.TestModule));
             }
         }
