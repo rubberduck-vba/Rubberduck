@@ -246,7 +246,7 @@ namespace Rubberduck.UI.Command
 
         private string GetNextTestModuleName(IVBProject project)
         {
-            var names = project.ComponentNames();
+            var names = new HashSet<string>(project.ComponentNames().Where(module => module.StartsWith(TestModuleBaseName)));
 
             var index = 1;
             while (names.Contains($"{TestModuleBaseName}{index}"))
