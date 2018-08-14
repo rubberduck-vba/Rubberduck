@@ -82,7 +82,7 @@
     <Compile Include="SourceCodeHandling\CodePaneSourceCodeHandler.cs" />
     <Compile Include="SourceCodeHandling\ISourceCodeHandler.cs" />
     <Compile Include="SourceCodeHandling\ISourceCodeProvider.cs" />
-    <Compile Include="SourceCodeHandling\ISourceFileHandler.cs" />
+    <Compile Include="SourceCodeHandling\ITempSourceFileHandler.cs" />
     <Compile Include="CommandBarLocation.cs" />
     <Compile Include="SafeComWrappers\Abstract\HostApplicationBase.cs" />
     <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />

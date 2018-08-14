@@ -17,12 +17,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public VBE(VB.VBE target, bool rewrapping = false)
             : base(target, rewrapping)
         {
-            SourceFileHandler = new SourceFileHandler();
+            TempSourceFileHandler = new ExternalFileTempSourceFileHandlerEmulator();
         }
 
         public VBEKind Kind => VBEKind.Standalone;
         public object HardReference => Target;
-        public ISourceFileHandler SourceFileHandler { get; }
+        public ITempSourceFileHandler TempSourceFileHandler { get; }
 
         public string Version => IsWrappingNullReference ? string.Empty : Target.Version;
 

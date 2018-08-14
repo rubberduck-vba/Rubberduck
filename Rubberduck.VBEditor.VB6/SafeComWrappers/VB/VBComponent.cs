@@ -124,7 +124,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         /// </summary>
         /// <param name="folder">Destination folder for the resulting source file.</param>
         /// <param name="tempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
-        public string ExportAsSourceFile(string folder, bool tempFile = false)
+        /// <param name="specialCaseDocumentModules">If reimpot of a document file is required later, it has to receive special treatment.</param>
+        public string ExportAsSourceFile(string folder, bool tempFile = false, bool specialCaseDocumentModules = true)
         {
             throw new NotSupportedException("Export as source file is not supported in VB6");
         }
