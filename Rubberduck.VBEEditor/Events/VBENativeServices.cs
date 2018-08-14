@@ -115,7 +115,7 @@ namespace Rubberduck.VBEditor.Events
 
         private static void KeyDownDispatcher(object sender, KeyPressEventArgs e)
         {
-            OnKeyDown(e);
+             OnKeyDown(e);
         }
 
         private static void FocusDispatcher(object sender, WindowChangedEventArgs eventArgs)

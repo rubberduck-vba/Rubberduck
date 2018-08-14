@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
@@ -15,7 +16,6 @@ namespace Rubberduck.AutoComplete
     public class AutoCompleteService : IDisposable
     {
         private readonly IGeneralConfigService _configService;
-        private readonly List<IAutoComplete> _autoCompletes = new List<IAutoComplete>();
         private readonly List<SelfClosingPair> _selfClosingPairs = new List<SelfClosingPair>
         {
             new SelfClosingPair('(', ')'),
@@ -29,6 +29,7 @@ namespace Rubberduck.AutoComplete
         private AutoCompleteSettings _settings;
         private bool _popupShown;
         private bool _enabled = false;
+        private bool _initialized;
 
         public AutoCompleteService(IGeneralConfigService configService, SelfClosingPairCompletionService selfClosingPairCompletion)
         {
@@ -39,19 +40,31 @@ namespace Rubberduck.AutoComplete
 
         public void Enable()
         {
+            InitializeConfig();
             if (!_enabled)
             {
                 VBENativeServices.KeyDown += HandleKeyDown;
                 VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
+                _enabled = true;
+            }
+        }
+
+        private void InitializeConfig()
+        {
+            if (!_initialized)
+            {
+                var config = _configService.LoadConfiguration();
+                ApplyAutoCompleteSettings(config);
             }
         }
 
         public void Disable()
         {
-            if (_enabled)
+            if (_enabled && _initialized)
             {
                 VBENativeServices.KeyDown -= HandleKeyDown;
                 VBENativeServices.IntelliSenseChanged -= HandleIntelliSenseChanged;
+                _enabled = false;
             }
         }
 
@@ -69,15 +82,6 @@ namespace Rubberduck.AutoComplete
         public void ApplyAutoCompleteSettings(Configuration config)
         {
             _settings = config.UserSettings.AutoCompleteSettings;
-            foreach (var autoComplete in _autoCompletes)
-            {
-                var setting = config.UserSettings.AutoCompleteSettings.AutoCompletes.FirstOrDefault(s => s.Key == autoComplete.GetType().Name);
-                if (setting != null && autoComplete.IsEnabled != setting.IsEnabled)
-                {
-                    autoComplete.IsEnabled = setting.IsEnabled;
-                }
-            }
-
             if (_settings.IsEnabled)
             {
                 Enable();
@@ -86,6 +90,7 @@ namespace Rubberduck.AutoComplete
             {
                 Disable();
             }
+            _initialized = true;
         }
 
         private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
@@ -97,39 +102,30 @@ namespace Rubberduck.AutoComplete
 
             var module = e.CodeModule;
             var qualifiedSelection = module.GetQualifiedSelection();
+            Debug.Assert(qualifiedSelection != null, nameof(qualifiedSelection) + " != null");
             var pSelection = qualifiedSelection.Value.Selection;
-            if (_popupShown || (e.Keys != Keys.None && pSelection.LineCount > 1) || e.Keys == Keys.Delete)
+
+            if (_popupShown || (e.Keys != Keys.None && pSelection.LineCount > 1) || e.Keys.HasFlag(Keys.Delete))
             {
                 return;
             }
 
             var currentContent = module.GetLines(pSelection);
-
-            /* "smart concat" // adds a line continuation when {ENTER} is pressed inside a string literal */
-            if (e.Keys == Keys.Enter && _settings.EnableSmartConcat && IsInsideStringLiteral(pSelection, ref currentContent))
+            if (HandleSmartConcat(e, pSelection, currentContent, module))
             {
-                var indent = currentContent.NthIndexOf('"', 1);
-                var whitespace = new string(' ', indent);
-                var code = $"{currentContent} & _\r\n{whitespace}\"";
-                module.ReplaceLine(pSelection.StartLine, code);
-                using (var pane = module.CodePane)
-                {
-                    pane.Selection = new Selection(pSelection.StartLine + 1, indent + 2);
-                    e.Handled = true;
-                    return;
-                }
+                return;
             }
 
+            HandleSelfClosingPairs(e, module, pSelection);
+        }
+
+        private void HandleSelfClosingPairs(AutoCompleteEventArgs e, ICodeModule module, Selection pSelection)
+        {
             var currentCode = e.CurrentLine;
             var currentSelection = e.CurrentSelection;
             //var surroundingCode = GetSurroundingCode(module, currentSelection); // todo: find a way to parse the current instruction
 
             var original = new CodeString(currentCode, new Selection(0, currentSelection.EndColumn - 1), new Selection(pSelection.StartLine, 1));
-
-            if (e.Character != default)
-            {
-                currentCode += e.Character;
-            }
 
             var prettifier = new CodeStringPrettifier(module);
             foreach (var selfClosingPair in _selfClosingPairs)
@@ -158,6 +154,38 @@ namespace Rubberduck.AutoComplete
             }
         }
 
+        /// <summary>
+        /// Adds a line continuation when {ENTER} is pressed inside a string literal; returns false otherwise.
+        /// </summary>
+        private bool HandleSmartConcat(AutoCompleteEventArgs e, Selection pSelection, string currentContent, ICodeModule module)
+        {
+            var shouldHandle = _settings.EnableSmartConcat &&
+                               e.Keys.HasFlag(Keys.Enter) &&
+                               IsInsideStringLiteral(pSelection, ref currentContent);
+
+            if (shouldHandle)
+            {
+                var indent = currentContent.NthIndexOf('"', 1);
+                var whitespace = new string(' ', indent);
+                var code = $"{currentContent} & _\r\n{whitespace}\"";
+
+                if (e.Keys.HasFlag(Keys.Control))
+                {
+                    code = $"{currentContent} & vbNewLine & _\r\n{whitespace}\"";
+                }
+
+                module.ReplaceLine(pSelection.StartLine, code);
+                using (var pane = module.CodePane)
+                {
+                    pane.Selection = new Selection(pSelection.StartLine + 1, indent + 2);
+                    e.Handled = true;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private string GetSurroundingCode(ICodeModule module, Selection selection)
         {
             // throws AccessViolationException!
@@ -166,19 +194,18 @@ namespace Rubberduck.AutoComplete
             {
                 return module.GetLines(1, declarationLines);
             }
-            else
-            {
-                var currentProc = module.GetProcOfLine(selection.StartLine);
-                var procKind = module.GetProcKindOfLine(selection.StartLine);
-                var procStart = module.GetProcStartLine(currentProc, procKind);
-                var lineCount = module.GetProcCountLines(currentProc, procKind);
-                return module.GetLines(procStart, lineCount);
-            }
+
+            var currentProc = module.GetProcOfLine(selection.StartLine);
+            var procKind = module.GetProcKindOfLine(selection.StartLine);
+            var procStart = module.GetProcStartLine(currentProc, procKind);
+            var lineCount = module.GetProcCountLines(currentProc, procKind);
+            return module.GetLines(procStart, lineCount);
         }
 
         private bool IsInsideStringLiteral(Selection pSelection, ref string currentContent)
         {
-            if (!currentContent.Contains("\"") || currentContent.StripStringLiterals().HasComment(out _))
+            if (!currentContent.Substring(pSelection.StartColumn - 1).Contains("\"") || 
+                currentContent.StripStringLiterals().HasComment(out _))
             {
                 return false;
             }
@@ -205,8 +232,6 @@ namespace Rubberduck.AutoComplete
             {
                 _configService.SettingsChanged -= ConfigServiceSettingsChanged;
             }
-
-            _autoCompletes.Clear();
         }
     }
 }

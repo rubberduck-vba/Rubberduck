@@ -22,19 +22,16 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 {
                     return prettifier.IsSpacingUnchanged(result) ? result : default;
                 }
-                else
-                {
-                    return result;
-                }
+
+                return result;
             }
-            else if (input == pair.ClosingChar)
+
+            if (input == pair.ClosingChar)
             {
                 return HandleClosingChar(pair, original);
             }
-            else
-            {
-                return default;
-            }
+
+            return default;
         }
 
         public CodeString Execute(SelfClosingPair pair, CodeString original, Keys input)
@@ -43,10 +40,8 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             {
                 return HandleBackspace(pair, original);
             }
-            else
-            {
-                return default;
-            }
+
+            return default;
         }
 
         private CodeString HandleOpeningChar(SelfClosingPair pair, CodeString original)
@@ -74,9 +69,6 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
         private CodeString HandleBackspace(SelfClosingPair pair, CodeString original)
         {
-            var lines = original.Lines;
-            var line = lines[original.CaretPosition.StartLine];
-
             return DeleteMatchingTokens(pair, original);
         }
 
@@ -94,9 +86,14 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 lines[original.CaretPosition.StartLine] = line.Remove(previous, 2);
                 return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
             }
-            else if (line[previous] == pair.OpeningChar)
+
+            if (line[previous] == pair.OpeningChar)
             {
-                var closingTokenPosition = FindMatchingTokenPosition(pair, original);
+                Selection closingTokenPosition;
+                closingTokenPosition = line[Math.Min(line.Length - 1, next)] == pair.ClosingChar
+                    ? position.ShiftRight()
+                    : FindMatchingTokenPosition(pair, original);
+                
                 if (closingTokenPosition != default)
                 {
                     var closingLine = lines[closingTokenPosition.EndLine].Remove(closingTokenPosition.StartColumn, 1);
@@ -107,13 +104,9 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
                     return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
                 }
+            }
 
-                return default;
-            }
-            else
-            {
-                return default;
-            }
+            return default;
         }
 
         private Selection FindMatchingTokenPosition(SelfClosingPair pair, CodeString original)
