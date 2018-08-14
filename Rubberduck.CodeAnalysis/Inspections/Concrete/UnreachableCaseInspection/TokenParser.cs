@@ -3,15 +3,14 @@ using Rubberduck.Parsing.PreProcessing;
 using System;
 using System.Data;
 using System.Globalization;
-using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public delegate bool StringToValueConversion<T>(string value, out T result, string typeName = null);
+    public delegate bool TokenToValue<T>(string value, out T result, string typeName = null);
 
-    public class StringValueConverter
+    public class TokenParser
     {
-        public static bool TryConvertString(string valueText, out long value, string typeName = null)
+        public static bool TryParse(string valueText, out long value, string typeName = null)
         {
             value = default;
             valueText = StripDoubleQuotes(valueText);
@@ -48,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvertString(string valueText, out double value, string typeName = null)
+        public static bool TryParse(string valueText, out double value, string typeName = null)
         {
             value = default;
             valueText = StripDoubleQuotes(valueText);
@@ -65,7 +64,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvertString(string valueText, out decimal value, string typeName = null)
+        public static bool TryParse(string valueText, out decimal value, string typeName = null)
         {
             value = default;
             valueText = StripDoubleQuotes(valueText);
@@ -84,7 +83,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvertString(string valueText, out bool value, string typeName = null)
+        public static bool TryParse(string valueText, out bool value, string typeName = null)
         {
             value = default;
             valueText = StripDoubleQuotes(valueText);
@@ -101,7 +100,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvertString(string valueString, out ComparableDateValue value, string typeName = null)
+        public static bool TryParse(string valueString, out ComparableDateValue value, string typeName = null)
         {
             value = default;
             if (!(valueString.StartsWith("#") && valueString.EndsWith("#")))
@@ -127,7 +126,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        public static bool TryConvertString(string valueText, out string value, string typeName = null)
+        public static bool TryParse(string valueText, out string value, string typeName = null)
         {
             value = valueText;
             return true;

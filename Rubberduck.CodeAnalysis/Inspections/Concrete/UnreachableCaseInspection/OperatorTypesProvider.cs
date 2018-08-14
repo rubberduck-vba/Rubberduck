@@ -351,7 +351,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 => operands.rhsTypeName is null || operands.rhsTypeName.Equals(string.Empty);
         }
 
-        #region DefinedTypeLists
+#region DefinedTypeLists
         public static List<string> IntegralNumericTypes = new List<string>()
         {
             Tokens.Byte,

@@ -57,7 +57,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
         [Test]
         [Category("Inspections")]
-        public void ParserTreeValue_NullInputValue()
+        public void ParseTreeValue_NullInputValue()
         {
             IParseTreeValue test = null;
             try

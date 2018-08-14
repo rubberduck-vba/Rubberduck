@@ -134,9 +134,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             IParseTreeValue newResult = null;
             if (TryGetLExprValue(context, out string lexprValue, out string declaredType))
             {
-                //newResult = _inspValueFactory.Create(lexprValue, declaredType);
                 newResult = _inspValueFactory.CreateDeclaredType(lexprValue, declaredType);
-                //newResult = _inspValueFactory.CreateConstant(lexprValue, declaredType);
             }
             else
             {
@@ -145,7 +143,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (TryGetIdentifierReferenceForContext(smplName, out IdentifierReference idRef))
                 {
                     var declarationTypeName = GetBaseTypeForDeclaration(idRef.Declaration);
-                    //newResult = _inspValueFactory.Create(context.GetText(), declarationTypeName);
                     newResult = _inspValueFactory.CreateDeclaredType(context.GetText(), declarationTypeName);
                 }
             }
@@ -281,11 +278,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (declaration.DeclarationType.HasFlag(DeclarationType.Constant))
                 {
                     expressionValue = GetConstantContextValueToken(declaration.Context);
-                    //if (declaration.DeclarationType.HasFlag(DeclarationType.Constant)
-                    //    && declaredTypeName.Equals(Tokens.String))
-                    //{
-                    //    expressionValue = "\"" + expressionValue + "\"";
-                    //}
                 }
                 else if (declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
                 {
