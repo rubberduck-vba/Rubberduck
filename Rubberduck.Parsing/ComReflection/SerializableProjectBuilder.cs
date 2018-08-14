@@ -33,13 +33,13 @@ namespace Rubberduck.Parsing.ComReflection
 
             if(projectLevelDeclarationsByParent.TryGetValue(projectDeclaration, out var nonModuleProjectChildren))
             {
-                foreach (var projectLevelDeclaration in nonModuleProjectChildren)
+                foreach (var projectLevelDeclaration in nonModuleProjectChildren.OrderBy(child => child.DeclarationType).ThenBy(child => child.IdentifierName ?? string.Empty))
                 {
                     serializableProject.AddDeclaration(new SerializableDeclarationTree(projectLevelDeclaration));
                 }
             }
 
-            foreach (var module in ProjectModules(projectName))
+            foreach (var module in ProjectModules(projectName).OrderBy(qmn => qmn.ComponentType).ThenBy(qmn => qmn.ComponentName ?? string.Empty))
             {
                 var serializableModule = SerializableModule(module, projectDeclaration, projectLevelDeclarationsByParent);
                 serializableProject.AddDeclaration(serializableModule);
@@ -71,7 +71,10 @@ namespace Rubberduck.Parsing.ComReflection
 
             if (projectLevelDeclarationsByParent.TryGetValue(moduleDeclaration, out var memberDeclarationsOnProjectLevel))
             {
-                serializableModule.AddChildren(memberDeclarationsOnProjectLevel);
+                var orderedMemberDeclarations = memberDeclarationsOnProjectLevel
+                    .OrderBy(declaration => declaration.DeclarationType)
+                    .ThenBy(declaration => declaration.IdentifierName ?? string.Empty);
+                serializableModule.AddChildren(orderedMemberDeclarations);
             }
 
             return serializableModule;
@@ -81,7 +84,7 @@ namespace Rubberduck.Parsing.ComReflection
             IDictionary<Declaration, List<Declaration>> declarationsByParent)
         {
             var serializableDeclaration = new SerializableDeclarationTree(declaration);
-            var childTrees = ChildTrees(declaration, declarationsByParent);
+            var childTrees = ChildTrees(declaration, declarationsByParent).OrderBy(tree => tree.Node.DeclarationType).ThenBy(tree => tree.Node.IdentifierName ?? string.Empty);
             serializableDeclaration.AddChildTrees(childTrees);
 
             return serializableDeclaration;

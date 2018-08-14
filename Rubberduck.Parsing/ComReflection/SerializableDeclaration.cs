@@ -164,25 +164,20 @@ namespace Rubberduck.Parsing.ComReflection
             ProjectPath = declaration.QualifiedName.QualifiedModuleName.ProjectPath;
             ComponentName = declaration.QualifiedName.QualifiedModuleName.ComponentName;
 
-            var param = declaration as ParameterDeclaration;
-            if (param != null)
+            switch (declaration)
             {
-                IsOptionalParam = param.IsOptional;
-                IsByRefParam = param.IsByRef;
-                IsParamArray = param.IsParamArray;
-                DefaultValue = param.DefaultValue;
-            }
-
-            var constant = declaration as ValuedDeclaration;
-            if (constant != null)
-            {
-                Expression = constant.Expression;
-            }
-
-            var coclass = declaration as ClassModuleDeclaration;
-            if (coclass != null)
-            {
-                IsControl = coclass.IsControl;
+                case ParameterDeclaration param:
+                    IsOptionalParam = param.IsOptional;
+                    IsByRefParam = param.IsByRef;
+                    IsParamArray = param.IsParamArray;
+                    DefaultValue = param.DefaultValue;
+                    break;
+                case ValuedDeclaration constant:
+                    Expression = constant.Expression;
+                    break;
+                case ClassModuleDeclaration coclass:
+                    IsControl = coclass.IsControl;
+                    break;
             }
         }
 
