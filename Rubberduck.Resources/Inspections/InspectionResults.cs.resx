@@ -339,4 +339,10 @@
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Staticky přístupný list lze referovat jeho kódovým jménem</value>
   </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Zvažte nahrazení volání '{0}'. {1}</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>'{0}' je deklarováno zastaralou 'CDecl' volací konvencí.</value>
+  </data>
 </root>

@@ -327,4 +327,10 @@
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Staticky přístupný sešit přístupný pomocí řetězce</value>
   </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Je použit člen, který je označený jako '@Obsolete'</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Použití zastaralé 'CDecl' volací konvence</value>
+  </data>
 </root>

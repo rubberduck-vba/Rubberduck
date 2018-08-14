@@ -129,9 +129,6 @@
   <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
     <value>Modul třídy (.cls)</value>
   </data>
-  <data name="Načíst" xml:space="preserve">
-    <value>UserForm (.frm)</value>
-  </data>
   <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
     <value>Standardní modul (.bas)</value>
   </data>

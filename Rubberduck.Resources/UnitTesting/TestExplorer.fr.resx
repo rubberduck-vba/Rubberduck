@@ -213,9 +213,6 @@
   <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
     <value>Changer le numéro d'erreur</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
-    <value>Durée totale</value>
-  </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignoré</value>
   </data>
@@ -227,5 +224,8 @@
   </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Impossible de créer le module de test. L'application hôte peut ne pas permettre la création de nouveaux modules, ou le projet peut être verrouillé. Vérifiez les journaux pour les détails.</value>
+  </data>
+  <data name="UnitTest_TotalDuration" xml:space="preserve">
+    <value>Durée totale</value>
   </data>
 </root>

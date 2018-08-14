@@ -195,4 +195,143 @@
   <data name="MultilineParameterInspection" xml:space="preserve">
     <value>Rozdělení deklarace parametru na více řádků velmi zraňuje čitelnost. I když je parametr dlouhý, zvažte jeho deklaraci na jeden řádek. </value>
   </data>
+  <data name="ObsoleteTypeHintInspection" xml:space="preserve">
+    <value>Type nápovědní písmena v jazyku existují jen pro podporu zastaralého kódu, který je vyžaduje; můžou být bez obav nahrazeny deklaracemi jako "As", které specifikují typ explicitně a mohou být vynechány v jiných referencích identifikátoru.</value>
+  </data>
+  <data name="UntypedFunctionUsageInspection" xml:space="preserve">
+    <value>Existuje ekvivalentní funkce, která vrací typ řetězec a měla by být přednostně použita z důvodu vyvarování se implicitního zkonvertování typu.
+Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; předání prázdné hodnoty funkci, která očekává řetěz, by vyvolalo "type mismatch" chybu za chodu programu.</value>
+  </data>
+  <data name="UseMeaningfulNameInspection" xml:space="preserve">
+    <value>Názvy identifikátorů by měly uvádět, pro co jsou používány a měly by být čitelné; vyvarujte se 'disemvowellingu' (odstranění samohlásek), číselných příponám a jménům o délce 1-2 písmen.</value>
+  </data>
+  <data name="VariableNotAssignedInspection" xml:space="preserve">
+    <value>Proměnná není přiřazena. Pokud to není záměrem, jedná se pravděpodobně o bug. Ignorujte výsledek této kontroly, pokud je proměnná přiřazena v jiné proceduře pomocí ByRef parametru.</value>
+  </data>
+  <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
+    <value>Proměnná, jejíž typ není explicitně deklarován, je implicitně typu 'Variant'. Pokud to byl váš úmysl, zvažte explicitní deklarování typu 'Variant', nebo deklarujte specifičtější typ.</value>
+  </data>
+  <data name="WriteOnlyPropertyInspection" xml:space="preserve">
+    <value>Vlastnost, která exponuje mutátor, avšak žádný accessor, designově smrtí a vytváří matoucí API rozhraní. Zvažte exponování getteru, nebo zkonvertování mutátoru na metodu.</value>
+  </data>
+  <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
+    <value>Procedura, které je způsobem 'ByRef' předán pouze jediný parametr, kterému je před ukončením procedury přiřazena nová hodnota/reference, používá tento ByRef parametr jako návratovou hodnotu: zvažte, zda místo toho nepoužít funkci.</value>
+  </data>
+  <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
+    <value>Aplikace Excel již definuje globálně vymezená objektové proměnné s touto referencí. Zvažte použití vlastnosti listu: 'CodeName'.</value>
+  </data>
+  <data name="StepOneIsRedundantInspection" xml:space="preserve">
+    <value>V cyklu for-next je krok 1 jako výchozí a tudíž je nadbytečné ho definovat.</value>
+  </data>
+  <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
+    <value>V cyklu for-next není specifikován krok. Tohle může být neúmyslné.</value>
+  </data>
+  <data name="DefTypeStatementInspection" xml:space="preserve">
+    <value>Používáním 'Def[Type]' výrazu vede ke specifikování typů užitím prefixu. Důrazně odrazujeme od používání tohoto stylu, měli byste se mu vyhnout za každou cenu.</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
+    <value>Manipulace s chybami by měla být obnovena po použití 'On Error Resume Next'.</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Detekuje klauzule případů, které se nikdy nevykonají.</value>
+  </data>
+  <data name="EmptyModuleInspection" xml:space="preserve">
+    <value>Prázdné moduly a třídy buďto odkazují na dosud neimplementovanou funkcionalitu, nebo představují zbytečnou zátěž, která může poškodit udržovatelnost projektu.</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
+    <value>Členu je přiřazen True/False v různých větvích příkazu if bez dalších příkazů v podmínce. Použij místo toho podmínku přímo na člena.</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspection" xml:space="preserve">
+    <value>Příkaz 'Error' existuje pouze v jazyce, který podporuje starší kód, který jej vyžadoval; používejte radši 'Err.Raise'.</value>
+  </data>
+  <data name="ShadowedDeclarationInspection" xml:space="preserve">
+    <value>V jednom a tom samém scopu existují 2 deklarace, které mají stejný název identifikátoru. To znamená, že bude k dispozici pouze jedna z nich.</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspection" xml:space="preserve">
+    <value>Prázdný blok 'Loop' bez jakýchkoli spustitelných příkazů ponechává správce kódu ve zmatku, co takový kód vůbec znamená. Vyhněte se psaní kódu, který nemusí být napsán.</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
+    <value>Deklarace proměnné objektu s automatickým instancí v rozsahu procedur mění, jak funguje nulling reference, což může vést k neočekávanému chování.</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+    <value>Člen je definován jako funkce, ale používá se jako procedura. Pokud nejde o rekurzivní funkci, zvažte zapsání 'Function' jako 'Sub'. Pokud je funkce rekurzivní, žádný z jejich externích voláních nepoužívá její návratnou hodnotu.</value>
+  </data>
+  <data name="ObjectVariableNotSetInspection" xml:space="preserve">
+    <value>Rubberduck rozeznává tuto proměnnou jako proměnnou objektu, která je definována bez klíčového slova 'Set'. Tato skutečnost způsobuje run-time chybu 91 'Object or With block variable not set'.</value>
+  </data>
+  <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
+    <value>Parametr anotace chybí, nebo je chybně specifikován. Správná syntaxe je: '@Annotation([parametr])\nPříklad: '@Folder("Parent.Child")</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
+    <value>Klíčové slovo 'Public' lze použít pouze na úrovn modulu; jeho protějšek 'Private' lze také použít pouze na úrovni modulu. 'Dim' lze však deklarovat pro proměnné jak na úrovni modulu, tak na úrovni procedury. Avšak pro lepší konzistenci je preferováno používat 'Dim' pro lokální proměnné a proto na úrovni modulu používejte 'Private' místo 'Dim'.</value>
+  </data>
+  <data name="UndeclaredVariableInspection" xml:space="preserve">
+    <value>Kód, ve kterém se nacházejí nedeklarované proměnné, a přitom je specifikována volba 'Option Explicit', nelze úspěšně zkompilovat. Nedeklarované proměnné jsou vždy typu Variant, datový typ, který způsobuje zbytečné nároky na výkon a paměť.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
+    <value>Tato přiřazení na povrchu vypadají, že se snaží přiřadit objektovou proměnnou na proměnnou typu hodnota, avšak skutečnost je taková, že se snaží přiřadit implicitně výchozího člena objektu. Pro zvýšení čitelnosti zvažte explicitní referenci výchozího člena objektu.</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Tato metoda je označena jako '@Obsolete'. Neměla by být nadále používána, měla by existovat lepší alternativa.</value>
+  </data>
+  <data name="StopKeywordInspection" xml:space="preserve">
+    <value>Klíčové slovo 'Stop' pozdrží exekuci kódu a aktivuje debugger. Vyhněte se tomuto v distribuovanému kódu.</value>
+  </data>
+  <data name="IntegerDataTypeInspection" xml:space="preserve">
+    <value>Maximální hodnota 16-bitového (Int) integeru je 32,769 - použitím 32-bit (Long) integeru všude, kde je možné, pomůžete předejít 'Overflow' run-time chybě a je lépe zpracováno moderními CPU.</value>
+  </data>
+  <data name="EmptyCaseBlockInspection" xml:space="preserve">
+    <value>Prázdný 'Case' blok bez jakýchkoli příkazů nechává osobu, která se na kód pak kouká, tápat, co je vlastně důvodem tohoto kódu. Vyhněte se prosím psaní kódu, který není potřeba být napsán.</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspection" xml:space="preserve">
+    <value>Prázdná 'Do...While' smyčka bez jakýchkoli příkazů nechává osobu, která se na kód pak kouká, tápat, co je vlastně důvodem tohoto kódu. Vyhněte se prosím psaní kódu, který není potřeba být napsán.</value>
+  </data>
+  <data name="EmptyForEachBlockInspection" xml:space="preserve">
+    <value>Prázdná 'For Each...Next' smyčka bez jakýchkoli příkazů nechává osobu, která se na kód pak kouká, tápat, co je vlastně důvodem tohoto kódu. Vyhněte se prosím psaní kódu, který není potřeba být napsán.</value>
+  </data>
+  <data name="EmptyForLoopBlockInspection" xml:space="preserve">
+    <value>Prázdná 'For...Next' smyčka bez jakýchkoli příkazů nechává osobu, která se na kód pak kouká, tápat, co je vlastně důvodem tohoto kódu. Vyhněte se prosím psaní kódu, který není potřeba být napsán.</value>
+  </data>
+  <data name="EmptyElseBlockInspection" xml:space="preserve">
+    <value>Prázdná 'Else' smyčka bez jakýchkoli příkazů nechává osobu, která se na kód pak kouká, tápat, co je vlastně důvodem tohoto kódu. Vyhněte se prosím psaní kódu, který není potřeba být napsán.</value>
+  </data>
+  <data name="EmptyIfBlockInspection" xml:space="preserve">
+    <value>Prázdná podmínková větev bez jakýchkoli příkazů nechává osobu, která se na kód pak kouká, tápat, co je vlastně důvodem tohoto kódu. Vyhněte se prosím psaní kódu, který není potřeba být napsán.</value>
+  </data>
+  <data name="HungarianNotationInspection" xml:space="preserve">
+    <value>Maďarská notace způsobuje menší čitelnost kódu a je zbytečná, pokud jsou proměnné psané velmi jasnou a konkrétní formou.</value>
+  </data>
+  <data name="RedundantOptionInspection" xml:space="preserve">
+    <value>Protože je pro tuto možnost nastaveno výchozí/implicitní nastavení, může být tato instrukce bezpečně vynechána.</value>
+  </data>
+  <data name="RedundantByRefModifierInspection" xml:space="preserve">
+    <value>Ve výchozím nastavení jsou všechny parametry předávány referencí, takže není nutné uvádět 'ByRef' modifikátor.</value>
+  </data>
+  <data name="LineLabelNotUsedInspection" xml:space="preserve">
+    <value>Označení řádku, na které není nikdy přeskočeno ('GoTo', 'Resume', ...) nemá žádný smysl. Zvažte jeho odstranění.</value>
+  </data>
+  <data name="MissingAttributeInspection" xml:space="preserve">
+    <value>Anotace Rubberducku je specifikována pro modul nebo člen, ale příslušný atribut není přítomen. Atributy modulu a anotace je třeba synchronizovat.</value>
+  </data>
+  <data name="MissingAnnotationInspection" xml:space="preserve">
+    <value>Atributy modulu a člena se ve VBE nezobrazují. Přidáním anotace uděláte tyto atributy explicitnější a Rubberduck může držet anotace a atributy synchronizovány.</value>
+  </data>
+  <data name="IllegalAnnotationInspection" xml:space="preserve">
+    <value>Anotace, která má být specifikována na úrovni modulu, nemůže být použita k anotaci členů; anotace, které mají být členy anotací, nemohou být použity na úrovni modulu; anotace modulu a členů mohou být specifikovány pouze jednou.</value>
+  </data>
+  <data name="OptionBaseZeroInspection" xml:space="preserve">
+    <value>Toto je výchozí nastavení, není třeba jej specifikovat.</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
+    <value>Přístupové zavolání členu bylo uděláno proti rozšířenému rozhraní, které Rubberduck nemohl vyřešit, nebo nebyl nalezen člen. Pokud VBA nemůže vyřešit typ v době spuštění (run-time), vyskočí chyba 438. Pokud je k dispozici ekvivalentní ne-rozšířené rozhraní, které je schopen Rubberduck vyřešit, zvažte jeho použití.</value>
+  </data>
+  <data name="HostSpecificExpressionInspection" xml:space="preserve">
+    <value>Závorkové výrazy jsou vyhodnoceny hostitelskou aplikací při běhu (run-time), což znamená, že je VBA nemůže v okamžiku kompilace ověřit. Zvažte místo toho využití objektového modelu hostitelské aplikace.</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
+    <value>Objekt Excel Aplikace neimplementuje rozhraní WorksheetFunction napřímo. Všechna volání provedená členy WorksheetFunction jsou zpracována jako 'late bound¨a chyby ve volaném členu budou vráceny jako typ Variant od 'VbVarType.vbError'. Toto zapříčiní nemožnost odchytnout chyby pomocí error handlerů a přidává výkonnostní náročnost ve srovnání s 'early bound' voláním. Zvažte volání 'Application.WorksheetFunction' explicitně. Poznámka: Pokud toto volání v minulosti generovalo chyby, tyto chyby byly ignorovány. Pokud použijete rychlou opravu (Quick fix), měla by být provedena správná manipulace s chybami.</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Windows implemenace Visual Basic podporuje pouze StdCall volací konvenci a použití CDecl volací konvence je podporováno pouze ve verzích VBA systému Macintosh. Použití tohoto klíčového slova ve Windows může mít za následek chybu runtime 49 - 'Bad DLL calling convention'. Pokud je tato procedura určena pouze pro hostitele systému Macintosh, měla by být podmíněně zkompilována.</value>
+  </data>
 </root>

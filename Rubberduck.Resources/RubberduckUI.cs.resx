@@ -1233,4 +1233,13 @@ End Enum</value>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Nástrojová okna nebyla korektně zničena a/nebo nemohou být obnoveny; VBE nemusí být v tuto chvíli stabilní. Rubberduck se načte normálně při příští inicializaci VBE.</value>
   </data>
+  <data name="ParserState_Busy" xml:space="preserve">
+    <value>Zaneprázdněný</value>
+  </data>
+  <data name="GroupingStyle_ByCategory" xml:space="preserve">
+    <value>Dle kategorie</value>
+  </data>
+  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
+    <value>Ignoruj prázdné řádky při vyhledávání prvních poznámek a deklaračních bloků</value>
+  </data>
 </root>
