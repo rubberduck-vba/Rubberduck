@@ -11,8 +11,6 @@ namespace Rubberduck.Parsing.ComReflection
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        private DeclarationFinder _finder;
-
         public SerializableProjectBuilder(IDeclarationFinderProvider declarationFinderProvider)
         {
             _declarationFinderProvider = declarationFinderProvider;
@@ -21,47 +19,47 @@ namespace Rubberduck.Parsing.ComReflection
 
         public SerializableProject SerializableProject(ProjectDeclaration projectDeclaration)
         {
-            _finder = _declarationFinderProvider.DeclarationFinder;
+            var finder = _declarationFinderProvider.DeclarationFinder;
 
             var serializableProject = new SerializableProject(projectDeclaration);
 
             var projectName = projectDeclaration.QualifiedModuleName;
-            var projectLevelDeclarationsByParent = ProjectLevelDeclarations(projectName)
+            var projectLevelDeclarationsByParent = ProjectLevelDeclarations(projectName, finder)
                 .Where(declaration => declaration.ParentDeclaration != null)
                 .GroupBy(declaration => declaration.ParentDeclaration)
                 .ToDictionary();
 
             if(projectLevelDeclarationsByParent.TryGetValue(projectDeclaration, out var nonModuleProjectChildren))
             {
-                foreach (var projectLevelDeclaration in nonModuleProjectChildren.OrderBy(child => child.DeclarationType).ThenBy(child => child.IdentifierName ?? string.Empty))
+                foreach (var projectLevelDeclaration in nonModuleProjectChildren)
                 {
                     serializableProject.AddDeclaration(new SerializableDeclarationTree(projectLevelDeclaration));
                 }
             }
 
-            foreach (var module in ProjectModules(projectName).OrderBy(qmn => qmn.ComponentType).ThenBy(qmn => qmn.ComponentName ?? string.Empty))
+            foreach (var module in ProjectModules(projectName, finder))
             {
-                var serializableModule = SerializableModule(module, projectDeclaration, projectLevelDeclarationsByParent);
+                var serializableModule = SerializableModule(module, projectDeclaration, projectLevelDeclarationsByParent, finder);
                 serializableProject.AddDeclaration(serializableModule);
             }
 
-
+            serializableProject.SortDeclarations();
             return serializableProject;
         }
 
-        private IEnumerable<Declaration> ProjectLevelDeclarations(QualifiedModuleName projectName)
+        private IEnumerable<Declaration> ProjectLevelDeclarations(QualifiedModuleName projectName, DeclarationFinder finder)
         {
-            return _finder.Members(projectName);
+            return finder.Members(projectName);
         }
 
-        private IEnumerable<QualifiedModuleName> ProjectModules(QualifiedModuleName projectName)
+        private IEnumerable<QualifiedModuleName> ProjectModules(QualifiedModuleName projectName, DeclarationFinder finder)
         {
-            return _finder.AllModules.Where(qmn => qmn.ProjectId == projectName.ProjectId && !qmn.Equals(projectName));
+            return finder.AllModules.Where(qmn => qmn.ProjectId == projectName.ProjectId && !qmn.Equals(projectName));
         }
 
-        private SerializableDeclarationTree SerializableModule(QualifiedModuleName module, ProjectDeclaration project, Dictionary<Declaration, List<Declaration>> projectLevelDeclarationsByParent)
+        private SerializableDeclarationTree SerializableModule(QualifiedModuleName module, ProjectDeclaration project, Dictionary<Declaration, List<Declaration>> projectLevelDeclarationsByParent, DeclarationFinder finder)
         {
-            var members = _finder.Members(module).ToList();
+            var members = finder.Members(module).ToList();
             var membersByParent = members.Where(declaration => declaration.ParentDeclaration != null)
                 .GroupBy(declaration => declaration.ParentDeclaration)
                 .ToDictionary();
@@ -71,10 +69,7 @@ namespace Rubberduck.Parsing.ComReflection
 
             if (projectLevelDeclarationsByParent.TryGetValue(moduleDeclaration, out var memberDeclarationsOnProjectLevel))
             {
-                var orderedMemberDeclarations = memberDeclarationsOnProjectLevel
-                    .OrderBy(declaration => declaration.DeclarationType)
-                    .ThenBy(declaration => declaration.IdentifierName ?? string.Empty);
-                serializableModule.AddChildren(orderedMemberDeclarations);
+                serializableModule.AddChildren(memberDeclarationsOnProjectLevel);
             }
 
             return serializableModule;
@@ -84,7 +79,7 @@ namespace Rubberduck.Parsing.ComReflection
             IDictionary<Declaration, List<Declaration>> declarationsByParent)
         {
             var serializableDeclaration = new SerializableDeclarationTree(declaration);
-            var childTrees = ChildTrees(declaration, declarationsByParent).OrderBy(tree => tree.Node.DeclarationType).ThenBy(tree => tree.Node.IdentifierName ?? string.Empty);
+            var childTrees = ChildTrees(declaration, declarationsByParent);
             serializableDeclaration.AddChildTrees(childTrees);
 
             return serializableDeclaration;

@@ -37,6 +37,15 @@ namespace Rubberduck.Parsing.ComReflection
             Children = children;
         }
 
+        public void SortChildren()
+        {
+            _children = _children.OrderBy(child => child.Node.DeclarationType).ThenBy(child => child.Node.IdentifierName).ToList();
+            foreach (var child in _children)
+            {
+                child.SortChildren();
+            }
+        }
+
         public void AddChildren(IEnumerable<Declaration> declarations)
         {
             foreach (var child in declarations)
@@ -105,6 +114,15 @@ namespace Rubberduck.Parsing.ComReflection
         public void AddDeclaration(SerializableDeclarationTree tree)
         {
             _declarations.Add(tree);
+        }
+
+        public void SortDeclarations()
+        {
+            _declarations = _declarations.OrderBy(declarationTree => declarationTree.Node.DeclarationType).ThenBy(declarationTree => declarationTree.Node.IdentifierName).ToList();
+            foreach (var declarationTree in _declarations)
+            {
+                declarationTree.SortChildren();
+            }
         }
 
         public List<Declaration> Unwrap()
