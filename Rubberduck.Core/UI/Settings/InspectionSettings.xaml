@@ -276,8 +276,7 @@
                     <DockPanel FlowDirection="LeftToRight">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                             <Label Style="{StaticResource HeaderText}"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}">
-                            </Label>
+                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <Label Content="-"/>
                                 <Label Style="{StaticResource HeaderText}"
@@ -287,15 +286,10 @@
                                          HorizontalAlignment="Stretch" />
                                 <Border Width="10" />
                                 <Label Style="{StaticResource HeaderText}"
-                                               Content="Severity:" />
-                                <CheckBox IsChecked="{Binding AreInspectionsFilteredBySeverity, UpdateSourceTrigger=PropertyChanged}" />
-                                <StackPanel Orientation="Horizontal">
-                                    <ComboBox Width="100"
-                                              IsEnabled="{Binding AreInspectionsFilteredBySeverity}"
-                                              ItemsSource="{Binding InspectionSettingsSeverityFilter}">
-                                        <!--, UpdateSourceTrigger=PropertyChanged-->
-                                    </ComboBox>
-                                </StackPanel>
+                                       Content="Severity:" />
+                                <ComboBox Width="100"
+                                          ItemsSource="{Binding SeverityFilters, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </StackPanel>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Left"

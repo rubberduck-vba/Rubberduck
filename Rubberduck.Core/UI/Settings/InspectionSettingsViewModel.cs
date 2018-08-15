@@ -7,6 +7,9 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.Resources.Inspections;
+using System.Globalization;
+using System;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Settings
@@ -29,6 +32,10 @@ namespace Rubberduck.UI.Settings
             InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("TypeLabel"));
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
+
+            SeverityFilters = new ObservableCollection<string>(
+                new[] { InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_All", CultureInfo.CurrentUICulture) }
+                    .Concat(Enum.GetNames(typeof(CodeInspectionSeverity)).Select(s => InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, CultureInfo.CurrentUICulture))));
         }
 
         public void UpdateCollection(CodeInspectionSeverity severity)
@@ -43,7 +50,7 @@ namespace Rubberduck.UI.Settings
             InspectionSettings.CommitEdit();
         }
 
-        private string _inspectionSettingsDescriptionFilter;
+        private string _inspectionSettingsDescriptionFilter = string.Empty;
         public string InspectionSettingsDescriptionFilter
         {
             get => _inspectionSettingsDescriptionFilter;
@@ -52,54 +59,39 @@ namespace Rubberduck.UI.Settings
                 if (_inspectionSettingsDescriptionFilter != value)
                 {
                     _inspectionSettingsDescriptionFilter = value;
-                    OnPropertyChanged(nameof(InspectionSettings));
-
-                    if (string.IsNullOrEmpty(value))
-                    {
-                        InspectionSettings.Filter = null;
-                    }
-                    else
-                    {
-                        InspectionSettings.Filter = item => (item as CodeInspectionSetting)?
-                            .Description.ToUpper()
-                            .Contains(value.ToUpper()) ?? true;
-                    }
+                    InspectionSettings.Filter = item => FilterResults(item);
                 }
             }
         }
 
-        private bool _areInspectionsFilteredBySeverity;
-        public bool AreInspectionsFilteredBySeverity
+        public ObservableCollection<string> SeverityFilters { get; }
+
+        static private readonly string _allResultsFilter = InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_All", CultureInfo.CurrentUICulture);
+        private string _selectedSeverityFilter = _allResultsFilter;
+        public string SelectedSeverityFilter
         {
-            get => _areInspectionsFilteredBySeverity;
+            get => _selectedSeverityFilter;
             set
             {
-                if (_areInspectionsFilteredBySeverity != value)
+                if (!_selectedSeverityFilter.Equals(value))
                 {
-                    _areInspectionsFilteredBySeverity = value;
+                    _selectedSeverityFilter = value.Replace(" ", string.Empty);
                     OnPropertyChanged();
-                }
-            }
-        }
-
-        private CodeInspectionSeverity _appliedSeverityFilter;
-        private List<CodeInspectionSeverity> _inspectionSettingsSeverityFilters = new List<CodeInspectionSeverity> { CodeInspectionSeverity.DoNotShow, CodeInspectionSeverity.Error, CodeInspectionSeverity.Warning, CodeInspectionSeverity.Suggestion, CodeInspectionSeverity.Hint };
-        public List<CodeInspectionSeverity> InspectionSettingsSeverityFilters
-        {
-            get => _inspectionSettingsSeverityFilters;
-            set
-            {
-                
-                if (_inspectionSettingsSeverityFilters.Contains(value))
-                {
-                    _inspectionSettingsSeverityFilters = value;
-
-                    AreInspectionsFilteredBySeverity = true;
-
-                    OnPropertyChanged(nameof(InspectionSettings));
+                    InspectionSettings.Filter = item => FilterResults(item);
                 }
             }
         }        
+
+        private bool FilterResults(object setting)
+        {
+            OnPropertyChanged(nameof(InspectionSettings));
+            var cis = setting as CodeInspectionSetting;
+
+            return cis.Description.ToUpper().Contains(_inspectionSettingsDescriptionFilter.ToUpper())
+                && _selectedSeverityFilter == _allResultsFilter 
+                    ? true
+                    : cis.Severity.ToString() == _selectedSeverityFilter;
+        }
 
         private ListCollectionView _inspectionSettings;
         public ListCollectionView InspectionSettings
