@@ -121,6 +121,11 @@ namespace Rubberduck.AutoComplete
 
         private void HandleSelfClosingPairs(AutoCompleteEventArgs e, ICodeModule module, Selection pSelection)
         {
+            if (!pSelection.IsSingleCharacter)
+            {
+                return;
+            }
+
             var currentCode = e.CurrentLine;
             var currentSelection = e.CurrentSelection;
             //var surroundingCode = GetSurroundingCode(module, currentSelection); // todo: find a way to parse the current instruction

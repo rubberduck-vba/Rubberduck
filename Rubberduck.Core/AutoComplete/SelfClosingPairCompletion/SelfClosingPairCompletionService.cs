@@ -103,8 +103,15 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                     var closingLine = lines[closingTokenPosition.EndLine].Remove(closingTokenPosition.StartColumn, 1);
                     lines[closingTokenPosition.EndLine] = closingLine;
 
-                    var openingLine = lines[original.CaretPosition.StartLine].Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
-                    lines[original.CaretPosition.StartLine] = openingLine;
+                    if (closingLine == pair.OpeningChar.ToString())
+                    {
+                        lines[original.CaretPosition.StartLine] = string.Empty;
+                    }
+                    else
+                    {
+                        var openingLine = lines[original.CaretPosition.StartLine].Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
+                        lines[original.CaretPosition.StartLine] = openingLine;
+                    }
 
                     return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
                 }
