@@ -213,7 +213,7 @@ namespace Rubberduck.UI.Command
             var identifiers = declarations as IList<Declaration> ?? declarations.ToList();
 
             var result = target.References
-                .Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext)
+                .Where(reference => reference.Context.Parent.Parent is VBAParser.ImplementsStmtContext)
                 .SelectMany(reference => identifiers.Where(identifier => identifier.IdentifierName == reference.QualifiedModuleName.ComponentName))
                 .ToList();
 
@@ -239,7 +239,8 @@ namespace Rubberduck.UI.Command
             {
                 name = target.ComponentName + "." + target.IdentifierName;
                 return items.FindInterfaceImplementationMembers(target.IdentifierName)
-                       .Where(item => item.IdentifierName == target.ComponentName + "_" + target.IdentifierName);
+                    .Where(item => item.DeclarationType == target.DeclarationType 
+                                   && item.IdentifierName == target.ComponentName + "_" + target.IdentifierName);
             }
 
             var member = items.FindInterfaceMember(target);
@@ -250,7 +251,8 @@ namespace Rubberduck.UI.Command
             }
             name = member.ComponentName + "." + member.IdentifierName;
             return items.FindInterfaceImplementationMembers(member.IdentifierName)
-                   .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
+                   .Where(item => item.DeclarationType == target.DeclarationType
+                                  && item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
         }
 
         public void Dispose()
