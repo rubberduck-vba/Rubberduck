@@ -411,7 +411,8 @@ End Property";
                 refactoring.Refactor(target);
 
                 var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = rewriter.GetText();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
