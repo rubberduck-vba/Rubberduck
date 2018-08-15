@@ -267,6 +267,7 @@
             <Setter Property="Background" Value="DarkGray"/>
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
+        <BitmapImage x:Key="FilterIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
     </UserControl.Resources>
     <Grid>
         <ScrollViewer>
@@ -279,14 +280,15 @@
                                 Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <Label Content="-"/>
+                                <Image Source="{StaticResource FilterIcon}" />
                                 <Label Style="{StaticResource HeaderText}"
-                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionSettings_FilterDescription}" />
+                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionSettings_FilterByDescription}" />
                                 <TextBox MinWidth="125"
                                          Text="{Binding InspectionSettingsDescriptionFilter, UpdateSourceTrigger=PropertyChanged}"
                                          HorizontalAlignment="Stretch" />
                                 <Border Width="10" />
                                 <Label Style="{StaticResource HeaderText}"
-                                       Content="Severity:" />
+                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionSettings_FilterBySeverity}" />
                                 <ComboBox Width="100"
                                           ItemsSource="{Binding SeverityFilters, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
