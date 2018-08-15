@@ -29,7 +29,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 {
                     if (prettifier.IsSpacingUnchanged(result, original))
                     {
-                        //_showIntelliSense.Execute(); /* lovely VBE makes a loud "DING!!" if the command has no effect */
+                        //_showIntelliSense?.Execute(); /* lovely VBE makes a loud "DING!!" if the command has no effect */
                         return result;
                     }
                     

@@ -11,13 +11,13 @@ namespace RubberduckTests.AutoComplete
     {
         private CodeString Run(SelfClosingPair pair, CodeString original, char input)
         {
-            var sut = new SelfClosingPairCompletionService();
+            var sut = new SelfClosingPairCompletionService(null);
             return sut.Execute(pair, original, input);
         }
 
         private CodeString Run(SelfClosingPair pair, CodeString original, Keys input)
         { 
-            var sut = new SelfClosingPairCompletionService();
+            var sut = new SelfClosingPairCompletionService(null);
             return sut.Execute(pair, original, input);
         }
 
