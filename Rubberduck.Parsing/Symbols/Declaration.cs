@@ -535,9 +535,11 @@ namespace Rubberduck.Parsing.Symbols
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:
                     case DeclarationType.PropertyGet:
+                        return $"{QualifiedName.QualifiedModuleName}.{IdentifierName}.Get";
                     case DeclarationType.PropertyLet:
+                        return $"{QualifiedName.QualifiedModuleName}.{IdentifierName}.Let";
                     case DeclarationType.PropertySet:
-                        return QualifiedName.QualifiedModuleName + "." + IdentifierName;
+                        return $"{QualifiedName.QualifiedModuleName}.{IdentifierName}.Set";
                     case DeclarationType.Event:
                         return ParentScope + "." + IdentifierName;
                     default:

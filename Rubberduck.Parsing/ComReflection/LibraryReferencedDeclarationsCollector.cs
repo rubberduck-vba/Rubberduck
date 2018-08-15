@@ -184,7 +184,7 @@ namespace Rubberduck.Parsing.ComReflection
             return (memberDeclarations, defaultMemberDeclaration);
         }
 
-        private static (Declaration memberDeclaration, ICollection<Declaration> parameterDeclarations) GetDeclarationsForMember(QualifiedModuleName moduleName, 
+        private static (Declaration memberDeclaration, List<Declaration> parameterDeclarations) GetDeclarationsForMember(QualifiedModuleName moduleName, 
             Declaration parentDeclaration, bool eventHandlers, ComMember item)
         {
             var memberDeclaration = CreateMemberDeclaration(item, moduleName, parentDeclaration, eventHandlers);
