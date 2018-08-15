@@ -96,7 +96,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// </summary>
         /// <param name="folder">Destination folder for the resulting source file.</param>
         /// <param name="tempFile">True if a unique temp file name should be generated. WARNING: filenames generated with this flag are not persisted.</param>
-        public string ExportAsSourceFile(string folder, bool tempFile = false)
+        /// <param name="specialCaseDocumentModules">If reimpot of a document file is required later, it has to receive special treatment.</param>
+        public string ExportAsSourceFile(string folder, bool tempFile = false, bool specialCaseDocumentModules = true)
         {
             var fullPath = tempFile
                 ? Path.Combine(folder, Path.GetRandomFileName())
@@ -107,7 +108,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     ExportUserFormModule(fullPath);
                     break;
                 case ComponentType.Document:
-                    ExportDocumentModule(fullPath);
+                    if(specialCaseDocumentModules)
+                    {
+                        ExportDocumentModule(fullPath);
+                    }
+                    else
+                    {
+                        Export(fullPath);
+                    }
                     break;
                 default:
                     Export(fullPath);

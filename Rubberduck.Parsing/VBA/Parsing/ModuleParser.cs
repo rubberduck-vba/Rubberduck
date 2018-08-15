@@ -99,7 +99,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
             Logger.Trace($"ParseTaskID {taskId} begins attributes pass.");
             var (attributesParseTree, attributesTokenStream) = AttributesPassResults(module, cancellationToken);
-            var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(module, attributesTokenStream ?? codePaneTokenStream);
+            var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(module, attributesTokenStream);
             Logger.Trace($"ParseTaskID {taskId} finished attributes pass.");
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -153,7 +153,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
         private (IParseTree tree, ITokenStream tokenStream) AttributesPassResults(QualifiedModuleName module, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            var code = _attributesSourceCodeProvider.SourceCode(module) ?? string.Empty;
+            var code = _attributesSourceCodeProvider.SourceCode(module);
             token.ThrowIfCancellationRequested();
             var attributesParseResults = _parser.Parse(module.ComponentName, module.ProjectId, code, token, CodeKind.AttributesCode);
             return attributesParseResults;

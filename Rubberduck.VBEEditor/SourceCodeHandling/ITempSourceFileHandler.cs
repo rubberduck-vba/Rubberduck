@@ -2,10 +2,10 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
 {
-    public interface ISourceFileHandler
+    public interface ITempSourceFileHandler
     {
         string Export(IVBComponent component);
-        void Import(IVBComponent component, string fileName);
+        void ImportAndCleanUp(IVBComponent component, string fileName);
 
         string Read(IVBComponent component);
     }

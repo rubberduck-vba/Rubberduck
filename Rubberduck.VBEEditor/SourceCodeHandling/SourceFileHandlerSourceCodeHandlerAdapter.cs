@@ -7,12 +7,12 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
     public class SourceFileHandlerSourceCodeHandlerAdapter : ISourceCodeHandler
     {
         private readonly IProjectsProvider _projectsProvider;
-        private readonly ISourceFileHandler _sourceFileHandler;
+        private readonly ITempSourceFileHandler _tempSourceFileHandler;
 
-        public SourceFileHandlerSourceCodeHandlerAdapter(ISourceFileHandler sourceFileHandler, IProjectsProvider projectsProvider)
+        public SourceFileHandlerSourceCodeHandlerAdapter(ITempSourceFileHandler tempSourceFileHandler, IProjectsProvider projectsProvider)
         {
             _projectsProvider = projectsProvider;
-            _sourceFileHandler = sourceFileHandler;
+            _tempSourceFileHandler = tempSourceFileHandler;
         }
 
         public string SourceCode(QualifiedModuleName module)
@@ -23,7 +23,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                 return string.Empty;
             }
 
-            return _sourceFileHandler.Read(component);
+            return _tempSourceFileHandler.Read(component) ?? string.Empty;
         }
 
         public void SubstituteCode(QualifiedModuleName module, string newCode)
@@ -40,9 +40,14 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                 return;
             }
 
-            var file = _sourceFileHandler.Export(component);
-            File.WriteAllText(file, newCode);
-            _sourceFileHandler.Import(component, file);
+            var fileName = _tempSourceFileHandler.Export(component);
+            if (fileName == null || !File.Exists(fileName))
+            {
+                return;
+            }
+            File.WriteAllText(fileName, newCode);
+            _tempSourceFileHandler.ImportAndCleanUp(component, fileName);
+
         }
     }
 }
