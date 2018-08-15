@@ -88,9 +88,7 @@ namespace Rubberduck.UI.Settings
             var cis = setting as CodeInspectionSetting;
 
             return cis.Description.ToUpper().Contains(_inspectionSettingsDescriptionFilter.ToUpper())
-                && _selectedSeverityFilter == _allResultsFilter 
-                    ? true
-                    : cis.Severity.ToString() == _selectedSeverityFilter;
+                && (_selectedSeverityFilter.Equals(_allResultsFilter) || cis.Severity.ToString().Equals(_selectedSeverityFilter));
         }
 
         private ListCollectionView _inspectionSettings;
