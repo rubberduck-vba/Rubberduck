@@ -3,6 +3,7 @@ using Antlr4.Runtime.Tree;
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace RubberduckTests.Parsing
 {
@@ -72,7 +73,7 @@ Public Sub Foo
     MsgBox ""hi""
 End Sub";
             var parser = new VBACodeStringParser("test", inputCode);
-            
+
             Assert.IsInstanceOf<TokenStreamRewriter>(parser.Parse().rewriter);
         }
 
@@ -99,6 +100,26 @@ Public Sub Foo
 End Sub";
             var parser = new VBACodeStringParser("test", inputCode, VBACodeStringParser.ParserMode.Ll);
 
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
+        }
+
+        [Test]
+        [Category("VBACodeStringParser_Tests")]
+        public void CanParseEmptyModule()
+        {
+            const string inputCode = @"";
+
+            var parser = new VBACodeStringParser("test", inputCode);
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
+        }
+
+        [Test]
+        [Category("VBACodeStringParser_Tests")]
+        public void CanParseNullInput()
+        {
+            const string inputCode = null;
+
+            var parser = new VBACodeStringParser("test", inputCode);
             Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
         }
     }

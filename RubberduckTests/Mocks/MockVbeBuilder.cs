@@ -83,7 +83,6 @@ namespace RubberduckTests.Mocks
             }
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
-            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
 
             return this;
@@ -114,6 +113,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         public Mock<IVBE> Build()
         {
+            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             return _vbe;
         }
 

@@ -174,7 +174,7 @@
     <Compile Include="SafeComWrappers\VB\VBProjects.cs" />
     <Compile Include="SafeComWrappers\VB\Window.cs" />
     <Compile Include="SafeComWrappers\VB\Windows.cs" />
-    <Compile Include="SourceCodeHandler.cs" />
+    <Compile Include="TempSourceFileHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">

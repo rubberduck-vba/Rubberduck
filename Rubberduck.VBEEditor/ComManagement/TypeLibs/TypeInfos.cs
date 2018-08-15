@@ -69,22 +69,21 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </summary>
     public class TypeInfoFunc : IDisposable
     {
-        private TypeInfoWrapper _typeInfo;
-        private ComTypes.FUNCDESC _funcDesc;
+        private readonly TypeInfoWrapper _typeInfo;
         private IntPtr _funcDescPtr;
-        private string[] _names = new string[255];   // includes argument names
-        private int _cNames = 0;
+        private readonly string[] _names = new string[255];   // includes argument names
+        private readonly int _cNames = 0;
 
-        public ComTypes.FUNCDESC FuncDesc { get => _funcDesc; }
+        public ComTypes.FUNCDESC FuncDesc { get; }
 
         public TypeInfoFunc(TypeInfoWrapper typeInfo, int funcIndex)
         {
             _typeInfo = typeInfo;
 
             ((ComTypes.ITypeInfo)_typeInfo).GetFuncDesc(funcIndex, out _funcDescPtr);
-            _funcDesc = StructHelper.ReadStructureUnsafe<ComTypes.FUNCDESC>(_funcDescPtr);
+            FuncDesc = StructHelper.ReadStructureUnsafe<ComTypes.FUNCDESC>(_funcDescPtr);
 
-            ((ComTypes.ITypeInfo)_typeInfo).GetNames(_funcDesc.memid, _names, _names.Length, out _cNames);
+            ((ComTypes.ITypeInfo)_typeInfo).GetNames(FuncDesc.memid, _names, _names.Length, out _cNames);
             if (_cNames == 0) _names[0] = "[unnamed]";
         }
 
@@ -94,8 +93,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             _funcDescPtr = IntPtr.Zero;
         }
 
-        public string Name { get => _names[0]; }
-        public int ParamCount { get => _funcDesc.cParams; }
+        public string Name => _names[0]; 
+        public int ParamCount => FuncDesc.cParams; 
 
         public enum PROCKIND
         {
@@ -110,22 +109,19 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             get
             {
                 // _funcDesc.invkind is a set of flags, and as such we convert into PROCKIND for simplicity
-                if (_funcDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYPUTREF))
+                if (FuncDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYPUTREF))
                 {
                     return PROCKIND.PROCKIND_SET;
                 }
-                else if (_funcDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYPUT))
+                if (FuncDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYPUT))
                 {
                     return PROCKIND.PROCKIND_LET;
                 }
-                else if (_funcDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYGET))
+                if (FuncDesc.invkind.HasFlag(ComTypes.INVOKEKIND.INVOKE_PROPERTYGET))
                 {
                     return PROCKIND.PROCKIND_GET;
                 }
-                else
-                {
-                    return PROCKIND.PROCKIND_PROC;
-                }
+                return PROCKIND.PROCKIND_PROC;
             }
         }
 
@@ -143,7 +139,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             namesInfo += ")";
 
-            output.AppendLine("- member: " + namesInfo + " [id 0x" + _funcDesc.memid.ToString("X") + ", " + _funcDesc.invkind + "]");
+            output.AppendLine("- member: " + namesInfo + " [id 0x" + FuncDesc.memid.ToString("X") + ", " + FuncDesc.invkind + "]");
         }
     }
 
@@ -152,24 +148,16 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </summary>
     public class TypeInfoReference
     {
-        TypeLibWrapper _vbeTypeLib;
-        int _typeLibIndex;
+        private readonly TypeLibWrapper _vbeTypeLib;
+        private readonly int _typeLibIndex;
 
-        readonly string _rawString;
-        readonly Guid _guid;
-        readonly uint _majorVersion;
-        readonly uint _minorVersion;
-        readonly uint _lcid;
-        readonly string _path;
-        readonly string _name;
-
-        public string RawString { get => _rawString; }
-        public Guid GUID { get => _guid; }
-        public uint MajorVersion { get => _majorVersion; }
-        public uint MinorVersion { get => _minorVersion; }
-        public uint LCID { get => _lcid; }
-        public string Path { get => _path; }
-        public string Name { get => _name; }
+        public string RawString { get; }
+        public Guid GUID { get; }
+        public uint MajorVersion { get; }
+        public uint MinorVersion { get; }
+        public uint LCID { get; }
+        public string Path { get; }
+        public string Name { get; }
 
         public TypeInfoReference(TypeLibWrapper vbeTypeLib, int typeLibIndex, string referenceStringRaw)
         {
@@ -180,7 +168,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             // LibidReference defined at https://msdn.microsoft.com/en-us/library/dd922767(v=office.12).aspx
             // The string is split into 5 parts, delimited by #
 
-            _rawString = referenceStringRaw;
+            RawString = referenceStringRaw;
 
             var referenceStringParts = referenceStringRaw.Split(new char[] { '#' }, 5);
             if (referenceStringParts.Length != 5)
@@ -188,21 +176,21 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 throw new ArgumentException($"Invalid reference string got {referenceStringRaw}.  Expected 5 parts.");
             }
 
-            _guid = Guid.Parse(referenceStringParts[0].Substring(3));
+            GUID = Guid.Parse(referenceStringParts[0].Substring(3));
             var versionSplit = referenceStringParts[1].Split(new char[] { '.' }, 2);
             if (versionSplit.Length != 2)
             {
                 throw new ArgumentException($"Invalid reference string got {referenceStringRaw}.  Invalid version string.");
             }
-            _majorVersion = uint.Parse(versionSplit[0], NumberStyles.AllowHexSpecifier);
-            _minorVersion = uint.Parse(versionSplit[1], NumberStyles.AllowHexSpecifier);
+            MajorVersion = uint.Parse(versionSplit[0], NumberStyles.AllowHexSpecifier);
+            MinorVersion = uint.Parse(versionSplit[1], NumberStyles.AllowHexSpecifier);
 
-            _lcid = uint.Parse(referenceStringParts[2], NumberStyles.AllowHexSpecifier);
-            _path = referenceStringParts[3];
-            _name = referenceStringParts[4];
+            LCID = uint.Parse(referenceStringParts[2], NumberStyles.AllowHexSpecifier);
+            Path = referenceStringParts[3];
+            Name = referenceStringParts[4];
         }
 
-        public TypeLibWrapper TypeLib { get => _vbeTypeLib.GetVBEReferenceTypeLibByIndex(_typeLibIndex); }
+        public TypeLibWrapper TypeLib => _vbeTypeLib.GetVBEReferenceTypeLibByIndex(_typeLibIndex);
 
         public void Document(StringLineBuilder output)
         {
@@ -216,12 +204,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// </summary>
     public class TypeInfoVar : IDisposable
     {
-        private TypeInfoWrapper _typeInfo;
-        private ComTypes.VARDESC _varDesc;
+        private readonly TypeInfoWrapper _typeInfo;
+        private readonly ComTypes.VARDESC _varDesc;
         private IntPtr _varDescPtr;
-        private string _name;
+        private readonly string _name;
 
-        public string Name { get => _name; }
+        public string Name => _name;
 
         public TypeInfoVar(TypeInfoWrapper typeInfo, int index)
         {
@@ -230,13 +218,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             ((ComTypes.ITypeInfo)_typeInfo).GetVarDesc(index, out _varDescPtr);
             _varDesc = StructHelper.ReadStructureUnsafe<ComTypes.VARDESC>(_varDescPtr);
 
-            int _cNames = 0;
-            var _names = new string[1];
+            var names = new string[1];
             if (_varDesc.memid != (int)TypeLibConsts.MEMBERID_NIL)
             {
-                _cNames = 0;
-                ((ComTypes.ITypeInfo)_typeInfo).GetNames(_varDesc.memid, _names, _names.Length, out _cNames);
-                _name = _names[0];
+                ((ComTypes.ITypeInfo)_typeInfo).GetNames(_varDesc.memid, names, names.Length, out _);
+                _name = names[0];
             }
             else
             {
@@ -276,35 +262,34 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private TypeLibWrapper _containerTypeLib;
-        public TypeLibWrapper Container { get => _containerTypeLib; }
+        public TypeLibWrapper Container => _containerTypeLib;
         private int _containerTypeLibIndex;
         private bool _isUserFormBaseClass = false;
-        private IntPtr _rawObjectPtr;
-        private ComTypes.ITypeInfo _wrappedObjectRCW;
+        private readonly IntPtr _rawObjectPtr;
+        private readonly ComTypes.ITypeInfo _wrappedObjectRCW;
 
         private ComTypes.TYPEATTR _cachedAttributes;
-        public ComTypes.TYPEATTR Attributes { get => _cachedAttributes; }
+        public ComTypes.TYPEATTR Attributes => _cachedAttributes;
 
-        private RestrictComInterfaceByAggregation<ComTypes.ITypeInfo> _ITypeInfo_Aggregator;
-        private ComTypes.ITypeInfo target_ITypeInfo { get => _ITypeInfo_Aggregator?.WrappedObject ?? _wrappedObjectRCW; }
+        private readonly RestrictComInterfaceByAggregation<ComTypes.ITypeInfo> _ITypeInfo_Aggregator;
+        private ComTypes.ITypeInfo target_ITypeInfo => _ITypeInfo_Aggregator?.WrappedObject ?? _wrappedObjectRCW;
 
-        private RestrictComInterfaceByAggregation<IVBEComponent> _IVBEComponent_Aggregator;
-        private IVBEComponent target_IVBEComponent { get => _IVBEComponent_Aggregator?.WrappedObject; }
+        private readonly RestrictComInterfaceByAggregation<IVBEComponent> _IVBEComponent_Aggregator;
+        private IVBEComponent target_IVBEComponent => _IVBEComponent_Aggregator?.WrappedObject;
 
-        public bool HasVBEExtensions { get => _IVBEComponent_Aggregator?.WrappedObject != null; }
+        public bool HasVBEExtensions => _IVBEComponent_Aggregator?.WrappedObject != null;
 
-        private bool _hasModuleScopeCompilationErrors;
-        public bool HasModuleScopeCompilationErrors => _hasModuleScopeCompilationErrors;
+        public bool HasModuleScopeCompilationErrors { get; private set; }
 
         /// <summary>
         /// Exposes an enumerable collection of functions provided by the ITypeInfo
         /// </summary>
         public class FuncsCollection : IIndexedCollectionBase<TypeInfoFunc>
         {
-            TypeInfoWrapper _parent;
+            private readonly TypeInfoWrapper _parent;
             public FuncsCollection(TypeInfoWrapper parent) => _parent = parent;
-            override public int Count { get => _parent.Attributes.cFuncs; }
-            override public TypeInfoFunc GetItemByIndex(int index) => new TypeInfoFunc(_parent, index);
+            public override int Count => _parent.Attributes.cFuncs;
+            public override TypeInfoFunc GetItemByIndex(int index) => new TypeInfoFunc(_parent, index);
 
             public TypeInfoFunc Find(string name, TypeInfoFunc.PROCKIND procKind)
             {
@@ -322,10 +307,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// </summary>
         public class VarsCollection : IIndexedCollectionBase<TypeInfoVar>
         {
-            TypeInfoWrapper _parent;
+            private readonly TypeInfoWrapper _parent;
             public VarsCollection(TypeInfoWrapper parent) => _parent = parent;
-            override public int Count { get => _parent.Attributes.cVars; }
-            override public TypeInfoVar GetItemByIndex(int index) => new TypeInfoVar(_parent, index);
+            public override int Count => _parent.Attributes.cVars;
+            public override TypeInfoVar GetItemByIndex(int index) => new TypeInfoVar(_parent, index);
         }
         public VarsCollection Vars;
 
@@ -334,10 +319,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// </summary>
         public class ImplementedInterfacesCollection : IIndexedCollectionBase<TypeInfoWrapper>
         {
-            TypeInfoWrapper _parent;
+            private readonly TypeInfoWrapper _parent;
             public ImplementedInterfacesCollection(TypeInfoWrapper parent) => _parent = parent;
-            override public int Count { get => _parent.Attributes.cImplTypes; }
-            override public TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeImplementedTypeInfo(index);
+            public override int Count => _parent.Attributes.cImplTypes;
+            public override TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeImplementedTypeInfo(index);
 
             /// <summary>
             /// Determines whether the type implements one of the specified interfaces
@@ -467,7 +452,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 // We detect this, via the E_VBA_COMPILEERROR error 
                 if (e.HResult == (int)KnownComHResults.E_VBA_COMPILEERROR)
                 {
-                    _hasModuleScopeCompilationErrors = true;
+                    HasModuleScopeCompilationErrors = true;
                 }
 
                 // just mute the erorr and expose an empty type
@@ -550,7 +535,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         private TypeLibTextFields? _cachedTextFields;
-        TypeLibTextFields CachedTextFields
+
+        private TypeLibTextFields CachedTextFields
         {
             get
             {
@@ -564,18 +550,18 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        public string Name { get => CachedTextFields._name; }
-        public string DocString { get => CachedTextFields._docString; }
-        public int HelpContext { get => CachedTextFields._helpContext; }
-        public string HelpFile { get => CachedTextFields._helpFile; }
+        public string Name => CachedTextFields._name;
+        public string DocString => CachedTextFields._docString;
+        public int HelpContext => CachedTextFields._helpContext;
+        public string HelpFile => CachedTextFields._helpFile;
 
         public string GetProgID() => (Container?.Name ?? "{unnamedlibrary}") + "." + CachedTextFields._name;
 
-        public Guid GUID { get => Attributes.guid; }
-        public TYPEKIND_VBE TypeKind { get => (TYPEKIND_VBE)Attributes.typekind; }
+        public Guid GUID => Attributes.guid;
+        public TYPEKIND_VBE TypeKind => (TYPEKIND_VBE)Attributes.typekind;
 
-        public bool HasPredeclaredId { get => Attributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID); }
-        public ComTypes.TYPEFLAGS Flags { get => Attributes.wTypeFlags; }
+        public bool HasPredeclaredId => Attributes.wTypeFlags.HasFlag(ComTypes.TYPEFLAGS.TYPEFLAG_FPREDECLID);
+        public ComTypes.TYPEFLAGS Flags => Attributes.wTypeFlags;
 
         private bool HasNoContainer() => _containerTypeLib == null;
 
@@ -669,10 +655,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             try
             {
                 return IDispatchHelper.Invoke(staticModule, func.FuncDesc.memid, IDispatchHelper.InvokeKind.DISPATCH_METHOD, args);
-            }
-            catch (Exception)
-            {
-                throw;
             }
             finally
             {
@@ -797,11 +779,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     func.Document(output);
                 }
             }
-            foreach (var var in Vars)
+            foreach (var variable in Vars)
             {
-                using (var)
+                using (variable)
                 {
-                    var.Document(output);
+                    variable.Document(output);
                 }
             }
             foreach (var typeInfoImpl in ImplementedInterfaces)

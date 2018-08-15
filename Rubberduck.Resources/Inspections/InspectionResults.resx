@@ -353,4 +353,8 @@
     <value>Consider replacing the call to '{0}'. {1}</value>
     <comment>{1} Replacement documentation</comment>
   </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>'{0}' is declared using the obsolete 'CDecl' calling convention.</value>
+    <comment>{0} Procedure name</comment>
+  </data>
 </root>

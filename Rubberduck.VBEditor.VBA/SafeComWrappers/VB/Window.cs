@@ -43,14 +43,36 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     return;
                 }
 
-                var window = VBE.MainWindow;
-                var handle = window.Handle().FindChildWindow(Caption);
-
-                if (NativeMethods.SendMessage(handle, (int) WM.SETREDRAW, new IntPtr(value ? -1 : 0), IntPtr.Zero) == IntPtr.Zero)
+                using (var window = VBE.MainWindow)
                 {
-                    _screenUpdating = value;
+                    var handle = window.Handle().FindChildWindow(Caption);
+                    if (handle.Equals(IntPtr.Zero))
+                    {
+                        return;
+                    }
+                    if (NativeMethods.SendMessage(handle, (int)WM.SETREDRAW, new IntPtr(value ? -1 : 0), IntPtr.Zero) == IntPtr.Zero)
+                    {
+                        _screenUpdating = value;
+                    }
                 }
             }
+        }
+
+        public void Refresh()
+        {
+            if (!_screenUpdating)
+            {
+                return;
+            }
+            using (var window = VBE.MainWindow)
+            {
+                var handle = window.Handle().FindChildWindow(Caption);
+                if (handle.Equals(IntPtr.Zero))
+                {
+                    return;
+                }
+                NativeMethods.RedrawWindow(handle, IntPtr.Zero, IntPtr.Zero, RedrawWindowFlags.AllChildren | RedrawWindowFlags.UpdateNow);
+            }           
         }
 
         public int Left
