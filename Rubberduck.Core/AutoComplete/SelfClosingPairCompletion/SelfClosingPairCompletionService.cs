@@ -91,7 +91,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             {
                 Selection closingTokenPosition;
                 closingTokenPosition = line[Math.Min(line.Length - 1, next)] == pair.ClosingChar
-                    ? position.ShiftRight()
+                    ? position
                     : FindMatchingTokenPosition(pair, original);
                 
                 if (closingTokenPosition != default)
@@ -111,11 +111,15 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
         private Selection FindMatchingTokenPosition(SelfClosingPair pair, CodeString original)
         {
-            var result = VBACodeStringParser.Parse(original.Code, p => p.startRule());
-            if (((ParserRuleContext)result.parseTree).IsEmpty)
+            var code = original.Code;
+            code = code.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}")
+                ? code.Substring(0, code.LastIndexOf(pair.ClosingChar) + 1)
+                : code;
+            var result = VBACodeStringParser.Parse(code, p => p.startRule());
+            if (((ParserRuleContext)result.parseTree).exception != null)
             {
-                result = VBACodeStringParser.Parse(original.Code, p => p.blockStmt());
-                if (((ParserRuleContext)result.parseTree).IsEmpty)
+                result = VBACodeStringParser.Parse(code, p => p.mainBlockStmt());
+                if (((ParserRuleContext)result.parseTree).exception != null)
                 {
                     return default;
                 }
@@ -124,6 +128,8 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             visitor.Visit(result.parseTree);
             return visitor.Result;
         }
+
+
 
         private class MatchingTokenVisitor : VBAParserBaseVisitor<Selection>
         {

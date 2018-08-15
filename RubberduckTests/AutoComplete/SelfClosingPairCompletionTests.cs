@@ -107,7 +107,7 @@ foo = | _
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;
             var original = @"foo = MsgBox(|)".ToCodeString();
-            var expected = @"foo = MsgBox".ToCodeString();
+            var expected = @"foo = MsgBox|".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
