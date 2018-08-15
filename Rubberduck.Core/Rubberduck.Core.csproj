@@ -290,6 +290,7 @@
     <Compile Include="AutoComplete\BlockCompletion\BlockCompletionService.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletion\CodeStringPrettifier.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletion\ICodeStringPrettifier.cs" />
+    <Compile Include="AutoComplete\ShowIntelliSenseCommand.cs" />
     <Compile Include="Common\CodeString.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletion\SelfClosingPair.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletion\SelfClosingPairCompletionService.cs" />

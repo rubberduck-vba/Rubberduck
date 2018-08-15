@@ -22,7 +22,7 @@ namespace Rubberduck.Common
             var line = lines[zPosition.StartLine];
             if (line != string.Empty && line[Math.Min(line.Length - 1, zPosition.StartColumn)] == '|')
             {
-                Code = line.Remove(zPosition.StartColumn, 1);
+                Code = line.Remove(Math.Min(line.Length - 1, zPosition.StartColumn), 1);
             }
             else
             {

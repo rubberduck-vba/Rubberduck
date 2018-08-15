@@ -1,5 +1,4 @@
 ﻿using Rubberduck.Common;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
 
@@ -14,7 +13,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             _module = module;
         }
 
-        public bool IsSpacingUnchanged(CodeString code)
+        public bool IsSpacingUnchanged(CodeString code, CodeString original)
         {
             using (var pane = _module.CodePane)
             {
@@ -33,6 +32,8 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                         return true;
                     }
                 }
+
+                _module.ReplaceLine(code.SnippetPosition.StartLine, original.Code);
             }
             return false;
         }

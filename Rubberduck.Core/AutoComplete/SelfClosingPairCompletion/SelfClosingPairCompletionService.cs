@@ -13,6 +13,13 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 {
     public class SelfClosingPairCompletionService
     {
+        private readonly IShowIntelliSenseCommand _showIntelliSense;
+
+        public SelfClosingPairCompletionService(IShowIntelliSenseCommand showIntelliSense)
+        {
+            _showIntelliSense = showIntelliSense;
+        }
+
         public CodeString Execute(SelfClosingPair pair, CodeString original, char input, ICodeStringPrettifier prettifier = null)
         {
             if (input == pair.OpeningChar)
@@ -20,7 +27,13 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 var result = HandleOpeningChar(pair, original);
                 if (result != default && prettifier != null)
                 {
-                    return prettifier.IsSpacingUnchanged(result) ? result : default;
+                    if (prettifier.IsSpacingUnchanged(result, original))
+                    {
+                        //_showIntelliSense.Execute(); /* lovely VBE makes a loud "DING!!" if the command has no effect */
+                        return result;
+                    }
+                    
+                    return default;
                 }
 
                 return result;
@@ -91,7 +104,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
             }
 
-            if (line[previous] == pair.OpeningChar)
+            if (previous < line.Length - 1 && line[previous] == pair.OpeningChar)
             {
                 Selection closingTokenPosition;
                 closingTokenPosition = line[Math.Min(line.Length - 1, next)] == pair.ClosingChar

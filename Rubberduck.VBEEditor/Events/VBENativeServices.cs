@@ -50,6 +50,8 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
+        private static bool Suspend { get; set; }
+
         private static void Attach(IntPtr hwnd)
         {
             var subclass = Subclasses.Subclass(hwnd);
@@ -73,7 +75,7 @@ namespace Rubberduck.VBEditor.Events
         public static void VbeEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild,
             uint dwEventThread, uint dwmsEventTime)
         {
-            if (hwnd == IntPtr.Zero || _vbe.IsWrappingNullReference) { return; }
+            if (Suspend || hwnd == IntPtr.Zero || _vbe.IsWrappingNullReference) { return; }
 
 #if THIRSTY_DUCK && DEBUG
             //This is an output window firehose, viewer discretion is advised.
@@ -151,8 +153,12 @@ namespace Rubberduck.VBEditor.Events
                 {
                     using (var module = pane.CodeModule)
                     {
+                        // bug: Keys.Enter == Keys.M
                         var args = new AutoCompleteEventArgs(module, e);
+                        
+                        Suspend = true;
                         KeyDown?.Invoke(_vbe, args);
+                        Suspend = false;
                         e.Handled = args.Handled;
                     }
                 }

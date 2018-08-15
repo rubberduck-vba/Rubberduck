@@ -168,21 +168,23 @@ namespace Rubberduck.AutoComplete
                                e.Keys.HasFlag(Keys.Enter) &&
                                IsInsideStringLiteral(pSelection, ref currentContent);
 
-            if (shouldHandle)
+            var lastIndexLeftOfCaret = currentContent.Length > 2 ? currentContent.Substring(0, pSelection.StartColumn - 1).LastIndexOf('"') : 0;
+            if (shouldHandle && lastIndexLeftOfCaret > 0)
             {
                 var indent = currentContent.NthIndexOf('"', 1);
                 var whitespace = new string(' ', indent);
-                var code = $"{currentContent} & _\r\n{whitespace}\"";
+                var code = $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
 
                 if (e.Keys.HasFlag(Keys.Control))
                 {
-                    code = $"{currentContent} & vbNewLine & _\r\n{whitespace}\"";
+                    code = $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & vbNewLine & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
+
                 }
 
                 module.ReplaceLine(pSelection.StartLine, code);
                 using (var pane = module.CodePane)
                 {
-                    pane.Selection = new Selection(pSelection.StartLine + 1, indent + 2);
+                    pane.Selection = new Selection(pSelection.StartLine + 1, indent + currentContent.Substring(pSelection.StartColumn - 2).Length);
                     e.Handled = true;
                     return true;
                 }
