@@ -105,7 +105,12 @@ namespace Rubberduck.Common
 
         private string InsertPseudoCaret()
         {
-            var lines = (Code ?? string.Empty).Split('\n');
+            if (string.IsNullOrEmpty(Code))
+            {
+                return string.Empty;
+            }
+
+            var lines = Code.Split('\n');
             var line = lines[CaretPosition.StartLine];
             lines[CaretPosition.StartLine] = line.Insert(CaretPosition.StartColumn, "|");
             return string.Join("\n", lines);

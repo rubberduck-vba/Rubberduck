@@ -83,7 +83,11 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             var line = lines[original.CaretPosition.StartLine];
             if (original.CaretPosition.EndColumn < next && line[previous] == pair.OpeningChar && line[next] == pair.ClosingChar)
             {
-                lines[original.CaretPosition.StartLine] = line.Remove(previous, 2);
+                if (line.Length == 2)
+                {
+                    return new CodeString(string.Empty, default, Selection.Empty.ShiftRight());
+                }
+                lines[original.CaretPosition.StartLine] = line.Length == 2 ? string.Empty : line.Remove(previous, 2);
                 return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
             }
 
