@@ -78,6 +78,7 @@
     <Compile Include="Factories\ISafeComWrapperProvider.cs" />
     <Compile Include="Factories\VBEFactory.cs" />
     <Compile Include="HashCode.cs" />
+    <Compile Include="ReferenceInfo.cs" />
     <Compile Include="SourceCodeHandling\SourceFileHandlerSourceCodeHandlerAdapter.cs" />
     <Compile Include="SourceCodeHandling\CodePaneSourceCodeHandler.cs" />
     <Compile Include="SourceCodeHandling\ISourceCodeHandler.cs" />

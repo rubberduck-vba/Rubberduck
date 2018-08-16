@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.ComReflection
             _serializedDeclarationsPath = serializedDeclarationsPath ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "declarations");
         }
 
-        public IReadOnlyCollection<Declaration> CollectedDeclarations(IReference reference)
+        public IReadOnlyCollection<Declaration> CollectedDeclarations(ReferenceInfo reference)
         {
             if (!SerializedVersionExists(reference))
             {
@@ -25,7 +25,7 @@ namespace Rubberduck.Parsing.ComReflection
             return LoadDeclarationsFromXml(reference);
         }
 
-        private bool SerializedVersionExists(IReference reference)
+        private bool SerializedVersionExists(ReferenceInfo reference)
         {
             if (!Directory.Exists(_serializedDeclarationsPath))
             {
@@ -37,17 +37,17 @@ namespace Rubberduck.Parsing.ComReflection
             return File.Exists(testFile);
         }
 
-        private string FilePath(IReference reference)
+        private string FilePath(ReferenceInfo reference)
         {
             return Path.Combine(_serializedDeclarationsPath, FileName(reference));
         }
 
-        private string FileName(IReference reference)
+        private string FileName(ReferenceInfo reference)
         {
             return $"{reference.Name}.{reference.Major}.{reference.Minor}.xml";
         }
 
-        public IReadOnlyCollection<Declaration> LoadDeclarationsFromXml(IReference reference)
+        public IReadOnlyCollection<Declaration> LoadDeclarationsFromXml(ReferenceInfo reference)
         {
             var file = FilePath(reference);
             var reader = new XmlPersistableDeclarations();

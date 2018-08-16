@@ -9,6 +9,8 @@ using NLog;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA.ComReferenceLoading
@@ -17,14 +19,17 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
     {
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
+        private readonly IProjectsProvider _projectsProvider;
         private readonly IReferencedDeclarationsCollector _referencedDeclarationsCollector;
 
         private readonly List<QualifiedModuleName> _unloadedCOMReferences;
 
+        private readonly Dictionary<(string identifierName, string fullPath), string> _projectIdsByFilePathAndProjectName = new Dictionary<(string identifierName, string fullPath), string>();
+
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 
-        public COMReferenceSynchronizerBase(RubberduckParserState state, IParserStateManager parserStateManager, IReferencedDeclarationsCollector referencedDeclarationsCollector)
+        protected COMReferenceSynchronizerBase(RubberduckParserState state, IParserStateManager parserStateManager, IProjectsProvider projectsProvider, IReferencedDeclarationsCollector referencedDeclarationsCollector)
         {
             if (state == null)
             {
@@ -34,6 +39,10 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
             {
                 throw new ArgumentNullException(nameof(parserStateManager));
             }
+            if (projectsProvider == null)
+            {
+                throw new ArgumentNullException(nameof(projectsProvider));
+            }
             if (referencedDeclarationsCollector == null)
             {
                 throw new ArgumentNullException(nameof(referencedDeclarationsCollector));
@@ -41,6 +50,7 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
 
             _state = state;
             _parserStateManager = parserStateManager;
+            _projectsProvider = projectsProvider;
             _referencedDeclarationsCollector = referencedDeclarationsCollector;
             _unloadedCOMReferences = new List<QualifiedModuleName>();
         }
@@ -50,20 +60,22 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
         public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync => _unloadedCOMReferences;
 
         private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
-        public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences => _projectReferences.ToHashSet().AsReadOnly();
+        public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences => _projectReferences.AsReadOnly();
 
 
-        protected abstract void LoadReferences(IEnumerable<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token);
+        protected abstract void LoadReferences(IEnumerable<ReferenceInfo> referencesToLoad, ConcurrentBag<ReferenceInfo> unmapped, CancellationToken token);
 
 
-        public void SyncComReferences(IReadOnlyList<IVBProject> projects, CancellationToken token)
+        public void SyncComReferences(CancellationToken token)
         {
             LastSyncOfCOMReferencesLoadedReferences = false;
             _unloadedCOMReferences.Clear();
+            RefreshReferencedByProjectId();
 
-            var unmapped = new ConcurrentBag<IReference>();
+            var unmapped = new ConcurrentBag<ReferenceInfo>();
 
-            var referencesToLoad = GetReferencesToLoadAndSaveReferencePriority(projects);
+            var referencesByProjectId = ReferencedByProjectId();
+            var referencesToLoad = GetReferencesToLoadAndSaveReferencePriority(referencesByProjectId);
 
             if (referencesToLoad.Any())
             {
@@ -71,7 +83,8 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
                 LoadReferences(referencesToLoad, unmapped, token);
             }
 
-            var notMappedReferences = NonMappedReferences(projects);
+            var allReferences = referencesByProjectId.Values.SelectMany(references => references).ToHashSet();
+            var notMappedReferences = NonMappedReferences(allReferences);
             foreach (var item in notMappedReferences)
             {
                 unmapped.Add(item);
@@ -79,33 +92,98 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
 
             foreach (var reference in unmapped)
             {
-                UnloadComReference(reference, projects);
+                UnloadComReference(reference);
             }
         }
 
-        private ICollection<IReference> GetReferencesToLoadAndSaveReferencePriority(IReadOnlyList<IVBProject> projects)
+        private Dictionary<string, List<ReferenceInfo>> ReferencedByProjectId()
         {
-            var referencesToLoad = new List<IReference>();
+            var referencesByProjectId = new Dictionary<string, List<ReferenceInfo>>();
 
-            foreach (var vbProject in projects)
+            var projects = _projectsProvider.Projects();
+            foreach (var (projectId, project) in projects)
             {
-                var projectId = QualifiedModuleName.GetProjectId(vbProject);
-                var references = vbProject.References;
+                referencesByProjectId.Add(projectId, ProjectReferenceInfos(project));
+            }
 
-                // use a 'for' loop to store the order of references as a 'priority'.
+            return referencesByProjectId;
+        }
+
+        private List<ReferenceInfo> ProjectReferenceInfos(IVBProject project)
+        {
+            var referenceInfos = new List<ReferenceInfo>();
+            using (var references = project.References)
+            {
+                for (var priority = 1; priority <= references.Count; priority++)
+                {
+                    using (var reference = references[priority])
+                    {
+                        if (reference.IsBroken)
+                        {
+                            continue;
+                        }
+                        referenceInfos.Add(new ReferenceInfo(reference));
+                    }
+                }
+            }
+
+            return referenceInfos;
+        }
+
+        private void RefreshReferencedByProjectId()
+        {
+            _projectIdsByFilePathAndProjectName.Clear();
+
+            var projects = _projectsProvider.Projects();
+            foreach (var (projectId, project) in projects)
+            {
+                if (TryGetFullPath(project, out var fullPath))
+                {
+                    var projectName = project.Name;
+                    _projectIdsByFilePathAndProjectName.Add((projectName, fullPath), projectId);
+                }
+            }
+        }
+
+        private static bool TryGetFullPath(IVBProject project, out string fullPath)
+        {
+            try
+            {
+                fullPath = project.FileName;
+            }
+            catch (IOException)
+            {
+                // Filename throws exception if unsaved.
+                fullPath = null;
+                return false;
+            }
+            catch (COMException e)
+            {
+                Logger.Warn(e);
+                fullPath = null;
+                return false;
+            }
+
+            return true;
+        }
+
+        private ICollection<ReferenceInfo> GetReferencesToLoadAndSaveReferencePriority(Dictionary<string, List<ReferenceInfo>> referencedByProjectId)
+        {
+            var referencesToLoad = new List<ReferenceInfo>();
+
+            foreach (var (projectId, references) in referencedByProjectId)
+            {
+                // use a 'for' loop to store the order of references as a 'priority', which is 1-based by VBA convention.
                 // reference resolver needs this to know which declaration to prioritize when a global identifier exists in multiple libraries.
                 for (var priority = 1; priority <= references.Count; priority++)
                 {
-                    var reference = references[priority];
-                    if (reference.IsBroken)
-                    {
-                        continue;
-                    }
+                    var reference = references[priority - 1];
 
                     // todo: figure out why Rubberduck.tlb *sometimes* throws
 
-                    var referencedProjectId = GetReferenceProjectId(reference, projects);
-                    var map = _projectReferences.FirstOrDefault(item => item.ReferencedProjectId == referencedProjectId);
+                    var referencedProjectId = GetReferenceProjectId(reference);
+                    var map = _projectReferences.FirstOrDefault(item =>
+                        item.ReferencedProjectId == referencedProjectId);
 
                     if (map == null)
                     {
@@ -119,60 +197,40 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
 
                     if (!map.IsLoaded)
                     {
-                        referencesToLoad.Add(reference);
+                        //There is nothing to load for a user project.
+                        if (!IsUserProjectProjectId(referencedProjectId))
+                        {
+                            referencesToLoad.Add(reference);
+                        }
                         map.IsLoaded = true;
                     }
                 }
             }
+
             return referencesToLoad;
         }
 
-        private string GetReferenceProjectId(IReference reference, IReadOnlyList<IVBProject> projects)
+        private string GetReferenceProjectId(ReferenceInfo reference)
         {
-            IVBProject project = null;
-            foreach (var item in projects)
+            if (_projectIdsByFilePathAndProjectName.TryGetValue((reference.Name, reference.FullPath), out var projectId))
             {
-                try
-                {
-                    // check the name not just the path, because path is empty in tests:
-                    if (item.Name == reference.Name && item.FileName == reference.FullPath)
-                    {
-                        project = item;
-                        break;
-                    }
-                }
-                catch (IOException)
-                {
-                    // Filename throws exception if unsaved.
-                }
-                catch (COMException e)
-                {
-                    Logger.Warn(e);
-                }
+                return projectId;
             }
 
-            if (project != null)
-            {
-                if (string.IsNullOrEmpty(project.ProjectId))
-                {
-                    project.AssignProjectId();
-                }
-                return project.ProjectId;
-            }
             return QualifiedModuleName.GetProjectId(reference);
         }
 
-        protected void LoadReference(IReference localReference, ConcurrentBag<IReference> unmapped)
+        protected void LoadReference(ReferenceInfo reference, ConcurrentBag<ReferenceInfo> unmapped)
         {
             if (Thread.CurrentThread.IsBackground && Thread.CurrentThread.Name == null)
             {
-                Thread.CurrentThread.Name = $"LoadReference '{localReference.Name}'";
+                Thread.CurrentThread.Name = $"LoadReference '{reference.Name}'";
             }
 
-            Logger.Trace($"Loading referenced type '{localReference.Name}'.");            
+            Logger.Trace($"Loading referenced type '{reference.Name}'.");            
             try
             {
-                var declarations = _referencedDeclarationsCollector.CollectedDeclarations(localReference);
+                var declarations = _referencedDeclarationsCollector.CollectedDeclarations(reference);
                 foreach (var declaration in declarations)
                 {
                     _state.AddDeclaration(declaration);
@@ -180,22 +238,21 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
             }
             catch (Exception exception)
             {
-                unmapped.Add(localReference);
-                Logger.Warn($"Types were not loaded from referenced type library '{localReference.Name}'.");
+                unmapped.Add(reference);
+                Logger.Warn($"Types were not loaded from referenced type library '{reference.Name}'.");
                 Logger.Error(exception);
             }
         }
 
-        private IEnumerable<IReference> NonMappedReferences(IReadOnlyList<IVBProject> projects)
+        private IEnumerable<ReferenceInfo> NonMappedReferences(ICollection<ReferenceInfo> references)
         {
             var mappedIds = _projectReferences.Select(item => item.ReferencedProjectId).ToHashSet();
-            var references = projects.SelectMany(project => project.References);
-            return references.Where(item => !mappedIds.Contains(GetReferenceProjectId(item, projects))).ToList();
+            return references.Where(item => !mappedIds.Contains(GetReferenceProjectId(item))).ToList();
         }
 
-        private void UnloadComReference(IReference reference, IReadOnlyList<IVBProject> projects)
+        private void UnloadComReference(ReferenceInfo reference)
         {
-            var referencedProjectId = GetReferenceProjectId(reference, projects);
+            var referencedProjectId = GetReferenceProjectId(reference);
 
             ReferencePriorityMap map = null;
             try
@@ -218,16 +275,25 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
             map.Remove(referencedProjectId);
             if (map.Count == 0)
             {
-                AddUnloadedReferenceToUnloadedReferences(reference);
                 _projectReferences.Remove(map);
-                _state.RemoveBuiltInDeclarations(reference);
+
+                //There is nothing to unload for a user project.
+                if (!IsUserProjectProjectId(referencedProjectId))
+                {
+                    AddUnloadedReferenceToUnloadedReferences(reference);
+                    _state.RemoveBuiltInDeclarations(reference);
+                }
             }
         }
 
-        private void AddUnloadedReferenceToUnloadedReferences(IReference reference)
+        private bool IsUserProjectProjectId(string projectId)
         {
-            var projectName = reference.Name;
-            var projectQMN = new QualifiedModuleName(projectName, reference.FullPath, projectName);
+            return _projectIdsByFilePathAndProjectName.Values.Contains(projectId);
+        }
+
+        private void AddUnloadedReferenceToUnloadedReferences(ReferenceInfo reference)
+        {
+            var projectQMN = new QualifiedModuleName(reference);
             _unloadedCOMReferences.Add(projectQMN);
         }
     }

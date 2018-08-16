@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using Rubberduck.Parsing.ComReflection;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.Parsing.VBA.ComReferenceLoading
 {
@@ -11,15 +12,17 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
         public SynchronousCOMReferenceSynchronizer(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
+            IProjectsProvider projectsProvider,
             IReferencedDeclarationsCollector referencedDeclarationsCollector)
         :base(
             state,
             parserStateManager,
+            projectsProvider,
             referencedDeclarationsCollector)
         { }
 
 
-        protected override void LoadReferences(IEnumerable<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)
+        protected override void LoadReferences(IEnumerable<ReferenceInfo> referencesToLoad, ConcurrentBag<ReferenceInfo> unmapped, CancellationToken token)
         {
             foreach (var reference in referencesToLoad)
             {

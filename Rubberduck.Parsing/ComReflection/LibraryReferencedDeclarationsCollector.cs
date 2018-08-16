@@ -6,7 +6,6 @@ using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VARFLAGS = System.Runtime.InteropServices.ComTypes.VARFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
@@ -20,13 +19,12 @@ namespace Rubberduck.Parsing.ComReflection
             _comLibraryProvider = comLibraryProvider;
         }
 
-        public IReadOnlyCollection<Declaration> CollectedDeclarations(
-            IReference reference)
+        public IReadOnlyCollection<Declaration> CollectedDeclarations(ReferenceInfo reference)
         {
             return LoadDeclarationsFromLibrary(reference);
         }
 
-        private List<Declaration> LoadDeclarationsFromLibrary(IReference reference)
+        private List<Declaration> LoadDeclarationsFromLibrary(ReferenceInfo reference)
         {
             var libraryPath = reference.FullPath;
             // Failure to load might mean that it's a "normal" VBProject that will get parsed by us anyway.

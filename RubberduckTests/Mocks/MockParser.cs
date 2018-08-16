@@ -75,6 +75,7 @@ namespace RubberduckTests.Mocks
             var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
                 state, 
                 parserStateManager,
+                projectRepository,
                 referencedDeclarationsCollector);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 state,

@@ -1032,10 +1032,9 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RemoveBuiltInDeclarations(IReference reference)
+        public void RemoveBuiltInDeclarations(ReferenceInfo reference)
         {
-            var projectName = reference.Name;
-            var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
+            var key = new QualifiedModuleName(reference);
             ClearAsTypeDeclarationPointingToReference(key);
             if (_moduleStates.TryRemove(key, out var moduleState))
             {
