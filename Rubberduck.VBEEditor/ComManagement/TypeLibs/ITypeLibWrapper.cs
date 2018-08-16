@@ -12,6 +12,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         string HelpFile { get; }
         bool HasVBEExtensions { get; }
         int TypesCount { get; }
+
+        TypeInfosCollection TypeInfos { get; }
+
         System.Runtime.InteropServices.ComTypes.TYPELIBATTR Attributes { get; }
 
         /// <summary>
