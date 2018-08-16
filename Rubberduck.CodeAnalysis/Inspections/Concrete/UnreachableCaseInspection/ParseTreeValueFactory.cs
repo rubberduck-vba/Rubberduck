@@ -6,7 +6,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         IParseTreeValue CreateExpression(string expression, string typeName);
         IParseTreeValue CreateDeclaredType(string expression, string typeName);
-        IParseTreeValue CreateConstant(string expression, string typeName);
+        IParseTreeValue CreateValueType(string expression, string typeName);
         IParseTreeValue Create(string valueToken);
         IParseTreeValue Create(byte value);
         IParseTreeValue Create(int value);
@@ -21,9 +21,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public class ParseTreeValueFactory : IParseTreeValueFactory
     {
-        public IParseTreeValue CreateConstant(string expression, string declaredTypeName)
+        public IParseTreeValue CreateValueType(string expression, string declaredTypeName)
         {
-            return ParseTreeValue.CreateConstant(expression, declaredTypeName);
+            return ParseTreeValue.CreateValueType(expression, declaredTypeName);
         }
 
         public IParseTreeValue Create(string valueToken)
@@ -38,7 +38,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     return CreateDate(valueToken);
                 }
-                return ParseTreeValue.CreateConstant(result.value, result.derivedType);
+                return ParseTreeValue.CreateValueType(result.value, result.derivedType);
             }
             return ParseTreeValue.CreateExpression(valueToken, string.Empty);
         }
@@ -47,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (TokenTypeResolver.TryConformTokenToType(expression, declaredTypeName, out string conformedText))
             {
-                return ParseTreeValue.CreateConstant(conformedText, declaredTypeName);
+                return ParseTreeValue.CreateValueType(conformedText, declaredTypeName);
             }
             return ParseTreeValue.CreateExpression(expression, declaredTypeName);
         }
@@ -59,43 +59,44 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IParseTreeValue Create(byte value)
         {
-            return CreateConstant(value.ToString(), Tokens.Byte);
+            return CreateValueType(value.ToString(), Tokens.Byte);
         }
 
         public IParseTreeValue Create(int value)
         {
-            return CreateConstant(value.ToString(), Tokens.Integer);
+            return CreateValueType(value.ToString(), Tokens.Integer);
         }
 
         public IParseTreeValue Create(long value)
         {
-            return CreateConstant(value.ToString(), Tokens.Long);
+            return CreateValueType(value.ToString(), Tokens.Long);
         }
 
         public IParseTreeValue Create(float value)
         {
-            return CreateConstant(value.ToString(), Tokens.Single);
+            return CreateValueType(value.ToString(), Tokens.Single);
         }
 
         public IParseTreeValue Create(double value)
         {
-            return CreateConstant(value.ToString(), Tokens.Double);
+            return CreateValueType(value.ToString(), Tokens.Double);
         }
 
         public IParseTreeValue Create(decimal value)
         {
-            return CreateConstant(value.ToString(), Tokens.Currency);
+            return CreateValueType(value.ToString(), Tokens.Currency);
         }
 
         public IParseTreeValue Create(bool value)
         {
-            return CreateConstant(value ? Tokens.True : Tokens.False, Tokens.Boolean);
+            return CreateValueType(value ? Tokens.True : Tokens.False, Tokens.Boolean);
         }
 
         public IParseTreeValue CreateDate(double value)
         {
             return CreateDate(value.ToString());
         }
+
         public IParseTreeValue CreateDate(string value)
         {
             return new ParseTreeValue(value, Tokens.Date);

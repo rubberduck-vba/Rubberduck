@@ -402,37 +402,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expectedResultType, opType);
         }
 
-        [TestCase("Byte", "250?Byte", "250")]
-        [TestCase("Integer", "250?Byte", "250")]
-        [TestCase("Long", "250?Byte", "250")]
-        [TestCase("LongLong", "250?Byte", "250")]
-        [TestCase("Single", "250?Byte", "250")]
-        [TestCase("Double", "250?Byte", "250")]
-        [TestCase("Currency", "250?Byte", "250")]
-        [TestCase("Boolean", "250?Byte", "True")]
-        [TestCase("Boolean", "0?Byte", "False")]
-        [Category("Inspections")]
-        public void ParseTreeValue_TryCoerces(string destinationType, string sourceOperands, string expectedValue)
-        {
-            var ptValue = CreateInspValueFrom(sourceOperands);
-            if (ptValue.TryLetCoerce(destinationType, out IParseTreeValue result))
-            {
-                Assert.AreEqual(destinationType, result.TypeName);
-                Assert.AreEqual(expectedValue, result.ValueText);
-            }
-        }
-
-        [TestCase("Byte", "300?Integer", "300")]
-        [Category("Inspections")]
-        public void ParseTreeValue_TryCoerceFailures(string destinationType, string sourceOperands, string expectedValue)
-        {
-            var ptValue = CreateInspValueFrom(sourceOperands);
-            if (ptValue.TryLetCoerce(destinationType, out IParseTreeValue result))
-            {
-                Assert.Fail($"Invalid LetCoerce - Coerced {ptValue.TypeName}:{ptValue.ValueText} to {destinationType}");
-            }
-        }
-
         [TestCase("x?Byte_-_2?Long", "x - 2", "Long")]
         [TestCase("2_-_x?Byte", "2 - x", "Integer")]
         [TestCase("x?Byte_+_2?Long", "x + 2", "Long")]
@@ -820,7 +789,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase(@"""A""_>=_""a""", "True", true)]
         [TestCase(@"""A""_>=_""a""", "True", false)]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_StringCompares(string operands, string expected, bool optionCompareBinary /*true = caseSensitive*/)
+        public void ParseTreeValueExpressionEvaluator_StringCompares(string operands, string expected, bool optionCompareBinary)
         {
             var ops = operands.Split(new string[] { "_" }, StringSplitOptions.None);
             var LHS = ValueFactory.Create(ops[0]);
@@ -840,7 +809,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase(@"""A""_Or_""a""", "A Or a", false)]
         [TestCase(@"""A""_Xor_""a""", "A Xor a", false)]
         [Category("Inspections")]
-        public void ParseTreeValueExpressionEvaluator_StringCompareTypeMismatches(string operands, string expected, bool optionCompareBinary /*true = caseSensitive*/)
+        public void ParseTreeValueExpressionEvaluator_StringCompareTypeMismatch(string operands, string expected, bool optionCompareBinary)
         {
             var ops = operands.Split(new string[] { "_" }, StringSplitOptions.None);
             var LHS = ValueFactory.Create(ops[0]);

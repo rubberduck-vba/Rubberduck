@@ -2,6 +2,7 @@
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing.Grammar;
 using System;
+using System.Collections.Generic;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
@@ -160,27 +161,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expectedValueText, value.ValueText);
         }
 
-        [TestCase("False", "False")]
-        [TestCase("True", "True")]
-        [TestCase("-1", "True")]
-        [TestCase("x < 5.55", "x < 5.55")]
-        [Category("Inspections")]
-        public void ParseTreeValue_ConvertToBoolText(string input, string expected)
-        {
-            var result = ValueFactory.Create(input);
-            IParseTreeValue coerced = null;
-            if (result.ParsesToConstantValue)
-            {
-                result.TryLetCoerce(Tokens.Boolean, out coerced);
-            }
-            else
-            {
-                coerced = result;
-            }
-            Assert.IsNotNull(coerced, $"Type conversion to {Tokens.Boolean} return null interface");
-            Assert.AreEqual(expected, coerced.ValueText);
-        }
-
         [TestCase("Yahoo", "Long")]
         [TestCase("Yahoo", "Double")]
         [TestCase("Yahoo", "Boolean")]
@@ -215,6 +195,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("#4-jan-2006#", "Date")]
         [TestCase("#4-jan#", "Date")]
         [TestCase(@"""#I'mNotADateType0#""", "String")]
+        [TestCase(@"""#4-jan#""", "String")]
         [Category("Inspections")]
         public void ParseTreeValue_DateTypeLiteral(string literal, string expectedTypeName)
         {
@@ -222,12 +203,83 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.AreEqual(expectedTypeName, ptValue.TypeName);
         }
 
-        [Test]
+        [TestCase("#1/4/2005#", "#01/04/2005 00:00:00#")]
+        [TestCase("1/4/2005", "#01/04/2005 00:00:00#")]
+        [TestCase("43831", "#01/01/2020 00:00:00#")]
+        [TestCase("2.54", "#12/30/1899 02:54:00#")]
+        [TestCase("2.74", "#01/01/1900 17:45:36#")]
+        [TestCase("35", "#02/03/1900 00:00:00#")]
         [Category("Inspections")]
-        public void ParseTreeValue_DateTypeDeclared()
+        public void ParseTreeValue_DateTypeDeclared(string input, string expected)
         {
-            var ptValue = ValueFactory.CreateDate("#1/4/2005#");
+            var ptValue = ValueFactory.CreateDate(input);
             Assert.AreEqual(Tokens.Date, ptValue.TypeName);
+            Assert.AreEqual(expected, ptValue.ValueText);
+        }
+
+        [TestCase("False", "False")]
+        [TestCase("True", "True")]
+        [TestCase("-1", "True")]
+        [TestCase("x < 5.55", "x < 5.55")]
+        [Category("Inspections")]
+        public void ParseTreeValue_ConvertToBoolText(string input, string expected)
+        {
+            var ptValue = ValueFactory.Create(input);
+            IParseTreeValue coerced = null;
+            if (ptValue.ParsesToConstantValue)
+            {
+                if (!ptValue.TryLetCoerce(Tokens.Boolean, out coerced))
+                {
+                    Assert.Fail($"TryLetCoerce Failed: {ptValue.TypeName}:{ptValue.ValueText} to {Tokens.Boolean}");
+                }
+            }
+            else
+            {
+                coerced = ptValue;
+            }
+            Assert.IsNotNull(coerced, $"Type conversion to {Tokens.Boolean} return null interface");
+            Assert.AreEqual(expected, coerced.ValueText);
+        }
+
+        [TestCase("Byte", "250?Byte", "250")]
+        [TestCase("Integer", "250?Byte", "250")]
+        [TestCase("Long", "250?Byte", "250")]
+        [TestCase("LongLong", "250?Byte", "250")]
+        [TestCase("Single", "250?Byte", "250")]
+        [TestCase("Double", "250?Byte", "250")]
+        [TestCase("Currency", "250?Byte", "250")]
+        [TestCase("Boolean", "250?Byte", "True")]
+        [TestCase("Boolean", "0?Byte", "False")]
+        [TestCase("Date", "1/1/2020?String", "#01/01/2020 00:00:00#")]
+        [TestCase("Date", "00:03:56?String", "#12/30/1899 00:03:56#")]
+        [TestCase("Double", "#01/01/2020 00:00:00#?Date", "43831")]
+        [Category("Inspections")]
+        public void ParseTreeValue_TryCoerce(string destinationType, string sourceOperands, string expectedValue)
+        {
+            var ptValue = CreateInspValueFrom(sourceOperands);
+            if (ptValue.TryLetCoerce(destinationType, out IParseTreeValue result))
+            {
+                Assert.AreEqual(destinationType, result.TypeName);
+                Assert.AreEqual(expectedValue, result.ValueText);
+            }
+            else
+            {
+                Assert.Fail($"TryLetCoerce Failed: {ptValue.TypeName}:{ptValue.ValueText} to {destinationType}");
+            }
+        }
+
+        [TestCase("Byte", "300?Integer", "300")]
+        [TestCase("Date", "Foo?String", "Foo")]
+        [TestCase("Date", "00:74:56?String", "00:74:56")]
+        [Category("Inspections")]
+        public void ParseTreeValue_TryCoerceFailure(string destinationType, string sourceOperands, string expectedValue)
+        {
+            var ptValue = CreateInspValueFrom(sourceOperands);
+            if (ptValue.TryLetCoerce(destinationType, out IParseTreeValue result))
+            {
+                Assert.Fail($"Invalid LetCoerce - Coerced {ptValue.TypeName}:{ptValue.ValueText} to {destinationType}");
+            }
+            Assert.AreEqual(expectedValue, ptValue.ValueText);
         }
 
         private IParseTreeValue CreateInspValueFrom(string valAndType, string conformTo = null)
@@ -235,9 +287,10 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var value = valAndType;
             if (valAndType.Contains(VALUE_TYPE_SEPARATOR))
             {
-                var args = valAndType.Split(new string[] { VALUE_TYPE_SEPARATOR }, StringSplitOptions.None);
+                var args = SplitAtIndex(valAndType, valAndType.LastIndexOf(VALUE_TYPE_SEPARATOR));
                 value = args[0];
-                string declaredType = args[1].Equals(string.Empty) ? null : args[1];
+                var declaredType = args[1].Equals(string.Empty) ? null : args[1];
+
                 if (conformTo is null)
                 {
                     return declaredType is null ? ValueFactory.Create(value) 
@@ -251,6 +304,20 @@ namespace RubberduckTests.Inspections.UnreachableCase
             }
             return conformTo is null ? ValueFactory.Create(value)
                 : ValueFactory.CreateDeclaredType(value, conformTo);
+        }
+
+        private static string[] SplitAtIndex(string input, int index)
+        {
+            if (index >= input.Length - 2)
+            {
+                return new string[] {input};
+            }
+            var results = new List<string>()
+            {
+                input.Substring(0, index),
+                input.Substring(index + 1)
+            };
+            return results.ToArray();
         }
     }
 }

@@ -72,12 +72,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
 
             var opProvider = new OperatorTypesProvider((LHS.TypeName, RHS.TypeName), opSymbol);
-            if (LHS.ExceedsTypeRange || RHS.ExceedsTypeRange)
-            {
-                var result = _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorEffectiveType);
-                result.ExceedsTypeRange = true;
-                return result;
-            }
 
             if (!(LHS.ParsesToConstantValue && RHS.ParsesToConstantValue))
             {
@@ -311,21 +305,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (opSymbol.Equals(ArithmeticOperators.MULTIPLY))
             {
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a * b; }, (double a, double b) => { return a * b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a * b; }, (double a, double b) => { return a * b; }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.DIVIDE))
             {
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a / b; }, (double a, double b) => { return a / b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a / b; }, (double a, double b) => { return a / b; }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.INTEGER_DIVIDE))
             {
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, IntDivision, IntDivision), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, IntDivision, IntDivision), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.PLUS))
             {
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.String))
                 {
-                    return _valueFactory.CreateConstant(Concatenate(LHS, RHS), opProvider.OperatorDeclaredType);
+                    return _valueFactory.CreateValueType(Concatenate(LHS, RHS), opProvider.OperatorDeclaredType);
                 }
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Date))
                 {
@@ -335,7 +329,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         return _valueFactory.CreateDate(value);
                     }
                 }
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a + b; }, (double a, double b) => { return a + b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a + b; }, (double a, double b) => { return a + b; }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.MINUS))
             {
@@ -348,20 +342,20 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     }
                     throw new OverflowException();
                 }
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a - b; }, (double a, double b) => { return a - b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a - b; }, (double a, double b) => { return a - b; }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.EXPONENT))
             {
                 //Math.Pow only takes doubles, so the decimal conversion option is null
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, null, (double a, double b) => { return Math.Pow(a, b); }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, null, (double a, double b) => { return Math.Pow(a, b); }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.MODULO))
             {
-                return _valueFactory.CreateConstant(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a % b; }, (double a, double b) => { return a % b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a % b; }, (double a, double b) => { return a % b; }), opProvider.OperatorDeclaredType);
             }
 
             //ArithmeticOperators.AMPERSAND
-            return _valueFactory.CreateConstant(Concatenate(LHS, RHS), opProvider.OperatorDeclaredType);
+            return _valueFactory.CreateValueType(Concatenate(LHS, RHS), opProvider.OperatorDeclaredType);
         }
 
         private string Concatenate(IParseTreeValue LHS, IParseTreeValue RHS)

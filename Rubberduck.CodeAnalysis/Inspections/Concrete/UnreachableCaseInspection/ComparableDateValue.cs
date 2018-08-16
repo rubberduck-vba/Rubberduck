@@ -2,36 +2,37 @@
 using Rubberduck.Parsing.PreProcessing;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public class ComparableDateValue : IValue, IComparable<ComparableDateValue>
     {
-        private readonly DateValue _inner;
+        private readonly DateValue _dateValue;
         private readonly int _hashCode;
 
         public ComparableDateValue(DateValue dateValue)
         {
-            _inner = dateValue;
+            _dateValue = dateValue;
             _hashCode = dateValue.AsDecimal.GetHashCode();
         }
 
-        public Parsing.PreProcessing.ValueType ValueType => _inner.ValueType;
+        public Parsing.PreProcessing.ValueType ValueType => _dateValue.ValueType;
 
-        public bool AsBool => _inner.AsBool;
+        public bool AsBool => _dateValue.AsBool;
 
-        public byte AsByte => _inner.AsByte;
+        public byte AsByte => _dateValue.AsByte;
 
-        public decimal AsDecimal => _inner.AsDecimal;
+        public decimal AsDecimal => _dateValue.AsDecimal;
 
-        public DateTime AsDate => _inner.AsDate;
+        public DateTime AsDate => _dateValue.AsDate;
 
-        public string AsString => _inner.AsString;
+        public string AsString => _dateValue.AsString;
 
-        public IEnumerable<IToken> AsTokens => _inner.AsTokens;
+        public IEnumerable<IToken> AsTokens => _dateValue.AsTokens;
 
         public int CompareTo(ComparableDateValue dateValue)
-            => _inner.AsDecimal.CompareTo(dateValue._inner.AsDecimal);
+            => _dateValue.AsDecimal.CompareTo(dateValue._dateValue.AsDecimal);
 
         public override int GetHashCode() => _hashCode;
 
@@ -44,7 +45,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (obj is DateValue dateValue)
             {
-                return dateValue.AsDecimal == _inner.AsDecimal;
+                return dateValue.AsDecimal == _dateValue.AsDecimal;
             }
 
             return false;
@@ -52,20 +53,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public override string ToString()
         {
-            return _inner.ToString();
+            return _dateValue.ToString();
         }
 
         public string AsDateLiteral()
         {
-            return AsDateLiteral(ToString());
-        }
-
-        private static string AsDateLiteral(string input)
-        {
+            var asString = AsDate.ToString(CultureInfo.InvariantCulture);
             var prePostPend = "#";
-            var result = input.StartsWith(prePostPend) ? input : $"{prePostPend}{input}";
+            var result = asString.StartsWith(prePostPend) ? asString : $"{prePostPend}{asString}";
             result = result.EndsWith(prePostPend) ? result : $"{result}{prePostPend}";
-            result.Replace(" 00:00:00", "");
             return result;
         }
     }

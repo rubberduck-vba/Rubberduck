@@ -2392,6 +2392,7 @@ End Sub";
         [TestCase("AVALUE + ANOTHERVALUE To 700")]
         [TestCase("Is < AVALUE + ANOTHERVALUE")]
         [TestCase("x < AVALUE + ANOTHERVALUE")]
+        [TestCase("-(AVALUE + ANOTHERVALUE)")]
         [Category("Inspections")]
         public void UnreachableCaseInspection_Overflows(string firstCase)
         {

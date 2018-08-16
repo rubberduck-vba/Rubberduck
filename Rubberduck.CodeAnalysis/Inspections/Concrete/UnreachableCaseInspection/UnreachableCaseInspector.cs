@@ -290,12 +290,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 var rhs = factory.Create(operands[1].Trim());
                 if (opSymbol.Equals(Tokens.Like))
                 {
-                    rhs = factory.CreateDeclaredType($"\"{operands[1].Trim()}\"", Tokens.String);
-                }
-                if (value.ExceedsTypeRange)
-                {
-                    lhs.ExceedsTypeRange = true;
-                    rhs.ExceedsTypeRange = true;
+                    rhs = factory.CreateDeclaredType($"\"{rhs.ValueText}\"", Tokens.String);
                 }
                 return (lhs, rhs);
             }

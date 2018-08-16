@@ -171,6 +171,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 return;
             }
+            if (binaryData.LHS.ExceedsTypeRange)
+            {
+                StoreVisitResult(context, binaryData.LHS);
+                return;
+            }
+
+            if (binaryData.RHS.ExceedsTypeRange)
+            {
+                StoreVisitResult(context, binaryData.RHS);
+                return;
+            }
 
             var calculator = new ParseTreeExpressionEvaluator(_inspValueFactory, context.IsOptionCompareBinary());
             var result = calculator.Evaluate(binaryData.LHS, binaryData.RHS, binaryData.Symbol);

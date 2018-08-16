@@ -2,13 +2,12 @@
 using Rubberduck.Parsing.PreProcessing;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public struct LetCoercer
     {
-        //Dictionary<sourceTypeName,Dictionary<LetdestinationTypeName,Func>
+        //Content: Dictionary<sourceTypeName,Dictionary<LetDestinationTypeName,CoercionFunc>
         private static Dictionary<string, Dictionary<string, Func<string, (bool, string)>>> _coercions;
 
         public static bool TryCoerce((string Type, string Text) source, string destinationType, out string result)
@@ -32,163 +31,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return false;
 #endif
             }
-            if (!_coercions.ContainsKey(source.Type))
-            {
-                return false;
-            }
 
             var coercer = _coercions[source.Type][destinationType];
-            var results = coercer(source.Text);
-            result = results.Item2;
-            return results.Item1;
-        }
-
-        private static (bool, string) StringToDate(string sourceText)
-        {
-            var candidate = AnnotateAsDateLiteral(sourceText);
-            if (TokenParser.TryParse(candidate, out ComparableDateValue dvComparable))
-            {
-                var result = dvComparable.AsDate.ToString(CultureInfo.InvariantCulture);
-                result = AnnotateAsDateLiteral(sourceText);
-                return (true, result);
-            }
-            return (false, string.Empty);
-        }
-
-        private static (bool, string) StringToBoolean(string sourceText)
-        {
-            if (sourceText.Equals(Tokens.True, StringComparison.OrdinalIgnoreCase))
-            {
-                return (true, Tokens.True);
-            }
-            if (sourceText.Equals(Tokens.False, StringComparison.OrdinalIgnoreCase))
-            {
-                return (true, Tokens.False);
-            }
-            if (sourceText.Equals($"#{Tokens.True}#", StringComparison.Ordinal))
-            {
-                return (true, Tokens.True);
-            }
-            if (sourceText.Equals($"#{Tokens.False}#", StringComparison.Ordinal))
-            {
-                return (true, Tokens.False);
-            }
-            if (double.TryParse(sourceText, out double asDouble))
-            {
-                return asDouble != 0 ? (true, Tokens.True) : (true, Tokens.False);
-            }
-            return (false, string.Empty);
-        }
-
-        private static (bool, string) NumericToDate(string source)
-        {
-            if (TokenParser.TryParse(source, out double dateAsDouble))
-            {
-                var dv = new DateValue(DateTime.FromOADate(dateAsDouble));
-                var dateValue = new ComparableDateValue(dv);
-                return (true, AnnotateAsDateLiteral(dateValue.AsDate.ToString(CultureInfo.InvariantCulture)));
-            }
-            return (false, string.Empty);
-        }
-
-        private static (bool, string) DateToString(string source)
-        {
-            return (true, RemoveStartAndEnd(source, "#"));
-        }
-
-        private static string RemoveQuotes(string source)
-        {
-            return RemoveStartAndEnd(source, "\"");
-        }
-
-        private static string RemoveStartAndEnd(string source, string character)
-        {
-            string result = source;
-            if (result.StartsWith(character))
-            {
-                result = result.Remove(0, 1);
-            }
-            if (result.EndsWith(character))
-            {
-                result = result.Remove(result.Length - 1);
-            }
-            return result;
-        }
-
-        private static (bool, string) DateToDouble(string source)
-        {
-            if (TokenParser.TryParse(source, out ComparableDateValue dv))
-            {
-                return (true, dv.AsDecimal.ToString());
-            }
-            return (false, string.Empty);
-        }
-
-        private static (bool, string) BooleanToString(string source)
-        {
-            if (source.Equals(Tokens.True) || source.Equals(Tokens.False))
-            {
-                return Copy(source);
-            }
-
-            var dValue = double.Parse(source);
-            return (true, dValue != 0 ? Tokens.True : Tokens.False);
-        }
-
-        private static string BankersRound(string source)
-        {
-            var parseable = RemoveQuotes(source);
-            if (double.TryParse(source, out double value))
-            {
-                var integral = Math.Round(value, MidpointRounding.ToEven);
-                return integral.ToString();
-            }
-            throw new OverflowException();
-        }
-
-        private static (bool, string) NumericToBoolean(string source)
-        {
-            double.TryParse(source, out double value);
-            return (value != 0, value != 0 ? Tokens.True : Tokens.False);
-        }
-
-        private static long BooleanAsLong(string source)
-        {
-            if (source.Equals(Tokens.True))
-            {
-                return -1;
-            }
-            if (source.Equals(Tokens.False))
-            {
-                return 0;
-            }
-            return long.Parse(source);
-        }
-
-        private static (bool, string) Copy(string source) => (true, source);
-
-        private static (bool, string) IntegralToGreater(string source)
-         => (long.TryParse(source, out _), source.ToString());
-
-        private static (bool, string) IntegralToRational(string source)
-        {
-            double.TryParse(source, out double value);
-            return (true, value.ToString());
-        }
-
-        private static string AnnotateAsDateLiteral(string input)
-        {
-            var result = input;
-            if (!input.StartsWith("#"))
-            {
-                result = $"#{result}";
-            }
-            if (!input.EndsWith("#"))
-            {
-                result = $"{result}#";
-            }
-            result.Replace(" 00:00:00", "");
-            return result;
+            (bool CoercionSuccess, string CoercedValue) = coercer(source.Text);
+            result = CoercedValue;
+            return CoercionSuccess;
         }
 
         private static void InitializeCoercions()
@@ -200,13 +47,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 [Tokens.String] = new Dictionary<string, Func<string, (bool, string)>>
                 {
                     [Tokens.String] = Copy,
-                    [Tokens.Byte] = (a) => { a = RemoveQuotes(a); return (byte.TryParse(a, out _), a); },
-                    [Tokens.Integer] = (a) => { a = RemoveQuotes(a); return (Int16.TryParse(a, out _), a); },
-                    [Tokens.Long] = (a) => { a = RemoveQuotes(a); return (Int32.TryParse(a, out _), a); },
-                    [Tokens.LongLong] = (a) => { a = RemoveQuotes(a); return (Int64.TryParse(a, out _), a); },
-                    [Tokens.Double] = (a) => { a = RemoveQuotes(a); return (double.TryParse(a, out _), a); },
-                    [Tokens.Single] = (a) => { a = RemoveQuotes(a); return (float.TryParse(a, out _), a); },
-                    [Tokens.Currency] = (a) => { a = RemoveQuotes(a); return (decimal.TryParse(a, out _), a); },
+                    [Tokens.Byte] = (a) => { a = RemoveDoubleQuotes(a); return (byte.TryParse(a, out _), a); },
+                    [Tokens.Integer] = (a) => { a = RemoveDoubleQuotes(a); return (Int16.TryParse(a, out _), a); },
+                    [Tokens.Long] = (a) => { a = RemoveDoubleQuotes(a); return (Int32.TryParse(a, out _), a); },
+                    [Tokens.LongLong] = (a) => { a = RemoveDoubleQuotes(a); return (Int64.TryParse(a, out _), a); },
+                    [Tokens.Double] = (a) => { a = RemoveDoubleQuotes(a); return (double.TryParse(a, out _), a); },
+                    [Tokens.Single] = (a) => { a = RemoveDoubleQuotes(a); return (float.TryParse(a, out _), a); },
+                    [Tokens.Currency] = (a) => { a = RemoveDoubleQuotes(a); return (decimal.TryParse(a, out _), a); },
                     [Tokens.Boolean] = StringToBoolean,
                     [Tokens.Date] = StringToDate,
                 },
@@ -299,12 +146,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     [Tokens.String] = (a) => { var result = BooleanToString(a); return result; },
                     [Tokens.Byte] = (a) => { var val = BooleanAsLong(a); return (true, val != 0 ? byte.MaxValue.ToString() : byte.MinValue.ToString()); },
-                    [Tokens.Integer] = (a) => { var val = BooleanAsLong(a); return Copy(val.ToString()); },
-                    [Tokens.Long] = (a) => { var val = BooleanAsLong(a); return Copy(val.ToString()); },
-                    [Tokens.LongLong] = (a) => { var val = BooleanAsLong(a); return Copy(val.ToString()); },
-                    [Tokens.Double] = (a) => { var val = BooleanAsLong(a); return Copy(val.ToString()); },
-                    [Tokens.Single] = (a) => { var val = BooleanAsLong(a); return Copy(val.ToString()); },
-                    [Tokens.Currency] = (a) => { var val = BooleanAsLong(a); return Copy(val.ToString()); },
+                    [Tokens.Integer] = (a) => { return (true, BooleanAsLong(a).ToString()); },
+                    [Tokens.Long] = (a) => { return (true, BooleanAsLong(a).ToString()); },
+                    [Tokens.LongLong] = (a) => { return (true, BooleanAsLong(a).ToString()); },
+                    [Tokens.Double] = (a) => { return (true, BooleanAsLong(a).ToString()); },
+                    [Tokens.Single] = (a) => { return (true, BooleanAsLong(a).ToString()); },
+                    [Tokens.Currency] = (a) => { return (true, BooleanAsLong(a).ToString()); },
                     [Tokens.Boolean] = Copy,
                     [Tokens.Date] = (a) => { var val = BooleanAsLong(a); return NumericToDate(val.ToString()); },
                 },
@@ -323,6 +170,141 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     [Tokens.Date] = Copy,
                 },
             };
+        }
+
+        private static (bool, string) StringToDate(string sourceText)
+        {
+            if (TokenParser.TryParse(AnnotateAsDateLiteral(sourceText), out ComparableDateValue dvComparable))
+            {
+                return (true, dvComparable.AsDateLiteral());
+            }
+            if (TokenParser.TryParse(sourceText, out double doubleValue))
+            {
+                return NumericToDate(sourceText);
+            }
+            return (false, string.Empty);
+        }
+
+        private static (bool, string) StringToBoolean(string sourceText)
+        {
+            if (sourceText.Equals(Tokens.True, StringComparison.OrdinalIgnoreCase))
+            {
+                return (true, Tokens.True);
+            }
+            if (sourceText.Equals(Tokens.False, StringComparison.OrdinalIgnoreCase))
+            {
+                return (true, Tokens.False);
+            }
+            if (sourceText.Equals($"#{Tokens.True}#", StringComparison.Ordinal))
+            {
+                return (true, Tokens.True);
+            }
+            if (sourceText.Equals($"#{Tokens.False}#", StringComparison.Ordinal))
+            {
+                return (true, Tokens.False);
+            }
+            if (double.TryParse(sourceText, out double asDouble))
+            {
+                return asDouble != 0 ? (true, Tokens.True) : (true, Tokens.False);
+            }
+            return (false, string.Empty);
+        }
+
+        private static (bool, string) NumericToDate(string source)
+        {
+            if (TokenParser.TryParse(source, out double dateAsDouble))
+            {
+                var dv = new DateValue(DateTime.FromOADate(dateAsDouble));
+                var dateValue = new ComparableDateValue(dv);
+                return (true, dateValue.AsDateLiteral());
+            }
+            return (false, string.Empty);
+        }
+
+        private static (bool, string) DateToString(string source)
+        {
+            return (true, RemoveStartAndEnd(source, "#"));
+        }
+
+        private static string RemoveDoubleQuotes(string source)
+        {
+            return RemoveStartAndEnd(source, "\"");
+        }
+
+        private static string RemoveStartAndEnd(string source, string character)
+        {
+            string result = source;
+            if (result.StartsWith(character))
+            {
+                result = result.Remove(0, 1);
+            }
+            if (result.EndsWith(character))
+            {
+                result = result.Remove(result.Length - 1);
+            }
+            return result;
+        }
+
+        private static (bool, string) DateToDouble(string source)
+        {
+            if (TokenParser.TryParse(source, out ComparableDateValue dv))
+            {
+                return (true, dv.AsDecimal.ToString());
+            }
+            return (false, string.Empty);
+        }
+
+        private static (bool, string) BooleanToString(string source)
+        {
+            if (source.Equals(Tokens.True) || source.Equals(Tokens.False))
+            {
+                return Copy(source);
+            }
+
+            return (true, double.Parse(source) != 0 ? Tokens.True : Tokens.False);
+        }
+
+        private static string BankersRound(string source)
+        {
+            var parseable = RemoveDoubleQuotes(source);
+            if (double.TryParse(source, out double value))
+            {
+                var integral = Math.Round(value, MidpointRounding.ToEven);
+                return integral.ToString();
+            }
+            throw new OverflowException();
+        }
+
+        private static (bool, string) NumericToBoolean(string source)
+             => (true, double.Parse(source) != 0 ? Tokens.True : Tokens.False);
+
+        private static long BooleanAsLong(string source)
+        {
+            if (source.Equals(Tokens.True))
+            {
+                return -1;
+            }
+            if (source.Equals(Tokens.False))
+            {
+                return 0;
+            }
+            return long.Parse(source);
+        }
+
+        private static (bool, string) Copy(string source) => (true, source);
+
+        private static string AnnotateAsDateLiteral(string input)
+        {
+            var result = input;
+            if (!input.StartsWith("#"))
+            {
+                result = $"#{result}";
+            }
+            if (!input.EndsWith("#"))
+            {
+                result = $"{result}#";
+            }
+            return result;
         }
     }
 }

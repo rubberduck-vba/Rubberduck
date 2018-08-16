@@ -132,6 +132,20 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return true;
         }
 
+        private static string AnnotateAsDateLiteral(string input)
+        {
+            var result = input;
+            if (!input.StartsWith("#"))
+            {
+                result = $"#{result}";
+            }
+            if (!input.EndsWith("#"))
+            {
+                result = $"{result}#";
+            }
+            return result;
+        }
+
         private static string StripDoubleQuotes(string input)
         {
             if (input.StartsWith("\""))
