@@ -27,6 +27,7 @@ namespace Rubberduck.UnitTesting
         private readonly RubberduckParserState _state;
         private readonly IFakesFactory _fakesFactory;
         private readonly IVBETypeLibsAPI _typeLibApi;
+        private readonly ITypeLibWrapperProvider _wrapperProvider;
         private readonly IUiDispatcher _uiDispatcher;
 
         private bool _testRequested;
@@ -35,12 +36,13 @@ namespace Rubberduck.UnitTesting
         private readonly Dictionary<TestMethod, TestOutcome> testResults = new Dictionary<TestMethod, TestOutcome>();
         public IEnumerable<TestMethod> Tests { get; private set; }
 
-        public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, IUiDispatcher uiDispatcher)
+        public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, ITypeLibWrapperProvider wrapperProvider, IUiDispatcher uiDispatcher)
         {
             Debug.WriteLine("TestEngine created.");
             _state = state;
             _fakesFactory = fakesFactory;
             _typeLibApi = typeLibApi;
+            _wrapperProvider = wrapperProvider;
             _uiDispatcher = uiDispatcher;
 
             _state.StateChanged += StateChangedHandler;
@@ -232,8 +234,7 @@ namespace Rubberduck.UnitTesting
             var groupedMembers = members.GroupBy(m => m.ProjectId);
             foreach (var group in groupedMembers)
             {
-                var project = _state.ProjectsProvider.Project(group.Key);
-                using (var typeLib = TypeLibWrapper.FromVBProject(project))
+                using (var typeLib = _wrapperProvider.TypeLibWrapperFromProject(group.Key))
                 {
                     foreach (var member in group)
                     {
