@@ -207,6 +207,7 @@
     <Compile Include="WindowsApi\WM.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="VBEEditorText.cs.resx" />
     <EmbeddedResource Include="VBEEditorText.de.resx" />
     <EmbeddedResource Include="VBEEditorText.fr.resx" />
     <EmbeddedResource Include="VBEEditorText.resx">

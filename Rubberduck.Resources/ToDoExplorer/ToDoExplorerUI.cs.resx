@@ -124,7 +124,7 @@
     <value>Popisek</value>
   </data>
   <data name="TodoExplorer_Caption" xml:space="preserve">
-    <value>Todo Explorer</value>
+    <value>TODO Explorer</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
     <value>TODO Explorer</value>
@@ -136,19 +136,19 @@
     <value>Seznam tokenu:</value>
   </data>
   <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
-    <value>{0}: {1} - {2}.{3} line {4}.</value>
+    <value>{0}: {1} - {2}.{3} řádek {4}.</value>
   </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copy to clipboard</value>
+    <value>Zkopírovat do schránky</value>
   </data>
   <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
-    <value>Rubberduck TODO Items - {0}
-{1} items found.</value>
+    <value>Rubberduck TODO položky - {0}
+{1} položka nalezena.</value>
     <comment>{0}=timestamp; {1}=number</comment>
   </data>
   <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
-    <value>Rubberduck TODO Items - {0}
-{1} items found.</value>
+    <value>Rubberduck TODO položky - {0}
+{1} položek nalezeno.</value>
     <comment>{0}=timestamp; {1}=number</comment>
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
