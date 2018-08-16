@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Grammar;
@@ -63,12 +62,6 @@ namespace Rubberduck.Parsing.ComReflection
             else
             {
                 GetFieldType(varDesc.elemdescVar.tdesc, info);
-                if (!IsEnumMember || !ComProject.KnownEnumerations.TryGetValue(_enumGuid, out ComEnumeration enumType))
-                {
-                    return;
-                }
-                var member = enumType.Members.FirstOrDefault(m => m.Value == (int)DefaultValue);
-                _valueType = member != null ? member.Name : _valueType;
             }
         }
 

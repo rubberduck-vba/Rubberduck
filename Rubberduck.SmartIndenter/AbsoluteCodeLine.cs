@@ -297,7 +297,7 @@ namespace Rubberduck.SmartIndenter
             {
                 return;
             }
-            var gap = Math.Max(_settings.AlignDimColumn - postition - alignTokens[0].Length - 2, 0);
+            var gap = Math.Max(_settings.AlignDimColumn - postition - alignTokens[0].Trim().Length - 2, 0);
             _segments[0] = string.Format("{0}{1} As {2}", alignTokens[0].Trim(), new string(' ', gap),
                                          string.Join(" As ", alignTokens.Skip(1)));
         }
