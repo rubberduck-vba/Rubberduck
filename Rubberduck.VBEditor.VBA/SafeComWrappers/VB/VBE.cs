@@ -80,7 +80,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 
         public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
-        
+       
         public override bool Equals(ISafeComWrapper<VB.VBE> other)
         {
             return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);

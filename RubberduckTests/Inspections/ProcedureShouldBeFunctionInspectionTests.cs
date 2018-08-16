@@ -16,6 +16,7 @@ namespace RubberduckTests.Inspections
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef foo As Boolean)
+    foo = 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -35,9 +36,11 @@ End Sub";
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef foo As Boolean)
+    foo = True
 End Sub
 
 Private Sub Goo(ByRef foo As Integer)
+    foo = 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -119,6 +122,8 @@ End Sub";
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef foo As Integer, ByRef goo As Integer)
+    foo = 42
+    goo = 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -140,6 +145,7 @@ End Sub";
             //Input
             const string inputCode1 =
                 @"Public Sub DoSomething(ByRef a As Integer)
+    a = 42
 End Sub";
             const string inputCode2 =
                 @"Implements IClass1
@@ -176,6 +182,7 @@ End Sub";
                 @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub";
 
             var builder = new MockVbeBuilder();
@@ -203,6 +210,7 @@ End Sub";
             const string inputCode =
                 @"'@Ignore ProcedureCanBeWrittenAsFunction
 Private Sub Foo(ByRef foo As Boolean)
+    foo = 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);

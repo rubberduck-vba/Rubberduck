@@ -117,130 +117,139 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Spustit Všechny &amp;Testy</value>
+  <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
+    <value>Nahraď prázdný řetěz "" za konstantu 'vbNullString'</value>
   </data>
-  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Otevřít Designer</value>
+  <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
+    <value>Použij property pro zapouzdři pole '{0}'</value>
   </data>
-  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
-    <value>{0} (parsuji...)</value>
+  <data name="IgnoreOnce" xml:space="preserve">
+    <value>Jednou ignoruj</value>
   </data>
-  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
-    <value>Modul třídy (.cls)</value>
+  <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
+    <value>Implementuj jako funkci a obnov použití.</value>
   </data>
-  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Standardní modul (.bas)</value>
+  <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
+    <value>Zkonvertuj funkci na proceduru</value>
   </data>
-  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Testovací modul</value>
+  <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
+    <value>Deklaruj jako explicitní 'Variant'</value>
   </data>
-  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Přepnout složky</value>
+  <data name="ImplicitByRefModifierQuickFix" xml:space="preserve">
+    <value>Předej parametr explicitně jako referenci</value>
   </data>
-  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>Zkopírovat do schránky</value>
+  <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
+    <value>Nahraď 'Error' za 'Err.Raise'</value>
   </data>
-  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
-    <value>Code Explorer</value>
+  <data name="ObsoleteGlobalInspectionQuickFix" xml:space="preserve">
+    <value>Nahraď 'Global' přístupový modifikátor za 'Public'</value>
   </data>
-  <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Odsazení</value>
+  <data name="ReplaceIfElseWithConditionalStatementQuickFix" xml:space="preserve">
+    <value>Nahraď 'If/Else' zjednodušeným přidělením</value>
   </data>
-  <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Přidat Modul</value>
+  <data name="ReplaceCommentMarkerQuickFix" xml:space="preserve">
+    <value>Zaměň použití 'Rem' s použitím znaku klasických komentářů: "'"</value>
   </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
-    <value>Testovací modul s pahýly</value>
-    <comment>TC</comment>
+  <data name="SetExplicitVariantReturnTypeQuickFix" xml:space="preserve">
+    <value>Vrať jako explicitní 'Variant'</value>
   </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Zhroucení node a jeho následovníků</value>
+  <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
+    <value>Zapisuj proměnné na jeden řádek</value>
   </data>
-  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Ukázat jmé&amp;na členů</value>
+  <data name="OptionExplicitQuickFix" xml:space="preserve">
+    <value>Specifikuj 'Option Explicit'</value>
   </data>
-  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value>Ukázat styl</value>
+  <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
+    <value>Předej parametr odkazem (ByRef)</value>
   </data>
-  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>Ukázat plné &amp;signatury</value>
+  <data name="PassParameterByValueQuickFix" xml:space="preserve">
+    <value>Předej parametr hodnotou (ByVal)</value>
   </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Rozšířit node a všechny jeho následovníky</value>
+  <data name="UseTypedFunctionQuickFix" xml:space="preserve">
+    <value>Změň '{0}' na '{1}'</value>
   </data>
-  <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Exportovat...</value>
+  <data name="RemoveCommentQuickFix" xml:space="preserve">
+    <value>Odstraň komentář</value>
   </data>
-  <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Exportovat Projekt...</value>
+  <data name="RemoveObsoleteStatementQuickFix" xml:space="preserve">
+    <value>Odstraň zastaralé prohlášení</value>
   </data>
-  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Najít Všechny Implementace...</value>
-    <comment>TC</comment>
+  <data name="RemoveTypeHintsQuickFix" xml:space="preserve">
+    <value>Odstraň typovou nápovědu</value>
   </data>
-  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Najít Všechny Reference...</value>
-    <comment>TC</comment>
+  <data name="RemoveUnassignedIdentifierQuickFix" xml:space="preserve">
+    <value>Odstraň nepřiřazenou proměnnou</value>
   </data>
-  <data name="CodeExplorer_Import" xml:space="preserve">
-    <value>Importovat...</value>
+  <data name="RemoveUnassignedVariableUsageQuickFix" xml:space="preserve">
+    <value>Odstraň použití (rozbije kód)</value>
   </data>
-  <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>Na&amp;vigova</value>
+  <data name="RemoveUnusedDeclarationQuickFix" xml:space="preserve">
+    <value>Odstraň nepoužitou deklaraci</value>
   </data>
-  <data name="CodeExplorer_New" xml:space="preserve">
-    <value>&amp;Nový</value>
+  <data name="RemoveUnusedParameterQuickFix" xml:space="preserve">
+    <value>Odstraň nepoužitý parametr</value>
   </data>
-  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
-    <value>Přidat komponentu do aktivního projektu</value>
+  <data name="SpecifyExplicitPublicModifierQuickFix" xml:space="preserve">
+    <value>Explicitně specifikuj 'Public access' modifikátor</value>
   </data>
-  <data name="CodeExplorer_Open" xml:space="preserve">
-    <value>Otevřít</value>
+  <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
+    <value>Odděl více deklarací do několika instrukcí</value>
   </data>
-  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Otevřít Designer</value>
+  <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
+    <value>Kontexový typ '{0}' není platný pro '{1}'</value>
   </data>
-  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Vlastnosti projektu</value>
+  <data name="SetObjectVariableQuickFix" xml:space="preserve">
+    <value>Použij klíčové slovo 'Set'</value>
   </data>
-  <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Vytisknout...</value>
+  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+    <value>Přidej accessor 'property get'</value>
   </data>
-  <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>Obnov&amp;ení</value>
+  <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
+    <value>Zaměň 'Dim' za 'Private'</value>
   </data>
-  <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Odstranit...</value>
+  <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
+    <value>Představ lokální proměnnou</value>
   </data>
-  <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
-    <value>Zdroje</value>
+  <data name="WhiteListIdentifierQuickFix" xml:space="preserve">
+    <value>Přidat do Whitelistu</value>
   </data>
-  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Přepnout signatury</value>
+  <data name="ApplicationWorksheetFunctionQuickFix" xml:space="preserve">
+    <value>Použij early-bound metodu Application.WorksheetFunction.</value>
   </data>
-  <data name="CodeExplorer_Sort" xml:space="preserve">
-    <value>Seřadit</value>
+  <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
+    <value>Vytvoř a použij lokální kopii tohoto parametru.</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>Jako v modulu</value>
+  <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
+    <value>Odstraň prohlášení 'Option Base'</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>podle Jména</value>
+  <data name="SynchronizeAttributesQuickFix" xml:space="preserve">
+    <value>Synchronizuj v modulu atributy/anotace</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
-    <value>Seskupit podle Typu</value>
+  <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
+    <value>Odstraň prázdný If blok</value>
   </data>
-  <data name="CodeExplorer_Add" xml:space="preserve">
-    <value>Přidat</value>
+  <data name="RedundantByRefModifierQuickFix" xml:space="preserve">
+    <value>Odstraň 'ByRef' modifikátor</value>
   </data>
-  <data name="ExportBeforeRemove_Caption" xml:space="preserve">
-    <value>Potvrdit Export</value>
+  <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
+    <value>Odstraň prázdný 'Else' blok</value>
   </data>
-  <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
-    <value>Chcete exportovat '{0}' před jeho odstraněním?</value>
+  <data name="IntegerDataTypeQuickFix" xml:space="preserve">
+    <value>Zaměň typ za 'Long'</value>
   </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>UserForm (.frm)</value>
+  <data name="RemoveStopKeywordQuickFix" xml:space="preserve">
+    <value>Odstraň použití klíčového slova 'Stop'</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionQuickFix" xml:space="preserve">
+    <value>Představ subrutinu pro zpracování chyb</value>
+  </data>
+  <data name="RemoveStepOneQuickFix" xml:space="preserve">
+    <value>Odstraň nadbytečnou klauzuli 'Step'</value>
+  </data>
+  <data name="AddStepOneQuickFix" xml:space="preserve">
+    <value>Přidej explicitní klauzuli 'Step'</value>
+  </data>
+  <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
+    <value>Odkazuj na statisticky přístupný list dle jeho kódového jména</value>
   </data>
 </root>

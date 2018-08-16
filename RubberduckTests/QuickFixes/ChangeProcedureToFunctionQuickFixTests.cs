@@ -18,10 +18,12 @@ namespace RubberduckTests.QuickFixes
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub";
 
             const string expectedCode =
                 @"Private Function Foo(ByVal arg1 As Integer) As Integer
+    arg1 = 42
     Foo = arg1
 End Function";
 
@@ -44,10 +46,12 @@ End Function";
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef arg1)
+    arg1 = 42
 End Sub";
 
             const string expectedCode =
                 @"Private Function Foo(ByVal arg1) As Variant
+    arg1 = 42
     Foo = arg1
 End Function";
 
@@ -171,6 +175,7 @@ End Sub";
 End Sub
 
 Private Sub Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub";
 
             const string expectedCode =
@@ -180,6 +185,7 @@ End Sub";
 End Sub
 
 Private Function Foo(ByVal arg1 As Integer) As Integer
+    arg1 = 42
     Foo = arg1
 End Function";
 
@@ -202,6 +208,7 @@ End Function";
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub
 
 Sub Goo(ByVal a As Integer)
@@ -211,6 +218,7 @@ End Sub";
 
             const string expectedCode =
                 @"Private Function Foo(ByVal arg1 As Integer) As Integer
+    arg1 = 42
     Foo = arg1
 End Function
 

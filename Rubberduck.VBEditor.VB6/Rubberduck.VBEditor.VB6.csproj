@@ -78,6 +78,9 @@
     <Compile Include="SafeComWrappers\VB\CodeModule.cs" />
     <Compile Include="SafeComWrappers\VB\CodePane.cs" />
     <Compile Include="SafeComWrappers\VB\CodePanes.cs" />
+    <Compile Include="SafeComWrappers\VB\CommandBarButtonEvents.cs" />
+    <Compile Include="SafeComWrappers\VB\CommandBarEvents.cs" />
+    <Compile Include="SafeComWrappers\VB\Events.cs" />
     <Compile Include="SafeComWrappers\VB\LinkedWindows.cs" />
     <Compile Include="SafeComWrappers\VB\Properties.cs" />
     <Compile Include="SafeComWrappers\VB\Property.cs" />
