@@ -194,7 +194,7 @@ namespace Rubberduck.UnitTesting
                                 Logger.Trace(trace, "Unexpected Exception when running TestInitialize");
                                 continue;
                             }
-                            var result = test.Run();
+                            var result = RunTestMethod(test);
                             // we can trigger this event, because cleanup can fail without affecting the result
                             OnTestCompleted(test, result);
                             RunInternal(testCleanup);
@@ -227,6 +227,44 @@ namespace Rubberduck.UnitTesting
             {
                 Logger.Error(ex, "Unexpected expection while running unit tests; unit tests will be aborted");
             }
+        }
+
+        private TestResult RunTestMethod(TestMethod test)
+        {
+            var assertResults = new List<AssertCompletedEventArgs>();
+
+            AssertCompletedEventArgs result;
+            var duration = new Stopwatch();
+            try
+            {
+                AssertHandler.OnAssertCompleted += (s, e) => assertResults.Add(e);
+                var testDeclaration = test.Declaration;
+                var typeLib = _wrapperProvider.TypeLibWrapperFromProject(testDeclaration.Project);
+                duration.Start();
+
+                _typeLibApi.ExecuteCode(typeLib, testDeclaration.ComponentName, testDeclaration.QualifiedName.MemberName);
+
+                duration.Stop();
+                AssertHandler.OnAssertCompleted -= (s, e) => assertResults.Add(e);
+                result = EvaluateResults(assertResults);
+            }
+            catch (Exception exception)
+            {
+                result = new AssertCompletedEventArgs(TestOutcome.Inconclusive, "Test raised an error. " + exception.Message);
+            }
+            return new TestResult(result.Outcome, result.Message, duration.ElapsedMilliseconds);
+        }
+
+        private AssertCompletedEventArgs EvaluateResults(IEnumerable<AssertCompletedEventArgs> assertResults)
+        {
+            var result = new AssertCompletedEventArgs(TestOutcome.Succeeded);
+
+            if (assertResults.Any(assertion => assertion.Outcome == TestOutcome.Failed || assertion.Outcome == TestOutcome.Inconclusive))
+            {
+                result = assertResults.First(assertion => assertion.Outcome == TestOutcome.Failed || assertion.Outcome == TestOutcome.Inconclusive);
+            }
+
+            return result;
         }
 
         private void RunInternal(IEnumerable<Declaration> members)

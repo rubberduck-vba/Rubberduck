@@ -19,7 +19,7 @@ namespace Rubberduck.UnitTesting
         {
             return GetTestModuleProcedures(state)
                     .Where(item => IsTestMethod(state, item))
-                    .Select(item => new TestMethod(state, item, new VBETypeLibsAPI()));
+                    .Select(item => new TestMethod(item));
         }
 
         public static IEnumerable<TestMethod> GetTests(IVBE vbe, IVBComponent component, RubberduckParserState state)
