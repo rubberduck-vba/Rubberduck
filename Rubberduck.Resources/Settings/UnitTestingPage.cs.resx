@@ -118,39 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PageHeader" xml:space="preserve">
-    <value>Unit Test Settings</value>
+    <value>Unit Test Nastavení</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
-    <value>Configure the settings for new unit test modules and methods.</value>
+    <value>Konfigurovat nastavení pro nové unit test moduly a metody</value>
   </data>
   <data name="UnitTestSettings_AssertMode" xml:space="preserve">
-    <value>Type safety:</value>
+    <value>Typ zabezpečení:</value>
   </data>
   <data name="UnitTestSettings_BindingMode" xml:space="preserve">
-    <value>Binding mode:</value>
+    <value>Binding mód:</value>
   </data>
   <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
-    <value>Early binding</value>
+    <value>Časný binding</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodInitCleanupPrompt" xml:space="preserve">
-    <value>Test method initialization/cleanup</value>
+    <value>Inicializace/úklid test metody</value>
   </data>
   <data name="UnitTestSettings_IncludeTestMethodStubWhenCreatingModulePrompt" xml:space="preserve">
-    <value>Insert test method stub</value>
+    <value>Vložit pahýl test metody</value>
   </data>
   <data name="UnitTestSettings_IncludeTestModuleInitCleanupPrompt" xml:space="preserve">
-    <value>Test module initialization/cleanup</value>
+    <value>Inicializace/úklid test modulu</value>
   </data>
   <data name="UnitTestSettings_LateBinding" xml:space="preserve">
-    <value>Late binding</value>
+    <value>Pozdní binding</value>
   </data>
   <data name="UnitTestSettings_PermissiveAssert" xml:space="preserve">
-    <value>Permissive assert</value>
+    <value>Tolerantní assert</value>
   </data>
   <data name="UnitTestSettings_StrictAssert" xml:space="preserve">
-    <value>Strict assert</value>
+    <value>Striktní assert</value>
   </data>
   <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
-    <value>Test Module Template</value>
+    <value>Šablona Test Modulu</value>
   </data>
 </root>

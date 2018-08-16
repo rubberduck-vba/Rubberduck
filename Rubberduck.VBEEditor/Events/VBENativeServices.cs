@@ -1,4 +1,7 @@
 ﻿using System;
+#if DEBUG
+using System.Diagnostics;
+#endif
 using System.Linq;
 using System.Text;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

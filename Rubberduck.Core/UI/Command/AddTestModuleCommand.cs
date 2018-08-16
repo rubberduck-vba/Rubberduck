@@ -246,10 +246,15 @@ namespace Rubberduck.UI.Command
 
         private string GetNextTestModuleName(IVBProject project)
         {
-            var names = project.ComponentNames();
-            var index = names.Count(n => n.StartsWith(TestModuleBaseName)) + 1;
+            var names = new HashSet<string>(project.ComponentNames().Where(module => module.StartsWith(TestModuleBaseName)));
 
-            return string.Concat(TestModuleBaseName, index);
+            var index = 1;
+            while (names.Contains($"{TestModuleBaseName}{index}"))
+            {
+                index++;
+            }
+
+            return $"{TestModuleBaseName}{index}";
         }
 
         private IEnumerable<Declaration> GetDeclarationsToStub(Declaration parentDeclaration)

@@ -151,13 +151,13 @@
     <value>Nastav&amp;ení</value>
   </data>
   <data name="ToolsMenu_TodoItems" xml:space="preserve">
-    <value>To&amp;Do Položky</value>
+    <value>TO&amp;DO Položky</value>
   </data>
   <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
     <value>&amp;Inspekce kódu</value>
   </data>
   <data name="RubberduckMenu_Refactor" xml:space="preserve">
-    <value>&amp;Refactor</value>
+    <value>&amp;Refaktorovat</value>
   </data>
   <data name="RubberduckMenu_UnitTests" xml:space="preserve">
     <value>Unit &amp;Testy</value>
@@ -169,69 +169,69 @@
     <value>E&amp;xtrahovat interface</value>
   </data>
   <data name="FormContextMenu_Rename" xml:space="preserve">
-    <value>Re&amp;name</value>
+    <value>Přejme&amp;novat</value>
   </data>
   <data name="IndentCurrentModule" xml:space="preserve">
-    <value>Current &amp;Module</value>
+    <value>Aktuální &amp;Modul</value>
   </data>
   <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value>Current &amp;Procedure</value>
+    <value>Aktuální &amp;Procedura</value>
   </data>
   <data name="IndentCurrentProject" xml:space="preserve">
-    <value>Current Project</value>
+    <value>Aktuální Projekt</value>
   </data>
   <data name="NoIndentAnnotation" xml:space="preserve">
-    <value>&amp;Add '@NoIndent</value>
+    <value>Přid&amp;at '@NoIndent'</value>
   </data>
   <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
-    <value>&amp;Encapsulate Field</value>
+    <value>&amp;Enkapsulace Pole</value>
   </data>
   <data name="RefactorMenu_IntroduceField" xml:space="preserve">
-    <value>Introduce &amp;Field</value>
+    <value>Představit Po&amp;le</value>
   </data>
   <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
-    <value>Introduce &amp;Parameter</value>
+    <value>Představit &amp;Parametr</value>
   </data>
   <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
-    <value>Move Closer To &amp;Usage</value>
+    <value>Přesunout Blíže k Prvnímu Po&amp;užití</value>
   </data>
   <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
-    <value>Code Metrics</value>
+    <value>Metrika Kódu</value>
   </data>
   <data name="RubberduckMenu_Navigate" xml:space="preserve">
-    <value>Na&amp;vigate</value>
+    <value>Na&amp;vigovat</value>
   </data>
   <data name="RubberduckMenu_Refresh" xml:space="preserve">
-    <value>Refresh</value>
+    <value>Obnovit</value>
   </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
-    <value>Rege&amp;x Search/Replace</value>
+    <value>Rege&amp;x Najít/Nahradit</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>In&amp;dent</value>
+    <value>O&amp;dsazení</value>
   </data>
   <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Test Method (&amp;Expected Error)</value>
+    <value>Testovací Metoda (Př&amp;edpokládaná Chyba)</value>
   </data>
   <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
-    <value>Test &amp;Method</value>
+    <value>Testovací &amp;Metoda</value>
   </data>
   <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
-    <value>Test M&amp;odule</value>
+    <value>Testovací M&amp;odul</value>
   </data>
   <data name="TestMenu_RunAllTests" xml:space="preserve">
-    <value>&amp;Run All Tests</value>
+    <value>Spustit &amp;všechny testy</value>
   </data>
   <data name="TestMenu_TextExplorer" xml:space="preserve">
     <value>&amp;Test Explorer</value>
   </data>
   <data name="ToolsMenu" xml:space="preserve">
-    <value>T&amp;ools</value>
+    <value>Nástr&amp;oje</value>
   </data>
   <data name="ToolsMenu_ExportProject" xml:space="preserve">
-    <value>Export Active Project...</value>
+    <value>Exportovat Aktivní Projekt...</value>
   </data>
   <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
-    <value>Regex &amp;Assistant</value>
+    <value>Regex &amp;Asistent</value>
   </data>
 </root>

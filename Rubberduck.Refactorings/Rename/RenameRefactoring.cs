@@ -360,7 +360,9 @@ namespace Rubberduck.Refactorings.Rename
             {
                 var parameters = _state.DeclarationFinder.MatchName(_model.Target.IdentifierName).Where(param =>
                    param.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property)
-                   && param.DeclarationType == DeclarationType.Parameter);
+                   && param.DeclarationType == DeclarationType.Parameter
+                    && param.ParentDeclaration.IdentifierName.Equals(_model.Target.ParentDeclaration.IdentifierName)
+                    && param.ParentDeclaration.ParentScopeDeclaration.Equals(_model.Target.ParentDeclaration.ParentScopeDeclaration));
 
                 foreach (var param in parameters)
                 {
@@ -513,8 +515,9 @@ namespace Rubberduck.Refactorings.Rename
         private void RenameReferences(Declaration target, string newName)
         {
             var modules = target.References
-                .Where(reference => reference.Context.GetText() != "Me")
-                .GroupBy(r => r.QualifiedModuleName);
+                .Where(reference =>
+                    reference.Context.GetText() != "Me").GroupBy(r => r.QualifiedModuleName);
+
             foreach (var grouping in modules)
             {
                 _modulesToRewrite.Add(grouping.Key);

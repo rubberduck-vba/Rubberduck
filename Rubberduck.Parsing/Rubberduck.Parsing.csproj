@@ -453,6 +453,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="ParsingText.cs.resx" />
     <EmbeddedResource Include="ParsingText.de.resx" />
     <EmbeddedResource Include="ParsingText.fr.resx" />
     <EmbeddedResource Include="ParsingText.resx">

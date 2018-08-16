@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using Castle.Facilities.TypedFactory;
@@ -149,7 +148,10 @@ namespace Rubberduck.Root
 
             RegisterWindowsHooks(container);
 
-            RegisterHotkeyFactory(container);
+            container.Register(Component.For<HotkeyFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<ITestEngine>().ImplementedBy<TestEngine>()
+                .LifestyleSingleton());
 
             var assembliesToRegister = AssembliesToRegister().ToArray();
 
@@ -893,11 +895,6 @@ namespace Rubberduck.Root
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
             container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler));
-        }
-
-        private void RegisterHotkeyFactory(IWindsorContainer container)
-        {
-            container.Register(Component.For<HotkeyFactory>().LifestyleSingleton());
         }
     }
 }
