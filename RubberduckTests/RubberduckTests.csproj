@@ -111,6 +111,7 @@
     <Compile Include="Inspections\ObsoleteMemberUsageInspectionTests.cs" />
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
+    <Compile Include="Mocks\StaticCachingReferencedDeclarationsCollectorDecorator.cs" />
     <Compile Include="Parsing\VBACodeStringParserTests.cs" />
     <Compile Include="PreProcessing\CompilationArgumentsCahceTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
