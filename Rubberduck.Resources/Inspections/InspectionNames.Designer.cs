@@ -394,15 +394,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Module has more than one folder annotation..
-        /// </summary>
-        public static string MultipleFolderAnnotationsInspection {
-            get {
-                return ResourceManager.GetString("MultipleFolderAnnotationsInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Non-returning function or property getter.
         /// </summary>
         public static string NonReturningFunctionInspection {

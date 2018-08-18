@@ -412,15 +412,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; has more than one &apos;@Folder&apos; annotation..
-        /// </summary>
-        public static string MultipleFolderAnnotationsInspection {
-            get {
-                return ResourceManager.GetString("MultipleFolderAnnotationsInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Return value for member &apos;{0}&apos; is never assigned..
         /// </summary>
         public static string NonReturningFunctionInspection {

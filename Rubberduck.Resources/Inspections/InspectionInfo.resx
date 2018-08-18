@@ -156,9 +156,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Declaring multiple variables in the same instruction is legal, but should be used sparingly. Consider declaring variables closer to their usage, in a single instruction per declaration.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Rubberduck only uses the first '@Folder' annotation in a code module; consider removing extraneous ones.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a 'Sub' procedure instead.</value>
   </data>
