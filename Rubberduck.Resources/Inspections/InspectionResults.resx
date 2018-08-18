@@ -357,4 +357,7 @@
     <value>'{0}' is declared using the obsolete 'CDecl' calling convention.</value>
     <comment>{0} Procedure name</comment>
   </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Annotation '{0}' is duplicated.</value>
+  </data>
 </root>

@@ -75,7 +75,7 @@ namespace RubberduckTests.Grammar
         [Test]
         public void IgnoreAnnotation_TypeIsIgnore()
         {
-            var annotation = new IgnoreAnnotation(new QualifiedSelection(), new[] { "param" });
+            var annotation = new IgnoreAnnotation(new QualifiedSelection(), null);
             Assert.AreEqual(AnnotationType.Ignore, annotation.AnnotationType);
         }
 
@@ -167,6 +167,24 @@ namespace RubberduckTests.Grammar
         {
             var annotation = new ObsoleteAnnotation(new QualifiedSelection(), new[] { "param" });
             Assert.AreEqual(AnnotationType.Obsolete, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void IgnoreAnnotation_CanBeAppliedMultipleTimes()
+        {
+            var annotation = new IgnoreAnnotation(new QualifiedSelection(), null);
+            Assert.True(annotation.AllowMultiple);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void IgnoreModuleAnnotation_CanBeAppliedMultipleTimes()
+        {
+            var annotation = new IgnoreModuleAnnotation(new QualifiedSelection(), null);
+            Assert.True(annotation.AllowMultiple);
         }
     }
 }

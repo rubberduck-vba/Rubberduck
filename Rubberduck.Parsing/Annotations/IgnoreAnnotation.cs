@@ -26,6 +26,8 @@ namespace Rubberduck.Parsing.Annotations
             return _inspectionNames.Contains(inspectionName);
         }
 
+        public override bool AllowMultiple { get; } = true;
+
         public override string ToString()
         {
             return $"Ignored inspections: {string.Join(", ", _inspectionNames)}";

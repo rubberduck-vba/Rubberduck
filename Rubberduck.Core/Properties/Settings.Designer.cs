@@ -452,9 +452,10 @@ namespace Rubberduck.Properties {
             "unities\" />\r\n    <CodeInspection Name=\"ObsoleteMemberUsageInspection\" Severity=\"" +
             "Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspe" +
             "ction Name=\"ObsoleteCallingConventionInspection\" Severity=\"Warning\" InspectionTy" +
-            "pe=\"CodeQualityIssues\" />\r\n  </CodeInspections>\r\n  <WhitelistedIdentifiers />\r\n " +
-            " <RunInspectionsOnSuccessfulParse>true</RunInspectionsOnSuccessfulParse>\r\n</Code" +
-            "InspectionSettings>")]
+            "pe=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"DuplicateAnnotationInspecti" +
+            "on\" Severity=\"Error\" InspectionType=\"RubberduckOpportunities\" />\r\n  </CodeInspec" +
+            "tions>\r\n  <WhitelistedIdentifiers />\r\n  <RunInspectionsOnSuccessfulParse>true</R" +
+            "unInspectionsOnSuccessfulParse>\r\n</CodeInspectionSettings>")]
         public global::Rubberduck.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));

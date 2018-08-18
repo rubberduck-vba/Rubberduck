@@ -115,6 +115,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An annotation is specified multiple times, but is intended to be specified only once..
+        /// </summary>
+        public static string DuplicatedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("DuplicatedAnnotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to An empty &apos;Case&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
         public static string EmptyCaseBlockInspection {

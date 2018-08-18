@@ -115,6 +115,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Annotation is duplicated.
+        /// </summary>
+        public static string DuplicatedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("DuplicatedAnnotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty &apos;Case&apos; block.
         /// </summary>
         public static string EmptyCaseBlockInspection {

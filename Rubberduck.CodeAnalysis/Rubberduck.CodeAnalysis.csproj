@@ -71,6 +71,7 @@
     <Compile Include="Inspections\Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Inspections\Concrete\AssignedByValParameterInspection.cs" />
     <Compile Include="Inspections\Concrete\DefTypeStatementInspection.cs" />
+    <Compile Include="Inspections\Concrete\DuplicatedAnnotationInspection.cs" />
     <Compile Include="Inspections\Concrete\EmptyModuleInspection.cs" />
     <Compile Include="Inspections\Concrete\EmptyBlockInspectionListenerBase.cs" />
     <Compile Include="Inspections\Concrete\EmptyCaseBlockInspection.cs" />

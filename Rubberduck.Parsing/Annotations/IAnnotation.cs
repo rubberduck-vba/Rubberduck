@@ -6,5 +6,6 @@ namespace Rubberduck.Parsing.Annotations
     {
         AnnotationType AnnotationType { get; }
         QualifiedSelection QualifiedSelection { get; }
+        bool AllowMultiple { get; }
     }
 }

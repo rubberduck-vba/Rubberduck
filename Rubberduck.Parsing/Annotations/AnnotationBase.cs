@@ -15,6 +15,8 @@ namespace Rubberduck.Parsing.Annotations
         public AnnotationType AnnotationType { get; }
         public QualifiedSelection QualifiedSelection { get; }
 
+        public virtual bool AllowMultiple { get; } = false;
+
         public override string ToString() => $"Annotation Type: {AnnotationType}";
     }
 }

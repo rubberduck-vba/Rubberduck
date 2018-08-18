@@ -333,4 +333,7 @@
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>Use of obsolete 'CDecl' calling convention</value>
   </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Annotation is duplicated</value>
+  </data>
 </root>

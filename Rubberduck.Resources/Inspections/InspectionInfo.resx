@@ -334,4 +334,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>Windows implementations of Visual Basic only support the StdCall calling convention, and use of of the CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - 'Bad DLL calling convention'. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled.</value>
   </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>An annotation is specified multiple times, but is intended to be specified only once.</value>
+  </data>
 </root>
