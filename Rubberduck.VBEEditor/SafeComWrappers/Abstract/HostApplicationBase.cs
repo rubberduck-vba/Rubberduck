@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -23,11 +24,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             TApplication application;
             try
             {
-                application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
+                application = (TApplication) Marshal.GetActiveObject($"{applicationName}.Application");
             }
             catch (COMException)
             {
                 application = null; // unit tests don't need it anyway.
+            }
+            catch (InvalidCastException exception)
+            {
+                //TODO: Find out why this ever happens.
+                _logger.Error(exception, $"Unable to cast the host Application {applicationName} to its PIA type.");
+                application = null; //We currently really only use the name anyway.
             }
             return application;
         }
@@ -51,6 +58,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             catch (COMException)
             {
                 application = null; // unit tests don't need it anyway.
+            }
+            catch (InvalidCastException exception)
+            {
+                _logger.Error(exception, $"Unable to cast the host Application {applicationName} to its PIA type.");
+                application = null; //We currently really only use the name anyway.
             }
             return application;
         }
