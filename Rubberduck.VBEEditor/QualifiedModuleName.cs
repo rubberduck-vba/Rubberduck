@@ -93,7 +93,7 @@ namespace Rubberduck.VBEditor
         {
             _projectName = projectName;
             ProjectPath = projectPath;
-            ProjectId = $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
+            ProjectId = "External" + $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             ComponentType = ComponentType.ComComponent;
             ModuleContentHashOnCreation = GetContentHash(null);
