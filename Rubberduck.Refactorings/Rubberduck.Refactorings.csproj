@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\DeclarationExtensions.cs" />
+    <Compile Include="Common\InterfaceDeclarationExtensions.cs" />
     <Compile Include="EncapsulateField\EncapsulateFieldModel.cs" />
     <Compile Include="EncapsulateField\EncapsulateFieldRefactoring.cs" />
     <Compile Include="EncapsulateField\IEncapsulateFieldDialog.cs" />

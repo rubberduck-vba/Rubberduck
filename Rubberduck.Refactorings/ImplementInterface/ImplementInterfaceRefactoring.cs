@@ -8,7 +8,6 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -107,8 +106,8 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private void ImplementMissingMembers(IModuleRewriter rewriter)
         {
-            var interfaceMembers = GetInterfaceMembers();
-            var implementedMembers = GetImplementedMembers();
+            var interfaceMembers = GetInterfaceMembers().ToList();
+            var implementedMembers = GetImplementedMembers(interfaceMembers);
             var nonImplementedMembers = GetNonImplementedMembers(interfaceMembers, implementedMembers);
 
             AddItems(nonImplementedMembers, rewriter, _targetInterface.IdentifierName);
@@ -142,6 +141,24 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
                 case DeclarationType.PropertySet:
                     return PropertySetStmt(member, interfaceName);
+
+                case DeclarationType.Variable:
+                    var members = new List<string>
+                    {
+                        PropertyGetStmt(member, interfaceName)
+                    };
+
+                    if (member.AsTypeName.Equals(Tokens.Variant) || !member.IsObject)
+                    {
+                        members.Add(PropertyLetStmt(member, interfaceName));
+                    }
+
+                    if (member.AsTypeName.Equals(Tokens.Variant) || member.IsObject)
+                    {
+                        members.Add(PropertySetStmt(member, interfaceName));
+                    }
+
+                    return string.Join(Environment.NewLine, members);
             }
 
             return string.Empty;
@@ -169,7 +186,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private string PropertyGetStmt(Declaration member, string interfaceName)
         {
-            var memberParams = GetParameters(member);
+            var memberParams = member.DeclarationType == DeclarationType.Variable ? new List<Parameter>() : GetParameters(member);
 
             var memberSignature = $"Private Property Get {interfaceName}_{member.IdentifierName}({string.Join(", ", memberParams)}) As {member.AsTypeName}";
             var memberCloseStatement = "End Property" + Environment.NewLine;
@@ -181,7 +198,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             var memberParams = GetParameters(member);
 
-            var memberSignature = $"Private Property Let {interfaceName}_{member.IdentifierName}({string.Join(", ", memberParams)})";
+            var memberSignature = $"Private Property Let {interfaceName}_{member.IdentifierName}({ string.Join(", ", memberParams)})";
             var memberCloseStatement = "End Property" + Environment.NewLine;
 
             return string.Join(Environment.NewLine, memberSignature, MemberBody, memberCloseStatement);
@@ -199,8 +216,21 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private List<Parameter> GetParameters(Declaration member)
         {
+            if (member.DeclarationType == DeclarationType.Variable)
+            {
+                return new List<Parameter>
+                {
+                    new Parameter
+                    {
+                        Accessibility = Tokens.ByVal,
+                        Name = "rhs",
+                        AsTypeName = member.AsTypeName
+                    }
+                };
+            }
+
             var parameters = _declarations.Where(item => item.DeclarationType == DeclarationType.Parameter &&
-                              item.ParentScopeDeclaration == member)
+                              ReferenceEquals(item.ParentScopeDeclaration, member))
                            .OrderBy(o => o.Selection.StartLine)
                            .ThenBy(t => t.Selection.StartColumn)
                            .Select(p => new Parameter
@@ -219,29 +249,22 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private IEnumerable<Declaration> GetInterfaceMembers()
         {
-            return _declarations.FindInterfaceMembers()
-                                .Where(d => d.ComponentName == _targetInterface.IdentifierName)
+            return _declarations.FindInterfaceMembers(_targetInterface)
                                 .OrderBy(d => d.Selection.StartLine)
                                 .ThenBy(d => d.Selection.StartColumn);
         }
 
-        private IEnumerable<Declaration> GetImplementedMembers()
+        private IEnumerable<Declaration> GetImplementedMembers(IEnumerable<Declaration> interfaceMembers)
         {
-            return _declarations.FindInterfaceImplementationMembers()
-                                .Where(item => item.ProjectId == _targetInterface.ProjectId
-                                        && item.ComponentName == _targetClass.IdentifierName
-                                        && item.IdentifierName.StartsWith(_targetInterface.ComponentName + "_")
-                                        && !item.Equals(_targetClass))
-                                .OrderBy(d => d.Selection.StartLine)
-                                .ThenBy(d => d.Selection.StartColumn);
+            return _declarations.Where(decl => ReferenceEquals(decl.ParentDeclaration, _targetClass)
+                                               && interfaceMembers.Any(decl.ImplementsInterfaceMember))
+                .OrderBy(o => o.Selection.StartLine)
+                .ThenBy(t => t.Selection.StartColumn);
         }
 
         private List<Declaration> GetNonImplementedMembers(IEnumerable<Declaration> interfaceMembers, IEnumerable<Declaration> implementedMembers)
         {
-            return interfaceMembers.Where(d => !implementedMembers
-                    .Select(s => new Tuple<string, DeclarationType>(s.IdentifierName, s.DeclarationType))
-                    .Contains(new Tuple<string, DeclarationType>($"{_targetInterface.ComponentName}_{d.IdentifierName}",
-                        d.DeclarationType)))
+            return interfaceMembers.Where(d => !implementedMembers.Any(member => member.ImplementsInterfaceMember(d)))
                 .OrderBy(o => o.Selection.StartLine)
                 .ThenBy(t => t.Selection.StartColumn)
                 .ToList();
