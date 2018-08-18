@@ -166,51 +166,6 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void SingleFolderAnnotation_NoResult()
-        {
-            const string inputCode =
-                @"'@Folder ""Foo""
-Public Sub Foo()
-    Const const1 As Integer = 9
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IllegalAnnotationInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void MultipleFolderAnnotations_ReturnsResult()
-        {
-            const string inputCode =
-                @"Option Explicit
-'@Folder ""Foo.Bar""
-'@Folder ""Biz.Buz""
-Public Sub Foo()
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IllegalAnnotationInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void CorrectTestModuleAnnotation_NoResult()
         {
             const string inputCode = @"

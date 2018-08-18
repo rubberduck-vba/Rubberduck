@@ -251,7 +251,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>This is the default setting, it does not need to be specified.</value>
   </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level; module and member annotations should only be specified once.</value>
+    <value>An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level.</value>
   </data>
   <data name="MissingAnnotationInspection" xml:space="preserve">
     <value>Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
