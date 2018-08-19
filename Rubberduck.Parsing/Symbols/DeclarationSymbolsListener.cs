@@ -222,14 +222,8 @@ namespace Rubberduck.Parsing.Symbols
             else
             {
                 var key = (identifierName, declarationType);
-                if (!_attributes.TryGetValue(key, out var attributes))
-                {
-                    attributes = null;
-                }
-                if (!_membersAllowingAttributes.TryGetValue(key, out var attributesPassContext))
-                {
-                    attributesPassContext = null;
-                }
+                _attributes.TryGetValue(key, out var attributes);
+                _membersAllowingAttributes.TryGetValue(key, out var attributesPassContext);
 
                 var annotations = FindAnnotations(selection.StartLine);
                 switch (declarationType)

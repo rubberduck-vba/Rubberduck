@@ -14,69 +14,38 @@ namespace Rubberduck.Parsing.VBA.Parsing
         private readonly Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> _membersAllowingAttributes
             = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
 
-        private readonly (string scopeIdentifier, DeclarationType scopeType) _initialScope;
+        private readonly (string scopeIdentifier, DeclarationType scopeType) _moduleScope;
         private (string scopeIdentifier, DeclarationType scopeType) _currentScope;
-        private IAnnotatedContext _currentAnnotatedContext;
         private Attributes _currentScopeAttributes;
 
-        public AttributeListener((string scopeIdentifier, DeclarationType scopeType) initialScope)
+        public AttributeListener((string scopeIdentifier, DeclarationType scopeType) moduleScope)
         {
-            _initialScope = initialScope;
-            _currentScope = initialScope;
-            _currentScopeAttributes = new Attributes();
+            _moduleScope = moduleScope;
+            _currentScope = moduleScope;
         }
 
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> Attributes => _attributes;
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes => _membersAllowingAttributes;
 
-        public override void ExitAnnotation(VBAParser.AnnotationContext context)
+        public override void EnterStartRule(VBAParser.StartRuleContext context)
         {
-            _currentAnnotatedContext?.Annotate(context);
-            context.AnnotatedContext = _currentAnnotatedContext as ParserRuleContext;
-        }
-
-        public override void ExitModuleAttributes(VBAParser.ModuleAttributesContext context)
-        {
-            if(_currentScopeAttributes.Any() && !_attributes.ContainsKey(_currentScope))
-            {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
-            }
+            _membersAllowingAttributes[_moduleScope] = context;
         }
 
         public override void EnterModuleVariableStmt(VBAParser.ModuleVariableStmtContext context)
         {
-            _currentScopeAttributes = new Attributes();
-            var annotatedContext = context.variableStmt().variableListStmt().variableSubStmt().Last();
-            _currentScope = (Identifier.GetName(annotatedContext), DeclarationType.Variable);
-            _currentAnnotatedContext = annotatedContext;
-            _membersAllowingAttributes[_currentScope] = context;
-        }
-
-        public override void ExitModuleVariableStmt(VBAParser.ModuleVariableStmtContext context)
-        {
-            if (_currentScopeAttributes.Any())
+            var variableDeclarationStatemenList = context.variableStmt().variableListStmt().variableSubStmt();
+            foreach (var variableContext in variableDeclarationStatemenList)
             {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
-                var annotatedContext = context.variableStmt().variableListStmt().variableSubStmt().Last();
-                annotatedContext.AddAttributes(_currentScopeAttributes);
+                var variableName = Identifier.GetName(variableContext);
+                _membersAllowingAttributes[(variableName, DeclarationType.Variable)] = context;
             }
-
-            ResetScope();
-        }
-
-        private void ResetScope()
-        {
-            _currentScope = _initialScope;
-            _currentScopeAttributes = _attributes.TryGetValue(_currentScope, out var attributes)
-                ? attributes
-                : new Attributes();
         }
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
             _currentScopeAttributes = new Attributes();
             _currentScope = (Identifier.GetName(context.subroutineName()), DeclarationType.Procedure);
-            _currentAnnotatedContext = context;
             _membersAllowingAttributes[_currentScope] = context;
         }
 
@@ -91,11 +60,18 @@ namespace Rubberduck.Parsing.VBA.Parsing
             ResetScope();
         }
 
+        private void ResetScope()
+        {
+            _currentScope = _moduleScope;
+            _currentScopeAttributes = _attributes.TryGetValue(_currentScope, out var attributes)
+                ? attributes
+                : new Attributes();
+        }
+
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
             _currentScopeAttributes = new Attributes();
             _currentScope = (Identifier.GetName(context.functionName()), DeclarationType.Function);
-            _currentAnnotatedContext = context;
             _membersAllowingAttributes[_currentScope] = context;
         }
 
@@ -114,7 +90,6 @@ namespace Rubberduck.Parsing.VBA.Parsing
         {
             _currentScopeAttributes = new Attributes();
             _currentScope = (Identifier.GetName(context.functionName()), DeclarationType.PropertyGet);
-            _currentAnnotatedContext = context;
             _membersAllowingAttributes[_currentScope] = context;
         }
 
@@ -133,7 +108,6 @@ namespace Rubberduck.Parsing.VBA.Parsing
         {
             _currentScopeAttributes = new Attributes();
             _currentScope = (Identifier.GetName(context.subroutineName()), DeclarationType.PropertyLet);
-            _currentAnnotatedContext = context;
             _membersAllowingAttributes[_currentScope] = context;
         }
 
@@ -152,7 +126,6 @@ namespace Rubberduck.Parsing.VBA.Parsing
         {
             _currentScopeAttributes = new Attributes();
             _currentScope = (Identifier.GetName(context.subroutineName()), DeclarationType.PropertySet);
-            _currentAnnotatedContext = context;
             _membersAllowingAttributes[_currentScope] = context;
         }
 
@@ -169,19 +142,54 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
         public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)
         {
-            var values = context.attributeValue().Select(e => e.GetText().Replace("\"", string.Empty)).ToList();
+            var attributeName = context.attributeName().GetText();
+            var attributeNameParts = attributeName.Split('.');
 
-            var attribute = _currentScopeAttributes
-                .SingleOrDefault(a => a.Name.Equals(context.attributeName().GetText(), StringComparison.OrdinalIgnoreCase));
-            if (attribute != null)
+            //Module attribute
+            if (attributeNameParts.Length == 1)
             {
-                foreach(var value in values.Where(v => !attribute.HasValue(v)))
-                {
-                    attribute.AddValue(value);
-                }
+                AddOrUpdateAttribute(_moduleScope, attributeName, context);
+                return;
             }
 
-            _currentScopeAttributes.Add(new AttributeNode(context));
+            var scopeName = attributeNameParts[0]; 
+
+            if (scopeName.Equals(_currentScope.scopeIdentifier, StringComparison.OrdinalIgnoreCase))
+            {
+                AddOrUpdateAttribute(_currentScopeAttributes, attributeName, context);
+                return;
+            }
+
+            //Member variable attributes
+            var moduleVariableScope = (scopeName, DeclarationType.Variable);
+            if (_membersAllowingAttributes.TryGetValue(moduleVariableScope, out _))
+            {
+                AddOrUpdateAttribute(moduleVariableScope, attributeName, context);
+            }
+        }
+
+        private void AddOrUpdateAttribute((string scopeName, DeclarationType Variable) moduleVariableScope,
+            string attributeName, VBAParser.AttributeStmtContext context)
+        {
+            if (!_attributes.TryGetValue(moduleVariableScope, out var attributes))
+            {
+                attributes = new Attributes();
+                _attributes.Add(moduleVariableScope, attributes);
+            }
+
+            AddOrUpdateAttribute(attributes, attributeName, context);
+        }
+
+        private static void AddOrUpdateAttribute(Attributes attributes, string attributeName, VBAParser.AttributeStmtContext context)
+        {
+            var attribute = attributes.SingleOrDefault(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase));
+            if (attribute != null)
+            {
+                attribute.AddContext(context);
+                return;
+            }
+
+            attributes.Add(new AttributeNode(context));
         }
     }
 }
