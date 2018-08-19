@@ -97,9 +97,14 @@ moduleDeclarationsElement :
     | eventStmt
     | constStmt
     | implementsStmt
-    | variableStmt
+    | moduleVariableStmt
     | moduleOption
     | udtDeclaration)
+;
+
+moduleVariableStmt :
+	variableStmt
+	(endOfLine attributeStmt)*
 ;
 
 moduleBody : 
