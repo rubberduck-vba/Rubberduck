@@ -19,6 +19,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
 // ReSharper disable ExplicitCallerInfoArgument
@@ -33,6 +34,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly GeneralSettings _generalSettings;
         private readonly WindowSettings _windowSettings;
         private readonly IUiDispatcher _uiDispatcher;
+        private readonly VBEKind _vbeKind;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -42,7 +44,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             List<CommandBase> commands,
             IConfigProvider<GeneralSettings> generalSettingsProvider, 
             IConfigProvider<WindowSettings> windowSettingsProvider, 
-            IUiDispatcher uiDispatcher)
+            IUiDispatcher uiDispatcher,
+            IVBE vbe)
         {
             _folderHelper = folderHelper;
             _state = state;
@@ -50,6 +53,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
             _windowSettingsProvider = windowSettingsProvider;
             _uiDispatcher = uiDispatcher;
+            _vbeKind = vbe.Kind;
 
             if (generalSettingsProvider != null)
             {
@@ -68,15 +72,19 @@ namespace Rubberduck.Navigation.CodeExplorer
                 o => reparseCommand.Execute(o),
                 o => !IsBusy && reparseCommand != null && reparseCommand.CanExecute(o));
 
-            OpenCommand = commands.OfType<UI.CodeExplorer.Commands.OpenCommand>().SingleOrDefault();
+            OpenCommand = commands.OfType<OpenCommand>().SingleOrDefault();
             OpenDesignerCommand = commands.OfType<OpenDesignerCommand>().SingleOrDefault();
 
-            AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
-            AddTestModuleWithStubsCommand = commands.OfType<AddTestModuleWithStubsCommand>().SingleOrDefault();
-
+            AddVBFormCommand = commands.OfType<AddVBFormCommand>().SingleOrDefault();
+            AddMDIFormCommand = commands.OfType<AddMDIFormCommand>().SingleOrDefault();
+            AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
             AddStdModuleCommand = commands.OfType<AddStdModuleCommand>().SingleOrDefault();
             AddClassModuleCommand = commands.OfType<AddClassModuleCommand>().SingleOrDefault();
-            AddUserFormCommand = commands.OfType<AddUserFormCommand>().SingleOrDefault();
+            AddUserControlCommand = commands.OfType<AddUserControlCommand>().SingleOrDefault();
+            AddPropertyPageCommand = commands.OfType<AddPropertyPageCommand>().SingleOrDefault();
+            AddUserDocumentCommand = commands.OfType<AddUserDocumentCommand>().SingleOrDefault();
+            AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
+            AddTestModuleWithStubsCommand = commands.OfType<AddTestModuleWithStubsCommand>().SingleOrDefault();            
 
             OpenProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
             RenameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
@@ -90,7 +98,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             ImportCommand = commands.OfType<ImportCommand>().SingleOrDefault();
             ExportCommand = commands.OfType<ExportCommand>().SingleOrDefault();
-            ExportAllCommand = commands.OfType<Rubberduck.UI.Command.ExportAllCommand>().SingleOrDefault();
+            ExportAllCommand = commands.OfType<ExportAllCommand>().SingleOrDefault();
             
             _externalRemoveCommand = commands.OfType<RemoveCommand>().SingleOrDefault();
             if (_externalRemoveCommand != null)
@@ -511,11 +519,17 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public CommandBase OpenCommand { get; }
 
+
+        public CommandBase AddVBFormCommand { get; }
+        public CommandBase AddMDIFormCommand { get; }
+        public CommandBase AddUserFormCommand { get; }
+        public CommandBase AddStdModuleCommand { get; }
+        public CommandBase AddClassModuleCommand { get; }                
+        public CommandBase AddUserControlCommand { get; }
+        public CommandBase AddPropertyPageCommand { get; }
+        public CommandBase AddUserDocumentCommand { get; }
         public CommandBase AddTestModuleCommand { get; }
         public CommandBase AddTestModuleWithStubsCommand { get; }
-        public CommandBase AddStdModuleCommand { get; }
-        public CommandBase AddClassModuleCommand { get; }
-        public CommandBase AddUserFormCommand { get; }
 
         public CommandBase OpenDesignerCommand { get; }
         public CommandBase OpenProjectPropertiesCommand { get; }
@@ -559,6 +573,10 @@ namespace Rubberduck.Navigation.CodeExplorer
         public Visibility TreeViewVisibility => Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility EmptyUIRefreshMessageVisibility => _isBusy ? Visibility.Hidden : Visibility.Visible;
+
+        public Visibility VB6Visibility => _vbeKind == VBEKind.Standalone ? Visibility.Visible : Visibility.Collapsed;
+
+        public Visibility VBAVisibility => _vbeKind == VBEKind.Hosted ? Visibility.Visible : Visibility.Collapsed;
 
         public void FilterByName(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
         {

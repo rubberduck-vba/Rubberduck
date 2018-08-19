@@ -682,8 +682,13 @@
     <Resource Include="Icons\Fugue\status-offline.png" />
     <Resource Include="Icons\Fugue\ui-scroll-pane-form.png" />
     <Resource Include="Icons\Fugue\ui-tab-content.png" />
-    <Content Include="Icons\Custom\PNG\MdiForm.png" />
+    <Resource Include="Icons\Custom\PNG\MdiForm.png" />
     <Resource Include="Icons\Fugue\document-import.png" />
+    <Resource Include="Icons\Custom\PNG\AddMdiForm.png" />
+    <Resource Include="Icons\Custom\PNG\AddPropertyPage.png" />
+    <Resource Include="Icons\Custom\PNG\AddResourceFile.png" />
+    <Resource Include="Icons\Custom\PNG\AddUserControl.png" />
+    <Resource Include="Icons\Custom\PNG\AddUserDocument.png" />
     <Content Include="Splash.png" />
     <Resource Include="Icons\Fugue\lock--exclamation.png" />
     <Resource Include="Rubberduck.png" />

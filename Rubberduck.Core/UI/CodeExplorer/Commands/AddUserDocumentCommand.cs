@@ -6,23 +6,23 @@ using Rubberduck.VBEditor.SafeComWrappers;
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     [CodeExplorerCommand]
-    public class AddClassModuleCommand : CommandBase
+    public class AddUserDocumentCommand : CommandBase
     {
         private readonly AddComponentCommand _addComponentCommand;
 
-        public AddClassModuleCommand(AddComponentCommand addComponentCommand) : base(LogManager.GetCurrentClassLogger())
+        public AddUserDocumentCommand(AddComponentCommand addComponentCommand) : base(LogManager.GetCurrentClassLogger())
         {
             _addComponentCommand = addComponentCommand;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel, ProjectTypes.All);
+            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel, new []{ProjectType.ActiveXExe, ProjectType.ActiveXDll});
         }
 
         protected override void OnExecute(object parameter)
         {
-            _addComponentCommand.AddComponent(parameter as CodeExplorerItemViewModel, ComponentType.ClassModule);
+            _addComponentCommand.AddComponent(parameter as CodeExplorerItemViewModel, ComponentType.DocObject);
         }
     }
 }

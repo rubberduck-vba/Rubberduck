@@ -374,6 +374,11 @@
     <Compile Include="AutoComplete\AutoCompleteClosingParenthese.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingString.cs" />
     <Compile Include="AutoComplete\AutoCompleteService.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\AddPropertyPageCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\AddUserDocumentCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\AddUserControlCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\AddMDIFormCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\AddVBFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
