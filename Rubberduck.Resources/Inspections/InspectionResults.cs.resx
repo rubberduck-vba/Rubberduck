@@ -1,0 +1,348 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="UnassignedVariableUsageInspection" xml:space="preserve">
+    <value>Proměnná '{0}' je použita, ale nepřiřazena</value>
+  </data>
+  <data name="ParameterCanBeByValInspection" xml:space="preserve">
+    <value>Parametr '{0}' může být předán jako hodnota</value>
+  </data>
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
+    <value>Parametr '{0}' není nikde použit</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
+    <value>Procedura '{0}' může být přepsána jako funkce</value>
+  </data>
+  <data name="OptionExplicitInspection" xml:space="preserve">
+    <value>V '{0}' není specifikováno 'Option Explicit'</value>
+  </data>
+  <data name="EmptyStringLiteralInspection_Duplicate[1]" xml:space="preserve">
+    <value>Je preferováno použití 'vbNullString' místo prázdného znaku řetězce ""</value>
+  </data>
+  <data name="VariableNotAssignedInspection" xml:space="preserve">
+    <value>Proměnná '{0}' není přidělena</value>
+  </data>
+  <data name="ObjectVariableNotSetInspection" xml:space="preserve">
+    <value>Proměnná '{0}' objektu je přidělena bez použití klíčového slova 'Set'</value>
+  </data>
+  <data name="DefaultProjectNameInspection" xml:space="preserve">
+    <value>Projekt '{0}' má výchozí jméno</value>
+  </data>
+  <data name="ObsoleteCallStatementInspection" xml:space="preserve">
+    <value>Přiřazení používá zastaralý 'Call' modifikátor</value>
+  </data>
+  <data name="ObsoleteCommentSyntaxInspection" xml:space="preserve">
+    <value>Komentář používá zastaralou 'Rem' značku</value>
+  </data>
+  <data name="ObsoleteLetStatementInspection" xml:space="preserve">
+    <value>Přiřazení používá zastaralý 'Let' modifikátor</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
+    <value>Veřejné pole '{0}' porušuje zapouzdření</value>
+  </data>
+  <data name="IdentifierNotUsedInspection" xml:space="preserve">
+    <value>{0} '{1}' není použito</value>
+  </data>
+  <data name="ImplicitByRefModifierInspection" xml:space="preserve">
+    <value>Parametr '{0}' je implicitně předán jako reference</value>
+  </data>
+  <data name="ImplicitPublicMemberInspection" xml:space="preserve">
+    <value>Člen '{0}' je implicitně veřejný</value>
+  </data>
+  <data name="ImplicitVariantDeclarationInspection" xml:space="preserve">
+    <value>{0} '{1}' je implicitně typu 'Variant'</value>
+  </data>
+  <data name="ImplicitVariantReturnTypeInspection" xml:space="preserve">
+    <value>Návratná hodnota členu '{0}' je implicitně typu 'Variant'</value>
+  </data>
+  <data name="MultilineParameterInspection" xml:space="preserve">
+    <value>Parametr '{0}' je specifikován na více řádcích</value>
+  </data>
+  <data name="NonReturningFunctionInspection" xml:space="preserve">
+    <value>Návratná hodnota členu '{0}' není nikdy přiřazena</value>
+  </data>
+  <data name="ObsoleteGlobalInspection" xml:space="preserve">
+    <value>{0} '{1}' používá zastaralý 'Global' modifikátor přístupu</value>
+  </data>
+  <data name="EmptyStringLiteralInspection" xml:space="preserve">
+    <value>Preferujte 'vbNullString' před prázdným znakem řetězce ""</value>
+  </data>
+  <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
+    <value>Přesunout proměnnou '{0}' v modulu do menšího rozsahu.</value>
+  </data>
+  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
+    <value>'{0}' má více jak jednu '@Folder' anotaci.</value>
+  </data>
+  <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
+    <value>Procedura '{0}' může být napsána jako funkce.</value>
+  </data>
+  <data name="IdentifierNameInspection" xml:space="preserve">
+    <value>Zvažte přejmenování {0} '{1}'</value>
+  </data>
+  <data name="WriteOnlyPropertyInspection" xml:space="preserve">
+    <value>Property '{0}' nemá žádný 'getter'</value>
+  </data>
+  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
+    <value>Reference '{0}' objektu je automaticky instancovaná</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+    <value>Návratná hodnota funkce '{0}' není nikdy použita.</value>
+  </data>
+  <data name="AssignedByValParameterInspection" xml:space="preserve">
+    <value>Parametr '{0}' je předán pomocí ByVal a je mu přiřazena hodnota</value>
+  </data>
+  <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
+    <value>Člen '{0}' implicitně odkazuje na 'ActiveSheet'</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReferenceInspection" xml:space="preserve">
+    <value>Člen'{0}' implicitně odkazuje na 'ActiveWorkbook'</value>
+  </data>
+  <data name="MultipleDeclarationsInspection" xml:space="preserve">
+    <value>Instrukce obsahuje množství deklarací</value>
+  </data>
+  <data name="ObsoleteTypeHintInspection" xml:space="preserve">
+    <value>{0} z {1} '{2}' používá zastaralou typovou nápovědu</value>
+  </data>
+  <data name="OptionBaseInspection" xml:space="preserve">
+    <value>Komponenta '{0}' používá 'Option Base 1'</value>
+  </data>
+  <data name="UntypedFunctionUsageInspection" xml:space="preserve">
+    <value>Nahradit funkci '{0}' existující typovou funkcí</value>
+  </data>
+  <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
+    <value>{0} '{1}' je implicitně typu 'Variant'</value>
+  </data>
+  <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
+    <value>Výraz '{0}' očekával parametr, ale žádný nebyl specifikován.</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
+    <value>Proměnná '{0}' na úrovni modulu je deklarována klíčovým slovem 'Dim'.</value>
+  </data>
+  <data name="UndeclaredVariableInspection" xml:space="preserve">
+    <value>Lokální proměnná '{0}' není deklarována</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
+    <value>Přidělení '{0}' implicitně přidělí výchozího člena třídy '{1}'</value>
+  </data>
+  <data name="AggregateInspection" xml:space="preserve">
+    <value>{0} ({1} výsledky)</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
+    <value>Člen '{0}' nebyl nalezen pro typ '{1}' v čase kompilace.</value>
+  </data>
+  <data name="HostSpecificExpressionInspection" xml:space="preserve">
+    <value>Výraz '{0}' nelze validovat v čase kompilace.</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
+    <value>Použití pozdního bound člena Application.{0}.</value>
+  </data>
+  <data name="OptionBaseZeroInspection" xml:space="preserve">
+    <value>Komponenta '{0}' používá 'Option Base 1'</value>
+  </data>
+  <data name="IllegalAnnotationInspection" xml:space="preserve">
+    <value>Anotace '{0}' je v tomto kontextu ilegální.</value>
+  </data>
+  <data name="MissingAnnotationInspection" xml:space="preserve">
+    <value>Modul nebo člen '{0}' má atribut '{1}', avšak žádnou korespondující anotaci</value>
+  </data>
+  <data name="MissingAttributeInspection" xml:space="preserve">
+    <value>Modul nebo člen '{0}' má '{1}' anotaci, ale žádný korespondující atribut</value>
+  </data>
+  <data name="EmptyIfBlockInspection" xml:space="preserve">
+    <value>'If' blok neobsahuje žádné spustitelné příkazy.</value>
+  </data>
+  <data name="RedundantOptionInspection" xml:space="preserve">
+    <value>'{0}' nemá žádný efekt</value>
+  </data>
+  <data name="RedundantByRefModifierInspection" xml:space="preserve">
+    <value>Parametr má '{0}' má nadbytečný modifikátor 'ByRef'</value>
+  </data>
+  <data name="LineLabelNotUsedInspection" xml:space="preserve">
+    <value>Nálepka '{0}' řádku není použita</value>
+  </data>
+  <data name="EmptyElseBlockInspection" xml:space="preserve">
+    <value>'Else' blok neobsahuje žádné spustitelné příkazy</value>
+  </data>
+  <data name="IntegerDataTypeInspection" xml:space="preserve">
+    <value>{0} '{1}' je deklarován jako Integer</value>
+  </data>
+  <data name="StopKeywordInspection" xml:space="preserve">
+    <value>Klíčové slovo 'Stop' pozastavuje vykonávání</value>
+  </data>
+  <data name="EmptyCaseBlockInspection" xml:space="preserve">
+    <value>'Case' blok neobsahuje žádné spustitelné příkazy</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspection" xml:space="preserve">
+    <value>'Do...While' smyčka neobsahuje žádné spustitelné příkazy</value>
+  </data>
+  <data name="EmptyForEachBlockInspection" xml:space="preserve">
+    <value>'For-Each' smyčka neobsahuje žádné spustitelné příkazy</value>
+  </data>
+  <data name="EmptyForLoopBlockInspection" xml:space="preserve">
+    <value>'For...Next' smyčka neobsahuje žádné spustitelné příkazy.</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspection" xml:space="preserve">
+    <value>'While...Wend' smyčka neobsahuje žádné spustitelné příkazy.</value>
+  </data>
+  <data name="ShadowedDeclarationInspection" xml:space="preserve">
+    <value>{0} '{1}' skrývá {2} '{3}'</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspection" xml:space="preserve">
+    <value>Run-time error byl vyvolán použitím zastaralého 'Error' příkazu</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
+    <value>Boolean znak '{0}' byl zadán v podmínce</value>
+  </data>
+  <data name="EmptyModuleInspection" xml:space="preserve">
+    <value>Modul/třída {0} je prázdná.</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Není schopno dosáhnout na 'Case' klauzuli '{0}'</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>Nedosažitelný 'Case Else': Všechny potřebné hodnoty jsou vyřešeny předchozím 'Case' příkazem/příkazy</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>Neplatný Typ: 'Case' Příkaz nemůže být vyhodnocen jako typ příkazu 'Select'</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>Nedosažitelné: 'Case' příkaz je vyřešen předchozím 'Case' příkazem/příkazy</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
+    <value>Errory jsou ignorovány, avšak už nikdy neřešeny</value>
+  </data>
+  <data name="DefTypeStatementInspection" xml:space="preserve">
+    <value>Zvažte explicitní použití 'As {0}' místo '{1}'</value>
+  </data>
+  <data name="StepOneIsRedundantInspection" xml:space="preserve">
+    <value>1 je výchozí krok pro 'for-next' smyčku a je tedy zbytečné ho definovat</value>
+  </data>
+  <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
+    <value>'Step' není specifikován</value>
+  </data>
+  <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
+    <value>Staticky přístupný list lze referovat jeho kódovým jménem</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Zvažte nahrazení volání '{0}'. {1}</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>'{0}' je deklarováno zastaralou 'CDecl' volací konvencí.</value>
+  </data>
+</root>

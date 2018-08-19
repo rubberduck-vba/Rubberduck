@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
@@ -114,10 +115,16 @@ namespace Rubberduck.UI.Command
 
         private string GetNextTestMethodName(IVBComponent component)
         {
-            var names = component.GetTests(_vbe, _state).Select(test => test.Declaration.IdentifierName);
-            var index = names.Count(n => n.StartsWith(TestMethodBaseName)) + 1;
+            var names = new HashSet<string>(_state.DeclarationFinder.Members(component.QualifiedModuleName)
+                .Select(test => test.IdentifierName).Where(decl => decl.StartsWith(TestMethodBaseName)));
 
-            return string.Concat(TestMethodBaseName, index);
+            var index = 1;
+            while (names.Contains($"{TestMethodBaseName}{index}"))
+            {
+                index++;
+            }
+
+            return $"{TestMethodBaseName}{index}";
         }
     }
 }
