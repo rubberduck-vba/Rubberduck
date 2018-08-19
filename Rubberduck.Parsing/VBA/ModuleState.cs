@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
@@ -25,6 +26,7 @@ namespace Rubberduck.Parsing.VBA
         public List<IAnnotation> Annotations { get; private set; }
         public SyntaxErrorException ModuleException { get; private set; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
 
         public bool IsNew { get; private set; }
 
@@ -39,6 +41,7 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
+            MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
 
             IsNew = true;
             State = ParserState.Pending;
@@ -55,6 +58,7 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = null;
             ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
+            MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
 
             IsNew = true;
         }
@@ -70,21 +74,7 @@ namespace Rubberduck.Parsing.VBA
             Annotations = new List<IAnnotation>();
             ModuleException = moduleException;
             ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
-
-            IsNew = true;
-        }
-
-        public ModuleState(IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> moduleAttributes)
-        {
-            Declarations = new ConcurrentDictionary<Declaration, byte>();
-            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            ParseTree = null;
-            State = ParserState.None;
-            ModuleContentHashCode = 0;
-            Comments = new List<CommentNode>();
-            Annotations = new List<IAnnotation>();
-            ModuleException = null;
-            ModuleAttributes = moduleAttributes;
+            MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
 
             IsNew = true;
         }
@@ -145,6 +135,12 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState SetModuleAttributes(IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> moduleAttributes)
         {
             ModuleAttributes = moduleAttributes;
+            return this;
+        }
+
+        public ModuleState SetMembersAllowingAttributes(IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> membersAllowingAttributes)
+        {
+            MembersAllowingAttributes = membersAllowingAttributes;
             return this;
         }
 

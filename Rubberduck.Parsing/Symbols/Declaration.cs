@@ -33,6 +33,7 @@ namespace Rubberduck.Parsing.Symbols
             Accessibility accessibility,
             DeclarationType declarationType,
             ParserRuleContext context,
+            ParserRuleContext attributesPassContext,
             Selection selection,
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
@@ -51,6 +52,7 @@ namespace Rubberduck.Parsing.Symbols
                 accessibility,
                 declarationType,
                 context,
+                attributesPassContext,
                 selection,
                 isArray,
                 asTypeContext,
@@ -88,6 +90,7 @@ namespace Rubberduck.Parsing.Symbols
                   accessibility,
                   declarationType,
                   null,
+                  null,
                   Selection.Home,
                   isArray,
                   asTypeContext,
@@ -107,6 +110,7 @@ namespace Rubberduck.Parsing.Symbols
             Accessibility accessibility,
             DeclarationType declarationType,
             ParserRuleContext context,
+            ParserRuleContext attributesPassContext,
             Selection selection,
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
@@ -126,6 +130,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType = declarationType;
             Selection = selection;
             Context = context;
+            AttributesPassContext = attributesPassContext;
             IsUserDefined = isUserDefined;
             _annotations = annotations;
             _attributes = attributes ?? new Attributes();
@@ -159,6 +164,7 @@ namespace Rubberduck.Parsing.Symbols
             Accessibility.Global,
             DeclarationType.Enumeration,
             null,
+            null,
             Selection.Home,
             false,
             null,
@@ -178,6 +184,7 @@ namespace Rubberduck.Parsing.Symbols
                 Accessibility.Global,
                 DeclarationType.UserDefinedType,
                 null,
+                null,
                 Selection.Home,
                 false,
                 null,
@@ -195,6 +202,7 @@ namespace Rubberduck.Parsing.Symbols
                 false,
                 Accessibility.Global,
                 DeclarationType.EnumerationMember,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -214,6 +222,7 @@ namespace Rubberduck.Parsing.Symbols
                 false,
                 Accessibility.Global,
                 field.Type,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -282,6 +291,7 @@ namespace Rubberduck.Parsing.Symbols
         public QualifiedModuleName QualifiedModuleName => QualifiedName.QualifiedModuleName;
 
         public ParserRuleContext Context { get; }
+        public ParserRuleContext AttributesPassContext { get; }
 
         private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
         public IEnumerable<IdentifierReference> References => _references;
