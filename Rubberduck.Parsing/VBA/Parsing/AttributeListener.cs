@@ -63,9 +63,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
         private void ResetScope()
         {
             _currentScope = _moduleScope;
-            _currentScopeAttributes = _attributes.TryGetValue(_currentScope, out var attributes)
-                ? attributes
-                : new Attributes();
+            _currentScopeAttributes = null;
         }
 
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
@@ -154,7 +152,8 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
             var scopeName = attributeNameParts[0]; 
 
-            if (scopeName.Equals(_currentScope.scopeIdentifier, StringComparison.OrdinalIgnoreCase))
+            //Might be an attribute for the enclosing procedure, function or poperty.
+            if (_currentScopeAttributes != null && scopeName.Equals(_currentScope.scopeIdentifier, StringComparison.OrdinalIgnoreCase))
             {
                 AddOrUpdateAttribute(_currentScopeAttributes, attributeName, context);
                 return;
