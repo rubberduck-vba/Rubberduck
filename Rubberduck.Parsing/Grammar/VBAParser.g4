@@ -109,7 +109,7 @@ moduleVariableStmt :
 
 moduleBody : 
     whiteSpace?
-    (moduleBodyElement endOfStatement)*;
+    ((moduleBodyElement | attributeStmt) endOfStatement)*;
 
 moduleBodyElement : 
     functionStmt 
