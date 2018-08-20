@@ -59,16 +59,40 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return;
             }
 
-            var rangeClauseFilter = BuildRangeClauseFilter();
+            var remainingCasesToInspect = new List<VBAParser.CaseClauseContext>();
+
+            foreach (var caseClause in _caseClauses)
+            {
+                var containsMismatch = false;
+                foreach( var range in caseClause.rangeClause())
+                {
+                    var childResults = ParseTreeValueResults.GetChildResults(range);
+                    var childValues = childResults.Select(ch => ParseTreeValueResults.GetValue(ch));
+                    if (childValues.Any(chr => chr.IsMismatchExpression))
+                    {
+                        containsMismatch = true;
+                    }
+                }
+                if (containsMismatch)
+                {
+                    MismatchTypeCases.Add(caseClause);
+                }
+                else
+                {
+                    remainingCasesToInspect.Add(caseClause);
+                }
+            }
+
+            var rangeClauseFilter = BuildRangeClauseFilter(remainingCasesToInspect);
             if (!(_selectExpressionValue is null) && _selectExpressionValue.ParsesToConstantValue)
             {
                 rangeClauseFilter.SelectExpressionValue = _selectExpressionValue;
             }
 
-            foreach (var caseClause in _caseClauses)
+            foreach (var caseClause in remainingCasesToInspect)
             {
                 var rangeClauseExpressions = (from range in caseClause.rangeClause()
-                                   select GetRangeClauseExpression(range)).ToList();
+                                              select GetRangeClauseExpression(range)).ToList();
 
                 rangeClauseExpressions.ForEach(expr => rangeClauseFilter.AddExpression(expr));
 
@@ -92,13 +116,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private IExpressionFilter BuildRangeClauseFilter()
+        private IExpressionFilter BuildRangeClauseFilter(IEnumerable<VBAParser.CaseClauseContext> caseClauses)
         {
             var rangeClauseFilter = ExpressionFilterFactory.Create(SelectExpressionTypeName);
 
             if (!(GetVariableDeclarationTypeName is null))
             {
-                foreach (var caseClause in _caseClauses)
+                foreach (var caseClause in caseClauses)
                 {
                     foreach (var rangeClause in caseClause.rangeClause())
                     {
@@ -201,7 +225,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool TryDetectTypeHint(string content, out string typeName)
         {
             typeName = string.Empty;
-            if (TokenParser.TryParse(content, out ComparableDateValue _))
+            if (content.StartsWith("#") && content.EndsWith("#"))
             {
                 return false;
             }

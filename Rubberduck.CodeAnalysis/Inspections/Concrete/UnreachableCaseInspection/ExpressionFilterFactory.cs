@@ -24,13 +24,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
         {
             if (IntegralNumberExtents.Keys.Contains(typeName))
             {
-                var integralNumberFilter = new ExpressionFilterIntegral(TokenParser.TryParse);
+                var integralNumberFilter = new ExpressionFilterIntegral(LetCoercer.TryParse);
                 integralNumberFilter.SetExtents(IntegralNumberExtents[typeName].typeMin, IntegralNumberExtents[typeName].typeMax);
                 return integralNumberFilter;
             }
             else if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single))
             {
-                var floatingPointNumberFilter = new ExpressionFilter<double>(TokenParser.TryParse, typeName);
+                var floatingPointNumberFilter = new ExpressionFilter<double>(LetCoercer.TryParse, typeName);
                 if (typeName.Equals(Tokens.Single))
                 {
                     floatingPointNumberFilter.SetExtents(float.MinValue, float.MaxValue);
@@ -39,21 +39,21 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
             }
             else if (typeName.Equals(Tokens.Currency))
             {
-                var fixedPointNumberFilter = new ExpressionFilter<decimal>(TokenParser.TryParse, typeName);
+                var fixedPointNumberFilter = new ExpressionFilter<decimal>(LetCoercer.TryParse, typeName);
                 fixedPointNumberFilter.SetExtents(CURRENCYMIN, CURRENCYMAX);
                 return fixedPointNumberFilter;
             }
             else if (typeName.Equals(Tokens.Boolean))
             {
-                return new ExpressionFilterBoolean(TokenParser.TryParse);
+                return new ExpressionFilterBoolean(LetCoercer.TryParse);
             }
 
             else if (typeName.Equals(Tokens.Date))
             {
-                return new ExpressionFilterDate(TokenParser.TryParse);
+                return new ExpressionFilterDate(LetCoercer.TryParse);
             }
 
-            return new ExpressionFilter<string>(TokenParser.TryParse, typeName);
+            return new ExpressionFilter<string>(LetCoercer.TryParse, typeName);
         }
     }
 }

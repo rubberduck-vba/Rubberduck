@@ -132,7 +132,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             else if (conformTypeName.Equals(Tokens.LongLong) || conformTypeName.Equals(Tokens.Long) ||
                 conformTypeName.Equals(Tokens.Integer) || conformTypeName.Equals(Tokens.Byte))
             {
-                if (TokenParser.TryParse(valueToken, out long newVal))
+                if (LetCoercer.TryParse(valueToken, out long newVal))
                 {
                     result = newVal.ToString();
                     return true;
@@ -189,13 +189,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 var derivedTypeName = DeriveTypeName(valueToken, out bool usedTypehint);
                 if (derivedTypeName.Equals(Tokens.Date))
                 {
-                    if (TokenParser.TryParse(valueToken, out ComparableDateValue dvComparable))
+                    if (LetCoercer.TryParse(valueToken, out ComparableDateValue dvComparable))
                     {
                         result = Convert.ToDouble(dvComparable.AsDecimal).ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
                 }
-                else if (TokenParser.TryParse(valueToken, out double newVal))
+                else if (LetCoercer.TryParse(valueToken, out double newVal))
                 {
                     result = newVal.ToString(CultureInfo.InvariantCulture);
                     return true;
@@ -204,7 +204,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             else if (conformTypeName.Equals(Tokens.Boolean))
             {
-                if (TokenParser.TryParse(valueToken, out bool newVal))
+                if (LetCoercer.TryParse(valueToken, out bool newVal))
                 {
                     result = newVal.ToString(CultureInfo.InvariantCulture);
                     return true;
@@ -219,7 +219,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             else if (conformTypeName.Equals(Tokens.Currency))
             {
-                if (TokenParser.TryParse(valueToken, out decimal newVal))
+                if (LetCoercer.TryParse(valueToken, out decimal newVal))
                 {
                     var currencyValue = Math.Round(newVal, 4, MidpointRounding.ToEven);
                     result = currencyValue.ToString(CultureInfo.InvariantCulture);
@@ -237,7 +237,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     result = CoercedText;
                     return Success;
                 }
-                else if (TokenParser.TryParse(valueToken, out ComparableDateValue dvComparable))
+                else if (LetCoercer.TryParse(valueToken, out ComparableDateValue dvComparable))
                 {
                     valueToken = dvComparable.AsDate.ToString(CultureInfo.InvariantCulture);
                     result = dvComparable.AsDateLiteral();
@@ -258,7 +258,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static (bool, string) StringToDate(string sourceText)
         {
-            if (TokenParser.TryParse(sourceText, out ComparableDateValue dvComparable))
+            if (LetCoercer.TryParse(sourceText, out ComparableDateValue dvComparable))
             {
                 return (true, dvComparable.AsDateLiteral());
             }
@@ -275,7 +275,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static bool TryParseAsDateLiteral(string valueString, out ComparableDateValue value)
         {
-            return TokenParser.TryParse(valueString, out value);
+            return LetCoercer.TryParse(valueString, out value);
         }
 
         private static string[] HexPrefixes = new string[] { "&h", "&H" };

@@ -250,7 +250,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("Currency", "250?Byte", "250")]
         [TestCase("Boolean", "250?Byte", "True")]
         [TestCase("Boolean", "0?Byte", "False")]
-        [TestCase("Date", "1/1/2020?String", "#01/01/2020 00:00:00#")]
+        [TestCase("Date", @"""1/1/2020""?String", "#01/01/2020 00:00:00#")]
         [TestCase("Date", "00:03:56?String", "#12/30/1899 00:03:56#")]
         [TestCase("Double", "#01/01/2020 00:00:00#?Date", "43831")]
         [Category("Inspections")]

@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.PreProcessing;
 using System;
 using System.Collections.Generic;
+using System.Data;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -11,6 +12,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string TypeName { get; }
         bool ParsesToConstantValue { get; }
         bool ExceedsTypeRange { get; }
+        bool IsMismatchExpression { get; }
     }
 
     public struct ParseTreeValue : IParseTreeValue
@@ -53,6 +55,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return ptValue;
         }
 
+        public static IParseTreeValue CreateMismatchExpression(string value, string declaredType)
+        {
+            var ptValue = new ParseTreeValue()
+            {
+                TypeName = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
+                ValueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ParsesToConstantValue = false,
+                IsMismatchExpression = true
+
+            };
+            return ptValue;
+        }
+
         public ParseTreeValue(string value, string declaredType)
         {
             _valueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor");
@@ -62,12 +77,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _hashCode = value.GetHashCode();
             _dateValue = null;
             _stringConstant = null;
+            IsMismatchExpression = false;
 
             if (declaredType == Tokens.Date)
             {
                 if (LetCoercer.TryCoerce((Tokens.String, _valueText), Tokens.Date, out string dateToken))
                 {
-                    TokenParser.TryParse(dateToken, out _dateValue);
+                    LetCoercer.TryParse(dateToken, out _dateValue);
                     ParsesToConstantValue = true;
                 }
                 else
@@ -108,6 +124,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         public bool ParsesToConstantValue { private set; get; }
+
+        public bool IsMismatchExpression { private set; get; }
 
         public bool ExceedsTypeRange
         {
@@ -188,57 +206,45 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public static bool TryConvert(this IParseTreeValue parseTreeValue, out long value)
+        public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out long newValue)
+            => TryLetCoerce(parseTreeValue, long.Parse, Tokens.Long, out newValue);
+
+        public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out double newValue)
+        => TryLetCoerce(parseTreeValue, double.Parse, Tokens.Double, out newValue);
+
+        public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out decimal newValue)
+            => TryLetCoerce(parseTreeValue, decimal.Parse, Tokens.Currency, out newValue);
+
+        public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out bool value)
+            => TryLetCoerce(parseTreeValue, bool.Parse, Tokens.Boolean, out value);
+
+        public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out string value)
+            => TryLetCoerce(parseTreeValue, (a) => { return a; }, Tokens.String, out value);
+
+        private static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out ComparableDateValue value)
+            => TryLetCoerceToDate(parseTreeValue, out value);
+
+        private static bool TryLetCoerce<T>(this IParseTreeValue parseTreeValue, Func<string, T> parser, string typeName, out T newValue)
         {
-            value = default;
-            if (parseTreeValue.TypeName != null && parseTreeValue.TypeName.Equals(Tokens.Date))
+            newValue = default;
+            if (LetCoercer.TryCoerce((parseTreeValue.TypeName, parseTreeValue.ValueText), typeName, out string valueText))
             {
-                if (parseTreeValue.TryConvert(out decimal decValue))
-                {
-                    return TokenParser.TryParse(decValue.ToString(), out value, Tokens.Currency);
-                }
-                return false;
+                newValue = parser(valueText);
+                return true;
             }
-            return TokenParser.TryParse(parseTreeValue.ValueText, out value);
+            return false;
         }
 
-        public static bool TryConvert(this IParseTreeValue parseTreeValue, out double value)
+        private static bool TryLetCoerceToDate(IParseTreeValue parseTreeValue, out ComparableDateValue value)
         {
             value = default;
-            if (parseTreeValue.TypeName != null && parseTreeValue.TypeName.Equals(Tokens.Date))
+            if (LetCoercer.TryCoerce((parseTreeValue.TypeName, parseTreeValue.ValueText), Tokens.Date, out string valueText))
             {
-                if (parseTreeValue.TryConvert(out decimal decValue))
-                {
-                    return TokenParser.TryParse(decValue.ToString(), out value);
-                }
-                return false;
+                var literal = new DateLiteralExpression(new ConstantExpression(new StringValue(valueText)));
+                value = new ComparableDateValue((DateValue)literal.Evaluate());
+                return true;
             }
-            return TokenParser.TryParse(parseTreeValue.ValueText, out value, Tokens.Double);
+            return false;
         }
-
-        public static bool TryConvert(this IParseTreeValue parseTreeValue, out decimal value)
-        {
-            value = default;
-            if (parseTreeValue.TypeName != null && parseTreeValue.TypeName.Equals(Tokens.Date))
-            {
-                if (TryConvert(parseTreeValue, out ComparableDateValue dvComparable))
-                {
-                    value = dvComparable.AsDecimal;
-                    return true;
-                }
-                return false;
-            }
-
-            return TokenParser.TryParse(parseTreeValue.ValueText, out value);
-        }
-
-        public static bool TryConvert(this IParseTreeValue parseTreeValue, out bool value)
-            => TokenParser.TryParse(parseTreeValue.ValueText, out value);
-
-        public static bool TryConvert(this IParseTreeValue parseTreeValue, out string value)
-            => TokenParser.TryParse(parseTreeValue.ValueText, out value);
-
-        private static bool TryConvert(this IParseTreeValue parseTreeValue, out ComparableDateValue value)
-            => TokenParser.TryParse(parseTreeValue.ValueText, out value);
     }
 }

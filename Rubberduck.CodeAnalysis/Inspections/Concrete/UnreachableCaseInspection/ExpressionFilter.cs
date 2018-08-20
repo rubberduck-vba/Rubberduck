@@ -441,9 +441,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool AddValueExpression(ValueExpression valueExpr)
         {
-            if (valueExpr.LHSValue.ParsesToConstantValue)
+            if (valueExpr.LHSValue.ParsesToConstantValue )
             {
-                if (Converter(valueExpr.LHS, out T result, _filterTypeName))
+                if (LetCoercer.TryCoerce((valueExpr.LHSValue.TypeName, valueExpr.LHSValue.ValueText), _filterTypeName, out string coercedValue) 
+                    && Converter(coercedValue, out T result, _filterTypeName))
                 {
                     return FiltersValue(result) ? false : AddSingleValue(result);
                 }

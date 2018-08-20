@@ -802,12 +802,9 @@ namespace RubberduckTests.Inspections.UnreachableCase
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
-        //TODO: Should this be an 'Inherently Unreachable' result
-        //Valid logic operators, but invalid with strings.
-        //VBA compiles, but a runtime error would occur - inspection does not flag runtime typemismatch
-        [TestCase(@"""A""_And_""a""", "A And a", false)]
-        [TestCase(@"""A""_Or_""a""", "A Or a", false)]
-        [TestCase(@"""A""_Xor_""a""", "A Xor a", false)]
+        [TestCase(@"""A""_And_""a""", @"""A"" And ""a""", false)]
+        [TestCase(@"""A""_Or_""a""", @"""A"" Or ""a""", false)]
+        [TestCase(@"""A""_Xor_""a""", @"""A"" Xor ""a""", false)]
         [Category("Inspections")]
         public void ParseTreeValueExpressionEvaluator_StringCompareTypeMismatch(string operands, string expected, bool optionCompareBinary)
         {
@@ -816,16 +813,9 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var RHS = ValueFactory.Create(ops[2]);
 
             var calculator = new ParseTreeExpressionEvaluator(ValueFactory, optionCompareBinary);
-            try
-            {
-                var result = calculator.Evaluate(LHS, RHS, ops[1]);
-            }
-            catch (ArgumentException e)
-            {
-                return;
-            }
-
-            Assert.Fail("Logical comparison of two strings did not throw an ArguementException");
+            var result = calculator.Evaluate(LHS, RHS, ops[1]);
+            Assert.AreEqual(expected, result.ValueText);
+            Assert.IsTrue(result.IsMismatchExpression);
         }
 
         [TestCase(@"""2""_+_""2""", @"""22""", "String")]

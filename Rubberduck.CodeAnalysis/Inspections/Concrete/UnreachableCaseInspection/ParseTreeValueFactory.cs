@@ -4,6 +4,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IParseTreeValueFactory
     {
+        IParseTreeValue CreateMismatchExpression(string expression, string typeName);
         IParseTreeValue CreateExpression(string expression, string typeName);
         IParseTreeValue CreateDeclaredType(string expression, string typeName);
         IParseTreeValue CreateValueType(string expression, string typeName);
@@ -50,6 +51,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return ParseTreeValue.CreateValueType(conformedText, declaredTypeName);
             }
             return ParseTreeValue.CreateExpression(expression, declaredTypeName);
+        }
+
+        public IParseTreeValue CreateMismatchExpression(string expression, string declaredTypeName)
+        {
+            return ParseTreeValue.CreateMismatchExpression(expression, declaredTypeName);
         }
 
         public IParseTreeValue CreateExpression(string expression, string declaredTypeName)

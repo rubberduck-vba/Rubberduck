@@ -37,6 +37,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 throw new ArgumentException($"Unary operator ({opSymbol}) passed to binary Evaluate function");
             }
 
+            var opProvider = new OperatorTypesProvider((LHS.TypeName, RHS.TypeName), opSymbol);
+            try { var testForMismatch = opProvider.OperatorDeclaredType; }
+            catch (ArgumentException)
+            {
+                return _valueFactory.CreateMismatchExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", Tokens.Variant);
+            }
+
             if (ArithmeticOperators.Includes(opSymbol))
             {
                 return EvaluateArithmeticOp(opSymbol, LHS, RHS);
@@ -181,7 +188,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return _valueFactory.CreateExpression($"{LogicalOperators.NOT} {parseTreeValue.ValueText}", opType);
             }
 
-            if (parseTreeValue.TryConvert(out long value))
+            if (parseTreeValue.TryLetCoerce(out long value))
             {
                 return _valueFactory.CreateDeclaredType((~value).ToString(CultureInfo.InvariantCulture), opProvider.OperatorDeclaredType);
             }
@@ -256,7 +263,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var effTypeName = opProvider.OperatorEffectiveType;
             if (effTypeName.Equals(Tokens.Date))
             {
-                if (parseTreeValue.TryConvert(out double dValue))
+                if (parseTreeValue.TryLetCoerce(out double dValue))
                 {
                     var result = DateTime.FromOADate(0 - dValue);
                     var date = new DateValue(result);
@@ -266,11 +273,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var declaredTypeName = opProvider.OperatorDeclaredType;
-            if (parseTreeValue.TryConvert(out decimal decValue))
+            if (parseTreeValue.TryLetCoerce(out decimal decValue))
             {
                 return _valueFactory.CreateDeclaredType((0 - decValue).ToString(CultureInfo.InvariantCulture), declaredTypeName);
             }
-            if (parseTreeValue.TryConvert(out double dblValue))
+            if (parseTreeValue.TryLetCoerce(out double dblValue))
             {
                 return _valueFactory.CreateDeclaredType((0 - dblValue).ToString(CultureInfo.InvariantCulture), declaredTypeName);
             }
@@ -324,7 +331,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Date))
                 {
                     var result = _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, null, (double a, double b) => { return a + b; }), Tokens.Double);
-                    if (result.TryConvert(out double value))
+                    if (result.TryLetCoerce(out double value))
                     {
                         return _valueFactory.CreateDate(value);
                     }
@@ -335,7 +342,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (LHS.TypeName.Equals(Tokens.Date) && RHS.TypeName.Equals(Tokens.Date))
                 {
-                    if (LHS.TryConvert(out double lhsValue) && RHS.TryConvert(out double rhsValue))
+                    if (LHS.TryLetCoerce(out double lhsValue) && RHS.TryLetCoerce(out double rhsValue))
                     {
                         var diff = lhsValue - rhsValue;
                         return _valueFactory.CreateDate(diff);
@@ -384,11 +391,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<decimal, decimal, decimal> DecimalCalc, Func<double, double, double> DoubleCalc)
         {
-            if (!(DecimalCalc is null) && LHS.TryConvert(out decimal lhsValue) && RHS.TryConvert(out decimal rhsValue))
+            if (!(DecimalCalc is null) && LHS.TryLetCoerce(out decimal lhsValue) && RHS.TryLetCoerce(out decimal rhsValue))
             {
                 return DecimalCalc(lhsValue, rhsValue).ToString();
             }
-            else if (!(DoubleCalc is null) && LHS.TryConvert(out double lhsDblValue) && RHS.TryConvert(out double rhsDblValue))
+            else if (!(DoubleCalc is null) && LHS.TryLetCoerce(out double lhsDblValue) && RHS.TryLetCoerce(out double rhsDblValue))
             {
                 return DoubleCalc(lhsDblValue, rhsDblValue).ToString();
             }
@@ -397,11 +404,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<decimal, decimal, bool> DecimalCompare, Func<double, double, bool> DoubleCompare)
         {
-            if (!(DecimalCompare is null) && LHS.TryConvert(out decimal lhsValue) && RHS.TryConvert(out decimal rhsValue))
+            if (!(DecimalCompare is null) && LHS.TryLetCoerce(out decimal lhsValue) && RHS.TryLetCoerce(out decimal rhsValue))
             {
                 return DecimalCompare(lhsValue, rhsValue) ? Tokens.True : Tokens.False;
             }
-            else if (!(DoubleCompare is null) && LHS.TryConvert(out double lhsDblValue) && RHS.TryConvert(out double rhsDblValue))
+            else if (!(DoubleCompare is null) && LHS.TryLetCoerce(out double lhsDblValue) && RHS.TryLetCoerce(out double rhsDblValue))
             {
                 return DoubleCompare(lhsDblValue, rhsDblValue) ? Tokens.True : Tokens.False;
             }
@@ -421,7 +428,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (BoolCompare != null)
             {
-                if (LHS.TryConvert(out bool lhsValue) && RHS.TryConvert(out bool rhsValue))
+                if (LHS.TryLetCoerce(out bool lhsValue) && RHS.TryLetCoerce(out bool rhsValue))
                 {
                     return BoolCompare(lhsValue, rhsValue);
                 }
@@ -432,7 +439,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<long, long, long> LogicCalc)
         {
-            if (!(LogicCalc is null) && LHS.TryConvert(out long lhsValue) && RHS.TryConvert(out long rhsValue))
+            if (!(LogicCalc is null) && LHS.TryLetCoerce(out long lhsValue) && RHS.TryLetCoerce(out long rhsValue))
             {
                 return LogicCalc(lhsValue, rhsValue).ToString();
             }
@@ -441,7 +448,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<bool, bool, bool> LogicCalc)
         {
-            if (!(LogicCalc is null) && LHS.TryConvert(out long lhsValue) && RHS.TryConvert(out long rhsValue))
+            if (!(LogicCalc is null) && LHS.TryLetCoerce(out long lhsValue) && RHS.TryLetCoerce(out long rhsValue))
             {
                 return LogicCalc(lhsValue != 0, rhsValue != 0).ToString();
             }

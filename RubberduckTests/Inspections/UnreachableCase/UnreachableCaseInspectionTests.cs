@@ -2420,6 +2420,27 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
+        [Test]
+        [Category("Inspections")]
+        public void UnreachableCaseInspection_TypeMismatch()
+        {
+            string inputCode =
+@"
+Private Sub Foo(x As Date)
+    Select Case x
+        Case ""Hoosier Daddy""
+            MsgBox ""Hoosier Daddy""    'mismatch - found during inspection
+        Case ""Test"" And ""Check""
+            MsgBox ""'Test' And 'Check'""   'mismatch - found while parsing
+        Case ""1/1/2020""
+            MsgBox ""1/1/2020 triggered""
+    End Select
+End Sub
+";
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 0, mismatch: 2);
+            Assert.AreEqual(expectedMsg, actualMsg);
+        }
+
         private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0, int inherentlyUnreachable = 0)
         {
             var components = new List<(string moduleName, string inputCode)>() { ("TestModule1", inputCode) };
