@@ -94,12 +94,12 @@ namespace Rubberduck.Parsing.VBA.Parsing
             // otherwise none of the annotations get associated to their respective Declaration
             Logger.Trace($"ParseTaskID {taskId} begins extracting comments and annotations.");
             var (comments, annotations) = CommentsAndAnnotations(module, codePaneParseTree);
-            Logger.Trace($"ParseTaskID {taskId} fniished extracting comments and annotations.");
+            Logger.Trace($"ParseTaskID {taskId} finished extracting comments and annotations.");
             cancellationToken.ThrowIfCancellationRequested();
 
             Logger.Trace($"ParseTaskID {taskId} begins attributes pass.");
             var (attributesParseTree, attributesTokenStream) = AttributesPassResults(module, cancellationToken);
-            var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(module, attributesTokenStream ?? codePaneTokenStream);
+            var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(module, attributesTokenStream);
             Logger.Trace($"ParseTaskID {taskId} finished attributes pass.");
             cancellationToken.ThrowIfCancellationRequested();
 

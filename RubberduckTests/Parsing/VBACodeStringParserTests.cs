@@ -102,5 +102,25 @@ End Sub";
 
             Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
         }
+
+        [Test]
+        [Category("VBACodeStringParser_Tests")]
+        public void CanParseEmptyModule()
+        {
+            const string inputCode = @"";
+
+            var parser = new VBACodeStringParser("test", inputCode);
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
+        }
+
+        [Test]
+        [Category("VBACodeStringParser_Tests")]
+        public void CanParseNullInput()
+        {
+            const string inputCode = null;
+
+            var parser = new VBACodeStringParser("test", inputCode);
+            Assert.IsInstanceOf<IParseTree>(parser.Parse().parseTree);
+        }
     }
 }

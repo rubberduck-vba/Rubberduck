@@ -1,12 +1,11 @@
 ﻿using System.IO;
 using System.Text;
-using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.VBEditor.VB6
 {
-    public class SourceFileHandler : ISourceFileHandler
+    public class ExternalFileTempSourceFileHandlerEmulator : ITempSourceFileHandler
     {
         public string Export(IVBComponent component)
         {
@@ -14,7 +13,7 @@ namespace Rubberduck.VBEditor.VB6
             return component.GetFileName(1);            
         }
 
-        public void Import(IVBComponent component, string fileName)
+        public void ImportAndCleanUp(IVBComponent component, string fileName)
         {
             // VB6 source code can be written directly in-place, without needing to import it, hence no-op.
         }
@@ -22,16 +21,12 @@ namespace Rubberduck.VBEditor.VB6
         public string Read(IVBComponent component)
         {
             var fileName = Export(component);
-            if (fileName == null)
+            if (fileName == null || !File.Exists(fileName))
             {
                 return null;
             }
 
-            var encoding = component.QualifiedModuleName.ComponentType == ComponentType.Document
-                ? Encoding.UTF8
-                : Encoding.Default;
-
-            return File.ReadAllText(fileName, encoding);
+            return File.ReadAllText(fileName, Encoding.Default);
         }        
     }
 }

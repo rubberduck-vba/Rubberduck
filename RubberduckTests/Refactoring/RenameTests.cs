@@ -175,6 +175,107 @@ End Property"
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
+        public void RenameRefactoring_RenameFirstPropertyParameter_DoesNotUpdateUnrelatedParameters()
+        {
+            var tdo = new RenameTestsDataObject(selection: "index", newName: "renamed");
+            var inputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Property Get Foo(ByVal in|dex As Integer) As Variant
+    Dim d As Integer
+    d = index
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property
+
+Property Set Bar(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property",
+
+                Expected =
+                    @"Property Get Foo(ByVal renamed As Integer) As Variant
+    Dim d As Integer
+    d = renamed
+End Property
+
+Property Let Foo(ByVal renamed As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = renamed
+End Property
+
+Property Set Bar(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameFirstPropertyParameter_DoesNotUpdateOtherModules()
+        {
+            var tdo = new RenameTestsDataObject(selection: "index", newName: "renamed");
+            var inputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Property Get Foo(ByVal in|dex As Integer) As Variant
+    Dim d As Integer
+    d = index
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property",
+
+                Expected =
+                    @"Property Get Foo(ByVal renamed As Integer) As Variant
+    Dim d As Integer
+    d = renamed
+End Property
+
+Property Let Foo(ByVal renamed As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = renamed
+End Property"
+            };
+
+            var secondInputOutput = new RenameTestModuleDefinition("ClassBar")
+            {
+                Input =
+                    @"Property Get Foo(ByVal index As Integer) As Variant
+    Dim d As Integer
+    d = index
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property",
+
+                Expected =
+                    @"Property Get Foo(ByVal index As Integer) As Variant
+    Dim d As Integer
+    d = index
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput, secondInputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameLastPropertyParameter_UpdatesAllRelatedParameters()
         {
             var tdo = new RenameTestsDataObject(selection: "value", newName: "renamed");
@@ -199,6 +300,38 @@ End Property
 Property Set Foo(ByVal index As Integer, ByVal renamed As Variant)
     Dim d As Variant
     d = renamed
+End Property"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameLastPropertyParameter_DoesNotUpdateUnrelatedParameters()
+        {
+            var tdo = new RenameTestsDataObject(selection: "value", newName: "renamed");
+            var inputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Property Let Foo(ByVal index As Integer, ByVal va|lue As Variant)
+    Dim d As Variant
+    d = value
+End Property
+
+Property Set Bar(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Variant
+    d = value
+End Property",
+                Expected =
+                    @"Property Let Foo(ByVal index As Integer, ByVal renamed As Variant)
+    Dim d As Variant
+    d = renamed
+End Property
+
+Property Set Bar(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Variant
+    d = value
 End Property"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);

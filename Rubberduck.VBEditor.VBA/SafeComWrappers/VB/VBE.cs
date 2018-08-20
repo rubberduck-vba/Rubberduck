@@ -19,12 +19,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public VBE(VB.VBE target, bool rewrapping = false)
             : base(target, rewrapping)
         {
-            SourceFileHandler = new SourceFileHandler();
+            TempSourceFileHandler = new TempSourceFileHandler();
         }
 
         public VBEKind Kind => VBEKind.Hosted;
         public object HardReference => Target;
-        public ISourceFileHandler SourceFileHandler { get; }
+        public ITempSourceFileHandler TempSourceFileHandler { get; }
 
         public string Version => IsWrappingNullReference ? string.Empty : Target.Version;
 
@@ -80,7 +80,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 
         public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
-        
+       
         public override bool Equals(ISafeComWrapper<VB.VBE> other)
         {
             return IsEqualIfNull(other) || (other != null && other.Target.Version == Version);
