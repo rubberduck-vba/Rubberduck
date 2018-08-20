@@ -507,7 +507,36 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public CommandBase RefreshCommand { get; }
+        public ObservableCollection<int> FontSizes = new ObservableCollection<int>(new int[] { 10, 12, 14, 16, 18, 20 });
+
+        private int _selectedFontIndex = 5;
+        public int SelectedFontIndex
+        {
+            get => _selectedFontIndex;
+            set
+            {
+                if (value != _selectedFontIndex)
+                {
+                    _selectedFontIndex = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int SelectedFontSize
+        {
+            get => FontSizes.ElementAt(_selectedFontIndex);
+            set
+            {
+                if (!FontSizes.IndexOf(_selectedFontIndex).Equals(value))
+                {
+                    _selectedFontIndex = FontSizes.IndexOf(value);
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+    public CommandBase RefreshCommand { get; }
 
         public CommandBase OpenCommand { get; }
 
