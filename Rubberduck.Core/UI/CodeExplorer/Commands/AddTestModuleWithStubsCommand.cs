@@ -19,17 +19,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            try
-            {
-                return GetDeclaration(parameter)?.Project != null || _vbe.ProjectsCount == 1;
-            }
-            catch (COMException)
-            {
-                return false;
-            }
-        }
+        protected override bool EvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel;
 
         protected override void OnExecute(object parameter)
         {

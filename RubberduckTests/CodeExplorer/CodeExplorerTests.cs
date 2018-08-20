@@ -79,6 +79,43 @@ namespace RubberduckTests.CodeExplorer
 
         [Category("Code Explorer")]
         [Test]
+        [TestCase(ProjectType.StandardExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXDll, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXControl, ExpectedResult = true)]
+        [TestCase(ProjectType.HostProject, ExpectedResult = true)]
+        [TestCase(ProjectType.StandAlone, ExpectedResult = true)]
+        public bool AddStdModule_CanExecuteBasedOnProjectType(ProjectType projectType)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddStdModuleCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+                return vm.AddStdModuleCommand.CanExecute(vm.SelectedItem);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
         public void AddClassModule()
         {
             var builder = new MockVbeBuilder();
@@ -87,7 +124,7 @@ namespace RubberduckTests.CodeExplorer
 
             var components = project.MockVBComponents;
 
-            var vbe = builder.AddProject(project.Build()).Build();
+            var vbe = builder.AddProject(project.Build()).Build();            
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
             var commands = new List<CommandBase> { new AddClassModuleCommand(new AddComponentCommand(vbe.Object)) };
@@ -107,6 +144,43 @@ namespace RubberduckTests.CodeExplorer
                 vm.AddClassModuleCommand.Execute(vm.SelectedItem);
 
                 components.Verify(c => c.Add(ComponentType.ClassModule), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        [TestCase(ProjectType.StandardExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXDll, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXControl, ExpectedResult = true)]
+        [TestCase(ProjectType.HostProject, ExpectedResult = true)]
+        [TestCase(ProjectType.StandAlone, ExpectedResult = true)]
+        public bool AddClassModule_CanExecuteBasedOnProjectType(ProjectType projectType)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddClassModuleCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+                return vm.AddClassModuleCommand.CanExecute(vm.SelectedItem);
             }
         }
 
@@ -140,6 +214,393 @@ namespace RubberduckTests.CodeExplorer
                 vm.AddUserFormCommand.Execute(vm.SelectedItem);
 
                 components.Verify(c => c.Add(ComponentType.UserForm), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        [TestCase(ProjectType.StandardExe, ExpectedResult = false)]
+        [TestCase(ProjectType.ActiveXExe, ExpectedResult = false)]
+        [TestCase(ProjectType.ActiveXDll, ExpectedResult = false)]
+        [TestCase(ProjectType.ActiveXControl, ExpectedResult = false)]
+        [TestCase(ProjectType.HostProject, ExpectedResult = true)]
+        [TestCase(ProjectType.StandAlone, ExpectedResult = true)]
+        public bool AddUserForm_CanExecuteBasedOnProjectType(ProjectType projectType)
+        {            
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+
+            var vbe = builder.AddProject(project.Build()).Build();            
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddUserFormCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {                
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+                return vm.AddUserFormCommand.CanExecute(vm.SelectedItem);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddVBForm()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+            var components = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddVBFormCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+                vm.AddVBFormCommand.Execute(vm.SelectedItem);
+
+                components.Verify(c => c.Add(ComponentType.VBForm), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        [TestCase(ProjectType.StandardExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXDll, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXControl, ExpectedResult = true)]
+        [TestCase(ProjectType.HostProject, ExpectedResult = false)]
+        [TestCase(ProjectType.StandAlone, ExpectedResult = false)]
+        public bool AddVBForm_CanExecuteBasedOnProjectType(ProjectType projectType)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddVBFormCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+                return vm.AddVBFormCommand.CanExecute(vm.SelectedItem);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddMDIForm()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+            var components = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddMDIFormCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+                vm.AddMDIFormCommand.Execute(vm.SelectedItem);
+
+                components.Verify(c => c.Add(ComponentType.MDIForm), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        [TestCase(ProjectType.StandardExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXDll, ExpectedResult = false)]
+        [TestCase(ProjectType.ActiveXControl, ExpectedResult = false)]
+        [TestCase(ProjectType.HostProject, ExpectedResult = false)]
+        [TestCase(ProjectType.StandAlone, ExpectedResult = false)]
+        public bool AddMDIForm_CanExecuteBasedOnProjectType(ProjectType projectType)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddMDIFormCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+                return vm.AddMDIFormCommand.CanExecute(vm.SelectedItem);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddUserControlForm()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+            var components = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddUserControlCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+                vm.AddUserControlCommand.Execute(vm.SelectedItem);
+
+                components.Verify(c => c.Add(ComponentType.UserControl), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        [TestCase(ProjectType.StandardExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXDll, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXControl, ExpectedResult = true)]
+        [TestCase(ProjectType.HostProject, ExpectedResult = false)]
+        [TestCase(ProjectType.StandAlone, ExpectedResult = false)]
+        public bool AddUserControl_CanExecuteBasedOnProjectType(ProjectType projectType)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddUserControlCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+                return vm.AddUserControlCommand.CanExecute(vm.SelectedItem);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddPropertyPage()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+            var components = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddPropertyPageCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+                vm.AddPropertyPageCommand.Execute(vm.SelectedItem);
+
+                components.Verify(c => c.Add(ComponentType.PropPage), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        [TestCase(ProjectType.StandardExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXDll, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXControl, ExpectedResult = true)]
+        [TestCase(ProjectType.HostProject, ExpectedResult = false)]
+        [TestCase(ProjectType.StandAlone, ExpectedResult = false)]
+        public bool AddPropertyPage_CanExecuteBasedOnProjectType(ProjectType projectType)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddPropertyPageCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+                return vm.AddPropertyPageCommand.CanExecute(vm.SelectedItem);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddUserDocument()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+            var components = project.MockVBComponents;
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddUserDocumentCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+                vm.AddUserDocumentCommand.Execute(vm.SelectedItem);
+
+                components.Verify(c => c.Add(ComponentType.DocObject), Times.Once);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        [TestCase(ProjectType.StandardExe, ExpectedResult = false)]
+        [TestCase(ProjectType.ActiveXExe, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXDll, ExpectedResult = true)]
+        [TestCase(ProjectType.ActiveXControl, ExpectedResult = false)]
+        [TestCase(ProjectType.HostProject, ExpectedResult = false)]
+        [TestCase(ProjectType.StandAlone, ExpectedResult = false)]
+        public bool AddUserDocument_CanExecuteBasedOnProjectType(ProjectType projectType)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddUserDocumentCommand(new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+                return vm.AddUserDocumentCommand.CanExecute(vm.SelectedItem);
             }
         }
 

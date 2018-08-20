@@ -20,6 +20,7 @@ namespace RubberduckTests.Mocks
         private readonly Mock<IVBProject> _project;
         private readonly Mock<IVBComponents> _vbComponents;
         private readonly Mock<IReferences> _vbReferences;
+        private readonly ProjectType _projectType;
 
         private readonly List<Mock<IVBComponent>> _componentsMock = new List<Mock<IVBComponent>>();
         private readonly List<Mock<ICodeModule>> _codeModuleMocks = new List<Mock<ICodeModule>>();
@@ -40,26 +41,29 @@ namespace RubberduckTests.Mocks
             _componentsMock.Remove(component);
         }
 
-        public MockProjectBuilder(string name, string filename, ProjectProtection protection, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
+        public MockProjectBuilder(string name, string filename, ProjectProtection protection, ProjectType projectType, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
         :this(
             name,
             filename,
             Guid.NewGuid().ToString(),
             protection,
+            projectType,
             getVbe,
             mockVbeBuilder
             )
         { }
 
-        public MockProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
+        public MockProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, ProjectType projectType, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
             _getVbe = getVbe;
             _mockVbeBuilder = mockVbeBuilder;
+            _projectType = projectType;
 
             _project = CreateProjectMock(name, filename, protection);
 
             _project.SetupProperty(m => m.HelpFile);
             _project.SetupGet(m => m.ProjectId).Returns(() => _project.Object.HelpFile);
+            _project.SetupGet(m => m.Type).Returns(_projectType);
             _project.Setup(m => m.AssignProjectId())
                 .Callback(() => _project.Object.HelpFile = projectId);
 
