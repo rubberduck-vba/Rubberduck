@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
+using Rubberduck.UI.Refactorings;
 using RubberduckTests.Refactoring.MockIoC;
 
 namespace RubberduckTests.Refactoring
@@ -2088,9 +2089,6 @@ End Sub
         [Category("Rename")]
         public void RenameRefactoring_CheckAllRefactorCallPaths()
         {
-            var container = RefactoringContainerInstaller.GetContainer();
-            
-
             RefactorParams[] refactorParams = { RefactorParams.None, RefactorParams.QualifiedSelection, RefactorParams.Declaration };
             foreach (var param in refactorParams)
             {
@@ -2285,6 +2283,9 @@ End Property";
             , RenameTestModuleDefinition? inputOutput3 = null
             , RenameTestModuleDefinition? inputOutput4 = null)
         {
+            var container = RefactoringContainerInstaller.GetContainer();
+            var factory = container.Resolve<IRefactoringPresenterFactory>();
+
             var renameTMDs = new List<RenameTestModuleDefinition>();
             bool cursorFound = false;
             foreach (var io in new[] { inputOutput1, inputOutput2, inputOutput3, inputOutput4 })
@@ -2331,7 +2332,18 @@ End Property";
             Assert.IsTrue(tdo.RenameModel.Target.IdentifierName.Contains(tdo.OriginalName)
                 , $"Target aquired ({tdo.RenameModel.Target.IdentifierName} does not equal name specified ({tdo.OriginalName}) in the test");
 
-            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, GetFactory(), tdo.MsgBox.Object, tdo.ParserState);
+            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory, tdo.MsgBox.Object, tdo.ParserState);
+
+            //Configure the stub dialog behavior
+            var presenter = (RenamePresenter)factory.Create<IRenamePresenter, RenameModel>(tdo.RenameModel);
+            var mock = Mock.Get(presenter.Dialog);
+            mock.Setup(m => m.ShowDialog()).Callback(() => { mock.SetupGet(m => m.Model).Returns(tdo.RenameModel); });
+            /*
+            var mock = container
+                .Resolve<Mock<RefactoringDialogStub<RenameModel, IRefactoringView<RenameModel>,
+                    RenameViewModel>>>();
+            mock.SetupGet(m => m.Model).Returns(tdo.RenameModel);
+            */
         }
 
         private static void AddTestModuleDefinition(RenameTestsDataObject tdo, RenameTestModuleDefinition inputOutput)

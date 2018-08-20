@@ -4,13 +4,17 @@ using Rubberduck.Refactorings.Rename;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
-    internal class RenamePresenter : RefactoringPresenterBase<RenameModel, IRefactoringDialog<RenameModel, IRefactoringView<RenameModel>, RenameViewModel>, IRefactoringView<RenameModel>, RenameViewModel>, IRenamePresenter
+    internal class RenamePresenter : RefactoringPresenterBase<RenameModel, IRefactoringDialog<RenameModel, IRefactoringView<RenameModel>, IRefactoringViewModel<RenameModel>>, IRefactoringView<RenameModel>, IRefactoringViewModel<RenameModel>>, IRenamePresenter
     {
-        public RenamePresenter(RenameModel model,
-            IRefactoringDialogFactory dialogFactory, IRefactoringView<RenameModel> view) : base(
-            model, dialogFactory, view)
-        { }
-        
+        private readonly RenameViewModel _viewModel;
+
+        public RenamePresenter(RenameModel model, IRefactoringDialogFactory dialogFactory) : base(model, dialogFactory)
+        {
+            _viewModel = dialogFactory.CreateViewModel<RenameModel, RenameViewModel>(model);
+        }
+
+        public override IRefactoringViewModel<RenameModel> ViewModel => _viewModel;
+
         public override RenameModel Show()
         {
             return Model.Target == null ? null : base.Show();
@@ -24,17 +28,17 @@ namespace Rubberduck.UI.Refactorings.Rename
             }
 
             Model.Target = target;
-            ViewModel.Target = target;
+            _viewModel.Target = target;
 
-            Show();
+            var model = Show();
 
             if (DialogResult != RefactoringDialogResult.Execute)
             {
                 return null;
             }
 
-            Model.NewName = ViewModel.NewName;
-            return Model;
+            //Model.NewName = _viewModel.NewName;
+            return model;
         }
     }
 }

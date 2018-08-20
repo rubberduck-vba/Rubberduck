@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.ModelBuilder.Inspectors;
@@ -11,17 +14,51 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.ComReferenceLoading;
+using Rubberduck.Parsing.VBA.DeclarationResolving;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.UI.Refactorings;
+using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace RubberduckTests.Refactoring.MockIoC
 {
     internal class RefactoringContainerInstaller : IWindsorInstaller
     {
+        static RefactoringContainerInstaller()
+        {
+            _mockedTypes = new List<Type>();
+        }
+
+        private static IWindsorContainer _container = null;
         internal static IWindsorContainer GetContainer()
         {
-            return new WindsorContainer().Install(new RefactoringContainerInstaller());
+            return _container ?? (_container = new WindsorContainer().Install(new RefactoringContainerInstaller()));
+        }
+
+        private static readonly List<Type> _mockedTypes;
+        internal static ReadOnlyCollection<Type> MockedTypes => _mockedTypes.AsReadOnly();
+
+        internal static void MockIt(Type type)
+        {
+            if (_mockedTypes.All(x => x != type))
+            {
+                _mockedTypes.Add(type);
+            }
+        }
+
+        internal static void StopMockingIt(Type type)
+        {
+            if (_mockedTypes.Any(x => x == type))
+            {
+                _mockedTypes.Remove(type);
+            }
         }
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
@@ -29,12 +66,14 @@ namespace RubberduckTests.Refactoring.MockIoC
             SetUpCollectionResolver(container);
             ActivateAutoMagicFactories(container);
             DeactivatePropertyInjection(container);
-
+            
             container.Kernel.Resolver.AddSubResolver(
                 new AutoMoqResolver(
                     container.Kernel));
+
             container.Register(Component
-                .For(typeof(Mock<>)));
+                .For(typeof(Mock<>))
+                .LifestyleSingleton());
 
             container.Register(Component.For<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider>()
                 .ImplementedBy<RubberduckParserState>()
@@ -45,13 +84,13 @@ namespace RubberduckTests.Refactoring.MockIoC
             RegisterParsingEngine(container);
 
             container.Register(Component.For<IRefactoringPresenterFactory>()
-                .AsFactory()
-                .LifestyleTransient()
+                .AsFactory(f => f.SelectedWith(new AutoMoqFactorySelector()))
+                .LifestyleSingleton()
                 );
 
             container.Register(Component.For<IRefactoringDialogFactory>()
-                .AsFactory()
-                .LifestyleTransient()
+                .AsFactory(f => f.SelectedWith(new AutoMoqFactorySelector()))
+                .LifestyleSingleton()
                 );
 
             container.Register(Classes
@@ -59,12 +98,6 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .InSameNamespaceAs(typeof(IParseCoordinator), true)
                 .WithService.DefaultInterfaces()
                 );
-            container.Register(Classes
-                .FromAssemblyContaining<IRefactoring>()
-                .IncludeNonPublicTypes()
-                .InSameNamespaceAs(typeof(IRefactoring), true)
-                .WithService.DefaultInterfaces()
-                .LifestyleTransient());
 
             container.Register(Component
                 .For(typeof(IRefactoringDialog<,,>))
@@ -75,6 +108,12 @@ namespace RubberduckTests.Refactoring.MockIoC
             container.Register(Component
                 .For(typeof(IRefactoringView<>))
                 .ImplementedBy(typeof(RefactoringViewStub<>))
+                .LifestyleSingleton()
+            );
+
+            container.Register(Component
+                .For(typeof(RenameViewModel), typeof(IRefactoringViewModel<RenameModel>))
+                .ImplementedBy<RenameViewModel>()
                 .LifestyleSingleton()
             );
 
@@ -89,7 +128,9 @@ namespace RubberduckTests.Refactoring.MockIoC
                     && !type.Name.EndsWith("ViewBase"))
                 .Unless(t => t.IsAbstract)
                 .WithService.DefaultInterfaces()
-                .LifestyleTransient());
+                .LifestyleSingleton());
+
+            _container = container;
         }
 
         private void SetUpCollectionResolver(IWindsorContainer container)
@@ -117,6 +158,10 @@ namespace RubberduckTests.Refactoring.MockIoC
         {
             RegisterCustomDeclarationLoadersToParser(container);
 
+            container.Register(Component.For<ICompilationArgumentsProvider, ICompilationArgumentsCache>()
+                .ImplementedBy<CompilationArgumentsCache>()
+                .DependsOn(Dependency.OnComponent<ICompilationArgumentsProvider, CompilationArgumentsProvider>())
+                .LifestyleSingleton());
             container.Register(Component.For<ICOMReferenceSynchronizer, IProjectReferencesProvider>()
                 .ImplementedBy<COMReferenceSynchronizer>()
                 .DependsOn(Dependency.OnValue<string>(null))
@@ -157,10 +202,34 @@ namespace RubberduckTests.Refactoring.MockIoC
             container.Register(Component.For<IParseCoordinator>()
                 .ImplementedBy<ParseCoordinator>()
                 .LifestyleSingleton());
-            
-            container.Register(Component.For<Func<IVBAPreprocessor>>()
-                .Instance(() => new VBAPreprocessor(7.0)));
+            container.Register(Component.For<ITokenStreamPreprocessor>()
+                .ImplementedBy<VBAPreprocessor>()
+                .DependsOn(Dependency.OnComponent<ITokenStreamParser, VBAPreprocessorParser>())
+                .LifestyleSingleton());
+            container.Register(Component.For<VBAPredefinedCompilationConstants>()
+                .ImplementedBy<VBAPredefinedCompilationConstants>()
+                .DependsOn(Dependency.OnValue<double>(double.Parse("7.1", CultureInfo.InvariantCulture)))
+                .LifestyleSingleton());
+            container.Register(Component.For<VBAPreprocessorParser>()
+                .ImplementedBy<VBAPreprocessorParser>()
+                .DependsOn(Dependency.OnComponent<IParsePassErrorListenerFactory, PreprocessingParseErrorListenerFactory>())
+                .LifestyleSingleton());
+            container.Register(Component.For<ICommonTokenStreamProvider>()
+                .ImplementedBy<SimpleVBAModuleTokenStreamProvider>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IStringParser>()
+                .ImplementedBy<TokenStreamParserStringParserAdapterWithPreprocessing>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IModuleParser>()
+                .ImplementedBy<ModuleParser>()
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodePaneSourceCodeHandler)),
+                    Dependency.OnComponent("attributesSourceCodeProvider", typeof(SourceFileHandlerSourceCodeHandlerAdapter)))
+                .LifestyleSingleton());
+            container.Register(Component.For<ITypeLibWrapperProvider>()
+                .ImplementedBy<TypeLibWrapperProvider>()
+                .LifestyleSingleton());
         }
+
         private void RegisterCustomDeclarationLoadersToParser(IWindsorContainer container)
         {
             container.Register(Classes.FromAssemblyContaining<ICustomDeclarationLoader>()

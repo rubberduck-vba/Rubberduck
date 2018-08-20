@@ -6,28 +6,28 @@ namespace Rubberduck.UI.Refactorings
     public abstract class RefactoringPresenterBase<TModel, TDialog, TView, TViewModel> : IDisposable, IRefactoringPresenter<TModel, TDialog, TView, TViewModel> 
         where TModel : class
         where TView : class, IRefactoringView<TModel>
-        where TViewModel : RefactoringViewModelBase<TModel>
+        where TViewModel : class, IRefactoringViewModel<TModel>
         where TDialog : class, IRefactoringDialog<TModel, TView, TViewModel>
     {
-        private readonly TDialog _dialog;
         private readonly IRefactoringDialogFactory _factory;
 
-        protected RefactoringPresenterBase(TModel model, IRefactoringDialogFactory factory, TView view)
+        protected RefactoringPresenterBase(TModel model, IRefactoringDialogFactory factory)
         {
             _factory = factory;
+            var view = _factory.CreateView<TModel, TView>(model);
             var viewModel = _factory.CreateViewModel<TModel, TViewModel>(model);
-            _dialog = _factory.CreateDialog<TModel, TView, TViewModel, TDialog>(model, view, viewModel);
+            Dialog = _factory.CreateDialog<TModel, TView, TViewModel, TDialog>(model, view, viewModel);
         }
 
-        public TModel Model => _dialog.ViewModel.Model;
-        public TDialog Dialog => _dialog;
-        public TViewModel ViewModel => _dialog.ViewModel;
+        public TModel Model => Dialog.Model;
+        public TDialog Dialog { get; }
+        public abstract TViewModel ViewModel { get; }
         public virtual RefactoringDialogResult DialogResult { get; protected set; }
 
         public virtual TModel Show()
         {
-            DialogResult = _dialog.ShowDialog();
-            return DialogResult == RefactoringDialogResult.Execute ? _dialog.ViewModel.Model : null;
+            DialogResult = Dialog.ShowDialog();
+            return DialogResult == RefactoringDialogResult.Execute ? Dialog.ViewModel.Model : null;
         }
 
         public void Dispose()
@@ -40,9 +40,11 @@ namespace Rubberduck.UI.Refactorings
         {
             if (disposing)
             {
-                _factory.ReleaseViewModel(_dialog.ViewModel);
-                _factory.ReleaseDialog(_dialog);
-                _dialog.Dispose();
+                _factory.ReleaseViewModel(Dialog.ViewModel);
+                _factory.ReleaseView(Dialog.View);
+                _factory.ReleaseDialog(Dialog);
+
+                Dialog.Dispose();
             }
         }
     }

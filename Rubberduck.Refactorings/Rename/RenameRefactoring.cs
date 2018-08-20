@@ -102,7 +102,7 @@ namespace Rubberduck.Refactorings.Rename
             using (var container = DisposalActionContainer.Create(_factory.Create<IRenamePresenter, RenameModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
-
+                
                 RefactorImpl(target, presenter);
                 RestoreInitialSelection();
             }
@@ -249,7 +249,12 @@ namespace Rubberduck.Refactorings.Rename
         private bool TrySetNewName(IRenamePresenter presenter)
         {
             var result = presenter.Show(_model.Target);
-            if (result == null) { return false; }
+            if (result == null)
+            {
+                return false;
+            }
+
+            _model = result;
 
             var conflictDeclarations = _state.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(_model.Target)
                 .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase));

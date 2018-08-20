@@ -1,15 +1,15 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Moq;
 using Rubberduck.Refactorings;
 
 namespace RubberduckTests.Refactoring.MockIoC
 {
-    internal class RefactoringDialogStub<TModel, TView, TViewModel> : IRefactoringDialog<TModel, TView, TViewModel>
+    internal abstract class RefactoringDialogStub<TModel, TView, TViewModel> : IRefactoringDialog<TModel, TView, TViewModel>
         where TModel : class
         where TView : class, IRefactoringView<TModel>
         where TViewModel : class, IRefactoringViewModel<TModel>
     {
-        [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
-        public RefactoringDialogStub(TModel model, TView view, TViewModel viewModel)
+        protected RefactoringDialogStub(TModel model, TView view, TViewModel viewModel)
         {
             Model = model;
             ViewModel = viewModel;
@@ -35,7 +35,7 @@ namespace RubberduckTests.Refactoring.MockIoC
         public virtual TModel Model { get; }
         public virtual TView View { get; }
         public virtual TViewModel ViewModel { get; }
-
+        
         protected virtual void ViewModel_OnWindowClosed(object sender, RefactoringDialogResult result)
         {
 

@@ -22,7 +22,7 @@ namespace Rubberduck.UI.Refactorings
         public TModel Model { get; }
         public TView View { get; }
         public TViewModel ViewModel { get; }
-
+        
         public new RefactoringDialogResult DialogResult { get; protected set; }
         public new virtual RefactoringDialogResult ShowDialog()
         {

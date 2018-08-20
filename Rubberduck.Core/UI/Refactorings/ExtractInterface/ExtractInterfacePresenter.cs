@@ -8,8 +8,12 @@ namespace Rubberduck.UI.Refactorings.ExtractInterface
     internal class ExtractInterfacePresenter : RefactoringPresenterBase<ExtractInterfaceModel, ExtractInterfaceDialog, ExtractInterfaceView, ExtractInterfaceViewModel>, IExtractInterfacePresenter
     {
         public ExtractInterfacePresenter(ExtractInterfaceModel model,
-            IRefactoringDialogFactory dialogFactory, ExtractInterfaceView view) : base(model, dialogFactory, view)
-        { }
+            IRefactoringDialogFactory dialogFactory) : base(model, dialogFactory)
+        {
+            ViewModel = dialogFactory.CreateViewModel<ExtractInterfaceModel, ExtractInterfaceViewModel>(model);
+        }
+
+        public override ExtractInterfaceViewModel ViewModel { get; }
 
         public override ExtractInterfaceModel Show()
         {
