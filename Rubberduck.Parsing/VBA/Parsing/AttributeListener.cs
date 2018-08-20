@@ -44,23 +44,33 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
         public override void EnterSubStmt(VBAParser.SubStmtContext context)
         {
+            var attributeScope = (Identifier.GetName(context.subroutineName()), DeclarationType.Procedure);
+            PushNewScope(attributeScope);
+            _membersAllowingAttributes[attributeScope] = context;
+        }
+
+        private void PushNewScope((string scopeIdentifier, DeclarationType scopeType) attributeScope)
+        {
+            _currentScope = attributeScope;
             _currentScopeAttributes = new Attributes();
-            _currentScope = (Identifier.GetName(context.subroutineName()), DeclarationType.Procedure);
-            _membersAllowingAttributes[_currentScope] = context;
         }
 
         public override void ExitSubStmt(VBAParser.SubStmtContext context)
         {
-            if(_currentScopeAttributes.Any())
+            SaveCurrentScopeAttributes(context);
+            PopScope();
+        }
+
+        private void SaveCurrentScopeAttributes(IAnnotatedContext context)
+        {
+            if (_currentScopeAttributes.Any())
             {
                 _attributes.Add(_currentScope, _currentScopeAttributes);
                 context.AddAttributes(_currentScopeAttributes);
             }
-
-            ResetScope();
         }
 
-        private void ResetScope()
+        private void PopScope()
         {
             _currentScope = _moduleScope;
             _currentScopeAttributes = null;
@@ -68,74 +78,54 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
         public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            _currentScopeAttributes = new Attributes();
-            _currentScope = (Identifier.GetName(context.functionName()), DeclarationType.Function);
-            _membersAllowingAttributes[_currentScope] = context;
+            var attributeScope = (Identifier.GetName(context.functionName()), DeclarationType.Function);
+            PushNewScope(attributeScope);
+            _membersAllowingAttributes[attributeScope] = context;
         }
 
         public override void ExitFunctionStmt(VBAParser.FunctionStmtContext context)
         {
-            if(_currentScopeAttributes.Any())
-            {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
-                context.AddAttributes(_currentScopeAttributes);
-            }
-
-            ResetScope();
+            SaveCurrentScopeAttributes(context);
+            PopScope();
         }
 
         public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            _currentScopeAttributes = new Attributes();
-            _currentScope = (Identifier.GetName(context.functionName()), DeclarationType.PropertyGet);
-            _membersAllowingAttributes[_currentScope] = context;
+            var attributeScope = (Identifier.GetName(context.functionName()), DeclarationType.PropertyGet);
+            PushNewScope(attributeScope);
+            _membersAllowingAttributes[attributeScope] = context;
         }
 
         public override void ExitPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
         {
-            if(_currentScopeAttributes.Any())
-            {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
-                context.AddAttributes(_currentScopeAttributes);
-            }
-
-            ResetScope();
+            SaveCurrentScopeAttributes(context);
+            PopScope();
         }
 
         public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            _currentScopeAttributes = new Attributes();
-            _currentScope = (Identifier.GetName(context.subroutineName()), DeclarationType.PropertyLet);
-            _membersAllowingAttributes[_currentScope] = context;
+            var attributeScope = (Identifier.GetName(context.subroutineName()), DeclarationType.PropertyLet);
+            PushNewScope(attributeScope);
+            _membersAllowingAttributes[attributeScope] = context;
         }
 
         public override void ExitPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
         {
-            if(_currentScopeAttributes.Any())
-            {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
-                context.AddAttributes(_currentScopeAttributes);
-            }
-
-            ResetScope();
+            SaveCurrentScopeAttributes(context);
+            PopScope();
         }
 
         public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            _currentScopeAttributes = new Attributes();
-            _currentScope = (Identifier.GetName(context.subroutineName()), DeclarationType.PropertySet);
-            _membersAllowingAttributes[_currentScope] = context;
+            var attributeScope = (Identifier.GetName(context.subroutineName()), DeclarationType.PropertySet);
+            PushNewScope(attributeScope);
+            _membersAllowingAttributes[attributeScope] = context;
         }
 
         public override void ExitPropertySetStmt(VBAParser.PropertySetStmtContext context)
         {
-            if(_currentScopeAttributes.Any())
-            {
-                _attributes.Add(_currentScope, _currentScopeAttributes);
-                context.AddAttributes(_currentScopeAttributes);
-            }
-
-            ResetScope();
+            SaveCurrentScopeAttributes(context);
+            PopScope();
         }
 
         public override void ExitAttributeStmt(VBAParser.AttributeStmtContext context)
