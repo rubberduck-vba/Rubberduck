@@ -45,7 +45,7 @@ End Sub";
                 int refreshes = 0;
                 engine.TestsRefreshed += (sender, args) => refreshes++;
                 parser.Parse(new CancellationTokenSource());
-                if (!engine.CanRun())
+                if (!engine.CanRun)
                 {
                     Assert.Inconclusive("Parser Error");
                 }
@@ -85,7 +85,7 @@ End Sub";
                 {
                     parser.Parse(new CancellationTokenSource());
                 }
-                if (!engine.CanRun())
+                if (!engine.CanRun)
                 {
                     Assert.Inconclusive("Parser Error");
                 }
@@ -135,7 +135,7 @@ End Sub";
                 var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
                 engine.TestCompleted += (source, args) => completionEvents.Add(args);
                 parser.Parse(new CancellationTokenSource());
-                if (!engine.CanRun())
+                if (!engine.CanRun)
                 {
                     Assert.Inconclusive("Parser Error");
                 }

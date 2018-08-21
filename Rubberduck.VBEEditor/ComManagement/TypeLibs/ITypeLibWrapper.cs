@@ -33,7 +33,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         TypeInfoReference GetVBEReferenceByIndex(int index);
         TypeLibWrapper GetVBEReferenceTypeLibByIndex(int index);
         TypeInfoReference GetVBEReferenceByGuid(Guid referenceGuid);
-        void Dispose();
         TypeInfoWrapper GetSafeTypeInfoByIndex(int index);
 
         /// <summary>

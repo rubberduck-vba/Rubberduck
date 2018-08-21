@@ -19,7 +19,7 @@ namespace Rubberduck.UnitTesting
         private static readonly ParserState[] AllowedRunStates = new ParserState[]
         {
             ParserState.ResolvedDeclarations,
-            ParserState.ResolvingReferences, 
+            ParserState.ResolvingReferences,
             ParserState.Ready
         };
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -30,11 +30,13 @@ namespace Rubberduck.UnitTesting
         private readonly ITypeLibWrapperProvider _wrapperProvider;
         private readonly IUiDispatcher _uiDispatcher;
 
+        private readonly Dictionary<TestMethod, TestOutcome> testResults = new Dictionary<TestMethod, TestOutcome>();
+        public IEnumerable<TestMethod> Tests { get; private set; }
+        public bool CanRun => AllowedRunStates.Contains(_state.Status);
+
         private bool _testRequested;
         private bool refreshBackoff;
 
-        private readonly Dictionary<TestMethod, TestOutcome> testResults = new Dictionary<TestMethod, TestOutcome>();
-        public IEnumerable<TestMethod> Tests { get; private set; }
 
         public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, ITypeLibWrapperProvider wrapperProvider, IUiDispatcher uiDispatcher)
         {
@@ -49,7 +51,9 @@ namespace Rubberduck.UnitTesting
         }
 
 
-        public TestOutcome CurrentAggregateOutcome {  get
+        public TestOutcome CurrentAggregateOutcome
+        {
+            get
             {
                 if (testResults.Values.Any(o => o == TestOutcome.Failed))
                 {
@@ -70,7 +74,7 @@ namespace Rubberduck.UnitTesting
 
         private void StateChangedHandler(object sender, ParserStateEventArgs e)
         {
-            if (!CanRun())
+            if (!CanRun)
             {
                 refreshBackoff = false;
             }
@@ -120,7 +124,7 @@ namespace Rubberduck.UnitTesting
 
         private void RunInternal(IEnumerable<TestMethod> tests)
         {
-            if (!CanRun())
+            if (!CanRun)
             {
                 return;
             }
@@ -259,9 +263,9 @@ namespace Rubberduck.UnitTesting
         {
             var result = new AssertCompletedEventArgs(TestOutcome.Succeeded);
 
-            if (assertResults.Any(assertion => assertion.Outcome == TestOutcome.Failed || assertion.Outcome == TestOutcome.Inconclusive))
+            if (assertResults.Any(assertion => assertion.Outcome != TestOutcome.Succeeded))
             {
-                result = assertResults.First(assertion => assertion.Outcome == TestOutcome.Failed || assertion.Outcome == TestOutcome.Inconclusive);
+                result = assertResults.First(assertion => assertion.Outcome != TestOutcome.Succeeded);
             }
 
             return result;
@@ -283,9 +287,5 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        public bool CanRun()
-        {
-            return AllowedRunStates.Contains(_state.Status);
-        }
     }
 }

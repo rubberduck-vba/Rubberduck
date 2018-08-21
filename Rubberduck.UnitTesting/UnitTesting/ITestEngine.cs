@@ -12,7 +12,7 @@ namespace Rubberduck.UnitTesting
         event EventHandler<TestCompletedEventArgs> TestCompleted;
         event EventHandler TestsRefreshed;
         TestOutcome CurrentAggregateOutcome { get; }
-        bool CanRun();
+        bool CanRun { get; }
     }
 
     public class TestModuleEventArgs : EventArgs
