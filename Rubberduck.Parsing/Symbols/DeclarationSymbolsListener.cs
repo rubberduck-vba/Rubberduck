@@ -244,6 +244,13 @@ namespace Rubberduck.Parsing.Symbols
                         true,
                         annotations,
                         attributes);
+                    var resultVariable = new ResultVariableDeclaration(
+                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                        result,
+                        asTypeName,
+                        typeHint,
+                        isArray);
+                    AddDeclaration(resultVariable);
                 }
                 else if (declarationType == DeclarationType.Event)
                 {

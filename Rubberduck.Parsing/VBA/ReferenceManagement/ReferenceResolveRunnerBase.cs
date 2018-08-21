@@ -217,7 +217,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
             Logger.Debug("Resolving identifier references in '{0}'... (thread {1})", module.Name, Thread.CurrentThread.ManagedThreadId);
 
-            var resolver = new IdentifierReferenceResolver(module, finder);
+            var resolver = new IdentifierReferenceResolver(module, finder, _state);
             var listener = new IdentifierReferenceListener(resolver);
 
             if (!string.IsNullOrWhiteSpace(tree.GetText().Trim()))

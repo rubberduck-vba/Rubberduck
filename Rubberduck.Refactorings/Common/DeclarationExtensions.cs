@@ -71,6 +71,7 @@ namespace Rubberduck.Common
                 throw new ArgumentException("Target DeclarationType is not Variable.", nameof(target));
             }
 
+            Debug.Assert(!target.IsRedimVariable);
             Debug.Assert(target.IsUndeclared || target.Context is VBAParser.VariableSubStmtContext);
             var statement = target.Context.Parent.Parent as VBAParser.VariableStmtContext;
             if (statement == null && !target.IsUndeclared)
@@ -522,7 +523,7 @@ namespace Rubberduck.Common
         /// <returns></returns>
         public static Declaration FindVariable(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
         {
-            var items = declarations.Where(d => d.IsUserDefined && d.DeclarationType == DeclarationType.Variable).ToList();
+            var items = declarations.Where(d => d.IsUserDefined && d.DeclarationType == DeclarationType.Variable && !d.IsRedimVariable).ToList();
 
             var target = items
                 .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));

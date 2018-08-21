@@ -39,7 +39,8 @@ namespace Rubberduck.Parsing.Symbols
             bool isUserDefined = true,
             IEnumerable<IAnnotation> annotations = null,
             Attributes attributes = null,
-            bool undeclared = false)
+            bool undeclared = false,
+            bool isRedimVariable = false)
             : this(
                 qualifiedName,
                 parentDeclaration,
@@ -60,6 +61,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             ParentScopeDeclaration = parentScope;
             IsUndeclared = undeclared;
+            IsRedimVariable = isRedimVariable;
         }
 
         public Declaration(
@@ -550,6 +552,11 @@ namespace Rubberduck.Parsing.Symbols
         /// Indicates whether the declaration is an ad-hoc declaration created by the resolver.
         /// </summary>
         public bool IsUndeclared { get; }
+
+        /// <summary>
+        /// Indicates whether the declaration is a variable implicitly created through the ReDim statement instead of being explicitly declared using the Dim statement.
+        /// </summary>
+        public bool IsRedimVariable { get; }
 
         public string CustomFolder { get; }
 
