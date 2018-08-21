@@ -11,7 +11,7 @@
              Language="{UICulture}"
              Name="CodeExplorer"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
+             d:DesignHeight="300" d:DesignWidth="400" d:DataContext="{d:DesignInstance codeExplorer:CodeExplorerViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -82,7 +82,7 @@
 
             <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
                 <Setter Property="Text" Value="{Binding Name}" />
-                <Setter Property="FontSize" Value="{Binding SelectedFontSize}" />
+                <Setter Property="FontSize" Value="{Binding FontSize, Mode=OneWay}" />
                 <Setter Property="Margin" Value="2,0,2,0" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="ToolTip" Value="{Binding Name}" />
@@ -98,7 +98,7 @@
 
             <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
                 <Setter Property="Text" Value="{Binding NameWithSignature}" />
-                <Setter Property="FontSize" Value="{Binding SelectedFontSize}" />
+                <!--<Setter Property="FontSize" Value="{Binding FontSize, Mode=OneWay}" />-->
                 <Setter Property="Margin" Value="2,0,2,0" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="ToolTip" Value="{Binding NameWithSignature}" />
@@ -123,12 +123,14 @@
             </Style>
 
             <HierarchicalDataTemplate x:Key="CodeExplorerTemplate" 
-                                  DataType="codeExplorer:CodeExplorerProjectViewModel"
-                                  ItemsSource="{Binding Items}">
+                                      DataType="codeExplorer:CodeExplorerProjectViewModel"
+                                      ItemsSource="{Binding Items}">
                 <StackPanel Orientation="Horizontal">
                     <Image Style="{StaticResource TreeViewIconStyle}" />
                     <TextBlock Style="{StaticResource TreeViewItemStyle}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToHiddenVisibility}}" />
-                    <TextBlock Style="{StaticResource TreeViewItemStyleWithSignatures}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" />
+                    <TextBlock Style="{StaticResource TreeViewItemStyleWithSignatures}"
+                               FontSize="{Binding FontSize, Mode=OneWay}"
+                               Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
 
@@ -488,10 +490,11 @@
 
                 <Separator />
 
-                <Label Content="Font Size:"/>
-                <ComboBox ItemsSource="{Binding FontSizes}"
-                          SelectedIndex="{Binding SelectedFontIndex}"
-                          Width="50" />
+                <Label Content="Font Size:"
+                       FontSize="{Binding FontSize}" />
+                <ComboBox ItemsSource="{Binding FontSizes, Mode=OneTime}"
+                          SelectedItem="{Binding FontSize, Mode=TwoWay}"
+                          Width="40" />
             </ToolBar>
         </ToolBarTray>
 

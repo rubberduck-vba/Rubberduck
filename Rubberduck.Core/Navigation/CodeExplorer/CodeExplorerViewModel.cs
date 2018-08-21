@@ -507,36 +507,23 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public ObservableCollection<int> FontSizes = new ObservableCollection<int>(new int[] { 10, 12, 14, 16, 18, 20 });
+        public ObservableCollection<int> FontSizes { get; } = new ObservableCollection<int> { 10, 12, 14, 16, 18, 20 };
 
-        private int _selectedFontIndex = 5;
-        public int SelectedFontIndex
+        private int _fontSize = 10;
+        public int FontSize
         {
-            get => _selectedFontIndex;
+            get => _fontSize;
             set
             {
-                if (value != _selectedFontIndex)
+                if (!_fontSize.Equals(value))
                 {
-                    _selectedFontIndex = value;
+                    _fontSize = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public int SelectedFontSize
-        {
-            get => FontSizes.ElementAt(_selectedFontIndex);
-            set
-            {
-                if (!FontSizes.IndexOf(_selectedFontIndex).Equals(value))
-                {
-                    _selectedFontIndex = FontSizes.IndexOf(value);
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-    public CommandBase RefreshCommand { get; }
+        public CommandBase RefreshCommand { get; }
 
         public CommandBase OpenCommand { get; }
 
