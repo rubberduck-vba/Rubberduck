@@ -145,160 +145,174 @@ End Sub";
             Assert.AreEqual(new TestResult(TestOutcome.Succeeded), completionEvents.First().Result);
         }
 
-        //[Test]
-        //public void TestEngine_SuccessfulTests()
-        //{
-        //    var actual = _engine.PassedTests().First();
+        [Test]
+        [Category("UnitTesting")]
+        public void TestEngine_Run_AndAssertSuccess_RaisesCompletionEvent_Success()
+        {
+            var testMethods = @"'@TestMethod
+Public Sub TestMethod1()
+End Sub";
 
-        //    Assert.AreEqual(_successfulMethod, actual);
-        //}
+            var builder = new MockVbeBuilder()
+                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddProjectToVbeBuilder();
 
-        //[Test]
-        //public void TestEngine_NotRunTests()
-        //{
-        //    var actual = _engine.NotRunTests().First();
+            var vbe = builder.Build().Object;
+            var parser = MockParser.Create(vbe);
+            var typeLibApi = new Mock<IVBETypeLibsAPI>();
+            var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
+            var typeLibMock = new Mock<ITypeLibWrapper>();
+            wrapperProvider.Setup(p => p.TypeLibWrapperFromProject(It.IsAny<string>()))
+                            .Returns(typeLibMock.Object)
+                            .Verifiable();
 
-        //    Assert.AreEqual(_notRunMethod, actual);
-        //}
+            typeLibApi.Setup(api => api.ExecuteCode(typeLibMock.Object, "TestModule1", "TestMethod1", null))
+                .Callback(() => AssertHandler.OnAssertSucceeded())
+                .Returns(null)
+                .Verifiable();
+            typeLibMock.Setup(tlm => tlm.Dispose()).Verifiable();
 
-        //[Test]
-        //public void TestEngine_LastRunTests_ReturnsAllRunTests()
-        //{
-        //    var actual = _engine.LastRunTests().ToList();
-        //    var expected = new List<TestMethod>()
-        //    {
-        //        _failedMethod, _inconclusiveMethod, _successfulMethod
-        //    };
 
-        //    CollectionAssert.AreEquivalent(expected, actual);
-        //}
+            var fakesFactory = new Mock<IFakesFactory>();
+            var createdFakes = new Mock<IFakes>();
+            fakesFactory.Setup(factory => factory.Create())
+                .Returns(createdFakes.Object);
 
-        //[Test]
-        //public void TestEngine_LastRunTests_Successful()
-        //{
-        //    var actual = _engine.LastRunTests(TestOutcome.Succeeded).First();
+            var dispatcher = new Mock<IUiDispatcher>();
+            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
+                      .Callback((Action action) => action.Invoke())
+                      .Verifiable();
 
-        //    Assert.AreEqual(_successfulMethod, actual);
-        //}
+            var completionEvents = new List<TestCompletedEventArgs>();
+            using (var state = parser.State)
+            {
+                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
+                engine.TestCompleted += (source, args) => completionEvents.Add(args);
+                parser.Parse(new CancellationTokenSource());
+                if (!engine.CanRun)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
+                engine.Run(engine.Tests);
+            }
+            Mock.Verify(dispatcher, typeLibApi, wrapperProvider, typeLibMock);
+            Assert.AreEqual(1, completionEvents.Count);
+            Assert.AreEqual(new TestResult(TestOutcome.Succeeded), completionEvents.First().Result);
+        }
 
-        //[Test]
-        //public void TestEngine_LastRunTests_Failed()
-        //{
-        //    var actual = _engine.LastRunTests(TestOutcome.Failed).First();
+        [Test]
+        [Category("UnitTesting")]
+        public void TestEngine_Run_AndAssertInconclusive_RaisesCompletionEvent_Inconclusive()
+        {
+            var testMethods = @"'@TestMethod
+Public Sub TestMethod1()
+End Sub";
 
-        //    Assert.AreEqual(_failedMethod, actual);
-        //}
+            var builder = new MockVbeBuilder()
+                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddProjectToVbeBuilder();
 
-        //[Test]
-        //public void TestEngine_LastRunTests_Inconclusive()
-        //{
-        //    var actual = _engine.LastRunTests(TestOutcome.Inconclusive).First();
+            var vbe = builder.Build().Object;
+            var parser = MockParser.Create(vbe);
+            var typeLibApi = new Mock<IVBETypeLibsAPI>();
+            var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
+            var typeLibMock = new Mock<ITypeLibWrapper>();
+            wrapperProvider.Setup(p => p.TypeLibWrapperFromProject(It.IsAny<string>()))
+                            .Returns(typeLibMock.Object)
+                            .Verifiable();
 
-        //    Assert.AreEqual(_inconclusiveMethod, actual);
-        //}
+            typeLibApi.Setup(api => api.ExecuteCode(typeLibMock.Object, "TestModule1", "TestMethod1", null))
+                .Callback(() => AssertHandler.OnAssertInconclusive("Test Message"))
+                .Returns(null)
+                .Verifiable();
+            typeLibMock.Setup(tlm => tlm.Dispose()).Verifiable();
 
-        //[Test]
-        //public void TestEngine_Run_ModuleIntialize_IsRunOnce()
-        //{
-        //    //arrange
-        //    _engine.ModuleInitialize += CatchEvent;
 
-        //    var tests = _engine.AllTests.Keys;
+            var fakesFactory = new Mock<IFakesFactory>();
+            var createdFakes = new Mock<IFakes>();
+            fakesFactory.Setup(factory => factory.Create())
+                .Returns(createdFakes.Object);
 
-        //    //act
-        //    _engine.Run(tests);
+            var dispatcher = new Mock<IUiDispatcher>();
+            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
+                      .Callback((Action action) => action.Invoke())
+                      .Verifiable();
 
-        //    Assert.IsTrue(_wasEventRaised, "Module Intialize was not run.");
-        //    Assert.AreEqual(1, _eventCount, "Module Intialzie expected to be run once.");
-        //}
+            var completionEvents = new List<TestCompletedEventArgs>();
+            using (var state = parser.State)
+            {
+                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
+                engine.TestCompleted += (source, args) => completionEvents.Add(args);
+                parser.Parse(new CancellationTokenSource());
+                if (!engine.CanRun)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
+                engine.Run(engine.Tests);
+            }
+            Mock.Verify(dispatcher, typeLibApi, wrapperProvider, typeLibMock);
+            Assert.AreEqual(1, completionEvents.Count);
+            Assert.AreEqual(new TestResult(TestOutcome.Inconclusive, "Test Message"), completionEvents.First().Result);
+        }
 
-        //[Test]
-        //public void TestEngine_Run_ModuleCleanup_IsRunOnce()
-        //{
-        //    //arrange
-        //    _engine.ModuleCleanup += CatchEvent;
+        [Test]
+        [Category("UnitTesting")]
+        public void TestEngine_Run_AndAssertFailed_RaisesCompletionEvent_Failed()
+        {
+            var testMethods = @"'@TestMethod
+Public Sub TestMethod1()
+End Sub";
 
-        //    //act
-        //    _engine.Run(_engine.AllTests.Keys);
+            var builder = new MockVbeBuilder()
+                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddProjectToVbeBuilder();
 
-        //    //assert
-        //    Assert.IsTrue(_wasEventRaised, "Module Cleanup was not run.");
-        //    Assert.AreEqual(1, _eventCount, "Module Cleanup expected to be run once.");
-        //}
+            var vbe = builder.Build().Object;
+            var parser = MockParser.Create(vbe);
+            var typeLibApi = new Mock<IVBETypeLibsAPI>();
+            var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
+            var typeLibMock = new Mock<ITypeLibWrapper>();
+            wrapperProvider.Setup(p => p.TypeLibWrapperFromProject(It.IsAny<string>()))
+                            .Returns(typeLibMock.Object)
+                            .Verifiable();
 
-        //[Test]
-        //public void TestEngine_Run_MethodIntialize_IsRunForEachTestMethod()
-        //{
-        //    //arrange
-        //    var expectedCount = _engine.AllTests.Count;
-        //    _engine.MethodInitialize += CatchEvent;
+            typeLibApi.Setup(api => api.ExecuteCode(typeLibMock.Object, "TestModule1", "TestMethod1", null))
+                .Callback(() => AssertHandler.OnAssertFailed("Test Message", "TestMethod1"))
+                .Returns(null)
+                .Verifiable();
+            typeLibMock.Setup(tlm => tlm.Dispose()).Verifiable();
 
-        //    //act
-        //    _engine.Run(_engine.AllTests.Keys);
 
-        //    //assert
-        //    Assert.IsTrue(_wasEventRaised, "Method Intialize was not run.");
-        //    Assert.AreEqual(expectedCount, _eventCount, "Method Intialized was expected to be run {0} times", expectedCount);
-        //}
+            var fakesFactory = new Mock<IFakesFactory>();
+            var createdFakes = new Mock<IFakes>();
+            fakesFactory.Setup(factory => factory.Create())
+                .Returns(createdFakes.Object);
 
-        //[Test]
-        //public void TestEngine_Run_MethodCleanup_IsRunForEachTestMethod()
-        //{
-        //    //arrange
-        //    var expectedCount = _engine.AllTests.Count;
-        //    _engine.MethodCleanup += CatchEvent;
+            var dispatcher = new Mock<IUiDispatcher>();
+            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
+                      .Callback((Action action) => action.Invoke())
+                      .Verifiable();
 
-        //    //act
-        //    _engine.Run(_engine.AllTests.Keys);
+            var completionEvents = new List<TestCompletedEventArgs>();
+            using (var state = parser.State)
+            {
+                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
+                engine.TestCompleted += (source, args) => completionEvents.Add(args);
+                parser.Parse(new CancellationTokenSource());
+                if (!engine.CanRun)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
+                engine.Run(engine.Tests);
+            }
+            Mock.Verify(dispatcher, typeLibApi, wrapperProvider, typeLibMock);
+            Assert.AreEqual(1, completionEvents.Count);
+            Assert.AreEqual(new TestResult(TestOutcome.Failed, string.Format(AssertMessages.Assert_FailedMessageFormat, "TestMethod1", "Test Message")), completionEvents.First().Result);
+        }
 
-        //    //assert
-        //    Assert.IsTrue(_wasEventRaised, "Method Initialize was not run.");
-        //    Assert.AreEqual(expectedCount, _eventCount, "Method Initialized was expected to be run {0} times", expectedCount);
-        //}
-
-        //[Test]
-        //public void TestEngine_Run_TestCompleteIsRaisedForEachTestMethod()
-        //{
-        //    //arrange
-        //    var expectedCount = _engine.AllTests.Count;
-        //    _engine.TestCompleted += EngineOnTestComplete;
-
-        //    //act
-        //    _engine.Run(_engine.AllTests.Keys);
-
-        //    //assert
-        //    Assert.IsTrue(_wasEventRaised, "TestCompleted event was not raised.");
-        //    Assert.AreEqual(expectedCount, _eventCount, "TestCompleted event was expected to be raised {0} times.", expectedCount);
-        //}
-
-        //[Test]
-        //public void TestEngine_Run_WhenTestListIsEmpty_Bail()
-        //{
-        //    //arrange 
-        //    _engine.MethodInitialize += CatchEvent;
-
-        //    //act
-        //    _engine.Run(new List<TestMethod>());
-
-        //    //assert
-        //    Assert.IsFalse(_wasEventRaised, "No methods should run when passed an empty list of tests.");
-        //}
-
-        //private void EngineOnTestComplete(object sender, TestCompletedEventArgs testCompletedEventArgs)
-        //{
-        //    CatchEvent();
-        //}
-
-        //private void CatchEvent(object sender, TestModuleEventArgs e)
-        //{
-        //    CatchEvent();
-        //}
-
-        //private void CatchEvent()
-        //{
-        //    _wasEventRaised = true;
-        //    _eventCount++;
-        //}
 
 
         private const string RawInput = @"Option Explicit
