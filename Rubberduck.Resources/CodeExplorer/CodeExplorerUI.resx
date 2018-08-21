@@ -355,4 +355,7 @@
   <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
     <value>Do you want to export '{0}' before removing?</value>
   </data>
+  <data name="CodeExplorer_Rename" xml:space="preserve">
+    <value>Rename</value>
+  </data>
 </root>
