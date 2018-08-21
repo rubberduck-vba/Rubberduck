@@ -507,10 +507,10 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public ObservableCollection<int> FontSizes { get; } = new ObservableCollection<int> { 10, 12, 14, 16, 18, 20 };
+        public ObservableCollection<double> FontSizes { get; } = new ObservableCollection<double> { 8, 10, 12, 14, 16 };
 
-        private int _fontSize = 10;
-        public int FontSize
+        private double _fontSize = 10;
+        public double FontSize
         {
             get => _fontSize;
             set
