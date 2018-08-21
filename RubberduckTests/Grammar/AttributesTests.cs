@@ -434,7 +434,7 @@ End Property
         [Category("Grammar")]
         [Category("Attributes")]
         [Test]
-        public void VariableAttributeBetweenVariableDeclarationsAndModuleBaodyGetsRecognized()
+        public void VariableAttributeBetweenVariableDeclarationsAndModuleBodyGetsRecognized()
         {
             const string inputCode =
                 @"
