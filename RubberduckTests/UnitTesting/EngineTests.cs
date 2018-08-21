@@ -1,9 +1,8 @@
 using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing.UIContext;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources.UnitTesting;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers;

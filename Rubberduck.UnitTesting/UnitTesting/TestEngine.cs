@@ -143,87 +143,90 @@ namespace Rubberduck.UnitTesting
             testResults.Clear();
             try
             {
-                var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName);
-                foreach (var module in modules)
+                var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName)
+                    .Select(grouping => grouping.Key);
+                foreach (var qmn in modules)
                 {
-                    var testInitialize = TestDiscovery.FindTestInitializeMethods(module.Key, _state).ToList();
-                    var testCleanup = TestDiscovery.FindTestCleanupMethods(module.Key, _state).ToList();
+                    var testInitialize = TestDiscovery.FindTestInitializeMethods(qmn, _state).ToList();
+                    var testCleanup = TestDiscovery.FindTestCleanupMethods(qmn, _state).ToList();
 
-                    var capturedModule = module;
                     var moduleTestMethods = testMethods
                         .Where(test =>
                         {
-                            var qmn = test.Declaration.QualifiedName.QualifiedModuleName;
+                            var testModuleName = test.Declaration.QualifiedName.QualifiedModuleName;
 
-                            return qmn.ProjectId == capturedModule.Key.ProjectId
-                                   && qmn.ComponentName == capturedModule.Key.ComponentName;
+                            return testModuleName.ProjectId == qmn.ProjectId
+                                   && testModuleName.ComponentName == qmn.ComponentName;
                         });
 
                     var fakes = _fakesFactory.Create();
-                    var initializeMethods = TestDiscovery.FindModuleInitializeMethods(module.Key, _state);
-                    try
+                    var initializeMethods = TestDiscovery.FindModuleInitializeMethods(qmn, _state);
+                    using (var typeLibWrapper = _wrapperProvider.TypeLibWrapperFromProject(qmn.ProjectId))
                     {
-                        RunInternal(initializeMethods);
-                    }
-                    catch (COMException ex)
-                    {
-                        Logger.Error(ex,
-                            "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.",
-                            module.Key.Name);
-                        foreach (var method in moduleTestMethods)
-                        {
-                            OnTestCompleted(method, new TestResult(TestOutcome.Unknown, AssertMessages.Assert_ComException));
-                        }
-                        continue;
-                    }
-                    foreach (var test in moduleTestMethods)
-                    {
-                        // no need to run setup/teardown for ignored tests
-                        if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
-                        {
-                            OnTestCompleted(test, new TestResult(TestOutcome.Ignored));
-                            continue;
-                        }
-
                         try
                         {
-                            fakes.StartTest();
-                            try
-                            {
-                                RunInternal(testInitialize);
-                            }
-                            catch (Exception trace)
-                            {
-                                OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.Assert_TestInitializeFailure));
-                                Logger.Trace(trace, "Unexpected Exception when running TestInitialize");
-                                continue;
-                            }
-                            var result = RunTestMethod(test);
-                            // we can trigger this event, because cleanup can fail without affecting the result
-                            OnTestCompleted(test, result);
-                            RunInternal(testCleanup);
+                            RunInternal(typeLibWrapper, initializeMethods);
                         }
                         catch (COMException ex)
                         {
-                            Logger.Error(ex, "Unexpected COM exception while running tests.");
-                            OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException));
+                            Logger.Error(ex,
+                                "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.",
+                                qmn.Name);
+                            foreach (var method in moduleTestMethods)
+                            {
+                                OnTestCompleted(method, new TestResult(TestOutcome.Unknown, AssertMessages.Assert_ComException));
+                            }
+                            continue;
                         }
-                        finally
+                        foreach (var test in moduleTestMethods)
                         {
-                            fakes.StopTest();
+                            // no need to run setup/teardown for ignored tests
+                            if (test.Declaration.Annotations.Any(a => a.AnnotationType == AnnotationType.IgnoreTest))
+                            {
+                                OnTestCompleted(test, new TestResult(TestOutcome.Ignored));
+                                continue;
+                            }
+
+                            try
+                            {
+                                fakes.StartTest();
+                                try
+                                {
+                                    RunInternal(typeLibWrapper, testInitialize);
+                                }
+                                catch (Exception trace)
+                                {
+                                    OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.Assert_TestInitializeFailure));
+                                    Logger.Trace(trace, "Unexpected Exception when running TestInitialize");
+                                    continue;
+                                }
+                                var result = RunTestMethod(typeLibWrapper, test);
+                                // we can trigger this event, because cleanup can fail without affecting the result
+                                OnTestCompleted(test, result);
+                                RunInternal(typeLibWrapper, testCleanup);
+                            }
+                            catch (COMException ex)
+                            {
+                                Logger.Error(ex, "Unexpected COM exception while running tests.");
+                                OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException));
+                            }
+                            finally
+                            {
+                                fakes.StopTest();
+                            }
                         }
-                    }
-                    var cleanupMethods = TestDiscovery.FindModuleCleanupMethods(module.Key, _state);
-                    try
-                    {
-                        RunInternal(cleanupMethods);
-                    }
-                    catch (COMException ex)
-                    {
-                        Logger.Error(ex,
-                            "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests",
-                            module.Key.Name);
-                        break;
+                        var cleanupMethods = TestDiscovery.FindModuleCleanupMethods(qmn, _state);
+                        try
+                        {
+                            RunInternal(typeLibWrapper, cleanupMethods);
+                        }
+                        catch (COMException ex)
+                        {
+                            Logger.Error(ex,
+                                "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests",
+                                qmn.Name);
+                            break;
+                        }
                     }
                 }
             }
@@ -233,7 +236,7 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        private TestResult RunTestMethod(TestMethod test)
+        private TestResult RunTestMethod(ITypeLibWrapper typeLib, TestMethod test)
         {
             var assertResults = new List<AssertCompletedEventArgs>();
 
@@ -243,7 +246,6 @@ namespace Rubberduck.UnitTesting
             {
                 AssertHandler.OnAssertCompleted += (s, e) => assertResults.Add(e);
                 var testDeclaration = test.Declaration;
-                var typeLib = _wrapperProvider.TypeLibWrapperFromProject(testDeclaration.Project);
                 duration.Start();
 
                 _typeLibApi.ExecuteCode(typeLib, testDeclaration.ComponentName, testDeclaration.QualifiedName.MemberName);
@@ -271,19 +273,12 @@ namespace Rubberduck.UnitTesting
             return result;
         }
 
-        private void RunInternal(IEnumerable<Declaration> members)
+        private void RunInternal(ITypeLibWrapper typeLib, IEnumerable<Declaration> members)
         {
-            var groupedMembers = members.GroupBy(m => m.ProjectId);
-            foreach (var group in groupedMembers)
+            foreach (var member in members)
             {
-                using (var typeLib = _wrapperProvider.TypeLibWrapperFromProject(group.Key))
-                {
-                    foreach (var member in group)
-                    {
-                        _typeLibApi.ExecuteCode(typeLib, member.QualifiedModuleName.ComponentName,
-                            member.QualifiedName.MemberName);
-                    }
-                }
+                _typeLibApi.ExecuteCode(typeLib, member.QualifiedModuleName.ComponentName,
+                    member.QualifiedName.MemberName);
             }
         }
 
