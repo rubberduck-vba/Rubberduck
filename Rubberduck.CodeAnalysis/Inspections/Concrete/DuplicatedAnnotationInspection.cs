@@ -6,7 +6,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete
 {
     public sealed class DuplicatedAnnotationInspection : InspectionBase
     {

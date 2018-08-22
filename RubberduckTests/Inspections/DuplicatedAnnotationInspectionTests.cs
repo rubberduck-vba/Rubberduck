@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Inspections.Inspections.Concrete;
+using Rubberduck.Inspections.Concrete;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
