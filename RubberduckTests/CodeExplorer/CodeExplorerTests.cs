@@ -337,7 +337,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var commands = new List<CommandBase> { new AddMDIFormCommand(new AddComponentCommand(vbe.Object)) };
+            var commands = new List<CommandBase> { new AddMDIFormCommand(vbe.Object, new AddComponentCommand(vbe.Object)) };
 
             var projectRepository = new ProjectsRepository(vbe.Object);
             var uiDispatcher = new Mock<IUiDispatcher>();
@@ -375,7 +375,7 @@ namespace RubberduckTests.CodeExplorer
             var vbe = builder.AddProject(project.Build()).Build();
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
 
-            var commands = new List<CommandBase> { new AddMDIFormCommand(new AddComponentCommand(vbe.Object)) };
+            var commands = new List<CommandBase> { new AddMDIFormCommand(vbe.Object, new AddComponentCommand(vbe.Object)) };
 
             var projectRepository = new ProjectsRepository(vbe.Object);
             var uiDispatcher = new Mock<IUiDispatcher>();
@@ -391,6 +391,37 @@ namespace RubberduckTests.CodeExplorer
                 vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
 
                 return vm.AddMDIFormCommand.CanExecute(vm.SelectedItem);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddMDIForm_CannotExecuteIfProjectAlreadyHasMDIForm()
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, ProjectType.StandardExe)
+                .AddComponent("MDIForm1", ComponentType.MDIForm, "");
+
+
+            var vbe = builder.AddProject(project.Build()).Build();
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
+
+            var commands = new List<CommandBase> { new AddMDIFormCommand(vbe.Object, new AddComponentCommand(vbe.Object)) };
+
+            var projectRepository = new ProjectsRepository(vbe.Object);
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
+            {
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, commands, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+
+                var parser = MockParser.Create(vbe.Object, state, projectRepository);
+                parser.Parse(new CancellationTokenSource());
+                if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+
+                vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
+
+                Assert.IsFalse(vm.AddMDIFormCommand.CanExecute(vm.SelectedItem));
             }
         }
 
