@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor;
+﻿using Rubberduck.Parsing.Grammar;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -7,5 +8,6 @@ namespace Rubberduck.Parsing.Annotations
         AnnotationType AnnotationType { get; }
         QualifiedSelection QualifiedSelection { get; }
         bool AllowMultiple { get; }
+        VBAParser.AnnotationContext Context { get; }
     }
 }

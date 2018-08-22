@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
     public sealed class IgnoreModuleAnnotation : AnnotationBase
     {
-        public IgnoreModuleAnnotation(QualifiedSelection qualifiedSelection, IEnumerable<string> parameters)
-            : base(AnnotationType.IgnoreModule, qualifiedSelection)
+        public IgnoreModuleAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
+            : base(AnnotationType.IgnoreModule, qualifiedSelection, context)
         {
             InspectionNames = parameters;
         }

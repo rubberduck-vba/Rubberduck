@@ -1,6 +1,7 @@
 ﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -11,8 +12,9 @@ namespace Rubberduck.Parsing.Annotations
     {
         public FolderAnnotation(
             QualifiedSelection qualifiedSelection,
+            VBAParser.AnnotationContext context,
             IEnumerable<string> parameters)
-            : base(AnnotationType.Folder, qualifiedSelection)
+            : base(AnnotationType.Folder, qualifiedSelection, context)
         {
             FolderName = parameters.FirstOrDefault() ?? string.Empty;
         }
