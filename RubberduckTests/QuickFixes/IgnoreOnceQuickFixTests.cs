@@ -882,11 +882,13 @@ End Sub";
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub";
 
             const string expectedCode =
                 @"'@Ignore ProcedureCanBeWrittenAsFunction
 Private Sub Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);

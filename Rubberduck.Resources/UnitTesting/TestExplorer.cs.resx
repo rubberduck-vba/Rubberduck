@@ -177,55 +177,61 @@
   <data name="TestExplorer_RunFailedTests" xml:space="preserve">
     <value>Testy, které neprošly</value>
   </data>
-  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
-    <value>Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue.</value>
+  <data name="Command_AddTestModule_Error" xml:space="preserve">
+    <value>Nebylo možné vytvořit testovací modul. Hostující aplikace možná nemá povoleno vytváření nových modulů, nebo je projekt uzamčen. Pro detaily se koukněte do logu.</value>
   </data>
   <data name="TestExplorer_Outcome" xml:space="preserve">
-    <value>Outcome</value>
+    <value>Výsledek</value>
   </data>
   <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
-    <value>Inconclusive Tests</value>
+    <value>Neprůkazné testy</value>
+  </data>
+  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
+    <value>Dva nebo více projektů obsahující testovací metody, mají stejné jména nebo stejně pojmenované testy. Pokud chcete pokračovat, jedno z nich prosím přejmenujte.</value>
   </data>
   <data name="TestOutcome_Failed" xml:space="preserve">
-    <value>Failed</value>
+    <value>Selhalo</value>
   </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
-    <value>Ignored</value>
+    <value>Ignorováno</value>
   </data>
   <data name="TestOutcome_Inconclusive" xml:space="preserve">
-    <value>Inconclusive</value>
+    <value>Neprůkazné</value>
   </data>
   <data name="TestOutcome_Succeeded" xml:space="preserve">
-    <value>Succeeded</value>
+    <value>Úspěch</value>
   </data>
   <data name="TestOutcome_Unknown" xml:space="preserve">
-    <value>Unknown</value>
+    <value>Neznámý</value>
   </data>
   <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
-    <value>Change to expected error number</value>
+    <value>Změnit na očekávané číslo chyby</value>
   </data>
   <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
-    <value>Expected error was not raised</value>
+    <value>Očekávaná chyba se nestala</value>
   </data>
   <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
-    <value>Test raised an error</value>
+    <value>Test skončil s chybou</value>
   </data>
   <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
-    <value>Rename test</value>
+    <value>Přejmenovat test</value>
   </data>
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
-    <value>this method runs after every test in the module</value>
+    <value>tato metoda běží na konci každého testu v modulu</value>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
-    <value>this method runs before every test in the module</value>
+    <value>tato metoda běží před začátkem každého testu v modulu</value>
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
-    <value>this method runs once per module</value>
+    <value>tato metoda běží jedenkrát v modulu</value>
   </data>
   <data name="UnitTest_TotalDuration" xml:space="preserve">
-    <value>Total Duration</value>
+    <value>Celkové Trvání</value>
   </data>
-  <data name="Command_AddTestModule_Error" xml:space="preserve">
-    <value>Unable to create test module. The host application may not allow for creation of new modules or the project may be locked. For details, check the log.</value>
+  <data name="TestExplorer_CategoryName" xml:space="preserve">
+    <value>Jméno Kategorie</value>
+  </data>
+  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
+    <value>Vybraná Kategorie</value>
   </data>
 </root>

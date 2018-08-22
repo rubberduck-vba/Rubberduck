@@ -291,8 +291,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
                 lock (_eventLock)
                 {
                     _click += value;
-                    if (_click != null && _click.GetInvocationList().Length != 0)
+                    if (_click != null && _click.GetInvocationList().Length == 1)
                     {
+                        // First subscriber attached - attach COM events
                         AttachEvents();
                     }
                 }
@@ -304,6 +305,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
                     _click -= value;
                     if (_click == null || _click.GetInvocationList().Length == 0)
                     {
+                        // Last subscriber detached - detach COM events
                         DetachEvents();
                     };
                 }

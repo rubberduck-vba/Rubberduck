@@ -1,0 +1,25 @@
+﻿; Czech Custom Messages Include -- Must be encoded in UTF-8 BOM
+Czech.PerUser=Aktuální Uživatel
+Czech.Everyone=Všichni Uživatelé
+Czech.RegisterAddin=Opravit VBE Addin registraci
+Czech.ProgramOnTheWeb=Webová stránka Rubberduck VBA
+Czech.UninstallProgram=Odinstalovat Rubberduck
+Czech.NETFramework46NotInstalled=Microsoft .NET Framework 4.6 instalace nebyla detekována.
+Czech.InstallPerUserOrAllUsersCaption=Vyberte možnosti instalace
+Czech.InstallPerUserOrAllUsersMessage=Pro koho má být aplikace instalována?
+Czech.InstallPerUserOrAllUsersAdminDescription=Prosím vyberte, zda má být tento software dostupný pro všechny uživatele, nebo jen pro vás.
+Czech.InstallPerUserOrAllUsersAdminButtonCaption=&Všichni uživatelé tohoto počítače
+Czech.InstallPerUserOrAllUsersUserButtonCaption=&Pouze vy
+Czech.ElevationRequiredForSelectedFolderWarning=Vybraná složka vyžaduje pro zápis práva administrátora. Nainstalovat pro všechny uživatele?
+Czech.ElevationRequestFailMessage=Administrátorský použadavek se nezdařil. Kód: &d
+Czech.RegisterAddInCaption=Registrovat VBE Add-in
+Czech.RegisterAddInMessage=Provést registraci uživatele VBE addinu.
+Czech.RegisterAddInDescription=VBE Add-ins jsou registrovány na základě uživatele, i když byl doplněk VBE nainstalován pro všechny uživatele. Proto je třeba provést registraci na základě každého uživatele.
+Czech.RegisterAddInButtonCaption=Registrovat Rubberduck VBE Add-in
+Czech.WillExecuteAdminInstall=Rubberduck Add-In bude k dispozici všem uživatelům.%n%nPOZNÁMKA: každý uživatel musí individuálně zaregistrovat Rubberduck Add-In, %nprotože se jedná o per-uživatel nastavení, které není možné aplikovat na všechny uživatele.%n%nPo dokončení instalace bude k dispozici zástupce s názvem "Opravit VBA Addin registraci"%nnacházející se ve složce, kam byl Rubberduck nainstalován a bude k dispozici pro všechny uživatele.
+Czech.WillLaunchAdminInstall=Instalátor si vyžádá práva administrátora, aby mohl provést instalaci pro všechny uživatele,%na poté bude pokračovat registrací doplňku pro aktuálního uživatele.
+Czech.WillInstallForCurrentUser=Rubberduck Add-In bude k dispozici pouze pro aktuálního uživatele%na nebude vyžadovat práva administrátora
+Czech.UninstallOldVersionPrompt=Vypadá to, že existuje předchozí verze Rubberducku instalována v %s módu a měla by být odinstalována. Pokračovat?
+Czech.UninstallOldVersionFail=Nelze odinstalovat předchozí verzi Rubberducku. Zkuste jej odinstalovat pomocí ovládacího panelu - programy a funkce - a poté spustit instalátor znovu.
+Czech.WarnInstallPerUserOverEveryone=Zdá se, že je nainstalována verze Rubberducku pro všechny uživatele. Pokud budete pokračovat s per-uživatel instalací, bude mít přednost před původní instalací. Přesto pokračovat?
+Czech.ElevationRequestFailMessage=Nelze odinstalovat předchozí verzi Rubberducku. Před instalací nové verze bude nejspíše nutné ji odinstalovat přímo.

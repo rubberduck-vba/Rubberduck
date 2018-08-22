@@ -73,6 +73,7 @@ namespace Rubberduck.Common
 
             try
             {
+                AutoComplete.Enable();
                 foreach (var hook in Hooks)
                 {
                     hook.Attach();
@@ -95,6 +96,7 @@ namespace Rubberduck.Common
 
             try
             {
+                AutoComplete.Disable();
                 foreach (var hook in Hooks)
                 {
                     hook.MessageReceived -= hook_MessageReceived;

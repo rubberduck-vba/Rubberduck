@@ -496,19 +496,19 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
     <value>Seznam tokenu:</value>
   </data>
   <data name="ExtractInterface_TitleLabel" xml:space="preserve">
-    <value>Extrahovat interface</value>
+    <value>Extrahovat Rozhraní</value>
   </data>
   <data name="SelectAll_Button" xml:space="preserve">
-    <value>Označ vše</value>
+    <value>Označit vše</value>
   </data>
   <data name="DeselectAll_Button" xml:space="preserve">
-    <value>Odznač vše</value>
+    <value>Odznačit vše</value>
   </data>
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Členové</value>
   </data>
   <data name="ExtractInterface_Caption" xml:space="preserve">
-    <value>Rubberduck - Extrahovat interface</value>
+    <value>Rubberduck - Extrahovat Rozhraní</value>
   </data>
   <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
     <value>Neplatný výběr.</value>
@@ -566,5 +566,680 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="Add" xml:space="preserve">
     <value>Přidat</value>
+  </data>
+  <data name="ReorderPresenter_OptionalParametersMustBeLastError" xml:space="preserve">
+    <value>Volitelné parametry musejí být specifikovány na konci seznamu parametrů.</value>
+  </data>
+  <data name="Refactoring_TargetIsInterfaceMemberImplementation" xml:space="preserve">
+    <value>Metoda '{0}' implementuje '{1}.{2}'. Změnit podpis rozhraní? (Rozšíří se na všechny implementace.)</value>
+  </data>
+  <data name="RemoveParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Vyberte parametr a dvojím poklepáním na něj, nebo použitím tlačítek, ho odstraňte nebo obnovte.</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Rubberduck Inspekce Kódu - {0}
+Nalezeno {1} problémů.</value>
+  </data>
+  <data name="RenameDialog_ConflictingNames" xml:space="preserve">
+    <value>Přejmenování na '{0}' je ve středu s '{1}' v tom samém kódovém rozsahu.
+Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
+  </data>
+  <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
+    <value>Přesvědčte se, že máte před přejemnováním vybrán pouze 1 control.</value>
+  </data>
+  <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
+    <value>{0} ({1} problémů)</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
+    <value>{0} problémů</value>
+  </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="Language_DE" xml:space="preserve">
+    <value>Němčina</value>
+  </data>
+  <data name="RegexSearchReplaceScope_AllOpenedFiles" xml:space="preserve">
+    <value>Všechny Otevřené Soubory</value>
+  </data>
+  <data name="RegexSearchReplaceScope_AllOpenProjects" xml:space="preserve">
+    <value>Všechny Otevřené Projekty</value>
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentBlock" xml:space="preserve">
+    <value>Aktuální Blok</value>
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentFile" xml:space="preserve">
+    <value>Aktální Soubor</value>
+  </data>
+  <data name="RegexSearchReplaceScope_CurrentProject" xml:space="preserve">
+    <value>Aktuální Projekt</value>
+  </data>
+  <data name="RegexSearchReplaceScope_Selection" xml:space="preserve">
+    <value>Výběr</value>
+  </data>
+  <data name="RegexSearchReplace_Caption" xml:space="preserve">
+    <value>Regex Hledej a Nahraď</value>
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
+    <value>Nahradit Vše</value>
+  </data>
+  <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
+    <value>Nahradit</value>
+  </data>
+  <data name="RegexSearchReplace_ReplaceLabel" xml:space="preserve">
+    <value>Nahradit:</value>
+  </data>
+  <data name="RegexSearchReplace_ScopeLabel" xml:space="preserve">
+    <value>Rozsah:</value>
+  </data>
+  <data name="RegexSearchReplace_SearchLabel" xml:space="preserve">
+    <value>Vyhledávání:</value>
+  </data>
+  <data name="ParserProgress_ShowDetails" xml:space="preserve">
+    <value>Detaily</value>
+  </data>
+  <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
+    <value>Udělat ActiveSheet referenci explicitní</value>
+  </data>
+  <data name="MakeActiveWorkbookReferenceExplicit" xml:space="preserve">
+    <value>Udělat ActiveWorkbook referenci explicitní</value>
+  </data>
+  <data name="FindSymbolDialog_Caption" xml:space="preserve">
+    <value>Najít symbol</value>
+  </data>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value>Aktuální Projekt</value>
+  </data>
+  <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
+    <value>Výběr není proměnná.</value>
+  </data>
+  <data name="EncapsulateField_Caption" xml:space="preserve">
+    <value>Rubberduck - Zapouzdřit Pole</value>
+  </data>
+  <data name="EncapsulateField_InstructionText" xml:space="preserve">
+    <value>Prosím, specifikujte jméno vlastnosti, přístupnost parametru a typ 'setteru'.</value>
+  </data>
+  <data name="EncapsulateField_Preview" xml:space="preserve">
+    <value>Náhled:</value>
+  </data>
+  <data name="EncapsulateField_PropertyName" xml:space="preserve">
+    <value>Jméno Property:</value>
+  </data>
+  <data name="EncapsulateField_SetterType" xml:space="preserve">
+    <value>Typ Setteru:</value>
+  </data>
+  <data name="EncapsulateField_TitleText" xml:space="preserve">
+    <value>Zapouzdřit Pole</value>
+  </data>
+  <data name="EncapsulateField_ParameterName" xml:space="preserve">
+    <value>Jméno Vlastnosti:</value>
+  </data>
+  <data name="MoveCloserToUsage_Caption" xml:space="preserve">
+    <value>Rubberduck - Přesuň na Místo Použití</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+    <value>'{0}' není nikde použito.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+    <value>'{0}' má odkazy ve více metodách.</value>
+  </data>
+  <data name="IntroduceField_Caption" xml:space="preserve">
+    <value>Rubberduck - Představ Pole</value>
+  </data>
+  <data name="IntroduceParameter_Caption" xml:space="preserve">
+    <value>Rubberduck - Představ Vlastnost</value>
+  </data>
+  <data name="IntroduceParameter_PromptIfTargetIsInterface" xml:space="preserve">
+    <value>Metoda '{0}' implementuje '{1}.{2}'. Změnit podpis rozhraní? (Rozšíří se na všechny implementace.)</value>
+  </data>
+  <data name="ImplementInterface_Caption" xml:space="preserve">
+    <value>Rubberduck - Implementovat Rozhraní</value>
+  </data>
+  <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
+    <value>Aktuální výběr není platný.</value>
+  </data>
+  <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
+    <value>Prosím, specifikujte jméno rozhraní a jeho členy.</value>
+  </data>
+  <data name="SeverityLabelText" xml:space="preserve">
+    <value>Vážnost:</value>
+  </data>
+  <data name="WindowSettings_StartupVisibilityHeader" xml:space="preserve">
+    <value>Viditelnost okna při spuštění</value>
+  </data>
+  <data name="EndOfLineCommentStyle_SameGap" xml:space="preserve">
+    <value>Stejná Mezera</value>
+  </data>
+  <data name="EndOfLineCommentStyle_StandardGap" xml:space="preserve">
+    <value>Standardní Mezera</value>
+  </data>
+  <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
+    <value>Zarovnat pokračování</value>
+  </data>
+  <data name="IndenterSettings_AlignDims" xml:space="preserve">
+    <value>Zarovnat 'dimy'</value>
+  </data>
+  <data name="IndenterSettings_AlignmentOptionsLabel" xml:space="preserve">
+    <value>Nastavení Zarovnání</value>
+  </data>
+  <data name="IndenterSettings_EnableOptionsLabel" xml:space="preserve">
+    <value>Povolit Nastavení</value>
+  </data>
+  <data name="IndenterSettings_EnableUndo" xml:space="preserve">
+    <value>Povolit 'zpět'</value>
+  </data>
+  <data name="IndenterSettings_EndOfLineCommentStyle" xml:space="preserve">
+    <value>Styl komentářů na konci řádku:</value>
+  </data>
+  <data name="IndenterSettings_IgnoreOperators" xml:space="preserve">
+    <value>Ignorovat operátory</value>
+  </data>
+  <data name="IndenterSettings_IndentFirstCommentBlock" xml:space="preserve">
+    <value>Odsadit první blok komentáře</value>
+  </data>
+  <data name="IndenterSettings_IndentFirstDeclarationBlock" xml:space="preserve">
+    <value>Odsadit první blok deklarace</value>
+  </data>
+  <data name="IndenterSettings_SpecialOptionsLabel" xml:space="preserve">
+    <value>Speciální nastavení</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentModuleCommand" xml:space="preserve">
+    <value>Odsadit Modul</value>
+  </data>
+  <data name="CommandDescription_IndentCurrentProcedureCommand" xml:space="preserve">
+    <value>Odsadit Proceduru</value>
+  </data>
+  <data name="CodeInspectionResults_GroupByModule" xml:space="preserve">
+    <value>Dle modulu</value>
+  </data>
+  <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
+    <value>Dle typu inspekce</value>
+  </data>
+  <data name="CodeInspectionResults_Issue" xml:space="preserve">
+    <value>Problém</value>
+  </data>
+  <data name="CodeInspectionResults_Location" xml:space="preserve">
+    <value>Lokace</value>
+  </data>
+  <data name="GroupingGrid_GroupingStyle" xml:space="preserve">
+    <value>Seskupení</value>
+  </data>
+  <data name="GroupingStyle_ByInspectionType" xml:space="preserve">
+    <value>Dle typu inspekce</value>
+  </data>
+  <data name="GroupingStyle_ByLocation" xml:space="preserve">
+    <value>Dle lokace</value>
+  </data>
+  <data name="GroupingStyle_ByOutcome" xml:space="preserve">
+    <value>Dle výsledku</value>
+  </data>
+  <data name="GeneralSettings_HotkeysLabel" xml:space="preserve">
+    <value>Klávesové Zkratky:</value>
+  </data>
+  <data name="SearchResults_Caption" xml:space="preserve">
+    <value>Výsledky Hledání</value>
+  </data>
+  <data name="SearchResults_Location" xml:space="preserve">
+    <value>Lokace</value>
+  </data>
+  <data name="SearchResults_Context" xml:space="preserve">
+    <value>Kontext</value>
+  </data>
+  <data name="SearchResults_AllImplementationsTabFormat" xml:space="preserve">
+    <value>Všechny implementace: '{0}'</value>
+  </data>
+  <data name="ParserState_Error" xml:space="preserve">
+    <value>Chyba Parsování</value>
+  </data>
+  <data name="ParserState_LoadingReference" xml:space="preserve">
+    <value>Načítám reference</value>
+  </data>
+  <data name="ParserState_Parsed" xml:space="preserve">
+    <value>Parsováno</value>
+  </data>
+  <data name="ParserState_Parsing" xml:space="preserve">
+    <value>Parsuji...</value>
+  </data>
+  <data name="ParserState_Pending" xml:space="preserve">
+    <value>Čekající</value>
+  </data>
+  <data name="ParserState_Ready" xml:space="preserve">
+    <value>Připraven</value>
+  </data>
+  <data name="ParserState_ResolverError" xml:space="preserve">
+    <value>Chyba Resolveru</value>
+  </data>
+  <data name="ParserState_ResolvingDeclarations" xml:space="preserve">
+    <value>Řeším deklarace...</value>
+  </data>
+  <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
+    <value>Parsuj všechny otevřené projekty</value>
+  </data>
+  <data name="GeneralSettings_HotkeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="GeneralSettings_HotkeyCtrl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
+    <value>Klíč2</value>
+  </data>
+  <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="CommandDescription_CodeExplorerCommand" xml:space="preserve">
+    <value>Code Explorer</value>
+  </data>
+  <data name="CommandDescription_InspectionResultsCommand" xml:space="preserve">
+    <value>Inspekce Kódu</value>
+  </data>
+  <data name="CommandDescription_RefactorExtractMethodCommand" xml:space="preserve">
+    <value>Refaktorovat / Extrahovat Metodu</value>
+  </data>
+  <data name="CommandDescription_CodePaneRefactorRenameCommand" xml:space="preserve">
+    <value>Refaktorovat / Přejmenovat</value>
+  </data>
+  <data name="CommandDescription_TestExplorerCommand" xml:space="preserve">
+    <value>Test Explorer</value>
+  </data>
+  <data name="CommonHotkey_InvalidKey" xml:space="preserve">
+    <value>Neplatný klíč.</value>
+  </data>
+  <data name="CommonHotkey_HookDetached" xml:space="preserve">
+    <value>Propojení je již odpojeno.</value>
+  </data>
+  <data name="CommonHotkey_HookAttached" xml:space="preserve">
+    <value>Propojení je již připojeno.</value>
+  </data>
+  <data name="CommonHotkey_KeyNotRegistered" xml:space="preserve">
+    <value>Klávesová Zkratka ({0}) není registrována.</value>
+  </data>
+  <data name="CommandDescription_FindSymbolCommand" xml:space="preserve">
+    <value>Najít symbol</value>
+  </data>
+  <data name="CommandDescription_RefactorMoveCloserToUsageCommand" xml:space="preserve">
+    <value>Refaktorovat / Přemístit deklaraci blíže k použití</value>
+  </data>
+  <data name="CommandDescription_ReparseCommand" xml:space="preserve">
+    <value>Obnovit stav parseru</value>
+  </data>
+  <data name="GroupingStyle_ByMarker" xml:space="preserve">
+    <value>Dle značky</value>
+  </data>
+  <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
+    <value>Oddělovač složky:</value>
+  </data>
+  <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
+    <value>Tečka (.)</value>
+  </data>
+  <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
+    <value>Lomeno (/)</value>
+  </data>
+  <data name="Parser_ParserError" xml:space="preserve">
+    <value>Chyby Parseru</value>
+  </data>
+  <data name="GeneralSettings_MinimumLogLevelLabel" xml:space="preserve">
+    <value>Minimální Úroveň Logu:</value>
+  </data>
+  <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="GeneralSettings_FatalLogLevel" xml:space="preserve">
+    <value>Fatální</value>
+  </data>
+  <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
+    <value>Info</value>
+  </data>
+  <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
+    <value>Žádné Logování</value>
+  </data>
+  <data name="GeneralSettings_TraceLogLevel" xml:space="preserve">
+    <value>Trace</value>
+  </data>
+  <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
+    <value>Varování</value>
+  </data>
+  <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
+    <value>Otevřít Log Složku</value>
+  </data>
+  <data name="ParserState_ResolvingReferences" xml:space="preserve">
+    <value>Řeším reference...</value>
+  </data>
+  <data name="RegexAssistant_Caption" xml:space="preserve">
+    <value>Rubberduck - Regex Analyzátor</value>
+  </data>
+  <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
+    <value>Popis</value>
+  </data>
+  <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
+    <value>Globální</value>
+  </data>
+  <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
+    <value>Ignorovat velká/malá písmena</value>
+  </data>
+  <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
+    <value>Vzor</value>
+  </data>
+  <data name="RegexAssistant_NoPatternError" xml:space="preserve">
+    <value>(žádný vzor)</value>
+  </data>
+  <data name="RegexAssistant_Instructions" xml:space="preserve">
+    <value>Níže napište regulární výraz, který si přejete analyzovat.</value>
+  </data>
+  <data name="RegexAssistant_Title" xml:space="preserve">
+    <value>Analyzátor Regulárních Výrazů</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersLabel" xml:space="preserve">
+    <value>Dovolené Identifikátory</value>
+  </data>
+  <data name="CodeInspectionSettings_WhitelistedIdentifiersDescription" xml:space="preserve">
+    <value>Tyto identifikátory budou ignorovány inspekcí 'Použij smysluplné názvy'</value>
+  </data>
+  <data name="CommandDescription_RefactorEncapsulateFieldCommand" xml:space="preserve">
+    <value>Refaktorovat / Zapouzdřit Pole</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc" xml:space="preserve">
+    <value>Různé</value>
+  </data>
+  <data name="CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse" xml:space="preserve">
+    <value>Spustit automaticky inspekce po úspěšném parsování</value>
+  </data>
+  <data name="GeneralSettings_ShowSplash" xml:space="preserve">
+    <value>Zobrazit úvodní obrazovku po spuštění</value>
+  </data>
+  <data name="RubberduckReloadFailure_Title" xml:space="preserve">
+    <value>Rubberduck nebude obnoven</value>
+  </data>
+  <data name="ParserErrorToolTipText" xml:space="preserve">
+    <value>{0} modul(y) nebylo možno zparsovat; klikněte pro detaily.</value>
+  </data>
+  <data name="ReparseToolTipText" xml:space="preserve">
+    <value>{0}. Klikněte pro obnovení.</value>
+  </data>
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
+    <value>Načíst Nastavení Odsazovače</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
+    <value>Uložit Nastavení Odsazovače</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
+    <value>XML soubor (.xml)'|*.xml|Rubberduck config soubor|*.config</value>
+  </data>
+  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
+    <value>Načíst Obecná Nastaení</value>
+  </data>
+  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
+    <value>Uložit Obecná Nastavení</value>
+  </data>
+  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
+    <value>Načíst Nastavení Inspekcí</value>
+  </data>
+  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
+    <value>Načíst Nastavení ToDo</value>
+  </data>
+  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
+    <value>Načíst Nastavení Unit Testů</value>
+  </data>
+  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
+    <value>Načíst Nastavení Okna</value>
+  </data>
+  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
+    <value>Uložit Nastavení Inspekcí</value>
+  </data>
+  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
+    <value>Uložit Nastavení ToDo</value>
+  </data>
+  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
+    <value>Uložit Nastavení Unit Testů</value>
+  </data>
+  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
+    <value>Uložit Nastavení Okna</value>
+  </data>
+  <data name="ContextReferences" xml:space="preserve">
+    <value>reference</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacing" xml:space="preserve">
+    <value>Udržovat vertikální vzdálenosti</value>
+  </data>
+  <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
+    <value>Vertikální vzdálenosti</value>
+  </data>
+  <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
+    <value>procedura knihovny</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_Caption" xml:space="preserve">
+    <value>Přiřazen ByVal parametr QuickFix - Udělat Lokální Kopii</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Prosím specifikujte název, který se má použít na lokální kopii ByVal {0} '{1}'</value>
+  </data>
+  <data name="AssignedByValParamQFixDialog_TitleText" xml:space="preserve">
+    <value>Specifikujte Název Kopie Lokální Proměnné</value>
+  </data>
+  <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
+    <value>Příklad Odsazeného Kódu</value>
+  </data>
+  <data name="VersionCheck_NewVersionAvailable" xml:space="preserve">
+    <value>Rubberduck verze {0} je nyní k dispozici! Přejete si přečíst novinky v této verzi?</value>
+  </data>
+  <data name="GeneralSettings_CheckVersion" xml:space="preserve">
+    <value>Při startu zkontrolovat, zda je dostupná nová verze</value>
+  </data>
+  <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
+    <value>Názvy proměnných musejí začínat písmenem.</value>
+  </data>
+  <data name="AssignedByValDialog_InvalidCharacters" xml:space="preserve">
+    <value>Názvy proměnných nesmějí obsahovat žádný jiný speciální znak, než je podtržítko '_'</value>
+  </data>
+  <data name="AssignedByValDialog_IsByValIdentifierFormat" xml:space="preserve">
+    <value>Lokální proměnná nemůže být stejná jako '{0}' parametr, který nahrazuje</value>
+  </data>
+  <data name="AssignedByValDialog_NewNameAlreadyUsedFormat" xml:space="preserve">
+    <value>'{0}' je již přístupný v tomto rozsahu.</value>
+  </data>
+  <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
+    <value>Identifikátor '{0}' vyústí jako výsledek inspekce "Použij smysluplné jméno". Zvažte použití jiného názvu.</value>
+  </data>
+  <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
+    <value>'{0}' je rezervované klíčové slovo.</value>
+  </data>
+  <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
+    <value>Proměnná '{0}' je přidělena. Odstranit přidělení instrukce?</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Náhled</value>
+  </data>
+  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
+    <value>Nepodařilo se detekovat označené slovo pro přejmenování</value>
+  </data>
+  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
+    <value>Identifikátor {0} není možno přejmenovat.</value>
+  </data>
+  <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
+    <value>Nebylo možno přejmenovat {0}.</value>
+  </data>
+  <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
+    <value>Nebylo možno přejmenovat Člena Rozhraní {0}.</value>
+  </data>
+  <data name="RenameDialog_BuiltInNameError" xml:space="preserve">
+    <value>{0} {1} není možno změnit.</value>
+  </data>
+  <data name="CodeInspectionSettings_InspectionSeveritySettingsLabel" xml:space="preserve">
+    <value>Závažnosti Inspekce</value>
+  </data>
+  <data name="RenamePresenter_TargetIsControlEventHandler" xml:space="preserve">
+    <value>Metoda '{0}' je EventHandler pro ovládací prvek '{1}'. Přejmenovat lze pouze ovládací prvek. Místo toho přejmenovat '{1}'?</value>
+  </data>
+  <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
+    <value>Metoda '{0}' je implementací události '{1}.{2}'. Místo toho přejmenovat událost '{2}'?</value>
+  </data>
+  <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
+    <value>Toto nastavení povolte jen pokud více, to děláte. Povolením a/nebo užíváním věcí z této sekce může skončit nečekanými obtížemi, poruchami kódu a nenávratnou ztrátou dat.</value>
+  </data>
+  <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
+    <value>Experimentální Funkce (Je třeba restartovat Excel, aby se změny projevily):</value>
+  </data>
+  <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
+    <value>Vyberte složku pro export zdrojového kódu {0} do:</value>
+  </data>
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
+    <value>Exportovat Aktivní Projekt</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
+    <value>Všechny Soubory</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
+    <value>VB Soubory</value>
+  </data>
+  <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
+    <value>Importovat Zdrojové Soubory</value>
+  </data>
+  <data name="EmptyUIRefreshMessage" xml:space="preserve">
+    <value>pro parsování a zpracování projektů ve VBE.</value>
+  </data>
+  <data name="EmptyUIRefreshMessage_Title" xml:space="preserve">
+    <value>Rubberduck prozatím nic nevidí.</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Plural" xml:space="preserve">
+    <value>Rubberduck TODO položky - {0}
+{1} položek nalezeno.</value>
+  </data>
+  <data name="ToDoExplorer_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck TODO položky - {0}
+{1} položka nalezena.</value>
+  </data>
+  <data name="ToDoExplorerToDoItemFormat" xml:space="preserve">
+    <value>{0}: {1} - {2}.{3} řádek {4}.</value>
+  </data>
+  <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
+    <value>Zkopírovat do schránky</value>
+  </data>
+  <data name="CodeMetricsDockablePresenter_Caption" xml:space="preserve">
+    <value>Metrika Kódu</value>
+  </data>
+  <data name="CodeMetrics_Complexity" xml:space="preserve">
+    <value>Cyklomatická Komplexita</value>
+  </data>
+  <data name="CodeMetrics_Lines" xml:space="preserve">
+    <value>Řádky</value>
+  </data>
+  <data name="CodeMetrics_Nesting" xml:space="preserve">
+    <value>Maximální Vnoření</value>
+  </data>
+  <data name="GeneralSettings_HotkeyRestrictionLabel" xml:space="preserve">
+    <value>Klávesové zkratky by měly obsahovat buď Alt a/nebo Ctrl.</value>
+  </data>
+  <data name="GeneralSettings_HotkeyRestrictionToolTip" xml:space="preserve">
+    <value>Tato konfigurace klávesové zkratky může vyvolat nežádoucí vedlejší účinky.</value>
+  </data>
+  <data name="GeneralSettings_ModifierWarning" xml:space="preserve">
+    <value>Varování Modifikátoru</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile" xml:space="preserve">
+    <value>Následující projekt(y) nemohou být zkompilovány, což je s největší pravděpodobností kvůli parsovacím chybám. I přesto pokračovat? {0}</value>
+  </data>
+  <data name="Command_Reparse_CannotCompile_Caption" xml:space="preserve">
+    <value>Není možno zkompilovat pro parsování</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse" xml:space="preserve">
+    <value>Zkompilovat kód před parsováním</value>
+  </data>
+  <data name="ParserState_Started" xml:space="preserve">
+    <value>Zahájeno</value>
+  </data>
+  <data name="ParserState_UnexpectedError" xml:space="preserve">
+    <value>Neočekávaná Chyba</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled" xml:space="preserve">
+    <value>VBE nastavení "Zkompilovat Na Žádost" je aktuálně povoleno. Toto není doporučeno a může vyústit v kompilační chyby a způsobit problémy při parsování. Chcete i přesto spustit parser?</value>
+  </data>
+  <data name="Command_Reparse_CompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>Nastavení Zkompilování Na Žádost</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled" xml:space="preserve">
+    <value>VBE nastavení "Zkompilovat Na Žádost" je aktuálně povoleno. Je silně doporučeno toto nastavení zakázat přes dialog VBE Nastavení nacházející se v panelu Obecné a změnit na Kompilování Před Parsováním. Přejete si toto nastavení nyní zakázat?
+
+POZNÁMKA: Pro aplikování tohoto nastavení je třeba restartovat Excel.</value>
+  </data>
+  <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
+    <value>Zkompilovat na Žádost je aktuálně povoleno</value>
+  </data>
+  <data name="InspectionSettings_FilterDescription" xml:space="preserve">
+    <value>Filtrovat podle Popisu:</value>
+  </data>
+  <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
+    <value>Ve vašich registrech bylo nalezeno Chytré Odsazování.
+Přejete si toto nastavení importovat do Rubberducku?</value>
+  </data>
+  <data name="DeclarationType_BracketedExpression" xml:space="preserve">
+    <value>runtime expression</value>
+  </data>
+  <data name="ContextMultipleControlsSelection" xml:space="preserve">
+    <value>multiple controls</value>
+  </data>
+  <data name="IndenterSettings_PreviewCode" xml:space="preserve">
+    <value>Public Enum ExampleEnum
+' Enum komentář.
+Foo
+Bar ' Komentář člena.
+End Enum</value>
+  </data>
+  <data name="IndenterSettings_IndentEnumTypeAsProcedure" xml:space="preserve">
+    <value>Odsadit komentáře v Enum a Type blocích tak, jako v procedurách</value>
+  </data>
+  <data name="DeclarationType_PropertyGet" xml:space="preserve">
+    <value>Get accessor vlastnosti</value>
+  </data>
+  <data name="DeclarationType_PropertyLet" xml:space="preserve">
+    <value>Let accessor vlastnosti</value>
+  </data>
+  <data name="DeclarationType_PropertySet" xml:space="preserve">
+    <value>Set accessor vlastnosti</value>
+  </data>
+  <data name="ReorderParamsDialog_InstructionsLabelText" xml:space="preserve">
+    <value>Zvol parametr a za použití táhnutí myši nebo pomocí tlačítek ho přesuň výše nebo níže.</value>
+  </data>
+  <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
+    <value>Rubberduck Inspekce Kódu - {0}
+{1} problém nalezen.</value>
+  </data>
+  <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
+    <value>Vynutit pokyny kompilátoru do sloupce 1</value>
+  </data>
+  <data name="IndenterSettings_ForceDebugDirectivesToColumn1" xml:space="preserve">
+    <value>Vynutit debugovací pokyny do sloupce 1</value>
+  </data>
+  <data name="IndenterSettings_IndentCase" xml:space="preserve">
+    <value>Odsadit 'Case'</value>
+  </data>
+  <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
+    <value>Odsadit pokyny kompilátoru</value>
+  </data>
+  <data name="IndenterSettings_IndentEntireProcedureBody" xml:space="preserve">
+    <value>Odsadit celý vnitřek procedury</value>
+  </data>
+  <data name="RubberduckFatalError" xml:space="preserve">
+    <value>Rubberduck zaznamenal chybu. Uložte vaši práci a restartujte program; jestliže máte povoleno logování, můžete log, který se nachází v: '%AppData%Roaming\Rubberduck\Logs\RubberduckLog.txt', uploadovat do nového GitHub Issue na 'https://github.com/rubberduck-vba/Rubberduck/issues/new' a reportovat jako bug.</value>
+  </data>
+  <data name="RubberduckReloadFailure_Message" xml:space="preserve">
+    <value>Nástrojová okna nebyla korektně zničena a/nebo nemohou být obnoveny; VBE nemusí být v tuto chvíli stabilní. Rubberduck se načte normálně při příští inicializaci VBE.</value>
+  </data>
+  <data name="ParserState_Busy" xml:space="preserve">
+    <value>Zaneprázdněný</value>
+  </data>
+  <data name="GroupingStyle_ByCategory" xml:space="preserve">
+    <value>Dle kategorie</value>
+  </data>
+  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
+    <value>Ignoruj prázdné řádky při vyhledávání prvních poznámek a deklaračních bloků</value>
   </data>
 </root>
