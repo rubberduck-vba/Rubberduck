@@ -13,6 +13,7 @@ using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.AutoComplete
 {
+
     public abstract class AutoCompleteBlockBase : AutoCompleteBase
     {
         /// <param name="indenterSettings">Used for auto-indenting blocks as per indenter settings.</param>
@@ -23,6 +24,8 @@ namespace Rubberduck.AutoComplete
         {
             IndenterSettings = indenterSettings;
         }
+
+        public bool IsCapturing { get; set; }
 
         protected virtual bool FindInputTokenAtBeginningOfCurrentLine => false;
         protected virtual bool SkipPreCompilerDirective => true;
@@ -42,43 +45,45 @@ namespace Rubberduck.AutoComplete
             {
                 return false;
             }
-            
-            var module = e.CodeModule;
-            using (var pane = module.CodePane)
+
             {
-                var selection = pane.Selection;
-                var originalCode = module.GetLines(selection);
-                var code = originalCode.Trim().StripStringLiterals();
-                var hasComment = code.HasComment(out int commentStart);
-
-                var isDeclareStatement = Regex.IsMatch(code, $"\\b{Tokens.Declare}\\b", RegexOptions.IgnoreCase);
-                var isExitStatement = Regex.IsMatch(code, $"\\b{Tokens.Exit}\\b", RegexOptions.IgnoreCase);
-                var isNamedArg = Regex.IsMatch(code, $"\\b{InputToken}\\:\\=", RegexOptions.IgnoreCase);
-
-                if ((SkipPreCompilerDirective && code.StartsWith("#"))
-                    || isDeclareStatement || isExitStatement || isNamedArg)
+                var module = e.CodeModule;
+                using (var pane = module.CodePane)
                 {
+                    var selection = pane.Selection;
+                    var originalCode = module.GetLines(selection);
+                    var code = originalCode.Trim().StripStringLiterals();
+                    var hasComment = code.HasComment(out int commentStart);
+
+                    var isDeclareStatement = Regex.IsMatch(code, $"\\b{Tokens.Declare}\\b", RegexOptions.IgnoreCase);
+                    var isExitStatement = Regex.IsMatch(code, $"\\b{Tokens.Exit}\\b", RegexOptions.IgnoreCase);
+                    var isNamedArg = Regex.IsMatch(code, $"\\b{InputToken}\\:\\=", RegexOptions.IgnoreCase);
+
+                    if ((SkipPreCompilerDirective && code.StartsWith("#"))
+                        || isDeclareStatement || isExitStatement || isNamedArg)
+                    {
+                        return false;
+                    }
+
+                    if (IsMatch(code) && !IsBlockCompleted(module, selection))
+                    {
+                        var indent = originalCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+                        var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
+
+                        var stdIndent = IndentBody
+                            ? IndenterSettings.Create().IndentSpaces
+                            : 0;
+
+                        module.InsertLines(selection.NextLine.StartLine, "\n" + newCode);
+
+                        module.ReplaceLine(selection.NextLine.StartLine, new string(' ', indent + stdIndent));
+                        pane.Selection = new Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
+
+                        e.Handled = true;
+                        return true;
+                    }
                     return false;
                 }
-
-                if (IsMatch(code) && !IsBlockCompleted(module, selection))
-                {
-                    var indent = originalCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
-                    var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
-
-                    var stdIndent = IndentBody 
-                        ? IndenterSettings.Create().IndentSpaces 
-                        : 0;
-
-                    module.InsertLines(selection.NextLine.StartLine, "\n" + newCode);
-
-                    module.ReplaceLine(selection.NextLine.StartLine, new string(' ', indent + stdIndent));
-                    pane.Selection = new Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
-
-                    e.Handled = true;
-                    return true;
-                }
-                return false;
             }
         }
 
@@ -104,7 +109,7 @@ namespace Rubberduck.AutoComplete
             return regexOk && (!hasComment || code.IndexOf(InputToken) < commentIndex);
         }
 
-        private bool IsBlockCompleted(ICodeModule module, Selection selection)
+        protected bool IsBlockCompleted(ICodeModule module, Selection selection)
         {
             string content;
             var proc = module.GetProcOfLine(selection.StartLine);

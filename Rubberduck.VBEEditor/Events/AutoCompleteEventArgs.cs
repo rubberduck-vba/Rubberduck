@@ -10,8 +10,8 @@ namespace Rubberduck.VBEditor.Events
         {
             if (e.Key == Keys.Delete ||
                 e.Key == Keys.Back ||
-                e.Key == Keys.Enter ||
-                e.Key == Keys.Tab)
+                e.Key.HasFlag(Keys.Enter) ||
+                e.Key.HasFlag(Keys.Tab))
             {
                 Keys = e.Key;
             }
