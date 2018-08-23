@@ -284,7 +284,8 @@
                             <Separator />
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Import}"
                                   Command="{Binding ImportCommand}"
-                                  CommandParameter="{Binding SelectedItem}" />
+                                  CommandParameter="{Binding SelectedItem}"
+                                  Visibility="{Binding VBAVisibility}"/>
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Export}"
                                   Command="{Binding ExportCommand}"
                                   CommandParameter="{Binding SelectedItem}"
@@ -295,7 +296,8 @@
                                   Visibility="{Binding ExportAllVisibility}" />
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Remove}"
                                   Command="{Binding RemoveCommand}"
-                                  CommandParameter="{Binding SelectedItem}">
+                                  CommandParameter="{Binding SelectedItem}"
+                                  Visibility="{Binding VBAVisibility}">
                                 <MenuItem.Icon>
                                     <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/minus-circle.png">
                                         <Image.Style>
@@ -310,7 +312,7 @@
                                     </Image>
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <Separator />
+                            <Separator Visibility="{Binding VBAVisibility}" />
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Print}"
                                   Command="{Binding PrintCommand}"
                                   CommandParameter="{Binding SelectedItem}">

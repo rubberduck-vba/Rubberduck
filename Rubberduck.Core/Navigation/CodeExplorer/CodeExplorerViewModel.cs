@@ -566,7 +566,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool CanExecuteExportAllCommand => ExportAllCommand.CanExecute(SelectedItem);
 
-        public Visibility ExportVisibility => CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility ExportVisibility => _vbeKind == VBEKind.Standalone || CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility ExportAllVisibility => CanExecuteExportAllCommand ? Visibility.Visible : Visibility.Collapsed;
 
