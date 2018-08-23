@@ -95,6 +95,9 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AutoComplete\BlockCompletionTests.cs" />
+    <Compile Include="AutoComplete\CodeStringTests.cs" />
+    <Compile Include="AutoComplete\SelfClosingPairCompletionTests.cs" />
     <Compile Include="Binding\IndexDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessTypeBindingTests.cs" />
@@ -111,6 +114,7 @@
     <Compile Include="Inspections\ObsoleteCallingConventionInspectionTests.cs" />
     <Compile Include="Mocks\MockAddInBuilder.cs" />
     <Compile Include="Inspections\ObsoleteMemberUsageInspectionTests.cs" />
+    <Compile Include="CodeStringExtensions.cs" />
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
     <Compile Include="Parsing\VBACodeStringParserTests.cs" />
