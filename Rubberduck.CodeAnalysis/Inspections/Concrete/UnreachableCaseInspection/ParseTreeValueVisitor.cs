@@ -171,13 +171,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 return;
             }
-            if (binaryData.LHS.ExceedsTypeRange)
+            if (binaryData.LHS.IsOverflowExpression)
             {
                 StoreVisitResult(context, binaryData.LHS);
                 return;
             }
 
-            if (binaryData.RHS.ExceedsTypeRange)
+            if (binaryData.RHS.IsOverflowExpression)
             {
                 StoreVisitResult(context, binaryData.RHS);
                 return;

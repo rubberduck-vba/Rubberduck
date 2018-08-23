@@ -329,10 +329,10 @@
     <value>Unreachable 'Case Else': all possible values are handled by prior 'Case' statement(s).</value>
   </data>
   <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
-    <value>Invalid type: 'Case' statement cannot be evaluated as the 'Select' statement type.</value>
+    <value>Unreachable: Case Statement will cause a runtime Mismatch error.</value>
   </data>
   <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
-    <value>Unreachable: 'Case' statement is handled by prior 'Case' statement(s).</value>
+    <value>Unreachable: Expression is triggered within prior Case statement(s).</value>
   </data>
   <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
     <value>Errors are ignored but never handled again.</value>
@@ -358,6 +358,6 @@
     <comment>{0} Procedure name</comment>
   </data>
   <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
-    <value>Unreachable: Case Statement is malformed or never True</value>
+    <value>Unreachable: Case Statement is malformed, can never trigger, or may cause a runtime error.</value>
   </data>
 </root>

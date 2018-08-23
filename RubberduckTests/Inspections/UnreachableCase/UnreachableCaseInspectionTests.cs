@@ -2313,7 +2313,7 @@ End Sub";
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        [TestCase("1# * .00125#", 4, 0)]
+        [TestCase("1# * .00125#", 3, 1)]
         [TestCase("1@ * .0012@", 3, 1)]
         [Category("Inspections")]
         public void UnreachableCaseInspection_Currency(string thirdCase, int unreachable, int caseElse)
@@ -2322,20 +2322,20 @@ End Sub";
 $@"
 Sub FirstSub()
 
-        Const currencyVal As Currency = 1@ * .0012@
-        Const doubleVal As Double = 1# * .00125#
+        Const currencyVal As Currency = 1 * .0012@
+        Const doubleVal As Double = 1 * .00125#
 
         Select Case currencyVal
             Case doubleVal  
-                'Unreachable
+                'OK
             Case doubleVal * 1
                 'Unreachable
             Case {thirdCase}
-                'Depends on thirdCase
-            Case 0.25
                 'Unreachable
+            Case 0.25
+                'Unreachable - Select Case value is a constant
             Case Else
-                'Depends on thirdCase
+                'Unreachable
         End Select
 End Sub";
 
@@ -2393,19 +2393,17 @@ End Sub";
         [TestCase("Is < AVALUE + ANOTHERVALUE")]
         [TestCase("x < AVALUE + ANOTHERVALUE")]
         [TestCase("-(AVALUE + ANOTHERVALUE)")]
+        [TestCase("2147483678")]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_Overflows(string firstCase)
+        public void UnreachableCaseInspection_Overflow(string firstCase)
         {
             string inputCode =
 $@"
 private Const AVALUE As Byte = 250
 private Const ANOTHERVALUE As Byte = 250
 
-Sub FirstSub(x As Long)
-
-    Dim bar As Long
-    bar = 22
-    Select Case bar
+Sub FirstSub(x As Integer)
+    Select Case x
         Case {firstCase}
             'Overflow
         Case 20 + 2

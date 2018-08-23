@@ -347,6 +347,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         var diff = lhsValue - rhsValue;
                         return _valueFactory.CreateDate(diff);
                     }
+                    //TODO: Why is this thrown explicitly rather than from the LetCoercer?
                     throw new OverflowException();
                 }
                 return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a - b; }, (double a, double b) => { return a - b; }), opProvider.OperatorDeclaredType);

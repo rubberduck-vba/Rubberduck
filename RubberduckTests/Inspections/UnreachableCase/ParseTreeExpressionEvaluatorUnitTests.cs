@@ -480,7 +480,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         {
             GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-            Assert.IsTrue(result.ExceedsTypeRange);
+            Assert.IsTrue(result.IsOverflowExpression);
         }
 
         [TestCase("10_/_2", "5", "Double")]

@@ -11,17 +11,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string ValueText { get; }
         string TypeName { get; }
         bool ParsesToConstantValue { get; }
-        bool ExceedsTypeRange { get; }
+        bool IsOverflowExpression { get; }
         bool IsMismatchExpression { get; }
     }
 
     public struct ParseTreeValue : IParseTreeValue
     {
-        private static decimal CURRENCYMIN = -922337203685477.5808M;
-        private static decimal CURRENCYMAX = 922337203685477.5807M;
-
-        private int _hashCode;
-
+        private readonly int _hashCode;
         private string _valueText;
         private ComparableDateValue _dateValue;
         private StringLiteralExpression _stringConstant;
@@ -39,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 TypeName = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
                 ValueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
                 ParsesToConstantValue = true,
-                ExceedsTypeRange = ExceedsTypeExtents(value, declaredType),
+                IsOverflowExpression = ExceedsTypeExtents(value, declaredType),
             };
             return ptValue;
         }
@@ -63,7 +59,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 ValueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
                 ParsesToConstantValue = false,
                 IsMismatchExpression = true
+            };
+            return ptValue;
+        }
 
+        public static IParseTreeValue CreateOverflowExpression(string value, string declaredType)
+        {
+            var ptValue = new ParseTreeValue()
+            {
+                TypeName = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
+                ValueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ParsesToConstantValue = false,
+                _exceedsTypeRange = true
             };
             return ptValue;
         }
@@ -81,9 +88,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (declaredType == Tokens.Date)
             {
-                if (LetCoercer.TryCoerce((Tokens.String, _valueText), Tokens.Date, out string dateToken))
+                if (LetCoercer.TryCoerce(_valueText, out _dateValue))
                 {
-                    LetCoercer.TryParse(dateToken, out _dateValue);
                     ParsesToConstantValue = true;
                 }
                 else
@@ -127,7 +133,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public bool IsMismatchExpression { private set; get; }
 
-        public bool ExceedsTypeRange
+        public bool IsOverflowExpression
         {
             private set
             {
@@ -168,7 +174,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [Tokens.LongLong] = (a) => { Int64.Parse(a); },
             [Tokens.Double] = (a) => { double.Parse(a); },
             [Tokens.Single] = (a) => { float.Parse(a); },
-            [Tokens.Currency] = (a) => { var value = decimal.Parse(a); if (value < CURRENCYMIN || value > CURRENCYMAX) { throw new OverflowException(); } },
+            [Tokens.Currency] = (a) => { var value = decimal.Parse(a); if (value < VBACurrency.MinValue || value > VBACurrency.MaxValue) { throw new OverflowException(); } },
             [Tokens.Boolean] = (a) => { if (!(a.Equals(Tokens.True) || a.Equals(Tokens.False))) { long.Parse(a); } },
         };
 
@@ -198,7 +204,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, string destinationType, out IParseTreeValue newValue)
         {
             newValue = null;
-            if (LetCoercer.TryCoerce((parseTreeValue.TypeName, parseTreeValue.ValueText), destinationType, out string valueText))
+            if (LetCoercer.TryCoerceToken((parseTreeValue.TypeName, parseTreeValue.ValueText), destinationType, out string valueText))
             {
                 newValue = ParseTreeValue.CreateValueType(valueText, destinationType);
                 return true;
@@ -227,7 +233,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool TryLetCoerce<T>(this IParseTreeValue parseTreeValue, Func<string, T> parser, string typeName, out T newValue)
         {
             newValue = default;
-            if (LetCoercer.TryCoerce((parseTreeValue.TypeName, parseTreeValue.ValueText), typeName, out string valueText))
+            if (LetCoercer.TryCoerceToken((parseTreeValue.TypeName, parseTreeValue.ValueText), typeName, out string valueText))
             {
                 newValue = parser(valueText);
                 return true;
@@ -238,7 +244,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool TryLetCoerceToDate(IParseTreeValue parseTreeValue, out ComparableDateValue value)
         {
             value = default;
-            if (LetCoercer.TryCoerce((parseTreeValue.TypeName, parseTreeValue.ValueText), Tokens.Date, out string valueText))
+            if (LetCoercer.TryCoerceToken((parseTreeValue.TypeName, parseTreeValue.ValueText), Tokens.Date, out string valueText))
             {
                 var literal = new DateLiteralExpression(new ConstantExpression(new StringValue(valueText)));
                 value = new ComparableDateValue((DateValue)literal.Evaluate());

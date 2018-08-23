@@ -682,7 +682,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement is malformed or never True.
+        ///   Looks up a localized string similar to Unreachable: Case Statement is malformed, can never trigger, or may cause a runtime error..
         /// </summary>
         public static string UnreachableCaseInspection_InherentlyUnreachable {
             get {
@@ -691,7 +691,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid Type: Case Statement cannot be evaluated as the Select Statement Type.
+        ///   Looks up a localized string similar to Unreachable: Case Statement will cause a runtime Mismatch error..
         /// </summary>
         public static string UnreachableCaseInspection_TypeMismatch {
             get {
@@ -700,7 +700,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unreachable: Case Statement is masked by prior Case statement(s).
+        ///   Looks up a localized string similar to Unreachable: Expression is triggered within prior Case statement(s)..
         /// </summary>
         public static string UnreachableCaseInspection_Unreachable {
             get {

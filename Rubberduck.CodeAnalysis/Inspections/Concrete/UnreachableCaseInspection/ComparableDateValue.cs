@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.PreProcessing;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
@@ -63,6 +64,45 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var result = asString.StartsWith(prePostPend) ? asString : $"{prePostPend}{asString}";
             result = result.EndsWith(prePostPend) ? result : $"{result}{prePostPend}";
             return result;
+        }
+
+        public static ComparableDateValue Parse(string valueText)
+        {
+                var literal = new DateLiteralExpression(new ConstantExpression(new StringValue(valueText)));
+                return new ComparableDateValue((DateValue)literal.Evaluate());
+        }
+
+        public static bool TryParse(string valueText, out ComparableDateValue value)
+        {
+            value = default;
+            if (!(valueText.StartsWith("#") && valueText.EndsWith("#")))
+            {
+                return false;
+            }
+
+            try
+            {
+                value = Parse(valueText);
+                return true;
+            }
+            catch (SyntaxErrorException)
+            {
+                return false;
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                return false;
+            }
+            catch (InputMismatchException)
+            {
+                return false;
+            }
+            catch (Exception e)
+            {
+                //even though a SyntaxErrorException/InputMismatchException is thrown, 
+                //this catch-all block seems to be needed(?)
+                return false;
+            }
         }
     }
 }

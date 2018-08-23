@@ -23,6 +23,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         IParseTreeValue SelectExpressionValue { set; get; }
     }
 
+    public delegate bool TokenToValue<T>(string value, out T result, string typeName = null);
+
     public class ExpressionFilter<T> : IExpressionFilter where T : IComparable<T>
     {
         private struct PredicateValueExpression
@@ -67,8 +69,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             Converter = converter;
             _filterTypeName = typeName;
             _hashCode = _filterTypeName.GetHashCode();
-            converter(Tokens.True, out _trueValue);
-            converter(Tokens.False, out _falseValue);
+            converter(Tokens.True, out _trueValue, typeName);
+            converter(Tokens.False, out _falseValue, typeName);
             _selectExpressionValue = null;
         }
 
@@ -213,6 +215,22 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             catch (ArgumentException)
             {
                 expression.IsMismatch = true;
+                expression.IsUnreachable = true;
+            }
+            catch (FormatException)
+            {
+                expression.IsMismatch = true;
+                expression.IsUnreachable = true;
+            }
+            catch (OverflowException)
+            {
+                expression.IsInherentlyUnreachable = true;
+                expression.IsUnreachable = true;
+            }
+            catch (Exception)
+            {
+                expression.IsMismatch = true;
+                expression.IsUnreachable = true;
             }
         }
 
@@ -412,11 +430,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool IsOverflow(IRangeClauseExpression expression)
         {
-            if (expression.LHSValue != null && expression.LHSValue.ExceedsTypeRange)
+            if (expression.LHSValue != null && expression.LHSValue.IsOverflowExpression)
             {
                 expression.IsInherentlyUnreachable = true;
             }
-            if (expression.RHSValue != null && expression.RHSValue.ExceedsTypeRange)
+            if (expression.RHSValue != null && expression.RHSValue.IsOverflowExpression)
             {
                 expression.IsInherentlyUnreachable = true;
             }
@@ -443,12 +461,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (valueExpr.LHSValue.ParsesToConstantValue )
             {
-                if (LetCoercer.TryCoerce((valueExpr.LHSValue.TypeName, valueExpr.LHSValue.ValueText), _filterTypeName, out string coercedValue) 
-                    && Converter(coercedValue, out T result, _filterTypeName))
+                if (Converter(valueExpr.LHSValue.ValueText, out T result, _filterTypeName))
                 {
                     return FiltersValue(result) ? false : AddSingleValue(result);
                 }
-                throw new ArgumentException();
+                //throw an exception
+                LetCoercer.CoerceToken((valueExpr.LHSValue.TypeName, valueExpr.LHSValue.ValueText), _filterTypeName);
             }
             return AddToContainer(Variables[VariableClauseTypes.Value], valueExpr.ToString());
         }

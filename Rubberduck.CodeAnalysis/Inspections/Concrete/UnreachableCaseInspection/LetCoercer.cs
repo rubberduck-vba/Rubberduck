@@ -2,313 +2,322 @@
 using Rubberduck.Parsing.PreProcessing;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
-    public delegate bool TokenToValue<T>(string value, out T result, string typeName = null);
+    public struct VBACurrency
+    {
+        public static decimal MinValue = -922337203685477.5808M;
+        public static decimal MaxValue = 922337203685477.5807M;
+        public static decimal Parse(string valueText)
+        {
+            var checkValue = decimal.Parse(valueText);
+            if (checkValue < MinValue || checkValue > MaxValue)
+            {
+                throw new OverflowException();
+            }
+            return Math.Round(checkValue, 4, MidpointRounding.ToEven);
+
+        }
+
+        public static bool TryParse(string valueText, out decimal value)
+        {
+            value = default;
+            try
+            {
+                value = Parse(valueText);
+                return true;
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+    }
 
     public struct LetCoercer
     {
         //Content: Dictionary<sourceTypeName,Dictionary<LetDestinationTypeName,CoercionFunc>
-        private static Dictionary<string, Dictionary<string, Func<string, (bool, string)>>> _coercions;
+        private static Dictionary<string, Dictionary<string, Func<string, string>>> _coercions;
 
-        public static bool TryCoerce((string Type, string Text) source, string destinationType, out string result)
+        public static bool TryCoerceToken((string Type, string Text) source, string destinationType, out string resultToken)
         {
-            InitializeCoercions();
-
-            result = string.Empty;
-            if (!_coercions.ContainsKey(source.Type))
-            {
-#if DEBUG
-                throw new ArgumentException($"Let Coercion source type: {source.Type} not supported");
-#else
-                return false;
-#endif
-            }
-            if (!_coercions[source.Type].ContainsKey(destinationType))
-            {
-#if DEBUG
-                throw new ArgumentException($"Let Coercion source=>destination pair: {source.Type}=>{destinationType} not supported");
-#else
-                return false;
-#endif
-            }
-
-            var coercer = _coercions[source.Type][destinationType];
-            (bool CoercionSuccess, string CoercedValue) = coercer(source.Text);
-            result = CoercedValue;
-            return CoercionSuccess;
-        }
-
-        public static bool TryParse(string valueText, out ComparableDateValue value, string typeName = null)
-        {
-            value = default;
-            if (!(valueText.StartsWith("#") && valueText.EndsWith("#")))
-            {
-                return false;
-            }
-
+            resultToken = string.Empty;
             try
             {
-                var literal = new DateLiteralExpression(new ConstantExpression(new StringValue(valueText)));
-                value = new ComparableDateValue((DateValue)literal.Evaluate());
+                resultToken = CoerceToken(source, destinationType);
                 return true;
             }
-            catch (SyntaxErrorException)
+            catch(ArgumentException)
             {
                 return false;
+            }
+            catch (OverflowException)
+            {
+                return false;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+            catch (KeyNotFoundException)
+            {
+#if DEBUG
+                throw new KeyNotFoundException($"Let Coercion source type: {source.Type} not supported");
+#else
+                return false;
+#endif
             }
             catch (Exception)
             {
-                //even though a SyntaxErrorException is thrown, this catch block
-                //seems to be needed(?)
                 return false;
             }
         }
 
-        public static bool TryParse(string valueText, out long value, string typeName = null)
+        public static string CoerceToken((string Type, string Text) source, string destinationType)
         {
-            value = default;
-            valueText = RemoveDoubleQuotes(valueText);
-            typeName = typeName ?? Tokens.Long;
+            InitializeCoercions();
 
-            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
+            if (!_coercions.ContainsKey(source.Type))
             {
-                value = valueText.Equals(Tokens.True) ? -1 : 0;
-                return true;
+                throw new KeyNotFoundException($"Let Coercion source type: {source.Type} not supported");
+            }
+            if (!_coercions[source.Type].ContainsKey(destinationType))
+            {
+                throw new KeyNotFoundException($"Let Coercion source=>destination pair: {source.Type}=>{destinationType} not supported");
             }
 
-            if ((typeName == Tokens.Byte
-                    || typeName == Tokens.Integer
-                    || typeName == Tokens.Long
-                    || typeName == Tokens.LongLong)
-                && long.TryParse(valueText, out var integralValue))
-            {
-                value = integralValue;
-                return true;
-            }
-
-            if (typeName == Tokens.Currency && decimal.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-            {
-                value = Convert.ToInt64(decimalValue);
-                return true;
-            }
-
-            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rationalValue))
-            {
-                value = Convert.ToInt64(rationalValue);
-                return true;
-            }
-
-            return false;
+            var coercer = _coercions[source.Type][destinationType];
+            return coercer(source.Text);
         }
 
-        public static bool TryParse(string valueText, out double value, string typeName = null)
-        {
-            value = default;
-            valueText = RemoveDoubleQuotes(valueText);
-            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
-            {
-                value = valueText.Equals(Tokens.True) ? -1 : 0;
-                return true;
-            }
-            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var rational))
-            {
-                value = rational;
-                return true;
-            }
-            return false;
-        }
+        public static bool TryCoerce(string valueText, out byte value)
+            => TryCoerce(valueText, Tokens.Byte, out value, byte.Parse);
 
-        public static bool TryParse(string valueText, out decimal value, string typeName = null)
-        {
-            value = default;
-            valueText = RemoveDoubleQuotes(valueText);
-            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
-            {
-                value = valueText.Equals(Tokens.True) ? -1 : 0;
-                return true;
-            }
+        public static bool TryCoerce(string valueText, out Int16 value)
+            => TryCoerce(valueText, Tokens.Integer, out value, Int16.Parse);
 
-            if (decimal.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var decimalValue))
-            {
-                value = decimalValue;
-                return true;
-            }
+        public static bool TryCoerce(string valueText, out Int32 value)
+            => TryCoerce(valueText, Tokens.Long, out value, Int32.Parse);
 
-            return false;
-        }
+        public static bool TryCoerce(string valueText, out long value)
+            => TryCoerce(valueText, Tokens.LongLong, out value, long.Parse);
 
-        public static bool TryParse(string valueText, out bool value, string typeName = null)
-        {
-            value = default;
-            valueText = RemoveDoubleQuotes(valueText);
-            if (valueText.Equals(Tokens.True) || valueText.Equals(Tokens.False))
-            {
-                value = valueText.Equals(Tokens.True);
-                return true;
-            }
-            if (double.TryParse(valueText, NumberStyles.Any, CultureInfo.InvariantCulture, out var doubleValue))
-            {
-                value = Math.Abs(doubleValue) >= double.Epsilon;
-                return true;
-            }
-            return false;
-        }
+        public static bool TryCoerce(string valueText, out double value)
+            => TryCoerce(valueText, Tokens.Double, out value, double.Parse);
 
-       public static bool TryParse(string valueText, out string value, string typeName = null)
+        public static bool TryCoerce(string valueText, out float value)
+            => TryCoerce(valueText, Tokens.Single, out value, float.Parse);
+
+        public static bool TryCoerce(string valueText, out decimal value)
+            => TryCoerce(valueText, Tokens.Currency, out value, VBACurrency.Parse);
+
+        public static bool TryCoerce(string valueText, out bool value)
+            => TryCoerce(valueText, Tokens.Boolean, out value, bool.Parse);
+
+        public static bool TryCoerce(string valueText, out string value)
         {
             value = valueText;
             return true;
+        }
+
+        public static bool TryCoerce(string valueText, out ComparableDateValue value)
+            => TryCoerce(valueText, Tokens.Date, out value, ComparableDateValue.Parse);
+
+        private static bool TryCoerce<T>(string valueText, string typeName, out T value, Func<string, T> parser)
+        {
+            value = default;
+            if (TryCoerceToken((Tokens.String, valueText), typeName, out string valueToken))
+            {
+                value = parser(valueToken);
+                return true;
+            }
+            return false;
         }
 
         private static void InitializeCoercions()
         {
             if (_coercions != null) { return; }
 
-            _coercions = new Dictionary<string, Dictionary<string, Func<string, (bool, string)>>>
+            _coercions = new Dictionary<string, Dictionary<string, Func<string, string>>>
             {
-                [Tokens.String] = new Dictionary<string, Func<string, (bool, string)>>
+                [Tokens.String] = new Dictionary<string, Func<string,string>>
                 {
-                    [Tokens.String] = Copy,
-                    [Tokens.Byte] = (a) => { a = RemoveDoubleQuotes(a); return (byte.TryParse(a, out _), a); },
-                    [Tokens.Integer] = (a) => { a = RemoveDoubleQuotes(a); return (Int16.TryParse(a, out _), a); },
-                    [Tokens.Long] = (a) => { a = RemoveDoubleQuotes(a); return (Int32.TryParse(a, out _), a); },
-                    [Tokens.LongLong] = (a) => { a = RemoveDoubleQuotes(a); return (Int64.TryParse(a, out _), a); },
-                    [Tokens.Double] = (a) => { a = RemoveDoubleQuotes(a); return (double.TryParse(a, out _), a); },
-                    [Tokens.Single] = (a) => { a = RemoveDoubleQuotes(a); return (float.TryParse(a, out _), a); },
-                    [Tokens.Currency] = (a) => { a = RemoveDoubleQuotes(a); return (decimal.TryParse(a, out _), a); },
-                    [Tokens.Boolean] = StringToBoolean,
-                    [Tokens.Date] = StringToDate,
+                    [Tokens.String] = (a) => { return a; },
+                    [Tokens.Byte] = (a) => { return byte.Parse(StringToByte(a).Item2).ToString(); },
+                    [Tokens.Integer] = (a) => { return short.Parse(StringToIntegral(a).Item2).ToString(); },
+                    [Tokens.Long] = (a) => { return Int32.Parse(StringToIntegral(a).Item2).ToString(); },
+                    [Tokens.LongLong] = (a) => { return Int64.Parse(StringToIntegral(a).Item2).ToString(); },
+                    [Tokens.Double] = (a) => { return double.Parse(StringToRational(a).Item2).ToString(); },
+                    [Tokens.Single] = (a) => { return float.Parse(StringToRational(a).Item2).ToString(); },
+                    [Tokens.Currency] = (a) => { return VBACurrency.Parse(StringToRational(a).Item2).ToString(); }, // ) : (false, sourceText); StringToCurrency,
+                    [Tokens.Boolean] = (a) => { return bool.Parse(StringToBoolean(a).Item2) ? Tokens.True : Tokens.False; },
+                    [Tokens.Date] = (a) => { return ComparableDateValue.Parse(StringToDate(a).Item2).AsDateLiteral(); },
                 },
 
-                [Tokens.Byte] = new Dictionary<string, Func<string, (bool, string)>>
+                [Tokens.Byte] = new Dictionary<string, Func<string, string>>
                 {
-                    [Tokens.String] = Copy,
-                    [Tokens.Byte] = Copy,
-                    [Tokens.Integer] = Copy,
-                    [Tokens.Long] = Copy,
-                    [Tokens.LongLong] = Copy,
-                    [Tokens.Double] = Copy,
-                    [Tokens.Single] = Copy,
-                    [Tokens.Currency] = Copy,
-                    [Tokens.Boolean] = NumericToBoolean,
-                    [Tokens.Date] = NumericToDate,
+                    [Tokens.String] = (a) => { return a; },
+                    [Tokens.Byte] = (a) => { return a; },
+                    [Tokens.Integer] = (a) => { return a; },
+                    [Tokens.Long] = (a) => { return a; },
+                    [Tokens.LongLong] = (a) => { return a; },
+                    [Tokens.Double] = (a) => { return a; },
+                    [Tokens.Single] = (a) => { return a; },
+                    [Tokens.Currency] = (a) => { return a; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
+                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
                 },
 
-                [Tokens.Integer] = new Dictionary<string, Func<string, (bool, string)>>
+                [Tokens.Integer] = new Dictionary<string, Func<string, string>>
                 {
-                    [Tokens.String] = Copy,
-                    [Tokens.Byte] = (a) => { return (byte.TryParse(a, out _), a); },
-                    [Tokens.Integer] = Copy,
-                    [Tokens.Long] = Copy,
-                    [Tokens.LongLong] = Copy,
-                    [Tokens.Double] = Copy,
-                    [Tokens.Single] = Copy,
-                    [Tokens.Currency] = Copy,
-                    [Tokens.Boolean] = NumericToBoolean,
-                    [Tokens.Date] = NumericToDate,
+                    [Tokens.String] = (a) => { return a; },
+                    [Tokens.Byte] = (a) => { return byte.Parse(a).ToString(); },
+                    [Tokens.Integer] = (a) => { return a; },
+                    [Tokens.Long] = (a) => { return a; },
+                    [Tokens.LongLong] = (a) => { return a; },
+                    [Tokens.Double] = (a) => { return a; },
+                    [Tokens.Single] = (a) => { return a; },
+                    [Tokens.Currency] = (a) => { return a; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
+                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
                 },
 
-                [Tokens.Long] = new Dictionary<string, Func<string, (bool, string)>>
+                [Tokens.Long] = new Dictionary<string, Func<string, string>>
                 {
-                    [Tokens.String] = Copy,
-                    [Tokens.Byte] = (a) => { return (byte.TryParse(a, out _), a); },
-                    [Tokens.Integer] = (a) => { return (Int16.TryParse(a, out _), a); },
-                    [Tokens.Long] = Copy,
-                    [Tokens.LongLong] = Copy,
-                    [Tokens.Double] = Copy,
-                    [Tokens.Single] = Copy,
-                    [Tokens.Currency] = Copy,
-                    [Tokens.Boolean] = NumericToBoolean,
-                    [Tokens.Date] = NumericToDate,
+                    [Tokens.String] = (a) => { return a; },
+                    [Tokens.Byte] = (a) => { return byte.Parse(a).ToString(); },
+                    [Tokens.Integer] = (a) => { return Int16.Parse(a).ToString(); },
+                    [Tokens.Long] = (a) => { return a; },
+                    [Tokens.LongLong] = (a) => { return a; },
+                    [Tokens.Double] = (a) => { return a; },
+                    [Tokens.Single] = (a) => { return a; },
+                    [Tokens.Currency] = (a) => { return a; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
+                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
                 },
 
-                [Tokens.Double] = new Dictionary<string, Func<string, (bool, string)>>
+                [Tokens.Double] = new Dictionary<string, Func<string, string>>
                 {
-                    [Tokens.String] = Copy,
-                    [Tokens.Byte] = (a) => { a = BankersRound(a); return (byte.TryParse(a, out _), a); },
-                    [Tokens.Integer] = (a) => { a = BankersRound(a); return (Int16.TryParse(a, out _), a); },
-                    [Tokens.Long] = (a) => { a = BankersRound(a); return (Int32.TryParse(a, out _), a); },
-                    [Tokens.LongLong] = (a) => { a = BankersRound(a); return (long.TryParse(a, out _), a); },
-                    [Tokens.Double] = Copy,
-                    [Tokens.Single] = (a) => { return (float.TryParse(a, out _), a); },
-                    [Tokens.Currency] = (a) => { return (decimal.TryParse(a, out _), a); },
-                    [Tokens.Boolean] = NumericToBoolean,
-                    [Tokens.Date] = NumericToDate,
+                    [Tokens.String] = (a) => { return a; },
+                    [Tokens.Byte] = (a) => { a = BankersRound(a); return byte.Parse(a).ToString(); },
+                    [Tokens.Integer] = (a) => { a = BankersRound(a); return Int16.Parse(a).ToString(); },
+                    [Tokens.Long] = (a) => { a = BankersRound(a); return Int32.Parse(a).ToString(); },
+                    [Tokens.LongLong] = (a) => { a = BankersRound(a); return long.Parse(a).ToString(); },
+                    [Tokens.Double] = (a) => { return a; },
+                    [Tokens.Single] = (a) => { return float.Parse(a).ToString(); },
+                    [Tokens.Currency] = (a) => { return decimal.Parse(a).ToString(); },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
+                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
                 },
 
-                [Tokens.Single] = new Dictionary<string, Func<string, (bool, string)>>
+                [Tokens.Single] = new Dictionary<string, Func<string, string>>
                 {
-                    [Tokens.String] = Copy,
-                    [Tokens.Byte] = (a) => { a = BankersRound(a); return (byte.TryParse(a, out _), a); },
-                    [Tokens.Integer] = (a) => { a = BankersRound(a); return (Int16.TryParse(a, out _), a); },
-                    [Tokens.Long] = (a) => { a = BankersRound(a); return (Int32.TryParse(a, out _), a); },
-                    [Tokens.LongLong] = (a) => { a = BankersRound(a); return (long.TryParse(a, out _), a); },
-                    [Tokens.Double] = Copy,
-                    [Tokens.Single] = Copy,
-                    [Tokens.Currency] = (a) => { return (decimal.TryParse(a, out _), a); },
-                    [Tokens.Boolean] = NumericToBoolean,
-                    [Tokens.Date] = NumericToDate,
+                    [Tokens.String] = (a) => { return a; },
+                    [Tokens.Byte] = (a) => { a = BankersRound(a); return byte.Parse(a).ToString(); },
+                    [Tokens.Integer] = (a) => { a = BankersRound(a); return Int16.Parse(a).ToString(); },
+                    [Tokens.Long] = (a) => { a = BankersRound(a); return Int32.Parse(a).ToString(); },
+                    [Tokens.LongLong] = (a) => { a = BankersRound(a); return long.Parse(a).ToString(); },
+                    [Tokens.Double] = (a) => { return a; },
+                    [Tokens.Single] = (a) => { return a; },
+                    [Tokens.Currency] = (a) => { return decimal.Parse(a).ToString(); },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
+                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
                 },
 
-                [Tokens.Currency] = new Dictionary<string, Func<string, (bool, string)>>
+                [Tokens.Currency] = new Dictionary<string, Func<string, string>>
                 {
-                    [Tokens.String] = Copy,
-                    [Tokens.Byte] = (a) => { a = BankersRound(a); return (byte.TryParse(a, out _), a); },
-                    [Tokens.Integer] = (a) => { a = BankersRound(a); return (Int16.TryParse(a, out _), a); },
-                    [Tokens.Long] = (a) => { a = BankersRound(a); return (Int32.TryParse(a, out _), a); },
-                    [Tokens.LongLong] = (a) => { a = BankersRound(a); return (long.TryParse(a, out _), a); },
-                    [Tokens.Double] = Copy,
-                    [Tokens.Single] = (a) => { return (float.TryParse(a, out _), a); },
-                    [Tokens.Currency] = Copy,
-                    [Tokens.Boolean] = NumericToBoolean,
-                    [Tokens.Date] = NumericToDate,
+                    [Tokens.String] = (a) => { return a; },
+                    [Tokens.Byte] = (a) => { a = BankersRound(a); return byte.Parse(a).ToString(); },
+                    [Tokens.Integer] = (a) => { a = BankersRound(a); return Int16.Parse(a).ToString(); },
+                    [Tokens.Long] = (a) => { a = BankersRound(a); return Int32.Parse(a).ToString(); },
+                    [Tokens.LongLong] = (a) => { a = BankersRound(a); return long.Parse(a).ToString(); },
+                    [Tokens.Double] = (a) => { return a; },
+                    [Tokens.Single] = (a) => { return float.Parse(a).ToString(); },
+                    [Tokens.Currency] = (a) => { return a; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
+                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
                 },
 
-                [Tokens.Boolean] = new Dictionary<string, Func<string, (bool, string)>>
+                [Tokens.Boolean] = new Dictionary<string, Func<string, string>>
                 {
-                    [Tokens.String] = (a) => { var result = BooleanToString(a); return result; },
-                    [Tokens.Byte] = (a) => { var val = BooleanAsLong(a); return (true, val != 0 ? byte.MaxValue.ToString() : byte.MinValue.ToString()); },
-                    [Tokens.Integer] = (a) => { return (true, BooleanAsLong(a).ToString()); },
-                    [Tokens.Long] = (a) => { return (true, BooleanAsLong(a).ToString()); },
-                    [Tokens.LongLong] = (a) => { return (true, BooleanAsLong(a).ToString()); },
-                    [Tokens.Double] = (a) => { return (true, BooleanAsLong(a).ToString()); },
-                    [Tokens.Single] = (a) => { return (true, BooleanAsLong(a).ToString()); },
-                    [Tokens.Currency] = (a) => { return (true, BooleanAsLong(a).ToString()); },
-                    [Tokens.Boolean] = Copy,
-                    [Tokens.Date] = (a) => { var val = BooleanAsLong(a); return NumericToDate(val.ToString()); },
+                    [Tokens.String] = (a) => { return BooleanToString(a).Item2; },
+                    [Tokens.Byte] = (a) => { var val = BooleanAsLong(a); return val != 0 ? byte.MaxValue.ToString() : byte.MinValue.ToString(); },
+                    [Tokens.Integer] = (a) => { return BooleanAsLong(a).ToString(); },
+                    [Tokens.Long] = (a) => { return BooleanAsLong(a).ToString(); },
+                    [Tokens.LongLong] = (a) => { return BooleanAsLong(a).ToString(); },
+                    [Tokens.Double] = (a) => { return BooleanAsLong(a).ToString(); },
+                    [Tokens.Single] = (a) => { return BooleanAsLong(a).ToString(); },
+                    [Tokens.Currency] = (a) => { return BooleanAsLong(a).ToString(); },
+                    [Tokens.Boolean] = (a) => { return a; },
+                    [Tokens.Date] = (a) => { var val = BooleanAsLong(a); return NumericToDate(val.ToString()).Item2; },
                 },
 
-                [Tokens.Date] = new Dictionary<string, Func<string, (bool, string)>>
+                [Tokens.Date] = new Dictionary<string, Func<string, string>>
                 {
-                    [Tokens.String] = (a) => { return DateToString(a); },
-                    [Tokens.Byte] = (a) => { var result = DateToDouble(a); return (byte.TryParse(result.Item2, out _), result.Item2); },
-                    [Tokens.Integer] = (a) => { var result = DateToDouble(a); return (Int16.TryParse(result.Item2, out _), result.Item2); },
-                    [Tokens.Long] = (a) => { var result = DateToDouble(a); return (Int32.TryParse(result.Item2, out _), result.Item2); },
-                    [Tokens.LongLong] = (a) => { var result = DateToDouble(a); return (long.TryParse(result.Item2, out _), result.Item2); },
-                    [Tokens.Double] = DateToDouble,
-                    [Tokens.Single] = (a) => { var result = DateToDouble(a); return (float.TryParse(result.Item2, out _), result.Item2); },
-                    [Tokens.Currency] = (a) => { var result = DateToDouble(a); return (decimal.TryParse(result.Item2, out _), result.Item2); },
-                    [Tokens.Boolean] = (a) => { var result = DateToDouble(a); var dbl = double.Parse(result.Item2); return (dbl != 0, dbl != 0 ? Tokens.True : Tokens.False); },
-                    [Tokens.Date] = Copy,
+                    [Tokens.String] = (a) => { return RemoveStartAndEnd(a, "#"); },
+                    [Tokens.Byte] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToByte(result.AsDecimal).ToString(); },
+                    [Tokens.Integer] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToInt16(result.AsDecimal).ToString(); },
+                    [Tokens.Long] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToInt32(result.AsDecimal).ToString(); },
+                    [Tokens.LongLong] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToInt64(result.AsDecimal).ToString(); },
+                    [Tokens.Double] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToDouble(result.AsDecimal).ToString(); },
+                    [Tokens.Single] = (a) => { var result = ComparableDateValue.Parse(a); return float.Parse(result.AsDecimal.ToString()).ToString(); },
+                    [Tokens.Currency] = (a) => { var result = ComparableDateValue.Parse(a); return result.AsDecimal.ToString(); },
+                    [Tokens.Boolean] = (a) => { var result = ComparableDateValue.Parse(a); return result.AsDecimal != 0 ? Tokens.True : Tokens.False; },
+                    [Tokens.Date] = (a) => { return a; },
                 },
             };
         }
 
         private static (bool, string) StringToDate(string sourceText)
         {
-            if (TryParse(AnnotateAsDateLiteral(sourceText), out ComparableDateValue dvComparable))
-            {
-                return (true, dvComparable.AsDateLiteral());
-            }
-            if (TryParse(sourceText, out double doubleValue))
+            if (double.TryParse(sourceText, out double doubleValue))
             {
                 return NumericToDate(sourceText);
             }
+            if (ComparableDateValue.TryParse(AnnotateAsDateLiteral(sourceText), out ComparableDateValue dvComparable))
+            {
+                return (true, dvComparable.AsDateLiteral());
+            }
             return (false, string.Empty);
+        }
+
+        private static (bool, string) StringToByte(string sourceText)
+        {
+            int? intValue = BooleanTokenToInt(sourceText);
+            if (intValue.HasValue)
+            {
+                return (true, intValue == 0 ? byte.MinValue.ToString() : byte.MaxValue.ToString());
+            }
+            return StringToIntegral(sourceText);
+        }
+
+        private static (bool, string) StringToCurrency(string sourceText)
+        {
+            (bool ok, string val) = StringToRational(sourceText);
+
+            return VBACurrency.TryParse(val, out decimal result) ? (true, result.ToString()) : (false, sourceText);
+        }
+
+        private static (bool, string) StringToIntegral(string sourceText)
+        {
+            (bool ok, string value) = StringToRational(sourceText);
+            return ok ? (true, BankersRound(value)) : (false, sourceText);
+        }
+
+        private static (bool,string) StringToRational(string sourceText)
+        {
+            sourceText = RemoveDoubleQuotes(sourceText);
+
+            int? intValue = BooleanTokenToInt(sourceText);
+            var parseValue = intValue.HasValue ? intValue.ToString() : sourceText;
+
+            return decimal.TryParse(parseValue, out decimal decValue) ? (true, decValue.ToString())
+                : double.TryParse(parseValue, out double value) ? (true, value.ToString()) :(false, sourceText);
         }
 
         private static (bool, string) StringToBoolean(string sourceText)
@@ -339,7 +348,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static (bool, string) NumericToDate(string source)
         {
-            if (TryParse(source, out double dateAsDouble))
+            if (double.TryParse(source, out double dateAsDouble))
             {
                 var dv = new DateValue(DateTime.FromOADate(dateAsDouble));
                 var dateValue = new ComparableDateValue(dv);
@@ -351,6 +360,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static (bool, string) DateToString(string source)
         {
             return (true, RemoveStartAndEnd(source, "#"));
+        }
+
+        private static int? BooleanTokenToInt(string sourceText)
+        {
+            if (sourceText.Equals(Tokens.True, StringComparison.OrdinalIgnoreCase))
+            {
+                return -1;
+            }
+            if (sourceText.Equals(Tokens.False, StringComparison.OrdinalIgnoreCase))
+            {
+                return 0;
+            }
+            if (sourceText.Equals($"#{Tokens.True}#", StringComparison.Ordinal))
+            {
+                return -1;
+            }
+            if (sourceText.Equals($"#{Tokens.False}#", StringComparison.Ordinal))
+            {
+                return 0;
+            }
+            return null;
         }
 
         private static string RemoveDoubleQuotes(string source)
@@ -374,7 +404,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static (bool, string) DateToDouble(string source)
         {
-            if (TryParse(source, out ComparableDateValue dv))
+            if (ComparableDateValue.TryParse(source, out ComparableDateValue dv))
             {
                 return (true, dv.AsDecimal.ToString());
             }
@@ -392,31 +422,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         private static string BankersRound(string source)
-        {
-            var parseable = RemoveDoubleQuotes(source);
-            if (double.TryParse(source, out double value))
-            {
-                var integral = Math.Round(value, MidpointRounding.ToEven);
-                return integral.ToString();
-            }
-            throw new OverflowException();
-        }
+             => Math.Round(double.Parse(source), MidpointRounding.ToEven).ToString();
 
         private static (bool, string) NumericToBoolean(string source)
              => (true, double.Parse(source) != 0 ? Tokens.True : Tokens.False);
 
         private static long BooleanAsLong(string source)
-        {
-            if (source.Equals(Tokens.True))
-            {
-                return -1;
-            }
-            if (source.Equals(Tokens.False))
-            {
-                return 0;
-            }
-            return long.Parse(source);
-        }
+            => source.Equals(Tokens.True) ? -1 : 0;
 
         private static (bool, string) Copy(string source) => (true, source);
 
