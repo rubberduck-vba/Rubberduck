@@ -2,7 +2,9 @@
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
 
@@ -22,7 +24,11 @@ namespace Rubberduck.Inspections.Concrete
             {
                 var duplicateAnnotations = declaration.Annotations
                     .GroupBy(annotation => annotation.AnnotationType)
-                    .Where(group => !group.First().AllowMultiple && group.Count() > 1);
+                    .Where(group => !group.First().AllowMultiple && group.Count() > 1 &&
+                                    (group.Key.HasFlag(AnnotationType.ModuleAnnotation) &&
+                                     declaration.DeclarationType.HasFlag(DeclarationType.Module) ||
+                                     group.Key.HasFlag(AnnotationType.MemberAnnotation) &&
+                                     declaration.DeclarationType.HasFlag(DeclarationType.Member)));
 
                 issues.AddRange(duplicateAnnotations.Select(duplicate => new DeclarationInspectionResult(
                     this,

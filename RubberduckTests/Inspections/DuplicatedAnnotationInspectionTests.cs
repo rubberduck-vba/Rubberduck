@@ -14,9 +14,6 @@ namespace RubberduckTests.Inspections
         public void AnnotationDuplicated_ReturnsResult()
         {
             const string inputCode = @"
-Public Sub Qux()
-End Sub
-
 '@Obsolete
 '@Obsolete
 Public Sub Foo()
@@ -37,9 +34,6 @@ End Sub";
         public void AnnotationDuplicatedTwice_ReturnsSingleResult()
         {
             const string inputCode = @"
-Public Sub Qux()
-End Sub
-
 '@Obsolete
 '@Obsolete
 '@Obsolete
@@ -61,9 +55,6 @@ End Sub";
         public void AnnotationNotDuplicated_DoesNotReturnResult()
         {
             const string inputCode = @"
-Public Sub Qux()
-End Sub
-
 '@Obsolete
 Public Sub Foo()
 End Sub";
@@ -83,12 +74,55 @@ End Sub";
         public void AnnotationAllowingMultipleApplicationsDuplicated_DoesNotReturnResult()
         {
             const string inputCode = @"
-Public Sub Qux()
-End Sub
-
 '@Ignore(Bar)
 '@Ignore(Baz)
 Public Sub Foo()
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new DuplicatedAnnotationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAnnotationDuplicatedForModuleDeclaration_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+'@TestInitialize
+'@TestInitialize
+
+Public S as String
+
+Public Sub Foo()
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new DuplicatedAnnotationInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ModuleAnnotationDuplicatedForMemberDeclaration_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Public Sub Foo()
+End Sub
+
+'@Folder(Baz)
+'@Folder(Baz)
+Public Sub Bar()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
