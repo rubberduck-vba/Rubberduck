@@ -210,6 +210,22 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> Subtypes => _subtypes.Keys;
 
+        public bool IsInterface => _subtypes.Count > 0;
+
+        public bool IsUserInterface => Subtypes.Any(s => s.IsUserDefined);
+
+        public IEnumerable<ClassModuleDeclaration> ImplementedInterfaces =>
+            _supertypes.Cast<ClassModuleDeclaration>().Where(type => type.Subtypes.Contains(this));
+
+
+        private readonly List<Declaration> _members = new List<Declaration>();
+        public IReadOnlyList<Declaration> Members => _members;
+
+        public void AddMember(Declaration member)
+        {
+            _members.Add(member);
+        }
+
         public void AddSupertypeName(string supertypeName)
         {
             _supertypeNames.Add(supertypeName);
@@ -225,9 +241,22 @@ namespace Rubberduck.Parsing.Symbols
         {
             foreach (var supertype in _supertypes)
             {
-                (supertype as ClassModuleDeclaration)?.RemoveSubtype(this);
+                if (supertype is ClassModuleDeclaration classModule)
+                {
+                    classModule.RemoveSubtype(this);
+                    classModule.ClearMemberImplementationCache();
+                }
             }
             _supertypes.Clear();
+            ClearMemberImplementationCache();
+        }
+
+        private void ClearMemberImplementationCache()
+        {
+            foreach (var member in Members)
+            {
+                (member as ModuleBodyElementDeclaration)?.InvalidateInterfaceCache();
+            }
         }
 
         private void AddSubtype(Declaration subtype)

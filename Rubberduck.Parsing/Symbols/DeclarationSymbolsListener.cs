@@ -307,6 +307,24 @@ namespace Rubberduck.Parsing.Symbols
                         context,
                         selection);
                 }
+                else if (declarationType == DeclarationType.Variable)
+                {
+                    result = new VariableDeclaration(
+                        new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                        _parentDeclaration,
+                        _currentScopeDeclaration,
+                        asTypeName,
+                        typeHint,
+                        selfAssigned,
+                        withEvents,
+                        accessibility,
+                        context,
+                        selection,
+                        isArray,
+                        asTypeContext,
+                        annotations,
+                        attributes);
+                }
                 else
                 {
                     result = new Declaration(

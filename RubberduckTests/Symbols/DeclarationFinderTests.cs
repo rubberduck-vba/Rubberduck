@@ -1275,21 +1275,32 @@ End Sub";
         [Test]
         public void DeclarationFinderCanCopeWithMultipleModulesImplementingTheSameInterface()
         {
-            var project = GetTestProject("testProject");
-            var interf = GetTestClassModule(project, "interface");
-            var member = GetTestFunction(interf, "testMember", Accessibility.Public);
-            var implementingClass1 = GetTestClassModule(project, "implementingClass1");
-            var implementingClass2 = GetTestClassModule(project, "implementingClass2");
-            var implementsContext1 = new VBAParser.ImplementsStmtContext(null, 0);
-            var implementsContext2 = new VBAParser.ImplementsStmtContext(null, 0);
-            AddReference(interf, implementingClass1, implementsContext1);
-            AddReference(interf, implementingClass1, implementsContext2);
-            var declarations = new List<Declaration> { interf, member, implementingClass1, implementingClass2 };
+            const string interfaceCode = @"
+Public Sub Foo()
+End Sub
+";
 
-            DeclarationFinder finder = new DeclarationFinder(declarations, new List<Rubberduck.Parsing.Annotations.IAnnotation>(), new List<UnboundMemberDeclaration>());
-            var interfaceDeclarations = finder.FindAllInterfaceMembers().ToList();
+            const string implementationCode = @"
+Implements IClass1
 
-            Assert.AreEqual(1, interfaceDeclarations.Count());
+Public Sub IClass1_Foo()
+End Sub
+";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, interfaceCode, new Selection(0, 0))
+                .AddComponent("Class2", ComponentType.ClassModule, implementationCode, new Selection(0, 0))
+                .AddComponent("Class3", ComponentType.ClassModule, implementationCode, new Selection(0, 0))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var interfaceDeclarations = state.DeclarationFinder.FindAllInterfaceMembers().ToList();
+
+                Assert.AreEqual(1, interfaceDeclarations.Count());
+            }
         }
 
         private static ClassModuleDeclaration GetTestClassModule(Declaration projectDeclatation, string name, bool isExposed = false)

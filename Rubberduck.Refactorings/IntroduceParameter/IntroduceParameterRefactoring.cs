@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -118,8 +117,14 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
         {
-            var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
-            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
+            var functionDeclaration = (ModuleBodyElementDeclaration)_declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+
+            if (functionDeclaration == null || !functionDeclaration.IsInterfaceImplementation)
+            {
+                return true;
+            }
+
+            var interfaceImplementation = functionDeclaration.InterfaceMemberImplemented;
 
             if (interfaceImplementation == null)
             {
@@ -129,35 +134,27 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var message = string.Format(RubberduckUI.IntroduceParameter_PromptIfTargetIsInterface,
                 functionDeclaration.IdentifierName, interfaceImplementation.ComponentName,
                 interfaceImplementation.IdentifierName);
+
             return _messageBox.Question(message, RubberduckUI.IntroduceParameter_Caption);
         }
 
         private void UpdateSignature(Declaration targetVariable)
         {
-            var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+            var functionDeclaration = (ModuleBodyElementDeclaration)_declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
             var proc = (dynamic) functionDeclaration.Context;
             var paramList = (VBAParser.ArgListContext) proc.argList();
-            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
 
-            if (functionDeclaration.DeclarationType != DeclarationType.PropertyGet &&
-                functionDeclaration.DeclarationType != DeclarationType.PropertyLet &&
-                functionDeclaration.DeclarationType != DeclarationType.PropertySet)
+            if (functionDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
+            {
+                UpdateProperties(functionDeclaration, targetVariable);               
+            }
+            else
             {
                 AddParameter(functionDeclaration, targetVariable, paramList);
-
-                if (interfaceImplementation == null)
-                {
-                    return;
-                }
             }
 
-            if (functionDeclaration.DeclarationType == DeclarationType.PropertyGet ||
-                functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
-                functionDeclaration.DeclarationType == DeclarationType.PropertySet)
-            {
-                UpdateProperties(functionDeclaration, targetVariable);
-            }
+            var interfaceImplementation = functionDeclaration.InterfaceMemberImplemented;
 
             if (interfaceImplementation == null)
             {
@@ -166,12 +163,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             UpdateSignature(interfaceImplementation, targetVariable);
 
-            var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                .Where(item => item.ProjectId == interfaceImplementation.ProjectId
-                               &&
-                               item.IdentifierName ==
-                               $"{interfaceImplementation.ComponentName}_{interfaceImplementation.IdentifierName}"
-                               && !item.Equals(functionDeclaration));
+            var interfaceImplementations = _state.DeclarationFinder.FindInterfaceImplementationMembers(functionDeclaration.InterfaceMemberImplemented)
+                .Where(member => !ReferenceEquals(member, functionDeclaration));
 
             foreach (var implementation in interfaceImplementations)
             {
@@ -250,16 +243,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             {
                 UpdateSignature(property, targetVariable);
             }
-        }
-
-        private Declaration GetInterfaceImplementation(Declaration target)
-        {
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(target));
-
-            if (interfaceImplementation == null) { return null; }
-
-            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            return interfaceMember;
         }
     }
 }

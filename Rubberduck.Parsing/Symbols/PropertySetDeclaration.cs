@@ -1,18 +1,16 @@
-﻿using System;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class PropertySetDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
+    public sealed class PropertySetDeclaration : PropertyDeclaration
     {
-        private readonly List<ParameterDeclaration> _parameters;
-
         public PropertySetDeclaration(
             QualifiedMemberName name,
             Declaration parent,
@@ -25,28 +23,24 @@ namespace Rubberduck.Parsing.Symbols
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
-                  name,
-                  parent,
-                  parentScope,
-                  asTypeName,
-                  null,
-                  false,
-                  false,
-                  accessibility,
-                  DeclarationType.PropertySet,
-                  context,
-                  selection,
-                  false,
-                  null,
-                  isUserDefined,
-                  annotations,
-                  attributes)
-        {
-            _parameters = new List<ParameterDeclaration>();
-        }
+                name,
+                parent,
+                parentScope,
+                asTypeName,
+                null,
+                null,
+                accessibility,
+                DeclarationType.PropertySet,
+                context,
+                selection,
+                false,
+                isUserDefined,
+                annotations,
+                attributes)
+        { }
 
-        public PropertySetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
-            Attributes attributes) : this(
+        public PropertySetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module, Attributes attributes) 
+            : this(
                 module.QualifyMemberName(member.Name),
                 parent,
                 parent,
@@ -58,40 +52,31 @@ namespace Rubberduck.Parsing.Symbols
                 null,
                 attributes)
         {
-            _parameters =
-                member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
-                    .ToList();
+            AddParameters(member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module)));
         }
 
-        public PropertySetDeclaration(ComField field, Declaration parent, QualifiedModuleName module,
-            Attributes attributes) : this(
-            module.QualifyMemberName(field.Name),
-            parent,
-            parent,
-            field.ValueType,
-            Accessibility.Global,
-            null,
-            Selection.Home,
-            false,
-            null,
-            attributes)
+        public PropertySetDeclaration(ComField field, Declaration parent, QualifiedModuleName module, Attributes attributes) 
+            : this(
+                module.QualifyMemberName(field.Name),
+                parent,
+                parent,
+                field.ValueType,
+                Accessibility.Global,
+                null,
+                Selection.Home,
+                false,
+                null,
+                attributes)
         { }
 
-        public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
-
-        public void AddParameter(ParameterDeclaration parameter)
+        protected override bool Implements(ICanBeInterfaceMember member)
         {
-            _parameters.Add(parameter);
+            return member.IsInterfaceMember
+                   && IsInterfaceImplementation
+                   && IdentifierName.Equals($"{member.InterfaceDeclaration.IdentifierName}_{member.IdentifierName}")
+                   && (member.DeclarationType == DeclarationType.PropertySet
+                       || member.DeclarationType == DeclarationType.Variable 
+                       && (member.IsObject || member.AsTypeName.Equals(Tokens.Variant)));
         }
-
-        /// <summary>
-        /// Gets an attribute value indicating whether a member is a class' default member.
-        /// If this value is true, any reference to an instance of the class it's the default member of,
-        /// should count as a member call to this member.
-        /// </summary>
-        public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
-
-        public override bool IsObject =>
-            base.IsObject || (Parameters.OrderBy(p => p.Selection).LastOrDefault()?.IsObject ?? false);
     }
 }

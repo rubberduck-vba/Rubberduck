@@ -125,6 +125,7 @@
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="Inspections\InspectionProviderTests.cs" />
     <Compile Include="Symbols\DeclarationExtensionTests.cs" />
+    <Compile Include="Symbols\ModuleBodyElementDeclarationTests.cs" />
     <Compile Include="Symbols\ToVbExpressionTests.cs" />
     <Compile Include="UnitTesting\TestMethodTests.cs" />
     <Compile Include="VBEditor\CodePaneSourceHandlerTests.cs" />
