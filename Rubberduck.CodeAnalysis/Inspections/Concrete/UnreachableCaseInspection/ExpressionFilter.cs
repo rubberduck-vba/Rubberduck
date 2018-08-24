@@ -184,7 +184,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (IsOverflow(expression))
             {
-                expression.IsUnreachable = true;
+                expression.IsOverflow = true;
+                return;
+            }
+
+            if (expression.IsMismatch)
+            {
                 return;
             }
 
@@ -215,22 +220,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             catch (ArgumentException)
             {
                 expression.IsMismatch = true;
-                expression.IsUnreachable = true;
             }
             catch (FormatException)
             {
                 expression.IsMismatch = true;
-                expression.IsUnreachable = true;
             }
             catch (OverflowException)
             {
-                expression.IsInherentlyUnreachable = true;
-                expression.IsUnreachable = true;
+                expression.IsOverflow = true;
             }
             catch (Exception)
             {
                 expression.IsMismatch = true;
-                expression.IsUnreachable = true;
             }
         }
 
@@ -432,13 +433,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (expression.LHSValue != null && expression.LHSValue.IsOverflowExpression)
             {
-                expression.IsInherentlyUnreachable = true;
+                expression.IsOverflow = true;
             }
             if (expression.RHSValue != null && expression.RHSValue.IsOverflowExpression)
             {
-                expression.IsInherentlyUnreachable = true;
+                expression.IsOverflow = true;
             }
-            return expression.IsInherentlyUnreachable;
+            return expression.IsOverflow;
         }
 
         private bool AddRangeOfValuesExpression(RangeOfValuesExpression rangeExpr)
@@ -456,6 +457,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             return AddToContainer(Variables[VariableClauseTypes.Range], rangeExpr.ToString());
         }
+
+        //TODO: Review use of 'Converter' versus a method that generates an exception or 
+        //a LetCoerced string that can then be converted using T.Parse(<string>);
 
         private bool AddValueExpression(ValueExpression valueExpr)
         {

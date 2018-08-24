@@ -20,13 +20,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private readonly IUnreachableCaseInspectorFactory _unreachableCaseInspectorFactory;
         private readonly IParseTreeValueFactory _valueFactory;
 
-        private enum CaseInpectionResult { Unreachable, InherentlyUnreachable, MismatchType, CaseElse };
+        private enum CaseInpectionResult { Unreachable, InherentlyUnreachable, MismatchType, Overflow, CaseElse };
 
         private static readonly Dictionary<CaseInpectionResult, string> ResultMessages = new Dictionary<CaseInpectionResult, string>()
         {
             [CaseInpectionResult.Unreachable] = InspectionResults.UnreachableCaseInspection_Unreachable,
             [CaseInpectionResult.InherentlyUnreachable] = InspectionResults.UnreachableCaseInspection_InherentlyUnreachable,
             [CaseInpectionResult.MismatchType] = InspectionResults.UnreachableCaseInspection_TypeMismatch,
+            [CaseInpectionResult.Overflow] = InspectionResults.UnreachableCaseInspection_Overflow,
             [CaseInpectionResult.CaseElse] = InspectionResults.UnreachableCaseInspection_CaseElse
         };
 
@@ -63,6 +64,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
                 selectCaseInspector.UnreachableCases.ForEach(uc => CreateInspectionResult(qualifiedSelectCaseStmt, uc, ResultMessages[CaseInpectionResult.Unreachable]));
                 selectCaseInspector.MismatchTypeCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.MismatchType]));
+                selectCaseInspector.OverflowCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.Overflow]));
                 selectCaseInspector.InherentlyUnreachableCases.ForEach(mm => CreateInspectionResult(qualifiedSelectCaseStmt, mm, ResultMessages[CaseInpectionResult.InherentlyUnreachable]));
                 selectCaseInspector.UnreachableCaseElseCases.ForEach(ce => CreateInspectionResult(qualifiedSelectCaseStmt, ce, ResultMessages[CaseInpectionResult.CaseElse]));
             }

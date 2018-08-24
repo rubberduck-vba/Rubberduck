@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
         {
             if (IntegralNumberExtents.Keys.Contains(typeName))
             {
-                var integralNumberFilter = new ExpressionFilterIntegral(TryCoerce);
+                var integralNumberFilter = new ExpressionFilterIntegral(TryCoerce, typeName);
                 integralNumberFilter.SetExtents(IntegralNumberExtents[typeName].typeMin, IntegralNumberExtents[typeName].typeMax);
                 return integralNumberFilter;
             }

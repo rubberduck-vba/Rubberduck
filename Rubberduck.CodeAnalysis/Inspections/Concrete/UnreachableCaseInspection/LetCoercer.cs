@@ -64,10 +64,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 return false;
             }
-            catch (KeyNotFoundException)
+            catch (KeyNotFoundException knf)
             {
 #if DEBUG
-                throw new KeyNotFoundException($"Let Coercion source type: {source.Type} not supported");
+                throw knf;
 #else
                 return false;
 #endif

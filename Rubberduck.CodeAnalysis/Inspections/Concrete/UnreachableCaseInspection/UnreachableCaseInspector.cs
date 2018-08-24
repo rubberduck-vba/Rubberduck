@@ -15,6 +15,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         List<ParserRuleContext> UnreachableCases { get; }
         List<ParserRuleContext> InherentlyUnreachableCases { get; }
         List<ParserRuleContext> MismatchTypeCases { get; }
+        List<ParserRuleContext> OverflowCases { get; }
         List<ParserRuleContext> UnreachableCaseElseCases { get; }
     }
 
@@ -44,6 +45,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public List<ParserRuleContext> MismatchTypeCases { set; get; } = new List<ParserRuleContext>();
 
+        public List<ParserRuleContext> OverflowCases { set; get; } = new List<ParserRuleContext>();
+
         public List<ParserRuleContext> InherentlyUnreachableCases { set; get; } = new List<ParserRuleContext>();
 
         public List<ParserRuleContext> UnreachableCaseElseCases { set; get; } = new List<ParserRuleContext>();
@@ -64,7 +67,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             foreach (var caseClause in _caseClauses)
             {
                 var containsMismatch = false;
-                foreach( var range in caseClause.rangeClause())
+                var containsOverflow = false;
+                foreach ( var range in caseClause.rangeClause())
                 {
                     var childResults = ParseTreeValueResults.GetChildResults(range);
                     var childValues = childResults.Select(ch => ParseTreeValueResults.GetValue(ch));
@@ -72,10 +76,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     {
                         containsMismatch = true;
                     }
+                    if (childValues.Any(chr => chr.IsOverflowExpression))
+                    {
+                        containsOverflow = true;
+                    }
                 }
                 if (containsMismatch)
                 {
                     MismatchTypeCases.Add(caseClause);
+                }
+                else if (containsOverflow)
+                {
+                    OverflowCases.Add(caseClause);
                 }
                 else
                 {
@@ -96,15 +108,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
                 rangeClauseExpressions.ForEach(expr => rangeClauseFilter.AddExpression(expr));
 
-                if (rangeClauseExpressions.All(expr => expr.IsMismatch))
+                if (rangeClauseExpressions.Any(expr => expr.IsMismatch))
                 {
                     MismatchTypeCases.Add(caseClause);
+                }
+                else if (rangeClauseExpressions.Any(expr => expr.IsOverflow))
+                {
+                    OverflowCases.Add(caseClause);
                 }
                 else if (rangeClauseExpressions.All(expr => expr.IsInherentlyUnreachable))
                 {
                     InherentlyUnreachableCases.Add(caseClause);
                 }
-                else if (rangeClauseExpressions.All(expr => expr.IsUnreachable || expr.IsMismatch || expr.IsInherentlyUnreachable))
+                else if (rangeClauseExpressions.All(expr => expr.IsUnreachable || expr.IsMismatch || expr.IsOverflow || expr.IsInherentlyUnreachable))
                 {
                     UnreachableCases.Add(caseClause);
                 }

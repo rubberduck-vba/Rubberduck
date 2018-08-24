@@ -12,6 +12,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         string OpSymbol { get; }
         bool IsMismatch { set; get; }
         bool IsUnreachable { set; get; }
+        bool IsOverflow { set; get; }
         bool IsInherentlyUnreachable { set; get; }
     }
 
@@ -116,6 +117,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public string RHS => _data.RHS;
         public string OpSymbol => _data.OpSymbol;
         public bool IsMismatch { set => _data.IsMismatch = value; get => _data.IsMismatch; }
+        public bool IsOverflow { set => _data.IsOverflow = value; get => _data.IsOverflow; }
         public bool IsUnreachable { set => _data.IsUnreachable = value; get => _data.IsUnreachable; }
         public bool IsInherentlyUnreachable { set => _data.IsInherentlyUnreachable = value; get => _data.IsInherentlyUnreachable; }
 
@@ -184,6 +186,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             public string RHS { private set; get; }
             public string OpSymbol { private set; get; }
             public bool IsMismatch { set; get; }
+            public bool IsOverflow { set; get; }
             public bool IsUnreachable { set; get; }
             public bool IsInherentlyUnreachable { set; get; }
 
@@ -195,6 +198,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 LHS = lhs is null ? string.Empty : lhs.ValueText;
                 OpSymbol = opSymbol;
                 IsMismatch = false;
+                IsOverflow = false;
                 IsUnreachable = false;
                 IsInherentlyUnreachable = false;
             }
