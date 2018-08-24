@@ -251,7 +251,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope 
+            return _model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName) 
                 && item.IdentifierName == declaration.IdentifierName 
                 && item.DeclarationType == declarationType);
         }

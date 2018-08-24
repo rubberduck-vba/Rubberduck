@@ -6,6 +6,7 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace RubberduckTests
 {
+
     [TestFixture]
     public class StringExtensionsTests
     {

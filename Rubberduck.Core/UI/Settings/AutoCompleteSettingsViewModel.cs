@@ -58,6 +58,21 @@ namespace Rubberduck.UI.Settings
             Settings = new ObservableCollection<AutoCompleteSetting>(toLoad.AutoCompletes);
         }
 
+        private bool _isEnabled;
+
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
+            {
+                if (_isEnabled != value)
+                {
+                    _isEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private bool _completeBlockOnTab;
         public bool CompleteBlockOnTab
         {

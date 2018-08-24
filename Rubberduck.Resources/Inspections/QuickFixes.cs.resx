@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EmptyStringLiteralInspectionQuickFix" xml:space="preserve">
+    <value>Nahraď prázdný řetěz "" za konstantu 'vbNullString'</value>
+  </data>
+  <data name="EncapsulatePublicFieldInspectionQuickFix" xml:space="preserve">
+    <value>Použij property pro zapouzdři pole '{0}'</value>
+  </data>
+  <data name="IgnoreOnce" xml:space="preserve">
+    <value>Jednou ignoruj</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspectionQuickFix" xml:space="preserve">
+    <value>Implementuj jako funkci a obnov použití.</value>
+  </data>
+  <data name="ConvertFunctionToProcedureQuickFix" xml:space="preserve">
+    <value>Zkonvertuj funkci na proceduru</value>
+  </data>
+  <data name="DeclareAsExplicitVariantQuickFix" xml:space="preserve">
+    <value>Deklaruj jako explicitní 'Variant'</value>
+  </data>
+  <data name="ImplicitByRefModifierQuickFix" xml:space="preserve">
+    <value>Předej parametr explicitně jako referenci</value>
+  </data>
+  <data name="ReplaceObsoleteErrorStatementQuickFix" xml:space="preserve">
+    <value>Nahraď 'Error' za 'Err.Raise'</value>
+  </data>
+  <data name="ObsoleteGlobalInspectionQuickFix" xml:space="preserve">
+    <value>Nahraď 'Global' přístupový modifikátor za 'Public'</value>
+  </data>
+  <data name="ReplaceIfElseWithConditionalStatementQuickFix" xml:space="preserve">
+    <value>Nahraď 'If/Else' zjednodušeným přidělením</value>
+  </data>
+  <data name="ReplaceCommentMarkerQuickFix" xml:space="preserve">
+    <value>Zaměň použití 'Rem' s použitím znaku klasických komentářů: "'"</value>
+  </data>
+  <data name="SetExplicitVariantReturnTypeQuickFix" xml:space="preserve">
+    <value>Vrať jako explicitní 'Variant'</value>
+  </data>
+  <data name="MakeSingleLineParameterQuickFix" xml:space="preserve">
+    <value>Zapisuj proměnné na jeden řádek</value>
+  </data>
+  <data name="OptionExplicitQuickFix" xml:space="preserve">
+    <value>Specifikuj 'Option Explicit'</value>
+  </data>
+  <data name="PassParameterByReferenceQuickFix" xml:space="preserve">
+    <value>Předej parametr odkazem (ByRef)</value>
+  </data>
+  <data name="PassParameterByValueQuickFix" xml:space="preserve">
+    <value>Předej parametr hodnotou (ByVal)</value>
+  </data>
+  <data name="UseTypedFunctionQuickFix" xml:space="preserve">
+    <value>Změň '{0}' na '{1}'</value>
+  </data>
+  <data name="RemoveCommentQuickFix" xml:space="preserve">
+    <value>Odstraň komentář</value>
+  </data>
+  <data name="RemoveObsoleteStatementQuickFix" xml:space="preserve">
+    <value>Odstraň zastaralé prohlášení</value>
+  </data>
+  <data name="RemoveTypeHintsQuickFix" xml:space="preserve">
+    <value>Odstraň typovou nápovědu</value>
+  </data>
+  <data name="RemoveUnassignedIdentifierQuickFix" xml:space="preserve">
+    <value>Odstraň nepřiřazenou proměnnou</value>
+  </data>
+  <data name="RemoveUnassignedVariableUsageQuickFix" xml:space="preserve">
+    <value>Odstraň použití (rozbije kód)</value>
+  </data>
+  <data name="RemoveUnusedDeclarationQuickFix" xml:space="preserve">
+    <value>Odstraň nepoužitou deklaraci</value>
+  </data>
+  <data name="RemoveUnusedParameterQuickFix" xml:space="preserve">
+    <value>Odstraň nepoužitý parametr</value>
+  </data>
+  <data name="SpecifyExplicitPublicModifierQuickFix" xml:space="preserve">
+    <value>Explicitně specifikuj 'Public access' modifikátor</value>
+  </data>
+  <data name="SplitMultipleDeclarationsQuickFix" xml:space="preserve">
+    <value>Odděl více deklarací do několika instrukcí</value>
+  </data>
+  <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
+    <value>Kontexový typ '{0}' není platný pro '{1}'</value>
+  </data>
+  <data name="SetObjectVariableQuickFix" xml:space="preserve">
+    <value>Použij klíčové slovo 'Set'</value>
+  </data>
+  <data name="WriteOnlyPropertyQuickFix" xml:space="preserve">
+    <value>Přidej accessor 'property get'</value>
+  </data>
+  <data name="ChangeDimToPrivateQuickFix" xml:space="preserve">
+    <value>Zaměň 'Dim' za 'Private'</value>
+  </data>
+  <data name="IntroduceLocalVariableQuickFix" xml:space="preserve">
+    <value>Představ lokální proměnnou</value>
+  </data>
+  <data name="WhiteListIdentifierQuickFix" xml:space="preserve">
+    <value>Přidat do Whitelistu</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionQuickFix" xml:space="preserve">
+    <value>Použij early-bound metodu Application.WorksheetFunction.</value>
+  </data>
+  <data name="AssignedByValParameterMakeLocalCopyQuickFix" xml:space="preserve">
+    <value>Vytvoř a použij lokální kopii tohoto parametru.</value>
+  </data>
+  <data name="RemoveOptionBaseStatementQuickFix" xml:space="preserve">
+    <value>Odstraň prohlášení 'Option Base'</value>
+  </data>
+  <data name="SynchronizeAttributesQuickFix" xml:space="preserve">
+    <value>Synchronizuj v modulu atributy/anotace</value>
+  </data>
+  <data name="RemoveEmptyIfBlockQuickFix" xml:space="preserve">
+    <value>Odstraň prázdný If blok</value>
+  </data>
+  <data name="RedundantByRefModifierQuickFix" xml:space="preserve">
+    <value>Odstraň 'ByRef' modifikátor</value>
+  </data>
+  <data name="RemoveEmptyElseBlockQuickFix" xml:space="preserve">
+    <value>Odstraň prázdný 'Else' blok</value>
+  </data>
+  <data name="IntegerDataTypeQuickFix" xml:space="preserve">
+    <value>Zaměň typ za 'Long'</value>
+  </data>
+  <data name="RemoveStopKeywordQuickFix" xml:space="preserve">
+    <value>Odstraň použití klíčového slova 'Stop'</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspectionQuickFix" xml:space="preserve">
+    <value>Představ subrutinu pro zpracování chyb</value>
+  </data>
+  <data name="RemoveStepOneQuickFix" xml:space="preserve">
+    <value>Odstraň nadbytečnou klauzuli 'Step'</value>
+  </data>
+  <data name="AddStepOneQuickFix" xml:space="preserve">
+    <value>Přidej explicitní klauzuli 'Step'</value>
+  </data>
+  <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
+    <value>Odkazuj na statisticky přístupný list dle jeho kódového jména</value>
+  </data>
+</root>

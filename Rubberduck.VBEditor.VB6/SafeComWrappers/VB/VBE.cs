@@ -78,6 +78,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public IVBProjects VBProjects => new VBProjects(IsWrappingNullReference ? null : Target.VBProjects);
 
         public IWindows Windows => new Windows(IsWrappingNullReference ? null : Target.Windows);
+
+        public IEvents Events => new Events(IsWrappingNullReference ? null : Target.Events);
         
         public override bool Equals(ISafeComWrapper<VB.VBE> other)
         {

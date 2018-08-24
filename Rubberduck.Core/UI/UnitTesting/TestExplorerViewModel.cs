@@ -34,7 +34,8 @@ namespace Rubberduck.UI.UnitTesting
              IClipboardWriter clipboard,
              IGeneralConfigService configService,
              ISettingsFormFactory settingsFormFactory,
-             IMessageBox messageBox)
+             IMessageBox messageBox,
+             ReparseCommand reparseCommand)
         {
             _vbe = vbe;
             _state = state;
@@ -54,7 +55,7 @@ namespace Rubberduck.UI.UnitTesting
             AddTestMethodCommand = new AddTestMethodCommand(vbe, state);
             AddErrorTestMethodCommand = new AddTestMethodExpectedErrorCommand(vbe, state);
 
-            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRefreshCommand, CanExecuteRefreshCommand);
+            RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRefreshCommand, o => !Model.IsBusy && reparseCommand.CanExecute(o));
             RepeatLastRunCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
             RunNotExecutedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunNotExecutedTestsCommand, CanExecuteRunNotExecutedTestsCommand);
             RunInconclusiveTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunInconclusiveTestsCommand, CanExecuteRunInconclusiveTestsCommand);
@@ -260,11 +261,6 @@ namespace Rubberduck.UI.UnitTesting
 
             Model.Refresh();
             SelectedTest = null;
-        }
-
-        private bool CanExecuteRefreshCommand(object parameter)
-        {
-            return !Model.IsBusy && _state.IsDirty();
         }
 
         private void EnsureRubberduckIsReferencedForEarlyBoundTests()

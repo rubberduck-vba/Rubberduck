@@ -97,14 +97,19 @@ moduleDeclarationsElement :
     | eventStmt
     | constStmt
     | implementsStmt
-    | variableStmt
+    | moduleVariableStmt
     | moduleOption
     | udtDeclaration)
 ;
 
+moduleVariableStmt :
+	variableStmt
+	(endOfLine attributeStmt)*
+;
+
 moduleBody : 
     whiteSpace?
-    (moduleBodyElement endOfStatement)*;
+    ((moduleBodyElement | attributeStmt) endOfStatement)*;
 
 moduleBodyElement : 
     functionStmt 

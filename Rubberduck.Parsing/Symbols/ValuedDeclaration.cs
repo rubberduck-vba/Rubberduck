@@ -35,6 +35,7 @@ namespace Rubberduck.Parsing.Symbols
                  accessibility,
                  declarationType, 
                  context, 
+                 null,
                  selection,
                  false,
                  asTypeContext,

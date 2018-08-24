@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.ComReflection;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.Parsing.VBA.ComReferenceLoading
 {
@@ -15,15 +17,17 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
         public COMReferenceSynchronizer(
             RubberduckParserState state, 
             IParserStateManager parserStateManager, 
-            string serializedDeclarationsPath = null)
+            IProjectsProvider projectsProvider,
+            IReferencedDeclarationsCollector referencedDeclarationsCollector)
         :base(
             state, 
-            parserStateManager, 
-            serializedDeclarationsPath)
+            parserStateManager,
+            projectsProvider,
+            referencedDeclarationsCollector)
         { }
 
 
-        protected override void LoadReferences(IEnumerable<IReference> referencesToLoad, ConcurrentBag<IReference> unmapped, CancellationToken token)
+        protected override void LoadReferences(IEnumerable<ReferenceInfo> referencesToLoad, ConcurrentBag<ReferenceInfo> unmapped, CancellationToken token)
         {
             var referenceLoadingTaskScheduler = ThrottledTaskScheduler(_maxReferenceLoadingConcurrency);
 

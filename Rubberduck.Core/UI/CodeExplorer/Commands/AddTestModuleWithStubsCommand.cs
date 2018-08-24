@@ -1,4 +1,5 @@
-﻿using NLog;
+﻿using System.Runtime.InteropServices;
+using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
