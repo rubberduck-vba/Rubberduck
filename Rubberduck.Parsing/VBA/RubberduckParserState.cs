@@ -625,6 +625,11 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[module].SetModuleAttributes(attributes);
         }
 
+        internal void SetMembersAllowingAttributes(QualifiedModuleName module, IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> membersAllowingAttributes)
+        {
+            _moduleStates[module].SetMembersAllowingAttributes(membersAllowingAttributes);
+        }
+
         public List<CommentNode> AllComments
         {
             get
@@ -725,6 +730,11 @@ namespace Rubberduck.Parsing.VBA
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> GetModuleAttributes(QualifiedModuleName module)
         {
             return _moduleStates[module].ModuleAttributes;
+        }
+
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> GetMembersAllowingAttributes(QualifiedModuleName module)
+        {
+            return _moduleStates[module].MembersAllowingAttributes;
         }
 
         /// <summary>

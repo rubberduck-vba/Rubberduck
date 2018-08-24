@@ -680,9 +680,23 @@ namespace Rubberduck.Parsing.Symbols
             var undeclaredLocal =
                 new Declaration(
                     new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
-                    enclosingProcedure, enclosingProcedure, "Variant", string.Empty, false, false,
-                    Accessibility.Implicit, DeclarationType.Variable, context, context.GetSelection(), false, null,
-                    true, annotations, null, true);
+                    enclosingProcedure, 
+                    enclosingProcedure, 
+                    "Variant", 
+                    string.Empty, 
+                    false, 
+                    false,
+                    Accessibility.Implicit, 
+                    DeclarationType.Variable, 
+                    context,
+                    null,
+                    context.GetSelection(), 
+                    false, 
+                    null,
+                    true, 
+                    annotations, 
+                    null, 
+                    true);
 
             var hasUndeclared = _newUndeclared.ContainsKey(enclosingProcedure.QualifiedName);
             if (hasUndeclared)
@@ -738,7 +752,7 @@ namespace Rubberduck.Parsing.Symbols
                 return undeclared.SingleOrDefault();
             }
 
-            var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, context.GetSelection(), true, null);
+            var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, null, context.GetSelection(), true, null);
             _newUndeclared.TryAdd(qualifiedName, new ConcurrentBag<Declaration> { item });
             return item;
         }

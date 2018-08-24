@@ -248,17 +248,17 @@ namespace Rubberduck.Parsing.ComReflection
                 case DeclarationType.ProceduralModule:
                     return new ProceduralModuleDeclaration(QualifiedMemberName, parent, IdentifierName, false, annotations, attributes);
                 case DeclarationType.Procedure:
-                    return new SubroutineDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, false, annotations, attributes);
+                    return new SubroutineDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.Function:
-                    return new FunctionDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, false, annotations, attributes);
+                    return new FunctionDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, null, Selection.Empty, IsArray, false, annotations, attributes);
                 case DeclarationType.Event:
                     return new EventDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, false, annotations, attributes);
                 case DeclarationType.PropertyGet:
-                    return new PropertyGetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, false, annotations, attributes);
+                    return new PropertyGetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, null, Selection.Empty, IsArray, false, annotations, attributes);
                 case DeclarationType.PropertyLet:
-                    return new PropertyLetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, false, annotations, attributes);
+                    return new PropertyLetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.PropertySet:
-                    return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, false, annotations, attributes);
+                    return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.Parameter:
                     return new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray, DefaultValue);
                 case DeclarationType.EnumerationMember:
@@ -266,7 +266,7 @@ namespace Rubberduck.Parsing.ComReflection
                 case DeclarationType.Constant:
                     return new ValuedDeclaration(QualifiedMemberName, parent, ParentScope, AsTypeName, null, TypeHint, annotations, Accessibility, DeclarationType.Constant, Expression, null, Selection.Home, false);
                 default:
-                    return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsUserDefined, null, attributes);
+                    return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, null, Selection.Empty, IsArray, null, IsUserDefined, null, attributes);
             }
         }
     }

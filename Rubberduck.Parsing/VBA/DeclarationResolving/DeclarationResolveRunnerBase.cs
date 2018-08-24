@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         protected readonly IParserStateManager _parserStateManager;
         private readonly IProjectReferencesProvider _projectReferencesProvider;
 
-        public DeclarationResolveRunnerBase(
+        protected DeclarationResolveRunnerBase(
             RubberduckParserState state,
             IParserStateManager parserStateManager,
             IProjectReferencesProvider projectReferencesProvider)
@@ -57,7 +57,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
                 Logger.Debug("Creating declarations for module {0}.", module.Name);
 
-                var declarationsListener = new DeclarationSymbolsListener(_state, module, _state.GetModuleAnnotations(module), _state.GetModuleAttributes(module), projectDeclaration);
+                var declarationsListener = new DeclarationSymbolsListener(_state, module, _state.GetModuleAnnotations(module), _state.GetModuleAttributes(module), _state.GetMembersAllowingAttributes(module), projectDeclaration);
                 ParseTreeWalker.Default.Walk(declarationsListener, tree);
                 foreach (var createdDeclaration in declarationsListener.CreatedDeclarations)
                 {
@@ -75,21 +75,22 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
         private Declaration GetOrCreateProjectDeclaration(QualifiedModuleName module)
         {
-            Declaration projectDeclaration;
-            if (!_projectDeclarations.TryGetValue(module.ProjectId, out projectDeclaration))
+            if (_projectDeclarations.TryGetValue(module.ProjectId, out var projectDeclaration))
             {
-                var project = _state.ProjectsProvider.Project(module.ProjectId);
-                projectDeclaration = CreateProjectDeclaration(project);
+                return projectDeclaration;
 
-                if (projectDeclaration.ProjectId != module.ProjectId)
-                {
-                    Logger.Error($"Inconsistent projectId between QualifiedModuleName {module} (projectID {module.ProjectId}) and its project (projectId {projectDeclaration.ProjectId})");
-                    throw new ArgumentException($"Inconsistent projectID on {nameof(module)}");
-                }
-
-                _projectDeclarations.AddOrUpdate(module.ProjectId, projectDeclaration, (s, c) => projectDeclaration);
-                _state.AddDeclaration(projectDeclaration);
             }
+            var project = _state.ProjectsProvider.Project(module.ProjectId);
+            projectDeclaration = CreateProjectDeclaration(project);
+
+            if (projectDeclaration.ProjectId != module.ProjectId)
+            {
+                Logger.Error($"Inconsistent projectId between QualifiedModuleName {module} (projectID {module.ProjectId}) and its project (projectId {projectDeclaration.ProjectId})");
+                throw new ArgumentException($"Inconsistent projectID on {nameof(module)}");
+            }
+
+            _projectDeclarations.AddOrUpdate(module.ProjectId, projectDeclaration, (s, c) => projectDeclaration);
+            _state.AddDeclaration(projectDeclaration);
 
             return projectDeclaration;
         }
