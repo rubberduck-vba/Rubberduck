@@ -56,7 +56,7 @@ moduleConfig :
 ;
 
 moduleConfigProperty :
-    BEGINPROPERTY whiteSpace unrestrictedIdentifier (whiteSpace GUIDLITERAL)? endOfStatement
+    BEGINPROPERTY whiteSpace unrestrictedIdentifier (LPAREN numberLiteral RPAREN)? (whiteSpace GUIDLITERAL)? endOfStatement
         (moduleConfigProperty | moduleConfigElement)+
     ENDPROPERTY endOfStatement
 ;
