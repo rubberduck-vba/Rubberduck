@@ -26,6 +26,7 @@ namespace Rubberduck.Parsing.Symbols
                   Accessibility.Public,
                   DeclarationType.ProceduralModule,
                   null,
+                  null,
                   Selection.Home,
                   false,
                   null,

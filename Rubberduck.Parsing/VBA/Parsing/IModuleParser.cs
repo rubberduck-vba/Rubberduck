@@ -9,7 +9,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA.Parsing
 {
-    public struct ModuleParseResults
+    public readonly struct ModuleParseResults
     {
         public ModuleParseResults(
             IParseTree codePaneParseTree,
@@ -17,6 +17,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
             IEnumerable<CommentNode> comments,
             IEnumerable<IAnnotation> annotations,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes,
+            IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> membersAllowingAttributes,
             IModuleRewriter codePaneRewriter,
             IModuleRewriter attributesRewriter
         )
@@ -26,6 +27,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
             Comments = comments;
             Annotations = annotations;
             Attributes = attributes;
+            MembersAllowingAttributes = membersAllowingAttributes;
             CodePaneRewriter = codePaneRewriter;
             AttributesRewriter = attributesRewriter;
         }
@@ -35,6 +37,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
         public IEnumerable<CommentNode> Comments { get; }
         public IEnumerable<IAnnotation> Annotations { get; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> Attributes { get; }
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; }
         public IModuleRewriter CodePaneRewriter { get; }
         public IModuleRewriter AttributesRewriter { get; }
     }

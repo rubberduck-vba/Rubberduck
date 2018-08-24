@@ -45,7 +45,7 @@ namespace Rubberduck.Inspections.Concrete
 
             public override void ExitVariableStmt([NotNull] VBAParser.VariableStmtContext context)
             {
-                if (context.DIM() != null && context.Parent is VBAParser.ModuleDeclarationsElementContext)
+                if (context.DIM() != null && context.TryGetAncestor<VBAParser.ModuleDeclarationsElementContext>(out _))
                 {
                     _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
                 }

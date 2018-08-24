@@ -144,6 +144,13 @@
     <Compile Include="Binding\Bindings\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="ComReflection\ComLibraryProvider.cs" />
+    <Compile Include="ComReflection\IComLibraryProvider.cs" />
+    <Compile Include="ComReflection\ISerializableProjectBuilder.cs" />
+    <Compile Include="ComReflection\LibraryReferencedDeclarationsCollector.cs" />
+    <Compile Include="ComReflection\SerializableProjectBuilder.cs" />
+    <Compile Include="ComReflection\SerializedReferencedDeclarationsCollector.cs" />
+    <Compile Include="ComReflection\IReferencedDeclarationsCollector.cs" />
     <Compile Include="PreProcessing\CompilationArgumentsCache.cs" />
     <Compile Include="PreProcessing\CompilationArgumentsProvider.cs" />
     <Compile Include="PreProcessing\ICompilationArgumentsProvider.cs" />
@@ -355,7 +362,6 @@
     <Compile Include="Symbols\ProceduralModuleDeclaration.cs" />
     <Compile Include="Symbols\ProjectDeclaration.cs" />
     <Compile Include="Symbols\ProjectReference.cs" />
-    <Compile Include="ComReflection\ReferencedDeclarationsCollector.cs" />
     <Compile Include="Symbols\ParsingExceptions\SyntaxErrorException.cs" />
     <Compile Include="ParserRuleContextExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -78,11 +78,13 @@
     <Compile Include="Factories\ISafeComWrapperProvider.cs" />
     <Compile Include="Factories\VBEFactory.cs" />
     <Compile Include="HashCode.cs" />
+    <Compile Include="ReferenceInfo.cs" />
     <Compile Include="SafeComWrappers\Abstract\IComIndexedProperty.cs" />
     <Compile Include="SafeComWrappers\Abstract\IEventSource.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\ICommandBarButtonEvents.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\ICommandBarEvents.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IEvents.cs" />
+    <Compile Include="SafeComWrappers\VB\Enums\ProjectTypes.cs" />
     <Compile Include="SourceCodeHandling\SourceFileHandlerSourceCodeHandlerAdapter.cs" />
     <Compile Include="SourceCodeHandling\CodePaneSourceCodeHandler.cs" />
     <Compile Include="SourceCodeHandling\ISourceCodeHandler.cs" />
