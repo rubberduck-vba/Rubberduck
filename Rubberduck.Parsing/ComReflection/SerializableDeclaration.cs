@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -39,6 +37,15 @@ namespace Rubberduck.Parsing.ComReflection
             Children = children;
         }
 
+        public void SortChildren()
+        {
+            _children = _children.OrderBy(child => child.Node.DeclarationType).ThenBy(child => child.Node.IdentifierName).ToList();
+            foreach (var child in _children)
+            {
+                child.SortChildren();
+            }
+        }
+
         public void AddChildren(IEnumerable<Declaration> declarations)
         {
             foreach (var child in declarations)
@@ -50,6 +57,11 @@ namespace Rubberduck.Parsing.ComReflection
         public void AddChildTree(SerializableDeclarationTree tree)
         {
             _children.Add(tree);
+        }
+
+        public void AddChildTrees(IEnumerable<SerializableDeclarationTree> trees)
+        {
+            _children.AddRange(trees);
         }
     }
 
@@ -74,7 +86,7 @@ namespace Rubberduck.Parsing.ComReflection
     {
         public SerializableProject() { }
 
-        public SerializableProject(Declaration declaration)
+        public SerializableProject(ProjectDeclaration declaration)
         {
             Node = new SerializableDeclaration(declaration);
             var project = (ProjectDeclaration)declaration;
@@ -102,6 +114,15 @@ namespace Rubberduck.Parsing.ComReflection
         public void AddDeclaration(SerializableDeclarationTree tree)
         {
             _declarations.Add(tree);
+        }
+
+        public void SortDeclarations()
+        {
+            _declarations = _declarations.OrderBy(declarationTree => declarationTree.Node.DeclarationType).ThenBy(declarationTree => declarationTree.Node.IdentifierName).ToList();
+            foreach (var declarationTree in _declarations)
+            {
+                declarationTree.SortChildren();
+            }
         }
 
         public List<Declaration> Unwrap()
@@ -161,25 +182,20 @@ namespace Rubberduck.Parsing.ComReflection
             ProjectPath = declaration.QualifiedName.QualifiedModuleName.ProjectPath;
             ComponentName = declaration.QualifiedName.QualifiedModuleName.ComponentName;
 
-            var param = declaration as ParameterDeclaration;
-            if (param != null)
+            switch (declaration)
             {
-                IsOptionalParam = param.IsOptional;
-                IsByRefParam = param.IsByRef;
-                IsParamArray = param.IsParamArray;
-                DefaultValue = param.DefaultValue;
-            }
-
-            var constant = declaration as ValuedDeclaration;
-            if (constant != null)
-            {
-                Expression = constant.Expression;
-            }
-
-            var coclass = declaration as ClassModuleDeclaration;
-            if (coclass != null)
-            {
-                IsControl = coclass.IsControl;
+                case ParameterDeclaration param:
+                    IsOptionalParam = param.IsOptional;
+                    IsByRefParam = param.IsByRef;
+                    IsParamArray = param.IsParamArray;
+                    DefaultValue = param.DefaultValue;
+                    break;
+                case ValuedDeclaration constant:
+                    Expression = constant.Expression;
+                    break;
+                case ClassModuleDeclaration coclass:
+                    IsControl = coclass.IsControl;
+                    break;
             }
         }
 

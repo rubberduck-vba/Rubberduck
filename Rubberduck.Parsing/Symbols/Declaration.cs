@@ -531,15 +531,18 @@ namespace Rubberduck.Parsing.Symbols
                         return "VBE";
                     case DeclarationType.ClassModule:
                     case DeclarationType.ProceduralModule:
-                        return QualifiedName.QualifiedModuleName.ToString();
+                        return QualifiedModuleName.ToString();
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:
+                        return $"{QualifiedModuleName}.{IdentifierName}";
                     case DeclarationType.PropertyGet:
+                        return $"{QualifiedModuleName}.{IdentifierName}.Get";
                     case DeclarationType.PropertyLet:
+                        return $"{QualifiedModuleName}.{IdentifierName}.Let";
                     case DeclarationType.PropertySet:
-                        return QualifiedName.QualifiedModuleName + "." + IdentifierName;
+                        return $"{QualifiedModuleName}.{IdentifierName}.Set";
                     case DeclarationType.Event:
-                        return ParentScope + "." + IdentifierName;
+                        return $"{ParentScope}.{IdentifierName}";
                     default:
                         return ParentScope;
                 }

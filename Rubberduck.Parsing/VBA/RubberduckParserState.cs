@@ -6,9 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
@@ -134,8 +132,6 @@ namespace Rubberduck.Parsing.VBA
         private static readonly List<ParserState> States = new List<ParserState>();
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
         public bool IsEnabled { get; internal set; }
 
@@ -721,9 +717,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
-        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees => _builtInDeclarationTrees;
-
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
         /// </summary>
@@ -1039,10 +1032,9 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RemoveBuiltInDeclarations(IReference reference)
+        public void RemoveBuiltInDeclarations(ReferenceInfo reference)
         {
-            var projectName = reference.Name;
-            var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
+            var key = new QualifiedModuleName(reference);
             ClearAsTypeDeclarationPointingToReference(key);
             if (_moduleStates.TryRemove(key, out var moduleState))
             {
@@ -1082,7 +1074,6 @@ namespace Rubberduck.Parsing.VBA
                 item.Value.Dispose();
             }
 
-            CoClasses?.Clear();
             RemoveEventHandlers();
             VBEEvents.Terminate();
 

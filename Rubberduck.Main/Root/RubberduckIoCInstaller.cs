@@ -818,6 +818,12 @@ namespace Rubberduck.Root
             container.Register(Component.For<IParseCoordinator>()
                 .ImplementedBy<ParseCoordinator>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IComLibraryProvider>()
+                .ImplementedBy<ComLibraryProvider>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IReferencedDeclarationsCollector>()
+                .ImplementedBy<LibraryReferencedDeclarationsCollector>()
+                .LifestyleSingleton());
             container.Register(Component.For<ITokenStreamPreprocessor>()
                 .ImplementedBy<VBAPreprocessor>()
                 .DependsOn(Dependency.OnComponent<ITokenStreamParser, VBAPreprocessorParser>())
