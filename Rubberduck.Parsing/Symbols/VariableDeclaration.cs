@@ -52,6 +52,9 @@ namespace Rubberduck.Parsing.Symbols
         }
 
         /// <inheritdoc/>
+        public string ImplementingIdentifierName => this.ImplementingIdentifierName();
+
+        /// <inheritdoc/>
         public bool IsInterfaceMember => this.IsInterfaceMember();
 
         /// <inheritdoc/>

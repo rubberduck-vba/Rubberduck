@@ -47,6 +47,7 @@ namespace Rubberduck.Parsing.Symbols
         public override bool IsObject =>
             base.IsObject || (Parameters.OrderBy(p => p.Selection).LastOrDefault()?.IsObject ?? false);
 
+        /// <inheritdoc/>
         protected abstract override bool Implements(ICanBeInterfaceMember member);
     }
 }

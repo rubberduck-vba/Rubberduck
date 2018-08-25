@@ -64,12 +64,18 @@ namespace Rubberduck.Parsing.Symbols
             AddParameters(member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module)));
         }
 
-        protected override bool Implements(ICanBeInterfaceMember interfaceMember)
+        /// <inheritdoc/>
+        protected override bool Implements(ICanBeInterfaceMember member)
         {
-            return interfaceMember.DeclarationType == DeclarationType.Function
-                && interfaceMember.IsInterfaceMember
+            if (ReferenceEquals(member, this))
+            {
+                return false;
+            }
+
+            return member.DeclarationType == DeclarationType.Function
+                && member.IsInterfaceMember
                 && IsInterfaceImplementation
-                && IdentifierName.Equals($"{interfaceMember.InterfaceDeclaration.IdentifierName}_{interfaceMember.IdentifierName}");
+                && IdentifierName.Equals(member.ImplementingIdentifierName);
         }
     }
 }

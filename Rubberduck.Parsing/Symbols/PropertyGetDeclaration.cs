@@ -82,12 +82,18 @@ namespace Rubberduck.Parsing.Symbols
                 attributes)
         { }
 
+        /// <inheritdoc/>
         protected override bool Implements(ICanBeInterfaceMember member)
         {
+            if (ReferenceEquals(member, this))
+            {
+                return false;
+            }
+
             return (member.DeclarationType == DeclarationType.PropertyGet || member.DeclarationType == DeclarationType.Variable)
                    && member.IsInterfaceMember
                    && IsInterfaceImplementation
-                   && IdentifierName.Equals($"{member.InterfaceDeclaration.IdentifierName}_{member.IdentifierName}");
+                   && IdentifierName.Equals(member.ImplementingIdentifierName);
         }
     }
 }

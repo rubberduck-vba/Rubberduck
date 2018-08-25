@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
@@ -45,61 +46,16 @@ namespace Rubberduck.Parsing.Symbols
                 annotations,
                 attributes)
         {
-            if (parent is ClassModuleDeclaration classModule)
+            if (!(parent is ClassModuleDeclaration classModule))
             {
-                classModule.AddMember(this);
+                return;
             }
+
+            classModule.AddMember(this);
+
+            _interface = new Lazy<(bool IsInterfaceImplementation, ClassModuleDeclaration InterfaceImplemented)>(() => ResolveInterface(this), true);
+            _implemented = new Lazy<Declaration>(() => MemberImplemented(this), true);
         }
-   
-        public bool IsInterfaceImplementation => (_implementsResolved ? _implements : InterfaceImplemented) != null;
-
-        private bool _implementsResolved;
-        private ClassModuleDeclaration _implements;
-        public ClassModuleDeclaration InterfaceImplemented
-        {
-            get
-            {
-                if (_implementsResolved)
-                {
-                    return _implements;
-                }
-
-                _implementsResolved = true;
-                if (!(ParentDeclaration is ClassModuleDeclaration classModule))
-                {
-                    return null;
-                }
-
-                var identifiers = IdentifierName.Split('_');
-
-                if (identifiers.Length == 1)
-                {
-                    return null;
-                }
-
-                var supertype = string.Join("_", identifiers.Take(identifiers.Length - 1));
-
-                _implements = classModule.Supertypes.Cast<ClassModuleDeclaration>().FirstOrDefault(intrface =>
-                    intrface.IdentifierName.Equals(supertype)
-                    && intrface.References.Any(reference => ReferenceEquals(reference.ParentScoping, classModule)));
-
-                _implemented = _implements?.Members.FirstOrDefault(member => Implements(member as ICanBeInterfaceMember));
-
-                return _implements;
-            }
-        }
-
-        internal void InvalidateInterfaceCache()
-        {
-            _implementsResolved = false;
-            _implemented = null;
-            _implements = null;
-        }
-
-        private Declaration _implemented;
-        public Declaration InterfaceMemberImplemented => _implementsResolved || IsInterfaceImplementation ? _implemented : null;
-
-        protected abstract bool Implements(ICanBeInterfaceMember interfaceMember);
 
         /// <inheritdoc/>
         public bool IsDefaultMember => this.IsDefaultMember();
@@ -117,10 +73,78 @@ namespace Rubberduck.Parsing.Symbols
             _parameters.AddRange(parameters);
         }
 
+        private Lazy<(bool IsInterfaceImplementation, ClassModuleDeclaration InterfaceImplemented)> _interface;
+
+        /// <summary>
+        /// Returns true if this member is a concrete implementation of an interface.
+        /// </summary>
+        public bool IsInterfaceImplementation => _interface != null && _interface.Value.IsInterfaceImplementation;
+
+        /// <summary>
+        /// Returns the interface that this member implements from, or null if not an implementation.
+        /// </summary>
+        public ClassModuleDeclaration InterfaceImplemented => _interface?.Value.InterfaceImplemented;
+
+        private Lazy<Declaration> _implemented;
+
+        /// <summary>
+        /// Returns the interface member that this member is a concrete implementation of, or null if not an implementation.
+        /// </summary>
+        public Declaration InterfaceMemberImplemented => _implemented?.Value;
+
+        /// <inheritdoc/>
+        public string ImplementingIdentifierName => this.ImplementingIdentifierName();
+
+        /// <summary>
+        /// Returns true if this Declaration is a concrete implementation of the passed member.
+        /// </summary>
+        /// <param name="interfaceMember">The member to test for implementation of.</param>
+        /// <returns>True if this Declaration is a concrete implementation of interfaceMember.</returns>
+        protected abstract bool Implements(ICanBeInterfaceMember interfaceMember);
+
         /// <inheritdoc/>
         public bool IsInterfaceMember => this.IsInterfaceMember();
 
         /// <inheritdoc/>
         public ClassModuleDeclaration InterfaceDeclaration => this.InterfaceDeclaration();
+
+        internal void InvalidateInterfaceCache()
+        {
+            if (!(ParentDeclaration is ClassModuleDeclaration))
+            {
+                return;
+            }
+
+            _interface = new Lazy<(bool IsInterfaceImplementation, ClassModuleDeclaration InterfaceImplemented)>(() => ResolveInterface(this), true);
+            _implemented = new Lazy<Declaration>(() => MemberImplemented(this), true);
+        }
+
+        private static (bool IsInterfaceImplementation, ClassModuleDeclaration InterfaceImplemented) ResolveInterface(ModuleBodyElementDeclaration element)
+        {
+            if (!(element.ParentDeclaration is ClassModuleDeclaration classModule))
+            {
+                return (false, null);
+            }
+
+            var identifiers = element.IdentifierName.Split('_');
+
+            if (identifiers.Length == 1)
+            {
+                return (false, null);
+            }
+
+            var supertype = string.Join("_", identifiers.Take(identifiers.Length - 1));
+
+            var implements = classModule.Supertypes.Cast<ClassModuleDeclaration>().FirstOrDefault(intrface =>
+                intrface.IdentifierName.Equals(supertype)
+                && intrface.References.Any(reference => ReferenceEquals(reference.ParentScoping, classModule)));
+
+            return (implements != null, implements);
+        }
+
+        private static Declaration MemberImplemented(ModuleBodyElementDeclaration element)
+        {
+            return element.InterfaceImplemented?.Members.FirstOrDefault(member => element.Implements(member as ICanBeInterfaceMember));
+        }
     }
 }

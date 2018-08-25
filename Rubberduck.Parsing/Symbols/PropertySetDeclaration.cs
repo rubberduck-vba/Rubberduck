@@ -73,11 +73,17 @@ namespace Rubberduck.Parsing.Symbols
                 attributes)
         { }
 
+        /// <inheritdoc/>
         protected override bool Implements(ICanBeInterfaceMember member)
         {
+            if (ReferenceEquals(member, this))
+            {
+                return false;
+            }
+
             return member.IsInterfaceMember
                    && IsInterfaceImplementation
-                   && IdentifierName.Equals($"{member.InterfaceDeclaration.IdentifierName}_{member.IdentifierName}")
+                   && IdentifierName.Equals(member.ImplementingIdentifierName)
                    && (member.DeclarationType == DeclarationType.PropertySet
                        || member.DeclarationType == DeclarationType.Variable 
                        && (member.IsObject || member.AsTypeName.Equals(Tokens.Variant)));
