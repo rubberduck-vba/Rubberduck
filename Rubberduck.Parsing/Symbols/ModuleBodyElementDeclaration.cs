@@ -46,12 +46,12 @@ namespace Rubberduck.Parsing.Symbols
                 annotations,
                 attributes)
         {
-            if (!(parent is ClassModuleDeclaration classModule))
+            if (!(parent is ModuleDeclaration module))
             {
                 return;
             }
 
-            classModule.AddMember(this);
+            module.AddMember(this);
 
             _interface = new Lazy<(bool IsInterfaceImplementation, ClassModuleDeclaration InterfaceImplemented)>(() => ResolveInterface(this), true);
             _implemented = new Lazy<Declaration>(() => MemberImplemented(this), true);

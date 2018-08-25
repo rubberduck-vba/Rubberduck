@@ -158,6 +158,7 @@
     <Compile Include="Rewriter\ModuleRewriterFactory.cs" />
     <Compile Include="Symbols\ICanBeInterfaceMember.cs" />
     <Compile Include="Symbols\ModuleBodyElementDeclaration.cs" />
+    <Compile Include="Symbols\ModuleDeclaration.cs" />
     <Compile Include="Symbols\ParsingExceptions\ExceptionErrorListenerFactory.cs" />
     <Compile Include="Symbols\ParsingExceptions\PreprocessingParseErrorListenerFactory.cs" />
     <Compile Include="Symbols\ParsingExceptions\IRubberduckParserErrorListenerFactory.cs" />
