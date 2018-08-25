@@ -39,7 +39,7 @@ namespace Rubberduck.Parsing.Symbols
         private Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
         private Lazy<IDictionary<Declaration, List<Declaration>>> _handlersByWithEventsField;
 
-        private Lazy<IDictionary<Tuple<VBAParser.ImplementsStmtContext, Declaration>, List<ModuleBodyElementDeclaration>>> _implementingMembers;
+        private Lazy<IDictionary<(VBAParser.ImplementsStmtContext Context, Declaration Implementor), List<ModuleBodyElementDeclaration>>> _implementingMembers;
         private Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<ModuleBodyElementDeclaration>>> _membersByImplementsContext;
         private Lazy<IDictionary<ClassModuleDeclaration, List<Declaration>>> _interfaceMembers;
         private Lazy<IDictionary<ClassModuleDeclaration, List<ClassModuleDeclaration>>> _interfaceImplementions;
@@ -165,14 +165,14 @@ namespace Rubberduck.Parsing.Symbols
             _classes = new Lazy<List<Declaration>>(() => DeclarationsWithType(DeclarationType.ClassModule).ToList(), true);
             _handlersByWithEventsField = new Lazy<IDictionary<Declaration, List<Declaration>>>(FindAllHandlersByWithEventField, true);
 
-            _implementingMembers = new Lazy<IDictionary<Tuple<VBAParser.ImplementsStmtContext, Declaration>, List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembers, true);
+            _implementingMembers = new Lazy<IDictionary<(VBAParser.ImplementsStmtContext Context, Declaration Implementor), List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembers, true);
             _interfaceMembers = new Lazy<IDictionary<ClassModuleDeclaration, List<Declaration>>>(FindAllIinterfaceMembersByModule, true);
             _membersByImplementsContext = new Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembersByImplementsContext, true);
             _interfaceImplementions = new Lazy<IDictionary<ClassModuleDeclaration, List<ClassModuleDeclaration>>>(FindAllImplementionsByInterface, true);
             _implementationsByMember = new Lazy<IDictionary<ICanBeInterfaceMember, List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembersByMember, true);
         }
 
-        private IDictionary<Tuple<VBAParser.ImplementsStmtContext, Declaration>, List<ModuleBodyElementDeclaration>> FindAllImplementingMembers()
+        private IDictionary<(VBAParser.ImplementsStmtContext Context, Declaration Implementor), List<ModuleBodyElementDeclaration>> FindAllImplementingMembers()
         {
             var implementsInstructions = UserDeclarations(DeclarationType.ClassModule)
                 .SelectMany(cls => cls.References
@@ -189,13 +189,11 @@ namespace Rubberduck.Parsing.Symbols
                     )
                 ).ToList();
 
-            var output = new Dictionary<Tuple<VBAParser.ImplementsStmtContext, Declaration>, List<ModuleBodyElementDeclaration>>();
+            var output = new Dictionary<(VBAParser.ImplementsStmtContext Context, Declaration Implementor), List<ModuleBodyElementDeclaration>>();
             foreach (var impl in implementsInstructions)
             {
-                output.Add(
-                    new Tuple<VBAParser.ImplementsStmtContext, Declaration>(impl.Context,
-                        impl.IdentifierReference.ParentScoping),
-                    ((ClassModuleDeclaration) (impl.IdentifierReference.ParentScoping)).Members.Where(item =>
+                output.Add((impl.Context, impl.IdentifierReference.ParentScoping),
+                    ((ClassModuleDeclaration) impl.IdentifierReference.ParentScoping).Members.Where(item =>
                         item is ModuleBodyElementDeclaration member && ReferenceEquals(member.InterfaceImplemented,
                             impl.IdentifierReference.Declaration)).Cast<ModuleBodyElementDeclaration>().ToList());
             }
@@ -222,7 +220,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private IDictionary<VBAParser.ImplementsStmtContext, List<ModuleBodyElementDeclaration>> FindAllImplementingMembersByImplementsContext()
         {
-            return _implementingMembers.Value.ToDictionary(pair => pair.Key.Item1, pair => pair.Value);
+            return _implementingMembers.Value.ToDictionary(pair => pair.Key.Context, pair => pair.Value);
         }
 
         private IDictionary<ClassModuleDeclaration, List<Declaration>> FindAllIinterfaceMembersByModule()
@@ -816,8 +814,7 @@ namespace Rubberduck.Parsing.Symbols
 
             var qualifiedName = hostApp.QualifiedName.QualifiedModuleName.QualifyMemberName(expression);
 
-            ConcurrentBag<Declaration> undeclared;
-            if (_newUndeclared.TryGetValue(qualifiedName, out undeclared))
+            if (_newUndeclared.TryGetValue(qualifiedName, out var undeclared))
             {
                 return undeclared.SingleOrDefault();
             }
