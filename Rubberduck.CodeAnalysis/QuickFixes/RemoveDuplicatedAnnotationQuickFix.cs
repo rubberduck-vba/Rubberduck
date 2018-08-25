@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var duplicateAnnotations = result.Target.Annotations
                 .GroupBy(annotation => annotation.AnnotationType)
                 .Where(group => !group.First().AllowMultiple && group.Count() > 1)
-                .SelectMany(group => group.Take(group.Count() - 1));
+                .SelectMany(group => group.Skip(1));
 
             foreach (var annotation in duplicateAnnotations)
             {
