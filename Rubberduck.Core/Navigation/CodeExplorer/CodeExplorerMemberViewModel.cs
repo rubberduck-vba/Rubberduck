@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Media.Imaging;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -175,5 +176,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         private BitmapImage _icon;
         public override BitmapImage CollapsedIcon => _icon;
         public override BitmapImage ExpandedIcon => _icon;
+
+        public bool IsObsolete =>
+            Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.Obsolete);
     }
 }

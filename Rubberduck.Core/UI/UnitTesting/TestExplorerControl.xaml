@@ -484,7 +484,7 @@
         <Border Grid.Row="0" Grid.RowSpan="3" Background="#FFEEF5FD" />
 
         <ToolBarTray Grid.Row="0" IsLocked="True">
-            <ToolBar IsEnabled="{Binding Model.IsReady}" Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
+            <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
                 <ToolBar.Resources>
                     <Style TargetType="Image">
                         <Setter Property="Height" Value="16" />

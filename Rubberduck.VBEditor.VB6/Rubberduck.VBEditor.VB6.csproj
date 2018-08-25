@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExternalFileTempSourceFileHandlerEmulator.cs" />
     <Compile Include="Providers\VB6AddInProvider.cs" />
     <Compile Include="SafeComWrappers\Office\CommandBar.cs" />
     <Compile Include="SafeComWrappers\Office\CommandBarButton.cs" />
@@ -77,6 +78,9 @@
     <Compile Include="SafeComWrappers\VB\CodeModule.cs" />
     <Compile Include="SafeComWrappers\VB\CodePane.cs" />
     <Compile Include="SafeComWrappers\VB\CodePanes.cs" />
+    <Compile Include="SafeComWrappers\VB\CommandBarButtonEvents.cs" />
+    <Compile Include="SafeComWrappers\VB\CommandBarEvents.cs" />
+    <Compile Include="SafeComWrappers\VB\Events.cs" />
     <Compile Include="SafeComWrappers\VB\LinkedWindows.cs" />
     <Compile Include="SafeComWrappers\VB\Properties.cs" />
     <Compile Include="SafeComWrappers\VB\Property.cs" />
@@ -93,7 +97,6 @@
     <Compile Include="SafeComWrappers\VB\VBProjects.cs" />
     <Compile Include="SafeComWrappers\VB\Window.cs" />
     <Compile Include="SafeComWrappers\VB\Windows.cs" />
-    <Compile Include="SourceCodeHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">

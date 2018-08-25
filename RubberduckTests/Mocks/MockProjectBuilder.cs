@@ -20,6 +20,7 @@ namespace RubberduckTests.Mocks
         private readonly Mock<IVBProject> _project;
         private readonly Mock<IVBComponents> _vbComponents;
         private readonly Mock<IReferences> _vbReferences;
+        private readonly ProjectType _projectType;
 
         private readonly List<Mock<IVBComponent>> _componentsMock = new List<Mock<IVBComponent>>();
         private readonly List<Mock<ICodeModule>> _codeModuleMocks = new List<Mock<ICodeModule>>();
@@ -40,26 +41,29 @@ namespace RubberduckTests.Mocks
             _componentsMock.Remove(component);
         }
 
-        public MockProjectBuilder(string name, string filename, ProjectProtection protection, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
+        public MockProjectBuilder(string name, string filename, ProjectProtection protection, ProjectType projectType, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
         :this(
             name,
             filename,
             Guid.NewGuid().ToString(),
             protection,
+            projectType,
             getVbe,
             mockVbeBuilder
             )
         { }
 
-        public MockProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
+        public MockProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, ProjectType projectType, Func<IVBE> getVbe, MockVbeBuilder mockVbeBuilder)
         {
             _getVbe = getVbe;
             _mockVbeBuilder = mockVbeBuilder;
+            _projectType = projectType;
 
             _project = CreateProjectMock(name, filename, protection);
 
             _project.SetupProperty(m => m.HelpFile);
             _project.SetupGet(m => m.ProjectId).Returns(() => _project.Object.HelpFile);
+            _project.SetupGet(m => m.Type).Returns(_projectType);
             _project.Setup(m => m.AssignProjectId())
                 .Callback(() => _project.Object.HelpFile = projectId);
 
@@ -276,6 +280,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.HasCodeModule).Returns(true);
             result.SetupProperty(m => m.Name, name);
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));
+            result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(result.Object));
 
             var propertiesMock = new Mock<IProperties>();
             propertiesMock.Setup(m => m.GetEnumerator()).Returns(() => properties?.GetEnumerator());
@@ -283,6 +288,8 @@ namespace RubberduckTests.Mocks
 
             var module = CreateCodeModuleMock(name, content, selection, result);
             result.SetupGet(m => m.CodeModule).Returns(() => module.Object);
+            // Note that this setup does not account for hashing behavior of designers. See https://github.com/rubberduck-vba/Rubberduck/issues/3387
+            result.Setup(m => m.ContentHash()).Returns(() => result.Object.CodeModule.ContentHash());
 
             result.Setup(m => m.Activate());
 
@@ -302,7 +309,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.Parent).Returns(() => component.Object);
             result.SetupGet(m => m.CodePane).Returns(() => codePane.Object);
             result.SetupGet(m => m.QualifiedModuleName).Returns(() => new QualifiedModuleName(component.Object));
-
+          
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
 
             result.Setup(m => m.AddFromFile(It.IsAny<string>()));
@@ -327,7 +334,7 @@ namespace RubberduckTests.Mocks
 
             codeModule.Setup(m => m.Content()).Returns(() => string.Join(Environment.NewLine, lines));
 
-            codeModule.Setup(m => m.SimpleContentHash()).Returns(() => string.IsNullOrEmpty(codeModule.Object.Content())
+            codeModule.Setup(m => m.ContentHash()).Returns(() => string.IsNullOrEmpty(codeModule.Object.Content())
                 ? 0
                 : codeModule.Object.Content().GetHashCode());
 

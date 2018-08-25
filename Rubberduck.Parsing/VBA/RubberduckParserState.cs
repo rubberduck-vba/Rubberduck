@@ -6,15 +6,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -133,8 +132,6 @@ namespace Rubberduck.Parsing.VBA
         private static readonly List<ParserState> States = new List<ParserState>();
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
         public bool IsEnabled { get; internal set; }
 
@@ -618,9 +615,19 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        internal void SetModuleAttributes(QualifiedModuleName module, IDictionary<Tuple<string, DeclarationType>, Attributes> attributes)
+        internal void AddModuleStateIfNotPresent(QualifiedModuleName module)
         {
-            _moduleStates.AddOrUpdate(module, new ModuleState(attributes), (c, s) => s.SetModuleAttributes(attributes));
+            _moduleStates.AddOrUpdate(module, new ModuleState(ParserState.Pending), (c, s) => s);
+        }
+
+        internal void SetModuleAttributes(QualifiedModuleName module, IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes)
+        {
+            _moduleStates[module].SetModuleAttributes(attributes);
+        }
+
+        internal void SetMembersAllowingAttributes(QualifiedModuleName module, IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> membersAllowingAttributes)
+        {
+            _moduleStates[module].SetMembersAllowingAttributes(membersAllowingAttributes);
         }
 
         public List<CommentNode> AllComments
@@ -715,17 +722,19 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
-        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees => _builtInDeclarationTrees;
-
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
         /// </summary>
         public IEnumerable<Declaration> AllUserDeclarations => DeclarationFinder.AllUserDeclarations;
 
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> GetModuleAttributes(QualifiedModuleName module)
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> GetModuleAttributes(QualifiedModuleName module)
         {
             return _moduleStates[module].ModuleAttributes;
+        }
+
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> GetMembersAllowingAttributes(QualifiedModuleName module)
+        {
+            return _moduleStates[module].MembersAllowingAttributes;
         }
 
         /// <summary>
@@ -832,28 +841,32 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
-        public void AddTokenStream(QualifiedModuleName module, ITokenStream stream)
+        public void SetCodePaneRewriter(QualifiedModuleName module, IModuleRewriter codePaneRewriter)
         {
-            _moduleStates[module].SetTokenStream(ProjectsProvider.Component(module).CodeModule, stream);
+            _moduleStates[module].SetCodePaneRewriter(module, codePaneRewriter);
+        }
+
+        public void SaveContentHash(QualifiedModuleName module)
+        {
             _moduleStates[module].SetModuleContentHashCode(GetModuleContentHash(module));
         }
 
-        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, ParsePass pass = ParsePass.CodePanePass)
+        public void AddParseTree(QualifiedModuleName module, IParseTree parseTree, CodeKind codeKind = CodeKind.CodePaneCode)
         {
             var key = module;
-            _moduleStates[key].SetParseTree(parseTree, pass);
+            _moduleStates[key].SetParseTree(parseTree, codeKind);
         }
 
-        public IParseTree GetParseTree(QualifiedModuleName module, ParsePass pass = ParsePass.CodePanePass)
+        public IParseTree GetParseTree(QualifiedModuleName module, CodeKind codeKind = CodeKind.CodePaneCode)
         {
-            switch (pass)
+            switch (codeKind)
             {
-                case ParsePass.AttributesPass:
+                case CodeKind.AttributesCode:
                     return _moduleStates[module].AttributesPassParseTree;
-                case ParsePass.CodePanePass:
+                case CodeKind.CodePaneCode:
                     return _moduleStates[module].ParseTree;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(pass), pass, null);
+                    throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
             }
         }
 
@@ -1013,18 +1026,25 @@ namespace Rubberduck.Parsing.VBA
         private int GetModuleContentHash(QualifiedModuleName module)
         {
             var component = ProjectsProvider.Component(module);
-            return QualifiedModuleName.GetModuleContentHash(component);
+            return QualifiedModuleName.GetContentHash(component);
         }
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
         {
-            return DeclarationFinder?.FindSelectedDeclaration(activeCodePane);
+            if (activeCodePane != null)
+            {
+                return DeclarationFinder?.FindSelectedDeclaration(activeCodePane);
+            }
+
+            using (var active = _vbe.ActiveCodePane)
+            {
+                return DeclarationFinder?.FindSelectedDeclaration(active);
+            }
         }
 
-        public void RemoveBuiltInDeclarations(IReference reference)
+        public void RemoveBuiltInDeclarations(ReferenceInfo reference)
         {
-            var projectName = reference.Name;
-            var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
+            var key = new QualifiedModuleName(reference);
             ClearAsTypeDeclarationPointingToReference(key);
             if (_moduleStates.TryRemove(key, out var moduleState))
             {
@@ -1064,7 +1084,6 @@ namespace Rubberduck.Parsing.VBA
                 item.Value.Dispose();
             }
 
-            CoClasses?.Clear();
             RemoveEventHandlers();
             VBEEvents.Terminate();
 

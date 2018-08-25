@@ -1,7 +1,7 @@
 using Antlr4.Runtime;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -31,6 +31,7 @@ namespace Rubberduck.Parsing.Symbols
                   false,
                   Accessibility.Implicit,
                   DeclarationType.Parameter,
+                  null,
                   null,
                   Selection.Home,
                   isArray,
@@ -70,6 +71,7 @@ namespace Rubberduck.Parsing.Symbols
                   Accessibility.Implicit,
                   DeclarationType.Parameter,
                   context,
+                  null,
                   selection,
                   isArray,
                   asTypeContext,
@@ -107,7 +109,7 @@ namespace Rubberduck.Parsing.Symbols
             }
             else if (parameter.HasDefaultValue)
             {
-                DefaultValue = parameter.DefaultValue is string ? ((string)parameter.DefaultValue).ToVbExpression(false) : parameter.DefaultValue.ToString();
+                DefaultValue = parameter.DefaultValue is string defaultValue ? defaultValue.ToVbExpression(false) : parameter.DefaultValue.ToString();
             }
         }
 

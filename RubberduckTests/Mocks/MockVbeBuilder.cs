@@ -60,12 +60,6 @@ namespace RubberduckTests.Mocks
         private Mock<ICodePanes> _vbCodePanes;
         private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>();
 
-        private const int MenuBar = 1;
-        private const int CodeWindow = 9;
-        private const int ProjectWindow = 14;
-        private const int MsForms = 17;
-        private const int MsFormsControl = 18;
-
         public MockVbeBuilder()
         {
             _vbe = CreateVbeMock();
@@ -89,7 +83,6 @@ namespace RubberduckTests.Mocks
             }
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
-            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
 
             return this;
@@ -100,19 +93,19 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="name">The name of the project to build.</param>
         /// <param name="protection">A value that indicates whether the project is protected.</param>
-        public MockProjectBuilder ProjectBuilder(string name, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return ProjectBuilder(name, string.Empty, protection);
+            return ProjectBuilder(name, string.Empty, protection, projectType);
         }
 
-        public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return new MockProjectBuilder(name, filename, protection, () => _vbe.Object, this);
+            return new MockProjectBuilder(name, filename, protection, projectType, () => _vbe.Object, this);
         }
 
-        public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return new MockProjectBuilder(name, filename, projectId, protection, () => _vbe.Object, this);
+            return new MockProjectBuilder(name, filename, projectId, protection, projectType, () => _vbe.Object, this);
         }
 
         /// <summary>
@@ -120,6 +113,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         public Mock<IVBE> Build()
         {
+            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             return _vbe;
         }
 
@@ -232,11 +226,7 @@ namespace RubberduckTests.Mocks
  
             var dummyCommandBar = DummyCommandBar();
 
-            commandBars.SetupGet(m => m[MenuBar]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[CodeWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[ProjectWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsForms]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsFormsControl]).Returns(dummyCommandBar);
+            commandBars.SetupGet(m => m[It.IsAny<int>()]).Returns(dummyCommandBar);
 
             return commandBars.Object;
         }

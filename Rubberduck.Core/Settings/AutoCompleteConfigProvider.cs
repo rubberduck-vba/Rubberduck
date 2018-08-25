@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.AutoComplete;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings

@@ -97,14 +97,19 @@ moduleDeclarationsElement :
     | eventStmt
     | constStmt
     | implementsStmt
-    | variableStmt
+    | moduleVariableStmt
     | moduleOption
     | udtDeclaration)
 ;
 
+moduleVariableStmt :
+	variableStmt
+	(endOfLine attributeStmt)*
+;
+
 moduleBody : 
     whiteSpace?
-    (moduleBodyElement endOfStatement)*;
+    ((moduleBodyElement | attributeStmt) endOfStatement)*;
 
 moduleBodyElement : 
     functionStmt 
@@ -297,7 +302,7 @@ variable : expression;
 constStmt : (visibility whiteSpace)? CONST whiteSpace constSubStmt (whiteSpace? COMMA whiteSpace? constSubStmt)*;
 constSubStmt : identifier (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? expression;
 
-declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? (FUNCTION | SUB) whiteSpace identifier whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
+declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? (FUNCTION | SUB) whiteSpace identifier whiteSpace (CDECL whiteSpace)? LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
 
 argList : LPAREN (whiteSpace? arg (whiteSpace? COMMA whiteSpace? arg)*)? whiteSpace? RPAREN;
 

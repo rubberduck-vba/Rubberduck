@@ -121,57 +121,60 @@
     <value>Resetovat nastavení do defaultní konfigurace?</value>
   </data>
   <data name="ExportPageSettingsButton" xml:space="preserve">
-    <value>Export</value>
+    <value>Exportovat</value>
   </data>
   <data name="ImportPageSettingsButton" xml:space="preserve">
-    <value>Import</value>
+    <value>Importovat</value>
   </data>
   <data name="PageHeader_GeneralSettings" xml:space="preserve">
-    <value>Obecné Nastavení</value>
+    <value>Obecná Nastavení</value>
   </data>
   <data name="PageHeader_IndenterSettings" xml:space="preserve">
-    <value>Indenter Settings</value>
+    <value>Nastavení Indenteru (odsazovače)</value>
   </data>
   <data name="PageHeader_InspectionSettings" xml:space="preserve">
     <value>Nastavení inspekce kódu</value>
   </data>
   <data name="PageHeader_TodoSettings" xml:space="preserve">
-    <value>Todo Nastavení</value>
+    <value>TODO Nastavení</value>
   </data>
   <data name="PageHeader_UnitTestSettings" xml:space="preserve">
-    <value>Unit Test Settings</value>
+    <value>Unit Test Nastavení</value>
   </data>
   <data name="PageHeader_WindowSettings" xml:space="preserve">
-    <value>Window Settings</value>
+    <value>Nastavení Okna</value>
   </data>
   <data name="PageInstructions_AutoCompleteSettings" xml:space="preserve">
-    <value>Configure which autocompletions are enabled.</value>
+    <value>Konfigurovat povolená auto doplnění.</value>
   </data>
   <data name="PageInstructions_GeneralSettings" xml:space="preserve">
     <value>Klikněte [Ok] pro uzavření okna a aplikování změn, nebo [Zrušit] pro jejich zrušení.</value>
   </data>
   <data name="PageInstructions_IndenterSettings" xml:space="preserve">
-    <value>Configure indenter settings.</value>
+    <value>Konfigurovat nastavení indenteru (odsazovače)</value>
   </data>
   <data name="PageInstructions_InspectionSettings" xml:space="preserve">
-    <value>Configure inspection severity. Use "DoNotShow" to disable an inspection.</value>
+    <value>Konfigurovat závažnost inspekce. Použijte "DoNotShow" pro zakázání inspekce.</value>
   </data>
   <data name="PageInstructions_TodoSettings" xml:space="preserve">
-    <value>Configure markers to be recognized in comments.</value>
+    <value>Konfigurovat značky, které mají být rozpoznány v komentářích.</value>
   </data>
   <data name="PageInstructions_UnitTestSettings" xml:space="preserve">
-    <value>Configure the settings for new unit test modules and methods.</value>
+    <value>Konfigurovat nastavení pro všechny nové unit test moduly a metody.</value>
   </data>
   <data name="PageInstructions_WindowSettings" xml:space="preserve">
-    <value>Configure the settings for window visibility.</value>
+    <value>Konfigurovat nastavení pro viditelnost okna.</value>
   </data>
   <data name="ResetSettingsButton" xml:space="preserve">
-    <value>Reset</value>
+    <value>Resetovat</value>
   </data>
   <data name="SelectAll" xml:space="preserve">
-    <value>All</value>
+    <value>Všechno</value>
   </data>
   <data name="Settings_Caption" xml:space="preserve">
-    <value>Rubberduck nastavení</value>
+    <value>Rubberduck Nastavení</value>
+  </data>
+  <data name="PageHeader_AutoCompleteSettings" xml:space="preserve">
+    <value>Nastavení Aplikace</value>
   </data>
 </root>

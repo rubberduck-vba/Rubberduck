@@ -6,7 +6,7 @@ namespace Rubberduck.Parsing.VBA
 {
     public interface IProjectManager
     {
-        IReadOnlyCollection<IVBProject> Projects { get; }
+        IReadOnlyCollection<(string ProjectId, IVBProject Project)> Projects { get; }
 
         void RefreshProjects();
         IReadOnlyCollection<QualifiedModuleName> AllModules();

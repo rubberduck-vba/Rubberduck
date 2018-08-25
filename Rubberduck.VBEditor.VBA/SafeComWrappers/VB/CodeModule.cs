@@ -100,25 +100,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        private string _previousContentHash;
-        public string ContentHash()
-        {
-            using (var hash = new SHA256Managed())
-            using (var stream = Content().ToStream())
-            {
-                return _previousContentHash = new string(Encoding.Unicode.GetChars(hash.ComputeHash(stream)));
-            }
-        }
-
-        public int SimpleContentHash()
+        public int ContentHash()
         {
             var code = Content();
             return string.IsNullOrEmpty(code)
                 ? 0
                 : code.GetHashCode();
         }
-
-        public bool IsDirty => _previousContentHash.Equals(ContentHash());
 
         public void AddFromString(string content)
         {
@@ -140,8 +128,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void DeleteLines(int startLine, int count = 1)
         {
-            if (IsWrappingNullReference) return; 
-            Target.DeleteLines(startLine, count);
+            if (IsWrappingNullReference) return;
+            if (Target.CountOfLines > 0)
+            {
+                Target.DeleteLines(startLine, count);
+            }
         }
 
         public void ReplaceLine(int line, string content)
@@ -155,7 +146,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 try
                 {
-                    Target.ReplaceLine(line, content);
+                    using (var pane = CodePane)
+                    {
+                        var selection = pane.Selection;
+                        Target.ReplaceLine(line, content);
+                        pane.Selection = selection;
+                    }
                 }
                 catch { /* "too many line continuations" is one possible cause */ }
             }

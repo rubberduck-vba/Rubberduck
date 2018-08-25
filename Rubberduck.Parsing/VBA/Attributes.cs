@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -21,12 +22,13 @@ namespace Rubberduck.Parsing.VBA
     public class AttributeNode : IEquatable<AttributeNode>
     {
         private readonly IList<string> _values;
+        private readonly HashSet<VBAParser.AttributeStmtContext> _contexts = new HashSet<VBAParser.AttributeStmtContext>();
 
         public AttributeNode(VBAParser.AttributeStmtContext context)
         {
-            Context = context;
-            Name = Context?.attributeName().GetText() ?? String.Empty;
-            _values = Context?.attributeValue().Select(a => a.GetText()).ToList() ?? new List<string>();
+            _contexts.Add(context);
+            Name = context?.attributeName().GetText() ?? string.Empty;
+            _values = context?.attributeValue().Select(a => a.GetText()).ToList() ?? new List<string>();
         }
 
         public AttributeNode(string name, IEnumerable<string> values)
@@ -35,13 +37,28 @@ namespace Rubberduck.Parsing.VBA
             _values = values.ToList();
         }
 
-        public VBAParser.AttributeStmtContext Context { get; }
+        public IReadOnlyCollection<VBAParser.AttributeStmtContext> Contexts => _contexts;
 
         public string Name { get; }
     
         public void AddValue(string value)
         {
             _values.Add(value);
+        }
+
+        public void AddContext(VBAParser.AttributeStmtContext context)
+        {
+            if (context == null || !Name.Equals(context.attributeName().GetText(), StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            _contexts.Add(context);
+            var values = context.attributeValue().Select(e => e.GetText().Replace("\"", string.Empty)).ToList();
+            foreach (var value in values.Where(v => !HasValue(v)))
+            {
+                AddValue(value);
+            }
         }
 
         public IReadOnlyCollection<string> Values => _values.AsReadOnly();

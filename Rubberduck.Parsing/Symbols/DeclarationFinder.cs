@@ -11,41 +11,11 @@ using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    internal static class DictionaryExtensions
-    {
-        public static IEnumerable<TValue> AllValues<TKey, TValue>(
-            this ConcurrentDictionary<TKey, ConcurrentBag<TValue>> source)
-        {
-            return source.SelectMany(item => item.Value).ToList();
-        }
-
-        public static IEnumerable<TValue> AllValues<TKey, TValue>(
-            this IDictionary<TKey, IList<TValue>> source)
-        {
-            return source.SelectMany(item => item.Value).ToList();
-        }
-
-        public static IEnumerable<TValue> AllValues<TKey, TValue>(
-            this IDictionary<TKey, List<TValue>> source)
-        {
-            return source.SelectMany(item => item.Value);
-        }
-
-        public static ConcurrentDictionary<TKey, ConcurrentBag<TValue>> ToConcurrentDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
-        {
-            return new ConcurrentDictionary<TKey, ConcurrentBag<TValue>>(source.Select(x => new KeyValuePair<TKey, ConcurrentBag<TValue>>(x.Key, new ConcurrentBag<TValue>(x))));
-        }
-
-        public static Dictionary<TKey, List<TValue>> ToDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
-        {
-            return source.ToDictionary(group => group.Key, group => group.ToList());
-        }
-    }
-
     public class DeclarationFinder
     {
         private static readonly SquareBracketedNameComparer NameComparer = new SquareBracketedNameComparer();
@@ -710,9 +680,23 @@ namespace Rubberduck.Parsing.Symbols
             var undeclaredLocal =
                 new Declaration(
                     new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
-                    enclosingProcedure, enclosingProcedure, "Variant", string.Empty, false, false,
-                    Accessibility.Implicit, DeclarationType.Variable, context, context.GetSelection(), false, null,
-                    true, annotations, null, true);
+                    enclosingProcedure, 
+                    enclosingProcedure, 
+                    "Variant", 
+                    string.Empty, 
+                    false, 
+                    false,
+                    Accessibility.Implicit, 
+                    DeclarationType.Variable, 
+                    context,
+                    null,
+                    context.GetSelection(), 
+                    false, 
+                    null,
+                    true, 
+                    annotations, 
+                    null, 
+                    true);
 
             var hasUndeclared = _newUndeclared.ContainsKey(enclosingProcedure.QualifiedName);
             if (hasUndeclared)
@@ -768,7 +752,7 @@ namespace Rubberduck.Parsing.Symbols
                 return undeclared.SingleOrDefault();
             }
 
-            var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, context.GetSelection(), true, null);
+            var item = new Declaration(qualifiedName, hostApp, hostApp, Tokens.Variant, string.Empty, false, false, Accessibility.Global, DeclarationType.BracketedExpression, context, null, context.GetSelection(), true, null);
             _newUndeclared.TryAdd(qualifiedName, new ConcurrentBag<Declaration> { item });
             return item;
         }

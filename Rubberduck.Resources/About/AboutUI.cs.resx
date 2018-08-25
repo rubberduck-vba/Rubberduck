@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Přirazení</value>
+    <value>Příspěvky</value>
   </data>
   <data name="AboutWindow_Caption" xml:space="preserve">
     <value>O Rubberducku</value>
@@ -130,59 +130,59 @@
     <value>Speciální Poděkování</value>
   </data>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
-    <value>Parsing powered by ANTLR
-GitHub integration powered by LibGit2Sharp
-Syntax highlighting powered by AvalonEdit
-Native hooks powered by EasyHook
-Fugue icons by Yusuke Kamiyamane
-IDE icons from SharpDevelop
-WPF localization support by Grant Frisken</value>
+    <value>ANTLR: Parsování
+LibGit2Sharp: Integrace GitHubu
+AvalonEdit: Zvýraznění syntaxe
+EasyHook: Nativní hooky
+Yusuke Kamiyamane: Fugue ikony
+SharpDevelop: IDE ikony
+Grant Frisken: Podpora lokalizace WPF</value>
   </data>
   <data name="AboutWindow_GeneralThanks" xml:space="preserve">
-    <value>All contributors to our GitHub repository
-All our stargazers, likers &amp; followers, for the warm fuzzies
-...and anyone reading this!</value>
+    <value>Všichni přispěvatelé do našeho GitHub repozitáře
+Všichni ti, co koukají na hvězdy, oblíbenci a následovníci,, pro ten teplý krásný pocit
+...a kohokoli, kdo to tady čte!</value>
   </data>
   <data name="AboutWindow_BlogsHeader" xml:space="preserve">
-    <value>Blogs:</value>
+    <value>Blogy:</value>
   </data>
   <data name="AboutWindow_CommunityHeader" xml:space="preserve">
-    <value>Community:</value>
+    <value>Komunita:</value>
   </data>
   <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
-    <value>Contributors &amp; supporters:</value>
+    <value>Přispěvatelé a supporteři</value>
   </data>
   <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
-    <value>Copy successful</value>
+    <value>Zkopírovat informace o verzi</value>
   </data>
   <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Click here to copy version info to clipboard.</value>
+    <value>Klikněte zde pro zkopírování informací do schánky.</value>
   </data>
   <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
-    <value>Version information copied to clipboard.</value>
+    <value>Informace o verzi byly zkopírovány do schránky.</value>
   </data>
   <data name="AboutWindow_HostExecutable" xml:space="preserve">
-    <value>Host Executable: {0}</value>
+    <value>Hostitelský spouštěč: {0}</value>
   </data>
   <data name="AboutWindow_HostProduct" xml:space="preserve">
-    <value>Host Product: {0} {1}</value>
+    <value>Hostitelský produkt: {0} {1}</value>
   </data>
   <data name="AboutWindow_HostVersion" xml:space="preserve">
-    <value>Host Version: {0}</value>
+    <value>Hostitelská Verze: {0}</value>
   </data>
   <data name="AboutWindow_OperatingSystem" xml:space="preserve">
     <value>OS: {0}, {1}</value>
   </data>
   <data name="AboutWindow_FoundAnIssue" xml:space="preserve">
-    <value>Found an issue?</value>
+    <value>Našli jste problém?</value>
   </data>
   <data name="AboutWindow_HelpImproveRubberduck" xml:space="preserve">
-    <value>Help us improve Rubberduck!</value>
+    <value>Pomozte nám vylepšit Rubberduck!</value>
   </data>
   <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
-    <value>You can also find us at:</value>
+    <value>Také nás můžete nalézt na:</value>
   </data>
   <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
-    <value>Report an issue</value>
+    <value>Nahlásit problém</value>
   </data>
 </root>

@@ -6,17 +6,26 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Rubberduck.Common;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.PreProcessing;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.Parsing.VBA.ComReferenceLoading;
+using Rubberduck.Parsing.VBA.DeclarationResolving;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.Resources.Registration;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.Root;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.API.VBA
 {
@@ -60,7 +69,6 @@ namespace Rubberduck.API.VBA
     public sealed class Parser : IParser, IDisposable
     {
         private RubberduckParserState _state;
-        private AttributeParser _attributeParser;
         private SynchronousParseCoordinator _parser;
         private IVBE _vbe;
         private IVBEEvents _vbeEvents;
@@ -90,16 +98,28 @@ namespace Rubberduck.API.VBA
             _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents);
             _state.StateChanged += _state_StateChanged;
 
-            var sourceCodeHandler = _vbe.SourceCodeHandler;
-
-            IVBAPreprocessor preprocessorFactory() => new VBAPreprocessor(double.Parse(_vbe.Version, CultureInfo.InvariantCulture));
-            _attributeParser = new AttributeParser(sourceCodeHandler, preprocessorFactory, _state.ProjectsProvider);
+            var sourceFileHandler = _vbe.TempSourceFileHandler;
+            var vbeVersion = double.Parse(_vbe.Version, CultureInfo.InvariantCulture);
+            var predefinedCompilationConstants = new VBAPredefinedCompilationConstants(vbeVersion);
+            var typeLibProvider = new TypeLibWrapperProvider(projectRepository);
+            var compilationArgumentsProvider = new CompilationArgumentsProvider(typeLibProvider, _dispatcher, predefinedCompilationConstants);
+            var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
+            var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
+            var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
+            var preprocessor = new VBAPreprocessor(preprocessorParser, compilationsArgumentsCache);
+            var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
+            var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
+            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
+            var stringParser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
+            var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);
             var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);
             var supertypeClearer = new SupertypeClearer(_state);
-            var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager);
+            var comLibraryProvider = new ComLibraryProvider();
+            var referencedDeclarationsCollector = new LibraryReferencedDeclarationsCollector(comLibraryProvider);
+            var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager, projectRepository, referencedDeclarationsCollector);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 _state,
                 new List<ICustomDeclarationLoader>
@@ -111,12 +131,19 @@ namespace Rubberduck.API.VBA
                         //new RubberduckApiDeclarations(_state)
                     }
                 );
+            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+            var moduleRewriterFactory = new ModuleRewriterFactory(
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHandler);
+            var moduleParser = new ModuleParser(
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHandler,
+                stringParser,
+                moduleRewriterFactory);
             var parseRunner = new ParseRunner(
                 _state,
                 parserStateManager,
-                preprocessorFactory,
-                _attributeParser, 
-                sourceCodeHandler);
+                moduleParser);
             var declarationResolveRunner = new DeclarationResolveRunner(
                 _state, 
                 parserStateManager, 
@@ -137,7 +164,8 @@ namespace Rubberduck.API.VBA
                 _state,
                 moduleToModuleReferenceManager,
                 referenceRemover,
-                supertypeClearer
+                supertypeClearer,
+                compilationsArgumentsCache
                 );
 
             _parser = new SynchronousParseCoordinator(

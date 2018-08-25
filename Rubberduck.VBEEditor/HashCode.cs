@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace Rubberduck.VBEditor
 {
@@ -20,6 +22,11 @@ namespace Rubberduck.VBEditor
                 }
                 return hash;
             }
+        }
+
+        public static int Compute(IEnumerable<int> values)
+        {
+            return values.Aggregate(5381, (hash, value) => ((hash << 5) + hash) ^ value);
         }
     }
 }

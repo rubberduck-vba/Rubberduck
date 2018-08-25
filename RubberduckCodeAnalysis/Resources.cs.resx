@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AnalyzerCategory" xml:space="preserve">
+    <value>Správa COM</value>
+  </data>
+  <data name="MissingClassInterfaceDescription" xml:space="preserve">
+    <value>COM-viditelné třídy musí mít explicitní atribut ClassInterface a musí být nastaven na `None`. Toto je potřeba, aby se předešlo problémům s verzováním.</value>
+  </data>
+  <data name="MissingClassInterfaceId" xml:space="preserve">
+    <value>MissingClassInterface</value>
+  </data>
+  <data name="MissingClassInterfaceTitle" xml:space="preserve">
+    <value>Chybějící Atribut ClassInterface</value>
+  </data>
+  <data name="MissingComDefaultInterfaceId" xml:space="preserve">
+    <value>MissingComDefaultInterface</value>
+  </data>
+  <data name="MissingGuidId" xml:space="preserve">
+    <value>MissingGuid</value>
+  </data>
+  <data name="MissingGuidTitle" xml:space="preserve">
+    <value>Chybějící Atribut Guid</value>
+  </data>
+  <data name="MissingProgIdId" xml:space="preserve">
+    <value>MissingProgId</value>
+  </data>
+  <data name="MissingProgIdTitle" xml:space="preserve">
+    <value>Chybějící Atribut ProgId</value>
+  </data>
+  <data name="MissingComDefaultInterfaceTitle" xml:space="preserve">
+    <value>Chybějící Atribut ComDefaultInterface</value>
+  </data>
+  <data name="MissingInterfaceTypeId" xml:space="preserve">
+    <value>MissingInterfaceType</value>
+  </data>
+  <data name="MissingInterfaceTypeTitle" xml:space="preserve">
+    <value>Chybějící Atribut InterfaceType</value>
+  </data>
+  <data name="MissingClassInterfaceMessageFormat" xml:space="preserve">
+    <value>COM-viditelná třída '{0}' nemá explicitní atribut ClassInterface, který je zároveň nastaven na 'ClassInterfaceType.None'</value>
+  </data>
+  <data name="MissingComDefaultInterfaceDescription" xml:space="preserve">
+    <value>COM-viditelné třídy musí mít explicitní atribut ComDefaultInterface, který odkazuje na COM-viditelné rozhraní.</value>
+  </data>
+  <data name="MissingProgIdMessageFormat" xml:space="preserve">
+    <value>COM-viditelná třída '{0}' nemá explicitní atribut ProgId, který odkazuje na konstantu RubberduckProgId.</value>
+  </data>
+  <data name="MissingComDefaultInterfaceMessageFormat" xml:space="preserve">
+    <value>COM-viditelná třída '{0}' musí mít explicitní atribut ComDefaultInterface, který odkazuje na typeof COM-viditelné rozhraní. Nepoužívejte řetězec pro přidělení jména rozhraní.</value>
+  </data>
+  <data name="MissingGuidDescription" xml:space="preserve">
+    <value>COM-viditelné typy musí mít explicitní atribut Guid. Toto je potřeba, aby se předešlo problémům s verzováním. Odkazujte se na konstanty RubberduckGuid.</value>
+  </data>
+  <data name="MissingGuidMessageFormat" xml:space="preserve">
+    <value>COM-viditelný type '{0}' nemá explicitní atribut Guid, který odkazuje na konstantu RubberduckGuid.</value>
+  </data>
+  <data name="MissingInterfaceTypeDescription" xml:space="preserve">
+    <value>COM-viditelná rozhraní musí mít explicitní atribut InterfaceType, typicky nastaven na "Dual" nebo "Dispatch" pro události rozhraní.</value>
+  </data>
+  <data name="MissingInterfaceTypeMessageFormat" xml:space="preserve">
+    <value>COM-viditelné rozhraní '{0}' nemá explicitní atribut InterfaceType nastaven na typ rozhraní. Doporučená volba je InterfaceIsDual, pokud se nejedná o událost, v takovém případě je doporučen InterfaceIsIDispatch.</value>
+  </data>
+  <data name="MissingProgIdDescription" xml:space="preserve">
+    <value>COM-viditelné třídy musí mít explicitní atribut ProgId. Toto je potřeba, aby se předešlo problémům s verzováním. Odkazujte se na konstanty RubberduckProgId.</value>
+  </data>
+</root>
