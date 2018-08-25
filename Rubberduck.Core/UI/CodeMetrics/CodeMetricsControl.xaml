@@ -234,8 +234,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid UseLayoutRounding="True"
-          Background="White">
+    <Grid UseLayoutRounding="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
