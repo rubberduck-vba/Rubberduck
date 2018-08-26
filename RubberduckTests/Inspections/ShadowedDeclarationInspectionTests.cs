@@ -133,11 +133,11 @@ End Property";
             var userProjectBuilder = CreateUserProject(builder);
             foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var referencedProject = builder.ProjectBuilder(expectedResultCount.Key, ProjectProtection.Unprotected)
+                var referencedProject = builder.ProjectBuilder(expectedResultCount.Key, "somePath", ProjectProtection.Unprotected)
                     .AddComponent("Foo" + expectedResultCount.Key, ComponentType.StandardModule, string.Empty)
                     .Build();
                 builder.AddProject(referencedProject);
-                userProjectBuilder = userProjectBuilder.AddReference(expectedResultCount.Key, string.Empty, 0, 0);
+                userProjectBuilder = userProjectBuilder.AddReference(expectedResultCount.Key, "somePath", 0, 0);
             }
 
             var userProject = userProjectBuilder.Build();

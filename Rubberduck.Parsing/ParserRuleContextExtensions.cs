@@ -132,6 +132,15 @@ namespace Rubberduck.Parsing
             return GetAncestor_Recursive<TContext>(context);
         }
 
+        /// <summary>
+        /// Tries to return the context's first ancestor of the generic Type.
+        /// </summary>
+        public static bool TryGetAncestor<TContext>(this ParserRuleContext context, out TContext ancestor)
+        {
+            ancestor = context.GetAncestor<TContext>();
+            return ancestor != null;
+        }
+
         private static TContext GetAncestor_Recursive<TContext>(ParserRuleContext context)
         {
             if (context == null)

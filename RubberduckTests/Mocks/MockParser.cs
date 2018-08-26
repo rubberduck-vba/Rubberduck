@@ -71,10 +71,13 @@ namespace RubberduckTests.Mocks
             var supertypeClearer = new SynchronousSupertypeClearer(state); 
             var parserStateManager = new SynchronousParserStateManager(state);
             var referenceRemover = new SynchronousReferenceRemover(state, moduleToModuleReferenceManager);
+            var baseReferencedDeclarationsCollector = new SerializedReferencedDeclarationsCollector(path);
+            var referencedDeclarationsCollector = new StaticCachingReferencedDeclarationsCollectorDecorator(baseReferencedDeclarationsCollector);
             var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
                 state, 
-                parserStateManager, 
-                path);
+                parserStateManager,
+                projectRepository,
+                referencedDeclarationsCollector);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 state,
                 new List<ICustomDeclarationLoader>
@@ -169,14 +172,6 @@ namespace RubberduckTests.Mocks
         private static void AddTestLibrary(RubberduckParserState state, SerializableProject deserialized)
         {
             var declarations = deserialized.Unwrap();
-
-            foreach (var members in declarations.Where(d => d.DeclarationType != DeclarationType.Project &&
-                                                            d.ParentDeclaration.DeclarationType == DeclarationType.ClassModule &&
-                                                            ProceduralTypes.Contains(d.DeclarationType))
-                .GroupBy(d => d.ParentDeclaration))
-            {
-                state.CoClasses.TryAdd(members.Select(m => m.IdentifierName).ToList(), members.First().ParentDeclaration);
-            }
 
             foreach (var declaration in declarations)
             {

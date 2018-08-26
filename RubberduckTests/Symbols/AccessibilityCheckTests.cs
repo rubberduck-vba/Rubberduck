@@ -135,7 +135,7 @@ namespace RubberduckTests.Symbols
             private static FunctionDeclaration GetTestFunction(Declaration moduleDeclatation, string name, Accessibility functionAccessibility)
             {
                 var qualifiedFunctionMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new FunctionDeclaration(qualifiedFunctionMemberName, moduleDeclatation, moduleDeclatation, "test", null, "test", functionAccessibility, null, Selection.Home, false, true, null, null);
+                return new FunctionDeclaration(qualifiedFunctionMemberName, moduleDeclatation, moduleDeclatation, "test", null, "test", functionAccessibility, null, null, Selection.Home, false, true, null, null);
             }
 
         [Category("Resolver")]
@@ -276,7 +276,7 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestVariable(Declaration parentDeclatation, string name, Accessibility variableAccessibility)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, variableAccessibility, DeclarationType.Variable, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, variableAccessibility, DeclarationType.Variable, null, null, Selection.Home, true, null);
             }
 
 
@@ -472,7 +472,7 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestEnum(Declaration parentDeclatation, string name, Accessibility enumAccessibility)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, enumAccessibility, DeclarationType.Enumeration, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, enumAccessibility, DeclarationType.Enumeration, null, null, Selection.Home, true, null);
             }
 
 
@@ -599,7 +599,7 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestUserType(Declaration parentDeclatation, string name, Accessibility userTypeAccessibility)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, userTypeAccessibility, DeclarationType.UserDefinedType, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, userTypeAccessibility, DeclarationType.UserDefinedType, null, null, Selection.Home, true, null);
             }
 
 
@@ -681,7 +681,7 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestEnumMember(Declaration parentDeclatation, string name)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Implicit, DeclarationType.EnumerationMember, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Implicit, DeclarationType.EnumerationMember, null, null, Selection.Home, true, null);
             }
 
 
@@ -702,7 +702,7 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestUserTypeMember(Declaration parentDeclatation, string name)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Implicit, DeclarationType.UserDefinedTypeMember, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Implicit, DeclarationType.UserDefinedTypeMember, null, null, Selection.Home, true, null);
             }
 
 

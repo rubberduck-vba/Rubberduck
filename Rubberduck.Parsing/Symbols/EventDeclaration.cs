@@ -38,6 +38,7 @@ namespace Rubberduck.Parsing.Symbols
                   accessibility,
                   DeclarationType.Event,
                   context,
+                  null,
                   selection,
                   isArray,
                   asTypeContext,

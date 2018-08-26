@@ -75,7 +75,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
             Item =  Parent.AddPopup(_beforeIndex);                
 
-            Item.Tag = _key;
+            Item.Tag = _key;            
 
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
             {
