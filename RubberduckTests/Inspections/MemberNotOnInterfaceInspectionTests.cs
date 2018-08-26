@@ -252,8 +252,33 @@ End Sub";
             const string inputCode =
                 @"Sub Foo()
     With New Dictionary
-        Debug.Print .FooBar
+        .FooBar
     End With
+End Sub";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        //See https://github.com/rubberduck-vba/Rubberduck/issues/4308 
+        [Test]
+        [Category("Inspections")]
+        [Ignore("To be unignored in a PR fixing issue 4308.")]
+        public void MemberNotOnInterface_ProcedureArgument()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Dim fooBaz As Dictionary
+    Set fooBaz = New Dictionary 
+    Bar fooBaz.FooBar
+End Sub
+
+Private Sub Bar(baz As Long)
 End Sub";
 
             using (var state = ArrangeParserAndParse(inputCode))
