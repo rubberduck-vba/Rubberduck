@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NLog;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA.Parsing
@@ -10,6 +12,8 @@ namespace Rubberduck.Parsing.VBA.Parsing
     public class ParseRunner : ParseRunnerBase
     {
         private const int _maxDegreeOfParserParallelism = -1;
+
+        private static Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ParseRunner(
             RubberduckParserState state, 
@@ -28,6 +32,8 @@ namespace Rubberduck.Parsing.VBA.Parsing
             }
 
             token.ThrowIfCancellationRequested();
+
+            var stopwatch = Stopwatch.StartNew();
 
             var options = new ParallelOptions();
             options.CancellationToken = token;
@@ -49,6 +55,9 @@ namespace Rubberduck.Parsing.VBA.Parsing
                 StateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
                 throw;
             }
+
+            stopwatch.Stop();
+            Logger.Debug($"Parsed user modules in {stopwatch.ElapsedMilliseconds}ms.");
         }
     }
 }

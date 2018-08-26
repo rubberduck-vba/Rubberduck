@@ -75,20 +75,39 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             PerformPreResolveCleanup(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
+            var stopwatch = Stopwatch.StartNew();
+
             ExecuteCompilationPasses(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
+
+            stopwatch.Stop();
+            Logger.Debug($"Executed compilation passes in {stopwatch.ElapsedMilliseconds}ms.");
+            stopwatch.Restart();
 
             AddSupertypesForDocumentModules(_toResolve.AsReadOnly(), _state);
             token.ThrowIfCancellationRequested();
 
+            stopwatch.Stop();
+            Logger.Debug($"added supertypes for document modules in {stopwatch.ElapsedMilliseconds}ms.");
+
             var parseTreesToResolve = _state.ParseTrees.Where(kvp => _toResolve.Contains(kvp.Key)).ToList();
             token.ThrowIfCancellationRequested();
+
+            stopwatch.Restart();
 
             ResolveReferences(parseTreesToResolve, token);
             token.ThrowIfCancellationRequested();
 
+            stopwatch.Stop();
+            Logger.Debug($"Resolved references in {stopwatch.ElapsedMilliseconds}ms.");
+            stopwatch.Restart();
+
             AddModuleToModuleReferences(_state.DeclarationFinder, token);
             token.ThrowIfCancellationRequested();
+
+            stopwatch.Stop();
+            Logger.Debug($"Determined module to module references in {stopwatch.ElapsedMilliseconds}ms.");
+            stopwatch.Restart();
 
             AddNewUndeclaredVariablesToDeclarations();
             AddNewUnresolvedMemberDeclarations();

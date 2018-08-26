@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
     public abstract class DeclarationResolveRunnerBase : IDeclarationResolveRunner
     {
         protected readonly ConcurrentDictionary<string, Declaration> _projectDeclarations = new ConcurrentDictionary<string, Declaration>();
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         protected readonly RubberduckParserState _state;
         protected readonly IParserStateManager _parserStateManager;
