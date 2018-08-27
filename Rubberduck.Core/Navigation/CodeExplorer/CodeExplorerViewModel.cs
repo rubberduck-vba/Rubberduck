@@ -331,6 +331,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             UpdateNodes(Projects, newProjects);
             
             Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
+
+            FilterByName(Projects, _filterText);
         }
 
         private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList, IEnumerable<CodeExplorerItemViewModel> newList)
@@ -416,6 +418,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                     // Force a refresh. OnPropertyChanged("Projects") didn't work.
                     Projects = Projects;
+
+                    
                 }
                 catch (Exception exception)
                 {
@@ -507,8 +511,23 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public CommandBase RefreshCommand { get; }
+        private string _filterText;
+        public string FilterText
+        {
+            get => _filterText;
+            set
+            {
+                if (!_filterText?.Equals(value) ?? true)
+                {
+                    _filterText = value;
+                    OnPropertyChanged();
+                    FilterByName(Projects, _filterText);
+                }
+            }
+        }
 
+        public CommandBase RefreshCommand { get; }
+        
         public CommandBase OpenCommand { get; }
 
         public CommandBase AddTestModuleCommand { get; }

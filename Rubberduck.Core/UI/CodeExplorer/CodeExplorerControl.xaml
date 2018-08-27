@@ -498,8 +498,8 @@
                          IsEnabled="{Binding CanSearch}"
                          MinHeight="20"
                          PreviewKeyDown="SearchBox_OnPreviewKeyDown"
-                         TextChanged="SearchBox_OnTextChanged" />
-        
+                         Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
                 <Image Source="{StaticResource SearchImage}" 
                        HorizontalAlignment="Right" VerticalAlignment="Center" 
                        MaxHeight="16" Margin="0,0,1,0" 
