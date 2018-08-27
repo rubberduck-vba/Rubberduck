@@ -607,10 +607,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                 {
                     FilterByName(item.Items, searchString);
                 }
-                
-                item.IsVisible = item.Items.Any(c => c.IsVisible) ||
-                                 item.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant()) ||
-                                 string.IsNullOrEmpty(searchString);
+
+                item.IsVisible = string.IsNullOrEmpty(searchString) ||
+                                 item.Items.Any(c => c.IsVisible) ||
+                                 item.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant());
             }
         }
 
