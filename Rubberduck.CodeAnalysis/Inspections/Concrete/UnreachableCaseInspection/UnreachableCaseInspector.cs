@@ -190,6 +190,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         var typeNames = from context in range.children
                                 where context is ParserRuleContext 
                                     && IsResultContext(context)
+                                select inspValues.GetValueType(context as ParserRuleContext);
 
                         caseClauseTypeNames.AddRange(typeNames);
                         caseClauseTypeNames.RemoveAll(tp => !InspectableTypes.Contains(tp));
