@@ -37,11 +37,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 throw new ArgumentException($"Unary operator ({opSymbol}) passed to binary Evaluate function");
             }
 
-            var opProvider = new OperatorTypesProvider((LHS.TypeName, RHS.TypeName), opSymbol);
+            var opProvider = new OperatorTypesProvider((LHS.ValueType, RHS.ValueType), opSymbol);
             try { var testForMismatch = opProvider.OperatorDeclaredType; }
             catch (ArgumentException)
             {
-                return _valueFactory.CreateMismatchExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", Tokens.Variant);
+                return _valueFactory.CreateMismatchExpression($"{LHS.Token} {opSymbol} {RHS.Token}", Tokens.Variant);
             }
 
             if (ArithmeticOperators.Includes(opSymbol))
@@ -73,26 +73,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         private bool IsStringCompare(IParseTreeValue LHS, IParseTreeValue RHS)
-             => (LHS.TypeName == Tokens.String) && (RHS.TypeName == Tokens.String);
+             => (LHS.ValueType == Tokens.String) && (RHS.ValueType == Tokens.String);
 
         private IParseTreeValue EvaluateRelationalOp(string opSymbol, IParseTreeValue LHS, IParseTreeValue RHS)
         {
 
-            var opProvider = new OperatorTypesProvider((LHS.TypeName, RHS.TypeName), opSymbol);
+            var opProvider = new OperatorTypesProvider((LHS.ValueType, RHS.ValueType), opSymbol);
 
             if (!(LHS.ParsesToConstantValue && RHS.ParsesToConstantValue))
             {
                 //special case of resolve-able expression with variable LHS
-                if (opSymbol.Equals(Tokens.Like) && RHS.ValueText.Equals($"\"*\""))
+                if (opSymbol.Equals(Tokens.Like) && RHS.Token.Equals($"\"*\""))
                 {
                     return _valueFactory.Create(true);
                 }
                 //Unable to resolve to a value, return an expression
                 if (opProvider.OperatorDeclaredType.Equals(string.Empty))
                 {
-                    return _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", Tokens.Variant);
+                    return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", Tokens.Variant);
                 }
-                return _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorDeclaredType);
             }
 
             if (opSymbol.Equals(RelationalOperators.EQ))
@@ -163,29 +163,29 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             else if (opSymbol.Equals(RelationalOperators.LIKE))
             {
-                if (RHS.ValueText.Equals("*"))
+                if (RHS.Token.Equals("*"))
                 {
                     return _valueFactory.Create(true);
                 }
 
                 if (LHS.ParsesToConstantValue && RHS.ParsesToConstantValue)
                 {
-                    var matches = Like(LHS.ValueText, RHS.ValueText);
+                    var matches = Like(LHS.Token, RHS.Token);
                     return _valueFactory.Create(matches);
                 }
             }
-            return _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
+            return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorDeclaredType);
         }
 
         private IParseTreeValue EvaluateLogicalNot(IParseTreeValue parseTreeValue)
         {
-            var opProvider = new OperatorTypesProvider(parseTreeValue.TypeName, LogicalOperators.NOT);
+            var opProvider = new OperatorTypesProvider(parseTreeValue.ValueType, LogicalOperators.NOT);
             if (!parseTreeValue.ParsesToConstantValue)
             {
                 //Unable to resolve to a value, return an expression
                 var opType = opProvider.OperatorDeclaredType;
                 opType = opType.Equals(string.Empty) ? Tokens.Variant : opProvider.OperatorDeclaredType;
-                return _valueFactory.CreateExpression($"{LogicalOperators.NOT} {parseTreeValue.ValueText}", opType);
+                return _valueFactory.CreateExpression($"{LogicalOperators.NOT} {parseTreeValue.Token}", opType);
             }
 
             if (parseTreeValue.TryLetCoerce(out long value))
@@ -197,18 +197,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private IParseTreeValue EvaluateLogicalOperator(string opSymbol, IParseTreeValue LHS, IParseTreeValue RHS)
         {
-            var opProvider = new OperatorTypesProvider((LHS.TypeName, RHS.TypeName), opSymbol);
+            var opProvider = new OperatorTypesProvider((LHS.ValueType, RHS.ValueType), opSymbol);
             if (!(LHS.ParsesToConstantValue && RHS.ParsesToConstantValue))
             {
                 //Unable to resolve to a value, return an expression
                 var opType = opProvider.OperatorDeclaredType;
                 opType = opType.Equals(string.Empty) ? Tokens.Variant : opType;
-                return _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opType);
+                return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opType);
             }
 
             if (!(OperatorTypesProvider.IntegralNumericTypes.Contains(opProvider.OperatorDeclaredType)))
             {
-                return _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorDeclaredType);
             }
 
             if (opSymbol.Equals(LogicalOperators.AND))
@@ -247,17 +247,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return _valueFactory.CreateDeclaredType(result, opProvider.OperatorDeclaredType);
             }
 
-            return _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
+            return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorDeclaredType);
         }
 
         private IParseTreeValue EvaluateUnaryMinus(IParseTreeValue parseTreeValue)
         {
-            var opProvider = new OperatorTypesProvider(parseTreeValue.TypeName, ArithmeticOperators.ADDITIVE_INVERSE);
+            var opProvider = new OperatorTypesProvider(parseTreeValue.ValueType, ArithmeticOperators.ADDITIVE_INVERSE);
             if (!parseTreeValue.ParsesToConstantValue)
             {
                 //Unable to resolve to a value, return an expression
                 var opTypeName = opProvider.OperatorDeclaredType;
-                return _valueFactory.CreateDeclaredType($"{ArithmeticOperators.ADDITIVE_INVERSE} {parseTreeValue.ValueText}", opTypeName);
+                return _valueFactory.CreateDeclaredType($"{ArithmeticOperators.ADDITIVE_INVERSE} {parseTreeValue.Token}", opTypeName);
             }
 
             var effTypeName = opProvider.OperatorEffectiveType;
@@ -288,17 +288,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             Debug.Assert(ArithmeticOperators.Includes(opSymbol));
 
-            var opProvider = new OperatorTypesProvider((LHS.TypeName, RHS.TypeName), opSymbol);
+            var opProvider = new OperatorTypesProvider((LHS.ValueType, RHS.ValueType), opSymbol);
             if (!(LHS.ParsesToConstantValue && RHS.ParsesToConstantValue))
             {
                 //Unable to resolve to a value, return an expression
-                return _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorDeclaredType);
             }
 
             if (!LHS.TryLetCoerce(opProvider.OperatorEffectiveType, out IParseTreeValue effLHS)
                 || !RHS.TryLetCoerce(opProvider.OperatorEffectiveType, out IParseTreeValue effRHS))
             {
-                return _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorDeclaredType);
             }
 
             if (opProvider.OperatorEffectiveType.Equals(Tokens.Date))
@@ -306,7 +306,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 
                 if (!(LHS.TryLetCoerce(Tokens.Double, out effLHS) && RHS.TryLetCoerce(Tokens.Double, out effRHS)))
                 {
-                    return _valueFactory.CreateExpression($"{LHS.ValueText} {opSymbol} {RHS.ValueText}", opProvider.OperatorEffectiveType);
+                    return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorEffectiveType);
                 }
             }
 
@@ -331,24 +331,28 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Date))
                 {
                     var result = _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, null, (double a, double b) => { return a + b; }), Tokens.Double);
-                    if (result.TryLetCoerce(out double value))
-                    {
-                        return _valueFactory.CreateDate(value);
-                    }
+                    //if (result.TryLetCoerce(out double value))
+                    //{
+                    //    return _valueFactory.CreateDate(value);
+                    //}
+                    return _valueFactory.CreateDate(result.AsDouble());
                 }
                 return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a + b; }, (double a, double b) => { return a + b; }), opProvider.OperatorDeclaredType);
             }
             else if (opSymbol.Equals(ArithmeticOperators.MINUS))
             {
-                if (LHS.TypeName.Equals(Tokens.Date) && RHS.TypeName.Equals(Tokens.Date))
+                if (LHS.ValueType.Equals(Tokens.Date) && RHS.ValueType.Equals(Tokens.Date))
                 {
-                    if (LHS.TryLetCoerce(out double lhsValue) && RHS.TryLetCoerce(out double rhsValue))
-                    {
-                        var diff = lhsValue - rhsValue;
-                        return _valueFactory.CreateDate(diff);
-                    }
-                    //TODO: Why is this thrown explicitly rather than from the LetCoercer?
-                    throw new OverflowException();
+                    //var lhsValue = LHS.AsDouble();
+                    //var rhsValue = RHS.AsDouble();
+                    return _valueFactory.CreateDate(LHS.AsDouble() - RHS.AsDouble());
+                    //if (LHS.TryLetCoerce(out double lhsValue) && RHS.TryLetCoerce(out double rhsValue))
+                    //{
+                    //    var diff = lhsValue - rhsValue;
+                    //    return _valueFactory.CreateDate(diff);
+                    //}
+                    ////TODO: Why is this thrown explicitly rather than from the LetCoercer?
+                    //throw new OverflowException();
                 }
                 return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a - b; }, (double a, double b) => { return a - b; }), opProvider.OperatorDeclaredType);
             }
@@ -368,8 +372,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Concatenate(IParseTreeValue LHS, IParseTreeValue RHS)
         {
-            var lhs = StripDoubleQuotes(LHS.ValueText);
-            var rhs = StripDoubleQuotes(RHS.ValueText);
+            var lhs = StripDoubleQuotes(LHS.Token);
+            var rhs = StripDoubleQuotes(RHS.Token);
             return $"{ @""""}{lhs}{rhs}{ @""""}";
         }
 
@@ -420,7 +424,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (!(StringComp is null))
             {
-                return StringComp(LHS.ValueText, RHS.ValueText) ? Tokens.True : Tokens.False;
+                return StringComp(LHS.Token, RHS.Token) ? Tokens.True : Tokens.False;
             }
             throw new ArgumentNullException();
         }

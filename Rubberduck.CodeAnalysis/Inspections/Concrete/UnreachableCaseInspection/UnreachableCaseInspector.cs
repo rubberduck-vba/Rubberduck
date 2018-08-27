@@ -143,10 +143,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     foreach (var rangeClause in caseClause.rangeClause())
                     {
                         var expression = GetRangeClauseExpression(rangeClause);
-                        if (!expression.LHSValue.ParsesToConstantValue)
+                        if (!expression.LHS.ParsesToConstantValue)
                         {
-                            var typeName = GetVariableDeclarationTypeName(expression.LHS, rangeClause);
-                             rangeClauseFilter.AddComparablePredicateFilter(expression.LHS, typeName);
+                            var typeName = GetVariableDeclarationTypeName(expression.LHS.Token, rangeClause);
+                             rangeClauseFilter.AddComparablePredicateFilter(expression.LHS.Token, typeName);
                         }
                     }
                 }
@@ -163,10 +163,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 SelectExpressionTypeName = typeName;
             }
             else if (inspValues.TryGetValue(selectStmt.selectExpression(), out IParseTreeValue result)
-                && InspectableTypes.Contains(result.TypeName))
+                && InspectableTypes.Contains(result.ValueType))
             {
                 _selectExpressionValue = result;
-                SelectExpressionTypeName = result.TypeName;
+                SelectExpressionTypeName = result.ValueType;
             }
             else
             {
@@ -190,7 +190,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         var typeNames = from context in range.children
                                 where context is ParserRuleContext 
                                     && IsResultContext(context)
-                                select inspValues.GetTypeName(context as ParserRuleContext);
 
                         caseClauseTypeNames.AddRange(typeNames);
                         caseClauseTypeNames.RemoveAll(tp => !InspectableTypes.Contains(tp));
@@ -323,14 +322,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static (IParseTreeValue lhs, IParseTreeValue rhs)
             CreateLogicPair(IParseTreeValue value, string opSymbol, IParseTreeValueFactory factory)
         {
-            var operands = value.ValueText.Split(new string[] { opSymbol }, StringSplitOptions.None);
+            var operands = value.Token.Split(new string[] { opSymbol }, StringSplitOptions.None);
             if (operands.Count() == 2)
             {
                 var lhs = factory.Create(operands[0].Trim());
                 var rhs = factory.Create(operands[1].Trim());
                 if (opSymbol.Equals(Tokens.Like))
                 {
-                    rhs = factory.CreateDeclaredType($"\"{rhs.ValueText}\"", Tokens.String);
+                    rhs = factory.CreateDeclaredType($"\"{rhs.Token}\"", Tokens.String);
                 }
                 return (lhs, rhs);
             }

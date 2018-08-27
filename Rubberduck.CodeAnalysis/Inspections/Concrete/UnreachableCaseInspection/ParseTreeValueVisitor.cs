@@ -339,7 +339,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 Visit(child);
                 if (_contextValues.TryGetValue(child, out IParseTreeValue value))
                 {
-                    return value.ValueText;
+                    return value.Token;
                 }
             }
             return string.Empty;

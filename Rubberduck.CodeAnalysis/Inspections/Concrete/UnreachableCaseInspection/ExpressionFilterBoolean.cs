@@ -12,7 +12,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             set
             {
                 _selectExpressionValue = value;
-                AddSingleValue(!_selectExpressionValue.ValueText.Equals(Tokens.True));
+                AddSingleValue(!_selectExpressionValue.Token.Equals(Tokens.True));
             }
             get => _selectExpressionValue;
         }
@@ -21,9 +21,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected override bool AddIsClause(IsClauseExpression expression)
         {
-            if (expression.LHSValue.ParsesToConstantValue)
+            if (expression.LHS.ParsesToConstantValue)
             {
-                if (Converter(expression.LHS, out bool bVal))
+                if (Converter(expression.LHS.Token, out bool bVal))
                 {
                     return AddIsClause(bVal, expression);
                 }
@@ -105,7 +105,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             else //SelectExpressionContext resolves to True or False
             {
-                var selectExpr = bool.Parse(SelectExpressionValue.ValueText);
+                var selectExpr = bool.Parse(SelectExpressionValue.Token);
                 if (opSymbol.Equals(RelationalOperators.NEQ))
                 {
                     return AddSingleValue(selectExpr != isValue);

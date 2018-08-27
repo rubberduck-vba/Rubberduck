@@ -454,7 +454,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
         private IRangeClauseExpression CreateRangeClauseExpression((IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) expressionElements)
         {
-            if (expressionElements.LHS.ValueText.Equals(Tokens.Is))
+            if (expressionElements.LHS.Token.Equals(Tokens.Is))
             {
                 return new IsClauseExpression(expressionElements.RHS, expressionElements.Symbol);
             }
@@ -616,7 +616,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
                         {
                             var lhs = ValueFactory.Create(sides[0].Trim());
                             var rhs = ValueFactory.Create(sides[1].Trim());
-                            if (lhs.ValueText.Equals(Tokens.Is))
+                            if (lhs.Token.Equals(Tokens.Is))
                             {
                                 results.Add(new IsClauseExpression(rhs, symbol));
                             }

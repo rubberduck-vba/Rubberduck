@@ -417,8 +417,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         {
             GetBinaryOpValues(operands, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-            Assert.AreEqual(result.ValueText, expected);
-            Assert.AreEqual(selectExpressionTypename, result.TypeName);
+            Assert.AreEqual(result.Token, expected);
+            Assert.AreEqual(selectExpressionTypename, result.ValueType);
             Assert.IsFalse(result.ParsesToConstantValue);
         }
 
@@ -440,7 +440,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         {
             GetBinaryOpValues(input, out IParseTreeValue LHS, out IParseTreeValue RHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.AreEqual(expected, result.Token);
         }
 
         [TestCase("10.51_*_11.2?Currency", "117.712", "Double")]
@@ -450,7 +450,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void ParseTreeValueExpressionEvaluator_MathOpCurrency(string operands, string expected, string selectExpressionTypename)
         {
             (IParseTreeValue expected, IParseTreeValue actual) result = TestBinaryOp(ArithmeticOperators.MULTIPLY, operands, expected, selectExpressionTypename);
-            Assert.AreEqual(selectExpressionTypename, result.actual.TypeName);
+            Assert.AreEqual(selectExpressionTypename, result.actual.ValueType);
         }
 
         [TestCase("10.51?Long_*_11.2", "123.2", "Double")]
@@ -559,7 +559,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
 
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.AreEqual(expected, result.Token);
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
@@ -600,7 +600,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
 
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.AreEqual(expected, result.Token);
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
@@ -620,7 +620,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
 
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.AreEqual(expected, result.Token);
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
@@ -670,7 +670,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
 
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.AreEqual(expected, result.Token);
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
@@ -684,7 +684,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             var result = Calculator.Evaluate(theValue, opSymbol);
 
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.AreEqual(expected, result.Token);
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
@@ -706,9 +706,9 @@ namespace RubberduckTests.Inspections.UnreachableCase
             GetUnaryOpValues(operands, out IParseTreeValue LHS, out string opSymbol);
             var result = Calculator.Evaluate(LHS, opSymbol);
 
-            Assert.AreEqual(expectedVal.ValueText, result.ValueText);
-            Assert.IsTrue(result.ParsesToConstantValue, $"{expectedVal.ValueText} does not parse to a constant value");
-            Assert.AreEqual(expectedVal.TypeName, result.TypeName);
+            Assert.AreEqual(expectedVal.Token, result.Token);
+            Assert.IsTrue(result.ParsesToConstantValue, $"{expectedVal.Token} does not parse to a constant value");
+            Assert.AreEqual(expectedVal.ValueType, result.ValueType);
         }
 
 
@@ -740,7 +740,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var RHS = ValueFactory.CreateDeclaredType(ops[2], Tokens.String);
             var result = Calculator.Evaluate(LHS, RHS, ops[1]);
 
-            Assert.AreEqual(expected, result.ValueText, $"{LHS} Like {RHS}");
+            Assert.AreEqual(expected, result.Token, $"{LHS} Like {RHS}");
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
@@ -772,7 +772,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var RHS = ValueFactory.Create(ops[2]);
             var result = Calculator.Evaluate(LHS, RHS, ops[1]);
 
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.AreEqual(expected, result.Token);
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
@@ -798,7 +798,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var calculator = new ParseTreeExpressionEvaluator(ValueFactory, optionCompareBinary);
             var result = calculator.Evaluate(LHS, RHS, ops[1]);
 
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.AreEqual(expected, result.Token);
             Assert.IsTrue(result.ParsesToConstantValue);
         }
 
@@ -814,7 +814,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             var calculator = new ParseTreeExpressionEvaluator(ValueFactory, optionCompareBinary);
             var result = calculator.Evaluate(LHS, RHS, ops[1]);
-            Assert.AreEqual(expected, result.ValueText);
+            Assert.AreEqual(expected, result.Token);
             Assert.IsTrue(result.IsMismatchExpression);
         }
 
@@ -936,15 +936,15 @@ namespace RubberduckTests.Inspections.UnreachableCase
 
             var result = Calculator.Evaluate(LHS, RHS, opSymbol);
 
-            Assert.AreEqual(expectedResultTypeName, result.TypeName);
+            Assert.AreEqual(expectedResultTypeName, result.ValueType);
 
             if (expectedResultTypeName.Equals(Tokens.Double) || expectedResultTypeName.Equals(Tokens.Single) || expectedResultTypeName.Equals(Tokens.Currency))
             {
                 var compareLength = expected.Length > 5 ? 5 : expected.Length;
                 var accuracy = Math.Pow(10, -1.0 * compareLength);
-                var lhs = double.Parse(result.ValueText.Substring(0, compareLength));
+                var lhs = double.Parse(result.Token.Substring(0, compareLength));
                 var rhs = double.Parse(expected.Substring(0, compareLength));
-                Assert.IsTrue(Math.Abs(lhs - rhs) <= accuracy, $"Actual={result.ValueText} Expected={expected}");
+                Assert.IsTrue(Math.Abs(lhs - rhs) <= accuracy, $"Actual={result.Token} Expected={expected}");
                 return (result,result);
             }
             var expectedResult = ValueFactory.CreateDeclaredType(expected, expectedResultTypeName);

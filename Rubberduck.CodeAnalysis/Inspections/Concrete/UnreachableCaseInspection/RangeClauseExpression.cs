@@ -5,10 +5,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IRangeClauseExpression
     {
-        IParseTreeValue RHSValue { get; }
-        IParseTreeValue LHSValue { get; }
-        string LHS { get; }
-        string RHS { get; }
+        IParseTreeValue RHS { get; }
+        IParseTreeValue LHS { get; }
         string OpSymbol { get; }
         bool IsMismatch { set; get; }
         bool IsUnreachable { set; get; }
@@ -38,8 +36,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _hashCode = OpSymbol.GetHashCode();
         }
-        public string Operand => LHS;
-        public string Pattern => AnnotateAsStringConstant(RHS);
+        public string Operand => LHS.Token;
+        public string Pattern => AnnotateAsStringConstant(RHS.Token);
         public bool Filters(LikeExpression like)
         {
             //TODO: Enhancement - evaluate Like Pattern for superset/subset conditions.
@@ -77,7 +75,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public override string ToString()
         {
-            return $"Is {OpSymbol} {LHSValue}";
+            return $"Is {OpSymbol} {LHS}";
         }
     }
 
@@ -91,7 +89,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public override string ToString()
         {
-            return $"{OpSymbol} {LHSValue}";
+            return $"{OpSymbol} {LHS}";
         }
     }
 
@@ -100,10 +98,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public ValueExpression(IParseTreeValue value)
             : base(value, null, string.Empty)
         {
-            _hashCode = LHS.GetHashCode();
+            _hashCode = LHS.Token.GetHashCode();
         }
 
-        public override string ToString() => LHS;
+        public override string ToString() => LHS.Token;
     }
 
     public abstract class RangeClauseExpression : IRangeClauseExpression
@@ -111,10 +109,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private ClauseExpressionData _data;
         protected int _hashCode;
 
-        public IParseTreeValue LHSValue => _data.LHSValue;
-        public IParseTreeValue RHSValue => _data.RHSValue;
-        public string LHS => _data.LHS;
-        public string RHS => _data.RHS;
+        public IParseTreeValue LHS => _data.LHS;
+        public IParseTreeValue RHS => _data.RHS;
         public string OpSymbol => _data.OpSymbol;
         public bool IsMismatch { set => _data.IsMismatch = value; get => _data.IsMismatch; }
         public bool IsOverflow { set => _data.IsOverflow = value; get => _data.IsOverflow; }
@@ -148,17 +144,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public override string ToString()
         {
-            return $"{LHS} {OpSymbol} {RHS}";
+            return $"{LHS.Token} {OpSymbol} {RHS.Token}";
         }
 
         private void SortExpressionOperands()
         {
-            if ((LHSValue.ParsesToConstantValue && !RHSValue.ParsesToConstantValue
-                || !LHSValue.ParsesToConstantValue && !RHSValue.ParsesToConstantValue && LHS.CompareTo(RHS) > 0)
+            if ((LHS.ParsesToConstantValue && !RHS.ParsesToConstantValue
+                || !LHS.ParsesToConstantValue && !RHS.ParsesToConstantValue && LHS.Token.CompareTo(RHS.Token) > 0)
                 && AlgebraicInverses.ContainsKey(OpSymbol))
             {
-                var lhs = RHSValue;
-                var rhs = LHSValue;
+                var lhs = RHS;
+                var rhs = LHS;
                 _data = new ClauseExpressionData(lhs, rhs, AlgebraicInverses[OpSymbol]);
             }
         }
@@ -180,10 +176,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private struct ClauseExpressionData : IRangeClauseExpression
         {
-            public IParseTreeValue LHSValue { private set; get; }
-            public IParseTreeValue RHSValue { private set; get; }
-            public string LHS { private set; get; }
-            public string RHS { private set; get; }
+            public IParseTreeValue LHS { private set; get; }
+            public IParseTreeValue RHS { private set; get; }
             public string OpSymbol { private set; get; }
             public bool IsMismatch { set; get; }
             public bool IsOverflow { set; get; }
@@ -192,10 +186,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             public ClauseExpressionData(IParseTreeValue lhs, IParseTreeValue rhs, string opSymbol)
             {
-                RHSValue = rhs;
-                RHS = rhs is null ? string.Empty : rhs.ValueText;
-                LHSValue = lhs;
-                LHS = lhs is null ? string.Empty : lhs.ValueText;
+                RHS = rhs;
+                LHS = lhs;
                 OpSymbol = opSymbol;
                 IsMismatch = false;
                 IsOverflow = false;

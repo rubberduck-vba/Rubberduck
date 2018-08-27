@@ -50,10 +50,10 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("2.54?Double", "2.54")]
         [TestCase("2.54?Boolean", "True")]
         [Category("Inspections")]
-        public void ParseTreeValue_ConformedToType(string operands, string expectedValueText)
+        public void ParseTreeValue_ConformedToType(string operands, string expectedToken)
         {
             var value = CreateInspValueFrom(operands);
-            Assert.AreEqual(expectedValueText, value.ValueText);
+            Assert.AreEqual(expectedToken, value.Token);
         }
 
         [Test]
@@ -122,11 +122,11 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("&HFFFFFFFFFFFFFFFF^", "LongLong", "-1")]
         [TestCase("&o1777777777777777777777^", "LongLong", "-1")]
         [Category("Inspections")]
-        public void ParseTreeValue_VariableType(string operands, string expectedTypeName, string expectedValueText)
+        public void ParseTreeValue_VariableType(string operands, string expectedValueType, string expectedToken)
         {
             var value = CreateInspValueFrom(operands);
-            Assert.AreEqual(expectedTypeName, value.TypeName);
-            Assert.AreEqual(expectedValueText, value.ValueText);
+            Assert.AreEqual(expectedValueType, value.ValueType);
+            Assert.AreEqual(expectedToken, value.Token);
         }
 
         [TestCase("45.5?Double", "Double", "45.5")]
@@ -167,12 +167,12 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("&o1777777777777777777777", "LongLong", "-1")]
         [TestCase("45.12345678", "Currency", "45.1235")]
         [Category("Inspections")]
-        public void ParseTreeValue_ConformToType(string operands, string conformToType, string expectedValueText)
+        public void ParseTreeValue_ConformToType(string operands, string conformToType, string expectedToken)
         {
             var value = CreateInspValueFrom(operands, conformToType);
 
-            Assert.AreEqual(conformToType, value.TypeName);
-            Assert.AreEqual(expectedValueText, value.ValueText);
+            Assert.AreEqual(conformToType, value.ValueType);
+            Assert.AreEqual(expectedToken, value.Token);
         }
 
         [TestCase("Yahoo", "Long")]
@@ -183,7 +183,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         {
             var result = ValueFactory.CreateDeclaredType(input, convertToTypeName);
             Assert.IsNotNull(result, $"Type conversion to {convertToTypeName} return null interface");
-            Assert.AreEqual("Yahoo", result.ValueText);
+            Assert.AreEqual("Yahoo", result.Token);
         }
 
         [TestCase("NaN", "String")]
@@ -192,17 +192,17 @@ namespace RubberduckTests.Inspections.UnreachableCase
         {
             var result = ValueFactory.CreateDeclaredType(input, convertToTypeName);
             Assert.IsNotNull(result, $"Type conversion to {convertToTypeName} return null interface");
-            Assert.AreEqual("NaN", result.ValueText);
+            Assert.AreEqual("NaN", result.Token);
         }
 
         [TestCase(@"""W#hat#""", "String", @"""W#hat#""")]
         [TestCase(@"""#W#hat#""", "String", @"""#W#hat#""")]    //Like Date
         [Category("Inspections")]
-        public void ParseTreeValue_LikeATypeHint(string operands, string expectedTypeName, string expectedValueText)
+        public void ParseTreeValue_LikeATypeHint(string operands, string expectedValueType, string expectedToken)
         {
             var value = CreateInspValueFrom(operands);
-            Assert.AreEqual(expectedTypeName, value.TypeName);
-            Assert.AreEqual(expectedValueText, value.ValueText);
+            Assert.AreEqual(expectedValueType, value.ValueType);
+            Assert.AreEqual(expectedToken, value.Token);
         }
 
         [TestCase("#1/4/2005#", "Date")]
@@ -211,10 +211,10 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase(@"""#I'mNotADateType0#""", "String")]
         [TestCase(@"""#4-jan#""", "String")]
         [Category("Inspections")]
-        public void ParseTreeValue_DateTypeLiteral(string literal, string expectedTypeName)
+        public void ParseTreeValue_DateTypeLiteral(string literal, string expectedValueType)
         {
             var ptValue = ValueFactory.Create(literal);
-            Assert.AreEqual(expectedTypeName, ptValue.TypeName);
+            Assert.AreEqual(expectedValueType, ptValue.ValueType);
         }
 
         [TestCase("#1/4/2005#", "#01/04/2005 00:00:00#")]
@@ -227,8 +227,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void ParseTreeValue_DateTypeDeclared(string input, string expected)
         {
             var ptValue = ValueFactory.CreateDate(input);
-            Assert.AreEqual(Tokens.Date, ptValue.TypeName);
-            Assert.AreEqual(expected, ptValue.ValueText);
+            Assert.AreEqual(Tokens.Date, ptValue.ValueType);
+            Assert.AreEqual(expected, ptValue.Token);
         }
 
         [TestCase("False", "False")]
@@ -244,7 +244,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             {
                 if (!ptValue.TryLetCoerce(Tokens.Boolean, out coerced))
                 {
-                    Assert.Fail($"TryLetCoerce Failed: {ptValue.TypeName}:{ptValue.ValueText} to {Tokens.Boolean}");
+                    Assert.Fail($"TryLetCoerce Failed: {ptValue.ValueType}:{ptValue.Token} to {Tokens.Boolean}");
                 }
             }
             else
@@ -252,7 +252,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 coerced = ptValue;
             }
             Assert.IsNotNull(coerced, $"Type conversion to {Tokens.Boolean} return null interface");
-            Assert.AreEqual(expected, coerced.ValueText);
+            Assert.AreEqual(expected, coerced.Token);
         }
 
         [TestCase("Byte", "250?Byte", "250")]
@@ -268,17 +268,17 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("Date", "00:03:56?String", "#12/30/1899 00:03:56#")]
         [TestCase("Double", "#01/01/2020 00:00:00#?Date", "43831")]
         [Category("Inspections")]
-        public void ParseTreeValue_TryCoerce(string destinationType, string sourceOperands, string expectedValue)
+        public void ParseTreeValue_TryCoerce(string destinationType, string sourceOperands, string expectedToken)
         {
             var ptValue = CreateInspValueFrom(sourceOperands);
             if (ptValue.TryLetCoerce(destinationType, out IParseTreeValue result))
             {
-                Assert.AreEqual(destinationType, result.TypeName);
-                Assert.AreEqual(expectedValue, result.ValueText);
+                Assert.AreEqual(destinationType, result.ValueType);
+                Assert.AreEqual(expectedToken, result.Token);
             }
             else
             {
-                Assert.Fail($"TryLetCoerce Failed: {ptValue.TypeName}:{ptValue.ValueText} to {destinationType}");
+                Assert.Fail($"TryLetCoerce Failed: {ptValue.ValueType}:{ptValue.Token} to {destinationType}");
             }
         }
 
@@ -286,14 +286,14 @@ namespace RubberduckTests.Inspections.UnreachableCase
         [TestCase("Date", "Foo?String", "Foo")]
         [TestCase("Date", "00:74:56?String", "00:74:56")]
         [Category("Inspections")]
-        public void ParseTreeValue_TryCoerceFailure(string destinationType, string sourceOperands, string expectedValue)
+        public void ParseTreeValue_TryCoerceFailure(string destinationType, string sourceOperands, string expectedToken)
         {
             var ptValue = CreateInspValueFrom(sourceOperands);
             if (ptValue.TryLetCoerce(destinationType, out IParseTreeValue result))
             {
-                Assert.Fail($"Invalid LetCoerce - Coerced {ptValue.TypeName}:{ptValue.ValueText} to {destinationType}");
+                Assert.Fail($"Invalid LetCoerce - Coerced {ptValue.ValueType}:{ptValue.Token} to {destinationType}");
             }
-            Assert.AreEqual(expectedValue, ptValue.ValueText);
+            Assert.AreEqual(expectedToken, ptValue.Token);
         }
 
         private IParseTreeValue CreateInspValueFrom(string valAndType, string conformTo = null)

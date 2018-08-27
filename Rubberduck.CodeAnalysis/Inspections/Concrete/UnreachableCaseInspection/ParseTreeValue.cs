@@ -8,8 +8,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public interface IParseTreeValue
     {
-        string ValueText { get; }
-        string TypeName { get; }
+        string Token { get; }
+        string ValueType { get; }
         bool ParsesToConstantValue { get; }
         bool IsOverflowExpression { get; }
         bool IsMismatchExpression { get; }
@@ -32,8 +32,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             var ptValue = new ParseTreeValue()
             {
-                TypeName = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
-                ValueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
+                Token = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
                 ParsesToConstantValue = true,
                 IsOverflowExpression = ExceedsTypeExtents(value, declaredType),
             };
@@ -44,8 +44,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var ptValue = new ParseTreeValue()
             {
-                TypeName = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
-                ValueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
+                Token = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
                 ParsesToConstantValue = false,
             };
             return ptValue;
@@ -55,8 +55,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var ptValue = new ParseTreeValue()
             {
-                TypeName = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
-                ValueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
+                Token = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
                 ParsesToConstantValue = false,
                 IsMismatchExpression = true
             };
@@ -67,8 +67,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var ptValue = new ParseTreeValue()
             {
-                TypeName = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
-                ValueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
+                Token = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
                 ParsesToConstantValue = false,
                 _exceedsTypeRange = true
             };
@@ -78,7 +78,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public ParseTreeValue(string value, string declaredType)
         {
             _valueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor");
-            TypeName = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor");
+            ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor");
             ParsesToConstantValue = false;
             _exceedsTypeRange = null;
             _hashCode = value.GetHashCode();
@@ -107,9 +107,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        public string TypeName { private set;  get; }
+        public string ValueType { private set;  get; }
 
-        public string ValueText
+        public string Token
         {
             private set
             {
@@ -143,19 +143,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (!_exceedsTypeRange.HasValue)
                 {
-                    _exceedsTypeRange = ParsesToConstantValue ? ExceedsTypeExtents(_valueText, TypeName) : false;
+                    _exceedsTypeRange = ParsesToConstantValue ? ExceedsTypeExtents(_valueText, ValueType) : false;
                 }
                 return _exceedsTypeRange.Value;
             }
         }
 
-        public override string ToString() => ValueText;
+        public override string ToString() => Token;
 
         public override bool Equals(object obj)
         {
             if (obj is ParseTreeValue ptValue)
             {
-                return ptValue.ValueText == ValueText && ptValue.TypeName == TypeName;
+                return ptValue.Token == Token && ptValue.ValueType == ValueType;
             }
 
             return false;
@@ -204,12 +204,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, string destinationType, out IParseTreeValue newValue)
         {
             newValue = null;
-            if (LetCoercer.TryCoerceToken((parseTreeValue.TypeName, parseTreeValue.ValueText), destinationType, out string valueText))
+            if (LetCoercer.TryCoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), destinationType, out string valueText))
             {
                 newValue = ParseTreeValue.CreateValueType(valueText, destinationType);
                 return true;
             }
             return false;
+        }
+
+        public static double AsDouble(this IParseTreeValue parseTreeValue)
+        {
+            return double.Parse(LetCoercer.CoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Double));
         }
 
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out long newValue)
@@ -233,7 +238,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool TryLetCoerce<T>(this IParseTreeValue parseTreeValue, Func<string, T> parser, string typeName, out T newValue)
         {
             newValue = default;
-            if (LetCoercer.TryCoerceToken((parseTreeValue.TypeName, parseTreeValue.ValueText), typeName, out string valueText))
+            if (LetCoercer.TryCoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), typeName, out string valueText))
             {
                 newValue = parser(valueText);
                 return true;
@@ -244,7 +249,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool TryLetCoerceToDate(IParseTreeValue parseTreeValue, out ComparableDateValue value)
         {
             value = default;
-            if (LetCoercer.TryCoerceToken((parseTreeValue.TypeName, parseTreeValue.ValueText), Tokens.Date, out string valueText))
+            if (LetCoercer.TryCoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Date, out string valueText))
             {
                 var literal = new DateLiteralExpression(new ConstantExpression(new StringValue(valueText)));
                 value = new ComparableDateValue((DateValue)literal.Evaluate());

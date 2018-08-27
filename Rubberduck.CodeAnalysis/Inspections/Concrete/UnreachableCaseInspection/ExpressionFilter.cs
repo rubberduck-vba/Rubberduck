@@ -59,18 +59,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private readonly T _trueValue;
         private readonly T _falseValue;
-        private readonly string _filterTypeName;
+        private readonly string _selectExpressionType;
         private readonly int _hashCode;
         private string _toString;
         protected IParseTreeValue _selectExpressionValue;
 
-        public ExpressionFilter(TokenToValue<T> converter, string typeName)
+        public ExpressionFilter(TokenToValue<T> converter, string valueType)
         {
             Converter = converter;
-            _filterTypeName = typeName;
-            _hashCode = _filterTypeName.GetHashCode();
-            converter(Tokens.True, out _trueValue, typeName);
-            converter(Tokens.False, out _falseValue, typeName);
+            _selectExpressionType = valueType;
+            _hashCode = _selectExpressionType.GetHashCode();
+            converter(Tokens.True, out _trueValue, valueType);
+            converter(Tokens.False, out _falseValue, valueType);
             _selectExpressionValue = null;
         }
 
@@ -267,10 +267,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (FiltersTrueFalse) { return false; }
 
-            var parseTreeValue = expression is IsClauseExpression ? expression.LHSValue : expression.RHSValue;
-            if (!Converter(parseTreeValue.ValueText, out T expressionValue, _filterTypeName))
+            var parseTreeValue = expression is IsClauseExpression ? expression.LHS : expression.RHS;
+            if (!Converter(parseTreeValue.Token, out T expressionValue, _selectExpressionType))
             {
-                throw new ArgumentOutOfRangeException($"Unable to convert {parseTreeValue.ValueText} to {typeof(T)}");
+                throw new ArgumentOutOfRangeException($"Unable to convert {parseTreeValue.Token} to {typeof(T)}");
             }
 
             if (ComparablePredicateFilters.ContainsKey(lhs))
@@ -345,7 +345,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected virtual bool AddIsClause(IsClauseExpression expression)
         {
-            if (Converter(expression.LHS, out T value, _filterTypeName))
+            if (Converter(expression.LHS.Token, out T value, _selectExpressionType))
             {
                 IsDirty = true;
                 if (IsClauseAdders.ContainsKey(expression.OpSymbol))
@@ -398,7 +398,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private (T start, T end) ConvertRangeValues(string startVal, string endVal)
         {
-            if (!Converter(startVal, out T start, _filterTypeName) || !Converter(endVal, out T end, _filterTypeName))
+            if (!Converter(startVal, out T start, _selectExpressionType) || !Converter(endVal, out T end, _selectExpressionType))
             {
                 throw new ArgumentException();
             }
@@ -431,11 +431,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool IsOverflow(IRangeClauseExpression expression)
         {
-            if (expression.LHSValue != null && expression.LHSValue.IsOverflowExpression)
+            if (expression.LHS != null && expression.LHS.IsOverflowExpression)
             {
                 expression.IsOverflow = true;
             }
-            if (expression.RHSValue != null && expression.RHSValue.IsOverflowExpression)
+            if (expression.RHS != null && expression.RHS.IsOverflowExpression)
             {
                 expression.IsOverflow = true;
             }
@@ -444,9 +444,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool AddRangeOfValuesExpression(RangeOfValuesExpression rangeExpr)
         {
-            if (rangeExpr.LHSValue.ParsesToConstantValue && rangeExpr.RHSValue.ParsesToConstantValue)
+            if (rangeExpr.LHS.ParsesToConstantValue && rangeExpr.RHS.ParsesToConstantValue)
             {
-                (T start, T end) = ConvertRangeValues(rangeExpr.LHS, rangeExpr.RHS);
+                (T start, T end) = ConvertRangeValues(rangeExpr.LHS.Token, rangeExpr.RHS.Token);
                 var rov = new RangeOfValues(start, end);
                 if (!rov.IsMalformed)
                 {
@@ -463,14 +463,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private bool AddValueExpression(ValueExpression valueExpr)
         {
-            if (valueExpr.LHSValue.ParsesToConstantValue )
+            if (valueExpr.LHS.ParsesToConstantValue )
             {
-                if (Converter(valueExpr.LHSValue.ValueText, out T result, _filterTypeName))
+                if (Converter(valueExpr.LHS.Token, out T result, _selectExpressionType))
                 {
                     return FiltersValue(result) ? false : AddSingleValue(result);
                 }
                 //throw an exception
-                LetCoercer.CoerceToken((valueExpr.LHSValue.TypeName, valueExpr.LHSValue.ValueText), _filterTypeName);
+                LetCoercer.CoerceToken((valueExpr.LHS.ValueType, valueExpr.LHS.Token), _selectExpressionType);
             }
             return AddToContainer(Variables[VariableClauseTypes.Value], valueExpr.ToString());
         }
@@ -479,9 +479,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (FiltersTrueFalse) { return false; }
 
-            if (unaryExpr.LHSValue.ParsesToConstantValue)
+            if (unaryExpr.LHS.ParsesToConstantValue)
             {
-                if (Converter(unaryExpr.LHS, out T result, _filterTypeName))
+                if (Converter(unaryExpr.LHS.Token, out T result, _selectExpressionType))
                 {
                     return FiltersValue(result) ? false : AddSingleValue(result);
                 }
@@ -512,17 +512,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return false;
             }
 
-            if (!binary.LHSValue.ParsesToConstantValue && binary.RHSValue.ParsesToConstantValue)
+            if (!binary.LHS.ParsesToConstantValue && binary.RHS.ParsesToConstantValue)
             {
-                if (!Converter(binary.RHS, out T value, _filterTypeName))
+                if (!Converter(binary.RHS.Token, out T value, _selectExpressionType))
                 {
                     throw new ArgumentException();
                 }
 
-                return AddComparablePredicate(binary.LHS, binary);
+                return AddComparablePredicate(binary.LHS.Token, binary);
             }
 
-            if (!binary.LHSValue.ParsesToConstantValue && !binary.RHSValue.ParsesToConstantValue)
+            if (!binary.LHS.ParsesToConstantValue && !binary.RHS.ParsesToConstantValue)
             {
                 return AddToContainer(Variables[VariableClauseTypes.Predicate], binary.ToString());
             }

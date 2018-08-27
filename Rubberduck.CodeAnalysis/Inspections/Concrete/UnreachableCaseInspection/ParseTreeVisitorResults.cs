@@ -8,8 +8,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         IParseTreeValue GetValue(ParserRuleContext context);
         List<ParserRuleContext> GetChildResults(ParserRuleContext parent);
-        string GetTypeName(ParserRuleContext context);
-        string GetValueText(ParserRuleContext context);
+        string GetValueType(ParserRuleContext context);
+        string GetToken(ParserRuleContext context);
         bool Contains(ParserRuleContext context);
         bool TryGetValue(ParserRuleContext context, out IParseTreeValue value);
         void OnNewValueResult(object sender, ValueResultEventArgs e);
@@ -49,14 +49,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return results;
         }
 
-        public string GetTypeName(ParserRuleContext context)
+        public string GetValueType(ParserRuleContext context)
         {
-            return GetValue(context).TypeName;
+            return GetValue(context).ValueType;
         }
 
-        public string GetValueText(ParserRuleContext context)
+        public string GetToken(ParserRuleContext context)
         {
-            return GetValue(context).ValueText;
+            return GetValue(context).Token;
         }
 
         public bool Contains(ParserRuleContext context)
