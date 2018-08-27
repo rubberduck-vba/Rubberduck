@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
@@ -9,7 +10,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public abstract class ModuleBodyElementDeclaration : Declaration, IParameterizedDeclaration, ICanBeInterfaceMember, ICanBeDefaultMember
+    public abstract class ModuleBodyElementDeclaration : Declaration, IParameterizedDeclaration, IInterfaceExposable, ICanBeDefaultMember
     {
         protected ModuleBodyElementDeclaration(
             QualifiedMemberName name,
@@ -100,7 +101,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         /// <param name="interfaceMember">The member to test for implementation of.</param>
         /// <returns>True if this Declaration is a concrete implementation of interfaceMember.</returns>
-        protected abstract bool Implements(ICanBeInterfaceMember interfaceMember);
+        protected abstract bool Implements(IInterfaceExposable interfaceMember);
 
         /// <inheritdoc/>
         public bool IsInterfaceMember => this.IsInterfaceMember();
@@ -133,18 +134,32 @@ namespace Rubberduck.Parsing.Symbols
                 return (false, null);
             }
 
+            /*
+             * The following MS-VBAL rule effectively limits the the IdentifierName of an implemented interface member to the last token in 'identifiers':
+             *
+             * 5.2.4.2 - A class may not be used as an interface class if the names of any of its public variable or method
+             * methods contain an underscore character (Unicode u+005F).
+             *
+             * Note that there is NOT a corresponding restriction on the <class-type-name>. 
+             */
+
             var supertype = string.Join("_", identifiers.Take(identifiers.Length - 1));
 
             var implements = classModule.Supertypes.Cast<ClassModuleDeclaration>().FirstOrDefault(intrface =>
                 intrface.IdentifierName.Equals(supertype)
                 && intrface.References.Any(reference => ReferenceEquals(reference.ParentScoping, classModule)));
 
-            return (implements != null, implements);
+            if (implements == null)
+            {
+                return (false, null);
+            }
+
+            return implements.Members.Any(member => element.Implements(member as IInterfaceExposable)) ? (true, implements) : (false, null);
         }
 
         private static Declaration MemberImplemented(ModuleBodyElementDeclaration element)
         {
-            return element.InterfaceImplemented?.Members.FirstOrDefault(member => element.Implements(member as ICanBeInterfaceMember));
+            return element.InterfaceImplemented?.Members.FirstOrDefault(member => element.Implements(member as IInterfaceExposable));
         }
     }
 }

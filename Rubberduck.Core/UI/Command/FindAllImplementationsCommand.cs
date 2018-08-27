@@ -162,7 +162,7 @@ namespace Rubberduck.UI.Command
             {
                 implementations = _state.DeclarationFinder.FindAllImplementationsOfInterface(classModule);
             }
-            else if (target is ICanBeInterfaceMember member && member.IsInterfaceMember)
+            else if (target is IInterfaceExposable member && member.IsInterfaceMember)
             {
                 implementations = _state.DeclarationFinder.FindInterfaceImplementationMembers(target);
             }

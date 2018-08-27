@@ -129,37 +129,37 @@ namespace Rubberduck.Refactorings.ImplementInterface
         }
 
         private string GetInterfaceMember(Declaration member, string interfaceName)
-        {          
-            var template = string.Join(Environment.NewLine, "Private {0}{1} {2}{3}", MemberBody, "End {0}", string.Empty);
+        {
+            var template = string.Join(Environment.NewLine, Tokens.Private + " {0}{1} {2}{3}", MemberBody, Tokens.End + " {0}", string.Empty);
             var signature = $"{interfaceName}_{member.IdentifierName}({string.Join(", ", GetParameters(member))})";
-            var asType = $" As {member.AsTypeName}";
+            var asType = $" {Tokens.As} {member.AsTypeName}";
 
             switch (member.DeclarationType)
             {
                 case DeclarationType.Procedure:
-                    return string.Format(template, "Sub", string.Empty, signature, string.Empty);
+                    return string.Format(template, Tokens.Sub, string.Empty, signature, string.Empty);
                 case DeclarationType.Function:
-                    return string.Format(template, "Function", string.Empty, signature, asType);
+                    return string.Format(template, Tokens.Function, string.Empty, signature, asType);
                 case DeclarationType.PropertyGet:
-                    return string.Format(template, "Property", " Get", signature, asType);
+                    return string.Format(template, Tokens.Property, $" {Tokens.Get}", signature, asType);
                 case DeclarationType.PropertyLet:
-                    return string.Format(template, "Property", " Let", signature, string.Empty);
+                    return string.Format(template, Tokens.Property, $" {Tokens.Let}", signature, string.Empty);
                 case DeclarationType.PropertySet:
-                    return string.Format(template, "Property", " Set", signature, string.Empty);
+                    return string.Format(template, Tokens.Property, $" {Tokens.Set}", signature, string.Empty);
                 case DeclarationType.Variable:
                     var members = new List<string>
                     {
-                        string.Format(template, "Property", " Get", $"{interfaceName}_{member.IdentifierName}()", asType)
+                        string.Format(template, Tokens.Property, $" {Tokens.Get}", $"{interfaceName}_{member.IdentifierName}()", asType)
                     };
 
                     if (member.AsTypeName.Equals(Tokens.Variant) || !member.IsObject)
                     {
-                        members.Add(string.Format(template, "Property", " Let", signature, string.Empty));
+                        members.Add(string.Format(template, Tokens.Property, $" {Tokens.Let}", signature, string.Empty));
                     }
 
                     if (member.AsTypeName.Equals(Tokens.Variant) || member.IsObject)
                     {
-                        members.Add(string.Format(template, "Property", " Set", signature, string.Empty));
+                        members.Add(string.Format(template, Tokens.Property, $" {Tokens.Set}", signature, string.Empty));
                     }
 
                     return string.Join(Environment.NewLine, members);

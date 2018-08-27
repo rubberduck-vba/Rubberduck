@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class VariableDeclaration : Declaration, ICanBeInterfaceMember
+    public sealed class VariableDeclaration : Declaration, IInterfaceExposable
     {
         public VariableDeclaration(
             QualifiedMemberName qualifiedName,

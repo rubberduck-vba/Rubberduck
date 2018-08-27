@@ -156,7 +156,7 @@
     <Compile Include="PreProcessing\ICompilationArgumentsProvider.cs" />
     <Compile Include="PreProcessing\ICompilationArgumentsCache.cs" />
     <Compile Include="Rewriter\ModuleRewriterFactory.cs" />
-    <Compile Include="Symbols\ICanBeInterfaceMember.cs" />
+    <Compile Include="Symbols\IInterfaceExposable.cs" />
     <Compile Include="Symbols\ModuleBodyElementDeclaration.cs" />
     <Compile Include="Symbols\ModuleDeclaration.cs" />
     <Compile Include="Symbols\ParsingExceptions\ExceptionErrorListenerFactory.cs" />

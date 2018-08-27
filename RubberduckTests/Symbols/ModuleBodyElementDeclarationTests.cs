@@ -15,7 +15,7 @@ namespace RubberduckTests.Symbols
         [Category("Resolver")]
         public void FindFindInterfaceMemberMatchesDeclarationTypes()
         {
-            var intrface =
+            var interfaceModule =
                 @"Option Explicit
 
 Public Property Get Foo(Bar As Long) As Long
@@ -38,7 +38,7 @@ End Property
         ";
             var vbe = new MockVbeBuilder()
                 .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
-                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestInterface", ComponentType.ClassModule, interfaceModule, new Selection(1, 1))
                 .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
                 .AddProjectToVbeBuilder()
                 .Build();

@@ -1272,6 +1272,7 @@ End Sub";
         }
 
         [Category("Resolver")]
+        [Category("Interfaces")]
         [Test]
         public void DeclarationFinderCanCopeWithMultipleModulesImplementingTheSameInterface()
         {
@@ -1300,6 +1301,667 @@ End Sub
                 var interfaceDeclarations = state.DeclarationFinder.FindAllInterfaceMembers().ToList();
 
                 Assert.AreEqual(1, interfaceDeclarations.Count());
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void FindInterfaceImplementationMembersMatchesDeclarationTypes()
+        {
+            var intrface =
+@"Option Explicit
+
+Public Property Get Foo(Bar As Long) As Long
+End Property
+
+Public Property Let Foo(Bar As Long, NewValue As Long)
+End Property
+";
+
+            var implementation =
+@"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo(Bar As Long) As Long
+End Property
+
+Public Property Let TestInterface_Foo(Bar As Long, RHS As Long)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var declaration = declarations.Single(decl => decl.DeclarationType == DeclarationType.PropertyGet && decl.IdentifierName.Equals("Foo"));
+
+                var expected = declarations.Single(decl => decl.DeclarationType == DeclarationType.PropertyGet && decl.IdentifierName.Equals("TestInterface_Foo"));
+                var actual = state.DeclarationFinder.FindInterfaceImplementationMembers(declaration).ToList();
+                var results = actual.Count;
+
+                Assert.AreEqual(1, results, "Expected {0} Declarations, received {1}", expected, results);
+                Assert.AreEqual(expected, actual.First(), "Expected {0}, resolved to {1}", expected, actual);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void FindInterfaceMembersMatchesPublicVariables()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Bar As String
+
+Public Property Get Foo() As Long
+End Property
+
+Public Property Let Foo(rhs As Long)
+End Property
+";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Bar() As String
+End Property
+
+Public Property Let TestInterface_Bar(rhs As String)
+End Property
+
+Public Property Get TestInterface_Foo() As Long
+End Property
+
+Public Property Let TestInterface_Foo(rhs As Long)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var actual = state.DeclarationFinder.FindAllInterfaceMembers().Count();
+                const int expected = 3;
+
+                Assert.AreEqual(expected, actual, "Expected {0} Declarations, received {1}", expected, actual);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void FindInterfaceImplementationMembersMatchesPublicVariables()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Bar As String
+
+Public Property Get Foo() As Long
+End Property
+
+Public Property Let Foo(rhs As Long)
+End Property
+";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Bar() As String
+End Property
+
+Public Property Let TestInterface_Bar(rhs As String)
+End Property
+
+Public Property Get TestInterface_Foo() As Long
+End Property
+
+Public Property Let TestInterface_Foo(rhs As Long)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var declaration = declarations.Single(decl => decl.DeclarationType == DeclarationType.Variable && decl.IdentifierName.Equals("Bar"));
+
+                var expected = declarations.Where(decl => decl.DeclarationType.HasFlag(DeclarationType.Property) && decl.IdentifierName.Equals("TestInterface_Bar")).ToList();
+                var actual = state.DeclarationFinder.FindInterfaceImplementationMembers(declaration).ToList();
+                var results = actual.Count;
+
+                Assert.AreEqual(expected.Count, results, "Expected {0} Declarations, received {1}", expected.Count, results);
+                Assert.That(actual, Is.EquivalentTo(expected));
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void FindInterfaceImplementationMembersPublicVariantMatchesAllPropertyTypes()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Bar As Variant";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Bar() As Variant
+End Property
+
+Public Property Let TestInterface_Bar(rhs As Variant)
+End Property
+
+Public Property Set TestInterface_Bar(rhs As Variant)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var declaration = declarations.Single(decl => decl.DeclarationType == DeclarationType.Variable && decl.IdentifierName.Equals("Bar"));
+
+                var expected = declarations.Where(decl => decl.DeclarationType.HasFlag(DeclarationType.Property) && decl.IdentifierName.Equals("TestInterface_Bar")).ToList();
+                var actual = state.DeclarationFinder.FindInterfaceImplementationMembers(declaration).ToList();
+                var results = actual.Count;
+
+                Assert.AreEqual(expected.Count, results, "Expected {0} Declarations, received {1}", expected.Count, results);
+                Assert.That(actual, Is.EquivalentTo(expected));
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void FindInterfaceImplementationMembersPublicIntrinsicDoesNotMatchSet()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Bar As Long";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Bar() As Long
+End Property
+
+Public Property Let TestInterface_Bar(rhs As Long)
+End Property
+
+Public Property Set TestInterface_Bar(rhs As Variant)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var declaration = declarations.Single(decl => decl.DeclarationType == DeclarationType.Variable && decl.IdentifierName.Equals("Bar"));
+
+                var expected = declarations.Where(decl => decl.IdentifierName.Equals("TestInterface_Bar") &&
+                                                          decl.DeclarationType == DeclarationType.PropertyLet ||
+                                                          decl.DeclarationType == DeclarationType.PropertyGet).ToList();
+                var actual = state.DeclarationFinder.FindInterfaceImplementationMembers(declaration).ToList();
+                var results = actual.Count;
+
+                Assert.AreEqual(expected.Count, results, "Expected {0} Declarations, received {1}", expected.Count, results);
+                Assert.That(actual, Is.EquivalentTo(expected));
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void FindInterfaceImplementationMembersPublicObjectDoesNotMatchLet()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Bar As Object";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Bar() As Object
+End Property
+
+Public Property Let TestInterface_Bar(rhs As Variant)
+End Property
+
+Public Property Set TestInterface_Bar(rhs As Object)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var declaration = declarations.Single(decl => decl.DeclarationType == DeclarationType.Variable && decl.IdentifierName.Equals("Bar"));
+
+                var expected = declarations.Where(decl => decl.IdentifierName.Equals("TestInterface_Bar") &&
+                                                          decl.DeclarationType == DeclarationType.PropertySet ||
+                                                          decl.DeclarationType == DeclarationType.PropertyGet).ToList();
+                var actual = state.DeclarationFinder.FindInterfaceImplementationMembers(declaration).ToList();
+                var results = actual.Count;
+
+                Assert.AreEqual(expected.Count, results, "Expected {0} Declarations, received {1}", expected.Count, results);
+                Assert.That(actual, Is.EquivalentTo(expected));
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void FindFindInterfaceMemberMatchesDeclarationTypes()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Property Get Foo(Bar As Long) As Long
+End Property
+
+Public Property Let Foo(Bar As Long, NewValue As Long)
+End Property
+";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo(Bar As Long) As Long
+End Property
+
+Public Property Let TestInterface_Foo(Bar As Long, RHS As Long)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var declaration = declarations.Single(decl => decl.DeclarationType == DeclarationType.PropertyGet && decl.IdentifierName.Equals("TestInterface_Foo"));
+
+                var expected = declarations.Single(decl => decl.DeclarationType == DeclarationType.PropertyGet && decl.IdentifierName.Equals("Foo"));
+                var actual = (declaration as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
+
+                Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void FindFindInterfaceMemberNoResultWithoutMatchingDeclaration()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Property Let Foo(Bar As Long, NewValue As Long)
+End Property
+";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo(Bar As Long) As Long
+End Property
+
+Public Property Let TestInterface_Foo(Bar As Long, RHS As Long)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var declaration = declarations.Single(decl => decl.DeclarationType == DeclarationType.PropertyGet && decl.IdentifierName.Equals("TestInterface_Foo"));
+
+                var actual = (declaration as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
+
+                Assert.IsNull(actual, "Expected null, resolved to {0}", actual);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        public void ImplementsInterfaceMemberMatchesProperty()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Property Get Foo() As Long
+End Property
+
+Public Property Let Foo(rhs As Long)
+End Property
+";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo() As Long
+End Property
+
+Public Property Let TestInterface_Foo(rhs As Long)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var expected = declarations.Single(decl => decl.IdentifierName.Equals("Foo") && decl.DeclarationType == DeclarationType.PropertyGet);
+                var implementing = declarations.Single(decl => decl.IdentifierName.Equals("TestInterface_Foo") && decl.DeclarationType == DeclarationType.PropertyGet);
+
+                var actual = (implementing as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
+
+                Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void ImplementsInterfaceMemberMatchesPublicVariable()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Foo As Long";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo() As Long
+End Property
+
+Public Property Let TestInterface_Foo(rhs As Long)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var expected = declarations.Single(decl => decl.IdentifierName.Equals("Foo") && decl.DeclarationType == DeclarationType.Variable);
+                var implementing = declarations.Single(decl => decl.IdentifierName.Equals("TestInterface_Foo") && decl.DeclarationType == DeclarationType.PropertyGet);
+
+                var actual = (implementing as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
+
+                Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void ImplementsInterfaceMemberLetMatchesPublicIntrinsic()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Foo As Long";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo() As Long
+End Property
+
+Public Property Let TestInterface_Foo(rhs As Long)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var expected = declarations.Single(decl => decl.IdentifierName.Equals("Foo") && decl.DeclarationType == DeclarationType.Variable);
+                var implementing = declarations.Single(decl => decl.IdentifierName.Equals("TestInterface_Foo") && decl.DeclarationType == DeclarationType.PropertyLet);
+
+                var actual = (implementing as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
+
+                Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void ImplementsInterfaceMemberSetDoesNotMatchPublicIntrinsic()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Foo As Long";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo() As Long
+End Property
+
+Public Property Set TestInterface_Foo(rhs As Variant)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var implementing = declarations.Single(decl => decl.IdentifierName.Equals("TestInterface_Foo") && decl.DeclarationType == DeclarationType.PropertySet);
+
+                Assert.IsFalse((implementing as ModuleBodyElementDeclaration)?.IsInterfaceImplementation);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void ImplementsInterfaceMemberSetMatchesPublicObject()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Foo As Object";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo() As Object
+End Property
+
+Public Property Set TestInterface_Foo(rhs As Object)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var expected = declarations.Single(decl => decl.IdentifierName.Equals("Foo") && decl.DeclarationType == DeclarationType.Variable);
+                var implementing = declarations.Single(decl => decl.IdentifierName.Equals("TestInterface_Foo") && decl.DeclarationType == DeclarationType.PropertySet);
+
+                var actual = (implementing as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
+
+                Assert.AreEqual(expected, actual, "Expected {0}, resolved to {1}", expected, actual);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void ImplementsInterfaceMemberLetDoesNotMatchPublicObject()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Foo As Object";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo() As Object
+End Property
+
+Public Property Let TestInterface_Foo(rhs As Variant)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var implementing = declarations.Single(decl => decl.IdentifierName.Equals("TestInterface_Foo") && decl.DeclarationType == DeclarationType.PropertyLet);
+
+                Assert.IsFalse((implementing as ModuleBodyElementDeclaration)?.IsInterfaceImplementation);
+            }
+        }
+
+        [Test]
+        [Category("Resolver")]
+        [Category("Interfaces")]
+        public void ImplementsInterfaceMemberVariantMatchesLetAndSet()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Foo As Variant";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Public Property Get TestInterface_Foo() As Variant
+End Property
+
+Public Property Let TestInterface_Foo(rhs As Variant)
+End Property
+
+Public Property Set TestInterface_Foo(rhs As Variant)
+End Property
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface, new Selection(1, 1))
+                .AddComponent("TestImplementation", ComponentType.ClassModule, implementation, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var expected = declarations.Single(decl => decl.IdentifierName.Equals("Foo") && decl.DeclarationType == DeclarationType.Variable);
+                var setter = declarations.Single(decl => decl.IdentifierName.Equals("TestInterface_Foo") && decl.DeclarationType == DeclarationType.PropertySet);
+                var letter = declarations.Single(decl => decl.IdentifierName.Equals("TestInterface_Foo") && decl.DeclarationType == DeclarationType.PropertyLet);
+
+                var actualSetter = (setter as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
+                var actualLetter = (letter as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
+
+                Assert.AreEqual(expected, actualSetter, "Expected {0}, resolved to {1}", expected, actualSetter);
+                Assert.AreEqual(expected, actualLetter, "Expected {0}, resolved to {1}", expected, actualLetter);
             }
         }
 

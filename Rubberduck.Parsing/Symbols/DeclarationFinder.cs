@@ -33,7 +33,7 @@ namespace Rubberduck.Parsing.Symbols
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
         private IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
         private IDictionary<QualifiedSelection, List<IdentifierReference>> _referencesBySelection;
-        private IDictionary<QualifiedModuleName, List<IdentifierReference>> _referencesByModule;
+        private IReadOnlyDictionary<QualifiedModuleName, IReadOnlyList<IdentifierReference>> _referencesByModule;
         private IDictionary<QualifiedMemberName, List<IdentifierReference>> _referencesByMember;
 
         private Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
@@ -43,7 +43,7 @@ namespace Rubberduck.Parsing.Symbols
         private Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<ModuleBodyElementDeclaration>>> _membersByImplementsContext;
         private Lazy<IDictionary<ClassModuleDeclaration, List<Declaration>>> _interfaceMembers;
         private Lazy<IDictionary<ClassModuleDeclaration, List<ClassModuleDeclaration>>> _interfaceImplementions;
-        private Lazy<IDictionary<ICanBeInterfaceMember, List<ModuleBodyElementDeclaration>>> _implementationsByMember;
+        private Lazy<IDictionary<IInterfaceExposable, List<ModuleBodyElementDeclaration>>> _implementationsByMember;
 
         private Lazy<List<Declaration>> _nonBaseAsType;
         private Lazy<List<Declaration>> _eventHandlers;
@@ -129,7 +129,7 @@ namespace Rubberduck.Parsing.Symbols
                         .SelectMany(declaration => declaration.References)
                         .GroupBy(reference =>
                             Declaration.GetModuleParent(reference.ParentScoping).QualifiedName.QualifiedModuleName)
-                        .ToDictionary(),
+                        .ToReadonlyDictionary(),
                 () =>
                     _referencesByMember = declarations
                         .SelectMany(declaration => declaration.References)
@@ -169,7 +169,7 @@ namespace Rubberduck.Parsing.Symbols
             _interfaceMembers = new Lazy<IDictionary<ClassModuleDeclaration, List<Declaration>>>(FindAllIinterfaceMembersByModule, true);
             _membersByImplementsContext = new Lazy<IDictionary<VBAParser.ImplementsStmtContext, List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembersByImplementsContext, true);
             _interfaceImplementions = new Lazy<IDictionary<ClassModuleDeclaration, List<ClassModuleDeclaration>>>(FindAllImplementionsByInterface, true);
-            _implementationsByMember = new Lazy<IDictionary<ICanBeInterfaceMember, List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembersByMember, true);
+            _implementationsByMember = new Lazy<IDictionary<IInterfaceExposable, List<ModuleBodyElementDeclaration>>>(FindAllImplementingMembersByMember, true);
         }
 
         private IDictionary<(VBAParser.ImplementsStmtContext Context, Declaration Implementor), List<ModuleBodyElementDeclaration>> FindAllImplementingMembers()
@@ -195,7 +195,8 @@ namespace Rubberduck.Parsing.Symbols
                 output.Add((impl.Context, impl.IdentifierReference.ParentScoping),
                     ((ClassModuleDeclaration) impl.IdentifierReference.ParentScoping).Members.Where(item =>
                         item is ModuleBodyElementDeclaration member && ReferenceEquals(member.InterfaceImplemented,
-                            impl.IdentifierReference.Declaration)).Cast<ModuleBodyElementDeclaration>().ToList());
+                            impl.IdentifierReference.Declaration))
+                    .Cast<ModuleBodyElementDeclaration>().ToList());
             }
 
             return output;
@@ -210,11 +211,12 @@ namespace Rubberduck.Parsing.Symbols
                         .Where(type => type.ImplementedInterfaces.Contains(intrface)).ToList());
         }
 
-        private IDictionary<ICanBeInterfaceMember, List<ModuleBodyElementDeclaration>> FindAllImplementingMembersByMember()
+        private IDictionary<IInterfaceExposable, List<ModuleBodyElementDeclaration>> FindAllImplementingMembersByMember()
         {
             var implementations = _implementingMembers.Value.AllValues();
             return implementations
-                .GroupBy(member => (ICanBeInterfaceMember)member.InterfaceMemberImplemented)
+                
+                .GroupBy(member => (IInterfaceExposable)member.InterfaceMemberImplemented)
                 .ToDictionary(member => member.Key, member => member.ToList());
         }
 
@@ -231,7 +233,7 @@ namespace Rubberduck.Parsing.Symbols
                 .ToDictionary(
                     module => module,
                     module => module.Members
-                        .Where(member => member is ICanBeInterfaceMember candidate && candidate.IsInterfaceMember)
+                        .Where(member => member is IInterfaceExposable candidate && candidate.IsInterfaceMember)
                         .ToList());
         }
 
@@ -402,9 +404,10 @@ namespace Rubberduck.Parsing.Symbols
         /// <returns>The selected interface if found, null if not found.</returns>
         public ClassModuleDeclaration FindInterface(QualifiedSelection selection)
         {
-            return FindAllUserInterfaces().FirstOrDefault(declaration => declaration.References
-                .Where(refrnce => refrnce.Context.GetAncestor<VBAParser.ImplementsStmtContext>() != null)
-                .Any(reference => ReferenceEquals(reference.Declaration, declaration)));
+            return FindAllUserInterfaces()
+                .FirstOrDefault(declaration => declaration.References
+                    .Any(reference => reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>() != null 
+                                      && ReferenceEquals(reference.Declaration, declaration)));
         }
 
         /// <summary>
@@ -454,7 +457,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <returns>All concrete implementations of the passed interface declaration.</returns>
         public IEnumerable<ModuleBodyElementDeclaration> FindInterfaceImplementationMembers(Declaration interfaceMember)
         {
-            if (!(interfaceMember is ICanBeInterfaceMember member))
+            if (!(interfaceMember is IInterfaceExposable member))
             {
                 return Enumerable.Empty<ModuleBodyElementDeclaration>();
             }
@@ -1131,10 +1134,9 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Creates a dictionary of identifier references, keyed by module.
         /// </summary>
-        public IReadOnlyDictionary<QualifiedModuleName,IEnumerable<IdentifierReference>> IdentifierReferences()
+        public IReadOnlyDictionary<QualifiedModuleName, IReadOnlyList<IdentifierReference>> IdentifierReferences()
         {
-            return new ReadOnlyDictionary<QualifiedModuleName, IEnumerable<IdentifierReference>>(
-                _referencesByModule.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.AsEnumerable()));
+            return _referencesByModule;
         }
 
         /// <summary>
@@ -1142,7 +1144,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedModuleName module)
         {
-            return _referencesByModule.TryGetValue(module, out List<IdentifierReference> value)
+            return _referencesByModule.TryGetValue(module, out var value)
                 ? value
                 : Enumerable.Empty<IdentifierReference>();
         }

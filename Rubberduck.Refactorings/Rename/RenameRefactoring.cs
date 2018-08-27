@@ -135,7 +135,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             if (!IsValidTarget(inputTarget)) { return false; }
 
-            if (!(inputTarget is ICanBeInterfaceMember))
+            if (!(inputTarget is IInterfaceExposable))
             {
                 _model.Target = inputTarget;
                 return true;
@@ -297,7 +297,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private Declaration ResolveRenameTargetIfInterfaceImplementationSelected(Declaration userTarget)
         {
-            var interfaceMember = userTarget is ICanBeInterfaceMember member && member.IsInterfaceMember
+            var interfaceMember = userTarget is IInterfaceExposable member && member.IsInterfaceMember
                 ? userTarget
                 : (userTarget as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
 

@@ -48,6 +48,6 @@ namespace Rubberduck.Parsing.Symbols
             base.IsObject || (Parameters.OrderBy(p => p.Selection).LastOrDefault()?.IsObject ?? false);
 
         /// <inheritdoc/>
-        protected abstract override bool Implements(ICanBeInterfaceMember member);
+        protected abstract override bool Implements(IInterfaceExposable member);
     }
 }

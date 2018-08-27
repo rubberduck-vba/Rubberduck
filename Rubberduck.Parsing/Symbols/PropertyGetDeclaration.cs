@@ -83,7 +83,7 @@ namespace Rubberduck.Parsing.Symbols
         { }
 
         /// <inheritdoc/>
-        protected override bool Implements(ICanBeInterfaceMember member)
+        protected override bool Implements(IInterfaceExposable member)
         {
             if (ReferenceEquals(member, this))
             {
@@ -92,7 +92,7 @@ namespace Rubberduck.Parsing.Symbols
 
             return (member.DeclarationType == DeclarationType.PropertyGet || member.DeclarationType == DeclarationType.Variable)
                    && member.IsInterfaceMember
-                   && IsInterfaceImplementation
+                   && ((ClassModuleDeclaration)member.ParentDeclaration).Subtypes.Any(implementation => ReferenceEquals(implementation, ParentDeclaration))
                    && IdentifierName.Equals(member.ImplementingIdentifierName);
         }
     }

@@ -43,7 +43,7 @@ namespace Rubberduck.Parsing.Symbols
         private readonly List<Declaration> _members = new List<Declaration>();
         public IReadOnlyList<Declaration> Members => _members;
 
-        public void AddMember(Declaration member)
+        internal void AddMember(Declaration member)
         {
             _members.Add(member);
         }
