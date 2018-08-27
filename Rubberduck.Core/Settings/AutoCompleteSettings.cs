@@ -1,5 +1,4 @@
 ﻿using Rubberduck.AutoComplete;
-using Rubberduck.Parsing.VBA;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -19,6 +18,9 @@ namespace Rubberduck.Settings
     {
         [XmlArrayItem("AutoComplete", IsNullable = false)]
         public HashSet<AutoCompleteSetting> AutoCompletes { get; set; }
+
+        [XmlAttribute]
+        public bool IsEnabled { get; set; }
 
         [XmlAttribute]
         public bool CompleteBlockOnTab { get; set; }

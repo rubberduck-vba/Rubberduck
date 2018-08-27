@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="StringExtensionsArgumentException" xml:space="preserve">
-    <value>Žádné {0} instance z '{1}' uvnitř '{2}'</value>
+    <value>Žádných {0} instancí z '{1}' uvnitř '{2}'</value>
   </data>
 </root>

@@ -164,6 +164,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             { ComponentType.VBForm, DeclarationType.VbForm },
             { ComponentType.MDIForm, DeclarationType.MdiForm},
             { ComponentType.UserControl, DeclarationType.UserControl},
+            { ComponentType.DocObject, DeclarationType.DocObject},
             { ComponentType.ResFile, DeclarationType.ResFile},
             { ComponentType.RelatedDocument, DeclarationType.RelatedDocument},
             { ComponentType.PropPage, DeclarationType.PropPage},

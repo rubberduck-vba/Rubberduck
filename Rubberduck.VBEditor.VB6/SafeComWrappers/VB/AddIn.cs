@@ -30,7 +30,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 {CommandBarSite.MenuBar, new CommandBarLocation(MenuBar, WindowMenu)},
                 {CommandBarSite.CodeWindow, new CommandBarLocation(CodeWindow, ListProperties)},
                 {CommandBarSite.ProjectExplorer, new CommandBarLocation(ProjectExplorer, ProjectProperties)},
-                {CommandBarSite.MsForm, new CommandBarLocation(MsForm, UpdateUserControls)},
+                // {CommandBarSite.MsForm, new CommandBarLocation(MsForm, UpdateUserControls)}, // FIXME - quick hack for #4280
                 {CommandBarSite.MsFormControl, new CommandBarLocation(MsFormControl, ViewCode)}
             });
         }

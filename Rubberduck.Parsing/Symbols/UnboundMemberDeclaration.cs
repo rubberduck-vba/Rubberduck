@@ -18,20 +18,21 @@ namespace Rubberduck.Parsing.Symbols
 
         public UnboundMemberDeclaration(Declaration parentDeclaration, ParserRuleContext unboundIdentifier, ParserRuleContext callingContext, IEnumerable<IAnnotation> annotations) :
             base(new QualifiedMemberName(parentDeclaration.QualifiedName.QualifiedModuleName, unboundIdentifier.GetText()),
-                 parentDeclaration,
-                 parentDeclaration,
-                 "Variant",
-                 string.Empty,
-                 false,
-                 false,
-                 Accessibility.Implicit, 
-                 DeclarationType.UnresolvedMember, 
-                 unboundIdentifier, 
-                 unboundIdentifier.GetSelection(), 
-                 false, 
-                 null,
-                 true, 
-                 annotations)
+                parentDeclaration,
+                parentDeclaration,
+                "Variant",
+                string.Empty,
+                false,
+                false,
+                Accessibility.Implicit,
+                DeclarationType.UnresolvedMember,
+                unboundIdentifier,
+                null,
+                unboundIdentifier.GetSelection(),
+                false,
+                null,
+                true,
+                annotations)
         {
             CallingContext = callingContext;
         }

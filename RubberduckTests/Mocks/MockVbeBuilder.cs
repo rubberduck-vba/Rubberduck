@@ -93,19 +93,19 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="name">The name of the project to build.</param>
         /// <param name="protection">A value that indicates whether the project is protected.</param>
-        public MockProjectBuilder ProjectBuilder(string name, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return ProjectBuilder(name, string.Empty, protection);
+            return ProjectBuilder(name, string.Empty, protection, projectType);
         }
 
-        public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return new MockProjectBuilder(name, filename, protection, () => _vbe.Object, this);
+            return new MockProjectBuilder(name, filename, protection, projectType, () => _vbe.Object, this);
         }
 
-        public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return new MockProjectBuilder(name, filename, projectId, protection, () => _vbe.Object, this);
+            return new MockProjectBuilder(name, filename, projectId, protection, projectType, () => _vbe.Object, this);
         }
 
         /// <summary>
