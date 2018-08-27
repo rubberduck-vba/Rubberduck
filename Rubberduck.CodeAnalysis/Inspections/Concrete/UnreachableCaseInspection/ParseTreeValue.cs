@@ -213,9 +213,16 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         public static double AsDouble(this IParseTreeValue parseTreeValue)
-        {
-            return double.Parse(LetCoercer.CoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Double));
-        }
+            => double.Parse(LetCoercer.CoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Double));
+
+        public static decimal AsCurrency(this IParseTreeValue parseTreeValue)
+            => decimal.Parse(LetCoercer.CoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Currency));
+
+        public static long AsLong(this IParseTreeValue parseTreeValue)
+            => long.Parse(LetCoercer.CoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Long));
+
+        public static bool AsBoolean(this IParseTreeValue parseTreeValue)
+            =>LetCoercer.CoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Boolean).Equals(Tokens.True);
 
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out long newValue)
             => TryLetCoerce(parseTreeValue, long.Parse, Tokens.Long, out newValue);

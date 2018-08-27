@@ -188,11 +188,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return _valueFactory.CreateExpression($"{LogicalOperators.NOT} {parseTreeValue.Token}", opType);
             }
 
-            if (parseTreeValue.TryLetCoerce(out long value))
-            {
-                return _valueFactory.CreateDeclaredType((~value).ToString(CultureInfo.InvariantCulture), opProvider.OperatorDeclaredType);
-            }
-            throw new OverflowException($"Unable to convert {parseTreeValue} to Long");
+            var value = parseTreeValue.AsLong();
+            return _valueFactory.CreateDeclaredType((~value).ToString(CultureInfo.InvariantCulture), opProvider.OperatorDeclaredType);
         }
 
         private IParseTreeValue EvaluateLogicalOperator(string opSymbol, IParseTreeValue LHS, IParseTreeValue RHS)
@@ -303,7 +300,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (opProvider.OperatorEffectiveType.Equals(Tokens.Date))
             {
-                
                 if (!(LHS.TryLetCoerce(Tokens.Double, out effLHS) && RHS.TryLetCoerce(Tokens.Double, out effRHS)))
                 {
                     return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorEffectiveType);
@@ -331,10 +327,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Date))
                 {
                     var result = _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, null, (double a, double b) => { return a + b; }), Tokens.Double);
-                    //if (result.TryLetCoerce(out double value))
-                    //{
-                    //    return _valueFactory.CreateDate(value);
-                    //}
                     return _valueFactory.CreateDate(result.AsDouble());
                 }
                 return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a + b; }, (double a, double b) => { return a + b; }), opProvider.OperatorDeclaredType);
@@ -343,16 +335,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (LHS.ValueType.Equals(Tokens.Date) && RHS.ValueType.Equals(Tokens.Date))
                 {
-                    //var lhsValue = LHS.AsDouble();
-                    //var rhsValue = RHS.AsDouble();
                     return _valueFactory.CreateDate(LHS.AsDouble() - RHS.AsDouble());
-                    //if (LHS.TryLetCoerce(out double lhsValue) && RHS.TryLetCoerce(out double rhsValue))
-                    //{
-                    //    var diff = lhsValue - rhsValue;
-                    //    return _valueFactory.CreateDate(diff);
-                    //}
-                    ////TODO: Why is this thrown explicitly rather than from the LetCoercer?
-                    //throw new OverflowException();
                 }
                 return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a - b; }, (double a, double b) => { return a - b; }), opProvider.OperatorDeclaredType);
             }
@@ -396,68 +379,54 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<decimal, decimal, decimal> DecimalCalc, Func<double, double, double> DoubleCalc)
         {
+            if (DecimalCalc is null && DoubleCalc is null)
+            {
+                throw new ArgumentException();
+            }
+
             if (!(DecimalCalc is null) && LHS.TryLetCoerce(out decimal lhsValue) && RHS.TryLetCoerce(out decimal rhsValue))
             {
                 return DecimalCalc(lhsValue, rhsValue).ToString();
             }
-            else if (!(DoubleCalc is null) && LHS.TryLetCoerce(out double lhsDblValue) && RHS.TryLetCoerce(out double rhsDblValue))
-            {
-                return DoubleCalc(lhsDblValue, rhsDblValue).ToString();
-            }
-            throw new OverflowException();
+            return DoubleCalc(LHS.AsDouble(), RHS.AsDouble()).ToString();
         }
 
         private string Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<decimal, decimal, bool> DecimalCompare, Func<double, double, bool> DoubleCompare)
         {
+            if (DecimalCompare is null && DoubleCompare is null)
+            {
+                throw new ArgumentException();
+            }
+
             if (!(DecimalCompare is null) && LHS.TryLetCoerce(out decimal lhsValue) && RHS.TryLetCoerce(out decimal rhsValue))
             {
                 return DecimalCompare(lhsValue, rhsValue) ? Tokens.True : Tokens.False;
             }
-            else if (!(DoubleCompare is null) && LHS.TryLetCoerce(out double lhsDblValue) && RHS.TryLetCoerce(out double rhsDblValue))
-            {
-                return DoubleCompare(lhsDblValue, rhsDblValue) ? Tokens.True : Tokens.False;
-            }
-            throw new OverflowException();
+            return DoubleCompare(LHS.AsDouble(), RHS.AsDouble()) ? Tokens.True : Tokens.False;
         }
 
         private string Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<string, string, bool> StringComp)
         {
-            if (!(StringComp is null))
-            {
-                return StringComp(LHS.Token, RHS.Token) ? Tokens.True : Tokens.False;
-            }
-            throw new ArgumentNullException();
+            var compare = StringComp ?? throw new ArgumentException();
+            return compare(LHS.Token, RHS.Token) ? Tokens.True : Tokens.False;
         }
 
         private bool Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<bool, bool, bool> BoolCompare)
         {
-            if (BoolCompare != null)
-            {
-                if (LHS.TryLetCoerce(out bool lhsValue) && RHS.TryLetCoerce(out bool rhsValue))
-                {
-                    return BoolCompare(lhsValue, rhsValue);
-                }
-                throw new OverflowException();
-            }
-            throw new ArgumentNullException();
+            var compare = BoolCompare ?? throw new ArgumentException();
+            return compare(LHS.AsBoolean(), RHS.AsBoolean());
         }
 
         private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<long, long, long> LogicCalc)
         {
-            if (!(LogicCalc is null) && LHS.TryLetCoerce(out long lhsValue) && RHS.TryLetCoerce(out long rhsValue))
-            {
-                return LogicCalc(lhsValue, rhsValue).ToString();
-            }
-            throw new ArgumentNullException();
+            var calc = LogicCalc ?? throw new ArgumentException();
+            return calc(LHS.AsLong(), RHS.AsLong()).ToString();
         }
 
         private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<bool, bool, bool> LogicCalc)
         {
-            if (!(LogicCalc is null) && LHS.TryLetCoerce(out long lhsValue) && RHS.TryLetCoerce(out long rhsValue))
-            {
-                return LogicCalc(lhsValue != 0, rhsValue != 0).ToString();
-            }
-            throw new ArgumentNullException();
+            var calc = LogicCalc ?? throw new ArgumentException();
+            return calc(LHS.AsLong() != 0, RHS.AsLong() != 0).ToString();
         }
 
         private bool IsSupportedSymbol(string opSymbol)
