@@ -98,7 +98,7 @@ namespace Rubberduck
 
         public void OnStartupComplete(ref Array custom)
         {
-            InitializeAddIn();
+            InitializeAddIn();            
         }
 
         public void OnBeginShutdown(ref Array custom)
@@ -198,8 +198,8 @@ namespace Rubberduck
                     RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
-            {
-                splash?.Dispose();
+            {                
+                splash?.Dispose();                
             }
         }
 

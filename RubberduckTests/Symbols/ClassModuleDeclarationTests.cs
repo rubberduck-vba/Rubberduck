@@ -246,7 +246,7 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestFakeClassModule(Declaration parentDeclatation, string name)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Public, DeclarationType.ClassModule, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Public, DeclarationType.ClassModule, null, null, Selection.Home, true, null);
             }
 
 

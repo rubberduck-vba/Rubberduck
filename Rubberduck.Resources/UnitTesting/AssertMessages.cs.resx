@@ -117,97 +117,97 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Assert_ComException" xml:space="preserve">
-    <value>Unexpected COM exception while running tests.</value>
-  </data>
   <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
-    <value>expected has {0} dimensions; actual has {1} dimensions. {2}</value>
+    <value>očekáváné má {0} dimenzí; aktuální má {1} dimensí. {2}</value>
     <comment>{0} and {1} are dimension numbers (1, 2, etc.), {2} = message parameter.  This should always be at the end.</comment>
   </data>
   <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
-    <value>OK, Rubberduck asserted.  Now what?</value>
+    <value>OK. Rubberduck je assertován. Co teď?</value>
     <comment>Reported when an AssertClass is passed as a parameter to a faked function.</comment>
   </data>
   <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
-    <value>Expected: Stack overflow?; Actual: Guard clause.</value>
+    <value>Očekáváno: Stack overflow?; Aktuální: Ochranná doložka.</value>
     <comment>Reported when an IFake interface is passed as a parameter to a faked function.</comment>
   </data>
   <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
-    <value>IVerify too.</value>
+    <value>IVerify také.</value>
     <comment>Reported when an IVerify interface is passed as a parameter to a faked function.</comment>
   </data>
   <data name="Assert_FailedMessageFormat" xml:space="preserve">
-    <value>{0} assertion failed. {1}</value>
+    <value>{0} assert zkouška selhala. {1}</value>
     <comment>{0} = method placeholder (i.e. AreEqual), {1} = message parameter.  This should always be at the end.</comment>
   </data>
-  <data name="Assert_GenericException" xml:space="preserve">
-    <value>Unexpected exception while running tests.</value>
-  </data>
   <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
-    <value>Invalid setup of IFake {0}. PassThrough property must be False.</value>
+    <value>Nesprávné nastavení IFake {0}. PassThrough vlastnost musí být False.</value>
     <comment>{0} = name of the function being faked.</comment>
   </data>
   <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: expected has an LBound of {1}; actual has an LBound of {2}. {3}</value>
+    <value>Rozměr {0}: očekávána hodnota LBound {1}; aktuální hodnota LBound {2}. {3}</value>
     <comment>{0} = dimension number, {1} and {2} = LBound numbers, {3} = message parameter.  This should always be at the end.</comment>
   </data>
-  <data name="Assert_MismatchedTypes" xml:space="preserve">
-    <value>[expected] and [actual] values are not the same type.</value>
-  </data>
-  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
-    <value>Neither [expected] or [actual] is an array.</value>
-  </data>
   <data name="Assert_NotImplemented" xml:space="preserve">
-    <value>Not implemented.</value>
+    <value>Není implementováno.</value>
     <comment>Placeholder text for planned functionality.</comment>
   </data>
   <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
-    <value>{0} is not an array.</value>
+    <value>{0} není typu pole.</value>
     <comment>{0} is either [expected] or [actual]</comment>
   </data>
   <data name="Assert_ParameterResultFormat" xml:space="preserve">
-    <value>Expected: {0}; Actual: {1}. {2}</value>
+    <value>Očekáváno: {0}; Aktuální: {1}. {2}</value>
     <comment>{0} = expected value, {1} = actual value, {2} = optional user supplied message (always last)</comment>
   </data>
   <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
-    <value>[expected] is a reference type and [actual] is a value type.</value>
+    <value>[očekáváno] je typu reference a [aktuální] je typu hodnota.</value>
   </data>
   <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
-    <value>Dimension {0}: expected has a UBound of {1}; actual has a UBound of {2}. {3}</value>
+    <value>Rozměr {0}" očekávána hodnota UBound {1}; aktuální hodnota UBound {2}. {3}</value>
     <comment>{0} = dimension number, {1} and {2} = UBound numbers, {3} = message parameter.  This should always be at the end.</comment>
   </data>
   <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
-    <value>[expected] and [actual] are arrays. Consider using {0}.</value>
+    <value>[očekáváno] a [aktuální] jsou typu pole. Zvažte použití {0}.</value>
     <comment>{0} is either Assert.SequenceEquals or Assert.NotSequenceEquals.</comment>
   </data>
   <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
-    <value>[expected] and [actual] are Nothing. Consider using {0}.</value>
+    <value>[očekáváno] a [aktuální] jsou "Nothing". Zvažte použití {0}.</value>
     <comment>{0} is either Assert.AreSame or Assert.AreNotSame.</comment>
   </data>
   <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
-    <value>[expected] and [actual] are reference types. Consider using {0}.</value>
+    <value>[očekáváno] a [aktuální] jsou typu reference. Zvažte použití {0}.</value>
     <comment>{0} is either Assert.AreSame or Assert.AreNotSame.</comment>
   </data>
   <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
-    <value>[expected] and [actual] are value types. Consider using {0}.</value>
+    <value>[očekáváno] a [aktuální] jsou typu hodnota. Zvažte použití {0}.</value>
     <comment>{0} is either Assert.AreEqual or Assert.AreNotEqual.</comment>
   </data>
-  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
-    <value>[expected] is a value type and [actual] is a reference type.</value>
-  </data>
-  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
-    <value>Rubberduck could not process the invocation results.</value>
-  </data>
   <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
-    <value>No matching invocation for parameter {0}; Only {1} invocations. {2}</value>
+    <value>Žádná odpovídající volání parametru {0}; Pouze {1} volání. {2}</value>
     <comment>{0} = parameter name, {1} = number of invokes, {2} = optional user supplied message (always last)</comment>
   </data>
   <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
-    <value>Parameter {0} was not a numeric value on invocation {1}. {2}</value>
+    <value>Parametr {0} nebyl u volání {1} číselná hodnota. {2}</value>
     <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
   </data>
   <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
-    <value>Parameter {0} was not passed on invocation {1}. {2}</value>
+    <value>Parametr {0} nebyl u volání {1} předán. {2}</value>
     <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
+  </data>
+  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
+    <value>[očekáváno] je typu hodnota a [aktuální] je typu reference.</value>
+  </data>
+  <data name="Assert_MismatchedTypes" xml:space="preserve">
+    <value>[očekáváno] a [aktuální] hodnoty nejsou stejného typu</value>
+  </data>
+  <data name="Assert_ComException" xml:space="preserve">
+    <value>Neočekávaná COM výjimka v průběhu běhu testů.</value>
+  </data>
+  <data name="Assert_GenericException" xml:space="preserve">
+    <value>Neočekávaná výjimka v průběhu běhu testů.</value>
+  </data>
+  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
+    <value>Ani [očekáváno] nebo [aktuální] nejsou typu pole.</value>
+  </data>
+  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
+    <value>Rubberduck nebyl schopen zpracovat výsledky volání.</value>
   </data>
 </root>

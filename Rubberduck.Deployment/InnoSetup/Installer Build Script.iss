@@ -14,7 +14,7 @@
 #define Tlb64bit "Rubberduck.x64.tlb"
 #define DllFullPath BuildDir + AddinDLL
 #define Tlb32bitFullPath BuildDir + Tlb32bit
-#define Tlb64bitFullPath BuildDir + Tlb64bit 
+#define Tlb64bitFullPath BuildDir + Tlb64bit
 #define AppVersion GetFileVersion(BuildDir + "Rubberduck.dll")
 #define AppPublisher "Rubberduck"
 #define AppURL "http://rubberduckvba.com"
@@ -37,7 +37,7 @@
 #pragma message "AppPublisher: " + AppPublisher
 #pragma message "AppURL: " + AppURL
 #pragma message "License: " + License
-#pragma message "OutputDirectory: " + OutputDirectory 
+#pragma message "OutputDirectory: " + OutputDirectory
 #pragma message "AddinProgId: " + AddinProgId
 #pragma message "AddinCLSID: " + AddInCLSID
 
@@ -82,6 +82,7 @@ WizardImageFile=InstallerBitMap.bmp
 Name: "English"; MessagesFile: "compiler:Default.isl"
 Name: "French"; MessagesFile: "compiler:Languages\French.isl"
 Name: "German"; MessagesFile: "compiler:Languages\German.isl"
+Name: "Czech"; MessagesFile: "compiler:Languages\Czech.isl"
 
 [Dirs]
 ; Make folder "readonly" to support icons (it does not actually make folder readonly. A weird Windows quirk)
@@ -109,7 +110,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 
 ; Commneted out because we don't want to delete users setting when they are just
 ; uninstalling to install another version of Rubberduck. Considered prompting to
-; delete but not for right now. 
+; delete but not for right now.
 ; [UninstallDelete]
 ; Type: filesandordirs; Name: "{userappdata}\{#AppName}"
 
@@ -119,6 +120,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 #include <English.CustomMessages.iss>
 #include <French.CustomMessages.iss>
 #include <German.CustomMessages.iss>
+#include <Czech.CustomMessages.iss>
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"
@@ -148,38 +150,38 @@ const
    EveryoneAppId = '{979AFF96-DD9E-4FC2-802D-9E0C36A60D09}';
    PerUserAppMode = 'CurrentUser';
    PerUserAppId = '{DF0E0E6F-2CED-482E-831C-7E9721EB66AA}';
-   
+
   ///<remarks>
   ///Pseudo-Bitwise enum to support functions for
   ///checking previous versions of different modes.
-  ///Pascal scripting doesn't have bitwise operators 
+  ///Pascal scripting doesn't have bitwise operators
   ///so we improvise....
   ///<remarks>
-  NoneIsInstalled = 0; 
+  NoneIsInstalled = 0;
   PerUserIsInstalled = 1;
-  EveryoneIsInstalled = 2; 
+  EveryoneIsInstalled = 2;
   BothAreInstalled = 3;
 
 var
   ///<remarks>
-  ///Flag to indicate that we automatically skipped pages during an 
+  ///Flag to indicate that we automatically skipped pages during an
   ///elevated install.
   ///
-  ///The flag should be only changed within the <see cref="ShouldSkipPage" /> 
+  ///The flag should be only changed within the <see cref="ShouldSkipPage" />
   ///event function. Treat it as read-only in all other contexts.
   ///</remarks>
   PagesSkipped: Boolean;
 
   ///<remarks>
   ///Custom page to select whether the installer should run for the
-  ///current user only or for all users (requiring elevation). 
+  ///current user only or for all users (requiring elevation).
   ///Configured in the WizardInitialize event function.
   ///</remarks>
   InstallForWhoOptionPage: TInputOptionWizardPage;
 
   ///<remarks>
   ///Custom page to indicate whether the installer should create per-user
-  ///registry key to make VBE addin available to the application. 
+  ///registry key to make VBE addin available to the application.
   ///<see cref="RegisterAddIn" />
   ///</remakrs>
   RegisterAddInOptionPage: TInputOptionWizardPage;
@@ -193,10 +195,10 @@ var
 
   ///<remarks>
   ///When the non-elevated installer launches the elevated installer
-  ///via the <see cref="Elevate" />, it will pass in a switch. This 
-  ///helps us to know that the elevated installer was started in this 
+  ///via the <see cref="Elevate" />, it will pass in a switch. This
+  ///helps us to know that the elevated installer was started in this
   ///manner rather than user right-clicking and choosing "Run As Administrator".
-  ///This mainly influences whether we should skip the pages. Treat it 
+  ///This mainly influences whether we should skip the pages. Treat it
   ///as read-only in all contexts other than <see cref="InitializeWizard" />.
   ///<remarks>
   HasElevateSwitch : Boolean;
@@ -205,7 +207,7 @@ var
   ///Indicates that the installer can only run in per-user only. This is typically
   ///when there is a previous version of Rubberduck and the user either won't or
   ///can't uninstall it. Therefore, we cannot safely install using all-user mode
-  ///in this context. This is set in the <see cref="SetupInitialize" /> event 
+  ///in this context. This is set in the <see cref="SetupInitialize" /> event
   ///function and should be read-only in all other contexts.
   ///</remarks>
   PerUserOnly : Boolean;
@@ -214,7 +216,7 @@ var
 
 ///<remarks>
 ///Used to select correct subtype of Win32 API
-///based on the installer's encoding. 
+///based on the installer's encoding.
 ///<remarks>
 #ifdef UNICODE
   #define AW "W"
@@ -229,7 +231,7 @@ var
 function ShellExecute(hwnd: HWND; lpOperation: string; lpFile: string;
   lpParameters: string; lpDirectory: string; nShowCmd: Integer): HINSTANCE;
   external 'ShellExecute{#AW}@shell32.dll stdcall';
-  
+
 // Helper functions section
 
 ///<remarks>
@@ -249,7 +251,7 @@ end;
 ///</remarks>
 function CmdLineParamExists(const Value: string): Boolean;
 var
-  I: Integer;  
+  I: Integer;
 begin
   Result := False;
   for I := 1 to ParamCount do
@@ -261,16 +263,16 @@ begin
 end;
 
 ///<remarks>
-///Used to determine whether a install directory that user 
-///selected is in fact writable by the user, especially 
-///for non-elevated installation. 
+///Used to determine whether a install directory that user
+///selected is in fact writable by the user, especially
+///for non-elevated installation.
 ///</remarks>
 function HaveWriteAccessToApp: Boolean;
 var
   PathName: string;
   FileName: string;
 begin
-  
+
   //DirExists() will return true if the path has a ending backslash
   //so we must take care to remove the backslash while we locate a
   //existent directory to avoid trying to create a file to a directory
@@ -278,7 +280,7 @@ begin
   //the first existent directory, we should be able to create directories
   PathName := RemoveBackslash(WizardDirValue);
   Log('Starting PathName: ' + PathName);
-    
+
   while not DirExists(PathName) do
   begin
      PathName := RemoveBackSlash(ExtractFilePath(PathName));
@@ -492,7 +494,7 @@ end;
 ///<remarks>
 ///Helper function used in the Registry section to indicate whether
 ///the item should be installed. For example, HKLM registry requires
-///elevated context, so the function must return true, while HKCU 
+///elevated context, so the function must return true, while HKCU
 ///counterpart will expect the opposite to be installed. This prevents
 ///comparable item being installed into both places.
 ///</remarks>
@@ -504,7 +506,7 @@ end;
 ///<remarks>
 ///Helper function used in the File section to assess whether an
 ///file(s) should be installed based on whether there's privilege
-///to do so. This guards against the case of both the non-elevated 
+///to do so. This guards against the case of both the non-elevated
 ///installer and the elevated installer installing same files into
 ///same place, which will cause problems. This function ensures only
 ///one or other mode will actually install the files.
@@ -547,7 +549,7 @@ end;
 ///</remarks>
 procedure RegisterAddin();
 begin
-    if IsWin64() then 
+    if IsWin64() then
     begin
       RegisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}', false);
       RegisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}', false);
@@ -565,7 +567,7 @@ end;
 ///</remarks>
 procedure UnregisterAddin();
 begin
-  if IsWin64() then 
+  if IsWin64() then
   begin
     UnregisterAddinForIDE(HKCU64, 'Software\Microsoft\VBA\VBE\6.0\Addins64', '{#AddinProgId}');
     UnregisterAddinForIDE(HKCU32, 'Software\Microsoft\VBA\VBE\6.0\Addins', '{#AddinProgId}');
@@ -579,7 +581,7 @@ begin
 end;
 
 ///<remarks>
-///Generate AppId based on whether it's going to be 
+///Generate AppId based on whether it's going to be
 ///per-user or for all users. This enable separate
 ///install/uninstall of each mode. Used by AppId
 ///directive in the [Setup] section.
@@ -587,8 +589,8 @@ end;
 ///<param name="AppMode">
 ///If value is 'peruser', then returns per-user AppId
 ///If value is 'everyone', then returns everyone AppId
-///Otherwise if left blank or contains invalid value, returns 
-///the AppId based on ShouldInstallAllUsers 
+///Otherwise if left blank or contains invalid value, returns
+///the AppId based on ShouldInstallAllUsers
 ///(e.g. based on user's selection.)
 ///</param>
 function GetAppId(AppMode: string): string;
@@ -605,7 +607,7 @@ begin
 end;
 
 ///<remarks>
-///Used to help disambiguate multiple installs of Rubberduck 
+///Used to help disambiguate multiple installs of Rubberduck
 ///by providing a suffix to indicate which mode it is
 ///</remarks>
 function GetAppSuffix(): string;
@@ -627,7 +629,7 @@ end;
 
 ///<remarks>
 ///Prevent creating an uninstaller from the non-elevated installer
-///The elevated installer will do it instead. Otherwise, we get 
+///The elevated installer will do it instead. Otherwise, we get
 ///weird behavior & errors when uninstalling mixed mode.
 ///</remarks>
 function ShouldCreateUninstaller(): boolean;
@@ -669,7 +671,7 @@ end;
 
 ///<remarks>
 ///Encapuslates the check for previous versions
-///from <see cref="GetUninstallString" /> as a 
+///from <see cref="GetUninstallString" /> as a
 ///boolean result
 ///</remarks>
 function IsUpgrade(): boolean;
@@ -692,7 +694,7 @@ var
 begin
     PerUserExists := (GetUninstallString(PerUserAppId) <> '');
     EveryoneExists := (GetUninstallString(EveryoneAppId) <> '')
-    
+
     if PerUserExists and EveryoneExists then
       result := BothAreInstalled
     else if PerUserExists and not EveryoneExists then
@@ -783,7 +785,7 @@ end;
 
 ///<remarks>
 ///This is the first event of the installer, fires prior to the wizard
-///being initialized. This is primarily used to validate that the 
+///being initialized. This is primarily used to validate that the
 ///pre-requisites are met, in this case, pre-existence of .NET framework.
 ///</remarks>
 function InitializeSetup(): Boolean;
@@ -795,7 +797,7 @@ begin
   begin
     Log('User does not have the prerequisite .NET framework installed');
     MsgBox(ExpandConstant('{cm:NETFramework46NotInstalled}'), mbCriticalError, mb_Ok);
-    ShellExec('open', 'https://www.microsoft.com/net/download/dotnet-framework-runtime/net46', '', '', SW_SHOW, ewNoWait, ErrorCode); 
+    ShellExec('open', 'https://www.microsoft.com/net/download/dotnet-framework-runtime/net46', '', '', SW_SHOW, ewNoWait, ErrorCode);
     Result := False;
   end
   else
@@ -806,10 +808,10 @@ begin
 end;
 
 ///<remarks>
-///The second event of installer allow us to customize the wizard by 
-///assessing whether we were launched in elevated context from an 
+///The second event of installer allow us to customize the wizard by
+///assessing whether we were launched in elevated context from an
 ///non-elevated installer; <see cref="HasElevateSwitch" />. We then
-///set up the <see cref="InstallForWhoOptionPage" /> and 
+///set up the <see cref="InstallForWhoOptionPage" /> and
 ///<see cref="RegisterAddInOptionPage" /> pages. In both cases, their
 ///behavior differs depending on whether we are elevated, and need to be
 ///configured accordingly.
@@ -827,7 +829,7 @@ begin
   InstallForWhoOptionPage :=
     CreateInputOptionPage(
       wpWelcome,
-      ExpandConstant('{cm:InstallPerUserOrAllUsersCaption}'), 
+      ExpandConstant('{cm:InstallPerUserOrAllUsersCaption}'),
       ExpandConstant('{cm:InstallPerUserOrAllUsersMessage}'),
       ExpandConstant('{cm:InstallPerUserOrAllUsersAdminDescription}'),
       True, False);
@@ -865,19 +867,19 @@ end;
 ///<remarks>
 ///This is called prior to load of the next page in question
 ///and is fired for each page we are about to visit.
-///Normally we don't skip unless we have the elevate switch in 
-///which case the elevated installer already has all the user's 
+///Normally we don't skip unless we have the elevate switch in
+///which case the elevated installer already has all the user's
 ///input so it needs not ask users for those again, making it quick
 ///to run the elevated installer when elevated from the non-elevated
-///installer. Otherwise, we verify whether we need to show the 
+///installer. Otherwise, we verify whether we need to show the
 ///<see cref="RegisterAddInOptionPage" /> which won't be if the installer
 ///is elevated (irrespective whether by the switch or directly by user)
 ///as installing addin registry keys will not work under an elevated context.
 ///</remarks>
 function ShouldSkipPage(PageID: Integer): Boolean;
 begin
-  // if we've executed this instance as elevated, skip pages unless we're 
-  // on the directory selection page 
+  // if we've executed this instance as elevated, skip pages unless we're
+  // on the directory selection page
   Result := not PagesSkipped and HasElevateSwitch and IsElevated() and (PageID <> wpReady);
   // if we've reached the Ready page, set our flag variable to avoid skipping further pages.
   if not Result then
@@ -905,14 +907,14 @@ var
   RetVal: HINSTANCE;
   UpgradeResult: integer;
 begin
-  // Prevent accidental extra clicks 
+  // Prevent accidental extra clicks
   Wizardform.NextButton.Enabled := False;
 
-  // We should assume true because a false value will cause the 
+  // We should assume true because a false value will cause the
   // installer to stay on the same page, which may not be desirable
   // due to several branching in this prcocedure.
   Result := true;
-  
+
   // We need to assess whether user might have selected some other directory
   // and whether we need to elevate in order to write to it. If elevation is
   // required, we need to confirm with the users. The actual elevation comes later.
@@ -941,7 +943,7 @@ begin
     // installer.
     //
     // We also need to verify there are no previous versions and if there are,
-    // to uninstall them. 
+    // to uninstall them.
     else if CurPageID = wpReady then
   begin
     // Log all output of functions called by non-code sections
@@ -955,7 +957,7 @@ begin
     Log(Format('AppSuffix: %s', [GetAppSuffix()]));
     Log(Format('ShouldCreateUninstaller: %d', [ShouldCreateUninstaller()]));
     Log(Format('ShouldInstallAllUsers variable: %d', [ShouldInstallAllUsers]));
-    
+
     if not IsElevated() and ShouldInstallAllUsers then
     begin
       Log('All-users install is required but we don''t have privilege; requesting elevation...');
@@ -969,7 +971,7 @@ begin
   end
     // We should set the selected directory (WizardForm.DirEdit) with
     // appropriate default directory depending on whether the user is
-    // running the installer as elevated or not. 
+    // running the installer as elevated or not.
     else if CurPageID = InstallForWhoOptionPage.ID then
   begin
     if InstallForWhoOptionPage.Values[1] then
@@ -1051,9 +1053,9 @@ end;
 ///doing by adding the extra custom messages accordingly to the page.
 ///</remarks>
 function UpdateReadyMemo(Space, NewLine, MemoUserInfoInfo, MemoDirInfo, MemoTypeInfo, MemoComponentsInfo, MemoGroupInfo, MemoTasksInfo: String): String;
-var 
+var
   output: String;
-begin 
+begin
   if IsElevated() then
   begin
     output := output + ExpandConstant('{cm:WillExecuteAdminInstall}') + NewLine + NewLine;
@@ -1091,7 +1093,7 @@ begin
 end;
 
 ///<remarks>
-///Called during uninstall, once for each step but for our purpose, we are 
+///Called during uninstall, once for each step but for our purpose, we are
 ///interested in only one step doing the actual uninstall.
 ///
 ///As a rule, the addin registration should be always uninstalled; there is no

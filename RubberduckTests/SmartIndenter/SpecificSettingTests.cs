@@ -1154,5 +1154,74 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/3800
+        [Test]
+        [Category("Indenter")]
+        public void AlignDimColumnWorksVariedSpacing()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "' comment",
+                "    Dim a                                       As String",
+                "    Dim b As Object",
+                "    Dim c                               As Long",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "' comment",
+                "    Dim a                                       As String",
+                "    Dim b                                       As Object",
+                "    Dim c                                       As Long",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentSpaces = 4;
+                s.IndentFirstCommentBlock = false;
+                s.AlignDims = true;
+                s.AlignDimColumn = 49;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        //https://github.com/rubberduck-vba/Rubberduck/issues/3800
+        [Test]
+        [Category("Indenter")]
+        public void AlignDimColumnWorksAlreadyAligned()
+        {
+            string[] expected;
+            var code = expected = new[]
+            {
+                "Private Sub Test()",
+                "' comment",
+                "    Dim a                                       As String",
+                "    Dim b                                       As Object",
+                "    Dim c                                       As Long",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.IndentSpaces = 4;
+                s.IndentFirstCommentBlock = false;
+                s.AlignDims = true;
+                s.AlignDimColumn = 49;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
+
+
 }

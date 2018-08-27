@@ -7,7 +7,7 @@ using Rubberduck.Parsing.PreProcessing;
 namespace RubberduckTests.VBEditor
 {
     [TestFixture()]
-    public class CompilationArgumentsCahceTests
+    public class CompilationArgumentsCacheTests
     {
         [Test]
         [Category("Preprocessor")]

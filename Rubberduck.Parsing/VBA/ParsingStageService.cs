@@ -98,9 +98,9 @@ namespace Rubberduck.Parsing.VBA
             _referenceResolver.ResolveReferences(toResolve, token);
         }
 
-        public void SyncComReferences(IReadOnlyList<IVBProject> projects, CancellationToken token)
+        public void SyncComReferences(CancellationToken token)
         {
-            _comSynchronizer.SyncComReferences(projects, token);
+            _comSynchronizer.SyncComReferences(token);
         }
     }
 }
