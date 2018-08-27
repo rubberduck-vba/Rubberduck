@@ -18,6 +18,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Antlr4.Runtime;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
