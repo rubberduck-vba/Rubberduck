@@ -1,32 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.AutoComplete.SelfClosingPairCompletion;
+using Rubberduck.Common;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.WindowsApi;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.AutoComplete
 {
     public class AutoCompleteService : IDisposable
     {
         private readonly IGeneralConfigService _configService;
-        private readonly List<IAutoComplete> _autoCompletes;
+        private readonly List<SelfClosingPair> _selfClosingPairs = new List<SelfClosingPair>
+        {
+            new SelfClosingPair('(', ')'),
+            new SelfClosingPair('"', '"'),
+            new SelfClosingPair('[', ']'),
+            new SelfClosingPair('{', '}'),
+        };
+
+        private readonly SelfClosingPairCompletionService _selfClosingPairCompletion;
 
         private AutoCompleteSettings _settings;
         private bool _popupShown;
+        private bool _enabled = false;
+        private bool _initialized;
 
-        public AutoCompleteService(IGeneralConfigService configService, IAutoCompleteProvider provider)
+        public AutoCompleteService(IGeneralConfigService configService, SelfClosingPairCompletionService selfClosingPairCompletion)
         {
+            _selfClosingPairCompletion = selfClosingPairCompletion;
             _configService = configService;
-            _autoCompletes = provider.AutoCompletes.ToList();
-
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
-            VBENativeServices.KeyDown += HandleKeyDown;
-            VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
+        }
+
+        public void Enable()
+        {
+            InitializeConfig();
+            if (!_enabled)
+            {
+                VBENativeServices.KeyDown += HandleKeyDown;
+                VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
+                _enabled = true;
+            }
+        }
+
+        private void InitializeConfig()
+        {
+            if (!_initialized)
+            {
+                var config = _configService.LoadConfiguration();
+                ApplyAutoCompleteSettings(config);
+            }
+        }
+
+        public void Disable()
+        {
+            if (_enabled && _initialized)
+            {
+                VBENativeServices.KeyDown -= HandleKeyDown;
+                VBENativeServices.IntelliSenseChanged -= HandleIntelliSenseChanged;
+                _enabled = false;
+            }
         }
 
         private void HandleIntelliSenseChanged(object sender, IntelliSenseEventArgs e)
@@ -43,85 +82,137 @@ namespace Rubberduck.AutoComplete
         public void ApplyAutoCompleteSettings(Configuration config)
         {
             _settings = config.UserSettings.AutoCompleteSettings;
-            foreach (var autoComplete in _autoCompletes)
+            if (_settings.IsEnabled)
             {
-                var setting = config.UserSettings.AutoCompleteSettings.AutoCompletes.FirstOrDefault(s => s.Key == autoComplete.GetType().Name);
-                if (setting != null && autoComplete.IsEnabled != setting.IsEnabled)
-                {
-                    autoComplete.IsEnabled = setting.IsEnabled;
-                    continue;
-                }
+                Enable();
             }
+            else
+            {
+                Disable();
+            }
+            _initialized = true;
         }
 
         private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
         {
+            if (e.Character == default && e.Keys == Keys.None)
+            {
+                return;
+            }
+
             var module = e.CodeModule;
             var qualifiedSelection = module.GetQualifiedSelection();
+            Debug.Assert(qualifiedSelection != null, nameof(qualifiedSelection) + " != null");
             var pSelection = qualifiedSelection.Value.Selection;
 
-            if (_popupShown || (e.Keys != Keys.None && pSelection.LineCount > 1) || e.Keys == Keys.Delete)
+            if (_popupShown || (e.Keys != Keys.None && pSelection.LineCount > 1) || e.Keys.HasFlag(Keys.Delete))
             {
                 return;
             }
 
             var currentContent = module.GetLines(pSelection);
-            if (e.Keys == Keys.Enter && _settings.EnableSmartConcat && IsInsideStringLiteral(pSelection, ref currentContent))
+            if (HandleSmartConcat(e, pSelection, currentContent, module))
             {
-                var indent = currentContent.NthIndexOf('"', 1);
-                var whitespace = new string(' ', indent);
-                var newCode = $"{currentContent} & _\r\n{whitespace}\"";
-                module.ReplaceLine(pSelection.StartLine, newCode);
-                using (var pane = module.CodePane)
-                {
-                    pane.Selection = new Selection(pSelection.StartLine + 1, indent + 2);
-                    e.Handled = true;
-                }
+                return;
             }
 
-            var handleBackspace = e.Keys == Keys.Back && pSelection.StartColumn > 1;
-            var handleTab = e.Keys == Keys.Tab && !pSelection.IsSingleCharacter;
-            var handleEnter = e.Keys == Keys.Enter && !pSelection.IsSingleCharacter;
+            HandleSelfClosingPairs(e, module, pSelection);
+        }
 
-            foreach (var autoComplete in _autoCompletes.Where(auto => auto.IsEnabled))
+        private void HandleSelfClosingPairs(AutoCompleteEventArgs e, ICodeModule module, Selection pSelection)
+        {
+            if (!pSelection.IsSingleCharacter)
             {
-                if ((handleTab || handleEnter) && autoComplete.IsMatch(currentContent))
+                return;
+            }
+
+            var currentCode = e.CurrentLine;
+            var currentSelection = e.CurrentSelection;
+            //var surroundingCode = GetSurroundingCode(module, currentSelection); // todo: find a way to parse the current instruction
+
+            var original = new CodeString(currentCode, new Selection(0, currentSelection.EndColumn - 1), new Selection(pSelection.StartLine, 1));
+
+            var prettifier = new CodeStringPrettifier(module);
+            foreach (var selfClosingPair in _selfClosingPairs)
+            {
+                CodeString result;
+                if (e.Keys == Keys.Back && pSelection.StartColumn > 1)
                 {
-                    using (var pane = module.CodePane)
-                    {
-                        if (!string.IsNullOrWhiteSpace(module.GetLines(pSelection.StartLine + 1, 1)))
-                        {
-                            module.InsertLines(pSelection.StartLine + 1, string.Empty);
-                            e.Handled = e.Keys != Keys.Tab; // swallow ENTER, let TAB through
-                        }
-                        else
-                        {
-                            pane.Selection = new Selection(pSelection.StartLine + 1, pSelection.EndColumn);
-                            e.Handled = true; // base.Execute added the indentation as applicable already.
-                        }
-                        break;
-                    }
-                }
-                else if (handleBackspace)
-                {
-                    if (DeleteAroundCaret(e, autoComplete))
-                    {
-                        break;
-                    }
+                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, e.Keys);
                 }
                 else
                 {
-                    if (autoComplete.Execute(e, _settings))
+                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, e.Character, prettifier);
+                }
+
+                if (result != default)
+                {
+                    using (var pane = module.CodePane)
                     {
-                        break;
+                        module.DeleteLines(result.SnippetPosition);
+                        module.InsertLines(result.SnippetPosition.StartLine, result.Code);
+                        pane.Selection = result.SnippetPosition.Offset(result.CaretPosition);
+                        e.Handled = true;
+                        return;
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Adds a line continuation when {ENTER} is pressed inside a string literal; returns false otherwise.
+        /// </summary>
+        private bool HandleSmartConcat(AutoCompleteEventArgs e, Selection pSelection, string currentContent, ICodeModule module)
+        {
+            var shouldHandle = _settings.EnableSmartConcat &&
+                               e.Keys.HasFlag(Keys.Enter) &&
+                               IsInsideStringLiteral(pSelection, ref currentContent);
+
+            var lastIndexLeftOfCaret = currentContent.Length > 2 ? currentContent.Substring(0, pSelection.StartColumn - 1).LastIndexOf('"') : 0;
+            if (shouldHandle && lastIndexLeftOfCaret > 0)
+            {
+                var indent = currentContent.NthIndexOf('"', 1);
+                var whitespace = new string(' ', indent);
+                var code = $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
+
+                if (e.Keys.HasFlag(Keys.Control))
+                {
+                    code = $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & vbNewLine & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
+
+                }
+
+                module.ReplaceLine(pSelection.StartLine, code);
+                using (var pane = module.CodePane)
+                {
+                    pane.Selection = new Selection(pSelection.StartLine + 1, indent + currentContent.Substring(pSelection.StartColumn - 2).Length);
+                    e.Handled = true;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private string GetSurroundingCode(ICodeModule module, Selection selection)
+        {
+            // throws AccessViolationException!
+            var declarationLines = module.CountOfDeclarationLines;
+            if (selection.StartLine <= declarationLines)
+            {
+                return module.GetLines(1, declarationLines);
+            }
+
+            var currentProc = module.GetProcOfLine(selection.StartLine);
+            var procKind = module.GetProcKindOfLine(selection.StartLine);
+            var procStart = module.GetProcStartLine(currentProc, procKind);
+            var lineCount = module.GetProcCountLines(currentProc, procKind);
+            return module.GetLines(procStart, lineCount);
+        }
+
         private bool IsInsideStringLiteral(Selection pSelection, ref string currentContent)
         {
-            if (!currentContent.Contains("\"") || currentContent.StripStringLiterals().HasComment(out _))
+            if (!currentContent.Substring(pSelection.StartColumn - 1).Contains("\"") || 
+                currentContent.StripStringLiterals().HasComment(out _))
             {
                 return false;
             }
@@ -141,44 +232,13 @@ namespace Rubberduck.AutoComplete
                    (rightOfCaret.Count(c => c.Equals('"')) % 2) != 0;
         }
 
-        private bool DeleteAroundCaret(AutoCompleteEventArgs e, IAutoComplete autoComplete)
-        {
-            if (autoComplete.IsInlineCharCompletion)
-            {
-                var code = e.CurrentLine;
-                // If caret LHS is the AC input token and RHS is the AC output token, we can remove both.
-                // Substring index is 0-based. Selection from code pane is 1-based.
-                // LHS should be at StartColumn - 2, RHS at StartColumn - 1.
-                var caretLHS = code.Substring(Math.Max(0, e.CurrentSelection.StartColumn - 2), 1);
-                var caretRHS = code.Length >= e.CurrentSelection.StartColumn
-                    ? code.Substring(e.CurrentSelection.StartColumn - 1, 1)
-                    : string.Empty;
-
-                if (caretLHS == autoComplete.InputToken && caretRHS == autoComplete.OutputToken)
-                {
-                    var left = code.Substring(0, e.CurrentSelection.StartColumn - 2);
-                    var right = code.Substring(e.CurrentSelection.StartColumn);
-                    using (var pane = e.CodeModule.CodePane)
-                    {
-                        e.CodeModule.ReplaceLine(e.CurrentSelection.StartLine, left + right);
-                        pane.Selection = new Selection(e.CurrentSelection.StartLine, e.CurrentSelection.StartColumn - 1);
-                        e.Handled = true;
-                    }
-                    return true;
-                }
-            }
-            return false;
-        }
-
         public void Dispose()
         {
-            VBENativeServices.KeyDown -= HandleKeyDown;
+            Disable();
             if (_configService != null)
             {
                 _configService.SettingsChanged -= ConfigServiceSettingsChanged;
             }
-
-            _autoCompletes.Clear();
         }
     }
 }

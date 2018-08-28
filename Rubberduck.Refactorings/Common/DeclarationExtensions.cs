@@ -424,7 +424,9 @@ namespace Rubberduck.Common
         public static Declaration FindInterfaceMember(this IEnumerable<Declaration> declarations, Declaration implementation)
         {
             var members = FindInterfaceMembers(declarations);
-            var matches = members.Where(m => m.IsUserDefined && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
+            var matches = members.Where(m => m.IsUserDefined 
+                                             && m.DeclarationType == implementation.DeclarationType
+                                             && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
 
             return matches.Count > 1
                 ? matches.SingleOrDefault(m => m.ProjectId == implementation.ProjectId)

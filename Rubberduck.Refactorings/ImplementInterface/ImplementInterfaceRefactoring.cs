@@ -238,11 +238,13 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private List<Declaration> GetNonImplementedMembers(IEnumerable<Declaration> interfaceMembers, IEnumerable<Declaration> implementedMembers)
         {
-            return interfaceMembers.Where(d => !implementedMembers.Select(s => s.IdentifierName)
-                                        .Contains(_targetInterface.ComponentName + "_" + d.IdentifierName))
-                                    .OrderBy(o => o.Selection.StartLine)
-                                    .ThenBy(t => t.Selection.StartColumn)
-                                    .ToList();
+            return interfaceMembers.Where(d => !implementedMembers
+                    .Select(s => new Tuple<string, DeclarationType>(s.IdentifierName, s.DeclarationType))
+                    .Contains(new Tuple<string, DeclarationType>($"{_targetInterface.ComponentName}_{d.IdentifierName}",
+                        d.DeclarationType)))
+                .OrderBy(o => o.Selection.StartLine)
+                .ThenBy(t => t.Selection.StartColumn)
+                .ToList();
         }
     }
 }

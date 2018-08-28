@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using NLog;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
@@ -22,12 +23,14 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
     {
         private readonly RubberduckParserState _state;
         private readonly IPersistable<SerializableProject> _service;
+        private readonly ISerializableProjectBuilder _serializableProjectBuilder;
 
-        public SerializeDeclarationsCommand(RubberduckParserState state, IPersistable<SerializableProject> service) 
+        public SerializeDeclarationsCommand(RubberduckParserState state, IPersistable<SerializableProject> service, ISerializableProjectBuilder serializableProjectBuilder) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _service = service;
+            _serializableProjectBuilder = serializableProjectBuilder;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -43,15 +46,14 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             var path = Path.Combine(BasePath, "Declarations");
             if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
 
-            foreach (var tree in _state.BuiltInDeclarationTrees)
+            foreach (var project in _state.DeclarationFinder.BuiltInDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>())
             {
                 System.Diagnostics.Debug.Assert(path != null, "project path isn't supposed to be null");
 
-                var filename = string.Format("{0}.{1}.{2}.xml",
-                    tree.Node.QualifiedMemberName.QualifiedModuleName.ProjectName,
-                    tree.MajorVersion,
-                    tree.MinorVersion);
-                _service.Persist(Path.Combine(path, filename), tree);
+                var tree = _serializableProjectBuilder.SerializableProject(project);
+                var filename = $"{tree.Node.QualifiedMemberName.QualifiedModuleName.ProjectName}.{tree.MajorVersion}.{tree.MinorVersion}.xml";
+                var fullFilename = Path.Combine(path, filename);
+                _service.Persist(fullFilename, tree);
             }
         }
     }

@@ -26,9 +26,13 @@ namespace Rubberduck.VBEditor.WindowsApi
             switch ((WM)msg)
             {
                 case WM.CHAR:
-                    args = new KeyPressEventArgs(hWnd, wParam, lParam, (char)wParam);
-                    OnKeyDown(args);
-                    if (args.Handled) { return 0; }
+                    var c = (char) wParam;
+                    if (c != '\r' && c != '\n' && c != '\t')
+                    {
+                        args = new KeyPressEventArgs(hWnd, wParam, lParam, c);
+                        OnKeyDown(args);
+                        if (args.Handled) { return 0; }
+                    }
                     break;
                 case WM.KEYDOWN:
                     args = new KeyPressEventArgs(hWnd, wParam, lParam);

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -63,6 +62,7 @@ namespace Rubberduck
         {
             _stateBar.Localize();
             _stateBar.SetStatusLabelCaption(_parser.State.Status);
+
             foreach (var menu in _menus)
             {
                 menu.Localize();

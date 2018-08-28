@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Rubberduck.Common;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
@@ -116,7 +117,9 @@ namespace Rubberduck.API.VBA
             var parserStateManager = new ParserStateManager(_state);
             var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);
             var supertypeClearer = new SupertypeClearer(_state);
-            var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager);
+            var comLibraryProvider = new ComLibraryProvider();
+            var referencedDeclarationsCollector = new LibraryReferencedDeclarationsCollector(comLibraryProvider);
+            var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager, projectRepository, referencedDeclarationsCollector);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 _state,
                 new List<ICustomDeclarationLoader>

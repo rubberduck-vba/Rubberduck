@@ -156,6 +156,7 @@
     <None Include="tools\uninstall.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources.cs.resx" />
     <EmbeddedResource Include="Resources.resx" />
   </ItemGroup>
   <ItemGroup>

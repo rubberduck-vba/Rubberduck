@@ -27,10 +27,13 @@ namespace Rubberduck.VBEditor
             return projectId;
         }
 
-        public static string GetProjectId(IReference reference)
+        /// <summary>
+        /// Gets the standard projectId for a library reference.
+        /// Do not use this overload for referenced user projects.
+        /// </summary>
+        public static string GetProjectId(ReferenceInfo reference)
         {
-            var projectName = reference.Name;
-            return new QualifiedModuleName(projectName, reference.FullPath, projectName).ProjectId;
+            return new QualifiedModuleName(reference).ProjectId;
         }
 
         public static int GetContentHash(IVBComponent component)
@@ -72,6 +75,15 @@ namespace Rubberduck.VBEditor
             }
         }
 
+        /// <summary>
+        /// Creates a QualifiedModuleName for a library reference.
+        /// Do not use this overload for referenced user projects.
+        /// </summary>
+        public QualifiedModuleName(ReferenceInfo reference)
+        :this(reference.Name,
+            reference.FullPath,
+            reference.Name)
+        {}
 
         /// <summary>
         /// Creates a QualifiedModuleName for a built-in declaration.
@@ -81,7 +93,7 @@ namespace Rubberduck.VBEditor
         {
             _projectName = projectName;
             ProjectPath = projectPath;
-            ProjectId = $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
+            ProjectId = "External" + $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             ComponentType = ComponentType.ComComponent;
             ModuleContentHashOnCreation = GetContentHash(null);

@@ -214,17 +214,17 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             var propertyGet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyGet &&
-                    d.Scope == knownProperty.Scope &&
+                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName) &&
                     d.IdentifierName == knownProperty.IdentifierName);
 
             var propertyLet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyLet &&
-                    d.Scope == knownProperty.Scope &&
+                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName) &&
                     d.IdentifierName == knownProperty.IdentifierName);
 
             var propertySet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertySet &&
-                    d.Scope == knownProperty.Scope &&
+                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName) &&
                     d.IdentifierName == knownProperty.IdentifierName);
 
             var properties = new List<Declaration>();

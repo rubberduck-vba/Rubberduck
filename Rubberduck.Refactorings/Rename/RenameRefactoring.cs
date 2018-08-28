@@ -184,7 +184,7 @@ namespace Rubberduck.Refactorings.Rename
         private bool UserConfirmsRenameOfResolvedTarget(string message)
         {
             return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_TitleText) ?? false;
-            
+
         }
 
         private Declaration ResolveRenameTargetIfEventHandlerSelected(Declaration selectedTarget)
@@ -360,7 +360,9 @@ namespace Rubberduck.Refactorings.Rename
             {
                 var parameters = _state.DeclarationFinder.MatchName(_model.Target.IdentifierName).Where(param =>
                    param.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property)
-                   && param.DeclarationType == DeclarationType.Parameter);
+                   && param.DeclarationType == DeclarationType.Parameter
+                    && param.ParentDeclaration.IdentifierName.Equals(_model.Target.ParentDeclaration.IdentifierName)
+                    && param.ParentDeclaration.ParentScopeDeclaration.Equals(_model.Target.ParentDeclaration.ParentScopeDeclaration));
 
                 foreach (var param in parameters)
                 {
@@ -433,33 +435,50 @@ namespace Rubberduck.Refactorings.Rename
             }
 
             var component = _state.ProjectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
-            if (component.Type == ComponentType.Document)
+            switch (component.Type)
             {
-                var properties = component.Properties;
-                var property = properties["_CodeName"];
-                {
-                    property.Value = _model.NewName;
-                }
-            }
-            else if (component.Type == ComponentType.UserForm)
-            {
-                var properties = component.Properties;
-                var property = properties["Caption"];
-                {
-                    if ((string)property.Value == _model.Target.IdentifierName)
+                case ComponentType.Document:
                     {
-                        property.Value = _model.NewName;
+                        var properties = component.Properties;
+                        var property = properties["_CodeName"];
+                        {
+                            property.Value = _model.NewName;
+                        }
+                        break;
                     }
-                    component.Name = _model.NewName;
-                }
-            }
-            else
-            {
-                using (var codeModule = component.CodeModule)
-                {
-                    Debug.Assert(!codeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
-                    codeModule.Name = _model.NewName;
-                }
+                case ComponentType.UserForm:
+                case ComponentType.VBForm:
+                case ComponentType.MDIForm:
+                    {
+                        var properties = component.Properties;
+                        var property = properties["Caption"];
+                        {
+                            if ((string)property.Value == _model.Target.IdentifierName)
+                            {
+                                property.Value = _model.NewName;
+                            }
+                            component.Name = _model.NewName;
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        if (_vbe.Kind == VBEKind.Hosted)
+                        {
+                            // VBA - rename code module
+                            using (var codeModule = component.CodeModule)
+                            {
+                                Debug.Assert(!codeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
+                                codeModule.Name = _model.NewName;
+                            }
+                        }
+                        else
+                        {
+                            // VB6 - rename component
+                            component.Name = _model.NewName;
+                        }
+                        break;
+                    }
             }
         }
 
@@ -513,8 +532,9 @@ namespace Rubberduck.Refactorings.Rename
         private void RenameReferences(Declaration target, string newName)
         {
             var modules = target.References
-                .Where(reference => reference.Context.GetText() != "Me")
-                .GroupBy(r => r.QualifiedModuleName);
+                .Where(reference =>
+                    reference.Context.GetText() != "Me").GroupBy(r => r.QualifiedModuleName);
+
             foreach (var grouping in modules)
             {
                 _modulesToRewrite.Add(grouping.Key);

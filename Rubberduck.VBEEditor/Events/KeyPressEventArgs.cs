@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.Events
 {
@@ -15,6 +16,10 @@ namespace Rubberduck.VBEditor.Events
             if (character == default(char))
             {
                 Key = (Keys)wParam;
+                if ((User32.GetKeyState(VirtualKeyStates.VK_CONTROL) & 0x8000) != 0)
+                {
+                    Key |= Keys.Control;
+                }
             }
             else
             {

@@ -174,4 +174,7 @@
   <data name="SelectAll" xml:space="preserve">
     <value>Tous</value>
   </data>
+  <data name="EnableAutocompleteLabel" xml:space="preserve">
+    <value>Activer cette fonctionnalité, malgré qu'elle est incomplète et peut se comporter étrangement.</value>
+  </data>
 </root>
