@@ -1,8 +1,6 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PreProcessing;
 using System;
-using System.Collections.Generic;
-using System.Data;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -17,58 +15,61 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public struct ParseTreeValue : IParseTreeValue
     {
+        private const string NULL_VALUETYPE_MSG = "null 'valueType' argument passed to ParseTreeValue constructor";
+        private const string NULL_TOKEN_MSG = "null 'token' argument passed to ParseTreeValue constructor";
+
         private readonly int _hashCode;
         private string _valueText;
         private ComparableDateValue _dateValue;
         private StringLiteralExpression _stringConstant;
         private bool? _exceedsTypeRange;
 
-        public static IParseTreeValue CreateValueType(string value, string declaredType)
+        public static IParseTreeValue CreateValueType(string token, string declaredValueType)
         {
-            if (declaredType == Tokens.Date || declaredType == Tokens.String)
+            if (declaredValueType == Tokens.Date || declaredValueType == Tokens.String)
             {
-                return new ParseTreeValue(value, declaredType);
+                return new ParseTreeValue(token, declaredValueType);
             }
 
             var ptValue = new ParseTreeValue()
             {
-                ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
-                Token = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ValueType = declaredValueType ?? throw new ArgumentNullException(NULL_VALUETYPE_MSG),
+                Token = token ?? throw new ArgumentNullException(NULL_TOKEN_MSG),
                 ParsesToConstantValue = true,
-                IsOverflowExpression = ExceedsTypeExtents(value, declaredType),
+                IsOverflowExpression = LetCoercer.ExceedsTypeExtents(declaredValueType, token),
             };
             return ptValue;
         }
 
-        public static IParseTreeValue CreateExpression(string value, string declaredType)
+        public static IParseTreeValue CreateExpression(string value, string declaredValueType)
         {
             var ptValue = new ParseTreeValue()
             {
-                ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
-                Token = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ValueType = declaredValueType ?? throw new ArgumentNullException(NULL_VALUETYPE_MSG),
+                Token = value ?? throw new ArgumentNullException(NULL_TOKEN_MSG),
                 ParsesToConstantValue = false,
             };
             return ptValue;
         }
 
-        public static IParseTreeValue CreateMismatchExpression(string value, string declaredType)
+        public static IParseTreeValue CreateMismatchExpression(string value, string declaredValueType)
         {
             var ptValue = new ParseTreeValue()
             {
-                ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
-                Token = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ValueType = declaredValueType ?? throw new ArgumentNullException(NULL_VALUETYPE_MSG),
+                Token = value ?? throw new ArgumentNullException(NULL_TOKEN_MSG),
                 ParsesToConstantValue = false,
                 IsMismatchExpression = true
             };
             return ptValue;
         }
 
-        public static IParseTreeValue CreateOverflowExpression(string value, string declaredType)
+        public static IParseTreeValue CreateOverflowExpression(string value, string declaredValueType)
         {
             var ptValue = new ParseTreeValue()
             {
-                ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor"),
-                Token = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor"),
+                ValueType = declaredValueType ?? throw new ArgumentNullException(NULL_VALUETYPE_MSG),
+                Token = value ?? throw new ArgumentNullException(NULL_TOKEN_MSG),
                 ParsesToConstantValue = false,
                 _exceedsTypeRange = true
             };
@@ -77,8 +78,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public ParseTreeValue(string value, string declaredType)
         {
-            _valueText = value ?? throw new ArgumentNullException("null 'value' argument passed to ParseTreeValue constructor");
-            ValueType = declaredType ?? throw new ArgumentNullException("null 'declaredType' argument passed to ParseTreeValue constructor");
+            ValueType = declaredType ?? throw new ArgumentNullException(NULL_VALUETYPE_MSG);
+            _valueText = value ?? throw new ArgumentNullException(NULL_TOKEN_MSG);
             ParsesToConstantValue = false;
             _exceedsTypeRange = null;
             _hashCode = value.GetHashCode();
@@ -88,14 +89,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (declaredType == Tokens.Date)
             {
-                if (LetCoercer.TryCoerce(_valueText, out _dateValue))
-                {
-                    ParsesToConstantValue = true;
-                }
-                else
-                {
-                    throw new ArgumentException($"Unable to coerce {_valueText} to Date");
-                }
+                ParsesToConstantValue = LetCoercer.TryCoerce(_valueText, out _dateValue);
             }
             if (declaredType.Equals(Tokens.String))
             {
@@ -143,7 +137,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (!_exceedsTypeRange.HasValue)
                 {
-                    _exceedsTypeRange = ParsesToConstantValue ? ExceedsTypeExtents(_valueText, ValueType) : false;
+                    _exceedsTypeRange = ParsesToConstantValue ? LetCoercer.ExceedsTypeExtents(ValueType, _valueText) : false;
                 }
                 return _exceedsTypeRange.Value;
             }
@@ -164,38 +158,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public override int GetHashCode()
         {
             return _hashCode;
-        }
-
-        private static Dictionary<string, Action<string>> OverflowChecks = new Dictionary<string, Action<string>>()
-        {
-            [Tokens.Byte] = (a) => { byte.Parse(a); },
-            [Tokens.Integer] = (a) => { Int16.Parse(a); },
-            [Tokens.Long] = (a) => { Int32.Parse(a); },
-            [Tokens.LongLong] = (a) => { Int64.Parse(a); },
-            [Tokens.Double] = (a) => { double.Parse(a); },
-            [Tokens.Single] = (a) => { float.Parse(a); },
-            [Tokens.Currency] = (a) => { var value = decimal.Parse(a); if (value < VBACurrency.MinValue || value > VBACurrency.MaxValue) { throw new OverflowException(); } },
-            [Tokens.Boolean] = (a) => { if (!(a.Equals(Tokens.True) || a.Equals(Tokens.False))) { long.Parse(a); } },
-        };
-
-        private static bool ExceedsTypeExtents(string valueText, string typeName)
-        {
-            if (OverflowChecks.ContainsKey(typeName))
-            {
-                try
-                {
-                    OverflowChecks[typeName](valueText);
-                }
-                catch (OverflowException)
-                {
-                    return true;
-                }
-                catch (FormatException)
-                {
-                    return false;
-                }
-            }
-            return false;
         }
     }
 

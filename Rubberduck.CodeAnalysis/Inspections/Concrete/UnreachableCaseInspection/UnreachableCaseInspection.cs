@@ -114,10 +114,23 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 (bool success, IdentifierReference idRef) = GetIdentifierReferenceForContext(descendents.First(), State);
                 if (success)
                 {
-                    return idRef.Declaration.AsTypeName;
+                    return GetBaseTypeForDeclaration(idRef.Declaration);
                 }
             }
             return string.Empty;
+        }
+
+        private string GetBaseTypeForDeclaration(Declaration declaration)
+        {
+            var localDeclaration = declaration;
+            var iterationGuard = 0;
+            while (!(localDeclaration is null)
+                && !localDeclaration.AsTypeIsBaseType
+                && iterationGuard++ < 5)
+            {
+                localDeclaration = localDeclaration.AsTypeDeclaration;
+            }
+            return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
         }
 
         #region UnreachableCaseInspectionListeners

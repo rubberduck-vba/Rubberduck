@@ -11,13 +11,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static decimal MaxValue = 922337203685477.5807M;
         public static decimal Parse(string valueText)
         {
-            var checkValue = decimal.Parse(valueText);
-            if (checkValue < MinValue || checkValue > MaxValue)
-            {
-                throw new OverflowException();
-            }
-            return Math.Round(checkValue, 4, MidpointRounding.ToEven);
-
+            var checkValue = Math.Round(decimal.Parse(valueText), 4, MidpointRounding.ToEven);
+            return MinValue < checkValue && MaxValue > checkValue ? checkValue 
+                : throw new OverflowException();
         }
 
         public static bool TryParse(string valueText, out decimal value)
@@ -52,7 +48,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 resultToken = CoerceToken(source, destinationType);
                 return true;
             }
-            catch(ArgumentException)
+            catch(ArgumentNullException)
             {
                 return false;
             }
@@ -91,8 +87,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 throw new KeyNotFoundException($"Let Coercion source=>destination pair: {source.Type}=>{destinationType} not supported");
             }
 
-            var coercer = _coercions[source.Type][destinationType];
-            return coercer(source.Text);
+            return _coercions[source.Type][destinationType](source.Text);
         }
 
         public static bool TryCoerce(string valueText, out byte value)
@@ -128,6 +123,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryCoerce(string valueText, out ComparableDateValue value)
             => TryCoerce(valueText, Tokens.Date, out value, ComparableDateValue.Parse);
 
+        public static bool ExceedsTypeExtents(string valueType, string token)
+        {
+            try
+            {
+                CoerceToken((Tokens.String, token), valueType);
+            }
+            catch (OverflowException)
+            {
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+            catch (ArgumentNullException)
+            {
+                return false;
+            }
+            return false;
+        }
+
         private static bool TryCoerce<T>(string valueText, string typeName, out T value, Func<string, T> parser)
         {
             value = default;
@@ -148,15 +164,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 [Tokens.String] = new Dictionary<string, Func<string,string>>
                 {
                     [Tokens.String] = (a) => { return a; },
-                    [Tokens.Byte] = (a) => { return byte.Parse(StringToByte(a).Item2).ToString(); },
-                    [Tokens.Integer] = (a) => { return short.Parse(StringToIntegral(a).Item2).ToString(); },
-                    [Tokens.Long] = (a) => { return Int32.Parse(StringToIntegral(a).Item2).ToString(); },
-                    [Tokens.LongLong] = (a) => { return Int64.Parse(StringToIntegral(a).Item2).ToString(); },
-                    [Tokens.Double] = (a) => { return double.Parse(StringToRational(a).Item2).ToString(); },
-                    [Tokens.Single] = (a) => { return float.Parse(StringToRational(a).Item2).ToString(); },
-                    [Tokens.Currency] = (a) => { return VBACurrency.Parse(StringToRational(a).Item2).ToString(); }, // ) : (false, sourceText); StringToCurrency,
-                    [Tokens.Boolean] = (a) => { return bool.Parse(StringToBoolean(a).Item2) ? Tokens.True : Tokens.False; },
-                    [Tokens.Date] = (a) => { return ComparableDateValue.Parse(StringToDate(a).Item2).AsDateLiteral(); },
+                    [Tokens.Byte] = (a) => { return byte.Parse(StringToByte(a)).ToString(); },
+                    [Tokens.Integer] = (a) => { return short.Parse(StringToIntegral(a)).ToString(); },
+                    [Tokens.Long] = (a) => { return Int32.Parse(StringToIntegral(a)).ToString(); },
+                    [Tokens.LongLong] = (a) => { return Int64.Parse(StringToIntegral(a)).ToString(); },
+                    [Tokens.Double] = (a) => { return double.Parse(StringToRational(a)).ToString(); },
+                    [Tokens.Single] = (a) => { return float.Parse(StringToRational(a)).ToString(); },
+                    [Tokens.Currency] = (a) => { return VBACurrency.Parse(StringToRational(a)).ToString(); },
+                    [Tokens.Boolean] = (a) => { return bool.Parse(StringToBoolean(a)) ? Tokens.True : Tokens.False; },
+                    [Tokens.Date] = (a) => { return StringToDate(a); }
                 },
 
                 [Tokens.Byte] = new Dictionary<string, Func<string, string>>
@@ -169,8 +185,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     [Tokens.Double] = (a) => { return a; },
                     [Tokens.Single] = (a) => { return a; },
                     [Tokens.Currency] = (a) => { return a; },
-                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
-                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
+                    [Tokens.Date] = (a) => { return NumericToDate(a); },
                 },
 
                 [Tokens.Integer] = new Dictionary<string, Func<string, string>>
@@ -183,8 +199,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     [Tokens.Double] = (a) => { return a; },
                     [Tokens.Single] = (a) => { return a; },
                     [Tokens.Currency] = (a) => { return a; },
-                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
-                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
+                    [Tokens.Date] = (a) => { return NumericToDate(a); },
                 },
 
                 [Tokens.Long] = new Dictionary<string, Func<string, string>>
@@ -197,8 +213,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     [Tokens.Double] = (a) => { return a; },
                     [Tokens.Single] = (a) => { return a; },
                     [Tokens.Currency] = (a) => { return a; },
-                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
-                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
+                    [Tokens.Date] = (a) => { return NumericToDate(a); },
                 },
 
                 [Tokens.Double] = new Dictionary<string, Func<string, string>>
@@ -211,8 +227,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     [Tokens.Double] = (a) => { return a; },
                     [Tokens.Single] = (a) => { return float.Parse(a).ToString(); },
                     [Tokens.Currency] = (a) => { return decimal.Parse(a).ToString(); },
-                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
-                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
+                    [Tokens.Date] = (a) => { return NumericToDate(a); },
                 },
 
                 [Tokens.Single] = new Dictionary<string, Func<string, string>>
@@ -225,8 +241,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     [Tokens.Double] = (a) => { return a; },
                     [Tokens.Single] = (a) => { return a; },
                     [Tokens.Currency] = (a) => { return decimal.Parse(a).ToString(); },
-                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
-                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
+                    [Tokens.Date] = (a) => { return NumericToDate(a); },
                 },
 
                 [Tokens.Currency] = new Dictionary<string, Func<string, string>>
@@ -239,13 +255,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     [Tokens.Double] = (a) => { return a; },
                     [Tokens.Single] = (a) => { return float.Parse(a).ToString(); },
                     [Tokens.Currency] = (a) => { return a; },
-                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a).Item2; },
-                    [Tokens.Date] = (a) => { return NumericToDate(a).Item2; },
+                    [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
+                    [Tokens.Date] = (a) => { return NumericToDate(a); },
                 },
 
                 [Tokens.Boolean] = new Dictionary<string, Func<string, string>>
                 {
-                    [Tokens.String] = (a) => { return BooleanToString(a).Item2; },
+                    [Tokens.String] = (a) => { return BooleanToString(a); },
                     [Tokens.Byte] = (a) => { var val = BooleanAsLong(a); return val != 0 ? byte.MaxValue.ToString() : byte.MinValue.ToString(); },
                     [Tokens.Integer] = (a) => { return BooleanAsLong(a).ToString(); },
                     [Tokens.Long] = (a) => { return BooleanAsLong(a).ToString(); },
@@ -254,7 +270,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     [Tokens.Single] = (a) => { return BooleanAsLong(a).ToString(); },
                     [Tokens.Currency] = (a) => { return BooleanAsLong(a).ToString(); },
                     [Tokens.Boolean] = (a) => { return a; },
-                    [Tokens.Date] = (a) => { var val = BooleanAsLong(a); return NumericToDate(val.ToString()).Item2; },
+                    [Tokens.Date] = (a) => { var val = BooleanAsLong(a); return NumericToDate(val.ToString()); },
                 },
 
                 [Tokens.Date] = new Dictionary<string, Func<string, string>>
@@ -273,93 +289,83 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             };
         }
 
-        private static (bool, string) StringToDate(string sourceText)
+        private static string StringToDate(string sourceText)
         {
-            if (double.TryParse(sourceText, out double doubleValue))
+            int? intValue = BooleanTokenToInt(sourceText);
+            var parseValue = intValue.HasValue ? intValue.ToString() : sourceText;
+
+            if (double.TryParse(parseValue, out double doubleValue))
             {
-                return NumericToDate(sourceText);
+                return NumericToDate(parseValue);
             }
-            if (ComparableDateValue.TryParse(AnnotateAsDateLiteral(sourceText), out ComparableDateValue dvComparable))
+            if (ComparableDateValue.TryParse(AnnotateAsDateLiteral(parseValue), out ComparableDateValue dvComparable))
             {
-                return (true, dvComparable.AsDateLiteral());
+                return dvComparable.AsDateLiteral();
             }
-            return (false, string.Empty);
+            throw new FormatException();
         }
 
-        private static (bool, string) StringToByte(string sourceText)
+        private static string StringToByte(string sourceText)
         {
             int? intValue = BooleanTokenToInt(sourceText);
             if (intValue.HasValue)
             {
-                return (true, intValue == 0 ? byte.MinValue.ToString() : byte.MaxValue.ToString());
+                return intValue == 0 ? byte.MinValue.ToString() : byte.MaxValue.ToString();
             }
             return StringToIntegral(sourceText);
         }
 
-        private static (bool, string) StringToCurrency(string sourceText)
+        private static string StringToIntegral(string sourceText)
         {
-            (bool ok, string val) = StringToRational(sourceText);
-
-            return VBACurrency.TryParse(val, out decimal result) ? (true, result.ToString()) : (false, sourceText);
+            return BankersRound(StringToRational(sourceText));
         }
 
-        private static (bool, string) StringToIntegral(string sourceText)
-        {
-            (bool ok, string value) = StringToRational(sourceText);
-            return ok ? (true, BankersRound(value)) : (false, sourceText);
-        }
-
-        private static (bool,string) StringToRational(string sourceText)
+        private static string StringToRational(string sourceText)
         {
             sourceText = RemoveDoubleQuotes(sourceText);
 
             int? intValue = BooleanTokenToInt(sourceText);
             var parseValue = intValue.HasValue ? intValue.ToString() : sourceText;
 
-            return decimal.TryParse(parseValue, out decimal decValue) ? (true, decValue.ToString())
-                : double.TryParse(parseValue, out double value) ? (true, value.ToString()) :(false, sourceText);
+            return decimal.TryParse(parseValue, out decimal decValue) ? decValue.ToString()
+                : double.TryParse(parseValue, out double value) ? value.ToString() : sourceText;
         }
 
-        private static (bool, string) StringToBoolean(string sourceText)
+        private static string StringToBoolean(string sourceText)
         {
             sourceText = RemoveDoubleQuotes(sourceText);
             if (sourceText.Equals(Tokens.True, StringComparison.OrdinalIgnoreCase))
             {
-                return (true, Tokens.True);
+                return Tokens.True;
             }
             if (sourceText.Equals(Tokens.False, StringComparison.OrdinalIgnoreCase))
             {
-                return (true, Tokens.False);
+                return Tokens.False;
             }
             if (sourceText.Equals($"#{Tokens.True}#", StringComparison.Ordinal))
             {
-                return (true, Tokens.True);
+                return Tokens.True;
             }
             if (sourceText.Equals($"#{Tokens.False}#", StringComparison.Ordinal))
             {
-                return (true, Tokens.False);
+                return Tokens.False;
             }
             if (double.TryParse(sourceText, out double asDouble))
             {
-                return asDouble != 0 ? (true, Tokens.True) : (true, Tokens.False);
+                return asDouble != 0 ? Tokens.True : Tokens.False;
             }
-            return (false, string.Empty);
+            return string.Empty;
         }
 
-        private static (bool, string) NumericToDate(string source)
+        private static string NumericToDate(string source)
         {
             if (double.TryParse(source, out double dateAsDouble))
             {
                 var dv = new DateValue(DateTime.FromOADate(dateAsDouble));
                 var dateValue = new ComparableDateValue(dv);
-                return (true, dateValue.AsDateLiteral());
+                return dateValue.AsDateLiteral();
             }
-            return (false, string.Empty);
-        }
-
-        private static (bool, string) DateToString(string source)
-        {
-            return (true, RemoveStartAndEnd(source, "#"));
+            return string.Empty;
         }
 
         private static int? BooleanTokenToInt(string sourceText)
@@ -402,35 +408,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return result;
         }
 
-        private static (bool, string) DateToDouble(string source)
-        {
-            if (ComparableDateValue.TryParse(source, out ComparableDateValue dv))
-            {
-                return (true, dv.AsDecimal.ToString());
-            }
-            return (false, string.Empty);
-        }
-
-        private static (bool, string) BooleanToString(string source)
+        private static string BooleanToString(string source)
         {
             if (source.Equals(Tokens.True) || source.Equals(Tokens.False))
             {
-                return Copy(source);
+                return source;
             }
 
-            return (true, double.Parse(source) != 0 ? Tokens.True : Tokens.False);
+            return double.Parse(source) != 0 ? Tokens.True : Tokens.False;
         }
 
         private static string BankersRound(string source)
              => Math.Round(double.Parse(source), MidpointRounding.ToEven).ToString();
 
-        private static (bool, string) NumericToBoolean(string source)
-             => (true, double.Parse(source) != 0 ? Tokens.True : Tokens.False);
+        private static string NumericToBoolean(string source)
+             => double.Parse(source) != 0 ? Tokens.True : Tokens.False;
 
         private static long BooleanAsLong(string source)
             => source.Equals(Tokens.True) ? -1 : 0;
-
-        private static (bool, string) Copy(string source) => (true, source);
 
         private static string AnnotateAsDateLiteral(string input)
         {

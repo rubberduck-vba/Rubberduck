@@ -190,7 +190,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 LHS = lhs;
                 OpSymbol = opSymbol;
                 IsMismatch = false;
-                IsOverflow = false;
+                IsOverflow = (LHS != null && LHS.IsOverflowExpression) || (RHS != null && RHS.IsOverflowExpression);
                 IsUnreachable = false;
                 IsInherentlyUnreachable = false;
             }

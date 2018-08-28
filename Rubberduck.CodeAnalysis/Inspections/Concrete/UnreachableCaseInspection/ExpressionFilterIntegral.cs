@@ -1,5 +1,4 @@
-﻿using Rubberduck.Parsing.Grammar;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,7 +6,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public class ExpressionFilterIntegral : ExpressionFilter<long>
     {
-        public ExpressionFilterIntegral(TokenToValue<long> converter, string typeName) : base(converter, typeName) { }
+        public ExpressionFilterIntegral(string valueType, Func<string,long> parser) 
+            : base(valueType, parser) { }
 
         public override bool FiltersAllValues => base.FiltersAllValues
             || Limits.HasMinAndMaxLimits && (Limits.Maximum - Limits.Minimum + 1 <= RangesValuesCount + SingleValues.Count());

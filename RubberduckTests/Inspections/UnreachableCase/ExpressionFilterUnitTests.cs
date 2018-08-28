@@ -270,6 +270,20 @@ namespace RubberduckTests.Inspections.UnreachableCase
             }
         }
 
+        [TestCase("Is_<_#1/1/2001#,#12/1/2000#_To_#1/10/2001#", "Min!#1/1/2001#,Range!#1/1/2001#:#1/10/2001#")]
+        [TestCase("Is_<_#1/1/2001#", "Min!#1/1/2001#")]
+        [TestCase("#1/1/2001#_To_#1/10/2001#", "Range!#1/1/2001#:#1/10/2001#")]
+        [TestCase("#1/1/2001#", "Value!#1/1/2001#")]
+        [Category("Inspections")]
+        public void ExpressionFilter_AddFiltersDate(string firstCase, string expectedClauses)
+        {
+            var actualFilter = RangeClauseTokensToFilter(new string[] { firstCase }, Tokens.Date);
+            var expectedFilter = FilterContentTokensToFilter(new string[] { expectedClauses }, Tokens.Date);
+            Assert.AreEqual(expectedFilter, actualFilter);
+            Assert.True(actualFilter.HasFilters, "'Actual' Filter not created");
+            Assert.True(expectedFilter.HasFilters, "'Expected' Filter not created");
+        }
+
         /*
          * The test cases below cover the truth table
          * for 'Is' clauses present in Boolean Select Case Statements.
@@ -339,7 +353,6 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void ExpressionFilter_BooleanIsClauseTruthTableConstSelectExpression(string selectExpressionValue, string rangeClause, string expectedFilterContent)
         {
             var actualFilter = ExpressionFilterFactory.Create(Tokens.Boolean);
-            //actualFilter.SelectExpressionValue = ValueFactory.Create(selectExpressionValue, Tokens.Boolean);
             actualFilter.SelectExpressionValue = ValueFactory.Create(selectExpressionValue.Equals(Tokens.True)); //, Tokens.Boolean);
 
             actualFilter = RangeClauseTokensToFilter(new string[] { rangeClause }, Tokens.Boolean, actualFilter);

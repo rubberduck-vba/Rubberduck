@@ -6,7 +6,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public class ExpressionFilterDate : ExpressionFilter<ComparableDateValue>
     {
-        public ExpressionFilterDate(TokenToValue<ComparableDateValue> converter) : base(converter, Tokens.Date) { }
+        public ExpressionFilterDate() : base(Tokens.Date, ComparableDateValue.Parse) { }
 
         public override bool FiltersAllValues => base.FiltersAllValues
             || Limits.HasMinAndMaxLimits && (Limits.Maximum.AsDecimal - Limits.Minimum.AsDecimal + 1 <= RangesValuesCount + SingleValues.Count());

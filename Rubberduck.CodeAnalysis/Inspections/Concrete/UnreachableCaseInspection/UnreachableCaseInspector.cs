@@ -146,7 +146,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         if (!expression.LHS.ParsesToConstantValue)
                         {
                             var typeName = GetVariableDeclarationTypeName(expression.LHS.Token, rangeClause);
-                             rangeClauseFilter.AddComparablePredicateFilter(expression.LHS.Token, typeName);
+                            rangeClauseFilter.AddComparablePredicateFilter(expression.LHS.Token, typeName);
                         }
                     }
                 }

@@ -17,72 +17,40 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection{
             [Tokens.Byte] = (byte.MinValue, byte.MaxValue)
         };
 
-        public static IExpressionFilter Create(string typeName)
+        public static IExpressionFilter Create(string valueType)
         {
-            if (IntegralNumberExtents.Keys.Contains(typeName))
+            if (IntegralNumberExtents.Keys.Contains(valueType))
             {
-                var integralNumberFilter = new ExpressionFilterIntegral(TryCoerce, typeName);
-                integralNumberFilter.SetExtents(IntegralNumberExtents[typeName].typeMin, IntegralNumberExtents[typeName].typeMax);
+                var integralNumberFilter = new ExpressionFilterIntegral(valueType, long.Parse);
+                integralNumberFilter.SetExtents(IntegralNumberExtents[valueType].typeMin, IntegralNumberExtents[valueType].typeMax);
                 return integralNumberFilter;
             }
-            else if (typeName.Equals(Tokens.Double) || typeName.Equals(Tokens.Single))
+            else if (valueType.Equals(Tokens.Double) || valueType.Equals(Tokens.Single))
             {
-                var floatingPointNumberFilter = new ExpressionFilter<double>(TryCoerce, typeName);
-                if (typeName.Equals(Tokens.Single))
+                var floatingPointNumberFilter = new ExpressionFilter<double>(valueType, double.Parse);
+                if (valueType.Equals(Tokens.Single))
                 {
                     floatingPointNumberFilter.SetExtents(float.MinValue, float.MaxValue);
                 }
                 return floatingPointNumberFilter;
             }
-            else if (typeName.Equals(Tokens.Currency))
+            else if (valueType.Equals(Tokens.Currency))
             {
-                var fixedPointNumberFilter = new ExpressionFilter<decimal>(TryCoerce, typeName);
+                var fixedPointNumberFilter = new ExpressionFilter<decimal>(valueType, VBACurrency.Parse);
                 fixedPointNumberFilter.SetExtents(VBACurrency.MinValue, VBACurrency.MaxValue);
                 return fixedPointNumberFilter;
             }
-            else if (typeName.Equals(Tokens.Boolean))
+            else if (valueType.Equals(Tokens.Boolean))
             {
-                return new ExpressionFilterBoolean(TryCoerce);
+                return new ExpressionFilterBoolean();
             }
 
-            else if (typeName.Equals(Tokens.Date))
+            else if (valueType.Equals(Tokens.Date))
             {
-                return new ExpressionFilterDate(TryCoerce);
+                return new ExpressionFilterDate();
             }
 
-            return new ExpressionFilter<string>(TryCoerce, typeName);
-        }
-
-        private static bool TryCoerce(string value, out long result, string typeName = null)
-            => TryCoerce(value, out result, long.Parse, typeName ?? Tokens.Long);
-
-        private static bool TryCoerce(string value, out double result, string typeName = null)
-            => TryCoerce(value, out result, double.Parse, typeName ?? Tokens.Double);
-
-        private static bool TryCoerce(string value, out decimal result, string typeName = null)
-            => TryCoerce(value, out result, decimal.Parse, typeName ?? Tokens.Currency);
-
-        private static bool TryCoerce(string value, out bool result, string typeName = null)
-            => TryCoerce(value, out result, bool.Parse, typeName ?? Tokens.Boolean);
-
-        private static bool TryCoerce(string value, out ComparableDateValue result, string typeName = null)
-            => TryCoerce(value, out result, ComparableDateValue.Parse, typeName ?? Tokens.Date);
-
-        private static bool TryCoerce<T>(string value, out T result, Func<string,T> parser, string typeName)
-        {
-            result = default;
-            if (LetCoercer.TryCoerceToken((Tokens.String, value), typeName, out string token))
-            {
-                result = parser(token);
-                return true;
-            }
-            return false;
-        }
-
-        private static bool TryCoerce(string value, out string result, string typeName = null)
-        {
-            result = value;
-            return true;
+            return new ExpressionFilter<string>(valueType, (a) => { return a; });
         }
     }
 }

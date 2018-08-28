@@ -1226,12 +1226,14 @@ End Sub";
             'OK
             Case Weekday.Wednesday
             'Unreachable
+            Case 2 * 2 'Wednesday
+            'Unreachable
             Case Else
             'OK
         End Select
 
         End Sub";
-            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
+            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 2);
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 

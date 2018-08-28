@@ -1,11 +1,10 @@
 ﻿using Rubberduck.Parsing.Grammar;
-using System;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public class ExpressionFilterBoolean : ExpressionFilter<bool>
     {
-        public ExpressionFilterBoolean(TokenToValue<bool> converter) : base(converter, Tokens.Boolean) { }
+        public ExpressionFilterBoolean() : base(Tokens.Boolean, (a) => { return a.Equals(Tokens.True); }) { }
 
         public override IParseTreeValue SelectExpressionValue
         {
@@ -23,11 +22,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (expression.LHS.ParsesToConstantValue)
             {
-                if (Converter(expression.LHS.Token, out bool bVal))
-                {
-                    return AddIsClause(bVal, expression);
-                }
-                throw new ArgumentException();
+                return AddIsClause(expression.LHS.AsBoolean(), expression);
             }
             return AddToContainer(Variables[VariableClauseTypes.Is], expression.ToString());
         }

@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -22,8 +23,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         bool FiltersAllValues { get; }
         IParseTreeValue SelectExpressionValue { set; get; }
     }
-
-    public delegate bool TokenToValue<T>(string value, out T result, string typeName = null);
 
     public class ExpressionFilter<T> : IExpressionFilter where T : IComparable<T>
     {
@@ -64,13 +63,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private string _toString;
         protected IParseTreeValue _selectExpressionValue;
 
-        public ExpressionFilter(TokenToValue<T> converter, string valueType)
+        public ExpressionFilter(string valueType, Func<string, T> parser)
         {
-            Converter = converter;
             _selectExpressionType = valueType;
             _hashCode = _selectExpressionType.GetHashCode();
-            converter(Tokens.True, out _trueValue, valueType);
-            converter(Tokens.False, out _falseValue, valueType);
+            Parser = parser;
+            _trueValue = Parse((Tokens.String, Tokens.True));
+            _falseValue = Parse((Tokens.String, Tokens.False));
             _selectExpressionValue = null;
         }
 
@@ -88,7 +87,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             [VariableClauseTypes.Value] = new HashSet<string>(),
         };
 
-        protected TokenToValue<T> Converter { set; get; } = null;
+        protected Func<string,T> Parser { private set; get; } = null;
 
         protected HashSet<T> SingleValues { set; get; } = new HashSet<T>();
 
@@ -180,18 +179,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public void AddExpression(IRangeClauseExpression expression)
         {
-            if (expression is null || expression.ToString().Equals(string.Empty)) { return; }
-
-            if (IsOverflow(expression))
-            {
-                expression.IsOverflow = true;
-                return;
-            }
-
-            if (expression.IsMismatch)
-            {
-                return;
-            }
+            if (expression is null
+                || expression.ToString().Equals(string.Empty)
+                || expression.IsMismatch
+                || expression.IsOverflow)
+            { return; }
 
             try
             {
@@ -217,10 +209,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                         return;
                 }
             }
-            catch (ArgumentException)
-            {
-                expression.IsMismatch = true;
-            }
             catch (FormatException)
             {
                 expression.IsMismatch = true;
@@ -229,9 +217,22 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 expression.IsOverflow = true;
             }
+            //Exception types below are not expected
+            //Setting expression.IsUnreachable = false avoids future evaluation of the expression
+            catch (ArgumentNullException)
+            {
+                expression.IsUnreachable = false;
+                Debug.Assert(true, "caught ArgumentNullException during 'AddExpression'");
+            }
+            catch (NullReferenceException)
+            {
+                expression.IsUnreachable = false;
+                Debug.Assert(true, "caught NullReferenceException during 'AddExpression'");
+            }
             catch (Exception)
             {
-                expression.IsMismatch = true;
+                expression.IsUnreachable = false;
+                Debug.Assert(true, "caught unhandled exception during 'AddExpression'");
             }
         }
 
@@ -263,15 +264,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected virtual bool TryGetMinimum(out T minimum) => Limits.TryGetMinimum(out minimum);
 
+        private T Parse(IParseTreeValue ptValue)
+        {
+            var coercedVal = LetCoercer.CoerceToken((ptValue.ValueType, ptValue.Token), _selectExpressionType); // LetCoercer.CoerceToken((Tokens.String,parseTreeValue.Token), _selectExpressionType);
+            return Parser(coercedVal);
+        }
+
+        private T Parse((string valueType, string token) source)
+        {
+            var coercedVal = LetCoercer.CoerceToken(source, _selectExpressionType); // LetCoercer.CoerceToken((Tokens.String,parseTreeValue.Token), _selectExpressionType);
+            return Parser(coercedVal);
+        }
+
         protected bool AddComparablePredicate(string lhs, IRangeClauseExpression expression)
         {
             if (FiltersTrueFalse) { return false; }
 
             var parseTreeValue = expression is IsClauseExpression ? expression.LHS : expression.RHS;
-            if (!Converter(parseTreeValue.Token, out T expressionValue, _selectExpressionType))
-            {
-                throw new ArgumentOutOfRangeException($"Unable to convert {parseTreeValue.Token} to {typeof(T)}");
-            }
+            T expressionValue = Parse(parseTreeValue);
 
             if (ComparablePredicateFilters.ContainsKey(lhs))
             {
@@ -345,8 +355,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         protected virtual bool AddIsClause(IsClauseExpression expression)
         {
-            if (Converter(expression.LHS.Token, out T value, _selectExpressionType))
+            if (expression.LHS.ParsesToConstantValue)
             {
+                T value = Parse(expression.LHS);
                 IsDirty = true;
                 if (IsClauseAdders.ContainsKey(expression.OpSymbol))
                 {
@@ -396,15 +407,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return result;
         }
 
-        private (T start, T end) ConvertRangeValues(string startVal, string endVal)
-        {
-            if (!Converter(startVal, out T start, _selectExpressionType) || !Converter(endVal, out T end, _selectExpressionType))
-            {
-                throw new ArgumentException();
-            }
-            return (start, end);
-        }
-
         protected bool AddToContainer<K>(HashSet<K> container, K value)
         {
             if (container.Contains(value))
@@ -429,48 +431,29 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private HashSet<string> this[VariableClauseTypes eType] => Variables[eType];
 
-        private bool IsOverflow(IRangeClauseExpression expression)
-        {
-            if (expression.LHS != null && expression.LHS.IsOverflowExpression)
-            {
-                expression.IsOverflow = true;
-            }
-            if (expression.RHS != null && expression.RHS.IsOverflowExpression)
-            {
-                expression.IsOverflow = true;
-            }
-            return expression.IsOverflow;
-        }
-
         private bool AddRangeOfValuesExpression(RangeOfValuesExpression rangeExpr)
         {
             if (rangeExpr.LHS.ParsesToConstantValue && rangeExpr.RHS.ParsesToConstantValue)
             {
-                (T start, T end) = ConvertRangeValues(rangeExpr.LHS.Token, rangeExpr.RHS.Token);
-                var rov = new RangeOfValues(start, end);
-                if (!rov.IsMalformed)
+                T start = Parse(rangeExpr.LHS);
+                T end = Parse(rangeExpr.RHS);
+                var rangeOfValues = new RangeOfValues(start, end);
+                if (rangeOfValues.IsMalformed)
                 {
-                    return rov.IsSingleValue ? AddSingleValue(rov.Start) : AddValueRange(rov);
+                    rangeExpr.IsInherentlyUnreachable = true;
+                    return false;
                 }
-                rangeExpr.IsInherentlyUnreachable = true;
-                return false;
+                return rangeOfValues.IsSingleValue ? AddSingleValue(rangeOfValues.Start) : AddValueRange(rangeOfValues);
             }
             return AddToContainer(Variables[VariableClauseTypes.Range], rangeExpr.ToString());
         }
-
-        //TODO: Review use of 'Converter' versus a method that generates an exception or 
-        //a LetCoerced string that can then be converted using T.Parse(<string>);
 
         private bool AddValueExpression(ValueExpression valueExpr)
         {
             if (valueExpr.LHS.ParsesToConstantValue )
             {
-                if (Converter(valueExpr.LHS.Token, out T result, _selectExpressionType))
-                {
-                    return FiltersValue(result) ? false : AddSingleValue(result);
-                }
-                //throw an exception
-                LetCoercer.CoerceToken((valueExpr.LHS.ValueType, valueExpr.LHS.Token), _selectExpressionType);
+                T result = Parse(valueExpr.LHS);
+                return FiltersValue(result) ? false : AddSingleValue(result);
             }
             return AddToContainer(Variables[VariableClauseTypes.Value], valueExpr.ToString());
         }
@@ -481,11 +464,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (unaryExpr.LHS.ParsesToConstantValue)
             {
-                if (Converter(unaryExpr.LHS.Token, out T result, _selectExpressionType))
-                {
-                    return FiltersValue(result) ? false : AddSingleValue(result);
-                }
-                throw new ArgumentException();
+                T result = Parse(unaryExpr.LHS);
+                return FiltersValue(result) ? false : AddSingleValue(result);
             }
             return AddToContainer(Variables[VariableClauseTypes.Predicate], unaryExpr.ToString());
         }
@@ -514,11 +494,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (!binary.LHS.ParsesToConstantValue && binary.RHS.ParsesToConstantValue)
             {
-                if (!Converter(binary.RHS.Token, out T value, _selectExpressionType))
-                {
-                    throw new ArgumentException();
-                }
-
                 return AddComparablePredicate(binary.LHS.Token, binary);
             }
 
