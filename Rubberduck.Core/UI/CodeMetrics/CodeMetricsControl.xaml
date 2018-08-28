@@ -286,8 +286,8 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <controls:EmptyUIRefresh Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Visibility="{Binding EmptyUIRefreshMessageVisibility, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
-        <controls:BusyIndicator Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+        <controls:EmptyUIRefresh Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Visibility="{Binding EmptyUIRefreshMessageVisibility, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
 
