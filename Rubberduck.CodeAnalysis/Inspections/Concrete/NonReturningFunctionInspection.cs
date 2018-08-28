@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
@@ -26,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             var declarations = UserDeclarations.ToList();
 
-            var interfaceMembers = declarations.FindInterfaceMembers();
+            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers();
 
             var functions = declarations
                 .Where(declaration => ReturningMemberTypes.Contains(declaration.DeclarationType)

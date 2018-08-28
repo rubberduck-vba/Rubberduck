@@ -214,27 +214,6 @@ namespace Rubberduck.Common
             return declarations.Where(declaration => declaration.ParentScope == parent.Scope);
         }
 
-        public static IEnumerable<Declaration> FindInterfaces(this IEnumerable<Declaration> declarations)
-        {
-            var classes = declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule);
-            var interfaces = classes.Where(item => ((ClassModuleDeclaration)item).Subtypes.Any(s => s.IsUserDefined));
-            return interfaces;
-        }
-
-        /// <summary>
-        /// Finds all interface members.
-        /// </summary>
-        public static IEnumerable<Declaration> FindInterfaceMembers(this IEnumerable<Declaration> declarations)
-        {
-            var items = declarations.ToList();
-            var interfaces = FindInterfaces(items).Select(i => i.Scope).ToList();
-            var interfaceMembers = items.Where(item => item.IsUserDefined
-                                                && ProcedureTypes.Contains(item.DeclarationType)
-                                                && interfaces.Any(i => item.ParentScope.StartsWith(i)))
-                                                .ToList();
-            return interfaceMembers;
-        }
-
         /// <summary>
         /// Finds all event handler procedures for specified control declaration.
         /// </summary>
@@ -392,47 +371,6 @@ namespace Rubberduck.Common
             return declarations.Where(item => Equals(item.ParentScopeDeclaration, type));
         }
 
-        /// <summary>
-        /// Finds all class members that are interface implementation members.
-        /// </summary>
-        public static IEnumerable<Declaration> FindInterfaceImplementationMembers(this IEnumerable<Declaration> declarations)
-        {
-            var items = declarations.ToList();
-            var members = FindInterfaceMembers(items);
-            var result = items.Where(item => 
-                item.IsUserDefined
-                && ProcedureTypes.Contains(item.DeclarationType)
-                && members.Select(m => m.ComponentName + '_' + m.IdentifierName).Contains(item.IdentifierName))
-            .ToList();
-
-            return result;
-        }
-
-        public static IEnumerable<Declaration> FindInterfaceImplementationMembers(this IEnumerable<Declaration> declarations, string interfaceMember)
-        {
-            return FindInterfaceImplementationMembers(declarations)
-                .Where(m => m.IdentifierName.EndsWith(interfaceMember));
-        }
-
-        public static IEnumerable<Declaration> FindInterfaceImplementationMembers(this IEnumerable<Declaration> declarations, Declaration interfaceDeclaration)
-        {
-            return FindInterfaceImplementationMembers(declarations)
-                .Where(m => m.DeclarationType == interfaceDeclaration.DeclarationType && m.IdentifierName ==
-                            interfaceDeclaration.ComponentName + "_" + interfaceDeclaration.IdentifierName);
-        }
-
-        public static Declaration FindInterfaceMember(this IEnumerable<Declaration> declarations, Declaration implementation)
-        {
-            var members = FindInterfaceMembers(declarations);
-            var matches = members.Where(m => m.IsUserDefined 
-                                             && m.DeclarationType == implementation.DeclarationType
-                                             && implementation.IdentifierName == m.ComponentName + '_' + m.IdentifierName).ToList();
-
-            return matches.Count > 1
-                ? matches.SingleOrDefault(m => m.ProjectId == implementation.ProjectId)
-                : matches.FirstOrDefault();
-        }
-
         public static Declaration FindTarget(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
         {
             var items = declarations.ToList();
@@ -552,38 +490,6 @@ namespace Rubberduck.Common
                     return reference.Declaration;
                 }
             }
-            return null;
-        }
-
-        /// <summary>
-        /// Returns the interface for a QualifiedSelection contained by a statement similar to "Implements IClass1"
-        /// </summary>
-        /// <param name="declarations"></param>
-        /// <param name="selection"></param>
-        /// <returns></returns>
-        [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
-        public static Declaration FindInterface(this IEnumerable<Declaration> declarations, QualifiedSelection selection)
-        {
-            foreach (var declaration in declarations.FindInterfaces())
-            {
-                foreach (var reference in declaration.References)
-                {
-                    var implementsStmt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
-
-                    if (implementsStmt == null) { continue; }
-
-                    var completeSelection = new Selection(implementsStmt.GetSelection().StartLine,
-                        implementsStmt.GetSelection().StartColumn, reference.Selection.EndLine,
-                        reference.Selection.EndColumn);
-
-                    if (reference.QualifiedModuleName.Equals(selection.QualifiedName) &&
-                        completeSelection.Contains(selection.Selection))
-                    {
-                        return declaration;
-                    }
-                }
-            }
-
             return null;
         }
     }
