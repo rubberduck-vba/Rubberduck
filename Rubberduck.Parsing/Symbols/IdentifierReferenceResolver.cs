@@ -194,9 +194,21 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
                 var members = _declarationFinder.Members(module);
-                defaultMember = (IParameterizedDeclaration)members.FirstOrDefault(m => m is IParameterizedDeclaration && m.Attributes.HasDefaultMemberAttribute() && (isAssignmentTarget ? m.DeclarationType.HasFlag(DeclarationType.Procedure) : m.DeclarationType.HasFlag(DeclarationType.Function)));
+                defaultMember = (IParameterizedDeclaration) members.FirstOrDefault(member =>
+                    member is IParameterizedDeclaration && member.Attributes.HasDefaultMemberAttribute() 
+                        && (isAssignmentTarget
+                            ? member.DeclarationType.HasFlag(DeclarationType.Procedure)
+                            : member.DeclarationType.HasFlag(DeclarationType.Function)));
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget && (defaultMember == null || (!defaultMember.Parameters.Any() || defaultMember.Parameters.All(p => p.IsOptional)) || isSetAssignment), hasExplicitLetStatement);
+
+            _boundExpressionVisitor.AddIdentifierReferences(
+                boundExpression, 
+                _qualifiedModuleName, 
+                _currentScope,
+                _currentParent,
+                isAssignmentTarget && (defaultMember == null || isSetAssignment || defaultMember.Parameters.All(param => param.IsOptional)),
+                hasExplicitLetStatement, 
+                isSetAssignment);
         }
 
         private void ResolveType(ParserRuleContext expression)

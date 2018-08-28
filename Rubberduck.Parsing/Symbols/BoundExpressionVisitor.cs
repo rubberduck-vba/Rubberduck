@@ -139,7 +139,8 @@ namespace Rubberduck.Parsing.Symbols
                         identifier,
                         callee,
                         callSiteContext.GetSelection(),
-                        _annotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine));
+                        _annotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                        isSetAssignment);
                 }
             }
             // Argument List not affected by being unbound.
