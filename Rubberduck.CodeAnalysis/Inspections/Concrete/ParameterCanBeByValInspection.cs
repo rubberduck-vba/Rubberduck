@@ -22,8 +22,8 @@ namespace Rubberduck.Inspections.Concrete
             var declarations = UserDeclarations.ToArray();
             var issues = new List<IInspectionResult>();
 
-            var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToArray();
-            var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
+            var interfaceDeclarationMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToArray();
+            var interfaceScopes = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
 
             issues.AddRange(GetResults(declarations, interfaceDeclarationMembers));
 
@@ -80,7 +80,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 var members = declarationMembers.Any(a => a.DeclarationType == DeclarationType.Event)
                     ? declarations.FindHandlersForEvent(declaration).Select(s => s.Item2).ToList()
-                    : declarations.FindInterfaceImplementationMembers(declaration).ToList();
+                    : State.DeclarationFinder.FindInterfaceImplementationMembers(declaration).Cast<Declaration>().ToList();
 
                 foreach (var member in members)
                 {
