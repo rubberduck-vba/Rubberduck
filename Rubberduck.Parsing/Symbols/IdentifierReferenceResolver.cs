@@ -204,10 +204,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                Logger.Warn(
-                   string.Format(
-                       "Type Context: Failed to resolve {0}. Binding as much as we can.",
-                       expression.GetText()));
+                Logger.Warn($"Type Context: Failed to resolve {expression.GetText()}. Binding as much as we can.");
             }
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
         }
@@ -366,8 +363,7 @@ namespace Rubberduck.Parsing.Symbols
                 context.lExpression(),
                 StatementResolutionContext.LetStatement,
                 true,
-                letStatement != null,
-                false);
+                letStatement != null);
             ResolveDefault(context.expression());
         }
 
@@ -413,14 +409,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveFileNumber(VBAParser.FileNumberContext fileNumber)
         {
-            if (fileNumber.markedFileNumber() != null)
-            {
-                ResolveDefault(fileNumber.markedFileNumber().expression());
-            }
-            else
-            {
-                ResolveDefault(fileNumber.unmarkedFileNumber().expression());
-            }
+            ResolveDefault(fileNumber.markedFileNumber() != null
+                ? fileNumber.markedFileNumber().expression()
+                : fileNumber.unmarkedFileNumber().expression());
         }
 
         public void Resolve(VBAParser.OpenStmtContext context)
@@ -596,9 +587,9 @@ namespace Rubberduck.Parsing.Symbols
             {
                 // Fixed-Length strings can have a constant-name as length that is a simple-name-expression that also has to be resolved.
                 var length = context.fieldLength();
-                if (context.fieldLength() != null && context.fieldLength().identifierValue() != null)
+                if (length?.identifierValue() != null)
                 {
-                    ResolveDefault(context.fieldLength().identifierValue());
+                    ResolveDefault(length.identifierValue());
                 }
                 return;
             }
