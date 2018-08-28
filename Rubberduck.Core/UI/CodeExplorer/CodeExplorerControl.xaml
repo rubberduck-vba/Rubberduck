@@ -154,7 +154,7 @@
                                   CommandParameter="{Binding SelectedItem}"
                                   Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
                                 <MenuItem.Icon>
-                                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ProjectForm.png" />
+                                    <Image Style="{StaticResource IconStyle}" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ProjectForm.png" />
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator />
@@ -174,7 +174,7 @@
                             <Separator />
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddModule}">
                                 <MenuItem.Icon>
-                                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
+                                    <Image Style="{StaticResource IconStyle}" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
                                 </MenuItem.Icon>
                                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddVBFormText}"
                                   Command="{Binding AddVBFormCommand}"
@@ -197,7 +197,7 @@
                                   CommandParameter="{Binding SelectedItem}"
                                   Visibility="{Binding VBAVisibility}">
                                     <MenuItem.Icon>
-                                        <Image Height="16" Source="{StaticResource AddUserFormImage}" />
+                                        <Image Style="{StaticResource IconStyle}" Source="{StaticResource AddUserFormImage}" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddStdModuleText}"
@@ -227,7 +227,7 @@
                                   CommandParameter="{Binding SelectedItem}"
                                   Visibility="{Binding VB6Visibility}">
                                     <MenuItem.Icon>
-                                        <Image Height="16" Source="{StaticResource AddPropertyPageImage}" />
+                                        <Image Style="{StaticResource IconStyle}" Source="{StaticResource AddPropertyPageImage}" />
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddUserDocumentText}"
@@ -301,9 +301,9 @@
                                   CommandParameter="{Binding SelectedItem}"
                                   Visibility="{Binding VBAVisibility}">
                                 <MenuItem.Icon>
-                                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/minus-circle.png">
+                                    <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/minus-circle.png">
                                         <Image.Style>
-                                            <Style TargetType="Image">
+                                            <Style BasedOn="{StaticResource IconStyle}" TargetType="Image">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsEnabled" Value="False">
                                                         <Setter Property="Opacity" Value="0.5" />
@@ -421,7 +421,7 @@
             <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}" >
 
                 <Button Command="{Binding RefreshCommand}">
-                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png">
+                    <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png">
                         <Image.Style>
                             <Style BasedOn="{StaticResource IconStyle}" TargetType="Image">
                                 <Style.Triggers>
@@ -450,7 +450,7 @@
                                   CommandParameter="{Binding SelectedItem}"
                                   Visibility="{Binding VB6Visibility}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="{StaticResource AddVBFormImage}" />
+                                <Image Style="{StaticResource IconStyle}" Source="{StaticResource AddVBFormImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddMDIFormText}"
@@ -458,7 +458,7 @@
                                   CommandParameter="{Binding SelectedItem}"
                                   Visibility="{Binding VB6Visibility}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="{StaticResource AddMDIFormImage}" />
+                                <Image Style="{StaticResource IconStyle}" Source="{StaticResource AddMDIFormImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddFormText}"
@@ -488,7 +488,7 @@
                                   CommandParameter="{Binding SelectedItem}"
                                   Visibility="{Binding VB6Visibility}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="{StaticResource AddUserControlImage}" />
+                                <Image Style="{StaticResource IconStyle}" Source="{StaticResource AddUserControlImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddPropertyPageText}"
@@ -496,7 +496,7 @@
                                   CommandParameter="{Binding SelectedItem}"
                                   Visibility="{Binding VB6Visibility}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="{StaticResource AddPropertyPageImage}" />
+                                <Image Style="{StaticResource IconStyle}" Source="{StaticResource AddPropertyPageImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddUserDocumentText}"
@@ -504,7 +504,7 @@
                                   CommandParameter="{Binding SelectedItem}"
                                   Visibility="{Binding VB6Visibility}">
                             <MenuItem.Icon>
-                                <Image Height="16" Source="{StaticResource AddUserDocumentImage}" />
+                                <Image Style="{StaticResource IconStyle}" Source="{StaticResource AddUserDocumentImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
@@ -552,7 +552,7 @@
                 </Menu>
 
                 <ToggleButton Name="DisplaySignatures" ToolTip="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ShowSignaturesToolTip}" IsChecked="True">
-                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/DisplayFullSignature.png" />
+                    <Image Style="{StaticResource IconStyle}" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/DisplayFullSignature.png" />
                 </ToggleButton>
 
                 <Separator />
@@ -597,8 +597,6 @@
 
                 <Label Style="{StaticResource fontSizeStyle}"
                        Content="Font Size:" />
-                <!--Style="{StaticResource fontSizeStyle}"-->
-                <!--FontSize="{Binding ElementName=ChosenFontSize, Path=SelectedItem, Mode=OneWay}"-->
                 
                 <ComboBox x:Name="ChosenFontSize"
                           HorizontalContentAlignment="Center"
