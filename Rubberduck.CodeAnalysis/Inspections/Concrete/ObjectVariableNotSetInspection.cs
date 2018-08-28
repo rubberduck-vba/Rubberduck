@@ -6,14 +6,13 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {
         public ObjectVariableNotSetInspection(RubberduckParserState state)
-            : base(state) {  }
+            : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -36,17 +35,11 @@ namespace Rubberduck.Inspections.Concrete
                     continue;
                 }
 
-                foreach (var reference in moduleReferences.Value)
-                {
-                    if (!IsIgnoringInspectionResultFor(reference, AnnotationName) 
-                        && VariableRequiresSetAssignmentEvaluator.NeedsSetKeywordAdded(reference, State))
-                    {
-                        result.Add(reference);
-                    }
-                }
+                result.AddRange(moduleReferences.Value.Where(reference => !reference.IsSetAssignment
+                    && VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State)));
             }
 
-            return result;
+            return result.Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName));
         }
     }
 }
