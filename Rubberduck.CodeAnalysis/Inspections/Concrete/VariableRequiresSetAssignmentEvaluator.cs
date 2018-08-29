@@ -41,6 +41,12 @@ namespace Rubberduck.Inspections
                 return false;
             }
 
+            // For Each iterators are implicitly set.
+            if (reference.Context.GetAncestor<VBAParser.ForEachStmtContext>() != null)
+            {
+                return false;
+            }
+
             if (isObjectVariable)
             {
                 // get the members of the returning type, a default member could make us lie otherwise
