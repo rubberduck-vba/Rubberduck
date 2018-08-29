@@ -503,10 +503,12 @@ End Sub";
                 refactoring.Refactor(target);
 
                 var rewriter1 = state.GetRewriter(component0);
-                Assert.AreEqual(expectedCode1, rewriter1.GetText());
+                var actual1 = rewriter1.GetText();
+                Assert.AreEqual(expectedCode1, actual1);
 
                 var rewriter2 = state.GetRewriter(component1);
-                Assert.AreEqual(expectedCode2, rewriter2.GetText());
+                var actual2 = rewriter2.GetText();
+                Assert.AreEqual(expectedCode2, actual2);
 
                 messageBox.Verify(m => m.Question(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
             }
