@@ -2432,7 +2432,7 @@ End Sub";
         {
             string code = @"
 Sub Test()
-    Me.Circle Step(1, 2), 3, 4, 5, 6, 7
+    Me.Circle Step (1, 2), 3, 4, 5, 6, 7
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
@@ -2456,7 +2456,7 @@ End Sub";
         {
             string code = @"
 Sub Test()
-    Me.Circle Step(1, 2), 3
+    Me.Circle Step (1, 2), 3
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
