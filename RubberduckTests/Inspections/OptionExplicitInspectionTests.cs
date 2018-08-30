@@ -97,6 +97,56 @@ namespace RubberduckTests.Inspections
 
         [Test]
         [Category("Inspections")]
+        public void IgnoredModule_DoesNotReturnResults()
+        {
+            const string inputCode1 = @"'@IgnoreModule";
+            const string inputCode2 = @"Option Explicit";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new OptionExplicitInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IgnoredInspection_DoesNotReturnResults()
+        {
+            const string inputCode1 = @"'@Ignore OptionExplicit";
+            const string inputCode2 = @"Option Explicit";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new OptionExplicitInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+        
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "OptionExplicitInspection";

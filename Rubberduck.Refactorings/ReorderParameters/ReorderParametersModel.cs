@@ -4,7 +4,6 @@ using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 
@@ -44,7 +43,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             if (TargetDeclaration == null) { return; }
 
-            Parameters = ((IParameterizedDeclaration) TargetDeclaration).Parameters.Select((s, i) => new Parameter((ParameterDeclaration)s, i)).ToList();
+            Parameters = ((IParameterizedDeclaration) TargetDeclaration).Parameters.Select((param, idx) => new Parameter(param, idx)).ToList();
 
             if (TargetDeclaration.DeclarationType == DeclarationType.PropertyLet ||
                 TargetDeclaration.DeclarationType == DeclarationType.PropertySet)
@@ -65,15 +64,14 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private Declaration PromptIfTargetImplementsInterface()
         {
-            var declaration = TargetDeclaration;
-            var interfaceImplementation = Declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (declaration == null || interfaceImplementation == null)
+            if (!(TargetDeclaration is ModuleBodyElementDeclaration member) || !member.IsInterfaceImplementation)
             {
-                return declaration;
+                return TargetDeclaration;
             }
 
-            var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+            var interfaceMember = member.InterfaceMemberImplemented;
+            var message = 
+                string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, TargetDeclaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
             
             return _messageBox.ConfirmYesNo(message, RubberduckUI.ReorderParamsDialog_TitleText) ? interfaceMember : null;
         }
