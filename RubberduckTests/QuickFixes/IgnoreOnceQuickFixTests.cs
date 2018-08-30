@@ -1027,8 +1027,8 @@ End Sub";
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                // FIXME reinstate and unignore tests
-                // refers to "UntypedFunctionUsageInspectionTests.GetBuiltInDeclarations()"
+                //FIXME reinstate and unignore tests
+                //refers to "UntypedFunctionUsageInspectionTests.GetBuiltInDeclarations()"
                 //GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
 
                 parser.Parse(new CancellationTokenSource());
@@ -1229,5 +1229,147 @@ End Sub";
             }
         }
 
+        [Test]
+        [Category("QuickFixes")]
+        public void IgnoreQuickFixAppendsToExistingAnnotation()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    '@Ignore VariableNotUsed
+    x = 42
+End Sub";
+
+            const string expectedCode =
+                @"Sub Foo()
+    '@Ignore UndeclaredVariable, VariableNotUsed
+    x = 42
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var component = project.Object.VBComponents[0];
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new UndeclaredVariableInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IgnoreQuickFixAddsAnnotationAfterComment()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    'comment
+    x = 42
+End Sub";
+
+            const string expectedCode =
+                @"Sub Foo()
+    'comment
+    '@Ignore UndeclaredVariable
+    x = 42
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var component = project.Object.VBComponents[0];
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new UndeclaredVariableInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IgnoreQuickFixAddsAnnotationAfterRemComment()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    Rem comment
+    x = 42
+End Sub";
+
+            const string expectedCode =
+                @"Sub Foo()
+    Rem comment
+    '@Ignore UndeclaredVariable
+    x = 42
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var component = project.Object.VBComponents[0];
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new UndeclaredVariableInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IgnoreQuickFixAddsAnnotationAfterMultilineComment()
+        {
+            const string inputCode =
+                @"Sub Foo()
+    'multi _
+     line _
+     comment
+    x = 42
+End Sub";
+
+            const string expectedCode =
+                @"Sub Foo()
+    'multi _
+     line _
+     comment
+    '@Ignore UndeclaredVariable
+    x = 42
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var component = project.Object.VBComponents[0];
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new UndeclaredVariableInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First());
+                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            }
+        }
     }
 }
