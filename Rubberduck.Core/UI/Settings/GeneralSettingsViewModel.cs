@@ -39,7 +39,8 @@ namespace Rubberduck.UI.Settings
             {
                 new DisplayLanguageSetting("en-US"),
                 new DisplayLanguageSetting("fr-CA"),
-                new DisplayLanguageSetting("de-DE")
+                new DisplayLanguageSetting("de-DE"),
+                new DisplayLanguageSetting("cs-CZ")
             });
 
             LogLevels = new ObservableCollection<MinimumLogLevel>(LogLevelHelper.LogLevels.Select(l => new MinimumLogLevel(l.Ordinal, l.Name)));
