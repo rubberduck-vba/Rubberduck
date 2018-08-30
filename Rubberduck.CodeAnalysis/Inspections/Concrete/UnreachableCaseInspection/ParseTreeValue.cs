@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private string _valueText;
         private ComparableDateValue _dateValue;
         private StringLiteralExpression _stringConstant;
-        private bool? _exceedsTypeRange;
+        private bool? _exceedsValueTypeRange;
 
         public static IParseTreeValue CreateValueType(string token, string declaredValueType)
         {
@@ -36,7 +36,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 ValueType = declaredValueType ?? throw new ArgumentNullException(NULL_VALUETYPE_MSG),
                 Token = token ?? throw new ArgumentNullException(NULL_TOKEN_MSG),
                 ParsesToConstantValue = true,
-                IsOverflowExpression = LetCoercer.ExceedsTypeExtents(declaredValueType, token),
+                IsOverflowExpression = LetCoercer.ExceedsValueTypeRange(declaredValueType, token),
             };
             return ptValue;
         }
@@ -71,7 +71,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 ValueType = declaredValueType ?? throw new ArgumentNullException(NULL_VALUETYPE_MSG),
                 Token = value ?? throw new ArgumentNullException(NULL_TOKEN_MSG),
                 ParsesToConstantValue = false,
-                _exceedsTypeRange = true
+                _exceedsValueTypeRange = true
             };
             return ptValue;
         }
@@ -81,7 +81,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             ValueType = declaredType ?? throw new ArgumentNullException(NULL_VALUETYPE_MSG);
             _valueText = value ?? throw new ArgumentNullException(NULL_TOKEN_MSG);
             ParsesToConstantValue = false;
-            _exceedsTypeRange = null;
+            _exceedsValueTypeRange = null;
             _hashCode = value.GetHashCode();
             _dateValue = null;
             _stringConstant = null;
@@ -131,15 +131,15 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             private set
             {
-                _exceedsTypeRange = value;
+                _exceedsValueTypeRange = value;
             }
             get
             {
-                if (!_exceedsTypeRange.HasValue)
+                if (!_exceedsValueTypeRange.HasValue)
                 {
-                    _exceedsTypeRange = ParsesToConstantValue ? LetCoercer.ExceedsTypeExtents(ValueType, _valueText) : false;
+                    _exceedsValueTypeRange = ParsesToConstantValue ? LetCoercer.ExceedsValueTypeRange(ValueType, _valueText) : false;
                 }
-                return _exceedsTypeRange.Value;
+                return _exceedsValueTypeRange.Value;
             }
         }
 

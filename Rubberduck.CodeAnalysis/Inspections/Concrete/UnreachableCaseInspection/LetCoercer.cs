@@ -123,7 +123,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryCoerce(string valueText, out ComparableDateValue value)
             => TryCoerce(valueText, Tokens.Date, out value, ComparableDateValue.Parse);
 
-        public static bool ExceedsTypeExtents(string valueType, string token)
+        public static bool ExceedsValueTypeRange(string valueType, string token)
         {
             try
             {
