@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using NLog;
+using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
@@ -69,7 +69,7 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
 
         public void SyncComReferences(CancellationToken token)
         {
-            var stopwatch = Stopwatch.StartNew();
+            var parsingStageTimer = ParsingStageTimer.StartNew();
 
             LastSyncOfCOMReferencesLoadedReferences = false;
             _unloadedCOMReferences.Clear();
@@ -98,8 +98,8 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
                 UnloadComReference(reference);
             }
 
-            stopwatch.Stop();
-            Logger.Debug($"Loaded and unloaded referenced libraries in {stopwatch.ElapsedMilliseconds}ms.");
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Loaded and unloaded referenced libraries in {0}ms.");
         }
 
         private Dictionary<string, List<ReferenceInfo>> ReferencedByProjectId()

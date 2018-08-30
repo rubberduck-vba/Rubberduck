@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using Antlr4.Runtime.Tree;
 using NLog;
+using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
@@ -75,39 +76,39 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             PerformPreResolveCleanup(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
-            var stopwatch = Stopwatch.StartNew();
+            var parsingStageTimer = ParsingStageTimer.StartNew();
 
             ExecuteCompilationPasses(_toResolve.AsReadOnly(), token);
             token.ThrowIfCancellationRequested();
 
-            stopwatch.Stop();
-            Logger.Debug($"Executed compilation passes in {stopwatch.ElapsedMilliseconds}ms.");
-            stopwatch.Restart();
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Executed compilation passes in {0}ms.");
+            parsingStageTimer.Restart();
 
             AddSupertypesForDocumentModules(_toResolve.AsReadOnly(), _state);
             token.ThrowIfCancellationRequested();
 
-            stopwatch.Stop();
-            Logger.Debug($"added supertypes for document modules in {stopwatch.ElapsedMilliseconds}ms.");
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Added supertypes for document modules in {0}ms.");
 
             var parseTreesToResolve = _state.ParseTrees.Where(kvp => _toResolve.Contains(kvp.Key)).ToList();
             token.ThrowIfCancellationRequested();
 
-            stopwatch.Restart();
+            parsingStageTimer.Restart();
 
             ResolveReferences(parseTreesToResolve, token);
             token.ThrowIfCancellationRequested();
 
-            stopwatch.Stop();
-            Logger.Debug($"Resolved references in {stopwatch.ElapsedMilliseconds}ms.");
-            stopwatch.Restart();
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Resolved references in {0}ms.");
+            parsingStageTimer.Restart();
 
             AddModuleToModuleReferences(_state.DeclarationFinder, token);
             token.ThrowIfCancellationRequested();
 
-            stopwatch.Stop();
-            Logger.Debug($"Determined module to module references in {stopwatch.ElapsedMilliseconds}ms.");
-            stopwatch.Restart();
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Determined module to module references in {0}ms.");
+            parsingStageTimer.Restart();
 
             AddNewUndeclaredVariablesToDeclarations();
             AddNewUnresolvedMemberDeclarations();
