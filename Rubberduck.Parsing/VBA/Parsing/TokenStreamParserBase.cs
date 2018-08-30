@@ -60,7 +60,9 @@ namespace Rubberduck.Parsing.VBA.Parsing
             }
         }
 
-        private void LogAndReset(CommonTokenStream tokenStream, string logWarnMessage, Exception exception)
+        //This method is virtual only because a CommonTokenStream cannot be mocked in tests
+        //and there is no interface for it or a base class that has the Reset member.
+        protected virtual void LogAndReset(CommonTokenStream tokenStream, string logWarnMessage, Exception exception)
         {
             Logger.Warn(logWarnMessage);
             Logger.Debug(exception);
