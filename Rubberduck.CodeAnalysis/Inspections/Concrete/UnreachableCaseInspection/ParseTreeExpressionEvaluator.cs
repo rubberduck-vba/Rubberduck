@@ -38,8 +38,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             var opProvider = new OperatorTypesProvider((LHS.ValueType, RHS.ValueType), opSymbol);
-            try { var testForMismatch = opProvider.OperatorDeclaredType; }
-            catch (ArgumentException)
+            if (opProvider.IsMismatch)
             {
                 return _valueFactory.CreateMismatchExpression($"{LHS.Token} {opSymbol} {RHS.Token}", Tokens.Variant);
             }

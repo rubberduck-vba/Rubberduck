@@ -32,6 +32,26 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public OperatorTypesProvider(string operandTypeName, string opSymbol)
             : this((operandTypeName, null), opSymbol) { }
 
+        public bool IsMismatch
+        {
+            get
+            {
+                if (_operatorDeclaredTypeName != null)
+                {
+                    return false;
+                }
+                try
+                {
+                    ResolveTypes();
+                    return false;
+                }
+                catch (KeyNotFoundException)
+                {
+                    return true;
+                }
+            }
+        }
+
         public string OperatorDeclaredType => _operatorDeclaredTypeName ?? ResolveTypes().Item1;
 
         public string OperatorEffectiveType => _operatorEffectiveTypeName ?? ResolveTypes().Item2;
@@ -70,7 +90,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             if (_operatorDeclaredTypeName is null)
             {
-                throw new ArgumentException($"Unhandled operation symbol: {_opSymbol}");
+                throw new KeyNotFoundException($"Unhandled operation symbol: {_opSymbol}");
             }
             return (_operatorDeclaredTypeName, _operatorEffectiveTypeName);
         }
