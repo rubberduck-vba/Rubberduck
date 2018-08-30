@@ -57,14 +57,19 @@ namespace Rubberduck.AutoComplete
         private void InitializeConfig()
         {
             _initializing = true;
-
-            if (!_initialized)
+            // No reason to think this would throw, but if it does, _initializing state needs to be reset.
+            try
             {
-                var config = _configService.LoadConfiguration();
-                ApplyAutoCompleteSettings(config);
+                if (!_initialized)
+                {
+                    var config = _configService.LoadConfiguration();
+                    ApplyAutoCompleteSettings(config);
+                }
             }
-
-            _initializing = false;
+            finally
+            {
+                _initializing = false;
+            }            
         }
 
         public void Disable()
