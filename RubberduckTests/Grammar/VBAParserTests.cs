@@ -3460,6 +3460,45 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
         }
 
+        [Category("Parser")]
+        [Test]
+        public void ParserAcceptsScaleMemberInUDT()
+        {
+            const string code = @"
+Public Type Whatever
+    Scale As Double
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserAcceptsCircleMemberInUDT()
+        {
+            const string code = @"
+Public Type Whatever
+    Circle As Long
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserAcceptsPSetMemberInUDT()
+        {
+            const string code = @"
+Public Type Whatever
+    PSet As Boolean
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
         {
             var stream = new AntlrInputStream(code);
