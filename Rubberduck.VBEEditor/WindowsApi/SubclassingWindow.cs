@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Text;
 using NLog;
 
 namespace Rubberduck.VBEditor.WindowsApi
@@ -85,6 +86,16 @@ namespace Rubberduck.VBEditor.WindowsApi
                 return DefSubclassProc(hWnd, msg, wParam, lParam);
             }
 
+#if (DEBUG && (THIRSTY_DUCK || THIRSTY_DUCK_WM))
+            //This is an output window firehose kind of like spy++. Prepare for some spam.
+            var windowClassName = ToClassName(hWnd);
+            if (!(WM_MAP.Lookup.TryGetValue((uint) msg, out var wmName)))
+            {
+                wmName = "Unknown";
+            }
+            Debug.WriteLine("MSG: {0:X4} ({1}), Hwnd {2:X4} ({3}), wParam {4:X4}, lParam {5:X4}", (uint)msg, wmName, (uint)hWnd, windowClassName, (uint)wParam, (uint)lParam);
+#endif
+
             if ((uint) msg == (uint) WM.DESTROY)
             {
                 Dispose();
@@ -106,6 +117,13 @@ namespace Rubberduck.VBEditor.WindowsApi
             }
 
             _disposed = true;
+        }
+
+        private static string ToClassName(IntPtr hwnd)
+        {
+            var name = new StringBuilder(User32.MaxGetClassNameBufferSize);
+            User32.GetClassName(hwnd, name, name.Capacity);
+            return name.ToString();
         }
     }
 }

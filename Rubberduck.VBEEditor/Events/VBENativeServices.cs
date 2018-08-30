@@ -80,11 +80,21 @@ namespace Rubberduck.VBEditor.Events
         {
             if (Suspend || hwnd == IntPtr.Zero || _vbe.IsWrappingNullReference) { return; }
 
-#if THIRSTY_DUCK && DEBUG
-            //This is an output window firehose, viewer discretion is advised.
-            if (idObject != (int)ObjId.Cursor) { Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild); }
-#endif
             var windowType = hwnd.ToWindowType();
+
+#if (DEBUG && (THIRSTY_DUCK || THIRSTY_DUCK_EVT))            
+
+            //This is an output window firehose, viewer discretion is advised.
+            if (idObject != (int)ObjId.Cursor)
+            {
+                var windowClassName = hwnd.ToClassName();
+                if (!WinEventMap.Lookup.TryGetValue(eventType, out var eventName))
+                {
+                    eventName = "Unknown";
+                }
+                Debug.WriteLine("EVT: {0:X4} ({1}) Hwnd {2:X4} ({3}), idObject {4}, idChild {5}", eventType, eventName, (int)hwnd, windowClassName, idObject, idChild);
+            }
+#endif
 
             if (windowType == WindowType.IntelliSense)
             {
