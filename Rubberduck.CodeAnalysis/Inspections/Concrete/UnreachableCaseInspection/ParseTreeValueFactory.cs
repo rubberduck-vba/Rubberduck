@@ -46,13 +46,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IParseTreeValue CreateDeclaredType(string expression, string declaredTypeName)
         {
-            if (TokenTypeResolver.TryConformTokenToType(expression, declaredTypeName, out (bool isOverflow,string conformedText) result))
+            if (TokenTypeResolver.TryConformTokenToType(expression, declaredTypeName, out string conformedText))
             {
-                return ParseTreeValue.CreateValueType(result.conformedText, declaredTypeName);
-            }
-            if (result.isOverflow)
-            {
-                return ParseTreeValue.CreateOverflowExpression(expression, declaredTypeName);
+                if (LetCoercer.ExceedsValueTypeRange(declaredTypeName, conformedText))
+                {
+                    return ParseTreeValue.CreateOverflowExpression(expression, declaredTypeName);
+                }
+                return ParseTreeValue.CreateValueType(conformedText, declaredTypeName);
             }
             return ParseTreeValue.CreateExpression(expression, declaredTypeName);
         }

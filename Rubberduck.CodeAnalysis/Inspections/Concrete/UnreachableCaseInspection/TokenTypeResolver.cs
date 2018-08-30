@@ -119,9 +119,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return derivedFromTypeHint;
         }
 
-        public static bool TryConformTokenToType(string valueToken, string conformTypeName, out (bool isOverflow, string valueText) result)
+        public static bool TryConformTokenToType(string valueToken, string conformTypeName, out string result)
         {
-            result = (false,string.Empty);
+            result = string.Empty;
 
             if (valueToken.Equals(double.NaN.ToString(CultureInfo.InvariantCulture)) &&
                 !conformTypeName.Equals(Tokens.String))
@@ -139,7 +139,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     if (LetCoercer.TryCoerce(valueToken, out byte newVal))
                     {
-                        result = (false, newVal.ToString(CultureInfo.InvariantCulture));
+                        result = newVal.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
                 }
@@ -147,19 +147,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     if (LetCoercer.TryCoerce(valueToken, out short newVal))
                     {
-                        result = (false, newVal.ToString(CultureInfo.InvariantCulture));
+                        result = newVal.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
 
                     if (TryParseAsHexLiteral(valueToken, out short outputHex))
                     {
-                        result = (false, outputHex.ToString(CultureInfo.InvariantCulture));
+                        result = outputHex.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
 
                     if (TryParseAsOctalLiteral(valueToken, out short outputOctal))
                     {
-                        result = (false, outputOctal.ToString(CultureInfo.InvariantCulture));
+                        result = outputOctal.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
                 }
@@ -167,19 +167,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     if (LetCoercer.TryCoerce(valueToken, out int newVal))
                     {
-                        result = (false, newVal.ToString(CultureInfo.InvariantCulture));
+                        result = newVal.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
 
                     if (TryParseAsHexLiteral(valueToken, out int outputHex))
                     {
-                        result = (false, outputHex.ToString(CultureInfo.InvariantCulture));
+                        result = outputHex.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
 
                     if (TryParseAsOctalLiteral(valueToken, out int outputOctal))
                     {
-                        result = (false, outputOctal.ToString(CultureInfo.InvariantCulture));
+                        result = outputOctal.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
                 }
@@ -187,19 +187,19 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     if (LetCoercer.TryCoerce(valueToken, out long newVal))
                     {
-                        result = (false, newVal.ToString(CultureInfo.InvariantCulture));
+                        result = newVal.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
 
                     if (TryParseAsHexLiteral(valueToken, out long outputHex))
                     {
-                        result = (false, outputHex.ToString(CultureInfo.InvariantCulture));
+                        result = outputHex.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
 
                     if (TryParseAsOctalLiteral(valueToken, out long outputOctal))
                     {
-                        result = (false, outputOctal.ToString(CultureInfo.InvariantCulture));
+                        result = outputOctal.ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
                 }
@@ -207,7 +207,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (isArabicNumber)
                 {
                     //If we get here the type cannot conform because it is an overflow
-                    result = (true, checkValue.ToString(CultureInfo.InvariantCulture));
+                    result = checkValue.ToString(CultureInfo.InvariantCulture);
                     return true;
                 }
             }
@@ -223,30 +223,30 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     if (LetCoercer.TryCoerce(valueToken, out ComparableDateValue dvComparable))
                     {
-                        result = (false, Convert.ToDouble(dvComparable.AsDecimal).ToString(CultureInfo.InvariantCulture));
+                        result = Convert.ToDouble(dvComparable.AsDecimal).ToString(CultureInfo.InvariantCulture);
                         return true;
                     }
                 }
                 else if(conformTypeName.Equals(Tokens.Single) && LetCoercer.TryCoerce(valueToken, out float floatVal))
                 {
-                    result = (false, floatVal.ToString(CultureInfo.InvariantCulture));
+                    result = floatVal.ToString(CultureInfo.InvariantCulture);
                     return true;
                 }
                 else if (conformTypeName.Equals(Tokens.Double) && LetCoercer.TryCoerce(valueToken, out double newVal))
                 {
-                    result = (false, newVal.ToString(CultureInfo.InvariantCulture));
+                    result = newVal.ToString(CultureInfo.InvariantCulture);
                     return true;
                 }
                 else if (conformTypeName.Equals(Tokens.Currency) && LetCoercer.TryCoerce(valueToken, out decimal decimalVal))
                 {
-                    result = (false, decimalVal.ToString(CultureInfo.InvariantCulture));
+                    result = decimalVal.ToString(CultureInfo.InvariantCulture);
                     return true;
                 }
 
                 if (isRational)
                 {
                     //If we get here the type cannot conform because it is an overflow
-                    result = (true, checkValue.ToString(CultureInfo.InvariantCulture));
+                    result = checkValue.ToString(CultureInfo.InvariantCulture);
                     return true;
                 }
             }
@@ -254,13 +254,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (LetCoercer.TryCoerce(valueToken, out bool newVal))
                 {
-                    result = (false, newVal.ToString(CultureInfo.InvariantCulture));
+                    result = newVal.ToString(CultureInfo.InvariantCulture);
                     return true;
                 }
             }
             else if (conformTypeName.Equals(Tokens.String))
             {
-                result = (false, valueToken);
+                result = valueToken;
                 return IsStringConstant(valueToken);
             }
             else if (conformTypeName.Equals(Tokens.Date))
@@ -270,13 +270,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     var sourceType = derivedTypeName.Equals(string.Empty) ? Tokens.String : derivedTypeName;
                     var (Success, CoercedText) = LetCoerce((sourceType, valueToken), Tokens.Date);
-                    result = (false, CoercedText);
+                    result = CoercedText;
                     return Success;
                 }
                 else if (LetCoercer.TryCoerce(valueToken, out ComparableDateValue dvComparable))
                 {
                     valueToken = dvComparable.AsDate.ToString(CultureInfo.InvariantCulture);
-                    result = (false, dvComparable.AsDateLiteral());
+                    result = dvComparable.AsDateLiteral();
                     return true;
                 }
             }
