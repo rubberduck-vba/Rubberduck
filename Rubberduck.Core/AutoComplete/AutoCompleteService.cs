@@ -40,7 +40,11 @@ namespace Rubberduck.AutoComplete
 
         public void Enable()
         {
-            InitializeConfig();
+            if (!_initializing)
+            {
+                InitializeConfig();
+            }
+
             if (!_enabled)
             {
                 VBENativeServices.KeyDown += HandleKeyDown;
@@ -49,13 +53,18 @@ namespace Rubberduck.AutoComplete
             }
         }
 
+        private bool _initializing;
         private void InitializeConfig()
         {
+            _initializing = true;
+
             if (!_initialized)
             {
                 var config = _configService.LoadConfiguration();
                 ApplyAutoCompleteSettings(config);
             }
+
+            _initializing = false;
         }
 
         public void Disable()
