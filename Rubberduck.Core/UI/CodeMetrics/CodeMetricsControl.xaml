@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
              Language="{UICulture}"
              Name="CodeMetrics"
@@ -236,7 +237,8 @@
     <Grid UseLayoutRounding="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="1.5*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -244,9 +246,7 @@
         </Grid.RowDefinitions>
 
         <TreeView x:Name="ProjectTree"
-                  Grid.Column="0"
-                  Grid.RowSpan="2"
-                  Background="White"
+                  Grid.RowSpan="2" Grid.Column="0"
                   ItemContainerStyle="{StaticResource ShinyTreeView}"
                   HorizontalContentAlignment="Stretch"
                   Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1"
@@ -257,7 +257,11 @@
             </i:Interaction.Behaviors>
         </TreeView>
 
-        <ListView ItemsSource="{Binding Metrics}" Grid.Column="1" Grid.Row="1">
+        <GridSplitter Grid.Row="0" Grid.Column="1" Width="5"
+                      Grid.RowSpan="2"
+                      HorizontalAlignment="Stretch"/>
+
+        <ListView ItemsSource="{Binding Metrics}" Grid.Column="2" Grid.Row="1">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="Focusable" Value="false"/>
@@ -282,8 +286,8 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <controls:EmptyUIRefresh Grid.ColumnSpan="2" Grid.RowSpan="2" Visibility="{Binding EmptyUIRefreshMessageVisibility, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
-        <controls:BusyIndicator Grid.ColumnSpan="2" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+        <controls:EmptyUIRefresh Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Visibility="{Binding EmptyUIRefreshMessageVisibility, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
 
