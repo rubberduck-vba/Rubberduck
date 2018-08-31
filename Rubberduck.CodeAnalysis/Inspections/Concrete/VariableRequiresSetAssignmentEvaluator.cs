@@ -42,7 +42,8 @@ namespace Rubberduck.Inspections
             }
 
             // For Each iterators are implicitly set.
-            if (reference.Context.GetAncestor<VBAParser.ForEachStmtContext>() != null)
+            var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
+            if (reference.Context.GetAncestor<VBAParser.ForEachStmtContext>() != null && letStmtContext == null)
             {
                 return false;
             }
@@ -60,9 +61,7 @@ namespace Rubberduck.Inspections
                 return parameters != null && parameters.All(p => p.IsOptional);
             }
 
-            // assigned declaration is a variant. we need to know about the RHS of the assignment.
-
-            var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
+            // assigned declaration is a variant. we need to know about the RHS of the assignment.           
             if (letStmtContext == null)
             {
                 // not an assignment
