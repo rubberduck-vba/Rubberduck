@@ -44,23 +44,25 @@ namespace Rubberduck.Parsing.VBA.Parsing
         {
             try
             {
-                return ParseLl(moduleName, tokenStream, codeKind);
+                return ParseSll(moduleName, tokenStream, codeKind);
             }
             catch (ParsePassSyntaxErrorException syntaxErrorException)
             {
                 var message = $"SLL mode failed while parsing the {codeKind} version of module {moduleName} at symbol {syntaxErrorException.OffendingSymbol.Text} at L{syntaxErrorException.LineNumber}C{syntaxErrorException.Position}. Retrying using LL.";
                 LogAndReset(tokenStream, message, syntaxErrorException);
-                return ParseSll(moduleName, tokenStream, codeKind);
+                return ParseLl(moduleName, tokenStream, codeKind);
             }
             catch (Exception exception)
             {
                 var message = $"SLL mode failed while parsing the {codeKind} version of module {moduleName}. Retrying using LL.";
                 LogAndReset(tokenStream, message, exception);
-                return ParseSll(moduleName, tokenStream, codeKind);
+                return ParseLl(moduleName, tokenStream, codeKind);
             }
         }
 
-        private void LogAndReset(CommonTokenStream tokenStream, string logWarnMessage, Exception exception)
+        //This method is virtual only because a CommonTokenStream cannot be mocked in tests
+        //and there is no interface for it or a base class that has the Reset member.
+        protected virtual void LogAndReset(CommonTokenStream tokenStream, string logWarnMessage, Exception exception)
         {
             Logger.Warn(logWarnMessage);
             Logger.Debug(exception);
