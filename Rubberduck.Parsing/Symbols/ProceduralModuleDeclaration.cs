@@ -6,32 +6,24 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class ProceduralModuleDeclaration : Declaration
+    public sealed class ProceduralModuleDeclaration : ModuleDeclaration
     {
         public ProceduralModuleDeclaration(
             QualifiedMemberName qualifiedName,
             Declaration projectDeclaration,
             string name,
-            bool isBuiltIn,
+            bool isUserDefined,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
                   qualifiedName,
                   projectDeclaration,
-                  projectDeclaration,
                   name,
-                  null,
-                  false,
-                  false,
-                  Accessibility.Public,
                   DeclarationType.ProceduralModule,
-                  null,
-                  Selection.Home,
-                  false,
-                  null,
-                  isBuiltIn,
+                  isUserDefined,
                   annotations,
-                  attributes) { }
+                  attributes)
+        { }
 
         public ProceduralModuleDeclaration(ComModule statics, Declaration parent, QualifiedModuleName module,
             Attributes attributes)
@@ -39,7 +31,7 @@ namespace Rubberduck.Parsing.Symbols
                 module.QualifyMemberName(statics.Name),
                 parent,
                 statics.Name,
-                true,
+                false,
                 new List<IAnnotation>(),
                 attributes)
         {
@@ -49,19 +41,19 @@ namespace Rubberduck.Parsing.Symbols
         //These are the pseudo-module ctor for COM enumerations and types.
         public ProceduralModuleDeclaration(ComEnumeration pseudo, Declaration parent, QualifiedModuleName module)
             : this(
-                module.QualifyMemberName(string.Format("_{0}", pseudo.Name)),
+                module.QualifyMemberName($"_{pseudo.Name}"),
                 parent,
-                string.Format("_{0}", pseudo.Name),
-                true,
+                $"_{pseudo.Name}",
+                false,
                 new List<IAnnotation>(),
                 new Attributes()) { }
 
         public ProceduralModuleDeclaration(ComStruct pseudo, Declaration parent, QualifiedModuleName module)
             : this(
-                module.QualifyMemberName(string.Format("_{0}", pseudo.Name)),
+                module.QualifyMemberName($"_{pseudo.Name}"),
                 parent,
-                string.Format("_{0}", pseudo.Name),
-                true,
+                $"_{pseudo.Name}",
+                false,
                 new List<IAnnotation>(),
                 new Attributes()) { }
 

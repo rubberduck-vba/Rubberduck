@@ -1,18 +1,18 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
-    [TestClass]
+    [TestFixture]
     public class ExtractMethodRuleInSelectionTests
     {
-        [TestClass]
+        [TestFixture]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsUsedAfter : ExtractMethodRuleInSelectionTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodRuleTests")]
+            [Test]
+            [Category("ExtractMethodRuleTests")]
             public void shouldNotSetFlag()
             {
                 var usedSelection = new Selection(4, 1, 7, 10);
@@ -27,11 +27,11 @@ namespace RubberduckTests.Refactoring.ExtractMethod
             }
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsUsedBefore : ExtractMethodRuleInSelectionTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodRuleTests")]
+            [Test]
+            [Category("ExtractMethodRuleTests")]
             public void shouldNotSetFlag()
             {
                 var usedSelection = new Selection(4, 1, 7, 10);

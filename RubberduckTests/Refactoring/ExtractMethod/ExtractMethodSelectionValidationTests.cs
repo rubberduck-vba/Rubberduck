@@ -1,27 +1,24 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rubberduck.Parsing.VBA;
+using NUnit.Framework;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
-    [TestClass]
+    [TestFixture]
     public class ExtractMethodSelectionValidationTests
     {
-        [TestClass]
+        [TestFixture]
         public class SpansSingleMethod : ExtractMethodSelectionValidationTests
         {
-            [TestClass]
+            [TestFixture]
             public class WhenSelectionSpansMoreThanASingleMethod : SpansSingleMethod
             {
 
-                [TestMethod]
-                [TestCategory("ExtractMethodSelectionValidationTests")]
+                [Test]
+                [Category("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnFalse()
                 {
-                    QualifiedModuleName qualifiedModuleName;
-                    RubberduckParserState state;
                     var inputCode = @"
 Option Explicit
 Private Sub Foo()
@@ -42,29 +39,29 @@ Private Sub NewMethod4
     Debug.Print a
 End Sub";
 
-                    MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
-                    var declarations = state.AllDeclarations;
-                    var selection = new Selection(4, 4, 10, 14);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    QualifiedModuleName qualifiedModuleName;
+                    using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                    {
+                        var declarations = state.AllDeclarations;
+                        var selection = new Selection(4, 4, 10, 14);
+                        QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                    var SUT = new ExtractMethodSelectionValidation(declarations);
+                        var SUT = new ExtractMethodSelectionValidation(declarations);
 
-                    var actual = SUT.withinSingleProcedure(qSelection.Value);
-                    var expected = false;
-                    Assert.AreEqual(expected, actual);
+                        var actual = SUT.withinSingleProcedure(qSelection.Value);
+                        var expected = false;
+                        Assert.AreEqual(expected, actual);
 
+                    }
                 }
             }
-            [TestClass]
+            [TestFixture]
             public class WhenSeletionSpansWithinMethod : SpansSingleMethod
             {
-                [TestMethod]
-                [TestCategory("ExtractMethodSelectionValidationTests")]
+                [Test]
+                [Category("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnTrue()
                 {
-
-                    QualifiedModuleName qualifiedModuleName;
-                    RubberduckParserState state;
                     var inputCode = @"
 Option Explicit
 Private Sub Foo()
@@ -85,27 +82,27 @@ Private Sub NewMethod4
     Debug.Print a
 End Sub";
 
-                    MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
-                    var declarations = state.AllDeclarations;
-                    var selection = new Selection(4, 4, 5, 14);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    QualifiedModuleName qualifiedModuleName;
+                    using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                    {
+                        var declarations = state.AllDeclarations;
+                        var selection = new Selection(4, 4, 5, 14);
+                        QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                    var SUT = new ExtractMethodSelectionValidation(declarations);
+                        var SUT = new ExtractMethodSelectionValidation(declarations);
 
-                    var actual = SUT.withinSingleProcedure(qSelection.Value);
+                        var actual = SUT.withinSingleProcedure(qSelection.Value);
 
-                    var expected = true;
-                    Assert.AreEqual(expected, actual);
+                        var expected = true;
+                        Assert.AreEqual(expected, actual);
 
+                    }
                 }
 
-                [TestMethod]
-                [TestCategory("ExtractMethodSelectionValidationTests")]
+                [Test]
+                [Category("ExtractMethodSelectionValidationTests")]
                 public void shouldReturnFalse()
                 {
-
-                    QualifiedModuleName qualifiedModuleName;
-                    RubberduckParserState state;
                     var inputCode = @"
 Option Explicit
 Private Sub Foo(byval a as long, _
@@ -120,17 +117,20 @@ Private Sub NewMethod
 End Sub";
 
 
-                    MockParser.ParseString(inputCode, out qualifiedModuleName, out state);
-                    var declarations = state.AllDeclarations;
-                    var selection = new Selection(4, 4, 7, 14);
-                    QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
+                    QualifiedModuleName qualifiedModuleName;
+                    using (var state = MockParser.ParseString(inputCode, out qualifiedModuleName))
+                    {
+                        var declarations = state.AllDeclarations;
+                        var selection = new Selection(4, 4, 7, 14);
+                        QualifiedSelection? qSelection = new QualifiedSelection(qualifiedModuleName, selection);
 
-                    var SUT = new ExtractMethodSelectionValidation(declarations);
+                        var SUT = new ExtractMethodSelectionValidation(declarations);
 
-                    var actual = SUT.withinSingleProcedure(qSelection.Value);
+                        var actual = SUT.withinSingleProcedure(qSelection.Value);
 
-                    var expected = false;
-                    Assert.AreEqual(expected, actual);
+                        var expected = false;
+                        Assert.AreEqual(expected, actual);
+                    }
                 }
             }
         }

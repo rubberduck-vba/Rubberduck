@@ -27,6 +27,7 @@
         public static readonly string ChDir = "ChDir";
         public static readonly string ChDrive = "ChDrive";
         public static readonly string Chr = "Chr";
+        public static readonly string ChrB = "ChrB";
         public static readonly string ChrW = "ChrW";
         public static readonly string CInt = "CInt";
         public static readonly string CLng = "CLng";
@@ -86,6 +87,7 @@
         public static readonly string Implements = "Implements";
         public static readonly string In = "In";
         public static readonly string Input = "Input";
+        public static readonly string InputB = "InputB";
         public static readonly string InputBox = "InputBox";
         public static readonly string InStr = "InStr";
         public static readonly string Int = "Int";
@@ -192,6 +194,7 @@
         public static readonly string WeekDay = "WeekDay";
         public static readonly string Wend = "Wend";
         public static readonly string While = "While";
+        public static readonly string Width = "Width";
         public static readonly string With = "With";
         public static readonly string Write = "Write";
         public static readonly string XOr = "Xor";

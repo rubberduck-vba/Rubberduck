@@ -1,8 +1,9 @@
-﻿using Rubberduck.Parsing.VBA;
-using System.Text;
+﻿using System.Text;
 using System.Text.RegularExpressions;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class LikeExpression : Expression
     {

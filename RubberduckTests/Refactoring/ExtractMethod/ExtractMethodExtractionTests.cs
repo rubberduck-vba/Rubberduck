@@ -1,6 +1,6 @@
-﻿//namespace RubberduckTests.Refactoring.ExtractMethod
+//namespace RubberduckTests.Refactoring.ExtractMethod
 //{
-//    [TestClass]
+//    [TestFixture]
 //    public class ExtractMethodExtractionTests
 //    {
 
@@ -29,12 +29,12 @@
 //";
 //        #endregion
 
-//        [TestClass]
+//        [TestFixture]
 //        public class WhenRemoveSelectionIsCalledWithValidSelection
 //        {
 
-//            [TestMethod]
-//            [TestCategory("ExtractedMethodRefactoringTests")]
+//            [Test]
+//            [Category("ExtractedMethodRefactoringTests")]
 //            public void shouldRemoveLinesFromCodeModuleFromBottomUp()
 //            {
 
@@ -55,12 +55,12 @@
 
 //        }
 
-//        [TestClass]
+//        [TestFixture]
 //        public class WhenApplyIsCalled
 //        {
 
-//            [TestMethod]
-//            [TestCategory("ExtractedMethodRefactoringTests")]
+//            [Test]
+//            [Category("ExtractedMethodRefactoringTests")]
 //            public void shouldExtractTheTextForTheNewProcByCallingConstructLinesOfProc()
 //            {
 //                var newProc = @"
@@ -89,8 +89,8 @@
 
 //            }
 
-//            [TestMethod]
-//            [TestCategory("ExtractedMethodRefactoringTests")]
+//            [Test]
+//            [Category("ExtractedMethodRefactoringTests")]
 //            public void shouldRemoveSelection()
 //            {
 
@@ -121,8 +121,8 @@
 //                extraction.Verify(ext => ext.RemoveSelection(codeModule.Object, selections));
 //            }
 
-//            [TestMethod]
-//            [TestCategory("ExtractedMethodRefactoringTests")]
+//            [Test]
+//            [Category("ExtractedMethodRefactoringTests")]
 //            public void shouldInsertMethodCall()
 //            {
 
@@ -156,8 +156,8 @@
 //                Assert.AreEqual(expected, actual);
 //            }
 
-//            [TestMethod]
-//            [TestCategory("ExtractedMethodRefactoringTests")]
+//            [Test]
+//            [Category("ExtractedMethodRefactoringTests")]
 //            public void shouldInsertNewMethodAtGivenLineNoBeforeInsertingMethodCall()
 //            {
 //                var newProc = @"
@@ -191,12 +191,12 @@
 
 //        }
 
-//        [TestClass]
+//        [TestFixture]
 //        public class WhenConstructLinesOfProcIsCalledWithAListOfSelections
 //        {
 
-//            [TestMethod]
-//            [TestCategory("ExtractedMethodRefactoringTests")]
+//            [Test]
+//            [Category("ExtractedMethodRefactoringTests")]
 //            public void shouldConcatenateASeriesOfLines()
 //            {
 
@@ -227,8 +227,8 @@
 //        /// <summary>
 //        /// https://github.com/rubberduck-vba/Rubberduck/issues/844
 //        /// </summary>
-//        [TestMethod]
-//        [TestCategory("ExtractMethodModelTests")]
+//        [Test]
+//        [Category("ExtractMethodModelTests")]
 //        public void shouldNotProduceDuplicateDimOfz()
 //        {
 

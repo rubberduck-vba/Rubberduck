@@ -1,31 +1,34 @@
 ﻿using Antlr4.Runtime;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Preprocessing;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text;
+using System.Collections.Generic;
+using Rubberduck.Parsing.PreProcessing;
 
-namespace RubberduckTests.Preprocessing
+namespace RubberduckTests.PreProcessing
 {
-    [TestClass]
+    [TestFixture]
     public class VBAPreprocessorVisitorTests
     {
         private CultureInfo _cultureInfo;
 
-        [TestInitialize]
+        [SetUp]
         public void TestInitialize()
         {
             _cultureInfo = System.Threading.Thread.CurrentThread.CurrentCulture;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void TestCleanup()
         {
             System.Threading.Thread.CurrentThread.CurrentCulture = _cultureInfo;
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestName()
         {
             string code = @"
@@ -44,7 +47,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(5m, result.Item1.Get("f").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestMinusUnaryOperator()
         {
             string code = @"
@@ -68,7 +72,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(0m, result.Item1.Get("h").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestNotUnaryOperator()
         {
             string code = @"
@@ -88,7 +93,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(-1m, result.Item1.Get("f").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestPlusOperator()
         {
             string code = @"
@@ -112,7 +118,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual("a", result.Item1.Get("h").AsString);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestMinusOperator()
         {
             string code = @"
@@ -134,7 +141,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(new DateTime(2599, 12, 27), result.Item1.Get("g").AsDate);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestIntFunction()
         {
             string code = @"
@@ -154,7 +162,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(10m, result.Item1.Get("f").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestFixFunction()
         {
             string code = @"
@@ -174,7 +183,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(10m, result.Item1.Get("f").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestAbsFunction()
         {
             string code = @"
@@ -194,7 +204,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(50m, result.Item1.Get("f").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestSgnFunction()
         {
             string code = @"
@@ -214,7 +225,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("f"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestLenFunction()
         {
             string code = @"
@@ -230,7 +242,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(3m, result.Item1.Get("d").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestLenBFunction()
         {
             string code = @"
@@ -246,7 +259,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(6m, result.Item1.Get("d").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestCBoolFunction()
         {
             string code = @"
@@ -284,7 +298,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(true, result.Item1.Get("o").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestCByteFunction()
         {
             string code = @"
@@ -312,7 +327,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(Convert.ToByte(1), result.Item1.Get("j").AsByte);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestCAnyNumberFunction()
         {
             // Same implementation for all.
@@ -333,7 +349,8 @@ namespace RubberduckTests.Preprocessing
             }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestCDateFunction()
         {
             string code = @"
@@ -357,7 +374,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(VBADateConstants.EPOCH_START, result.Item1.Get("h").AsDate);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestCStrFunction()
         {
             string code = @"
@@ -379,7 +397,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(new DateTime(2016, 1, 31).ToShortDateString(), result.Item1.Get("g").AsString);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestCVariantFunction()
         {
             string code = @"
@@ -417,7 +436,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(1m, result.Item1.Get("h").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestLikeOperator()
         {
             string code = @"
@@ -451,7 +471,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(true, result.Item1.Get("m").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestIsOperator()
         {
             string code = @"
@@ -463,7 +484,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(false, result.Item1.Get("b").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestImpOperator()
         {
             string code = @"
@@ -491,7 +513,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("j"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestEqvOperator()
         {
             string code = @"
@@ -515,7 +538,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("h"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestXorOperator()
         {
             string code = @"
@@ -539,7 +563,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("h"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestOrOperator()
         {
             string code = @"
@@ -563,7 +588,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("h"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestAndOperator()
         {
             string code = @"
@@ -591,7 +617,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(0, result.Item1.Get("j").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestGeqOperator()
         {
             string code = @"
@@ -639,7 +666,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(true, result.Item1.Get("t").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestGtOperator()
         {
             string code = @"
@@ -687,7 +715,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(false, result.Item1.Get("t").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestLeqOperator()
         {
             string code = @"
@@ -735,7 +764,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(true, result.Item1.Get("t").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestLtOperator()
         {
             string code = @"
@@ -783,7 +813,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(false, result.Item1.Get("t").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestEqOperator()
         {
             string code = @"
@@ -821,7 +852,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(true, result.Item1.Get("o").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestNeqOperator()
         {
             string code = @"
@@ -859,7 +891,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(false, result.Item1.Get("o").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestConcatOperator()
         {
             string code = @"
@@ -883,7 +916,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(string.Empty, result.Item1.Get("h").AsString);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestPowOperator()
         {
             string code = @"
@@ -903,7 +937,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("f"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestModOperator()
         {
             string code = @"
@@ -923,7 +958,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("f"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestIntDivOperator()
         {
             string code = @"
@@ -949,7 +985,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("i"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestMultOperator()
         {
             string code = @"
@@ -967,7 +1004,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("e"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestDivOperator()
         {
             string code = @"
@@ -985,7 +1023,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(null, result.Item1.Get("e"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestStringLiteral()
         {
             string code = @"
@@ -997,7 +1036,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual("a\"\"b", result.Item1.Get("b").AsString);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestNumberLiteral()
         {
             string code = @"
@@ -1011,7 +1051,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(-5032300m, result.Item1.Get("c").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestDateLiteral()
         {
             string code = @"
@@ -1048,7 +1089,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(new DateTime(1899, 12, 30, 12, 13, 0), result.Item1.Get("n").AsDate);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestKeywordLiterals()
         {
             string code = @"
@@ -1066,7 +1108,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(EmptyValue.Value, result.Item1.Get("e"));
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestComplexExpressions()
         {
             string code = @"
@@ -1080,7 +1123,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(new DateTime(1799, 12, 31), result.Item1.Get("d").AsDate);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestOperatorPrecedence()
         {
             string code = @"
@@ -1090,7 +1134,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(7m, result.Item1.Get("a").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestLocaleJapanese()
         {
             string code = @"
@@ -1107,9 +1152,11 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(true, result.Item1.Get("d").AsBool);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestLocaleGerman()
         {
+            // FIXME shouldn't this be 82,5235?
             string code = @"
 #Const a = 82.5235
 ";
@@ -1118,7 +1165,8 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(82.5235m, result.Item1.Get("a").AsDecimal);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestPreprocessingLiveDeadCode()
         {
             string code = @"
@@ -1160,7 +1208,52 @@ namespace RubberduckTests.Preprocessing
             Assert.AreEqual(evaluated, result.Item2.AsString);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
+        public void TestPreprocessingLiveDeadCodeTokensDoNotGetRemoved()
+        {
+            string code = @"
+#Const a = 2 + 5
+
+#If a = 7 Then
+    Public Sub Alive()
+        #If True Then
+            Debug.Print 2
+        #ElseIf 1 = 2 Then
+            Debug.Print 4
+        #End If
+    End Sub
+#Else
+    Public Sub Dead()
+        Debug.Print 3
+    End Sub
+#End If
+";
+
+            string evaluated = @"
+#Const a = 2 + 5
+
+#If a = 7 Then
+    Public Sub Alive()
+        #If True Then
+            Debug.Print 2
+        #ElseIf 1 = 2 Then
+            Debug.Print 4
+        #End If
+    End Sub
+#Else
+    Public Sub Dead()
+        Debug.Print 3
+    End Sub
+#End If
+";
+            var result = Preprocess(code);
+            var allTokenText = TokenText(result.Item2.AsTokens);
+            Assert.AreEqual(evaluated, allTokenText);
+        }
+
+        [Test]
+        [Category("Preprocessor")]
         public void TestPreprocessingNoConditionalCompilation()
         {
             string code = @"
@@ -1182,7 +1275,8 @@ End Sub
             Assert.AreEqual(evaluated, result.Item2.AsString);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestLogicalLinesHasConditionalCompilationKeywords()
         {
             string code = @"
@@ -1202,7 +1296,8 @@ End Sub
             Assert.AreEqual(evaluated, result.Item2.AsString);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestPtrSafeKeywordAsConstant()
         {
             string code = @"
@@ -1226,7 +1321,8 @@ End Sub
             Assert.AreEqual(evaluated, result.Item2.AsString);
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Preprocessor")]
         public void TestIgnoresComment()
         {
             string code = @"
@@ -1270,11 +1366,28 @@ End Sub
             parser.ErrorHandler = new BailErrorStrategy();
             //parser.AddErrorListener(new ExceptionErrorListener());
             var tree = parser.compilationUnit();
-            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), tree.start.InputStream);
+            var userDefinedConstants = new Dictionary<string, short>();
+            var evaluator = new VBAPreprocessorVisitor(symbolTable, new VBAPredefinedCompilationConstants(7.01), userDefinedConstants, tree.start.InputStream, tokens);
             var expr = evaluator.Visit(tree);
+            var resultValue = expr.Evaluate();
 
             Debug.Assert(parser.NumberOfSyntaxErrors == 0);
-            return Tuple.Create(symbolTable, expr.Evaluate());
+            return Tuple.Create(symbolTable, resultValue);
+        }
+
+        private string TokenText(IEnumerable<IToken> tokens)
+        {
+            var builder = new StringBuilder();
+            foreach(var token in tokens)
+            {
+                builder.Append(token.Text);
+            }
+            var withoutEOF = builder.ToString();
+            while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
+            {
+                withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);
+            }
+            return withoutEOF;
         }
     }
 }

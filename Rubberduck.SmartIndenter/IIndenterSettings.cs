@@ -3,14 +3,18 @@
     public interface IIndenterSettings
     {
         bool IndentEntireProcedureBody { get; set; }
-        bool IndentFirstCommentBlock { get; set; }
         bool IndentEnumTypeAsProcedure { get; set; }
+        bool IndentFirstCommentBlock { get; set; }       
         bool IndentFirstDeclarationBlock { get; set; }
+        bool IgnoreEmptyLinesInFirstBlocks { get; set; }
         bool AlignCommentsWithCode { get; set; }
         bool AlignContinuations { get; set; }
         bool IgnoreOperatorsInContinuations { get; set; }
         bool IndentCase { get; set; }
         bool ForceDebugStatementsInColumn1 { get; set; }
+        bool ForceDebugPrintInColumn1 { get; set; }
+        bool ForceDebugAssertInColumn1 { get; set; }
+        bool ForceStopInColumn1 { get; set; }
         bool ForceCompilerDirectivesInColumn1 { get; set; }
         bool IndentCompilerDirectives { get; set; }
         bool AlignDims { get; set; }

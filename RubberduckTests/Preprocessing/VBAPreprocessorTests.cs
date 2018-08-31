@@ -1,23 +1,20 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Parsing.VBA;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
+using System.Reflection;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor;
 
-namespace RubberduckTests.Preprocessing
+namespace RubberduckTests.PreProcessing
 {
-    [TestClass]
+    [TestFixture]
     public class VBAPreprocessorTests
     {
-        [TestMethod]
-        [DeploymentItem(@"Testfiles\")]
+        [Test]
+        [Category("Preprocessor")]
         public void TestPreprocessor()
         {
             foreach (var testfile in GetTestFiles())
@@ -32,14 +29,16 @@ namespace RubberduckTests.Preprocessing
 
         private void AssertParseResult(string filename, string originalCode, string materializedParseTree)
         {
-            Assert.AreEqual(originalCode, materializedParseTree, string.Format("{0} mismatch detected.", filename));
+            Assert.AreEqual(originalCode, materializedParseTree, $"{filename} mismatch detected.");
         }
 
         private IEnumerable<Tuple<string, string, string>> GetTestFiles()
         {
             // Reference_Module_1 = raw, unprocessed code.
             // Reference_Module_1_Processed = result of preprocessor.
-            var all = Directory.EnumerateFiles("Preprocessor").ToList();
+            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            basePath = Directory.GetParent(basePath).Parent.FullName;
+            var all = Directory.EnumerateFiles(Path.Combine(basePath, "Testfiles//Preprocessor")).ToList();
             var rawAndProcessed = all
                 .Where(file => !file.Contains("_Processed"))
                 .Select(file => Tuple.Create(file, all.First(f => f.Contains(Path.GetFileNameWithoutExtension(file)) && f.Contains("_Processed")))).ToList();
@@ -50,22 +49,20 @@ namespace RubberduckTests.Preprocessing
 
         private string Parse(string code)
         {
-            var builder = new MockVbeBuilder();
             IVBComponent component;
-            var vbe = builder.BuildFromSingleStandardModule(code, out component);
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var state = new RubberduckParserState(vbe.Object);
-            var parser = MockParser.Create(vbe.Object, state);
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status == ParserState.Error)
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out component);
+            
+            using(var state = MockParser.CreateAndParse(vbe.Object))
             {
-                Assert.Inconclusive("Parser Error");
+                var tree = state.GetParseTree(new QualifiedModuleName(component));
+                var parsed = tree.GetText();
+                var withoutEOF = parsed;
+                while (withoutEOF.Length >= 5 && String.Equals(withoutEOF.Substring(withoutEOF.Length - 5, 5), "<EOF>"))
+                {
+                    withoutEOF = withoutEOF.Substring(0, withoutEOF.Length - 5);
+                }
+                return withoutEOF;
             }
-            var tree = state.GetParseTree(component);
-            var parsed = tree.GetText();
-            var withoutEOF = parsed.Substring(0, parsed.Length - 5);
-            return withoutEOF;
         }
     }
 }

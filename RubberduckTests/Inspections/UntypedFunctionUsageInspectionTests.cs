@@ -1,27 +1,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Inspections;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using NUnit.Framework;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class UntypedFunctionUsageInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UntypedFunctionUsage_ReturnsResult()
         {
             const string inputCode =
@@ -30,7 +25,6 @@ namespace RubberduckTests.Inspections
     str = Left(""test"", 1)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -38,23 +32,26 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
 
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new UntypedFunctionUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UntypedFunctionUsage_DoesNotReturnResult()
         {
             const string inputCode =
@@ -63,30 +60,32 @@ End Sub";
     str = Left$(""test"", 1)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
 
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new UntypedFunctionUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UntypedFunctionUsage_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -97,7 +96,6 @@ End Sub";
     str = Left(""test"", 1)
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
@@ -105,116 +103,26 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            var parser = MockParser.Create(vbe.Object);
+            using (var state = parser.State)
+            {
+                GetBuiltInDeclarations().ForEach(d => state.AddDeclaration(d));
 
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var inspection = new UntypedFunctionUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UntypedFunctionUsage_QuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-    Dim str As String
-    str = Left(""test"", 1)
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    Dim str As String
-    str = Left$(""test"", 1)
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var module = project.Object.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.First().Fix();
-
-            Assert.AreEqual(expectedCode, module.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void UntypedFunctionUsage_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-@"Sub Foo()
-    Dim str As String
-    str = Left(""test"", 1)
-End Sub";
-
-            const string expectedCode =
-@"Sub Foo()
-    Dim str As String
-'@Ignore UntypedFunctionUsage
-    str = Left(""test"", 1)
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
-                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            var module = project.Object.VBComponents[0].CodeModule;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-
-            GetBuiltInDeclarations().ForEach(d => parser.State.AddDeclaration(d));
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UntypedFunctionUsageInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, module.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new UntypedFunctionUsageInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "UntypedFunctionUsageInspection";
@@ -228,13 +136,13 @@ End Sub";
             var vbaDeclaration = new ProjectDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "VBA"), "VBA"),
                 "VBA",
-                true, null);
+                false, null);
 
             var conversionModule = new ProceduralModuleDeclaration(
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Conversion"), "Conversion"),
                 vbaDeclaration,
                 "Conversion",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -242,7 +150,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "FileSystem"), "FileSystem"),
                 vbaDeclaration,
                 "FileSystem",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -250,7 +158,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Interaction"), "Interaction"),
                 vbaDeclaration,
                 "Interaction",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -258,7 +166,7 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "Strings"), "Strings"),
                 vbaDeclaration,
                 "Strings",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -266,9 +174,18 @@ End Sub";
                 new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "DateTime"), "DateTime"),
                 vbaDeclaration,
                 "Strings",
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
+
+            var hiddenModule = new ProceduralModuleDeclaration(
+                new QualifiedMemberName(new QualifiedModuleName("VBA", MockVbeBuilder.LibraryPathVBA, "_HiddenModule"), "_HiddenModule"),
+                vbaDeclaration,
+                "_HiddenModule",
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
+
 
             var commandFunction = new FunctionDeclaration(
                 new QualifiedMemberName(interactionModule.QualifiedName.QualifiedModuleName, "_B_var_Command"),
@@ -278,10 +195,11 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null, 
                 null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -294,9 +212,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -309,9 +228,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -324,9 +244,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -339,9 +260,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -385,9 +307,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -411,9 +334,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -426,9 +350,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -452,9 +377,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -467,9 +393,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -493,9 +420,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -519,9 +447,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -555,9 +484,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -570,9 +500,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -585,9 +516,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -600,15 +532,16 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
             var firstMidParam = new ParameterDeclaration(
                 new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "String"),
-                midbFunction,
+                midFunction,
                 "Variant",
                 null,
                 null,
@@ -617,7 +550,7 @@ End Sub";
 
             var secondMidParam = new ParameterDeclaration(
                 new QualifiedMemberName(stringsModule.QualifiedName.QualifiedModuleName, "Start"),
-                midbFunction,
+                midFunction,
                 "Long",
                 null,
                 null,
@@ -636,9 +569,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -651,9 +585,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -666,9 +601,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -681,9 +617,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -696,9 +633,10 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
 
@@ -711,12 +649,13 @@ End Sub";
                 string.Empty,
                 Accessibility.Global,
                 null,
+                null,
                 new Selection(),
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
-        
+
 
             var timePropertyGet = new PropertyGetDeclaration(
                 new QualifiedMemberName(dateTimeModule.QualifiedName.QualifiedModuleName, "Time"),
@@ -727,11 +666,86 @@ End Sub";
                 string.Empty,
                 Accessibility.Global,
                 null,
+                null,
                 new Selection(),
                 false,
-                true,
+                false,
                 new List<IAnnotation>(),
                 new Attributes());
+
+            var inputbFunction = new FunctionDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "_B_var_InputB"),
+                hiddenModule,
+                hiddenModule,
+                "Variant",
+                null,
+                null,
+                Accessibility.Global,
+                null,
+                null,
+                Selection.Home,
+                false,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
+
+            var firstInputBParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "Number"),
+                inputbFunction,
+                "Long",
+                null,
+                null,
+                false,
+                true);
+
+            var secondInputBParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "FileNumber"),
+                inputbFunction,
+                "Integer",
+                null,
+                null,
+                false,
+                true);
+
+            inputbFunction.AddParameter(firstInputBParam);
+            inputbFunction.AddParameter(secondInputBParam);
+
+            var inputFunction = new FunctionDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "_B_var_Input"),
+                hiddenModule,
+                hiddenModule,
+                "Variant",
+                null,
+                null,
+                Accessibility.Global,
+                null,
+                null,
+                Selection.Home,
+                false,
+                false,
+                new List<IAnnotation>(),
+                new Attributes());
+
+            var firstInputParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "Number"),
+                inputFunction,
+                "Long",
+                null,
+                null,
+                false,
+                true);
+
+            var secondInputParam = new ParameterDeclaration(
+                new QualifiedMemberName(hiddenModule.QualifiedName.QualifiedModuleName, "FileNumber"),
+                inputFunction,
+                "Integer",
+                null,
+                null,
+                false,
+                true);
+
+            inputFunction.AddParameter(firstInputParam);
+            inputFunction.AddParameter(secondInputParam);
 
             return new List<Declaration>
             {
@@ -741,6 +755,7 @@ End Sub";
                 interactionModule,
                 stringsModule,
                 dateTimeModule,
+                hiddenModule,
                 commandFunction,
                 environFunction,
                 rtrimFunction,
@@ -774,7 +789,13 @@ End Sub";
                 strFunction,
                 curDirFunction,
                 datePropertyGet,
-                timePropertyGet
+                timePropertyGet,
+                inputbFunction,
+                firstInputBParam,
+                secondInputBParam,
+                inputFunction,
+                firstInputParam,
+                secondInputParam
             };
         }
     }

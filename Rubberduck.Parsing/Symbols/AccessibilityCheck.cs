@@ -45,7 +45,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return true;
             }
-            if (calleeMember.IsBuiltIn && calleeMember.Accessibility > Accessibility.Friend)
+            if (!calleeMember.IsUserDefined && calleeMember.Accessibility > Accessibility.Friend)
             {
                 return true;
             }

@@ -5,25 +5,66 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 namespace Rubberduck.VBEditor.WindowsApi
 {
     //Stub for code pane replacement.  :-)
-    internal class CodePaneSubclass : FocusSource
-    {
-        private readonly ICodePane _pane;
-
-        public ICodePane CodePane { get { return _pane; } }
-
+    internal class CodePaneSubclass : VbeAttachableSubclass<ICodePane>, IWindowEventProvider
+    {       
+        public event EventHandler CaptionChanged;
+        public event EventHandler<KeyPressEventArgs> KeyDown;
+ 
         internal CodePaneSubclass(IntPtr hwnd, ICodePane pane) : base(hwnd)
         {
-            _pane = pane;
+            VbeObject = pane;
+        }
+
+        protected void OnKeyDown(KeyPressEventArgs eventArgs)
+        {
+            KeyDown?.Invoke(this, eventArgs);
+        }
+
+        public override int SubClassProc(IntPtr hWnd, IntPtr msg, IntPtr wParam, IntPtr lParam, IntPtr uIdSubclass, IntPtr dwRefData)
+        {
+            KeyPressEventArgs args;
+            switch ((WM)msg)
+            {
+                case WM.CHAR:
+                    var c = (char) wParam;
+                    if (c != '\r' && c != '\n' && c != '\t')
+                    {
+                        args = new KeyPressEventArgs(hWnd, wParam, lParam, c);
+                        OnKeyDown(args);
+                        if (args.Handled) { return 0; }
+                    }
+                    break;
+                case WM.KEYDOWN:
+                    args = new KeyPressEventArgs(hWnd, wParam, lParam);
+                    OnKeyDown(args);
+                    if (args.Handled) { return 0; }
+                    break;
+                case WM.SETTEXT:
+                    if (!HasValidVbeObject)
+                    {
+                        CaptionChanged?.Invoke(this, null);
+                    }
+                    break;
+            }
+            return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
+        }
+
+        private bool _disposed;
+        protected override void Dispose(bool disposing)
+        {
+            if (!_disposed && disposing)
+            {
+                CaptionChanged = delegate { };
+                KeyDown = delegate { };
+            }
+
+            base.Dispose(disposing);
+            _disposed = true;
         }
 
         protected override void DispatchFocusEvent(FocusType type)
         {
-            var window = VBENativeServices.GetWindowInfoFromHwnd(Hwnd);
-            if (!window.HasValue)
-            {
-                return;
-            }
-            OnFocusChange(new WindowChangedEventArgs(window.Value.Hwnd, window.Value.Window, _pane, type));
+            OnFocusChange(new WindowChangedEventArgs(Hwnd, type));
         }
     }
 }

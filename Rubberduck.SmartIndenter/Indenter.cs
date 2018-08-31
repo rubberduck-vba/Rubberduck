@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.SmartIndenter
@@ -22,28 +23,35 @@ namespace Rubberduck.SmartIndenter
         /// </summary>
         public void IndentCurrentProcedure()
         {
-            var pane = _vbe.ActiveCodePane;
-
-            if (pane == null)
+            using (var pane = _vbe.ActiveCodePane)
             {
-                return;
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+
+                using (var module = pane.CodeModule)
+                {
+                    var selection = GetSelection(pane);
+
+                    var procName = module.GetProcOfLine(selection.StartLine);
+                    var procKind = module.GetProcKindOfLine(selection.StartLine);
+
+                    if (string.IsNullOrEmpty(procName))
+                    {
+                        return;
+                    }
+
+                    var startLine = module.GetProcStartLine(procName, procKind);
+                    var endLine = startLine + module.GetProcCountLines(procName, procKind);
+
+                    selection = new Selection(startLine, 1, endLine, 1);
+                    using (var component = module.Parent)
+                    {
+                        Indent(component, selection);
+                    }
+                }
             }
-            var module = pane.CodeModule;
-            var selection = GetSelection(pane);
-
-            var procName = module.GetProcOfLine(selection.StartLine);
-            var procKind = module.GetProcKindOfLine(selection.StartLine);
-
-            if (string.IsNullOrEmpty(procName))
-            {
-                return;
-            }
-
-            var startLine = module.GetProcStartLine(procName, procKind);
-            var endLine = startLine + module.GetProcCountLines(procName, procKind);
-
-            selection = new Selection(startLine, 1, endLine, 1);
-            Indent(module.Parent, selection);
         }
 
         /// <summary>
@@ -51,14 +59,39 @@ namespace Rubberduck.SmartIndenter
         /// </summary>
         public void IndentCurrentModule()
         {
-            var pane = _vbe.ActiveCodePane;
-            if (pane == null)
+            using (var pane = _vbe.ActiveCodePane)
+            {
+                if (pane == null || pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+
+                using (var module = pane.CodeModule)
+                {
+                    using (var component = module.Parent)
+                    {
+                        Indent(component);
+                    }
+                }                
+            }
+        }
+
+        /// <summary>
+        /// Indents every module in the active project.
+        /// </summary>
+        public void IndentCurrentProject()
+        {
+            var project = _vbe.ActiveVBProject;
+            if (project.Protection == ProjectProtection.Locked)
             {
                 return;
             }
-            Indent(pane.CodeModule.Parent);
+            foreach (var component in project.VBComponents)
+            {
+                Indent(component);
+            }
         }
-        
+
         private static Selection GetSelection(ICodePane codePane)
         {
             return codePane.Selection;
@@ -70,49 +103,56 @@ namespace Rubberduck.SmartIndenter
         /// <param name="component">The VBComponent to indent</param>
         public void Indent(IVBComponent component)
         {
-            var module = component.CodeModule;
-            var lineCount = module.CountOfLines;
-            if (lineCount == 0)
+            using (var module = component.CodeModule)
             {
-                return;
+                var lineCount = module.CountOfLines;
+                if (lineCount == 0)
+                {
+                    return;
+                }
+
+                var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
+                var indented = Indent(codeLines, true);
+
+                module.DeleteLines(1, lineCount);
+                module.InsertLines(1, string.Join("\r\n", indented));
             }
-
-            var codeLines = module.GetLines(1, lineCount).Replace("\r", string.Empty).Split('\n');
-            var indented = Indent(codeLines, true);
-
-            module.DeleteLines(1, lineCount);
-            module.InsertLines(1, string.Join("\r\n", indented));
         }
 
         /// <summary>
-        /// DO NOT USE - Not fully implemented. Use the Indent(IVBComponent component) instead and ping @Comintern if you need this functionality...
+        /// Not fully implemented for selections (it does not track the current indentation level before the call). Use at your own
+        /// risk on anything smaller than a procedure - the caller is responsible for determining the base indent and restoring it
+        /// *after* the call.
         /// </summary>
         /// <param name="component">The VBComponent to indent</param>
         /// <param name="selection">The selection to indent</param>
-        public void Indent(IVBComponent component, Selection selection)
+        private void Indent(IVBComponent component, Selection selection)
         {
-            var module = component.CodeModule;
-            var lineCount = module.CountOfLines;
-            if (lineCount == 0)
+            using (var module = component.CodeModule)
             {
-                return;
+                var lineCount = module.CountOfLines;
+                if (lineCount == 0)
+                {
+                    return;
+                }
+
+                var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty)
+                    .Split('\n');
+
+                var indented = Indent(codeLines, false);
+
+                var start = selection.StartLine;
+                var lines = selection.LineCount;
+
+                //Deletelines fails if the the last line of the procedure is the last line of the module.
+                module.DeleteLines(start, start + lines < lineCount ? lines : lines - 1);
+                module.InsertLines(start, string.Join("\r\n", indented));
             }
-
-            var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty).Split('\n');
-
-            var indented = Indent(codeLines);
-
-            var start = selection.StartLine;
-            var lines = selection.LineCount;
-
-            //Deletelines fails if the the last line of the procedure is the last line of the module.
-            module.DeleteLines(start, start + lines < lineCount ? lines : lines - 1);
-            module.InsertLines(start, string.Join("\r\n", indented));
         }
 
-        private IEnumerable<LogicalCodeLine> BuildLogicalCodeLines(IEnumerable<string> lines)
+        private IEnumerable<LogicalCodeLine> BuildLogicalCodeLines(IEnumerable<string> lines, out IIndenterSettings settings)
         {
-            var settings = _settings.Invoke();
+            settings = _settings.Invoke();
             var logical = new List<LogicalCodeLine>();
             LogicalCodeLine current = null;
             AbsoluteCodeLine previous = null;
@@ -158,7 +198,12 @@ namespace Rubberduck.SmartIndenter
         /// <returns>Indented code lines</returns>
         public IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines)
         {
-            var logical = BuildLogicalCodeLines(codeLines).ToList();
+            return Indent(codeLines, forceTrailingNewLines, false);
+        }
+
+        private IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines, bool procedure)
+        {
+            var logical = BuildLogicalCodeLines(codeLines, out var settings).ToList();
             var indents = 0;
             var start = false;
             var enumStart = false;
@@ -192,27 +237,48 @@ namespace Rubberduck.SmartIndenter
                 line.AtProcedureStart = start;
                 line.IndentationLevel = indents - line.Outdents;
                 indents += line.NextLineIndents;
-                start = line.IsProcedureStart || (line.AtProcedureStart && line.IsDeclaration) || (line.AtProcedureStart && line.IsCommentBlock);
+                start = line.IsProcedureStart || 
+                        line.AtProcedureStart && line.IsDeclaration ||
+                        line.AtProcedureStart && line.IsCommentBlock ||
+                        settings.IgnoreEmptyLinesInFirstBlocks && line.AtProcedureStart && line.IsEmpty;
                 inEnumType = line.IsEnumOrTypeStart;
                 enumStart = inEnumType;
             }
 
-            return GenerateCodeLineStrings(logical, forceTrailingNewLines);
+            return GenerateCodeLineStrings(logical, forceTrailingNewLines, procedure);
         }
 
-        private IEnumerable<string> GenerateCodeLineStrings(IEnumerable<LogicalCodeLine> logical, bool forceTrailingNewLines)
+        private IEnumerable<string> GenerateCodeLineStrings(IEnumerable<LogicalCodeLine> logical, bool forceTrailingNewLines, bool procedure = false)
         {
             var output = new List<string>();
             var settings = _settings.Invoke();
 
             List<LogicalCodeLine> indent;
-            if (settings.VerticallySpaceProcedures)
-            {
+            if (!procedure && settings.VerticallySpaceProcedures)
+            {               
                 indent = new List<LogicalCodeLine>();
                 var lines = logical.ToArray();
+                var header = true;
+                var inEnumType = false;
                 for (var i = 0; i < lines.Length; i++)
                 {
                     indent.Add(lines[i]);
+
+                    if (header && lines[i].IsEnumOrTypeStart)
+                    {
+                        inEnumType = true;
+                    }
+                    if (header && lines[i].IsEnumOrTypeEnd)
+                    {
+                        inEnumType = false;
+                    }
+
+                    if (header && !inEnumType && lines[i].IsProcedureStart)
+                    {
+                        header = false;
+                        SpaceHeader(indent, settings);
+                        continue;
+                    }
                     if (!lines[i].IsEnumOrTypeEnd && !lines[i].IsProcudureEnd)
                     {
                         continue;
@@ -226,7 +292,7 @@ namespace Rubberduck.SmartIndenter
                         }
                         indent.Add(lines[i]);
                     }
-                    else if (i == lines.Length && forceTrailingNewLines)
+                    else if (forceTrailingNewLines && i == lines.Length)
                     {
                         indent.Add(new LogicalCodeLine(Enumerable.Repeat(new AbsoluteCodeLine(string.Empty, settings), Math.Max(settings.LinesBetweenProcedures, 1)), settings));
                     }
@@ -242,6 +308,34 @@ namespace Rubberduck.SmartIndenter
                 output.AddRange(line.Indented().Split(new[] { Environment.NewLine }, StringSplitOptions.None));
             }
             return output;
+        }
+
+        private static void SpaceHeader(IList<LogicalCodeLine> header, IIndenterSettings settings)
+        {
+            var commentSkipped = false;
+            var commentLines = 0;
+            for (var i = header.Count - 2; i >= 0; i--)
+            {
+                if (!commentSkipped && header[i].IsCommentBlock)
+                {
+                    commentLines++;
+                    continue;
+                }
+
+                commentSkipped = true;
+                if (header[i].IsEmpty)
+                {
+                    header.RemoveAt(i);
+                }
+                else
+                {
+                    header.Insert(header.Count - 1 - commentLines,
+                        new LogicalCodeLine(
+                            Enumerable.Repeat(new AbsoluteCodeLine(string.Empty, settings),
+                                settings.LinesBetweenProcedures), settings));
+                    return;
+                }
+            }
         }
     }
 }

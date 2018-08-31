@@ -1,45 +1,31 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 using UnitTestSettings = Rubberduck.Settings.UnitTestSettings;
 
 namespace RubberduckTests.Settings
 {
-    [TestClass]
+    [TestFixture]
     public class UnitTestSettingsTests
     {
         private Configuration GetDefaultConfig()
         {
-            var unitTestSettings = new UnitTestSettings
-            {
-                BindingMode = BindingMode.LateBinding,
-                AssertMode = AssertMode.StrictAssert,
-                ModuleInit = true,
-                MethodInit = true,
-                DefaultTestStubInNewModule = false
-            };
+            var unitTestSettings = new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false);
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 
         private Configuration GetNondefaultConfig()
         {
-            var unitTestSettings = new UnitTestSettings
-            {
-                BindingMode = BindingMode.EarlyBinding,
-                AssertMode = AssertMode.PermissiveAssert,
-                ModuleInit = false,
-                MethodInit = false,
-                DefaultTestStubInNewModule = true
-            };
+            var unitTestSettings = new UnitTestSettings(BindingMode.EarlyBinding, AssertMode.PermissiveAssert, false, false, true);
 
-            var userSettings = new UserSettings(null, null, null, null, unitTestSettings, null, null);
+            var userSettings = new UserSettings(null, null, null, null, null, unitTestSettings, null, null);
             return new Configuration(userSettings);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
@@ -48,16 +34,18 @@ namespace RubberduckTests.Settings
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
 
-            MultiAssert.Aggregate(
-                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode),
-                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode),
-                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit),
-                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit),
-                () => Assert.AreEqual(config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule));
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(config.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode);
+                Assert.AreEqual(config.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode);
+                Assert.AreEqual(config.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit);
+                Assert.AreEqual(config.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit);
+                Assert.AreEqual(config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule);
+            });
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void SetDefaultsWorks()
         {
             var viewModel = new UnitTestSettingsViewModel(GetNondefaultConfig());
@@ -65,16 +53,18 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
 
-            MultiAssert.Aggregate(
-                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode),
-                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode),
-                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit),
-                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit),
-                () => Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule));
+            Assert.Multiple(() =>
+            {
+                Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode);
+                Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode);
+                Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit);
+                Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit);
+                Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule);
+            });
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void BindingModeIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
@@ -83,8 +73,8 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void AssertModeIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
@@ -93,8 +83,8 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void ModuleInitIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
@@ -103,8 +93,8 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void MethodInitIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
@@ -113,8 +103,8 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit);
         }
 
-        [TestCategory("Settings")]
-        [TestMethod]
+        [Category("Settings")]
+        [Test]
         public void DefaultTestStubInNewModuleIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();

@@ -1,19 +1,19 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
-    [TestClass]
+    [TestFixture]
     public class ExtractMethodRuleUsedBeforeTests
     {
-        [TestClass]
+        [TestFixture]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsUsedAfter : ExtractMethodRuleUsedBeforeTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodRuleTests")]
+            [Test]
+            [Category("ExtractMethodRuleTests")]
             public void shouldNotSetFlag()
             {
                 var usedSelection = new Selection(4, 1, 7, 10);
@@ -28,11 +28,11 @@ namespace RubberduckTests.Refactoring.ExtractMethod
             }
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsUsedBefore : ExtractMethodRuleUsedBeforeTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodRuleTests")]
+            [Test]
+            [Category("ExtractMethodRuleTests")]
             public void shouldSetFlagUsedBefore()
             {
                 var usedSelection = new Selection(4, 1, 7, 10);
@@ -48,11 +48,11 @@ namespace RubberduckTests.Refactoring.ExtractMethod
 
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsInSelection : ExtractMethodRuleUsedAfterTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodRuleTests")]
+            [Test]
+            [Category("ExtractMethodRuleTests")]
             public void shouldNotSetFlag()
             {
                 var usedSelection = new Selection(4, 1, 7, 10);

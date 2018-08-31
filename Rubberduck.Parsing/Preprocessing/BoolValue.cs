@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Antlr4.Runtime;
+using System;
+using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class BoolValue : IValue
     {
@@ -74,6 +76,14 @@ namespace Rubberduck.Parsing.Preprocessing
                 {
                     return "False";
                 }
+            }
+        }
+
+        public IEnumerable<IToken> AsTokens
+        {
+            get
+            {
+                return new List<IToken>();
             }
         }
 

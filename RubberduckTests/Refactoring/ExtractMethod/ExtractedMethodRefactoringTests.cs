@@ -1,9 +1,9 @@
-﻿//namespace RubberduckTests.Refactoring.ExtractMethod
+//namespace RubberduckTests.Refactoring.ExtractMethod
 //{
-//    [TestClass]
+//    [TestFixture]
 //    public class ExtractMethodRefactoringTests
 //    {
-//        [TestClass]
+//        [TestFixture]
 //        public class WhenRefactorIsCalled
 //        {
 //            #region codeSnipets
@@ -21,7 +21,7 @@
 //            const string extractCode = "x = 1 + 2";
 //            #endregion codeSnipets
 
-//            [TestMethod]
+//            [Test]
 //            public void shouldCallParseRequest()
 //            {
 
@@ -61,7 +61,7 @@
 
 //            }
 
-//            [TestMethod]
+//            [Test]
 //            public void shouldCallApplyOnExtraction()
 //            {
 
@@ -101,16 +101,16 @@
 //        }
 //    }
 
-//    [TestClass]
+//    [TestFixture]
 //    public class Issues
 //    {
-//        [TestClass]
+//        [TestFixture]
 //        public class Issue_844_InternalDimIsDuplicatedWhenExtracted
 //        {
 //        }
 //    }
 
-//    [TestClass]
+//    [TestFixture]
 //    public class Example
 //    {
 
@@ -130,7 +130,7 @@
 //End Function
 //";
 //        #endregion codeparts
-//        [TestClass]
+//        [TestFixture]
 //        public class WhenASimpleExampleIsRun : Example
 //        {
 //            const string inputCode = @"
@@ -145,8 +145,8 @@
 //    x = 1
 //End Function";
 
-//            [TestCategory("ExtractedMethodRefactoringTests")]
-//            [TestMethod]
+//            [Category("ExtractedMethodRefactoringTests")]
+//            [Test]
 //            public void shouldCallTheExtraction()
 //            {
 //                QualifiedModuleName qualifiedModuleName;
@@ -194,49 +194,49 @@
 //         * - When the return value is a reference - the return assignment is Set initially implement with return values returned as ByRef */
 
 
-//        //[TestClass]
+//        //[TestFixture]
 //        public class when_local_variable_is_only_used_before_the_selection : ExtractMethodModelTests
 //        {
 //            /* When a local variable/constant is only used before the selection, 
 //             * its declaration remains where it was */
-//            //[TestMethod]
+//            //[Test]
 //            public void should_leave_declaration_in_source_method()
 //            {
 //            }
 //        }
-//        //[TestClass]
+//        //[TestFixture]
 //        public class when_local_variable_is_only_used_after_the_selection : ExtractMethodModelTests
 //        {
 //            /* When a local variable/constant is only used after the selection, 
 //             * its declaration remains where it was */
-//            //[TestMethod]
+//            //[Test]
 //            public void should_leave_declaration_in_source_method()
 //            {
 
 //            }
 
 //        }
-//        //[TestClass]
+//        //[TestFixture]
 //        public class when_local_variable_is_used_before_and_within_the_selection : ExtractMethodModelTests
 //        {
 //            /* When a local variable is used before and within the selction, 
 //             * it's considered an input */
-//            //[TestMethod]
+//            //[Test]
 //            public void should_be_passed_as_a_byref_parameter()
 //            {
 //            }
 //        }
-//        //[TestClass]
+//        //[TestFixture]
 //        public class when_local_variable_is_used_after_and_within_the_selection : ExtractMethodModelTests
 //        {
 //            /* When a local variable is used after and within the selection, 
 //             * it's considered an output */
-//            //[TestMethod]
+//            //[Test]
 //            public void should_be_passed_as_a_byref_parameter()
 //            {
 //            }
 //        }
-//        //[TestClass]
+//        //[TestFixture]
 //        public class when_multiple_values_are_updated_within_selection : ExtractMethodModelTests
 //        {
 
@@ -245,7 +245,7 @@
 //            }
 
 //        }
-//        //[TestClass]
+//        //[TestFixture]
 //        public class when_selection_contains_a_line_label_refered_to_before_the_selection : ExtractMethodModelTests
 //        {
 //            /* This rules out extracting ErrHandler subroutines 
@@ -259,10 +259,10 @@
 
 //        }
 
-//        //[TestClass]
+//        //[TestFixture]
 //        public class when_selection_contains_a_line_label_only_referred_to_within_the_selection : ExtractMethodModelTests
 //        {
-//            [TestMethod]
+//            [Test]
 //            public void should_move_the_label_and_reference_to_destination_method()
 //            {
 

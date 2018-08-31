@@ -8,23 +8,18 @@ namespace Rubberduck.Parsing
         public QualifiedContext(QualifiedMemberName memberName, ParserRuleContext context)
             : this(memberName.QualifiedModuleName, context)
         {
-            _memberName = memberName;
+            MemberName = memberName;
         }
 
         public QualifiedContext(QualifiedModuleName moduleName, ParserRuleContext context)
         {
-            _moduleName = moduleName;
-            _context = context;
+            ModuleName = moduleName;
+            Context = context;
         }
 
-        private readonly QualifiedMemberName _memberName;
-        public QualifiedMemberName MemberName { get { return _memberName; } }
-
-        private readonly QualifiedModuleName _moduleName;
-        public QualifiedModuleName ModuleName { get { return _moduleName; } }
-
-        private readonly ParserRuleContext _context;
-        public ParserRuleContext Context { get { return _context; } }
+        public QualifiedMemberName MemberName { get; }
+        public QualifiedModuleName ModuleName { get; }
+        public ParserRuleContext Context { get; }
 
         public override int GetHashCode()
         {
@@ -44,9 +39,9 @@ namespace Rubberduck.Parsing
 
         public static bool operator ==(QualifiedContext context1, QualifiedContext context2)
         {
-            if (((object)context1) == null)
+            if ((object)context1 == null)
             {
-                return ((object)context2) == null;
+                return (object)context2 == null;
             }
 
             return context1.Equals(context2);
@@ -54,9 +49,9 @@ namespace Rubberduck.Parsing
 
         public static bool operator !=(QualifiedContext context1, QualifiedContext context2)
         {
-            if (((object)context1) == null)
+            if ((object)context1 == null)
             {
-                return ((object)context2) != null;
+                return (object)context2 != null;
             }
 
             return !context1.Equals(context2);
@@ -67,7 +62,7 @@ namespace Rubberduck.Parsing
         where TContext : ParserRuleContext
     {
         public QualifiedContext(QualifiedMemberName memberName, TContext context)
-            : this(memberName.QualifiedModuleName, context)
+            : base(memberName, context)
         {
         }
 
@@ -76,6 +71,6 @@ namespace Rubberduck.Parsing
         {
         }
 
-        public new TContext Context { get { return base.Context as TContext; } }
+        public new TContext Context => base.Context as TContext;
     }
 }

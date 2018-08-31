@@ -13,64 +13,26 @@ namespace Rubberduck.RegexAssistant
 
     public class ConcatenatedExpression : IRegularExpression
     {
-        private readonly IList<IRegularExpression> _subexpressions;
-
         public ConcatenatedExpression(IList<IRegularExpression> subexpressions)
         {
-            if (subexpressions == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            _subexpressions = subexpressions;
+            Subexpressions = subexpressions ?? throw new ArgumentNullException();
         }
 
-        public string Description
-        {
-            get
-            {
-                return AssistantResources.ExpressionDescription_ConcatenatedExpression;
-            }
-        }
+        public string Description => AssistantResources.ExpressionDescription_ConcatenatedExpression;
 
-        public IList<IRegularExpression> Subexpressions
-        {
-            get
-            {
-                return _subexpressions;
-            }
-        }
+        public IList<IRegularExpression> Subexpressions { get; }
     }
 
     public class AlternativesExpression : IRegularExpression
     {
-        private readonly IList<IRegularExpression> _subexpressions;
-
         public AlternativesExpression(IList<IRegularExpression> subexpressions)
         {
-            if (subexpressions == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            _subexpressions = subexpressions;
+            Subexpressions = subexpressions ?? throw new ArgumentNullException();
         }
 
-        public string Description
-        {
-            get
-            {
-                return string.Format(AssistantResources.ExpressionDescription_AlternativesExpression, _subexpressions.Count);
-            }
-        }
+        public string Description => string.Format(AssistantResources.ExpressionDescription_AlternativesExpression, Subexpressions.Count);
 
-        public IList<IRegularExpression> Subexpressions
-        {
-            get
-            {
-                return _subexpressions;
-            }
-        }
+        public IList<IRegularExpression> Subexpressions { get; }
     }
 
     public class SingleAtomExpression : IRegularExpression
@@ -79,34 +41,16 @@ namespace Rubberduck.RegexAssistant
 
         public SingleAtomExpression(IAtom atom)
         {
-            if (atom == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            Atom = atom;
+            Atom = atom ?? throw new ArgumentNullException();
         }
 
-        public string Description
-        {
-            get
-            {
-                return string.Format("{0} {1}.", Atom.Description, Atom.Quantifier.HumanReadable());
-            }
-        }
+        public string Description => $"{Atom.Description} {Atom.Quantifier.HumanReadable()}.";
 
-        public IList<IRegularExpression> Subexpressions
-        {
-            get
-            {
-                return new List<IRegularExpression>(Enumerable.Empty<IRegularExpression>());
-            }
-        }
+        public IList<IRegularExpression> Subexpressions => new List<IRegularExpression>(Enumerable.Empty<IRegularExpression>());
 
         public override bool Equals(object obj)
         {
-            var other = obj as SingleAtomExpression;
-            return other != null
+            return obj is SingleAtomExpression other
                 && other.Atom.Equals(Atom);
         }
 
@@ -123,29 +67,12 @@ namespace Rubberduck.RegexAssistant
 
         public ErrorExpression(string errorToken)
         {
-            if (errorToken == null)
-            {
-                throw new ArgumentNullException();
-            }
-
-            _errorToken = errorToken;
+            _errorToken = errorToken ?? throw new ArgumentNullException();
         }
 
-        public string Description
-        {
-            get
-            {
-                return string.Format(AssistantResources.ExpressionDescription_ErrorExpression, _errorToken);
-            }
-        }
-        
-        public IList<IRegularExpression> Subexpressions
-        {
-            get
-            {
-                return new List<IRegularExpression>();
-            }
-        }
+        public string Description => string.Format(AssistantResources.ExpressionDescription_ErrorExpression, _errorToken);
+
+        public IList<IRegularExpression> Subexpressions => new List<IRegularExpression>();
     }
 
     internal static class RegularExpression
@@ -170,14 +97,13 @@ namespace Rubberduck.RegexAssistant
                 throw new ArgumentNullException();
             }
 
-            IRegularExpression expression;
             // ByRef requires us to hack around here, because TryParseAsAtom doesn't fail when it doesn't consume the specifier anymore
-            string specifierCopy = specifier;
-            if (TryParseAsAtom(ref specifierCopy, out expression) && specifierCopy.Length == 0)
+            var specifierCopy = specifier;
+            if (TryParseAsAtom(ref specifierCopy, out var expression) && specifierCopy.Length == 0)
             {
                 return expression;
             }
-            List<IRegularExpression> subexpressions = new List<IRegularExpression>();
+            var subexpressions = new List<IRegularExpression>();
             while (specifier.Length != 0)
             {
                 expression = ParseIntoConcatenatedExpression(ref specifier);
@@ -203,20 +129,19 @@ namespace Rubberduck.RegexAssistant
         /// <returns>The ConcatenatedExpression resulting from parsing the given specifier, either completely or up to the first encountered '|'</returns>
         private static IRegularExpression ParseIntoConcatenatedExpression(ref string specifier)
         {
-            List<IRegularExpression> subexpressions = new List<IRegularExpression>();
-            string currentSpecifier = specifier;
-            int oldSpecifierLength = currentSpecifier.Length + 1;
+            var subexpressions = new List<IRegularExpression>();
+            var currentSpecifier = specifier;
+            var oldSpecifierLength = currentSpecifier.Length + 1;
             while (currentSpecifier.Length > 0 && currentSpecifier.Length < oldSpecifierLength)
             {
                 oldSpecifierLength = currentSpecifier.Length;
-                IRegularExpression expression;
                 // we actually have an AlternativesExpression, return the current status to Parse after updating the specifier
                 if (currentSpecifier[0].Equals('|'))
                 {
                     specifier = currentSpecifier.Substring(1); // skip leading |
                     return new ConcatenatedExpression(subexpressions);
                 }
-                if (TryParseAsAtom(ref currentSpecifier, out expression))
+                if (TryParseAsAtom(ref currentSpecifier, out var expression))
                 {
                     subexpressions.Add(expression);
                 }
@@ -230,9 +155,9 @@ namespace Rubberduck.RegexAssistant
             return new ConcatenatedExpression(subexpressions);
         }
 
-        private static readonly Regex groupWithQuantifier = new Regex("^" + Group.Pattern + Quantifier.Pattern + "?", RegexOptions.Compiled);
-        private static readonly Regex characterClassWithQuantifier = new Regex("^" + CharacterClass.Pattern + Quantifier.Pattern + "?", RegexOptions.Compiled);
-        private static readonly Regex literalWithQuantifier = new Regex("^" + Literal.Pattern + Quantifier.Pattern + "?", RegexOptions.Compiled);
+        private static readonly Regex groupWithQuantifier = new Regex($"^{Group.Pattern}{Quantifier.Pattern}?", RegexOptions.Compiled);
+        private static readonly Regex characterClassWithQuantifier = new Regex($"^{CharacterClass.Pattern}{Quantifier.Pattern}?", RegexOptions.Compiled);
+        private static readonly Regex literalWithQuantifier = new Regex($"^{Literal.Pattern}{Quantifier.Pattern}?", RegexOptions.Compiled);
         /// <summary>
         /// Tries to parse the given specifier into an Atom. For that all categories of Atoms are checked in the following order:
         ///  1. Group
@@ -249,29 +174,29 @@ namespace Rubberduck.RegexAssistant
         // internal for testing
         internal static bool TryParseAsAtom(ref string specifier, out IRegularExpression expression)
         {
-            Match m = groupWithQuantifier.Match(specifier);
+            var m = groupWithQuantifier.Match(specifier);
             if (m.Success)
             {
-                string atom = m.Groups["expression"].Value;
-                string quantifier = m.Groups["quantifier"].Value;
+                var atom = m.Groups["expression"].Value;
+                var quantifier = m.Groups["quantifier"].Value;
                 specifier = specifier.Substring(atom.Length + 2 + quantifier.Length);
-                expression = new SingleAtomExpression(new Group("("+atom+")", new Quantifier(quantifier)));
+                expression = new SingleAtomExpression(new Group($"({atom})", new Quantifier(quantifier)));
                 return true;
             }
             m = characterClassWithQuantifier.Match(specifier);
             if (m.Success)
             {
-                string atom = m.Groups["expression"].Value;
-                string quantifier = m.Groups["quantifier"].Value;
+                var atom = m.Groups["expression"].Value;
+                var quantifier = m.Groups["quantifier"].Value;
                 specifier = specifier.Substring(atom.Length + 2 + quantifier.Length);
-                expression = new SingleAtomExpression(new CharacterClass("["+atom+"]", new Quantifier(quantifier)));
+                expression = new SingleAtomExpression(new CharacterClass($"[{atom}]", new Quantifier(quantifier)));
                 return true;
             }
             m = literalWithQuantifier.Match(specifier);
             if (m.Success)
             {
-                string atom = m.Groups["expression"].Value;
-                string quantifier = m.Groups["quantifier"].Value;
+                var atom = m.Groups["expression"].Value;
+                var quantifier = m.Groups["quantifier"].Value;
                 specifier = specifier.Substring(atom.Length + quantifier.Length);
                 expression = new SingleAtomExpression(new Literal(atom, new Quantifier(quantifier)));
                 return true;

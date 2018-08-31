@@ -1,0 +1,25 @@
+﻿; German Custom Messages Include -- Must be encoded in UTF-8 BOM
+German.PerUser=Aktueller Benutzer
+German.Everyone=Alle Benutzer
+German.RegisterAddin=VBE AddIn Registrierung reparieren
+German.ProgramOnTheWeb=Rubberduck VBA Website
+German.UninstallProgram=Rubberduck deinstallieren
+German.NETFramework46NotInstalled=Microsoft .NET Framework 4.6 konnte nicht gefunden werden.
+German.InstallPerUserOrAllUsersCaption=Eine Installationsoption wähen
+German.InstallPerUserOrAllUsersMessage=Für wen soll diese Anwendung installiert werden?
+German.InstallPerUserOrAllUsersAdminDescription=Bitte wählen Sie, ob diese Anwendung für alle Benutzer or nur für Sie selbst verfügbar sein soll.
+German.InstallPerUserOrAllUsersAdminButtonCaption=&Alle Benutzer
+German.InstallPerUserOrAllUsersUserButtonCaption=&Nur Sie selbst
+German.ElevationRequiredForSelectedFolderWarning=Der gewählte Ordner benötigt Administratorprivilegien für einen Schreibzugriff. Für alle Benutzer installieren?
+German.ElevationRequestFailMessage=Rechteerhöhung fehlgeschlagen. Fehlercode: %d
+German.RegisterAddInCaption=VBE AddIn registrieren
+German.RegisterAddInMessage=Nutzerregistrierung des VBE AddIn durchführen.
+German.RegisterAddInDescription=VBE AddIns sind für jeden Benutzer einzeln registriert, selbst wenn das AddIn für alle Benutzer installiert wurde. Daher muss die Registrierung auf Nutzerbasis durchgeführt werden.
+German.RegisterAddInButtonCaption=Das Rubberduck VBE AddIn registrieren
+German.WillExecuteAdminInstall=Rubberduck AddIn wird für alle Benutzer verfügbar sein.%n%nACHTUNG: Jeder Benutzer muss selbst das AddIn registrieren, da dies eine Nutzereinstellung ist,%nund nicht für alle Benutzer direkt eingerichtet werden kann.%n%nNach der Installation wird eine Verlinkung mit dem Namen "VBE AddIn Registrierung reparieren" im%nProgrammordner von Rubberduck für alle Nutzer verfügbar sein.
+German.WillLaunchAdminInstall=Das Setup wird nach Administratorprivilegien zur installation für alle Nutzer fragen.%nAnschließend wird die Installation fortgesetzt und das AddIn für diesen Nutzer registriert.
+German.WillInstallForCurrentUser=Das Rubberduck VBE-AddIn wird für den aktuellen Nutzer verfügbar gemacht und keine Administratorprivilegien benötigen.
+German.UninstallOldVersionPrompt=Es scheint eine vorige Version von Rubberduck, als Anwendung für %s, installiert zu sein, die Deinstalliert werden sollte. Fortfahren?
+German.UninstallOldVersionFail=Konnte vorige Version nicht deinstallieren. Versuchen Sie, diese über die Systemsteuerung zu deinstallieren und starten Sie den Installer erneut.
+German.WarnInstallPerUserOverEveryone=Es scheint eine für alle Benutzer installierte Version von Rubberduck vorzuliegen. Eine installation nur für diesen Benutzer wird Vorrang vor der originalen Installation haben. Trotzdem fortfahren?
+German.ElevationRequestFailMessage=Konnte vorige Version von Rubberduck nicht deinstallieren. Es kann sein, dass Sie diese manuell deinstallieren müssen, bevor Sie die neue Version installieren können.

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class SymbolTable<TKey, TValue>
     {
@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.Preprocessing
             _table = new Dictionary<TKey, TValue>();
         }
 
-        public void Add(TKey name, TValue value)
+        public void AddOrUpdate(TKey name, TValue value)
         {
             _table[name] = value;
         }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using Antlr4.Runtime;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class StringValue : IValue
     {
@@ -90,6 +92,14 @@ namespace Rubberduck.Parsing.Preprocessing
             get
             {
                 return _value;
+            }
+        }
+
+        public IEnumerable<IToken> AsTokens
+        {
+            get
+            {
+                return new List<IToken>();
             }
         }
 

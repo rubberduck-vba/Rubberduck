@@ -1,142 +1,128 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Inspections;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
+using NUnit.Framework;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class UndeclaredVariableInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsResult()
         {
             const string inputCode =
-@"Sub Test()
+                @"Sub Test()
     a = 42
     Debug.Print a
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UndeclaredVariableInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UndeclaredVariableInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsNoResultIfDeclaredLocally()
         {
             const string inputCode =
-@"Sub Test()
+                @"Sub Test()
     Dim a As Long
     a = 42
     Debug.Print a
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UndeclaredVariableInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UndeclaredVariableInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsNoResultIfDeclaredModuleScope()
         {
             const string inputCode =
-@"Private a As Long
+                @"Private a As Long
             
 Sub Test()
     a = 42
     Debug.Print a
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UndeclaredVariableInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new UndeclaredVariableInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.IsFalse(inspectionResults.Any());
+                Assert.IsFalse(inspectionResults.Any());
+            }
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2525
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsNoResultIfAnnotated()
         {
             const string inputCode =
-@"Sub Test()
+                @"Sub Test()
     '@Ignore UndeclaredVariable
     a = 42
     Debug.Print a
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UndeclaredVariableInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
 
-            var inspection = new UndeclaredVariableInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "UndeclaredVariableInspection";
+            var inspection = new UndeclaredVariableInspection(null);
 
-            Assert.IsFalse(inspectionResults.Any());
+            Assert.AreEqual(inspectionName, inspection.Name);
         }
     }
 }

@@ -6,19 +6,9 @@ namespace Rubberduck.RegexAssistant
     public class Pattern : IDescribable
     {
         public IRegularExpression RootExpression;
-        MatcherFlags Flags;
+        readonly MatcherFlags Flags;
 
-        private readonly bool _hasStartAnchor;
-        private readonly bool _hasEndAnchor;
-        private readonly string _description;
-
-        public string Description
-        {
-            get
-            {
-                return _description;
-            }
-        }
+        public string Description { get; }
 
         public Pattern(string expression, bool ignoreCase = false, bool global = false)
         {
@@ -30,18 +20,18 @@ namespace Rubberduck.RegexAssistant
             Flags = ignoreCase ? MatcherFlags.IgnoreCase : 0;
             Flags = global ? Flags | MatcherFlags.Global : Flags;
 
-            _hasEndAnchor = expression[expression.Length - 1].Equals('$');
-            _hasStartAnchor = expression[0].Equals('^');
+            AnchoredAtEnd = expression[expression.Length - 1].Equals('$');
+            AnchoredAtStart = expression[0].Equals('^');
 
-            int start = _hasStartAnchor ? 1 : 0;
-            int end = (_hasEndAnchor ? 1 : 0) + start;
+            var start = AnchoredAtStart ? 1 : 0;
+            var end = (AnchoredAtEnd ? 1 : 0) + start;
             RootExpression = RegularExpression.Parse(expression.Substring(start, expression.Length - end));
-            _description = AssembleDescription();
+            Description = AssembleDescription();
         }
 
         private string AssembleDescription()
         {
-            string result = string.Empty;
+            var result = string.Empty;
             result += CasingDescription;
             result += StartAnchorDescription;
             result += RootExpression.Description;
@@ -77,20 +67,17 @@ namespace Rubberduck.RegexAssistant
             }
         }
 
-        public bool IgnoreCase { get { return Flags.HasFlag(MatcherFlags.IgnoreCase); } }
-        public bool Global { get { return Flags.HasFlag(MatcherFlags.Global); } }
-        public bool AnchoredAtStart { get { return _hasStartAnchor; } }
-        public bool AnchoredAtEnd { get { return _hasEndAnchor; } }
+        public bool IgnoreCase => Flags.HasFlag(MatcherFlags.IgnoreCase);
+        public bool Global => Flags.HasFlag(MatcherFlags.Global);
+        public bool AnchoredAtStart { get; }
 
-        public string CasingDescription { get
-            {
-                return IgnoreCase ? AssistantResources.PatternDescription_IgnoreCase : string.Empty;
-            }
-        }
+        public bool AnchoredAtEnd { get; }
+
+        public string CasingDescription => IgnoreCase ? AssistantResources.PatternDescription_IgnoreCase : string.Empty;
     }
 
     [Flags]
-    enum MatcherFlags
+    internal enum MatcherFlags
     {
         IgnoreCase = 1 << 0,
         Global     = 1 << 1,

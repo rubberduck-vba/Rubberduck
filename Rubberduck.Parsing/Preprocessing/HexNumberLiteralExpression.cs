@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class HexNumberLiteralExpression : Expression
     {

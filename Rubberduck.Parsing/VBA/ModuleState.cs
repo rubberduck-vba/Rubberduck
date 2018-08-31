@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
@@ -14,16 +16,17 @@ namespace Rubberduck.Parsing.VBA
     {
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
-        public ITokenStream TokenStream { get; private set; }
+        public IModuleRewriter ModuleRewriter { get; private set; }
+        public IModuleRewriter AttributesRewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
+        public IParseTree AttributesPassParseTree { get; private set; }
         public ParserState State { get; private set; }
         public int ModuleContentHashCode { get; private set; }
         public List<CommentNode> Comments { get; private set; }
         public List<IAnnotation> Annotations { get; private set; }
         public SyntaxErrorException ModuleException { get; private set; }
-        public IDictionary<Tuple<string, DeclarationType>, Attributes> ModuleAttributes { get; private set; }
-        public ConcurrentDictionary<QualifiedModuleName, byte> HasReferenceToModule { get; private set; }
-        public HashSet<QualifiedModuleName> IsReferencedByModule { get; private set; }
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> ModuleAttributes { get; private set; }
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
 
         public bool IsNew { get; private set; }
 
@@ -31,43 +34,31 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = declarations;
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;UnboundMemberDeclaration
             ParseTree = null;
-
-            if (declarations.Any() && declarations.ElementAt(0).Key.QualifiedName.QualifiedModuleName.Component != null)
-            {
-                State = ParserState.Pending;
-            }
-            else
-            {
-                State = ParserState.Pending;
-            }
 
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = null;
-            ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
-            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
-            IsReferencedByModule = new HashSet<QualifiedModuleName>();
+            ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
+            MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
 
             IsNew = true;
+            State = ParserState.Pending;
         }
 
         public ModuleState(ParserState state)
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
             State = state;
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = null;
-            ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
-            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
-            IsReferencedByModule = new HashSet<QualifiedModuleName>();
+            ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
+            MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
 
             IsNew = true;
         }
@@ -76,47 +67,37 @@ namespace Rubberduck.Parsing.VBA
         {
             Declarations = new ConcurrentDictionary<Declaration, byte>();
             UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
             ParseTree = null;
             State = ParserState.Error;
             ModuleContentHashCode = 0;
             Comments = new List<CommentNode>();
             Annotations = new List<IAnnotation>();
             ModuleException = moduleException;
-            ModuleAttributes = new Dictionary<Tuple<string, DeclarationType>, Attributes>();
-            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
-            IsReferencedByModule = new HashSet<QualifiedModuleName>();
+            ModuleAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes>();
+            MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
 
             IsNew = true;
         }
 
-        public ModuleState(IDictionary<Tuple<string, DeclarationType>, Attributes> moduleAttributes)
+        public ModuleState SetCodePaneRewriter(QualifiedModuleName module, IModuleRewriter codePaneRewriter)
         {
-            Declarations = new ConcurrentDictionary<Declaration, byte>();
-            UnresolvedMemberDeclarations = new ConcurrentDictionary<UnboundMemberDeclaration, byte>();
-            TokenStream = null;
-            ParseTree = null;
-            State = ParserState.None;
-            ModuleContentHashCode = 0;
-            Comments = new List<CommentNode>();
-            Annotations = new List<IAnnotation>();
-            ModuleException = null;
-            ModuleAttributes = moduleAttributes;
-            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
-            IsReferencedByModule = new HashSet<QualifiedModuleName>();
-
-            IsNew = true;
-        }
-
-        public ModuleState SetTokenStream(ITokenStream tokenStream)
-        {
-            TokenStream = tokenStream;
+            ModuleRewriter = codePaneRewriter;
             return this;
         }
 
-        public ModuleState SetParseTree(IParseTree parseTree)
+        public ModuleState SetParseTree(IParseTree parseTree, CodeKind codeKind)
         {
-            ParseTree = parseTree;
+            switch (codeKind)
+            {
+                case CodeKind.AttributesCode:
+                    AttributesPassParseTree = parseTree;
+                    break;
+                case CodeKind.CodePaneCode:
+                    ParseTree = parseTree;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(codeKind), codeKind, null);
+            }
             return this;
         }
 
@@ -151,24 +132,26 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState SetModuleAttributes(IDictionary<Tuple<string, DeclarationType>, Attributes> moduleAttributes)
+        public ModuleState SetModuleAttributes(IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> moduleAttributes)
         {
             ModuleAttributes = moduleAttributes;
             return this;
         }
 
-        public void RefreshHasReferenceToModule()
+        public ModuleState SetMembersAllowingAttributes(IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> membersAllowingAttributes)
         {
-            HasReferenceToModule = new ConcurrentDictionary<QualifiedModuleName, byte>();
+            MembersAllowingAttributes = membersAllowingAttributes;
+            return this;
         }
 
-        public void RefreshIsReferencedByModule()
+        public ModuleState SetAttributesRewriter(IModuleRewriter rewriter)
         {
-            IsReferencedByModule = new HashSet<QualifiedModuleName>();
+            AttributesRewriter = rewriter;
+            return this;
         }
-
 
         private bool _isDisposed;
+
         public void Dispose()
         {
             if (_isDisposed)
@@ -176,25 +159,10 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            if (Declarations != null)
-            {
-                Declarations.Clear();
-            }
-
-            if (Comments != null)
-            {
-                Comments.Clear();
-            }
-
-            if (Annotations != null)
-            {
-                Annotations.Clear();
-            }
-
-            if (ModuleAttributes != null)
-            {
-                ModuleAttributes.Clear();
-            }
+            Declarations?.Clear();
+            Comments?.Clear();
+            Annotations?.Clear();
+            ModuleAttributes?.Clear();
 
             _isDisposed = true;
         }

@@ -1,5 +1,5 @@
-using NLog;
-using System.Diagnostics;
+using Rubberduck.VBEditor;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
@@ -7,28 +7,26 @@ namespace Rubberduck.Parsing.Symbols
     public sealed class ProjectReferencePass : ICompilationPass
     {
         private readonly DeclarationFinder _declarationFinder;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public ProjectReferencePass(DeclarationFinder declarationFinder)
         {
             _declarationFinder = declarationFinder;
         }
 
-        public void Execute()
+        public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
-            var stopwatch = Stopwatch.StartNew();
-            var projects = _declarationFinder.Projects.ToList();
-            var allReferences = projects.Where(p => !p.IsBuiltIn).SelectMany(p => ((ProjectDeclaration)p).ProjectReferences).ToList();
-            var builtInProjects = projects.Where(p => p.IsBuiltIn).ToList();
+            var projects = _declarationFinder.Projects.Cast<ProjectDeclaration>().ToList();
+            var allReferences = projects.Where(p => p.IsUserDefined).SelectMany(p => p.ProjectReferences).ToList();
+            var builtInProjects = projects.Where(p => !p.IsUserDefined).ToList();
             // Give each built-in project access to all other projects so that e.g. CurrentDb in Access has access to the Database class defined in a different project.
             foreach (var builtInProject in builtInProjects)
             {
+                builtInProject.ClearProjectReferences();    //Built-in projects have no project references of their own.
                 foreach (var reference in allReferences)
                 {
-                    ((ProjectDeclaration)builtInProject).AddProjectReference(reference.ReferencedProjectId, reference.Priority);
+                    builtInProject.AddProjectReference(reference.ReferencedProjectId, reference.Priority);
                 }
             }
-            stopwatch.Stop();
         }
     }
 }

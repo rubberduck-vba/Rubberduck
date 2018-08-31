@@ -1,19 +1,19 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class ProceduralModuleDeclarationTests
     {
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void ProceduralModulesHaveDeclarationTypeProceduralModule()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var proceduralModule = GetTestProceduralModule(projectDeclaration, "testModule", false, null);
+            var proceduralModule = GetTestProceduralModule(projectDeclaration, "testModule", true, null);
 
             Assert.IsTrue(proceduralModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule));
         }
@@ -21,7 +21,7 @@ namespace RubberduckTests.Symbols
             private static ProjectDeclaration GetTestProject(string name)
             {
                 var qualifiedProjectName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ProjectDeclaration(qualifiedProjectName, name, false, null);
+                return new ProjectDeclaration(qualifiedProjectName, name, true, null);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -29,18 +29,19 @@ namespace RubberduckTests.Symbols
                     return new QualifiedModuleName("dummy", "dummy", "dummy");
                 }
 
-            private static ProceduralModuleDeclaration GetTestProceduralModule(Declaration projectDeclatation, string name, bool isBuiltIn, Attributes attributes)
+            private static ProceduralModuleDeclaration GetTestProceduralModule(Declaration projectDeclatation, string name, bool isUserDefined, Attributes attributes)
             {
                 var qualifiedProceduralModuleMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ProceduralModuleDeclaration(qualifiedProceduralModuleMemberName, projectDeclatation, name, isBuiltIn, null, attributes);
+                return new ProceduralModuleDeclaration(qualifiedProceduralModuleMemberName, projectDeclatation, name, isUserDefined, null, attributes);
             }
 
 
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultProceduralModulesAreNotPrivate()
         {
             var projectDeclaration = GetTestProject("testProject");
-            var proceduralModule = GetTestProceduralModule(projectDeclaration, "testModule", false, null);
+            var proceduralModule = GetTestProceduralModule(projectDeclaration, "testModule", true, null);
 
             Assert.IsFalse(proceduralModule.IsPrivateModule);
         }

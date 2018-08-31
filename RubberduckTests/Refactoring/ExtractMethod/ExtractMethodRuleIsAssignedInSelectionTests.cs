@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
@@ -6,17 +6,17 @@ using Rubberduck.VBEditor;
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
 
-    [TestClass]
+    [TestFixture]
     public class ExtractMethodRuleIsAssignedInSelectionTests
     {
-        [TestClass]
+        [TestFixture]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsInSelection : ExtractMethodRuleIsAssignedInSelectionTests
         {
-            [TestClass]
+            [TestFixture]
             public class AndIsAssigned : WhenSetValidFlagIsCalledWhenTheReferenceIsInSelection
             {
-                [TestMethod]
-                [TestCategory("ExtractMethodRuleTests")]
+                [Test]
+                [Category("ExtractMethodRuleTests")]
                 public void shouldSetFlagIsAssigned()
                 {
                     var usedSelection = new Selection(4, 1, 7, 10);
@@ -32,11 +32,11 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 }
             }
 
-            [TestClass]
+            [TestFixture]
             public class AndIsNotAssigned : WhenSetValidFlagIsCalledWhenTheReferenceIsInSelection
             {
-                [TestMethod]
-                [TestCategory("ExtractMethodRuleTests")]
+                [Test]
+                [Category("ExtractMethodRuleTests")]
                 public void shouldNotSetFlag()
                 {
                     var usedSelection = new Selection(4, 1, 7, 10);
@@ -54,15 +54,15 @@ namespace RubberduckTests.Refactoring.ExtractMethod
 
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsAssigned : ExtractMethodRuleIsAssignedInSelectionTests
         {
 
-            [TestClass]
+            [TestFixture]
             public class AndIsBeforeSelection : WhenSetValidFlagIsCalledWhenTheReferenceIsAssigned
             {
-                [TestMethod]
-                [TestCategory("ExtractMethodRuleTests")]
+                [Test]
+                [Category("ExtractMethodRuleTests")]
                 public void shouldSetFlagIsAssigned()
                 {
                     var usedSelection = new Selection(4, 1, 7, 10);
@@ -78,11 +78,11 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 }
             }
 
-            [TestClass]
+            [TestFixture]
             public class AndIsAfterSelection : WhenSetValidFlagIsCalledWhenTheReferenceIsAssigned
             {
-                [TestMethod]
-                [TestCategory("ExtractMethodRuleTests")]
+                [Test]
+                [Category("ExtractMethodRuleTests")]
                 public void shouldNotSetFlag()
                 {
                     var usedSelection = new Selection(4, 1, 7, 10);

@@ -4,47 +4,62 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
+using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
+using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComInterface : ComType, IComTypeWithMembers
     {
-        private readonly List<ComInterface> _inherited = new List<ComInterface>();
-        private readonly List<ComMember> _members = new List<ComMember>();
-        private ComMember _defaultMember;
-
         public bool IsExtensible { get; private set; }
 
-        public IEnumerable<ComInterface> InheritedInterfaces
-        {
-            get { return _inherited; }
-        }
+        private readonly List<ComInterface> _inherited = new List<ComInterface>();
+        public IEnumerable<ComInterface> InheritedInterfaces => _inherited;
 
-        public IEnumerable<ComMember> Members
-        {
-            get { return _members; }
-        }
+        private readonly List<ComMember> _members = new List<ComMember>();
+        public IEnumerable<ComMember> Members => _members;
 
-        public ComMember DefaultMember
-        {
-            get { return _defaultMember; }
-        }
+        private readonly List<ComField> _properties = new List<ComField>();
+        public IEnumerable<ComField> Properties => _properties;
 
-        public ComInterface(ITypeInfo info, TYPEATTR attrib) : base(info, attrib)
+        public ComMember DefaultMember { get; private set; }
+
+        public ComInterface(IComBase parent, ITypeInfo info, TYPEATTR attrib) : base(parent, info, attrib)
         {
+            // Since the reference declaration gathering is threaded, this can't be truly recursive, so implemented interfaces may have
+            // null parents (for example, if the library references a type library that isn't referenced by the VBA project or if that project
+            // hasn't had the implemented interface processed yet).
+            try
+            {
+                info.GetContainingTypeLib(out var typeLib, out _);
+                typeLib.GetLibAttr(out IntPtr attribPtr);
+                using (DisposalActionContainer.Create(attribPtr, typeLib.ReleaseTLibAttr))
+                {
+                    var typeAttr = Marshal.PtrToStructure<TYPELIBATTR>(attribPtr);
+                    Parent = typeAttr.guid.Equals(parent?.Project.Guid) ? parent?.Project : null;
+                }
+            }
+            catch
+            {
+                Parent = null;
+            }
+
             GetImplementedInterfaces(info, attrib);
+            GetComProperties(info, attrib);
             GetComMembers(info, attrib);
         }
 
-        public ComInterface(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(typeLib, attrib, index)
+        public ComInterface(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(parent, typeLib, attrib, index)
         {
             Type = DeclarationType.ClassModule;
             GetImplementedInterfaces(info, attrib);
+            GetComProperties(info, attrib);
             GetComMembers(info, attrib);
         }
 
@@ -53,23 +68,19 @@ namespace Rubberduck.Parsing.ComReflection
             IsExtensible = !typeAttr.wTypeFlags.HasFlag(TYPEFLAGS.TYPEFLAG_FNONEXTENSIBLE);
             for (var implIndex = 0; implIndex < typeAttr.cImplTypes; implIndex++)
             {
-                int href;
-                info.GetRefTypeOfImplType(implIndex, out href);
+                info.GetRefTypeOfImplType(implIndex, out int href);
+                info.GetRefTypeInfo(href, out ITypeInfo implemented);
 
-                ITypeInfo implemented;
-                info.GetRefTypeInfo(href, out implemented);
+                implemented.GetTypeAttr(out IntPtr attribPtr);
+                using (DisposalActionContainer.Create(attribPtr, info.ReleaseTypeAttr))
+                {
+                    var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
 
-                IntPtr attribPtr;
-                implemented.GetTypeAttr(out attribPtr);
-                var attribs = (TYPEATTR)Marshal.PtrToStructure(attribPtr, typeof(TYPEATTR));
-
-                ComType inherited;
-                ComProject.KnownTypes.TryGetValue(attribs.guid, out inherited);
-                var intface = inherited as ComInterface ?? new ComInterface(implemented, attribs);
-                _inherited.Add(intface);
-                ComProject.KnownTypes.TryAdd(attribs.guid, intface);
-
-                info.ReleaseTypeAttr(attribPtr);
+                    ComProject.KnownTypes.TryGetValue(attribs.guid, out ComType inherited);
+                    var intface = inherited as ComInterface ?? new ComInterface(Project, implemented, attribs);
+                    _inherited.Add(intface);
+                    ComProject.KnownTypes.TryAdd(attribs.guid, intface);
+                }
             }
         }
 
@@ -77,20 +88,38 @@ namespace Rubberduck.Parsing.ComReflection
         {
             for (var index = 0; index < attrib.cFuncs; index++)
             {
-                IntPtr memberPtr;
-                info.GetFuncDesc(index, out memberPtr);
-                var member = (FUNCDESC)Marshal.PtrToStructure(memberPtr, typeof(FUNCDESC));
-                if (member.callconv != CALLCONV.CC_STDCALL)
+                info.GetFuncDesc(index, out IntPtr memberPtr);
+                using (DisposalActionContainer.Create(memberPtr, info.ReleaseFuncDesc))
                 {
-                    continue;
+                    var member = Marshal.PtrToStructure<FUNCDESC>(memberPtr);
+                    if (member.callconv != CALLCONV.CC_STDCALL)
+                    {
+                        continue;
+                    }
+                    var comMember = new ComMember(this, info, member);
+                    _members.Add(comMember);
+                    if (comMember.IsDefault)
+                    {
+                        DefaultMember = comMember;
+                    }
                 }
-                var comMember = new ComMember(info, member);
-                _members.Add(comMember);
-                if (comMember.IsDefault)
+            }
+        }
+
+        private void GetComProperties(ITypeInfo info, TYPEATTR attrib)
+        {
+            var names = new string[1];
+            for (var index = 0; index < attrib.cVars; index++)
+            {
+                info.GetVarDesc(index, out IntPtr varDescPtr);
+                using (DisposalActionContainer.Create(varDescPtr, info.ReleaseVarDesc))
                 {
-                    _defaultMember = comMember;
+                    var property = Marshal.PtrToStructure<VARDESC>(varDescPtr);
+                    info.GetNames(property.memid, names, names.Length, out int length);
+                    Debug.Assert(length == 1);
+
+                    _properties.Add(new ComField(this, info, names[0], property, index, DeclarationType.Property));
                 }
-                info.ReleaseFuncDesc(memberPtr);
             }
         }
     }

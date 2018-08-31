@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -8,7 +7,7 @@ namespace Rubberduck.VBEditor
     /// <summary>
     /// Represents a VBComponent or a VBProject.
     /// </summary>
-    public struct QualifiedModuleName
+    public readonly struct QualifiedModuleName
     {
         public static string GetProjectId(IVBProject project)
         {
@@ -17,51 +16,74 @@ namespace Rubberduck.VBEditor
                 return string.Empty;
             }
 
-            if (string.IsNullOrEmpty(project.HelpFile))
+            var projectId = project.ProjectId;
+
+            if (string.IsNullOrEmpty(projectId))
             {
-                project.HelpFile = project.GetHashCode().ToString(CultureInfo.InvariantCulture);
+                project.AssignProjectId();
+                projectId = project.ProjectId;
             }
 
-            return project.HelpFile;
+            return projectId;
         }
 
-        public static string GetProjectId(IReference reference)
+        /// <summary>
+        /// Gets the standard projectId for a library reference.
+        /// Do not use this overload for referenced user projects.
+        /// </summary>
+        public static string GetProjectId(ReferenceInfo reference)
         {
-            var projectName = reference.Name;
-            return new QualifiedModuleName(projectName, reference.FullPath, projectName).ProjectId;
+            return new QualifiedModuleName(reference).ProjectId;
+        }
+
+        public static int GetContentHash(IVBComponent component)
+        {
+            return component?.ContentHash() ?? 0;
         }
 
         public QualifiedModuleName(IVBProject project)
         {
-            _component = null;
             _componentName = null;
-            _componentType = ComponentType.Undefined;
+            ComponentType = ComponentType.Undefined;
             _projectName = project.Name;
-            _projectPath = string.Empty;
-            _projectId = GetProjectId(project);           
-            _contentHashCode = 0;
+            ProjectPath = string.Empty;
+            ProjectId = GetProjectId(project);
+            ModuleContentHashOnCreation = GetContentHash(null);
         }
 
         public QualifiedModuleName(IVBComponent component)
         {
-            _componentType = component.Type;
-            _component = component;
+            ComponentType = component.Type;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
-            _contentHashCode = 0;
-            if (!component.IsWrappingNullReference)
-            {
-                var module = _component.CodeModule;
-                _contentHashCode = module.CountOfLines > 0
-                    ? module.GetLines(1, module.CountOfLines).GetHashCode()
-                    : 0;
-            }
+            //note: We set this property in order to stabelize the component.
+            //For some reason, components sometimes seem to get removed on the COM side although 
+            //an RCW is still holding a reference. For some reason, opening the CodeModule of a 
+            //component seems to prevent this. 
+            //This is a hack to open the code module on each component for which we get a QMN 
+            //in a way that does not get optimized away.
+            ModuleContentHashOnCreation = GetContentHash(component);
 
-            var project = component.Collection.Parent;
-            _projectName = project == null ? string.Empty : project.Name;
-            _projectPath = string.Empty;
-            _projectId = GetProjectId(project);
+            using (var components = component.Collection)
+            {
+                using (var project = components.Parent)
+                {
+                    _projectName = project == null ? string.Empty : project.Name;
+                    ProjectPath = string.Empty;
+                    ProjectId = GetProjectId(project);
+                }
+            }
         }
+
+        /// <summary>
+        /// Creates a QualifiedModuleName for a library reference.
+        /// Do not use this overload for referenced user projects.
+        /// </summary>
+        public QualifiedModuleName(ReferenceInfo reference)
+        :this(reference.Name,
+            reference.FullPath,
+            reference.Name)
+        {}
 
         /// <summary>
         /// Creates a QualifiedModuleName for a built-in declaration.
@@ -70,12 +92,11 @@ namespace Rubberduck.VBEditor
         public QualifiedModuleName(string projectName, string projectPath, string componentName)
         {
             _projectName = projectName;
-            _projectPath = projectPath;
-            _projectId = string.Format("{0};{1}", _projectName, _projectPath).GetHashCode().ToString(CultureInfo.InvariantCulture);
+            ProjectPath = projectPath;
+            ProjectId = "External" + $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
-            _component = null;
-            _componentType = ComponentType.ComComponent;
-            _contentHashCode = 0;
+            ComponentType = ComponentType.ComComponent;
+            ModuleContentHashOnCreation = GetContentHash(null);
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -83,56 +104,50 @@ namespace Rubberduck.VBEditor
             return new QualifiedMemberName(this, member);
         }
 
-        private readonly IVBComponent _component;
-        public IVBComponent Component { get { return _component; } }
+        public ComponentType ComponentType { get; }
 
-        private readonly ComponentType _componentType;
-        public ComponentType ComponentType { get { return _componentType; } }
-
-        private readonly int _contentHashCode;
-        public int ContentHashCode { get { return _contentHashCode; } }
-
-        private readonly string _projectId;
-        public string ProjectId { get { return _projectId; } }
+        public bool IsParsable => ComponentType != ComponentType.ResFile && ComponentType != ComponentType.RelatedDocument;
+        public string ProjectId { get; }
 
         private readonly string _componentName;
-        public string ComponentName { get { return _componentName ?? string.Empty; } }
+        public string ComponentName => _componentName ?? string.Empty;
 
-        public string Name { get { return ToString(); } }
+        public string Name => ToString();
 
         private readonly string _projectName;
-        public string ProjectName { get { return _projectName ?? string.Empty; } }
+        public string ProjectName => _projectName ?? string.Empty;
 
-        private readonly string _projectPath;
-        public string ProjectPath { get { return _projectPath; } }
+        public string ProjectPath { get; }
+        public int ModuleContentHashOnCreation { get; }
 
         public override string ToString()
         {
             return string.IsNullOrEmpty(_componentName) && string.IsNullOrEmpty(_projectName)
                 ? string.Empty
-                : (string.IsNullOrEmpty(_projectPath) ? string.Empty : System.IO.Path.GetFileName(_projectPath) + ";")
-                     + _projectName + "." + _componentName;
+                : (string.IsNullOrEmpty(ProjectPath) ? string.Empty : System.IO.Path.GetFileName(ProjectPath) + ";")
+                     + $"{_projectName}.{_componentName}";
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Compute(_projectId, _componentName ?? string.Empty);
+            return HashCode.Compute(ProjectId ?? string.Empty, _componentName ?? string.Empty);
         }
 
         public override bool Equals(object obj)
         {
-            if (obj == null) { return false; }
-
-            try
-            {
-                var other = (QualifiedModuleName)obj;
-                var result = other.ProjectId == ProjectId && other.ComponentName == ComponentName;
-                return result;
-            }
-            catch (InvalidCastException)
+            if (obj == null)
             {
                 return false;
             }
+
+            var other = obj as QualifiedModuleName?;
+
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.Value.ProjectId == ProjectId && other.Value.ComponentName == ComponentName;
         }
 
         public static bool operator ==(QualifiedModuleName a, QualifiedModuleName b)

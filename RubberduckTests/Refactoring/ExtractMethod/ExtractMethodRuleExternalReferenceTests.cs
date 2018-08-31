@@ -1,19 +1,19 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Refactoring.ExtractMethod
 {
-    [TestClass]
+    [TestFixture]
     public class ExtractMethodRuleExternalReferenceTests
     {
 
-        [TestClass]
+        [TestFixture]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsInternal : ExtractMethodRuleExternalReferenceTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodRuleTests")]
+            [Test]
+            [Category("ExtractMethodRuleTests")]
             public void shouldSetTheFlag()
             {
                 var usedSelection = new Selection(4, 1, 7, 10);
@@ -23,7 +23,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 var decSelection = new Selection(5, 1, 5, 10);
                 var referenceDeclaration = new Declaration(decQualifiedMemberName, null, "", "", "",
                     false, false, Accessibility.Friend, DeclarationType.ClassModule,
-                    context: null, selection: decSelection, isArray: false, asTypeContext: null);
+                    context: null, attributesPassContext: null, selection: decSelection, isArray: false, asTypeContext: null);
 
                 IdentifierReference reference = new IdentifierReference(new QualifiedModuleName(), null, null, "a", referenceSelection, null, referenceDeclaration);
 
@@ -34,11 +34,11 @@ namespace RubberduckTests.Refactoring.ExtractMethod
             }
         }
 
-        [TestClass]
+        [TestFixture]
         public class WhenSetValidFlagIsCalledWhenTheReferenceIsUsedInternallyOnly : ExtractMethodRuleExternalReferenceTests
         {
-            [TestMethod]
-            [TestCategory("ExtractMethodRuleTests")]
+            [Test]
+            [Category("ExtractMethodRuleTests")]
             public void shouldNotSetFlag()
             {
                 var usedSelection = new Selection(4, 1, 7, 10);
@@ -49,7 +49,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 var decSelection = new Selection(5, 1, 5, 10);
                 var referenceDeclaration = new Declaration(decQualifiedMemberName, null, "", "", "",
                     false, false, Accessibility.Friend, DeclarationType.ClassModule,
-                    context: null, selection: decSelection, isArray: false, asTypeContext: null);
+                    context: null, attributesPassContext: null, selection: decSelection, isArray: false, asTypeContext: null);
 
                 IdentifierReference reference = new IdentifierReference(new QualifiedModuleName(), null, null, "a", referenceSelection, null, referenceDeclaration);
 

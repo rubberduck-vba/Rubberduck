@@ -1,8 +1,9 @@
-﻿using Rubberduck.Parsing.VBA;
-using System;
+﻿using System;
 using System.Globalization;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
-namespace Rubberduck.Parsing.Preprocessing
+namespace Rubberduck.Parsing.PreProcessing
 {
     public sealed class DateLiteralExpression : Expression
     {
@@ -71,7 +72,7 @@ namespace Rubberduck.Parsing.Preprocessing
                 var L = dateValue.dateValuePart()[0];
                 var M = dateValue.dateValuePart()[1];
                 VBADateParser.DateValuePartContext R = null;
-                if (dateValue.dateValuePart().Count == 3)
+                if (dateValue.dateValuePart().Length == 3)
                 {
                     R = dateValue.dateValuePart()[2];
                 }
@@ -237,7 +238,7 @@ namespace Rubberduck.Parsing.Preprocessing
             {
                 var timeValue = dateOrTime.timeValue();
                 hours = int.Parse(timeValue.timeValuePart()[0].GetText(), CultureInfo.InvariantCulture);
-                if (timeValue.timeValuePart().Count == 1)
+                if (timeValue.timeValuePart().Length == 1)
                 {
                     mins = 0;
                 }
@@ -245,7 +246,7 @@ namespace Rubberduck.Parsing.Preprocessing
                 {
                     mins = int.Parse(timeValue.timeValuePart()[1].GetText(), CultureInfo.InvariantCulture);
                 }
-                if (timeValue.timeValuePart().Count < 3)
+                if (timeValue.timeValuePart().Length < 3)
                 {
                     seconds = 0;
                 }

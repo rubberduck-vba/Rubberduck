@@ -16,13 +16,13 @@ namespace Rubberduck.Parsing.ComReflection
 
         public IEnumerable<SerializableDeclarationTree> Children
         {
-            get { return _children; } 
-            set { _children = new List<SerializableDeclarationTree>(value); }
+            get => _children;
+            set => _children = new List<SerializableDeclarationTree>(value);
         }
 
-        public SerializableDeclarationTree() { } 
+        public SerializableDeclarationTree() { }
 
-        public SerializableDeclarationTree(Declaration declaration)   
+        public SerializableDeclarationTree(Declaration declaration)
             : this(new SerializableDeclaration(declaration)) { }
 
         public SerializableDeclarationTree(Declaration declaration, IEnumerable<SerializableDeclarationTree> children)
@@ -37,6 +37,15 @@ namespace Rubberduck.Parsing.ComReflection
             Children = children;
         }
 
+        public void SortChildren()
+        {
+            _children = _children.OrderBy(child => child.Node.DeclarationType).ThenBy(child => child.Node.IdentifierName).ToList();
+            foreach (var child in _children)
+            {
+                child.SortChildren();
+            }
+        }
+
         public void AddChildren(IEnumerable<Declaration> declarations)
         {
             foreach (var child in declarations)
@@ -48,6 +57,11 @@ namespace Rubberduck.Parsing.ComReflection
         public void AddChildTree(SerializableDeclarationTree tree)
         {
             _children.Add(tree);
+        }
+
+        public void AddChildTrees(IEnumerable<SerializableDeclarationTree> trees)
+        {
+            _children.AddRange(trees);
         }
     }
 
@@ -68,11 +82,11 @@ namespace Rubberduck.Parsing.ComReflection
     }
 
     [DataContract]
-    public class SerializableProject 
+    public class SerializableProject
     {
         public SerializableProject() { }
 
-        public SerializableProject(Declaration declaration)
+        public SerializableProject(ProjectDeclaration declaration)
         {
             Node = new SerializableDeclaration(declaration);
             var project = (ProjectDeclaration)declaration;
@@ -88,8 +102,8 @@ namespace Rubberduck.Parsing.ComReflection
 
         public IEnumerable<SerializableDeclarationTree> Declarations
         {
-            get { return _declarations; }
-            set { _declarations = new List<SerializableDeclarationTree>(value); }
+            get => _declarations;
+            set => _declarations = new List<SerializableDeclarationTree>(value);
         }
 
         [DataMember(IsRequired = true)]
@@ -102,15 +116,13 @@ namespace Rubberduck.Parsing.ComReflection
             _declarations.Add(tree);
         }
 
-        private readonly Dictionary<string, SerializableDeclarationTree> _pseudoLookup = new Dictionary<string, SerializableDeclarationTree>(); 
-        public SerializableDeclarationTree GetPseudoDeclaration(Declaration declaration)
+        public void SortDeclarations()
         {
-            if (!_pseudoLookup.ContainsKey(declaration.IdentifierName))
+            _declarations = _declarations.OrderBy(declarationTree => declarationTree.Node.DeclarationType).ThenBy(declarationTree => declarationTree.Node.IdentifierName).ToList();
+            foreach (var declarationTree in _declarations)
             {
-                _declarations.Add(new SerializableDeclarationTree(declaration));
+                declarationTree.SortChildren();
             }
-
-            return _pseudoLookup[declaration.IdentifierName];
         }
 
         public List<Declaration> Unwrap()
@@ -118,7 +130,7 @@ namespace Rubberduck.Parsing.ComReflection
             var project = (ProjectDeclaration)Node.Unwrap(null);
             project.MajorVersion = MajorVersion;
             project.MinorVersion = MinorVersion;
-            var output = new List<Declaration> {project};
+            var output = new List<Declaration> { project };
             foreach (var declaration in Declarations)
             {
                 output.AddRange(UnwrapTree(declaration, project));
@@ -152,14 +164,14 @@ namespace Rubberduck.Parsing.ComReflection
             IdentifierName = declaration.IdentifierName;
 
             Attributes = declaration.Attributes
-                .Select(a => new SerializableMemberAttribute(a.Key, a.Value))
+                .Select(a => new SerializableMemberAttribute(a.Name, a.Values))
                 .ToList();
 
             ParentScope = declaration.ParentScope;
             TypeHint = declaration.TypeHint;
             AsTypeName = declaration.AsTypeName;
             IsArray = declaration.IsArray;
-            IsBuiltIn = declaration.IsBuiltIn;
+            IsUserDefined = declaration.IsUserDefined;
             IsSelfAssigned = declaration.IsSelfAssigned;
             IsWithEvents = declaration.IsWithEvents;
             Accessibility = declaration.Accessibility;
@@ -170,17 +182,20 @@ namespace Rubberduck.Parsing.ComReflection
             ProjectPath = declaration.QualifiedName.QualifiedModuleName.ProjectPath;
             ComponentName = declaration.QualifiedName.QualifiedModuleName.ComponentName;
 
-            var param = declaration as ParameterDeclaration;
-            if (param != null)
+            switch (declaration)
             {
-                IsOptionalParam = param.IsOptional;
-                IsByRefParam = param.IsByRef;
-                IsParamArray = param.IsParamArray;
-            }
-            var coclass = declaration as ClassModuleDeclaration;
-            if (coclass != null)
-            {
-                IsControl = coclass.IsControl;
+                case ParameterDeclaration param:
+                    IsOptionalParam = param.IsOptional;
+                    IsByRefParam = param.IsByRef;
+                    IsParamArray = param.IsParamArray;
+                    DefaultValue = param.DefaultValue;
+                    break;
+                case ValuedDeclaration constant:
+                    Expression = constant.Expression;
+                    break;
+                case ClassModuleDeclaration coclass:
+                    IsControl = coclass.IsControl;
+                    break;
             }
         }
 
@@ -193,14 +208,14 @@ namespace Rubberduck.Parsing.ComReflection
         public string ProjectPath { get; set; }
         public string ComponentName { get; set; }
 
-        public QualifiedModuleName QualifiedModuleName { get { return new QualifiedModuleName(ProjectName, ProjectPath, ComponentName); } }
-        public QualifiedMemberName QualifiedMemberName { get { return new QualifiedMemberName(QualifiedModuleName, MemberName); } }
+        public QualifiedModuleName QualifiedModuleName => new QualifiedModuleName(ProjectName, ProjectPath, ComponentName);
+        public QualifiedMemberName QualifiedMemberName => new QualifiedMemberName(QualifiedModuleName, MemberName);
 
         public string ParentScope { get; set; }
         public string AsTypeName { get; set; }
         public string TypeHint { get; set; }
         public bool IsArray { get; set; }
-        public bool IsBuiltIn { get; set; }
+        public bool IsUserDefined { get; set; }
         public bool IsSelfAssigned { get; set; }
         public bool IsWithEvents { get; set; }
         public bool IsExtensible { get; set; }
@@ -211,6 +226,9 @@ namespace Rubberduck.Parsing.ComReflection
         public bool IsOptionalParam { get; set; }
         public bool IsByRefParam { get; set; }
         public bool IsParamArray { get; set; }
+        public string DefaultValue { get; set; }
+
+        public string Expression { get; set; }
 
         public Declaration Unwrap(Declaration parent)
         {
@@ -218,32 +236,37 @@ namespace Rubberduck.Parsing.ComReflection
             var attributes = new Attributes();
             foreach (var attribute in Attributes)
             {
-                attributes.Add(attribute.Name, attribute.Values);
+                attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
             }
 
             switch (DeclarationType)
             {
                 case DeclarationType.Project:
-                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, true, null);                    
+                    return new ProjectDeclaration(QualifiedMemberName, IdentifierName, false, null);
                 case DeclarationType.ClassModule:
-                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes, false, IsControl);
+                    return new ClassModuleDeclaration(QualifiedMemberName, parent, IdentifierName, false, annotations, attributes, false, IsControl);
                 case DeclarationType.ProceduralModule:
-                    return new ProceduralModuleDeclaration(QualifiedMemberName, parent, IdentifierName, true, annotations, attributes);
+                    return new ProceduralModuleDeclaration(QualifiedMemberName, parent, IdentifierName, false, annotations, attributes);
                 case DeclarationType.Procedure:
-                    return new SubroutineDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                    return new SubroutineDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.Function:
-                    return new FunctionDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                    return new FunctionDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, null, Selection.Empty, IsArray, false, annotations, attributes);
+                case DeclarationType.Event:
+                    return new EventDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, false, annotations, attributes);
                 case DeclarationType.PropertyGet:
-                    return new PropertyGetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, Selection.Empty, IsArray, true, annotations, attributes);
+                    return new PropertyGetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, null, TypeHint, Accessibility, null, null, Selection.Empty, IsArray, false, annotations, attributes);
                 case DeclarationType.PropertyLet:
-                    return new PropertyLetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                    return new PropertyLetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.PropertySet:
-                    return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, Selection.Empty, true, annotations, attributes);
+                    return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.Parameter:
-                    return new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray);
-
+                    return new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray, DefaultValue);
+                case DeclarationType.EnumerationMember:
+                    return new ValuedDeclaration(QualifiedMemberName, parent, ParentScope, AsTypeName, null, TypeHint, annotations, Accessibility, DeclarationType.EnumerationMember, Expression, null, Selection.Home, false);
+                case DeclarationType.Constant:
+                    return new ValuedDeclaration(QualifiedMemberName, parent, ParentScope, AsTypeName, null, TypeHint, annotations, Accessibility, DeclarationType.Constant, Expression, null, Selection.Home, false);
                 default:
-                    return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, Selection.Empty, IsArray, null, IsBuiltIn, null, attributes);
+                    return new Declaration(QualifiedMemberName, parent, ParentScope, AsTypeName, TypeHint, IsSelfAssigned, IsWithEvents, Accessibility, DeclarationType, null, null, Selection.Empty, IsArray, null, IsUserDefined, null, attributes);
             }
         }
     }

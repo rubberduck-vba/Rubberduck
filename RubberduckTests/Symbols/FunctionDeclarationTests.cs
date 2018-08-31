@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -7,10 +6,11 @@ using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class FunctionDeclarationTests
     {
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void FunctionsHaveDeclarationTypeFunction()
         {
             var function = GetTestFunction("testFoo", null);
@@ -21,7 +21,7 @@ namespace RubberduckTests.Symbols
             private static FunctionDeclaration GetTestFunction(string name, Attributes attributes)
             {
                 var qualifiedName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new FunctionDeclaration(qualifiedName, null, null, "test", null, "test", Accessibility.Implicit, null, Selection.Home, false, false, null, attributes);
+                return new FunctionDeclaration(qualifiedName, null, null, "test", null, "test", Accessibility.Implicit, null, null, Selection.Home, false, true, null, attributes);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -30,7 +30,8 @@ namespace RubberduckTests.Symbols
                 }
 
 
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultFunctionsDoNotHaveParameters()
         {
             var function = GetTestFunction("testFoo", null);
@@ -39,7 +40,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var function = GetTestFunction("testFoo", null);
@@ -57,7 +59,8 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultFunctionsAreNotDefaultMembers()
         {
             var function = GetTestFunction("testFoo", null);
@@ -66,7 +69,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void FunctionsAreDefaultMembersIfTheyHaveTheDefaultMemberAttribute()
         {
             var attributes = new Attributes();

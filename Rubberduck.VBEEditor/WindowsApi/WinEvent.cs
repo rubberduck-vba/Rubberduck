@@ -69,6 +69,7 @@
 
     public enum ObjId
     {
+        IntelliSense = 3,
         Window = 0,
         SysMenu = -1,
         TitleBar = -2,

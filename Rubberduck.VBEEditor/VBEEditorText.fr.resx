@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
 		Microsoft ResX Schema
@@ -102,5 +102,8 @@
   </data>
   <data name="SelectionLocationRange">
     <value />
+  </data>
+  <data name="NonexistentComponentErrorText" xml:space="preserve">
+    <value>Le module/document {0} est introuvable. Impossible d'importer le code pour ce module.</value>
   </data>
 </root>

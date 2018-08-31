@@ -1,24 +1,18 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Rubberduck.Inspections;
-using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Inspections.Resources;
+using NUnit.Framework;
+using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ImplicitActiveWorkbookReferenceInspectionTests
     {
-        [TestMethod]
-        [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsWorksheets()
         {
             const string inputCode =
@@ -28,7 +22,6 @@ Sub foo()
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
@@ -36,24 +29,17 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.State.AddTestLibrary("Excel.1.8.xml");
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ImplicitActiveWorkbookReferenceInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(1, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_Ignored_DoesNotReportRange()
         {
             const string inputCode =
@@ -65,7 +51,6 @@ Sub foo()
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
 
-            //Arrange
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode)
@@ -73,76 +58,18 @@ End Sub";
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.State.AddTestLibrary("Excel.1.8.xml");
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ImplicitActiveWorkbookReferenceInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [DeploymentItem(@"TestFiles\")]
-        public void ImplicitActiveWorkbookReference_IgnoreQuickFixWorks()
-        {
-            const string inputCode =
-                @"
-Sub foo()
-    Dim sheet As Worksheet
-    Set sheet = Worksheets(""Sheet1"")
-End Sub";
-
-            const string expectedCode =
-                @"
-Sub foo()
-    Dim sheet As Worksheet
-'@Ignore ImplicitActiveWorkbookReference
-    Set sheet = Worksheets(""Sheet1"")
-End Sub";
-
-            //Arrange
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .Build();
-            var module = project.Object.VBComponents[0].CodeModule;
-            var vbe = builder.AddProject(project).Build();
-
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-
-            var parser = MockParser.Create(vbe.Object, new RubberduckParserState(vbe.Object));
-            parser.State.AddTestLibrary("Excel.1.8.xml");
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-            var inspection = new ImplicitActiveWorkbookReferenceInspection(parser.State);
-            var inspectionResults = inspection.GetInspectionResults();
-
-            inspectionResults.First().QuickFixes.Single(s => s is IgnoreOnceQuickFix).Fix();
-
-            Assert.AreEqual(expectedCode, module.Content());
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new ImplicitActiveWorkbookReferenceInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ImplicitActiveWorkbookReferenceInspection";

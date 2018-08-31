@@ -1,22 +1,20 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using System.Windows.Media;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
+using NUnit.Framework;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.Application;
-using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.UnitTesting
 {
-    [TestClass]
+    [TestFixture]
     public class ViewModelTests
     {
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void UIDiscoversAnnotatedTestMethods()
         {
             var testMethods = @"'@TestMethod
@@ -26,22 +24,27 @@ End Sub";
             var builder = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
-                .MockVbeBuilder();
+                .AddProjectToVbeBuilder();
 
             var vbe = builder.Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
 
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
-            var model = new TestExplorerModel(vbe, parser.State);
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            
-            Assert.AreEqual(1, model.Tests.Count);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
+
+                Assert.AreEqual(1, model.Tests.Count);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void UIRemovesRemovedTestMethods()
         {
             var testMethods = @"'@TestMethod
@@ -55,26 +58,33 @@ End Sub";
             builder.AddProject(project.Build());
 
             var vbe = builder.Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            
-            Assert.AreEqual(2, model.Tests.Count);
+                Assert.AreEqual(2, model.Tests.Count);
 
-            project.RemoveComponent(project.MockComponents[1]);
-            
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-            
-            Assert.AreEqual(1, model.Tests.Count);
+                project.RemoveComponent(project.MockComponents[1]);
+
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
+
+                Assert.AreEqual(1, model.Tests.Count);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_LimeGreenForSuccess()
         {
             var testMethods = @"'@TestMethod
@@ -87,22 +97,26 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests.First().Result = new TestResult(TestOutcome.Succeeded);
+                model.AddExecutedTest(model.Tests.First());
 
-            model.Tests.First().Result = new TestResult(TestOutcome.Succeeded);
-            model.AddExecutedTest(model.Tests.First());
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
+                Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_RedForFailure()
         {
             var testMethods = @"'@TestMethod
@@ -114,22 +128,26 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, parser.State);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests.First().Result = new TestResult(TestOutcome.Failed);
+                model.AddExecutedTest(model.Tests.First());
 
-            model.Tests.First().Result = new TestResult(TestOutcome.Failed);
-            model.AddExecutedTest(model.Tests.First());
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.Red);
+                Assert.AreEqual(model.ProgressBarColor, Colors.Red);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_GoldForInconclusive()
         {
             var testMethods = @"'@TestMethod
@@ -141,22 +159,26 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests.First().Result = new TestResult(TestOutcome.Inconclusive);
+                model.AddExecutedTest(model.Tests.First());
 
-            model.Tests.First().Result = new TestResult(TestOutcome.Inconclusive);
-            model.AddExecutedTest(model.Tests.First());
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
+                Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_RedForFailure_IncludesNonFailingTests()
         {
             var testMethods = @"'@TestMethod
@@ -180,29 +202,33 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.Tests[1].Result = new TestResult(TestOutcome.Inconclusive);
+                model.Tests[2].Result = new TestResult(TestOutcome.Failed);
+                model.Tests[3].Result = new TestResult(TestOutcome.Ignored);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.Tests[1].Result = new TestResult(TestOutcome.Inconclusive);
-            model.Tests[2].Result = new TestResult(TestOutcome.Failed);
-            model.Tests[3].Result = new TestResult(TestOutcome.Ignored);
+                model.AddExecutedTest(model.Tests[0]);
+                model.AddExecutedTest(model.Tests[1]);
+                model.AddExecutedTest(model.Tests[2]);
+                model.AddExecutedTest(model.Tests[3]);
 
-            model.AddExecutedTest(model.Tests[0]);
-            model.AddExecutedTest(model.Tests[1]);
-            model.AddExecutedTest(model.Tests[2]);
-            model.AddExecutedTest(model.Tests[3]);
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.Red);
+                Assert.AreEqual(model.ProgressBarColor, Colors.Red);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_GoldForInconclusive_IncludesNonFailingAndNonInconclusiveTests()
         {
             var testMethods = @"'@TestMethod
@@ -222,27 +248,31 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.Tests[1].Result = new TestResult(TestOutcome.Inconclusive);
+                model.Tests[2].Result = new TestResult(TestOutcome.Ignored);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.Tests[1].Result = new TestResult(TestOutcome.Inconclusive);
-            model.Tests[2].Result = new TestResult(TestOutcome.Ignored);
+                model.AddExecutedTest(model.Tests[0]);
+                model.AddExecutedTest(model.Tests[1]);
+                model.AddExecutedTest(model.Tests[2]);
 
-            model.AddExecutedTest(model.Tests[0]);
-            model.AddExecutedTest(model.Tests[1]);
-            model.AddExecutedTest(model.Tests[2]);
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
+                Assert.AreEqual(model.ProgressBarColor, Colors.Gold);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void UISetsProgressBarColor_LimeGreenForSuccess_IncludesIgnoredTests()
         {
             var testMethods = @"'@TestMethod
@@ -258,25 +288,29 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.Tests[1].Result = new TestResult(TestOutcome.Ignored);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.Tests[1].Result = new TestResult(TestOutcome.Ignored);
+                model.AddExecutedTest(model.Tests[0]);
+                model.AddExecutedTest(model.Tests[1]);
 
-            model.AddExecutedTest(model.Tests[0]);
-            model.AddExecutedTest(model.Tests[1]);
-
-            Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
+                Assert.AreEqual(model.ProgressBarColor, Colors.LimeGreen);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void AddingExecutedTestUpdatesExecutedCount()
         {
             var testMethods = @"'@TestMethod
@@ -288,24 +322,28 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                Assert.AreEqual(0, model.ExecutedCount);
 
-            Assert.AreEqual(0, model.ExecutedCount);
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.AddExecutedTest(model.Tests[0]);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.AddExecutedTest(model.Tests[0]);
-
-            Assert.AreEqual(1, model.ExecutedCount);
+                Assert.AreEqual(1, model.ExecutedCount);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void AddingExecutedTestUpdatesLastRun()
         {
             var testMethods = @"'@TestMethod
@@ -317,24 +355,28 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                Assert.AreEqual(0, model.LastRun.Count);
 
-            Assert.AreEqual(0, model.LastRun.Count);
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.AddExecutedTest(model.Tests[0]);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.AddExecutedTest(model.Tests[0]);
-
-            Assert.AreEqual(1, model.LastRun.Count);
+                Assert.AreEqual(1, model.LastRun.Count);
+            }
         }
 
-        [TestMethod]
+        [Test]
+        [Category("Unit Testing")]
         public void ClearLastRun()
         {
             var testMethods = @"'@TestMethod
@@ -346,23 +388,26 @@ End Sub";
                 .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods);
 
             var vbe = builder.AddProject(project.Build()).Build().Object;
-            var mockHost = new Mock<IHostApplication>();
-            mockHost.SetupAllProperties();
-            var parser = MockParser.Create(vbe, new RubberduckParserState(vbe));
+            var parser = MockParser.Create(vbe);
+            using (var state = parser.State)
+            {
+                var model = new TestExplorerModel(vbe, state);
 
-            var model = new TestExplorerModel(vbe, parser.State);
+                parser.Parse(new CancellationTokenSource());
+                if (state.Status >= ParserState.Error)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
+                model.AddExecutedTest(model.Tests[0]);
 
-            model.Tests[0].Result = new TestResult(TestOutcome.Succeeded);
-            model.AddExecutedTest(model.Tests[0]);
+                Assert.AreEqual(1, model.LastRun.Count);
 
-            Assert.AreEqual(1, model.LastRun.Count);
+                model.ClearLastRun();
 
-            model.ClearLastRun();
-
-            Assert.AreEqual(0, model.LastRun.Count);
+                Assert.AreEqual(0, model.LastRun.Count);
+            }
         }
 
         private const string RawInput = @"Option Explicit

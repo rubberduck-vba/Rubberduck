@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -7,10 +6,11 @@ using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class PropertySetDeclarationTests
     {
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void PropertySetsHaveDeclarationTypePropertySet()
         {
             var propertySet = GetTestPropertySet("test", null);
@@ -21,7 +21,7 @@ namespace RubberduckTests.Symbols
             private static PropertySetDeclaration GetTestPropertySet(string name, Attributes attributes)
             {
                 var qualifiedName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new PropertySetDeclaration(qualifiedName, null, null, "test", Accessibility.Implicit, null, Selection.Home, false, null, attributes);
+                return new PropertySetDeclaration(qualifiedName, null, null, "test", Accessibility.Implicit, null, null, Selection.Home, true, null, attributes);
             }
 
                 private static QualifiedModuleName StubQualifiedModuleName()
@@ -30,7 +30,8 @@ namespace RubberduckTests.Symbols
                 }
 
 
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultPropertySetsDoNotHaveParameters()
         {
             var propertySet = GetTestPropertySet("test", null);
@@ -39,7 +40,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var propertySet = GetTestPropertySet("test", null);
@@ -57,7 +59,8 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultPropertySetsAreNotDefaultMembers()
         {
             var propertySet = GetTestPropertySet("test", null);
@@ -66,7 +69,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestMethod]
+        [Test]
+        [Category("Resolver")]
         public void PropertySetsAreDefaultMembersIfTheyHaveTheDefaultMemberAttribute()
         {
             var attributes = new Attributes();

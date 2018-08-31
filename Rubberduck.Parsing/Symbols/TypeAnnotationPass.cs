@@ -1,9 +1,10 @@
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
-using Rubberduck.Parsing.VBA;
-using System.Diagnostics;
+using Rubberduck.VBEditor;
+using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -29,14 +30,16 @@ namespace Rubberduck.Parsing.Symbols
             _expressionParser = expressionParser;
         }
 
-        public void Execute()
+        public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
-            var stopwatch = Stopwatch.StartNew();
-            foreach (var declaration in _declarationFinder.FindDeclarationsWithNonBaseAsType())
+            var toDetermineAsTypeDeclaration = _declarationFinder
+                                                .FindDeclarationsWithNonBaseAsType()
+                                                .Where(decl => decl.AsTypeDeclaration == null 
+                                                        || modules.Contains(decl.QualifiedName.QualifiedModuleName));
+            foreach (var declaration in toDetermineAsTypeDeclaration)
             {
                 AnnotateType(declaration);
             }
-            stopwatch.Stop();
         }
 
         private void AnnotateType(Declaration declaration)

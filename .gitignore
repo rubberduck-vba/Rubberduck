@@ -6,6 +6,7 @@
 *.user
 *.sln.docstates
 *.csproj.user
+*.csproj.DotSettings
 
 # External NuGet Packages
 [Pp]ackages/
@@ -115,6 +116,10 @@ csx
 # Windows Store app package directory
 AppPackages/
 
+# IDE Configuration
+.vs/
+.vscode/
+
 # Others
 sql/
 *.Cache
@@ -126,6 +131,7 @@ ClientBin/
 *.[Pp]ublish.xml
 *.pfx
 *.publishsettings
+*.playlist
 
 # Monodevelop detritus
 *.userprefs
@@ -171,3 +177,5 @@ $RECYCLE.BIN/
 *.xlsm
 Installers/
 *.xlsx
+
+CodeGraphData/
