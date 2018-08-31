@@ -1099,6 +1099,24 @@ End
 
         [Category("Parser")]
         [Test]
+        public void TestIndexedProperty()
+        {
+            string code = @"
+VERSION 5.00
+Begin VB.Form Form1
+   Begin ComctlLib.ListView lvFilter 
+      BeginProperty ColumnHeader(1) {0713E8C7-850A-101B-AFC0-4210102A8DA7} 
+         Caption      =   ""ID""
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
         public void TestEmptyComment()
         {
             string code = @"'";
