@@ -26,12 +26,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 if (project == null && _vbe.ProjectsCount == 1)
                 {
                     using (var vbProjects = _vbe.VBProjects)
-                    {
-                        project = vbProjects[1];
-                        using (project)
-                        {
-                            return project != null && allowableProjectTypes.Contains(project.Type);
-                        }
+                    using (project = vbProjects[1])
+                    {                        
+                        return project != null && allowableProjectTypes.Contains(project.Type);                        
                     }
                 }
 

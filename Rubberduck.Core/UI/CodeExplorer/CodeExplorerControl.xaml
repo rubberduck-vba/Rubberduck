@@ -102,7 +102,7 @@
                 </Style.Triggers>
             </Style>
 
-            <Style  x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
+            <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
                 <Setter Property="Text" Value="{Binding NameWithSignature}" />
                 <Setter Property="FontSize" Value="10" />
                 <Setter Property="FontWeight" Value="{Binding FontWeight}"/>
@@ -174,7 +174,7 @@
                                   Visibility="{Binding VB6Visibility}"/>
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_OpenProjectProperties}"
                                   Command="{Binding OpenProjectPropertiesCommand}"
-                                  CommandParameter="{Binding SelectedItem}"/>
+                                  CommandParameter="{Binding SelectedItem}" />
                             <Separator />
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddModule}">
                                 <MenuItem.Icon>

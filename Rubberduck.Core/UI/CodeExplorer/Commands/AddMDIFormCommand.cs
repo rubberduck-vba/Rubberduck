@@ -30,12 +30,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             if (project == null  && _vbe.ProjectsCount == 1)
             {
                 using (var vbProjects = _vbe.VBProjects)
+                using (project = vbProjects[1])
                 {
-                    project = vbProjects[1];
-                    using (project)
-                    {
-                        return EvaluateCanExecuteCore(project, parameter as CodeExplorerItemViewModel);
-                    }
+                    return EvaluateCanExecuteCore(project, parameter as CodeExplorerItemViewModel);
                 }
             }
 
