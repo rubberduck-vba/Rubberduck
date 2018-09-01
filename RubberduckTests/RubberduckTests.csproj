@@ -122,6 +122,8 @@
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
     <Compile Include="Mocks\StaticCachingReferencedDeclarationsCollectorDecorator.cs" />
+    <Compile Include="ParserState\ParserStateTests.cs" />
+    <Compile Include="Parsing\Coordination\TokenStreamParserTests.cs" />
     <Compile Include="Parsing\VBACodeStringParserTests.cs" />
     <Compile Include="PreProcessing\CompilationArgumentsCacheTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />

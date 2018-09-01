@@ -144,6 +144,7 @@
     <Compile Include="Binding\Bindings\ParenthesizedDefaultBinding.cs" />
     <Compile Include="Binding\TypeBindingContext.cs" />
     <Compile Include="Binding\ExpressionClassification.cs" />
+    <Compile Include="Common\ParsingStageTimer.cs" />
     <Compile Include="ComReflection\ComLibraryProvider.cs" />
     <Compile Include="ComReflection\IComLibraryProvider.cs" />
     <Compile Include="ComReflection\ISerializableProjectBuilder.cs" />

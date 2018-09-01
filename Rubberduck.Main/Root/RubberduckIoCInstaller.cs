@@ -842,6 +842,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<IStringParser>()
                 .ImplementedBy<TokenStreamParserStringParserAdapterWithPreprocessing>()
                 .LifestyleSingleton());
+            container.Register(Component.For<ITokenStreamParser>()
+                .ImplementedBy<VBATokenStreamParser>()
+                .LifestyleSingleton());
             container.Register(Component.For<IModuleParser>()
                 .ImplementedBy<ModuleParser>()
                 .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodePaneSourceCodeHandler)),
