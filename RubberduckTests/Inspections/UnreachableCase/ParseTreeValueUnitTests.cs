@@ -125,7 +125,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
         public void ParseTreeValue_VariableType(string operands, string expectedValueType, string expectedToken)
         {
             var value = CreateInspValueFrom(operands);
-            Assert.AreEqual(expectedValueType, value.ValueType);
+            var expected = expectedValueType.Equals(string.Empty) ? null : expectedValueType;
+            Assert.AreEqual(expected, value.ValueType);
             Assert.AreEqual(expectedToken, value.Token);
         }
 
@@ -229,6 +230,45 @@ namespace RubberduckTests.Inspections.UnreachableCase
             var ptValue = ValueFactory.CreateDate(input);
             Assert.AreEqual(Tokens.Date, ptValue.ValueType);
             Assert.AreEqual(expected, ptValue.Token);
+        }
+
+        [TestCase("#1/4/2005#", "#01/04/2005 00:00:00#")]
+        [TestCase("1/4/2005", "#01/04/2005 00:00:00#")]
+        [TestCase("43831", "#01/01/2020 00:00:00#")]
+        [TestCase("2.54", "#01/01/1900 12:57:36#")]
+        [TestCase("2.74", "#01/01/1900 17:45:36#")]
+        [TestCase("35", "#02/03/1900 00:00:00#")]
+        [Category("Inspections")]
+        public void ParseTreeValue_ConformToDate(string input, string expected)
+        {
+            var typeTokenPair = TypeTokenPair.ConformToType(Tokens.Date, input);
+            Assert.AreEqual(expected, typeTokenPair.Token);
+        }
+
+        [TestCase("#01/01/1900 17:45:36#", "2.74", "Double")]
+        [TestCase("#01/01/1900 17:45:36#", "2.74", "Currency")]
+        [TestCase("#01/01/1900 17:45:36#", "2.74", "Single")]
+        [TestCase("#01/01/1900 17:45:36#", "True", "Boolean")]
+        [TestCase("#01/01/1900 17:45:36#", "3", "Byte")]
+        [TestCase("#01/01/1900 17:45:36#", "3", "Integer")]
+        [TestCase("#01/01/1900 17:45:36#", "3", "Long")]
+        [TestCase("#01/01/1900 17:45:36#", "3", "LongLong")]
+        [Category("Inspections")]
+        public void ParseTreeValue_DateLiteralAssignedToOther(string input, string expected, string valueType)
+        {
+            var ptValue = ValueFactory.CreateDeclaredType(input, valueType);
+            Assert.AreEqual(valueType, ptValue.ValueType);
+            Assert.AreEqual(expected, ptValue.Token);
+        }
+
+        [TestCase("#01/01/2020 00:00:00#", "43831", "Integer")]
+        [TestCase("#01/01/2020 00:00:00#", "43831", "Byte")]
+        [Category("Inspections")]
+        public void ParseTreeValue_DateLiteralAssignedToOtherOverflow(string input, string expected, string valueType)
+        {
+            var ptValue = ValueFactory.CreateDeclaredType(input, valueType);
+            Assert.AreEqual(valueType, ptValue.ValueType);
+            Assert.IsTrue(ptValue.IsOverflowExpression);
         }
 
         [TestCase("False", "False")]

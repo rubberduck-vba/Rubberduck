@@ -1,4 +1,7 @@
-﻿using Rubberduck.Parsing.Grammar;
+﻿using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
+using System;
+using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -24,47 +27,80 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     {
         public IParseTreeValue CreateValueType(string expression, string declaredTypeName)
         {
-            return ParseTreeValue.CreateValueType(expression, declaredTypeName);
+            if (expression is null || declaredTypeName is null)
+            {
+                throw new ArgumentNullException();
+            }
+            return ParseTreeValue.CreateValueType(new TypeTokenPair(declaredTypeName, expression));
+        }
+
+        private static bool HasTypeHint(string token, out string valueTypeHint)
+        {
+            valueTypeHint = string.Empty;
+            return !(token.First() == token.Last() && token.First() == '#') && SymbolList.TypeHintToTypeName.TryGetValue(token.Last().ToString(), out valueTypeHint);
         }
 
         public IParseTreeValue Create(string valueToken)
         {
-            if (TokenTypeResolver.TryDeriveTypeName(valueToken, out (string derivedType, string value) result, out bool derivedFromTypeHint))
+            if (valueToken is null || valueToken.Equals(string.Empty))
             {
-                if (derivedFromTypeHint && result.derivedType.Equals(Tokens.String))
-                {
-                    return ParseTreeValue.CreateExpression(result.value, Tokens.String);
-                }
-                if (result.derivedType.Equals(Tokens.Date))
-                {
-                    return CreateDate(valueToken);
-                }
-                return ParseTreeValue.CreateValueType(result.value, result.derivedType);
+                throw new ArgumentException();
             }
-            return ParseTreeValue.CreateExpression(valueToken, string.Empty);
+
+            if (HasTypeHint(valueToken, out string valueType))
+            {
+                var vToken = valueToken.Remove(valueToken.Length - 1);
+                var conformedTypeTokenPair = TypeTokenPair.ConformToType(valueType, vToken);
+                if (conformedTypeTokenPair.HasValue)
+                {
+                    return ParseTreeValue.CreateValueType(conformedTypeTokenPair);
+                }
+                return ParseTreeValue.CreateExpression(new TypeTokenPair(valueType, vToken));
+            }
+
+            if (TypeTokenPair.TryParse(valueToken, out TypeTokenPair result))
+            {
+                return ParseTreeValue.CreateValueType(result);
+            }
+            return ParseTreeValue.CreateExpression(new TypeTokenPair(null, valueToken));
         }
 
         public IParseTreeValue CreateDeclaredType(string expression, string declaredTypeName)
         {
-            if (TokenTypeResolver.TryConformTokenToType(expression, declaredTypeName, out string conformedText))
+            if (expression is null || declaredTypeName is null)
             {
-                if (LetCoercer.ExceedsValueTypeRange(declaredTypeName, conformedText))
+                throw new ArgumentNullException();
+            }
+
+            var goalTypeTokenPair = new TypeTokenPair(declaredTypeName, null);
+            var typeToken = TypeTokenPair.ConformToType(declaredTypeName, expression);
+            if (typeToken.HasValue)
+            {
+                if (LetCoerce.ExceedsValueTypeRange(typeToken.ValueType, typeToken.Token))
                 {
                     return ParseTreeValue.CreateOverflowExpression(expression, declaredTypeName);
                 }
-                return ParseTreeValue.CreateValueType(conformedText, declaredTypeName);
+                return ParseTreeValue.CreateValueType(typeToken);
             }
-            return ParseTreeValue.CreateExpression(expression, declaredTypeName);
+            return ParseTreeValue.CreateExpression(new TypeTokenPair(declaredTypeName, expression));
         }
 
         public IParseTreeValue CreateMismatchExpression(string expression, string declaredTypeName)
         {
+            if (expression is null || declaredTypeName is null)
+            {
+                throw new ArgumentNullException();
+            }
             return ParseTreeValue.CreateMismatchExpression(expression, declaredTypeName);
         }
 
         public IParseTreeValue CreateExpression(string expression, string declaredTypeName)
         {
-            return ParseTreeValue.CreateExpression(expression, declaredTypeName);
+            if (expression is null || declaredTypeName is null)
+            {
+                throw new ArgumentNullException();
+            }
+            return ParseTreeValue.CreateExpression(new TypeTokenPair(declaredTypeName, expression));
         }
 
         public IParseTreeValue Create(byte value)
@@ -111,7 +147,5 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             return new ParseTreeValue(value, Tokens.Date);
         }
-
-        private bool IsStringConstant(string input) => input.StartsWith("\"") && input.EndsWith("\"");
     }
 }

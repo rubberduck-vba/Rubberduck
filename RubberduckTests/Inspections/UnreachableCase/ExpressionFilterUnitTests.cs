@@ -527,7 +527,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
         private IEnumerable<IRangeClauseExpression> RangeClauseTokensToExpressions(IEnumerable<string> rangeClauseLiterals, string filterTypeName)
         {
             var results = new List<IRangeClauseExpression>();
-            foreach (var clause in rangeClauseLiterals)
+            foreach (var clause in rangeClauseLiterals.Where(rc => !rc.Equals(string.Empty)))
             {
                 IRangeClauseExpression expressionClause = null;
                 var operandDelimiters = clause.Where(ch => ch.Equals('_'));

@@ -259,13 +259,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var effTypeName = opProvider.OperatorEffectiveType;
             if (effTypeName.Equals(Tokens.Date))
             {
-                if (parseTreeValue.TryLetCoerce(out double dValue))
-                {
-                    var result = DateTime.FromOADate(0 - dValue);
-                    var date = new DateValue(result);
-                    return _valueFactory.CreateDeclaredType(date.AsDate.ToString(CultureInfo.InvariantCulture), effTypeName);
-                }
-                throw new ArgumentException($"Unable to process opSymbol: {ArithmeticOperators.ADDITIVE_INVERSE}");
+                var result = DateTime.FromOADate(0 - parseTreeValue.AsDouble());
+                var date = new DateValue(result);
+                return _valueFactory.CreateDeclaredType(date.AsDate.ToString(CultureInfo.InvariantCulture), effTypeName);
             }
 
             var declaredTypeName = opProvider.OperatorDeclaredType;
@@ -273,11 +269,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 return _valueFactory.CreateDeclaredType((0 - decValue).ToString(CultureInfo.InvariantCulture), declaredTypeName);
             }
-            if (parseTreeValue.TryLetCoerce(out double dblValue))
-            {
-                return _valueFactory.CreateDeclaredType((0 - dblValue).ToString(CultureInfo.InvariantCulture), declaredTypeName);
-            }
-            throw new ArgumentException($"Unable to process opSymbol: {ArithmeticOperators.ADDITIVE_INVERSE}");
+            return _valueFactory.CreateDeclaredType((0 - parseTreeValue.AsDouble()).ToString(CultureInfo.InvariantCulture), declaredTypeName);
         }
 
         private IParseTreeValue EvaluateArithmeticOp(string opSymbol, IParseTreeValue LHS, IParseTreeValue RHS)
@@ -380,7 +372,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (DecimalCalc is null && DoubleCalc is null)
             {
-                throw new ArgumentException();
+                throw new ArgumentNullException();
             }
 
             if (!(DecimalCalc is null) && LHS.TryLetCoerce(out decimal lhsValue) && RHS.TryLetCoerce(out decimal rhsValue))
@@ -394,7 +386,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             if (DecimalCompare is null && DoubleCompare is null)
             {
-                throw new ArgumentException();
+                throw new ArgumentNullException();
             }
 
             if (!(DecimalCompare is null) && LHS.TryLetCoerce(out decimal lhsValue) && RHS.TryLetCoerce(out decimal rhsValue))
@@ -406,25 +398,25 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<string, string, bool> StringComp)
         {
-            var compare = StringComp ?? throw new ArgumentException();
+            var compare = StringComp ?? throw new ArgumentNullException();
             return compare(LHS.Token, RHS.Token) ? Tokens.True : Tokens.False;
         }
 
         private bool Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<bool, bool, bool> BoolCompare)
         {
-            var compare = BoolCompare ?? throw new ArgumentException();
+            var compare = BoolCompare ?? throw new ArgumentNullException();
             return compare(LHS.AsBoolean(), RHS.AsBoolean());
         }
 
-        private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<long, long, long> LogicCalc)
+        private static string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<long, long, long> LogicCalc)
         {
-            var calc = LogicCalc ?? throw new ArgumentException();
+            var calc = LogicCalc ?? throw new ArgumentNullException();
             return calc(LHS.AsLong(), RHS.AsLong()).ToString();
         }
 
-        private string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<bool, bool, bool> LogicCalc)
+        private static string Calculate(IParseTreeValue LHS, IParseTreeValue RHS, Func<bool, bool, bool> LogicCalc)
         {
-            var calc = LogicCalc ?? throw new ArgumentException();
+            var calc = LogicCalc ?? throw new ArgumentNullException();
             return calc(LHS.AsLong() != 0, RHS.AsLong() != 0).ToString();
         }
 

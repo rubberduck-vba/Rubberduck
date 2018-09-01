@@ -266,13 +266,13 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private T Parse(IParseTreeValue ptValue)
         {
-            var coercedVal = LetCoercer.CoerceToken((ptValue.ValueType, ptValue.Token), _selectExpressionType); // LetCoercer.CoerceToken((Tokens.String,parseTreeValue.Token), _selectExpressionType);
+            var coercedVal = LetCoerce.Coerce((ptValue.ValueType, ptValue.Token), _selectExpressionType);
             return Parser(coercedVal);
         }
 
         private T Parse((string valueType, string token) source)
         {
-            var coercedVal = LetCoercer.CoerceToken(source, _selectExpressionType); // LetCoercer.CoerceToken((Tokens.String,parseTreeValue.Token), _selectExpressionType);
+            var coercedVal = LetCoerce.Coerce(source, _selectExpressionType);
             return Parser(coercedVal);
         }
 
