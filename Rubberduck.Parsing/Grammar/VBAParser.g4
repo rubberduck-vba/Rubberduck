@@ -833,6 +833,7 @@ markerKeyword : AS;
 statementKeyword :
     CALL
     | CASE
+    | CIRCLE
     | CONST
     | DECLARE
     | DEFBOOL
@@ -878,12 +879,14 @@ statementKeyword :
     | ON
     | OPTION
     | PRIVATE
+    | PSET
     | PUBLIC
     | RAISEEVENT
     | REDIM
     | RESUME
     | RETURN
     | RSET
+    | SCALE
     | SELECT
     | SET
     | STATIC
