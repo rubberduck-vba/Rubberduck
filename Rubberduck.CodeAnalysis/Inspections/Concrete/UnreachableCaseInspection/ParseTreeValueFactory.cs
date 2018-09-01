@@ -145,7 +145,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public IParseTreeValue CreateDate(string value)
         {
-            return new ParseTreeValue(value, Tokens.Date);
+            return new ParseTreeValue(new TypeTokenPair(Tokens.Date, value));
         }
     }
 }

@@ -20,11 +20,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public bool HasValue => Token != null;
         public bool HasType => ValueType != null;
 
-        public bool IsValueTypeString => ValueType.Equals(Tokens.String);
-        public bool IsValueTypeDate => ValueType.Equals(Tokens.Date);
-
-        public bool IsStringConstant => IsStringConst(Token);
-
         public static bool TryParse(string inputString, out TypeTokenPair result)
         {
             result = new TypeTokenPair(null, inputString);
@@ -339,8 +334,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return (false, value);
             }
         }
-
-        private static bool IsStringConst(string input) => input.StartsWith("\"") && input.EndsWith("\"");
 
         private static bool IsDateLiteral(string input) => input.StartsWith("#") && input.EndsWith("#");
     }

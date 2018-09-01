@@ -15,25 +15,22 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public struct ParseTreeValue : IParseTreeValue
     {
-        private const string NULL_VALUETYPE_MSG = "null 'valueType' argument passed to ParseTreeValue constructor";
-        private const string NULL_TOKEN_MSG = "null 'token' argument passed to ParseTreeValue constructor";
-
         private readonly int _hashCode;
-        private TypeTokenPair _valuePair;
+        private TypeTokenPair _typeTokenPair;
         private ComparableDateValue _dateValue;
         private StringLiteralExpression _stringConstant;
         private bool? _exceedsValueTypeRange;
 
         public static IParseTreeValue CreateValueType(TypeTokenPair value)
         {
-            if (value.IsValueTypeDate || value.IsValueTypeString)
+            if (value.ValueType.Equals(Tokens.Date) || value.ValueType.Equals(Tokens.String))
             {
                 return new ParseTreeValue(value);
             }
 
             var ptValue = new ParseTreeValue()
             {
-                _valuePair = value,
+                _typeTokenPair = value,
                 ParsesToConstantValue = true,
                 IsOverflowExpression = LetCoerce.ExceedsValueTypeRange(value.ValueType, value.Token),
             };
@@ -44,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var ptValue = new ParseTreeValue()
             {
-                _valuePair = typeToken,
+                _typeTokenPair = typeToken,
                 ParsesToConstantValue = false,
             };
             return ptValue;
@@ -54,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var ptValue = new ParseTreeValue()
             {
-                _valuePair = new TypeTokenPair(declaredValueType, value),
+                _typeTokenPair = new TypeTokenPair(declaredValueType, value),
                 ParsesToConstantValue = false,
                 IsMismatchExpression = true
             };
@@ -65,7 +62,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             var ptValue = new ParseTreeValue()
             {
-                _valuePair = new TypeTokenPair(declaredValueType, value),
+                _typeTokenPair = new TypeTokenPair(declaredValueType, value),
                 ParsesToConstantValue = false,
                 _exceedsValueTypeRange = true
             };
@@ -74,7 +71,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         public ParseTreeValue(TypeTokenPair valuePair)
         {
-            _valuePair = valuePair;
+            _typeTokenPair = valuePair;
             ParsesToConstantValue = false;
             _exceedsValueTypeRange = null;
             _hashCode = valuePair.Token.GetHashCode();
@@ -82,45 +79,18 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _stringConstant = null;
             IsMismatchExpression = false;
 
-            if (valuePair.IsValueTypeDate)
+            if (valuePair.ValueType.Equals(Tokens.Date))
             {
-                ParsesToConstantValue = LetCoerce.TryCoerce(_valuePair.Token, out _dateValue);
+                ParsesToConstantValue = LetCoerce.TryCoerce(_typeTokenPair.Token, out _dateValue);
             }
-            if (valuePair.IsValueTypeString)
+            else if (valuePair.ValueType.Equals(Tokens.String) && IsStringConstant(valuePair.Token))
             {
-                if (valuePair.IsStringConstant)
-                {
-                    _stringConstant = new StringLiteralExpression(new ConstantExpression(new StringValue(_valuePair.Token)));
-                    ParsesToConstantValue = true;
-                }
+                _stringConstant = new StringLiteralExpression(new ConstantExpression(new StringValue(_typeTokenPair.Token)));
+                ParsesToConstantValue = true;
             }
         }
 
-        public ParseTreeValue(string value, string declaredType)
-        {
-            _valuePair = new TypeTokenPair(declaredType, value);
-            ParsesToConstantValue = false;
-            _exceedsValueTypeRange = null;
-            _hashCode = value.GetHashCode();
-            _dateValue = null;
-            _stringConstant = null;
-            IsMismatchExpression = false;
-
-            if (declaredType == Tokens.Date)
-            {
-                ParsesToConstantValue = LetCoerce.TryCoerce(_valuePair.Token, out _dateValue);
-            }
-            if (declaredType.Equals(Tokens.String))
-            {
-                if (_valuePair.IsStringConstant)
-                {
-                    _stringConstant = new StringLiteralExpression(new ConstantExpression(new StringValue(_valuePair.Token)));
-                    ParsesToConstantValue = true;
-                }
-            }
-        }
-
-        public string ValueType => _valuePair.ValueType;
+        public string ValueType => _typeTokenPair.ValueType;
 
         public string Token
         {
@@ -134,7 +104,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 {
                     return $"\"{_stringConstant.Evaluate().AsString}\"";
                 }
-                return _valuePair.Token;
+                return _typeTokenPair.Token;
             }
         }
 
@@ -152,7 +122,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             {
                 if (!_exceedsValueTypeRange.HasValue)
                 {
-                    _exceedsValueTypeRange = ParsesToConstantValue ? LetCoerce.ExceedsValueTypeRange(ValueType, _valuePair.Token) : false;
+                    _exceedsValueTypeRange = ParsesToConstantValue ? LetCoerce.ExceedsValueTypeRange(ValueType, _typeTokenPair.Token) : false;
                 }
                 return _exceedsValueTypeRange.Value;
             }
@@ -174,6 +144,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             return _hashCode;
         }
+
+        private static bool IsStringConstant(string candidate) => candidate.StartsWith("\"") && candidate.EndsWith("\"");
     }
 
     public static class ParseTreeValueExtensions
