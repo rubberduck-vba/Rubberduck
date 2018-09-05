@@ -11,22 +11,20 @@ namespace Rubberduck.VBEditor.Events
             Hwnd = hwnd;
             WParam = wParam;
             LParam = lParam;
+            ControlDown = (User32.GetKeyState(VirtualKeyStates.VK_CONTROL) & 0x8000) != 0;
 
             if (keydown)
             {
-                var key = (Keys)wParam;
-                ControlDown = key.HasFlag(Keys.Control);
                 // Why \r and not \n? Because it really doesn't matter...
-                Character = key.HasFlag(Keys.Enter) ? '\r' : default;
+                Character = ((Keys)wParam & Keys.KeyCode) == Keys.Enter? '\r' : default;
             }
             else
             {
-                ControlDown = (User32.GetKeyState(VirtualKeyStates.VK_CONTROL) & 0x8000) != 0;
+                
                 Character = (char)wParam;
             }
         }
 
-        //public bool IsCharacter { get; }
         public IntPtr Hwnd { get; }
         public IntPtr WParam { get; }
         public IntPtr LParam { get; }
