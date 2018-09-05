@@ -400,6 +400,58 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void ObjectVariableNotSet_ForEachObject_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub Test()
+    Dim bar As Object
+    For Each foo In bar
+    Next
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_InsideForEachObject_ReturnsResult()
+        {
+
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub Test()
+    Dim bar As Variant
+    Dim baz As Object
+    For Each foo In bar
+        baz = foo
+    Next
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_InsideForEachSetObject_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub Test()
+    Dim bar As Variant
+    Dim baz As Object
+    For Each foo In bar
+        Set baz = foo
+    Next
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_RSet_ReturnsNoResult()
         {
 
