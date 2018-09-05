@@ -391,6 +391,7 @@
     <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\SetAsStartupProjectCommand.cs" />
     <Compile Include="UI\CodeMetrics\CodeMetricsWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>

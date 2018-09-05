@@ -34,7 +34,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly GeneralSettings _generalSettings;
         private readonly WindowSettings _windowSettings;
         private readonly IUiDispatcher _uiDispatcher;
-        private readonly VBEKind _vbeKind;
+        private readonly IVBE _vbe;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -53,7 +53,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
             _windowSettingsProvider = windowSettingsProvider;
             _uiDispatcher = uiDispatcher;
-            _vbeKind = vbe.Kind;
+            _vbe = vbe;
 
             if (generalSettingsProvider != null)
             {
@@ -84,8 +84,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             AddPropertyPageCommand = commands.OfType<AddPropertyPageCommand>().SingleOrDefault();
             AddUserDocumentCommand = commands.OfType<AddUserDocumentCommand>().SingleOrDefault();
             AddTestModuleCommand = commands.OfType<UI.CodeExplorer.Commands.AddTestModuleCommand>().SingleOrDefault();
-            AddTestModuleWithStubsCommand = commands.OfType<AddTestModuleWithStubsCommand>().SingleOrDefault();            
+            AddTestModuleWithStubsCommand = commands.OfType<AddTestModuleWithStubsCommand>().SingleOrDefault();
 
+            SetAsStartupProjectCommand = commands.OfType<SetAsStartupProjectCommand>().SingleOrDefault();
             OpenProjectPropertiesCommand = commands.OfType<OpenProjectPropertiesCommand>().SingleOrDefault();
             RenameCommand = commands.OfType<RenameCommand>().SingleOrDefault();
             IndenterCommand = commands.OfType<IndentCommand>().SingleOrDefault();
@@ -334,7 +335,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             var newProjects = userDeclarations.Select(grouping =>
                 new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
-                    grouping)).ToList();
+                    grouping,
+                    _vbe)).ToList();
 
             UpdateNodes(Projects, newProjects);
             
@@ -532,6 +534,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase AddTestModuleWithStubsCommand { get; }
 
         public CommandBase OpenDesignerCommand { get; }
+        public CommandBase SetAsStartupProjectCommand { get; }
         public CommandBase OpenProjectPropertiesCommand { get; }
 
         public CommandBase RenameCommand { get; }
@@ -566,7 +569,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool CanExecuteExportAllCommand => ExportAllCommand.CanExecute(SelectedItem);
 
-        public Visibility ExportVisibility => _vbeKind == VBEKind.Standalone || CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
+        public Visibility ExportVisibility => _vbe.Kind == VBEKind.Standalone || CanExecuteExportAllCommand ? Visibility.Collapsed : Visibility.Visible;
 
         public Visibility ExportAllVisibility => CanExecuteExportAllCommand ? Visibility.Visible : Visibility.Collapsed;
 
@@ -574,9 +577,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public Visibility EmptyUIRefreshMessageVisibility => _isBusy ? Visibility.Hidden : Visibility.Visible;
 
-        public Visibility VB6Visibility => _vbeKind == VBEKind.Standalone ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility VB6Visibility => _vbe.Kind == VBEKind.Standalone ? Visibility.Visible : Visibility.Collapsed;
 
-        public Visibility VBAVisibility => _vbeKind == VBEKind.Hosted ? Visibility.Visible : Visibility.Collapsed;
+        public Visibility VBAVisibility => _vbe.Kind == VBEKind.Hosted ? Visibility.Visible : Visibility.Collapsed;
 
         public void FilterByName(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
         {

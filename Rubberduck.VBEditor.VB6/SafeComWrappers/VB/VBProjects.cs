@@ -38,6 +38,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public IVBProject Open(string path) => new VBProject(IsWrappingNullReference? null : Target.AddFromFile(path).Item(1));
 
+        public IVBProject StartProject
+        {
+            get => new VBProject(IsWrappingNullReference ? null : Target.StartProject);
+            set => Target.StartProject = (VB.VBProject)value.Target;
+        }
+
         public IVBProject this[object index] => new VBProject(IsWrappingNullReference ? null : Target.Item(index));
 
         IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
