@@ -6,35 +6,34 @@ namespace Rubberduck.VBEditor.Events
 {
     public class KeyPressEventArgs
     {
-        // Note: This offers additional functionality over WindowsApi.KeyPressEventArgs by passing the WndProc arguments.
-        public KeyPressEventArgs(IntPtr hwnd, IntPtr wParam, IntPtr lParam, char character = default)
+        public KeyPressEventArgs(IntPtr hwnd, IntPtr wParam, IntPtr lParam, bool keydown = false)
         {
             Hwnd = hwnd;
             WParam = wParam;
             LParam = lParam;
-            Character = character;
-            if (character == default(char))
+
+            if (keydown)
             {
-                Key = (Keys)wParam;
-                if ((User32.GetKeyState(VirtualKeyStates.VK_CONTROL) & 0x8000) != 0)
-                {
-                    Key |= Keys.Control;
-                }
+                var key = (Keys)wParam;
+                ControlDown = key.HasFlag(Keys.Control);
+                // Why \r and not \n? Because it really doesn't matter...
+                Character = key.HasFlag(Keys.Enter) ? '\r' : default;
             }
             else
             {
-                IsCharacter = true;
+                ControlDown = (User32.GetKeyState(VirtualKeyStates.VK_CONTROL) & 0x8000) != 0;
+                Character = (char)wParam;
             }
         }
 
-        public bool IsCharacter { get; }
+        //public bool IsCharacter { get; }
         public IntPtr Hwnd { get; }
         public IntPtr WParam { get; }
         public IntPtr LParam { get; }
 
         public bool Handled { get; set; }
-
+        public bool IsDelete => (Keys)WParam == Keys.Delete;
         public char Character { get; }
-        public Keys Key { get; }
+        public bool ControlDown { get; }
     }
 }

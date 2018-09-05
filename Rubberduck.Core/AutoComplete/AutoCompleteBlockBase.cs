@@ -39,51 +39,49 @@ namespace Rubberduck.AutoComplete
 
         public override bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            var ignoreTab = e.Keys == Keys.Tab && !settings.CompleteBlockOnTab;
-            var ignoreEnter = e.Keys == Keys.Enter && !settings.CompleteBlockOnEnter;
-            if (IsInlineCharCompletion || e.Keys == Keys.None || ignoreTab || ignoreEnter)
+            var ignoreTab = e.Character == '\t' && !settings.CompleteBlockOnTab;
+            var ignoreEnter = e.Character == '\r' && !settings.CompleteBlockOnEnter;
+            if (IsInlineCharCompletion || e.IsDelete || ignoreTab || ignoreEnter)
             {
                 return false;
             }
 
+            var module = e.CodeModule;
+            using (var pane = module.CodePane)
             {
-                var module = e.CodeModule;
-                using (var pane = module.CodePane)
+                var selection = pane.Selection;
+                var originalCode = module.GetLines(selection);
+                var code = originalCode.Trim().StripStringLiterals();
+                var hasComment = code.HasComment(out int commentStart);
+
+                var isDeclareStatement = Regex.IsMatch(code, $"\\b{Tokens.Declare}\\b", RegexOptions.IgnoreCase);
+                var isExitStatement = Regex.IsMatch(code, $"\\b{Tokens.Exit}\\b", RegexOptions.IgnoreCase);
+                var isNamedArg = Regex.IsMatch(code, $"\\b{InputToken}\\:\\=", RegexOptions.IgnoreCase);
+
+                if ((SkipPreCompilerDirective && code.StartsWith("#"))
+                    || isDeclareStatement || isExitStatement || isNamedArg)
                 {
-                    var selection = pane.Selection;
-                    var originalCode = module.GetLines(selection);
-                    var code = originalCode.Trim().StripStringLiterals();
-                    var hasComment = code.HasComment(out int commentStart);
-
-                    var isDeclareStatement = Regex.IsMatch(code, $"\\b{Tokens.Declare}\\b", RegexOptions.IgnoreCase);
-                    var isExitStatement = Regex.IsMatch(code, $"\\b{Tokens.Exit}\\b", RegexOptions.IgnoreCase);
-                    var isNamedArg = Regex.IsMatch(code, $"\\b{InputToken}\\:\\=", RegexOptions.IgnoreCase);
-
-                    if ((SkipPreCompilerDirective && code.StartsWith("#"))
-                        || isDeclareStatement || isExitStatement || isNamedArg)
-                    {
-                        return false;
-                    }
-
-                    if (IsMatch(code) && !IsBlockCompleted(module, selection))
-                    {
-                        var indent = originalCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
-                        var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
-
-                        var stdIndent = IndentBody
-                            ? IndenterSettings.Create().IndentSpaces
-                            : 0;
-
-                        module.InsertLines(selection.NextLine.StartLine, "\n" + newCode);
-
-                        module.ReplaceLine(selection.NextLine.StartLine, new string(' ', indent + stdIndent));
-                        pane.Selection = new Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
-
-                        e.Handled = true;
-                        return true;
-                    }
                     return false;
                 }
+
+                if (IsMatch(code) && !IsBlockCompleted(module, selection))
+                {
+                    var indent = originalCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
+                    var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
+
+                    var stdIndent = IndentBody
+                        ? IndenterSettings.Create().IndentSpaces
+                        : 0;
+
+                    module.InsertLines(selection.NextLine.StartLine, "\n" + newCode);
+
+                    module.ReplaceLine(selection.NextLine.StartLine, new string(' ', indent + stdIndent));
+                    pane.Selection = new Selection(selection.NextLine.StartLine, indent + stdIndent + 1);
+
+                    e.Handled = true;
+                    return true;
+                }
+                return false;
             }
         }
 
