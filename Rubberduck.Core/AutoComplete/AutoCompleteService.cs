@@ -109,7 +109,7 @@ namespace Rubberduck.AutoComplete
 
         private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
         {
-            if (e.Character == default && e.Keys == Keys.None)
+            if (e.Character == default && !e.IsDelete)
             {
                 return;
             }
@@ -119,7 +119,7 @@ namespace Rubberduck.AutoComplete
             Debug.Assert(qualifiedSelection != null, nameof(qualifiedSelection) + " != null");
             var pSelection = qualifiedSelection.Value.Selection;
 
-            if (_popupShown || (e.Keys != Keys.None && pSelection.LineCount > 1) || e.Keys.HasFlag(Keys.Delete))
+            if (_popupShown || pSelection.LineCount > 1 || e.IsDelete)
             {
                 return;
             }
@@ -150,9 +150,9 @@ namespace Rubberduck.AutoComplete
             foreach (var selfClosingPair in _selfClosingPairs)
             {
                 CodeString result;
-                if (e.Keys == Keys.Back && pSelection.StartColumn > 1)
+                if (e.Character == '\b' && pSelection.StartColumn > 1)
                 {
-                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, e.Keys);
+                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, '\b');
                 }
                 else
                 {
@@ -179,7 +179,7 @@ namespace Rubberduck.AutoComplete
         private bool HandleSmartConcat(AutoCompleteEventArgs e, Selection pSelection, string currentContent, ICodeModule module)
         {
             var shouldHandle = _settings.EnableSmartConcat &&
-                               e.Keys.HasFlag(Keys.Enter) &&
+                               e.Character == '\r' &&
                                IsInsideStringLiteral(pSelection, ref currentContent);
 
             var lastIndexLeftOfCaret = currentContent.Length > 2 ? currentContent.Substring(0, pSelection.StartColumn - 1).LastIndexOf('"') : 0;
@@ -189,7 +189,7 @@ namespace Rubberduck.AutoComplete
                 var whitespace = new string(' ', indent);
                 var code = $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
 
-                if (e.Keys.HasFlag(Keys.Control))
+                if (e.ControlDown)
                 {
                     code = $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & vbNewLine & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
 

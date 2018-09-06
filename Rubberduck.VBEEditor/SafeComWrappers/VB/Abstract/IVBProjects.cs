@@ -15,5 +15,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IVBProject Add(ProjectType type);
         IVBProject Open(string path);
         void Remove(IVBProject project);
+        IVBProject StartProject { get; set; } // VB6 only
     }
 }
