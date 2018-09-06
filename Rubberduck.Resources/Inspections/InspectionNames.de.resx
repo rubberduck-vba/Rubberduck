@@ -327,4 +327,7 @@
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Statically accessible sheet accessed using string</value>
   </data>
+  <data name="UndeclaredRedimVariableInspection" xml:space="preserve">
+    <value>Nicht deklarierte Redim Variable</value>
+  </data>
 </root>

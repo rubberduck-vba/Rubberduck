@@ -646,6 +646,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Variable &apos;{0}&apos; in Redim statement is not declared and will be implicitly created.
+        /// </summary>
+        public static string UndeclaredRedimVariableInspection {
+            get {
+                return ResourceManager.GetString("UndeclaredRedimVariableInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Local variable &apos;{0}&apos; is not declared..
         /// </summary>
         public static string UndeclaredVariableInspection {

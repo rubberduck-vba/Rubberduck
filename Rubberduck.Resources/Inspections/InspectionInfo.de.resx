@@ -328,4 +328,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Excel already defines a globally scoped object variable with this reference. Consider using the sheet's 'CodeName' property.</value>
   </data>
+  <data name="UndeclaredRedimVariableInspection" xml:space="preserve">
+    <value>Code, der Variablen mittels redim statements deklariert macht Code schwieriger zu verstehen.</value>
+  </data>
 </root>
