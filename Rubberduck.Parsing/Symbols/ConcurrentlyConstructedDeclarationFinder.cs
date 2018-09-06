@@ -6,7 +6,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class ConcurrentlyConstructedDeclarationFinder : DeclarationFinder
+    public sealed class ConcurrentlyConstructedDeclarationFinder : DeclarationFinder
     {
         private const int _maxDegreeOfConstructionParallelism = -1;
 
@@ -16,8 +16,7 @@ namespace Rubberduck.Parsing.Symbols
 
         protected override void ExecuteCollectionConstructionActions(List<Action> collectionConstructionActions)
         {
-            var options = new ParallelOptions();
-            options.MaxDegreeOfParallelism = _maxDegreeOfConstructionParallelism;
+            var options = new ParallelOptions {MaxDegreeOfParallelism = _maxDegreeOfConstructionParallelism};
 
             Parallel.ForEach(
                 collectionConstructionActions, 

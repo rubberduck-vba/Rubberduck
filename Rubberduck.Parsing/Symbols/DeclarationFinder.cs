@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using Antlr4.Runtime;
@@ -16,7 +15,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class DeclarationFinder
+    public class DeclarationFinder 
     {
         private static readonly SquareBracketedNameComparer NameComparer = new SquareBracketedNameComparer();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -71,6 +70,8 @@ namespace Rubberduck.Parsing.Symbols
             _annotationService = new AnnotationService(this);
 
             var collectionConstructionActions = CollectionConstructionActions(declarations, annotations, unresolvedMemberDeclarations);
+
+            // ReSharper disable once VirtualMemberCallInConstructor; this is under control, action collection is built right here ^^
             ExecuteCollectionConstructionActions(collectionConstructionActions);
 
             //Temporal coupling: the initializers of the lazy collections use the regular collections filled above.
@@ -736,11 +737,6 @@ namespace Rubberduck.Parsing.Symbols
                 return memberMatches.FirstOrDefault();
             }
 
-            //if (memberType == DeclarationType.Variable && NameComparer.Equals(enclosingProcedure.IdentifierName, memberName))
-            //{
-            //    return enclosingProcedure;
-            //}
-
             return null;
         }
 
@@ -763,62 +759,55 @@ namespace Rubberduck.Parsing.Symbols
                     typeHint,
                     isSelfAssigned: false,
                     isWithEvents: false,
-                    Accessibility.Implicit,
-                    DeclarationType.Variable,
-                    context,
-                    context.GetSelection(),
-                    isArray: true,
-                    asTypeClause,
                     isUserDefined: true,
-                    annotations,
-                    null,
+                    isArray: true,
                     undeclared: false,
+                    accessibility:Accessibility.Implicit,
+                    declarationType:DeclarationType.Variable,
+                    context:context, 
+                    attributesPassContext:null,
+                    selection:context.GetSelection(),
+                    asTypeContext:asTypeClause,
+                    annotations:annotations,
+                    attributes:null,
                     isRedimVariable: true);
             // Note: We do not add annotations again because those get added for the redim statement separately.
             // We have to add the newly created declaration to the lookup dictionaries because we're in the middle of the binding process
             // and a Redim statement after this one could reference the same variable.
-            List<Declaration> tempDeclarations = null;
-            if (_declarations.TryGetValue(newVariable.QualifiedName.QualifiedModuleName, out tempDeclarations))
+            if (_declarations.TryGetValue(newVariable.QualifiedName.QualifiedModuleName, out var tempDeclarations))
             {
                 tempDeclarations.Add(newVariable);
             }
             else
             {
-                tempDeclarations = new List<Declaration>();
-                tempDeclarations.Add(newVariable);
+                tempDeclarations = new List<Declaration> {newVariable};
                 _declarations[newVariable.QualifiedName.QualifiedModuleName] = tempDeclarations;
             }
-            tempDeclarations = null;
             if (_declarationsByName.TryGetValue(newVariable.IdentifierName.ToLowerInvariant(), out tempDeclarations))
             {
                 tempDeclarations.Add(newVariable);
             }
             else
             {
-                tempDeclarations = new List<Declaration>();
-                tempDeclarations.Add(newVariable);
+                tempDeclarations = new List<Declaration> {newVariable};
                 _declarationsByName[newVariable.IdentifierName.ToLowerInvariant()] = tempDeclarations;
             }
-            tempDeclarations = null;
             if (_declarationsBySelection.TryGetValue(GetGroupingKey(newVariable), out tempDeclarations))
             {
                 tempDeclarations.Add(newVariable);
             }
             else
             {
-                tempDeclarations = new List<Declaration>();
-                tempDeclarations.Add(newVariable);
+                tempDeclarations = new List<Declaration> {newVariable};
                 _declarationsBySelection[GetGroupingKey(newVariable)] = tempDeclarations;
             }
-            tempDeclarations = null;
             if (_userDeclarationsByType.TryGetValue(newVariable.DeclarationType, out tempDeclarations))
             {
                 tempDeclarations.Add(newVariable);
             }
             else
             {
-                tempDeclarations = new List<Declaration>();
-                tempDeclarations.Add(newVariable);
+                tempDeclarations = new List<Declaration> {newVariable};
                 _userDeclarationsByType[newVariable.DeclarationType] = tempDeclarations;
             }
             return newVariable;

@@ -156,11 +156,6 @@ namespace Rubberduck.Parsing.Binding
             {
                 return new SimpleNameExpression(enumMember, ExpressionClassification.Value, _context);
             }
-            // Prioritize return value assignments over any other let/set property references.
-            //if (_parent.DeclarationType == DeclarationType.PropertyGet && _declarationFinder.IsMatch(_parent.IdentifierName, _name))
-            //{
-            //    return new SimpleNameExpression(_parent, ExpressionClassification.Property, _context);
-            //}
             var property = _declarationFinder.FindMemberEnclosingModule(_module, _parent, _name, _propertySearchType);
             if (IsValidMatch(property, _name))
             {

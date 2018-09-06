@@ -1,12 +1,4 @@
-﻿using Rubberduck.Parsing.Grammar;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.Parsing.ComReflection;
-using Rubberduck.Parsing.Grammar;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -24,15 +16,16 @@ namespace Rubberduck.Parsing.Symbols
                   function,
                   asTypeName,
                   typeHint,
-                  false,
-                  false,
-                  Accessibility.Implicit,
-                  DeclarationType.ResultVariable,
-                  null,
-                  Selection.Home,
+                  isSelfAssigned:false,
+                  isWithEvents:false,
+                  accessibility:Accessibility.Implicit,
+                  declarationType:DeclarationType.ResultVariable,
+                  context:null,
+                  attributesPassContext:null,
+                  selection:Selection.Home,
                   isArray,
-                  null,
-                  false)
+                  asTypeContext:null,
+                  isUserDefined:false)
         {
             Function = function;
         }
