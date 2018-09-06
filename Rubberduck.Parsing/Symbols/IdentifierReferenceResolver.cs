@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +24,9 @@ namespace Rubberduck.Parsing.Symbols
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
         private readonly AnnotationService _annotationService;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private readonly RubberduckParserState _state;
 
-        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
+        public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder, RubberduckParserState state)
         {
             _declarationFinder = finder;
             _qualifiedModuleName = qualifiedModuleName;
@@ -44,6 +46,7 @@ namespace Rubberduck.Parsing.Symbols
                 procedurePointerBindingContext);
             _annotationService = new AnnotationService(_declarationFinder);
             _boundExpressionVisitor = new BoundExpressionVisitor(_annotationService);
+            _state = state;
         }
 
         public void SetCurrentScope()
@@ -160,7 +163,8 @@ namespace Rubberduck.Parsing.Symbols
             StatementResolutionContext statementContext = StatementResolutionContext.Undefined,
             bool isAssignmentTarget = false,
             bool hasExplicitLetStatement = false,
-            bool isSetAssignment = false)
+            bool isSetAssignment = false,
+            bool isRedimVariable = false)
         {
             var withExpression = GetInnerMostWithExpression();
             var boundExpression = _bindingService.ResolveDefault(
@@ -200,15 +204,21 @@ namespace Rubberduck.Parsing.Symbols
                             ? member.DeclarationType.HasFlag(DeclarationType.Procedure)
                             : member.DeclarationType.HasFlag(DeclarationType.Function)));
             }
-
+            if (isRedimVariable)
+            {
+                // If the redim statement causes a variable to be created we have to add it manually to the state.      
+                // We rely on the fact that AddDeclaration removes/does not allow duplicates.
+                _state.AddDeclaration(boundExpression.ReferencedDeclaration);
+            }
             _boundExpressionVisitor.AddIdentifierReferences(
                 boundExpression, 
                 _qualifiedModuleName, 
-                _currentScope,
-                _currentParent,
-                isAssignmentTarget && (defaultMember == null || isSetAssignment || defaultMember.Parameters.All(param => param.IsOptional)),
-                hasExplicitLetStatement, 
+                _currentScope, 
+                _currentParent, 
+                isAssignmentTarget && (defaultMember == null || isSetAssignment || (!defaultMember.Parameters.Any() || defaultMember.Parameters.All(p => p.IsOptional))), 
+                hasExplicitLetStatement,
                 isSetAssignment);
+
         }
 
         private void ResolveType(ParserRuleContext expression)
@@ -251,7 +261,6 @@ namespace Rubberduck.Parsing.Symbols
 
         public void Resolve(VBAParser.RedimStmtContext context)
         {
-            // TODO: Create local variable if no match for redim variable declaration.
             foreach (var redimVariableDeclaration in context.redimDeclarationList().redimVariableDeclaration())
             {
                 // We treat redim statements as index expressions to make it SLL.
@@ -260,7 +269,7 @@ namespace Rubberduck.Parsing.Symbols
                 // The lexpression is the array that is being resized.
                 // We can't treat it as a normal index expression because the semantics are different.
                 // It's not actually a function call but a special statement.
-                ResolveDefault(indexExpr.lExpression());
+                ResolveDefault(indexExpr.lExpression(), isRedimVariable: true);
                 var argumentList = indexExpr.argumentList();
                 if (argumentList.argument() != null)
                 {

@@ -246,4 +246,7 @@
   <data name="AddStepOneQuickFix" xml:space="preserve">
     <value>Step hinzufügen</value>
   </data>
+  <data name="IntroduceLocalVariableForRedimQuickFix" xml:space="preserve">
+    <value>Lokale Variable einführen</value>
+  </data>
 </root>

@@ -335,4 +335,8 @@
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
     <value>Step ist nicht angegeben</value>
   </data>
+  <data name="UndeclaredRedimVariableInspection" xml:space="preserve">
+    <value>Die Variable '{0}' im Redim statement existiert nicht und wird implizit erstellt</value>
+    <comment>{0} Variable name</comment>
+  </data>
 </root>
