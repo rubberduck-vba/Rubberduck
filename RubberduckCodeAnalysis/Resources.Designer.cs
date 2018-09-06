@@ -10,7 +10,6 @@
 
 namespace RubberduckCodeAnalysis {
     using System;
-    using System.Reflection;
     
     
     /// <summary>
@@ -40,7 +39,7 @@ namespace RubberduckCodeAnalysis {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RubberduckCodeAnalysis.Resources", typeof(Resources).GetTypeInfo().Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("RubberduckCodeAnalysis.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -67,6 +66,33 @@ namespace RubberduckCodeAnalysis {
         internal static string AnalyzerCategory {
             get {
                 return ResourceManager.GetString("AnalyzerCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chained Wrappers.
+        /// </summary>
+        internal static string ChainedWrapperDescription {
+            get {
+                return ResourceManager.GetString("ChainedWrapperDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chained Wrappers.
+        /// </summary>
+        internal static string ChainedWrapperMessageFormat {
+            get {
+                return ResourceManager.GetString("ChainedWrapperMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chained Wrappers.
+        /// </summary>
+        internal static string ChainedWrapperTitle {
+            get {
+                return ResourceManager.GetString("ChainedWrapperTitle", resourceCulture);
             }
         }
         

@@ -31,7 +31,8 @@ namespace Rubberduck.UI.Command
 
             try
             {
-                using (var codeModule = _projectsProvider.Component(param.QualifiedName).CodeModule)
+                var component = _projectsProvider.Component(param.QualifiedName);
+                using (var codeModule = component.CodeModule)
                 {
                     using (var codePane = codeModule.CodePane)
                     {

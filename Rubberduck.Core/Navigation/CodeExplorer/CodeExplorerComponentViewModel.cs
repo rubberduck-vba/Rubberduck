@@ -110,7 +110,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool ContainsBuiltinDocumentPropertiesProperty()
         {
-            using (var properties = _projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName).Properties)
+            var component = _projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName);
+            using (var properties = component.Properties)
             {
                 return properties.Any(item => item.Name == "BuiltinDocumentProperties");
             }
