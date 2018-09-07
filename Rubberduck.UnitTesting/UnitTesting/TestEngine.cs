@@ -150,14 +150,27 @@ namespace Rubberduck.UnitTesting
 
         private void RunWhileSuspended(IEnumerable<TestMethod> tests)
         {
-            // FIXME do something useful when this fails!
-            EnsureRubberduckIsReferencedForEarlyBoundTests();
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
             if (!testMethods.Any())
             {
                 return;
             }
             testResults.Clear();
+            try
+            {
+                EnsureRubberduckIsReferencedForEarlyBoundTests();
+            }
+            catch (InvalidOperationException e)
+            {
+                Logger.Warn(e);
+                foreach (var test in testMethods)
+                {
+                    // FIXME use a more semantically correct message
+                    OnTestCompleted(test, new TestResult(TestOutcome.Failed, AssertMessages.Assert_TestInitializeFailure, 1));
+                }
+                return;
+            }
+
             var overallTime = new Stopwatch();
             overallTime.Start();
             try
