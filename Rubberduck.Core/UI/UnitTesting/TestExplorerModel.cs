@@ -23,6 +23,7 @@ namespace Rubberduck.UI.UnitTesting
             this.testEngine = testEngine;
 
             testEngine.TestsRefreshed += RefreshTests;
+            testEngine.TestRunCompleted += (_, time) => TotalDuration = time;
             testEngine.TestCompleted += HandleTestCompletion;
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
@@ -78,39 +79,49 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        internal ObservableCollection<TestMethodViewModel> Tests { get; } = new ObservableCollection<TestMethodViewModel>();
+        // FIXME can this really not be internal?
+        public ObservableCollection<TestMethodViewModel> Tests { get; } = new ObservableCollection<TestMethodViewModel>();
 
-        internal List<TestMethodViewModel> LastRun { get; } = new List<TestMethodViewModel>();
+        public List<TestMethodViewModel> LastRun { get; } = new List<TestMethodViewModel>();
+        private long _totalDuration;
+        public long TotalDuration
+        {
+            get { return _totalDuration; } private set
+            {
+                _totalDuration = value;
+                OnPropertyChanged();
+            }
+        }
 
         public void ClearLastRun()
         {
             LastRun.Clear();
         }
 
-        public void AddExecutedTest(TestMethod test)
-        {
-            if (!Tests.Any(t =>
-            t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
-            t.Method.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-            t.Method.Declaration.ProjectId == test.Declaration.ProjectId))
-            {
-                Tests.Add(new TestMethodViewModel(test));
-            }
+        //public void AddExecutedTest(TestMethod test)
+        //{
+        //    if (!Tests.Any(t =>
+        //    t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
+        //    t.Method.Declaration.IdentifierName == test.Declaration.IdentifierName &&
+        //    t.Method.Declaration.ProjectId == test.Declaration.ProjectId))
+        //    {
+        //        Tests.Add(new TestMethodViewModel(test));
+        //    }
 
-            LastRun.Add(Tests.First(m => m.Method == test));
-            ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
+        //    LastRun.Add(Tests.First(m => m.Method == test));
+        //    ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
 
-            if (Tests.Any(t => t.Result.Outcome == TestOutcome.Failed))
-            {
-                ProgressBarColor = Colors.Red;
-            }
-            else
-            {
-                ProgressBarColor = Tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive)
-                    ? Colors.Gold
-                    : Colors.LimeGreen;
-            }
-        }
+        //    if (Tests.Any(t => t.Result.Outcome == TestOutcome.Failed))
+        //    {
+        //        ProgressBarColor = Colors.Red;
+        //    }
+        //    else
+        //    {
+        //        ProgressBarColor = Tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive)
+        //            ? Colors.Gold
+        //            : Colors.LimeGreen;
+        //    }
+        //}
         
         private int _executedCount;
         public int ExecutedCount
@@ -141,19 +152,6 @@ namespace Rubberduck.UI.UnitTesting
             set
             {
                 _isBusy = value;
-                OnPropertyChanged();
-
-                IsReady = !_isBusy;
-            }
-        }
-
-        private bool _isReady = true;
-        public bool IsReady
-        {
-            get => _isReady;
-            private set
-            {
-                _isReady = value;
                 OnPropertyChanged();
             }
         }

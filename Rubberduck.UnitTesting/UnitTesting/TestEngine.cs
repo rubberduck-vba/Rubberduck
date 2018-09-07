@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Resources.UnitTesting;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
@@ -32,6 +33,7 @@ namespace Rubberduck.UnitTesting
 
         private readonly Dictionary<TestMethod, TestOutcome> testResults = new Dictionary<TestMethod, TestOutcome>();
         public IEnumerable<TestMethod> Tests { get; private set; }
+        // FIXME consider forcing VBE in design mode here
         public bool CanRun => AllowedRunStates.Contains(_state.Status);
 
         private bool _testRequested;
@@ -83,7 +85,7 @@ namespace Rubberduck.UnitTesting
             {
                 refreshBackoff = true;
                 Tests = TestDiscovery.GetAllTests(_state);
-                TestsRefreshed?.Invoke(this, EventArgs.Empty);
+                _uiDispatcher.InvokeAsync(() => TestsRefreshed?.Invoke(this, EventArgs.Empty));
 
                 if (_testRequested)
                 {
@@ -103,18 +105,13 @@ namespace Rubberduck.UnitTesting
         }
 
         public event EventHandler<TestCompletedEventArgs> TestCompleted;
+        public event EventHandler<long> TestRunCompleted;
         public event EventHandler TestsRefreshed;
 
         private void OnTestCompleted(TestMethod test, TestResult result)
         {
             testResults.Add(test, result.Outcome);
-            TestCompleted?.Invoke(this, new TestCompletedEventArgs(test, result));
-        }
-
-        public void RunAll()
-        {
-            _testRequested = true;
-            Run(Tests);
+            _uiDispatcher.InvokeAsync(() => TestCompleted?.Invoke(this, new TestCompletedEventArgs(test, result)));
         }
 
         public void Run(IEnumerable<TestMethod> tests)
@@ -133,14 +130,36 @@ namespace Rubberduck.UnitTesting
             _state.OnSuspendParser(this, AllowedRunStates, () => RunWhileSuspended(tests));
         }
 
+        private void EnsureRubberduckIsReferencedForEarlyBoundTests()
+        {
+            var projectIdsOfMembersUsingAddInLibrary = _state.DeclarationFinder.AllUserDeclarations
+                .Where(member => member.AsTypeName == "Rubberduck.PermissiveAssertClass"
+                                 || member.AsTypeName == "Rubberduck.AssertClass")
+                .Select(member => member.ProjectId)
+                .ToHashSet();
+            var projectsUsingAddInLibrary = _state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Project)
+                .Where(declaration => projectIdsOfMembersUsingAddInLibrary.Contains(declaration.ProjectId))
+                .Select(declaration => declaration.Project);
+
+            foreach (var project in projectsUsingAddInLibrary)
+            {
+                VBEInteraction.EnsureProjectReferencesUnitTesting(project);
+            }
+        }
+
         private void RunWhileSuspended(IEnumerable<TestMethod> tests)
         {
+            // FIXME do something useful when this fails!
+            EnsureRubberduckIsReferencedForEarlyBoundTests();
             var testMethods = tests as IList<TestMethod> ?? tests.ToList();
             if (!testMethods.Any())
             {
                 return;
             }
             testResults.Clear();
+            var overallTime = new Stopwatch();
+            overallTime.Start();
             try
             {
                 var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName)
@@ -165,7 +184,7 @@ namespace Rubberduck.UnitTesting
                     {
                         try
                         {
-                            RunInternal(typeLibWrapper, initializeMethods);
+                            VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, initializeMethods);
                         }
                         catch (COMException ex)
                         {
@@ -192,7 +211,7 @@ namespace Rubberduck.UnitTesting
                                 fakes.StartTest();
                                 try
                                 {
-                                    RunInternal(typeLibWrapper, testInitialize);
+                                    VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, testInitialize);
                                 }
                                 catch (Exception trace)
                                 {
@@ -203,7 +222,7 @@ namespace Rubberduck.UnitTesting
                                 var result = RunTestMethod(typeLibWrapper, test);
                                 // we can trigger this event, because cleanup can fail without affecting the result
                                 OnTestCompleted(test, result);
-                                RunInternal(typeLibWrapper, testCleanup);
+                                VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, testCleanup);
                             }
                             catch (COMException ex)
                             {
@@ -218,7 +237,7 @@ namespace Rubberduck.UnitTesting
                         var cleanupMethods = TestDiscovery.FindModuleCleanupMethods(qmn, _state);
                         try
                         {
-                            RunInternal(typeLibWrapper, cleanupMethods);
+                            VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, cleanupMethods);
                         }
                         catch (COMException ex)
                         {
@@ -234,34 +253,22 @@ namespace Rubberduck.UnitTesting
             {
                 Logger.Error(ex, "Unexpected expection while running unit tests; unit tests will be aborted");
             }
+            overallTime.Stop();
+            TestRunCompleted?.Invoke(this, overallTime.ElapsedMilliseconds);
         }
-
+        
         private TestResult RunTestMethod(ITypeLibWrapper typeLib, TestMethod test)
         {
             var assertResults = new List<AssertCompletedEventArgs>();
-
-            AssertCompletedEventArgs result;
-            var duration = new Stopwatch();
-            try
+            if (!VBEInteraction.AttemptRunTestMethod(_typeLibApi, typeLib, test, (s, e) => assertResults.Add(e), out var duration))
             {
-                AssertHandler.OnAssertCompleted += (s, e) => assertResults.Add(e);
-                var testDeclaration = test.Declaration;
-                duration.Start();
-
-                _typeLibApi.ExecuteCode(typeLib, testDeclaration.ComponentName, testDeclaration.QualifiedName.MemberName);
-
-                duration.Stop();
-                AssertHandler.OnAssertCompleted -= (s, e) => assertResults.Add(e);
-                result = EvaluateResults(assertResults);
+                // FIXME i18n
+                return new TestResult(TestOutcome.Inconclusive, "Test raised an error.", duration);
             }
-            catch (Exception exception)
-            {
-                result = new AssertCompletedEventArgs(TestOutcome.Inconclusive, "Test raised an error. " + exception.Message);
-            }
-            return new TestResult(result.Outcome, result.Message, duration.ElapsedMilliseconds);
+            return EvaluateResults(assertResults, duration);
         }
 
-        private AssertCompletedEventArgs EvaluateResults(IEnumerable<AssertCompletedEventArgs> assertResults)
+        private TestResult EvaluateResults(IEnumerable<AssertCompletedEventArgs> assertResults, long duration)
         {
             var result = new AssertCompletedEventArgs(TestOutcome.Succeeded);
 
@@ -270,17 +277,7 @@ namespace Rubberduck.UnitTesting
                 result = assertResults.First(assertion => assertion.Outcome != TestOutcome.Succeeded);
             }
 
-            return result;
+            return new TestResult(result.Outcome, result.Message, duration);
         }
-
-        private void RunInternal(ITypeLibWrapper typeLib, IEnumerable<Declaration> members)
-        {
-            foreach (var member in members)
-            {
-                _typeLibApi.ExecuteCode(typeLib, member.QualifiedModuleName.ComponentName,
-                    member.QualifiedName.MemberName);
-            }
-        }
-
     }
 }

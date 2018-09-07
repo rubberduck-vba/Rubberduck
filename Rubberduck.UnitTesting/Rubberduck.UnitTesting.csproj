@@ -38,12 +38,16 @@
       <HintPath>..\packages\NLog.4.5.6\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,7 +62,6 @@
     <Compile Include="UnitTesting\IFakes.cs" />
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="ComClientHelpers\PermissiveObjectComparer.cs" />
-    <Compile Include="ProjectTestExtensions.cs" />
     <Compile Include="ComClientHelpers\ReturnTypeConverter.cs" />
     <Compile Include="UnitTesting\TestCategory.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
@@ -66,6 +69,7 @@
     <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="UnitTesting\TestDiscovery.cs" />
+    <Compile Include="UnitTesting\VBEInteraction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">

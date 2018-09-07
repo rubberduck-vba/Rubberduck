@@ -7,9 +7,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Interaction.Navigation;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Settings;
@@ -77,7 +75,7 @@ namespace Rubberduck.UI.UnitTesting
             {
                 GroupByLocation = true;
 
-                if ((bool) param)
+                if ((bool)param)
                 {
                     GroupByOutcome = false;
                     GroupByCategory = false;
@@ -94,11 +92,6 @@ namespace Rubberduck.UI.UnitTesting
                     GroupByLocation = false;
                 }
             });
-        }
-
-        private void RunCompleted(object sender, TestRunEventArgs e)
-        {
-            TotalDuration = e.Duration;
         }
 
         private static readonly ParserState[] AllowedRunStates = { ParserState.ResolvedDeclarations, ParserState.ResolvingReferences, ParserState.Ready };
@@ -205,21 +198,8 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase SetLocationGroupingCommand { get; }
 
         public CommandBase SetCategoryGroupingCommand { get; }
-
-        public long TotalDuration { get; private set; }
-
-        private RunAllTestsCommand _runAllTests;
-        public RunAllTestsCommand RunAllTestsCommand {
-            get { return _runAllTests; }
-            set {
-                if (_runAllTests != null)
-                {
-                    _runAllTests.RunCompleted -= RunCompleted;
-                }
-                _runAllTests = value;
-                _runAllTests.RunCompleted += RunCompleted;
-            }
-        }
+        
+        public RunAllTestsCommand RunAllTestsCommand { get; set; }
 
         public AddTestModuleCommand AddTestModuleCommand { get; set; }
 
@@ -260,109 +240,46 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         public TestExplorerModel Model { get; }
-        
-        private void EnsureRubberduckIsReferencedForEarlyBoundTests()
-        {
-            var projectIdsOfMembersUsingAddInLibrary = _state.DeclarationFinder.AllUserDeclarations
-                .Where(member => member.AsTypeName == "Rubberduck.PermissiveAssertClass" 
-                                    || member.AsTypeName == "Rubberduck.AssertClass")
-                .Select(member => member.ProjectId)
-                .ToHashSet();
-            var projectsUsingAddInLibrary = _state.DeclarationFinder
-                .UserDeclarations(DeclarationType.Project)
-                .Where(declaration => projectIdsOfMembersUsingAddInLibrary.Contains(declaration.ProjectId))
-                .Select(declaration => declaration.Project);
-
-            foreach (var project in projectsUsingAddInLibrary)
-            {
-                project?.EnsureReferenceToAddInLibrary();
-            }
-        }
 
         private void ExecuteRepeatLastRunCommand(object parameter)
         {
-            EnsureRubberduckIsReferencedForEarlyBoundTests();
-
             var tests = Model.LastRun.ToList();
             Model.ClearLastRun();
-
-            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
-
-            stopwatch.Start();
             _testEngine.Run(tests.Select(vm => vm.Method));
-            stopwatch.Stop();
-
             Model.IsBusy = false;
-            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private void ExecuteRunNotExecutedTestsCommand(object parameter)
         {
-            EnsureRubberduckIsReferencedForEarlyBoundTests();
-
             Model.ClearLastRun();
-
-            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
-
-            stopwatch.Start();
             _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown).Select(vm => vm.Method));
-            stopwatch.Stop();
-
             Model.IsBusy = false;
-            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private void ExecuteRunInconclusiveTestsCommand(object parameter)
         {
-            EnsureRubberduckIsReferencedForEarlyBoundTests();
-
             Model.ClearLastRun();
-
-            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
-
-            stopwatch.Start();
             _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Inconclusive).Select(vm => vm.Method));
-            stopwatch.Stop();
-
             Model.IsBusy = false;
-            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private void ExecuteRunFailedTestsCommand(object parameter)
         {
-            EnsureRubberduckIsReferencedForEarlyBoundTests();
-
             Model.ClearLastRun();
-
-            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
-
-            stopwatch.Start();
             _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed).Select(vm => vm.Method));
-            stopwatch.Stop();
-
             Model.IsBusy = false;
-            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private void ExecuteRunPassedTestsCommand(object parameter)
         {
-            EnsureRubberduckIsReferencedForEarlyBoundTests();
-
             Model.ClearLastRun();
-
-            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
-
-            stopwatch.Start();
             _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded).Select(vm => vm.Method));
-            stopwatch.Stop();
-
             Model.IsBusy = false;
-            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private bool CanExecuteSelectedTestCommand(object obj)
@@ -377,19 +294,10 @@ namespace Rubberduck.UI.UnitTesting
                 return;
             }
 
-            EnsureRubberduckIsReferencedForEarlyBoundTests();
-
             Model.ClearLastRun();
-
-            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
-
-            stopwatch.Start();
             _testEngine.Run(new[] { SelectedTest.Method });
-            stopwatch.Stop();
-
             Model.IsBusy = false;
-            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private void ExecuteCopyResultsCommand(object parameter)
@@ -422,20 +330,15 @@ namespace Rubberduck.UI.UnitTesting
 
         private void ExecuteRunSelectedCategoryTestsCommand(object obj)
         {
-            EnsureRubberduckIsReferencedForEarlyBoundTests();
-
+            if (SelectedTest == null)
+            {
+                return;
+            }
             Model.ClearLastRun();
-
-            var stopwatch = new Stopwatch();
             Model.IsBusy = true;
-
-            stopwatch.Start();
             _testEngine.Run(Model.Tests.Where(test => test.Method.Category.Equals(SelectedTest.Method.Category))
                 .Select(t => t.Method));
-            stopwatch.Stop();
-
             Model.IsBusy = false;
-            TotalDuration = stopwatch.ElapsedMilliseconds;
         }
 
         private bool CanExecuteRunSelectedCategoryTestsCommand(object obj)
@@ -468,7 +371,7 @@ namespace Rubberduck.UI.UnitTesting
 
         public void Dispose()
         {
-            RunAllTestsCommand.RunCompleted -= RunCompleted;
+            Model.Dispose();
         }
     }
 }

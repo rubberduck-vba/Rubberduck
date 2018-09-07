@@ -1,25 +1,67 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Reflection;
+﻿
 using Microsoft.Win32;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Registration;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace Rubberduck.UnitTesting
-{
-    [ComVisible(false)]
-    public static class ProjectTestExtensions
+{ 
+    public class VBEInteraction
     {
-        // FIXME: this needs to be encapsulated into the actual TestEngine. 
-        // Don't require clients of the "library" to know the right magic incantations!
-        public static void EnsureReferenceToAddInLibrary(this IVBProject project)
+
+        internal static void RunDeclarations(IVBETypeLibsAPI typeLibApi, ITypeLibWrapper typeLib, IEnumerable<Declaration> declarations)
         {
+            foreach (var declaration in declarations)
+            {
+                typeLibApi.ExecuteCode(typeLib, declaration.QualifiedModuleName.ComponentName,
+                    declaration.QualifiedName.MemberName);
+            }
+        }
+
+        internal static bool AttemptRunTestMethod(IVBETypeLibsAPI tlApi, ITypeLibWrapper typeLib, TestMethod test, EventHandler<AssertCompletedEventArgs> assertCompletionHandler, out long duration)
+        {
+            AssertHandler.OnAssertCompleted += assertCompletionHandler;
+            var stopwatch = new Stopwatch();
+            try
+            {
+                var testDeclaration = test.Declaration;
+
+                stopwatch.Start();
+                tlApi.ExecuteCode(typeLib, testDeclaration.ComponentName, testDeclaration.QualifiedName.MemberName);
+                stopwatch.Stop();
+
+                duration = stopwatch.ElapsedMilliseconds;
+                return true;
+            }
+            catch (Exception e)
+            {
+                stopwatch.Stop();
+                // FIXME: log this exception
+                duration = stopwatch.ElapsedMilliseconds;
+                return false;
+            }
+            finally
+            {
+                AssertHandler.OnAssertCompleted -= assertCompletionHandler;
+            }
+        }
+            
+
+        public static void EnsureProjectReferencesUnitTesting(IVBProject project)
+        {
+            if (project == null || project.IsWrappingNullReference) { return; }
             var libFolder = IntPtr.Size == 8 ? "win64" : "win32";
-            // TODO: This assumes the current assembly is same major/minor as the TLB!!!
+            // FIXME: This assumes the current assembly is same major/minor as the TLB!!!
             var libVersion = Assembly.GetExecutingAssembly().GetName().Version;
             const string libGuid = RubberduckGuid.RubberduckTypeLibGuid;
             var pathKey = Registry.ClassesRoot.OpenSubKey($@"TypeLib\{{{libGuid}}}\{libVersion.Major}.{libVersion.Minor}\0\{libFolder}");
-            
+
             var referencePath = pathKey?.GetValue(string.Empty, string.Empty) as string;
             string name = null;
 
@@ -30,7 +72,7 @@ namespace Rubberduck.UnitTesting
 
                 name = tlbKey?.GetValue(string.Empty, string.Empty) as string;
             }
-            
+
             if (string.IsNullOrWhiteSpace(referencePath) || string.IsNullOrWhiteSpace(name))
             {
                 throw new InvalidOperationException("Cannot locate the tlb in the registry or the entry may be corrupted. Therefore early binding is not possible");
@@ -54,7 +96,7 @@ namespace Rubberduck.UnitTesting
 
         private static IReference FindReferenceByName(IReferences refernences, string name)
         {
-            foreach(var reference in refernences)
+            foreach (var reference in refernences)
             {
                 if (reference.Name == name)
                 {
@@ -79,5 +121,6 @@ namespace Rubberduck.UnitTesting
             }
             return false;
         }
+
     }
 }

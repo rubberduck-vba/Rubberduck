@@ -164,7 +164,7 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
             if (settings.BindingMode == BindingMode.EarlyBinding)
             {
-                project.EnsureReferenceToAddInLibrary();
+                VBEInteraction.EnsureProjectReferencesUnitTesting(project);
             }
 
             try

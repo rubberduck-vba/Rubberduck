@@ -7,9 +7,9 @@ namespace Rubberduck.UnitTesting
     public interface ITestEngine
     {
         IEnumerable<TestMethod> Tests { get; }
-        void RunAll();
         void Run(IEnumerable<TestMethod> tests);
         event EventHandler<TestCompletedEventArgs> TestCompleted;
+        event EventHandler<long> TestRunCompleted;
         event EventHandler TestsRefreshed;
         TestOutcome CurrentAggregateOutcome { get; }
         bool CanRun { get; }

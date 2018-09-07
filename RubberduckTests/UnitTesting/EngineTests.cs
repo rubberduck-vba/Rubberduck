@@ -28,7 +28,7 @@ End Sub";
 
             var builder = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
                 .AddProjectToVbeBuilder();
 
             var vbe = builder.Build().Object;
@@ -37,6 +37,9 @@ End Sub";
             var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
             var fakesFactory = new Mock<IFakesFactory>();
             var dispatcher = new Mock<IUiDispatcher>();
+            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
+              .Callback((Action action) => action.Invoke())
+              .Verifiable();
 
             using (var state = parser.State)
             {
@@ -64,7 +67,7 @@ End Sub";
 
             var builder = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
                 .AddProjectToVbeBuilder();
 
             var vbe = builder.Build().Object;
@@ -73,6 +76,9 @@ End Sub";
             var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
             var fakesFactory = new Mock<IFakesFactory>();
             var dispatcher = new Mock<IUiDispatcher>();
+            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
+              .Callback((Action action) => action.Invoke())
+              .Verifiable();
 
             using (var state = parser.State)
             {
@@ -104,7 +110,7 @@ End Sub";
 
             var builder = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
                 .AddProjectToVbeBuilder();
 
             var vbe = builder.Build().Object;
@@ -155,7 +161,7 @@ End Sub";
 
             var builder = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
                 .AddProjectToVbeBuilder();
 
             var vbe = builder.Build().Object;
@@ -211,7 +217,7 @@ End Sub";
 
             var builder = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
                 .AddProjectToVbeBuilder();
 
             var vbe = builder.Build().Object;
@@ -267,7 +273,7 @@ End Sub";
 
             var builder = new MockVbeBuilder()
                 .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, GetTestModuleInput + testMethods)
+                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
                 .AddProjectToVbeBuilder();
 
             var vbe = builder.Build().Object;
@@ -315,15 +321,16 @@ End Sub";
 
 
 
-        private const string RawInput = @"Option Explicit
+        private const string TestModuleHeader = @"Option Explicit
 Option Private Module
 
-{0}
-Private Assert As New Rubberduck.AssertClass
+'@TestModule
+Private Assert As Object
 
 '@ModuleInitialize
 Public Sub ModuleInitialize()
     'this method runs once per module.
+    Assert = CreateObject(""Rubberduck.AssertClass"")
 End Sub
 
 '@ModuleCleanup
@@ -341,11 +348,5 @@ Public Sub TestCleanup()
     'this method runs after every test in the module.
 End Sub
 ";
-
-
-        private string GetTestModuleInput
-        {
-            get { return string.Format(RawInput, "'@TestModule"); }
-        }
     }
 }
