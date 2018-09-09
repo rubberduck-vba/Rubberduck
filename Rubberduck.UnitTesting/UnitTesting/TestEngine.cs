@@ -38,8 +38,8 @@ namespace Rubberduck.UnitTesting
         // FIXME consider forcing VBE in design mode here, would require injecting a VBE
         public bool CanRun => AllowedRunStates.Contains(_state.Status);
         public bool CanRepeatLastRun => LastRun.Any();
-
-        private bool _testRequested;
+        
+        private bool _testsRunning;
         private bool refreshBackoff;
 
 
@@ -84,31 +84,16 @@ namespace Rubberduck.UnitTesting
 
         private void StateChangedHandler(object sender, ParserStateEventArgs e)
         {
-            if (!CanRun)
+            if (!CanRun || e.IsError)
             {
                 refreshBackoff = false;
             }
             // CanRun returned true already, only refresh tests if we're not backed off
-            else if (!refreshBackoff)
+            else if (!refreshBackoff && !_testsRunning)
             {
                 refreshBackoff = true;
                 Tests = TestDiscovery.GetAllTests(_state);
                 _uiDispatcher.InvokeAsync(() => TestsRefreshed?.Invoke(this, EventArgs.Empty));
-
-                if (_testRequested)
-                {
-                    _testRequested = false;
-                    _uiDispatcher.InvokeAsync(() =>
-                    {
-                        RunInternal(Tests);
-                    });
-                }
-            }
-
-            // any error cancels outstanding test runs
-            if (e.IsError)
-            {
-                _testRequested = false;
             }
         }
 
@@ -146,7 +131,10 @@ namespace Rubberduck.UnitTesting
             }
             // FIXME we shouldn't need to handle awaiting a certain parser state ourselves anymore, right?
             // that would drop the _testsRequested member completely
+            // _testsRunning avoids raising a TestsRefreshed event when exiting the parser suspension
+            _testsRunning = true;
             _state.OnSuspendParser(this, AllowedRunStates, () => RunWhileSuspended(tests));
+            _testsRunning = false;
         }
 
         private void EnsureRubberduckIsReferencedForEarlyBoundTests()
