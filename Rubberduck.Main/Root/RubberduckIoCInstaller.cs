@@ -625,6 +625,7 @@ namespace Rubberduck.Root
 
             // assumption: All Commands are in the same assembly as CommandBase
             container.Register(Classes.FromAssemblyContaining(typeof(CommandBase))
+                .IncludeNonPublicTypes()
                 .Where(type => type.IsBasedOn(typeof(CommandBase))
                     && type != typeof(DelegateCommand) // DelegateCommand is not intended to be injected!
                     && type.NotDisabledOrExperimental(_initialSettings))
@@ -637,6 +638,7 @@ namespace Rubberduck.Root
         private void RegisterCommandsWithPresenters(IWindsorContainer container)
         {
             // FIXME these registrations shouldn't be IoC's business. the presenters should require those themselves!
+            // Possible solution: Property Injection
             container.Register(Component.For<CommandBase>()
                 .ImplementedBy<RunAllTestsCommand>()
                 .DependsOn(Dependency.OnComponent<IDockablePresenter, TestExplorerDockablePresenter>())

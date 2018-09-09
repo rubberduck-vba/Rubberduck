@@ -15,6 +15,7 @@ using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 
 namespace Rubberduck.UnitTesting
 {
+    // FIXME litter logging around here
     internal class TestEngine : ITestEngine
     {
         private static readonly ParserState[] AllowedRunStates = new ParserState[]
