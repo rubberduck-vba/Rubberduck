@@ -197,35 +197,28 @@ namespace Rubberduck.UnitTesting
             overallTime.Start();
             try
             {
-                var modules = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName)
-                    .Select(grouping => grouping.Key);
-                foreach (var qmn in modules)
+                var testsByModule = testMethods.GroupBy(test => test.Declaration.QualifiedName.QualifiedModuleName)
+                    .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
+                
+                foreach (var moduleName in testsByModule.Keys)
                 {
-                    var testInitialize = TestDiscovery.FindTestInitializeMethods(qmn, _state).ToList();
-                    var testCleanup = TestDiscovery.FindTestCleanupMethods(qmn, _state).ToList();
-
-                    var moduleTestMethods = testMethods
-                        .Where(test =>
-                        {
-                            var testModuleName = test.Declaration.QualifiedName.QualifiedModuleName;
-
-                            return testModuleName.ProjectId == qmn.ProjectId
-                                   && testModuleName.ComponentName == qmn.ComponentName;
-                        });
+                    var testInitialize = TestDiscovery.FindTestInitializeMethods(moduleName, _state).ToList();
+                    var testCleanup = TestDiscovery.FindTestCleanupMethods(moduleName, _state).ToList();
+                    
+                    var moduleTestMethods = testsByModule[moduleName];
 
                     var fakes = _fakesFactory.Create();
-                    var initializeMethods = TestDiscovery.FindModuleInitializeMethods(qmn, _state);
-                    using (var typeLibWrapper = _wrapperProvider.TypeLibWrapperFromProject(qmn.ProjectId))
+                    using (var typeLibWrapper = _wrapperProvider.TypeLibWrapperFromProject(moduleName.ProjectId))
                     {
                         try
                         {
-                            VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, initializeMethods);
+                            VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, TestDiscovery.FindModuleInitializeMethods(moduleName, _state));
                         }
                         catch (COMException ex)
                         {
                             Logger.Error(ex,
                                 "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.",
-                                qmn.Name);
+                                moduleName.Name);
                             foreach (var method in moduleTestMethods)
                             {
                                 OnTestCompleted(method, new TestResult(TestOutcome.Unknown, AssertMessages.Assert_ComException));
@@ -269,16 +262,15 @@ namespace Rubberduck.UnitTesting
                                 fakes.StopTest();
                             }
                         }
-                        var cleanupMethods = TestDiscovery.FindModuleCleanupMethods(qmn, _state);
                         try
                         {
-                            VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, cleanupMethods);
+                            VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, TestDiscovery.FindModuleCleanupMethods(moduleName, _state));
                         }
                         catch (COMException ex)
                         {
                             Logger.Error(ex,
                                 "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests",
-                                qmn.Name);
+                                moduleName.Name);
                             break;
                         }
                     }
