@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.Win32;
+using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Registration;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
@@ -12,8 +13,10 @@ using System.Reflection;
 
 namespace Rubberduck.UnitTesting
 { 
+    // FIXME litter some logging around here
     public class VBEInteraction
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         internal static void RunDeclarations(IVBETypeLibsAPI typeLibApi, ITypeLibWrapper typeLib, IEnumerable<Declaration> declarations)
         {
@@ -42,7 +45,7 @@ namespace Rubberduck.UnitTesting
             catch (Exception e)
             {
                 stopwatch.Stop();
-                // FIXME: log this exception
+                Logger.Info(e, "Running a test method failed with an exception");
                 duration = stopwatch.ElapsedMilliseconds;
                 return false;
             }
