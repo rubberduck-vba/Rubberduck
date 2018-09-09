@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
@@ -10,8 +9,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
-
-    public class TestExplorerModel : ViewModelBase, IDisposable
+    internal class TestExplorerModel : ViewModelBase, IDisposable
     {
         private readonly IVBE _vbe;
         private readonly Dispatcher _dispatcher;
@@ -23,9 +21,15 @@ namespace Rubberduck.UI.UnitTesting
             this.testEngine = testEngine;
 
             testEngine.TestsRefreshed += RefreshTests;
-            testEngine.TestRunCompleted += (_, time) => TotalDuration = time;
+            testEngine.TestRunCompleted += HandleRunCompletion;
             testEngine.TestCompleted += HandleTestCompletion;
             _dispatcher = Dispatcher.CurrentDispatcher;
+        }
+
+        private void HandleRunCompletion(object sender, long time)
+        {
+            TotalDuration = time;
+            ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
         }
 
         private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
@@ -39,12 +43,9 @@ namespace Rubberduck.UI.UnitTesting
             }
             else
             {
-                vmTest = Tests.First(vm => vm.Method == test);
+                vmTest = Tests.First(inside => inside.Equals(vmTest));
             }
-            LastRun.Add(vmTest);
             vmTest.Result = e.Result;
-
-            ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
 
             RefreshProgressBarColor();
         }
@@ -78,11 +79,9 @@ namespace Rubberduck.UI.UnitTesting
                     break;
             }
         }
-
-        // FIXME can this really not be internal?
+        
         public ObservableCollection<TestMethodViewModel> Tests { get; } = new ObservableCollection<TestMethodViewModel>();
-
-        public List<TestMethodViewModel> LastRun { get; } = new List<TestMethodViewModel>();
+        
         private long _totalDuration;
         public long TotalDuration
         {
@@ -92,36 +91,6 @@ namespace Rubberduck.UI.UnitTesting
                 OnPropertyChanged();
             }
         }
-
-        public void ClearLastRun()
-        {
-            LastRun.Clear();
-        }
-
-        //public void AddExecutedTest(TestMethod test)
-        //{
-        //    if (!Tests.Any(t =>
-        //    t.Method.Declaration.ComponentName == test.Declaration.ComponentName &&
-        //    t.Method.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-        //    t.Method.Declaration.ProjectId == test.Declaration.ProjectId))
-        //    {
-        //        Tests.Add(new TestMethodViewModel(test));
-        //    }
-
-        //    LastRun.Add(Tests.First(m => m.Method == test));
-        //    ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
-
-        //    if (Tests.Any(t => t.Result.Outcome == TestOutcome.Failed))
-        //    {
-        //        ProgressBarColor = Colors.Red;
-        //    }
-        //    else
-        //    {
-        //        ProgressBarColor = Tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive)
-        //            ? Colors.Gold
-        //            : Colors.LimeGreen;
-        //    }
-        //}
         
         private int _executedCount;
         public int ExecutedCount
@@ -162,6 +131,7 @@ namespace Rubberduck.UI.UnitTesting
             {
                 testEngine.TestCompleted -= HandleTestCompletion;
                 testEngine.TestsRefreshed -= RefreshTests;
+                testEngine.TestRunCompleted -= HandleRunCompletion;
             }
         }
     }

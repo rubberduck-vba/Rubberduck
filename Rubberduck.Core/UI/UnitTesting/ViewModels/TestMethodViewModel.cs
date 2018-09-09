@@ -1,9 +1,10 @@
 ﻿using Rubberduck.Interaction.Navigation;
 using Rubberduck.UnitTesting;
+using System.Collections.Generic;
 
 namespace Rubberduck.UI.UnitTesting.ViewModels
 {
-    internal class TestMethodViewModel : ViewModelBase, INavigateSource
+    public class TestMethodViewModel : ViewModelBase, INavigateSource
     {
         public TestMethod Method { get; private set; }
 
@@ -41,5 +42,16 @@ namespace Rubberduck.UI.UnitTesting.ViewModels
             };
         }
 
+        public override bool Equals(object obj)
+        {
+            var model = obj as TestMethodViewModel;
+            return model != null &&
+                   EqualityComparer<TestMethod>.Default.Equals(Method, model.Method);
+        }
+
+        public override int GetHashCode()
+        {
+            return 1003453392 + EqualityComparer<TestMethod>.Default.GetHashCode(Method);
+        }
     }
 }

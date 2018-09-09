@@ -1,27 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting
 {
     public interface ITestEngine
     {
-        IEnumerable<TestMethod> Tests { get; }
-        void Run(IEnumerable<TestMethod> tests);
         event EventHandler<TestCompletedEventArgs> TestCompleted;
         event EventHandler<long> TestRunCompleted;
         event EventHandler TestsRefreshed;
+
+        IEnumerable<TestMethod> Tests { get; }
         TestOutcome CurrentAggregateOutcome { get; }
         bool CanRun { get; }
-    }
+        bool CanRepeatLastRun { get; }
 
-    public class TestModuleEventArgs : EventArgs
-    {
-        public TestModuleEventArgs(QualifiedModuleName qualifiedModuleName)
-        {
-            QualifiedModuleName = qualifiedModuleName;
-        }
-        public QualifiedModuleName QualifiedModuleName { get; }
+        void Run(IEnumerable<TestMethod> tests);
+        void RunByOutcome(TestOutcome outcome);
+        void RepeatLastRun();
     }
 
     public class TestCompletedEventArgs : EventArgs

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.UnitTesting
 {
@@ -23,6 +24,14 @@ namespace Rubberduck.UnitTesting
                     && Output == other.Output;
             }
             return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var hashCode = -1268493841;
+            hashCode = hashCode * -1521134295 + Outcome.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Output);
+            return hashCode;
         }
 
         public override string ToString()

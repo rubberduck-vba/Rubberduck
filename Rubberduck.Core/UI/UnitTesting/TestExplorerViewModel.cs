@@ -18,7 +18,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
+    internal class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -47,12 +47,7 @@ namespace Rubberduck.UI.UnitTesting
             _messageBox = messageBox;
 
             _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
-
-            RepeatLastRunCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRepeatLastRunCommand, CanExecuteRepeatLastRunCommand);
-            RunNotExecutedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunNotExecutedTestsCommand, CanExecuteRunNotExecutedTestsCommand);
-            RunInconclusiveTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunInconclusiveTestsCommand, CanExecuteRunInconclusiveTestsCommand);
-            RunFailedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunFailedTestsCommand, CanExecuteRunFailedTestsCommand);
-            RunPassedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunPassedTestsCommand, CanExecuteRunPassedTestsCommand);
+            
             RunSelectedTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
             RunSelectedCategoryTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedCategoryTestsCommand, CanExecuteRunSelectedCategoryTestsCommand);
 
@@ -94,42 +89,11 @@ namespace Rubberduck.UI.UnitTesting
             });
         }
 
-        private static readonly ParserState[] AllowedRunStates = { ParserState.ResolvedDeclarations, ParserState.ResolvingReferences, ParserState.Ready };
-
-        private bool CanExecuteRunPassedTestsCommand(object obj)
+        public event EventHandler<TestCompletedEventArgs> TestCompleted;
+        private void TestEngineTestCompleted(object sender, TestCompletedEventArgs e)
         {
-            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) && Model.Tests.Any(test => test.Result.Outcome == TestOutcome.Succeeded);
-        }
-
-        private bool CanExecuteRunFailedTestsCommand(object obj)
-        {
-            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) && Model.Tests.Any(test => test.Result.Outcome == TestOutcome.Failed);
-        }
-
-        private bool CanExecuteRunNotExecutedTestsCommand(object obj)
-        {
-            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) && Model.Tests.Any(test => test.Result.Outcome == TestOutcome.Unknown);
-        }
-
-        private bool CanExecuteRunInconclusiveTestsCommand(object obj)
-        {
-            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) & Model.Tests.Any(test => test.Result.Outcome == TestOutcome.Inconclusive);
-        }
-
-        private bool CanExecuteRepeatLastRunCommand(object obj)
-        {
-            return _vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status) && Model.LastRun.Any();
-        }
-
-        public event EventHandler<EventArgs> TestCompleted;
-        private void TestEngineTestCompleted(object sender, EventArgs e)
-        {
-            if (e is TestCompletedEventArgs args)
-            {
-                Model.Tests.First(vm => vm.Method == args.Test).Result = args.Result;
-                // get the UI to update
-                TestCompleted?.Invoke(sender, e);
-            }
+            // Propagate the event
+            TestCompleted?.Invoke(sender, e);
         }
 
         public INavigateSource SelectedItem => SelectedTest;
@@ -199,7 +163,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public CommandBase SetCategoryGroupingCommand { get; }
         
-        public RunAllTestsCommand RunAllTestsCommand { get; set; }
 
         public AddTestModuleCommand AddTestModuleCommand { get; set; }
 
@@ -209,24 +172,22 @@ namespace Rubberduck.UI.UnitTesting
 
         public ReparseCommand RefreshCommand { get; set; }
 
-        public CommandBase RepeatLastRunCommand { get; }
 
-        public CommandBase RunNotExecutedTestsCommand { get; }
+        public RunAllTestsCommand RunAllTestsCommand { get; set; }
+        public RepeatLastRunCommand RepeatLastRunCommand { get; set; }
+        public RunNotExecutedTestsCommand RunNotExecutedTestsCommand { get; set; }
+        // no way to run skipped tests. Those are skipped until reparsing anyways, so it's k
+        public RunInconclusiveTestsCommand RunInconclusiveTestsCommand { get; set; }
+        public RunFailedTestsCommand RunFailedTestsCommand { get; set; }
+        public RunSucceededTestsCommand RunPassedTestsCommand { get; set; }
+        public CommandBase RunSelectedTestCommand { get; }
+        public CommandBase RunSelectedCategoryTestsCommand { get; }
 
-        public CommandBase RunInconclusiveTestsCommand { get; }
-
-        public CommandBase RunFailedTestsCommand { get; }
-
-        public CommandBase RunPassedTestsCommand { get; }
 
         public CommandBase CopyResultsCommand { get; }
 
         private readonly NavigateCommand _navigateCommand;
         public INavigateCommand NavigateCommand => _navigateCommand;
-
-        public CommandBase RunSelectedTestCommand { get; }
-
-        public CommandBase RunSelectedCategoryTestsCommand { get; }
 
         public CommandBase OpenTestSettingsCommand { get; }
 
@@ -241,47 +202,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public TestExplorerModel Model { get; }
 
-        private void ExecuteRepeatLastRunCommand(object parameter)
-        {
-            var tests = Model.LastRun.ToList();
-            Model.ClearLastRun();
-            Model.IsBusy = true;
-            _testEngine.Run(tests.Select(vm => vm.Method));
-            Model.IsBusy = false;
-        }
-
-        private void ExecuteRunNotExecutedTestsCommand(object parameter)
-        {
-            Model.ClearLastRun();
-            Model.IsBusy = true;
-            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Unknown).Select(vm => vm.Method));
-            Model.IsBusy = false;
-        }
-
-        private void ExecuteRunInconclusiveTestsCommand(object parameter)
-        {
-            Model.ClearLastRun();
-            Model.IsBusy = true;
-            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Inconclusive).Select(vm => vm.Method));
-            Model.IsBusy = false;
-        }
-
-        private void ExecuteRunFailedTestsCommand(object parameter)
-        {
-            Model.ClearLastRun();
-            Model.IsBusy = true;
-            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Failed).Select(vm => vm.Method));
-            Model.IsBusy = false;
-        }
-
-        private void ExecuteRunPassedTestsCommand(object parameter)
-        {
-            Model.ClearLastRun();
-            Model.IsBusy = true;
-            _testEngine.Run(Model.Tests.Where(test => test.Result.Outcome == TestOutcome.Succeeded).Select(vm => vm.Method));
-            Model.IsBusy = false;
-        }
-
         private bool CanExecuteSelectedTestCommand(object obj)
         {
             return !Model.IsBusy && SelectedItem != null;
@@ -293,8 +213,7 @@ namespace Rubberduck.UI.UnitTesting
             {
                 return;
             }
-
-            Model.ClearLastRun();
+            
             Model.IsBusy = true;
             _testEngine.Run(new[] { SelectedTest.Method });
             Model.IsBusy = false;
@@ -334,7 +253,6 @@ namespace Rubberduck.UI.UnitTesting
             {
                 return;
             }
-            Model.ClearLastRun();
             Model.IsBusy = true;
             _testEngine.Run(Model.Tests.Where(test => test.Method.Category.Equals(SelectedTest.Method.Category))
                 .Select(t => t.Method));

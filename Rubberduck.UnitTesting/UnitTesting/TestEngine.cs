@@ -31,10 +31,12 @@ namespace Rubberduck.UnitTesting
         private readonly ITypeLibWrapperProvider _wrapperProvider;
         private readonly IUiDispatcher _uiDispatcher;
 
-        private readonly Dictionary<TestMethod, TestOutcome> testResults = new Dictionary<TestMethod, TestOutcome>();
+        private readonly List<TestMethod> LastRun = new List<TestMethod>();
+        private readonly Dictionary<TestOutcome, List<TestMethod>> resultsByOutcome = new Dictionary<TestOutcome, List<TestMethod>>();
         public IEnumerable<TestMethod> Tests { get; private set; }
-        // FIXME consider forcing VBE in design mode here
+        // FIXME consider forcing VBE in design mode here, would require injecting a VBE
         public bool CanRun => AllowedRunStates.Contains(_state.Status);
+        public bool CanRepeatLastRun => LastRun.Any();
 
         private bool _testRequested;
         private bool refreshBackoff;
@@ -50,22 +52,27 @@ namespace Rubberduck.UnitTesting
             _uiDispatcher = uiDispatcher;
 
             _state.StateChanged += StateChangedHandler;
-        }
 
+            // avoid nulls in results by outcome
+            foreach (TestOutcome outcome in Enum.GetValues(typeof(TestOutcome)))
+            {
+                resultsByOutcome.Add(outcome, new List<TestMethod>());
+            }
+        }
 
         public TestOutcome CurrentAggregateOutcome
         {
             get
             {
-                if (testResults.Values.Any(o => o == TestOutcome.Failed))
+                if (resultsByOutcome[TestOutcome.Failed].Any())
                 {
                     return TestOutcome.Failed;
                 }
-                if (testResults.Values.Any(o => o == TestOutcome.Inconclusive || o == TestOutcome.Ignored))
+                if (resultsByOutcome[TestOutcome.Inconclusive].Any() || resultsByOutcome[TestOutcome.Ignored].Any())
                 {
                     return TestOutcome.Inconclusive;
                 }
-                if (testResults.Values.Any(o => o == TestOutcome.Succeeded))
+                if (resultsByOutcome[TestOutcome.Succeeded].Any())
                 {
                     return TestOutcome.Succeeded;
                 }
@@ -110,13 +117,24 @@ namespace Rubberduck.UnitTesting
 
         private void OnTestCompleted(TestMethod test, TestResult result)
         {
-            testResults.Add(test, result.Outcome);
+            resultsByOutcome[result.Outcome].Add(test);
+            LastRun.Add(test);
             _uiDispatcher.InvokeAsync(() => TestCompleted?.Invoke(this, new TestCompletedEventArgs(test, result)));
         }
 
         public void Run(IEnumerable<TestMethod> tests)
         {
             _uiDispatcher.InvokeAsync(() => RunInternal(tests));
+        }
+
+        public void RunByOutcome(TestOutcome outcome)
+        {
+            Run(resultsByOutcome[outcome]);
+        }
+
+        public void RepeatLastRun()
+        {
+            Run(LastRun);
         }
 
         private void RunInternal(IEnumerable<TestMethod> tests)
@@ -155,7 +173,11 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            testResults.Clear();
+            LastRun.Clear();
+            foreach (var resultAggregator in resultsByOutcome.Values)
+            {
+                resultAggregator.Clear();
+            }
             try
             {
                 EnsureRubberduckIsReferencedForEarlyBoundTests();
