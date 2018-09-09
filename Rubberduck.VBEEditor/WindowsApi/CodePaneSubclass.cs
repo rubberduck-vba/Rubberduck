@@ -26,14 +26,22 @@ namespace Rubberduck.VBEditor.WindowsApi
             switch ((WM)msg)
             {
                 case WM.CHAR:
-                    args = new KeyPressEventArgs(hWnd, wParam, lParam, (char)wParam);
-                    OnKeyDown(args);
-                    if (args.Handled) { return 0; }
+                    args = new KeyPressEventArgs(hWnd, wParam, lParam);
+                    if (args.Character != '\r' && args.Character != '\n')
+                    {
+                        OnKeyDown(args);
+                        if (args.Handled) { return 0; }
+                    }
                     break;
                 case WM.KEYDOWN:
-                    args = new KeyPressEventArgs(hWnd, wParam, lParam);
-                    OnKeyDown(args);
-                    if (args.Handled) { return 0; }
+                    args = new KeyPressEventArgs(hWnd, wParam, lParam, true);
+                    // The only keydown we care about that doesn't generate a WM_CHAR is Delete, and the VBE handles Enter in WM_KEYDOWN, 
+                    // so we need to handle it first (otherwise it will already be in code when the managed event is handled).
+                    if (args.IsDelete || args.Character == '\r')
+                    {
+                        OnKeyDown(args);
+                        if (args.Handled) { return 0; }
+                    }
                     break;
                 case WM.SETTEXT:
                     if (!HasValidVbeObject)

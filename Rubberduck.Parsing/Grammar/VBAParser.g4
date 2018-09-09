@@ -56,7 +56,7 @@ moduleConfig :
 ;
 
 moduleConfigProperty :
-    BEGINPROPERTY whiteSpace unrestrictedIdentifier (whiteSpace GUIDLITERAL)? endOfStatement
+    BEGINPROPERTY whiteSpace unrestrictedIdentifier (LPAREN numberLiteral RPAREN)? (whiteSpace GUIDLITERAL)? endOfStatement
         (moduleConfigProperty | moduleConfigElement)+
     ENDPROPERTY endOfStatement
 ;
@@ -97,14 +97,19 @@ moduleDeclarationsElement :
     | eventStmt
     | constStmt
     | implementsStmt
-    | variableStmt
+    | moduleVariableStmt
     | moduleOption
     | udtDeclaration)
 ;
 
+moduleVariableStmt :
+	variableStmt
+	(endOfLine attributeStmt)*
+;
+
 moduleBody : 
     whiteSpace?
-    (moduleBodyElement endOfStatement)*;
+    ((moduleBodyElement | attributeStmt) endOfStatement)*;
 
 moduleBodyElement : 
     functionStmt 
@@ -828,6 +833,7 @@ markerKeyword : AS;
 statementKeyword :
     CALL
     | CASE
+    | CIRCLE
     | CONST
     | DECLARE
     | DEFBOOL
@@ -873,12 +879,14 @@ statementKeyword :
     | ON
     | OPTION
     | PRIVATE
+    | PSET
     | PUBLIC
     | RAISEEVENT
     | REDIM
     | RESUME
     | RETURN
     | RSET
+    | SCALE
     | SELECT
     | SET
     | STATIC

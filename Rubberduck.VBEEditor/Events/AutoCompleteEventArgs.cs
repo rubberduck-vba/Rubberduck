@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
@@ -8,20 +7,12 @@ namespace Rubberduck.VBEditor.Events
     {
         public AutoCompleteEventArgs(ICodeModule module, KeyPressEventArgs e)
         {
-            if (e.Key == Keys.Delete ||
-                e.Key == Keys.Back ||
-                e.Key == Keys.Enter ||
-                e.Key == Keys.Tab)
-            {
-                Keys = e.Key;
-            }
-            else
-            {
-                Character = e.Character;
-            }
+            Character = e.Character;
             CodeModule = module;
             CurrentSelection = module.GetQualifiedSelection().Value.Selection;
             CurrentLine = module.GetLines(CurrentSelection);
+            ControlDown = e.ControlDown;
+            IsDelete = e.IsDelete;
         }
 
         /// <summary>
@@ -36,26 +27,25 @@ namespace Rubberduck.VBEditor.Events
         public ICodeModule CodeModule { get; }
 
         /// <summary>
-        /// <c>true</c> if the event is originating from a <c>WM_CHAR</c> message.
-        /// <c>false</c> if the event is originating from a <c>WM_KEYDOWN</c> message.
-        /// </summary>
-        /// <remarks>
-        /// Inline completion is handled on WM_CHAR; deletions and block completion on WM_KEYDOWN.
-        /// </remarks>
-        public bool IsCharacter => Keys == default;
-        /// <summary>
-        /// The character whose key was pressed. Undefined value if <see cref="Keys"/> isn't `<see cref="Keys.None"/>.
+        /// The character whose key was pressed (Enter is always '\r'). Default value if Delete was pressed.
         /// </summary>
         public char Character { get; }
-        /// <summary>
-        /// The actionnable key that was pressed. Value is <see cref="Keys.None"/> when <see cref="IsCharacter"/> is <c>true</c>.
-        /// </summary>
-        public Keys Keys { get; }
 
+        /// <summary>
+        /// <c>true</c> if the left control key was down on the keypress.
+        /// </summary>
+        public bool ControlDown { get; }
+
+        /// <summary>
+        /// <c>true</c> if the Delete key generated the event.
+        /// </summary>
+        public bool IsDelete { get; }
+        
         /// <summary>
         /// The current location of the caret.
         /// </summary>
         public Selection CurrentSelection { get; }
+
         /// <summary>
         /// The contents of the current line of code.
         /// </summary>

@@ -5,6 +5,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.Command
 {
@@ -21,6 +22,11 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
+            if (_vbe.Kind == VBEKind.Standalone)
+            {
+                return false;
+            }
+
             if (!(parameter is CodeExplorerProjectViewModel) && parameter is CodeExplorerItemViewModel)
             {
                 return false;

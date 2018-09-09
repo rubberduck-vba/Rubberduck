@@ -9,7 +9,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -238,7 +237,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 RemoveSignatureParameters(eventImplementation);
             }
 
-            var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers().Where(item =>
+            var interfaceImplementations = _model.State.DeclarationFinder.FindAllInterfaceImplementingMembers().Where(item =>
                 item.ProjectId == _model.TargetDeclaration.ProjectId
                 &&
                 item.IdentifierName == $"{_model.TargetDeclaration.ComponentName}_{_model.TargetDeclaration.IdentifierName}");
@@ -252,7 +251,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope 
+            return _model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName) 
                 && item.IdentifierName == declaration.IdentifierName 
                 && item.DeclarationType == declarationType);
         }

@@ -9,7 +9,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -32,7 +31,6 @@ namespace Rubberduck.Inspections.QuickFixes
             var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
 
             int annotationLine;
-            string codeLine;
             using (var module = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName).CodeModule)
             {
                 annotationLine = result.QualifiedSelection.Selection.StartLine;
@@ -40,8 +38,6 @@ namespace Rubberduck.Inspections.QuickFixes
                 {
                     annotationLine--;
                 }
-
-                codeLine = annotationLine == 1 ? string.Empty : module.GetLines(annotationLine - 1, 1);
             }
 
             RuleContext treeRoot = result.Context;
@@ -49,16 +45,26 @@ namespace Rubberduck.Inspections.QuickFixes
             {
                 treeRoot = treeRoot.Parent;
             }
-            
-            if (codeLine.HasComment(out var commentStart) && codeLine.Substring(commentStart).StartsWith("'@Ignore "))
+
+            var listener = new CommentOrAnnotationListener();
+            ParseTreeWalker.Default.Walk(listener, treeRoot);
+            var commentContext = listener.Contexts.LastOrDefault(i => i.Stop.TokenIndex <= result.Context.Start.TokenIndex);
+            var commented = commentContext?.Stop.Line + 1 == annotationLine;
+
+            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+
+            if (commented)
             {
-                var listener = new AnnotationListener();
-                ParseTreeWalker.Default.Walk(listener, treeRoot);
-
-                var annotationContext = listener.Contexts.Last(i => i.Start.TokenIndex <= result.Context.Start.TokenIndex);
-
-                var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
-                rewriter.InsertAfter(annotationContext.annotationName().Stop.TokenIndex, $" {result.Inspection.AnnotationName},");
+                var annotation = commentContext.annotationList()?.annotation(0);
+                if (annotation != null && annotation.GetText().StartsWith("Ignore"))
+                {
+                    rewriter.InsertAfter(annotation.annotationName().Stop.TokenIndex, $" {result.Inspection.AnnotationName},");
+                }
+                else
+                {
+                    var indent = new string(Enumerable.Repeat(' ', commentContext.Start.Column).ToArray());
+                    rewriter.InsertAfter(commentContext.Stop.TokenIndex, $"{indent}{annotationText}{Environment.NewLine}");
+                }
             }
             else
             {
@@ -72,39 +78,35 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
                 else
                 {
-                    var listener = new EOLListener();
-                    ParseTreeWalker.Default.Walk(listener, treeRoot);
+                    var eol = new EndOfLineListener();
+                    ParseTreeWalker.Default.Walk(eol, treeRoot);
 
                     // we subtract 2 here to get the insertion index to A) account for VBE's one-based indexing
                     // and B) to get the newline token that introduces that line
-                    var eolContext = listener.Contexts.OrderBy(o => o.Start.TokenIndex).ElementAt(annotationLine - 2);
+                    var eolContext = eol.Contexts.OrderBy(o => o.Start.TokenIndex).ElementAt(annotationLine - 2);
                     insertIndex = eolContext.Start.TokenIndex;
 
                     annotationText = Environment.NewLine + annotationText;
                 }
 
-                var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
                 rewriter.InsertBefore(insertIndex, annotationText);
             }
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IgnoreOnce;
 
-        private class AnnotationListener : VBAParserBaseListener
+        private class CommentOrAnnotationListener : VBAParserBaseListener
         {
-            private readonly IList<VBAParser.AnnotationContext> _contexts = new List<VBAParser.AnnotationContext>();
-            public IEnumerable<VBAParser.AnnotationContext> Contexts => _contexts;
+            private readonly IList<VBAParser.CommentOrAnnotationContext> _contexts = new List<VBAParser.CommentOrAnnotationContext>();
+            public IEnumerable<VBAParser.CommentOrAnnotationContext> Contexts => _contexts;
 
-            public override void ExitAnnotation([NotNull] VBAParser.AnnotationContext context)
+            public override void ExitCommentOrAnnotation([NotNull] VBAParser.CommentOrAnnotationContext context)
             {
-                if (context.annotationName().GetText() == Annotations.IgnoreInspection)
-                {
-                    _contexts.Add(context);
-                }
+                _contexts.Add(context);
             }
         }
 
-        private class EOLListener : VBAParserBaseListener
+        private class EndOfLineListener : VBAParserBaseListener
         {
             private readonly IList<ParserRuleContext> _contexts = new List<ParserRuleContext>();
             public IEnumerable<ParserRuleContext> Contexts => _contexts;

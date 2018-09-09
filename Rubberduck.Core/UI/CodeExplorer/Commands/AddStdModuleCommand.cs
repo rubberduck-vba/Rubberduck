@@ -16,7 +16,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel);
+            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel, ProjectTypes.All);
         }
 
         protected override void OnExecute(object parameter)

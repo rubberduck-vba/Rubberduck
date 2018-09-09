@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.Grammar;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
@@ -81,7 +80,7 @@ namespace Rubberduck.Inspections.QuickFixes
                         var interfaceParameterIndex = GetParameterIndex((VBAParser.ArgContext)result.Context);
 
                         var implementationMembers =
-                            _state.AllUserDeclarations.FindInterfaceImplementationMembers(interfaceMembers.First(
+                            _state.DeclarationFinder.FindInterfaceImplementationMembers(interfaceMembers.First(
                                 member => member.Context == matchingInterfaceMemberContext)).ToHashSet();
 
                         var parameterDeclarations =
@@ -117,7 +116,7 @@ namespace Rubberduck.Inspections.QuickFixes
                     if (matchingInterfaceMemberContext != null)
                     {
                         var functionDeclarations =
-                            _state.AllUserDeclarations.FindInterfaceImplementationMembers(
+                            _state.DeclarationFinder.FindInterfaceImplementationMembers(
                                     interfaceMembers.First(member => member.Context == matchingInterfaceMemberContext))
                                 .Cast<FunctionDeclaration>()
                                 .ToHashSet();
@@ -144,7 +143,7 @@ namespace Rubberduck.Inspections.QuickFixes
                     if (matchingInterfaceMemberContext != null)
                     {
                         var propertyGetDeclarations =
-                            _state.AllUserDeclarations.FindInterfaceImplementationMembers(
+                            _state.DeclarationFinder.FindInterfaceImplementationMembers(
                                     interfaceMembers.First(member => member.Context == matchingInterfaceMemberContext))
                                 .Cast<PropertyGetDeclaration>()
                                 .ToHashSet();

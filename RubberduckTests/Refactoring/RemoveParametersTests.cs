@@ -34,8 +34,7 @@ End Sub";
                 @"Private Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -71,8 +70,7 @@ End Sub";
                 @"Private Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -108,8 +106,7 @@ End Sub";
                 @"Private Sub Foo(ByVal arg2 As String)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -145,8 +142,7 @@ End Sub";
                 @"Private Sub Foo(ByVal arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -192,8 +188,7 @@ Public Sub Goo()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -239,8 +234,7 @@ Sub goo()
     foo asd, sdf
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -276,8 +270,7 @@ End Function";
                 @"Private Function Foo(ByVal arg1 As Integer) As Boolean
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -313,8 +306,7 @@ End Function";
                 @"Private Function Foo() As Boolean
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -360,8 +352,7 @@ Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -405,8 +396,7 @@ Private Sub goo()
     foo 1, 2, 5, 7
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -446,8 +436,7 @@ End Property";
                 @"Private Property Get Foo() As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -482,8 +471,7 @@ End Property";
 Private Property Set Foo(ByVal arg2 As String)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -522,8 +510,7 @@ End Property";
                 @"Private Property Set Foo(ByVal arg2 As String)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -569,8 +556,7 @@ Private Sub Bar()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -620,8 +606,7 @@ Private Sub Bar()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -675,8 +660,7 @@ Private Function foo(ByVal b As Integer) As Integer
     foo = a + b
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -722,8 +706,7 @@ Private Sub Bar()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -834,8 +817,7 @@ Public Sub Goo(ByVal arg1 As Integer, _
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -866,8 +848,7 @@ End Sub
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -890,8 +871,7 @@ End Property";
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -925,8 +905,7 @@ End Property
 Private Property Set Foo(ByVal arg2 As String)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -968,8 +947,7 @@ End Property
 Private Property Let Foo(ByVal arg2 As String)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1013,8 +991,7 @@ Private Sub Goo(ByVal arg1 As Integer)
     Foo 
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1060,8 +1037,7 @@ Private Sub Goo(ByVal arg1 As Integer)
     Foo 1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1109,8 +1085,7 @@ Private Sub Goo(ByVal arg1 As Integer)
     Foo ""test""
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1167,8 +1142,7 @@ Private Sub Goo(ByVal arg1 As Integer)
     Foo ,3
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1208,8 +1182,7 @@ End Sub";
                   ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1248,8 +1221,7 @@ End Sub";
                   ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1288,8 +1260,7 @@ End Sub";
                   ByVal arg2 As String)
 End Sub";   // note: VBE removes excess spaces
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1328,8 +1299,7 @@ End Sub";
                   ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1382,8 +1352,7 @@ Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 End Sub
 ";   // note: IDE removes excess spaces
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -1929,8 +1898,7 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -1969,8 +1937,7 @@ End Sub";
                 @"Private Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -1994,8 +1961,7 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -2025,8 +1991,7 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 15, 1, 15);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {

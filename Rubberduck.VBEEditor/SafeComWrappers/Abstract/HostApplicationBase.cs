@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -23,11 +24,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             TApplication application;
             try
             {
-                application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
+                application = (TApplication) Marshal.GetActiveObject($"{applicationName}.Application");
             }
-            catch (COMException)
+            catch (COMException exception)
             {
-                application = null; // unit tests don't need it anyway.
+                _logger.Error(exception, $"Unexpected COM exception while acquiring the host application object for application {applicationName} via COM reflection.");
+                application = null; // We currently really only use the name anyway.
+            }
+            catch (InvalidCastException exception)
+            {
+                //TODO: Find out why this ever happens.
+                _logger.Error(exception, $"Unable to cast the host application object for application {applicationName} acquired via COM reflection to its PIA type.");
+                application = null; //We currently really only use the name anyway.
+            }
+            catch (Exception exception)
+            {
+                //note: We catch all exceptions because we currently really do not need application object and there can be exceptions for unexpected system setups.
+                _logger.Error(exception, $"Unexpected exception while acquiring the host application object for application {applicationName} from a document module.");
+                application = null; //We currently really only use the name anyway.
             }
             return application;
         }
@@ -37,20 +51,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             TApplication application;
             try
             {
-                var appProperty = ApplicationPropertyFromDocumentModule(vbe);
-                if (appProperty != null)
+                using (var appProperty = ApplicationPropertyFromDocumentModule(vbe))
                 {
-                    application = (TApplication)appProperty.Object;
-                }
-                else
-                {
-                    application = (TApplication)Marshal.GetActiveObject($"{applicationName}.Application");
+                    if (appProperty != null)
+                    {
+                        application = (TApplication) appProperty.Object;
+                    }
+                    else
+                    {
+                        application = ApplicationFromComReflection(applicationName);
+                    }
                 }
 
             }
-            catch (COMException)
+            catch (COMException exception)
             {
-                application = null; // unit tests don't need it anyway.
+                _logger.Error(exception, $"Unexpected COM exception while acquiring the host application object for application {applicationName} from a document module.");
+                application = null; // We currently really only use the name anyway.
+            }
+            catch (InvalidCastException exception)
+            {
+                _logger.Error(exception, $"Unable to cast the host application object for application {applicationName} acquiered from a document module to its PIA type.");
+                application = null; //We currently really only use the name anyway.
+            }
+            catch (Exception exception)
+            {
+                //note: We catch all exceptions because we currently really do not need application object and there can be exceptions for unexpected system setups.
+                _logger.Error(exception, $"Unexpected exception while acquiring the host application object for application {applicationName} from a document module.");
+                application = null; //We currently really only use the name anyway.
             }
             return application;
         }

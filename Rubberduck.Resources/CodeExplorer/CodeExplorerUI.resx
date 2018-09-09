@@ -355,4 +355,22 @@
   <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
     <value>Do you want to export '{0}' before removing?</value>
   </data>
+  <data name="CodeExplorer_AddMDIFormText" xml:space="preserve">
+    <value>MDI form (.frm)</value>
+  </data>
+  <data name="CodeExplorer_AddPropertyPageText" xml:space="preserve">
+    <value>Property page (.pag)</value>
+  </data>
+  <data name="CodeExplorer_AddUserControlText" xml:space="preserve">
+    <value>UserControl (.ctl)</value>
+  </data>
+  <data name="CodeExplorer_AddUserDocumentText" xml:space="preserve">
+    <value>User document (.dob)</value>
+  </data>
+  <data name="CodeExplorer_AddVBFormText" xml:space="preserve">
+    <value>Form (.frm)</value>
+  </data>
+  <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
+    <value>Set as start up</value>
+  </data>
 </root>

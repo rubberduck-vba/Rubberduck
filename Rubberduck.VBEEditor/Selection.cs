@@ -27,6 +27,12 @@ namespace Rubberduck.VBEditor
         public Selection ToOneBased() =>
             new Selection(StartLine + 1, StartColumn + 1, EndLine + 1, EndColumn + 1);
 
+        public Selection ShiftRight(int positions = 1) =>
+            new Selection(StartLine, StartColumn + positions, EndLine, EndColumn + positions);
+
+        public Selection ShiftLeft(int positions = 1) =>
+            new Selection(StartLine, Math.Max(1, StartColumn - positions), EndLine, Math.Max(1, StartColumn - positions));
+
         public bool IsEmpty()
         {
             return Equals(Empty);
@@ -72,6 +78,14 @@ namespace Rubberduck.VBEditor
 
         public Selection PreviousLine => StartLine == 1 ? Home : new Selection(StartLine - 1, 1);
         public Selection NextLine => new Selection(StartLine + 1, 1);
+
+        /// <summary>
+        /// Adds each corresponding element of the specified <c>Selection</c> value. Useful for offsetting with a zero-based <c>Selection</c>.
+        /// </summary>
+        public Selection Offset(Selection offset)
+        {
+            return new Selection(StartLine + offset.StartLine, StartColumn + offset.StartColumn, EndLine + offset.EndLine, EndColumn + offset.EndColumn);
+        }
 
         public int StartLine { get; }
 

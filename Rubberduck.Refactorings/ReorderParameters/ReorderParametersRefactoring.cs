@@ -3,8 +3,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
-using Rubberduck.Resources;
+ using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.ComManagement;
@@ -220,10 +219,18 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 }
             }
 
-            var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers()
-                                                        .Where(item => item.ProjectId == _model.TargetDeclaration.ProjectId &&
-                                                               item.IdentifierName == _model.TargetDeclaration.ComponentName + "_" + _model.TargetDeclaration.IdentifierName);
-            foreach (var interfaceImplentation in interfaceImplementations)
+            if (!(_model.TargetDeclaration is ModuleBodyElementDeclaration member) 
+                || !(member.IsInterfaceImplementation || member.IsInterfaceMember))
+            {
+                return;
+            }
+
+            var implementations =
+                _model.State.DeclarationFinder.FindInterfaceImplementationMembers(member.IsInterfaceMember
+                    ? member
+                    : member.InterfaceMemberImplemented);
+
+            foreach (var interfaceImplentation in implementations)
             {
                 AdjustReferences(interfaceImplentation.References);
                 AdjustSignatures(interfaceImplentation);

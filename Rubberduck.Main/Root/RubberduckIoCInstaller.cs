@@ -341,7 +341,11 @@ namespace Rubberduck.Root
 
         private void RegisterRubberduckMenu(IWindsorContainer container)
         {
-            var location = _addin.CommandBarLocations[CommandBarSite.MenuBar];
+            if (!_addin.CommandBarLocations.TryGetValue(CommandBarSite.MenuBar, out var location))
+            {
+                return;
+            }
+
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = RubberduckMenuItems();
@@ -407,7 +411,11 @@ namespace Rubberduck.Root
 
         private void RegisterCodePaneContextMenu(IWindsorContainer container)
         {
-            var location = _addin.CommandBarLocations[CommandBarSite.CodeWindow];
+            if (!_addin.CommandBarLocations.TryGetValue(CommandBarSite.CodeWindow, out var location))
+            {
+                return;
+            }
+
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = CodePaneContextMenuItems();
@@ -428,7 +436,11 @@ namespace Rubberduck.Root
 
         private void RegisterFormDesignerContextMenu(IWindsorContainer container)
         {
-            var location = _addin.CommandBarLocations[CommandBarSite.MsForm];
+            if (!_addin.CommandBarLocations.TryGetValue(CommandBarSite.MsForm, out var location))
+            {
+                return;
+            }
+
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = FormDesignerContextMenuItems();
@@ -446,7 +458,11 @@ namespace Rubberduck.Root
 
         private void RegisterFormDesignerControlContextMenu(IWindsorContainer container)
         {
-            var location = _addin.CommandBarLocations[CommandBarSite.MsFormControl];
+            if (!_addin.CommandBarLocations.TryGetValue(CommandBarSite.MsFormControl, out var location))
+            {
+                return;
+            }
+
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = FormDesignerContextMenuItems();
@@ -455,7 +471,11 @@ namespace Rubberduck.Root
 
         private void RegisterProjectExplorerContextMenu(IWindsorContainer container)
         {
-            var location = _addin.CommandBarLocations[CommandBarSite.ProjectExplorer];
+            if (!_addin.CommandBarLocations.TryGetValue(CommandBarSite.ProjectExplorer, out var location))
+            {
+                return;
+            }
+
             var controls = MainCommandBarControls(location.ParentId);
             var beforeIndex = FindRubberduckMenuInsertionIndex(controls, location.BeforeControlId);
             var menuItemTypes = ProjectWindowContextMenuItems();
@@ -771,6 +791,12 @@ namespace Rubberduck.Root
             container.Register(Component.For<IParseCoordinator>()
                 .ImplementedBy<ParseCoordinator>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IComLibraryProvider>()
+                .ImplementedBy<ComLibraryProvider>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IReferencedDeclarationsCollector>()
+                .ImplementedBy<LibraryReferencedDeclarationsCollector>()
+                .LifestyleSingleton());
             container.Register(Component.For<ITokenStreamPreprocessor>()
                 .ImplementedBy<VBAPreprocessor>()
                 .DependsOn(Dependency.OnComponent<ITokenStreamParser, VBAPreprocessorParser>())
@@ -788,6 +814,9 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IStringParser>()
                 .ImplementedBy<TokenStreamParserStringParserAdapterWithPreprocessing>()
+                .LifestyleSingleton());
+            container.Register(Component.For<ITokenStreamParser>()
+                .ImplementedBy<VBATokenStreamParser>()
                 .LifestyleSingleton());
             container.Register(Component.For<IModuleParser>()
                 .ImplementedBy<ModuleParser>()

@@ -20,20 +20,20 @@ namespace RubberduckTests.Mocks
         private readonly Mock<IVBEEvents> _vbeEvents;
 
         #region standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
-        public static readonly string LibraryPathVBA = @"C:\PROGRA~1\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
-        public static readonly string LibraryPathMsExcel = @"C:\Program Files\Microsoft Office\Office15\EXCEL.EXE";   // mock host application, priority locked
-        public static readonly string LibraryPathMsOffice = @"C:\Program Files\Common Files\Microsoft Shared\OFFICE15\MSO.DLL";
-        public static readonly string LibraryPathStdOle = @"C:\Windows\System32\stdole2.tlb";
-        public static readonly string LibraryPathMsForms = @"C:\Windows\system32\FM20.DLL"; // standard in projects with a UserForm module
+        public static readonly string LibraryPathVBA = @"C:\Program Files (x86)\Common Files\Microsoft Shared\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
+        public static readonly string LibraryPathMsExcel = @"C:\Program Files\Microsoft Office 15\Root\Office15\EXCEL.EXE";   // mock host application, priority locked
+        public static readonly string LibraryPathMsOffice = @"C:\Program Files (x86)\Common Files\Microsoft Shared\OFFICE15\MSO.DLL";
+        public static readonly string LibraryPathStdOle = @"C:\Windows\SysWOW64\stdole2.tlb";
+        public static readonly string LibraryPathMsForms = @"C:\Windows\SysWOW64\FM20.DLL"; // standard in projects with a UserForm module
         #endregion
 
         public static readonly string LibraryPathVBIDE = @"C:\Program Files (x86)\Common Files\Microsoft Shared\VBA\VBA6\VBE6EXT.OLB";
-        public static readonly string LibraryPathScripting = @"C:\Windows\System32\scrrun.dll";
-        public static readonly string LibraryPathRegex = @"C:\Windows\System32\vbscript.dll\3";
-        public static readonly string LibraryPathMsXml = @"C:\Windows\System32\msxml6.dll";
-        public static readonly string LibraryPathShDoc = @"C:\Windows\System32\ieframe.dll";
-        public static readonly string LibraryPathAdoDb = @"C:\Program Files\Common Files\System\ado\msado15.dll";
-        public static readonly string LibraryPathAdoRecordset = @"C:\Program Files\Common Files\System\ado\msador15.dll";
+        public static readonly string LibraryPathScripting = @"C:\Windows\SysWOW64\scrrun.dll";
+        public static readonly string LibraryPathRegex = @"C:\Windows\SysWOW64\vbscript.dll\3";
+        public static readonly string LibraryPathMsXml = @"C:\Windows\SysWOW64\msxml6.dll";
+        public static readonly string LibraryPathShDoc = @"C:\Windows\SysWOW64\ieframe.dll";
+        public static readonly string LibraryPathAdoDb = @"C:\Program Files (x86)\Common Files\System\ado\msado15.dll";
+        public static readonly string LibraryPathAdoRecordset = @"C:\Program Files (x86)\Common Files\System\ado\msador15.dll";
 
         public static readonly Dictionary<string, string> LibraryPaths = new Dictionary<string, string>
         {
@@ -93,19 +93,19 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="name">The name of the project to build.</param>
         /// <param name="protection">A value that indicates whether the project is protected.</param>
-        public MockProjectBuilder ProjectBuilder(string name, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return ProjectBuilder(name, string.Empty, protection);
+            return ProjectBuilder(name, string.Empty, protection, projectType);
         }
 
-        public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return new MockProjectBuilder(name, filename, protection, () => _vbe.Object, this);
+            return new MockProjectBuilder(name, filename, protection, projectType, () => _vbe.Object, this);
         }
 
-        public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return new MockProjectBuilder(name, filename, projectId, protection, () => _vbe.Object, this);
+            return new MockProjectBuilder(name, filename, projectId, protection, projectType, () => _vbe.Object, this);
         }
 
         /// <summary>
