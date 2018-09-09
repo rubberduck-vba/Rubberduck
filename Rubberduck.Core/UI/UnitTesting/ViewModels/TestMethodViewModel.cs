@@ -1,28 +1,32 @@
 ﻿using Rubberduck.Interaction.Navigation;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor;
 using System.Collections.Generic;
 
 namespace Rubberduck.UI.UnitTesting.ViewModels
 {
     public class TestMethodViewModel : ViewModelBase, INavigateSource
     {
-        public TestMethod Method { get; private set; }
-
-        // Delegate Navigability to encapsulated TestMethod
-        public NavigateCodeEventArgs GetNavigationArgs() => Method.GetNavigationArgs();
-
-        private TestResult _result = new TestResult(TestOutcome.Unknown);
-
         public TestMethodViewModel(TestMethod test)
         {
             Method = test;
         }
+
+        public TestMethod Method { get; private set; }
+
+        private TestResult _result = new TestResult(TestOutcome.Unknown);
 
         public TestResult Result
         {
             get => _result;
             set { _result = value; OnPropertyChanged(); }
         }
+
+        public QualifiedMemberName QualifiedName => Method.Declaration.QualifiedName;
+
+        // Delegate Navigability to encapsulated TestMethod
+        public NavigateCodeEventArgs GetNavigationArgs() => Method.GetNavigationArgs();
+        
 
         public override string ToString()
         {

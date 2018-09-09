@@ -259,18 +259,18 @@
 
         <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Model.Tests}">
             <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="Method.Declaration.QualifiedName.QualifiedModuleName.Name" />
-                <componentModel:SortDescription PropertyName="Method.Declaration.QualifiedName.MemberName" />
+                <componentModel:SortDescription PropertyName="QualifiedName.QualifiedModuleName.Name" />
+                <componentModel:SortDescription PropertyName="QualifiedName.MemberName" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Method.Declaration.QualifiedName.QualifiedModuleName.Name" />
+                <PropertyGroupDescription PropertyName="QualifiedName.QualifiedModuleName.Name" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
 
         <CollectionViewSource x:Key="ResultsByOutcome" Source="{Binding Model.Tests}">
             <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="Method.Declaration.QualifiedName.QualifiedModuleName.Name" />
-                <componentModel:SortDescription PropertyName="Method.Declaration.QualifiedName.MemberName" />
+                <componentModel:SortDescription PropertyName="QualifiedName.QualifiedModuleName.Name" />
+                <componentModel:SortDescription PropertyName="QualifiedName.MemberName" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Result.Outcome" Converter="{StaticResource OutcomeTextConverter}" />
@@ -279,8 +279,8 @@
 
         <CollectionViewSource x:Key="ResultsByCategory" Source="{Binding Model.Tests}">
             <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="Method.Declaration.QualifiedName.QualifiedModuleName.Name" />
-                <componentModel:SortDescription PropertyName="Method.Declaration.QualifiedName.MemberName" />
+                <componentModel:SortDescription PropertyName="QualifiedName.QualifiedModuleName.Name" />
+                <componentModel:SortDescription PropertyName="QualifiedName.MemberName" />
             </CollectionViewSource.SortDescriptions>
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Method.Category.Name" />
@@ -636,7 +636,7 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding Method.Declaration.QualifiedName.QualifiedModuleName}" />
+                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedName.QualifiedModuleName}" />
                         <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}" Binding="{Binding Method.Declaration.IdentifierName}" />
                         <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}" Binding="{Binding Method.Category.Name}" />
                         <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
@@ -655,8 +655,8 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding Method.Declaration.QualifiedName.QualifiedModuleName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}" Binding="{Binding Method.Declaration.QualifiedName.MemberName}" />
+                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedName.QualifiedModuleName}" />
+                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedName.MemberName}" />
                         <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}" Binding="{Binding Method.Category.Name}" />
                         <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
                         <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
@@ -674,8 +674,8 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding Method.Declaration.QualifiedName.QualifiedModuleName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}" Binding="{Binding Method.Declaration.QualifiedName.MemberName}" />
+                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedName.QualifiedModuleName}" />
+                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedName.MemberName}" />
                         <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}" Binding="{Binding Method.Category.Name}" />
                         <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
                         <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
