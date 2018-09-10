@@ -39,7 +39,6 @@ namespace Rubberduck.UnitTesting
         public bool CanRun => AllowedRunStates.Contains(_state.Status);
         public bool CanRepeatLastRun => LastRun.Any();
         
-        private bool _testsRunning;
         private bool refreshBackoff;
 
 
@@ -89,7 +88,7 @@ namespace Rubberduck.UnitTesting
                 refreshBackoff = false;
             }
             // CanRun returned true already, only refresh tests if we're not backed off
-            else if (!refreshBackoff && !_testsRunning)
+            else if (!refreshBackoff && e.OldState != ParserState.Busy)
             {
                 refreshBackoff = true;
                 Tests = TestDiscovery.GetAllTests(_state);
@@ -129,12 +128,7 @@ namespace Rubberduck.UnitTesting
             {
                 return;
             }
-            // FIXME we shouldn't need to handle awaiting a certain parser state ourselves anymore, right?
-            // that would drop the _testsRequested member completely
-            // _testsRunning avoids raising a TestsRefreshed event when exiting the parser suspension
-            _testsRunning = true;
             _state.OnSuspendParser(this, AllowedRunStates, () => RunWhileSuspended(tests));
-            _testsRunning = false;
         }
 
         private void EnsureRubberduckIsReferencedForEarlyBoundTests()
