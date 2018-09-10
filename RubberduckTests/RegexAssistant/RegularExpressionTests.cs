@@ -1,4 +1,6 @@
 ﻿using NUnit.Framework;
+using Rubberduck.RegexAssistant.Atoms;
+using Rubberduck.RegexAssistant.Expressions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,7 +16,7 @@ namespace Rubberduck.RegexAssistant.Tests
             var pattern = "(g){2,4}";
             RegularExpression.TryParseAsAtom(ref pattern, out var expression);
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
-            Assert.AreEqual(new Group("(g)", new Quantifier("{2,4}")), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new Group(new SingleAtomExpression(new Literal("g", Quantifier.None)), "(g)", new Quantifier("{2,4}")), (expression as SingleAtomExpression).Atom);
         }
 
         [Category("RegexAssistant")]
@@ -109,6 +111,57 @@ namespace Rubberduck.RegexAssistant.Tests
             }
         }
 
+
+        [Category("RegexAssistant")]
+        [Test]
+        public void ParseGroupConcatenationAsConcatenatedExpression()
+        {
+            var expected = new List<IRegularExpression>
+            {
+                new SingleAtomExpression(new Group(new SingleAtomExpression(new Literal("a", Quantifier.None)), "(a)", Quantifier.None)),
+                new SingleAtomExpression(new Group(new SingleAtomExpression(new Literal("b", Quantifier.None)), "(b)", Quantifier.None))
+            };
+            var expression = RegularExpression.Parse("(a)(b)");
+            Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
+            var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
+            Assert.AreEqual(expected.Count, subexpressions.Count);
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], subexpressions[i]);
+            }
+        }
+
+        [Category("RegexAssistant")]
+        [Test]
+        public void ParseNestedConcatenatedGroupsCorrectly()
+        {
+            var expected = new List<IRegularExpression>
+            {
+                new SingleAtomExpression(new Literal("a", Quantifier.None)),
+                new SingleAtomExpression(new Group(new ConcatenatedExpression(new IRegularExpression[]{
+                    new SingleAtomExpression(new Literal("f", Quantifier.None)),
+                    new SingleAtomExpression(new Literal("o", Quantifier.None)),
+                    new SingleAtomExpression(new Literal("o", Quantifier.None)),
+                }.ToList()), "(foo)", Quantifier.None)),
+                new SingleAtomExpression(new Group(new ConcatenatedExpression(new IRegularExpression[]{
+                    new SingleAtomExpression(new Literal("b", Quantifier.None)),
+                    new SingleAtomExpression(new Literal("a", Quantifier.None)),
+                    new SingleAtomExpression(new Literal("r", Quantifier.None)),
+                }.ToList()), "(bar)", Quantifier.None)),
+                new SingleAtomExpression(new Literal("b", Quantifier.None))
+            };
+            var expression = RegularExpression.Parse("(a(foo)(bar)b)");
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
+            Assert.IsInstanceOf(typeof(Group), ((SingleAtomExpression)expression).Atom);
+            var containedGroup = (Group)((SingleAtomExpression)expression).Atom;
+            var subexpressions = containedGroup.Subexpression.Subexpressions;
+            Assert.AreEqual(expected.Count, subexpressions.Count);
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], subexpressions[i]);
+            }
+        }
+
         [Category("RegexAssistant")]
         [Test]
         public void ParseSimplisticGroupConcatenationAsConcatenatedExpression()
@@ -116,7 +169,11 @@ namespace Rubberduck.RegexAssistant.Tests
             var expected = new List<IRegularExpression>
             {
                 new SingleAtomExpression(new Literal("a", Quantifier.None)),
-                new SingleAtomExpression(new Group("(abc)", new Quantifier("{1,4}"))),
+                new SingleAtomExpression(new Group(new ConcatenatedExpression(new IRegularExpression[]{
+                    new SingleAtomExpression(new Literal("a", Quantifier.None)),
+                    new SingleAtomExpression(new Literal("b", Quantifier.None)),
+                    new SingleAtomExpression(new Literal("c", Quantifier.None)),
+                }.ToList()),"(abc)", new Quantifier("{1,4}"))),
                 new SingleAtomExpression(new Literal("b", Quantifier.None))
             };
 
@@ -186,7 +243,10 @@ namespace Rubberduck.RegexAssistant.Tests
         {
             var expression = RegularExpression.Parse("(a|b)");
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
-            Assert.AreEqual(new Group("(a|b)", Quantifier.None), (expression as SingleAtomExpression).Atom);
+            Assert.AreEqual(new Group(new AlternativesExpression(new IRegularExpression[]{
+                    new SingleAtomExpression(new Literal("a", Quantifier.None)),
+                    new SingleAtomExpression(new Literal("b", Quantifier.None)),
+                }.ToList()), "(a|b)", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
     }
 }

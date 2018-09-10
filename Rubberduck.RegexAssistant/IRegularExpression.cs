@@ -1,7 +1,8 @@
-﻿using Rubberduck.RegexAssistant.i18n;
+﻿using Rubberduck.RegexAssistant.Atoms;
+using RdGroup = Rubberduck.RegexAssistant.Atoms.Group;
+using Rubberduck.RegexAssistant.Expressions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
