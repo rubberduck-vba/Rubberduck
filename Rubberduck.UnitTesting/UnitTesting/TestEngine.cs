@@ -176,8 +176,7 @@ namespace Rubberduck.UnitTesting
                 Logger.Warn(e);
                 foreach (var test in testMethods)
                 {
-                    // FIXME use a more semantically correct message
-                    OnTestCompleted(test, new TestResult(TestOutcome.Failed, AssertMessages.Assert_TestInitializeFailure, 1));
+                    OnTestCompleted(test, new TestResult(TestOutcome.Failed, AssertMessages.Prerequisite_EarlyBindingReferenceMissing, 0));
                 }
                 return;
             }
@@ -205,12 +204,10 @@ namespace Rubberduck.UnitTesting
                         }
                         catch (COMException ex)
                         {
-                            Logger.Error(ex,
-                                "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.",
-                                moduleName.Name);
+                            Logger.Error(ex, "Unexpected COM exception while initializing tests for module {0}. The module will be skipped.", moduleName.Name);
                             foreach (var method in moduleTestMethods)
                             {
-                                OnTestCompleted(method, new TestResult(TestOutcome.Unknown, AssertMessages.Assert_ComException));
+                                OnTestCompleted(method, new TestResult(TestOutcome.Unknown, AssertMessages.TestRunner_ModuleInitializeFailure));
                             }
                             continue;
                         }
@@ -230,21 +227,24 @@ namespace Rubberduck.UnitTesting
                                 {
                                     VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, testInitialize);
                                 }
-                                catch (Exception trace)
+                                catch (COMException trace)
                                 {
-                                    OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.Assert_TestInitializeFailure));
-                                    Logger.Trace(trace, "Unexpected Exception when running TestInitialize");
+                                    OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.TestRunner_TestInitializeFailure));
+                                    Logger.Trace(trace, "Unexpected COMException when running TestInitialize");
                                     continue;
                                 }
                                 var result = RunTestMethod(typeLibWrapper, test);
                                 // we can trigger this event, because cleanup can fail without affecting the result
                                 OnTestCompleted(test, result);
-                                VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, testCleanup);
-                            }
-                            catch (COMException ex)
-                            {
-                                Logger.Error(ex, "Unexpected COM exception while running tests.");
-                                OnTestCompleted(test, new TestResult(TestOutcome.Inconclusive, AssertMessages.Assert_ComException));
+                                try
+                                {
+                                    VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, testCleanup);
+                                }
+                                catch (COMException cleanupFail)
+                                {
+                                    // Apparently the user doesn't need to know when test results for subsequent tests could be incorrect
+                                    Logger.Trace(cleanupFail, "Unexpected COMException when running TestCleanup");
+                                }
                             }
                             finally
                             {
@@ -257,6 +257,7 @@ namespace Rubberduck.UnitTesting
                         }
                         catch (COMException ex)
                         {
+                            // FIXME somehow notify the user of this mess
                             Logger.Error(ex,
                                 "Unexpected COM exception while cleaning up tests for module {0}. Aborting any further unit tests",
                                 moduleName.Name);
@@ -267,6 +268,7 @@ namespace Rubberduck.UnitTesting
             }
             catch (Exception ex)
             {
+                // FIXME somehow notify the user of this mess
                 Logger.Error(ex, "Unexpected expection while running unit tests; unit tests will be aborted");
             }
             overallTime.Stop();
@@ -275,13 +277,23 @@ namespace Rubberduck.UnitTesting
         
         private TestResult RunTestMethod(ITypeLibWrapper typeLib, TestMethod test)
         {
-            var assertResults = new List<AssertCompletedEventArgs>();
-            if (!VBEInteraction.AttemptRunTestMethod(_typeLibApi, typeLib, test, (s, e) => assertResults.Add(e), out var duration))
+            long duration = 0;
+            try
             {
-                // FIXME i18n
-                return new TestResult(TestOutcome.Inconclusive, "Test raised an error.", duration);
+                var assertResults = new List<AssertCompletedEventArgs>();
+                VBEInteraction.RunTestMethod(_typeLibApi, typeLib, test, (s, e) => assertResults.Add(e), out duration);
+                return EvaluateResults(assertResults, duration);
             }
-            return EvaluateResults(assertResults, duration);
+            catch (COMException e)
+            {
+                Logger.Info(e, "Unexpected COM exception while running test method.");
+                return new TestResult(TestOutcome.Inconclusive, AssertMessages.TestRunner_ComException, duration);
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, "Unexpected exceptino while running test method.");
+                return new TestResult(TestOutcome.Inconclusive, AssertMessages.TestRunner_ExceptionDuringRun, duration);
+            }
         }
 
         private TestResult EvaluateResults(IEnumerable<AssertCompletedEventArgs> assertResults, long duration)

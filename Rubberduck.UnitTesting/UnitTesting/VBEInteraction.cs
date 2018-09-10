@@ -27,7 +27,7 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        internal static bool AttemptRunTestMethod(IVBETypeLibsAPI tlApi, ITypeLibWrapper typeLib, TestMethod test, EventHandler<AssertCompletedEventArgs> assertCompletionHandler, out long duration)
+        internal static void RunTestMethod(IVBETypeLibsAPI tlApi, ITypeLibWrapper typeLib, TestMethod test, EventHandler<AssertCompletedEventArgs> assertCompletionHandler, out long duration)
         {
             AssertHandler.OnAssertCompleted += assertCompletionHandler;
             var stopwatch = new Stopwatch();
@@ -40,14 +40,12 @@ namespace Rubberduck.UnitTesting
                 stopwatch.Stop();
 
                 duration = stopwatch.ElapsedMilliseconds;
-                return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 stopwatch.Stop();
-                Logger.Info(e, "Running a test method failed with an exception");
                 duration = stopwatch.ElapsedMilliseconds;
-                return false;
+                throw;
             }
             finally
             {
