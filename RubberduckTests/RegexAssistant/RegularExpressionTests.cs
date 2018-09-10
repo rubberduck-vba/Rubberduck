@@ -14,7 +14,7 @@ namespace Rubberduck.RegexAssistant.Tests
         public void ParseSingleLiteralGroupAsAtomWorks()
         {
             var pattern = "(g){2,4}";
-            RegularExpression.TryParseAsAtom(ref pattern, out var expression);
+            var expression = VBRegexParser.Parse(pattern);
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Group(new SingleAtomExpression(new Literal("g", Quantifier.None)), "(g)", new Quantifier("{2,4}")), (expression as SingleAtomExpression).Atom);
         }
@@ -24,7 +24,7 @@ namespace Rubberduck.RegexAssistant.Tests
         public void ParseCharacterClassAsAtomWorks()
         {
             var pattern = "[abcd]*";
-            RegularExpression.TryParseAsAtom(ref pattern, out var expression);
+            var expression = VBRegexParser.Parse(pattern);
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new CharacterClass("[abcd]", new Quantifier("*")), (expression as SingleAtomExpression).Atom);
         }
@@ -34,7 +34,7 @@ namespace Rubberduck.RegexAssistant.Tests
         public void ParseLiteralAsAtomWorks()
         {
             var pattern = "a";
-            RegularExpression.TryParseAsAtom(ref pattern, out var expression);
+            var expression = VBRegexParser.Parse(pattern);
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("a", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
@@ -44,7 +44,7 @@ namespace Rubberduck.RegexAssistant.Tests
         public void ParseUnicodeEscapeAsAtomWorks()
         {
             var pattern = "\\u1234+";
-            RegularExpression.TryParseAsAtom(ref pattern, out var expression);
+            var expression = VBRegexParser.Parse(pattern);
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("\\u1234", new Quantifier("+")), (expression as SingleAtomExpression).Atom);
         }
@@ -54,7 +54,7 @@ namespace Rubberduck.RegexAssistant.Tests
         public void ParseHexEscapeSequenceAsAtomWorks()
         {
             var pattern = "\\x12?";
-            RegularExpression.TryParseAsAtom(ref pattern, out var expression);
+            var expression = VBRegexParser.Parse(pattern);
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("\\x12", new Quantifier("?")), (expression as SingleAtomExpression).Atom);
         }
@@ -64,7 +64,7 @@ namespace Rubberduck.RegexAssistant.Tests
         public void ParseOctalEscapeSequenceAsAtomWorks()
         {
             var pattern = "\\712{2}";
-            RegularExpression.TryParseAsAtom(ref pattern, out var expression);
+            var expression = VBRegexParser.Parse(pattern);
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("\\712", new Quantifier("{2}")), (expression as SingleAtomExpression).Atom);
         }
@@ -74,7 +74,7 @@ namespace Rubberduck.RegexAssistant.Tests
         public void ParseEscapedLiteralAsAtomWorks()
         {
             var pattern = "\\)";
-            RegularExpression.TryParseAsAtom(ref pattern, out var expression);
+            var expression = VBRegexParser.Parse(pattern);
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Literal("\\)", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
@@ -86,8 +86,8 @@ namespace Rubberduck.RegexAssistant.Tests
             foreach (var paren in "()[]{}*?+".ToCharArray().Select(c => "" + c))
             {
                 var hack = paren;
-                Assert.IsFalse(RegularExpression.TryParseAsAtom(ref hack, out var expression));
-                Assert.IsNull(expression);
+                var expression = VBRegexParser.Parse(hack);
+                Assert.IsAssignableFrom(typeof(ErrorExpression), expression);
             }
         }
 
@@ -101,7 +101,7 @@ namespace Rubberduck.RegexAssistant.Tests
                 new SingleAtomExpression(new Literal("b", Quantifier.None))
             };
 
-            var expression = RegularExpression.Parse("ab");
+            var expression = VBRegexParser.Parse("ab");
             Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
             var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
             Assert.AreEqual(expected.Count, subexpressions.Count);
@@ -121,7 +121,7 @@ namespace Rubberduck.RegexAssistant.Tests
                 new SingleAtomExpression(new Group(new SingleAtomExpression(new Literal("a", Quantifier.None)), "(a)", Quantifier.None)),
                 new SingleAtomExpression(new Group(new SingleAtomExpression(new Literal("b", Quantifier.None)), "(b)", Quantifier.None))
             };
-            var expression = RegularExpression.Parse("(a)(b)");
+            var expression = VBRegexParser.Parse("(a)(b)");
             Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
             var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
             Assert.AreEqual(expected.Count, subexpressions.Count);
@@ -150,7 +150,7 @@ namespace Rubberduck.RegexAssistant.Tests
                 }.ToList()), "(bar)", Quantifier.None)),
                 new SingleAtomExpression(new Literal("b", Quantifier.None))
             };
-            var expression = RegularExpression.Parse("(a(foo)(bar)b)");
+            var expression = VBRegexParser.Parse("(a(foo)(bar)b)");
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.IsInstanceOf(typeof(Group), ((SingleAtomExpression)expression).Atom);
             var containedGroup = (Group)((SingleAtomExpression)expression).Atom;
@@ -177,7 +177,7 @@ namespace Rubberduck.RegexAssistant.Tests
                 new SingleAtomExpression(new Literal("b", Quantifier.None))
             };
 
-            var expression = RegularExpression.Parse("a(abc){1,4}b");
+            var expression = VBRegexParser.Parse("a(abc){1,4}b");
             Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
             var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
             Assert.AreEqual(expected.Count, subexpressions.Count);
@@ -198,7 +198,7 @@ namespace Rubberduck.RegexAssistant.Tests
                 new SingleAtomExpression(new Literal("b", Quantifier.None))
             };
 
-            var expression = RegularExpression.Parse("a[abc]*b");
+            var expression = VBRegexParser.Parse("a[abc]*b");
             Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
             var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
             Assert.AreEqual(expected.Count, subexpressions.Count);
@@ -218,7 +218,7 @@ namespace Rubberduck.RegexAssistant.Tests
                 new SingleAtomExpression(new Literal("b", Quantifier.None))
             };
 
-            var expression = RegularExpression.Parse("a|b");
+            var expression = VBRegexParser.Parse("a|b");
             Assert.IsInstanceOf(typeof(AlternativesExpression), expression);
             var subexpressions = (expression as AlternativesExpression).Subexpressions;
             Assert.AreEqual(expected.Count, subexpressions.Count);
@@ -232,7 +232,7 @@ namespace Rubberduck.RegexAssistant.Tests
         [Test]
         public void CharacterClassIsNotAnAlternativesExpression()
         {
-            var expression = RegularExpression.Parse("[a|b]");
+            var expression = VBRegexParser.Parse("[a|b]");
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new CharacterClass("[a|b]", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
@@ -241,7 +241,7 @@ namespace Rubberduck.RegexAssistant.Tests
         [Test]
         public void GroupIsNotAnAlternativesExpression()
         {
-            var expression = RegularExpression.Parse("(a|b)");
+            var expression = VBRegexParser.Parse("(a|b)");
             Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
             Assert.AreEqual(new Group(new AlternativesExpression(new IRegularExpression[]{
                     new SingleAtomExpression(new Literal("a", Quantifier.None)),
