@@ -17,16 +17,9 @@ namespace Rubberduck.RegexAssistant.Expressions
 
         public IList<IRegularExpression> Subexpressions => new List<IRegularExpression>(Enumerable.Empty<IRegularExpression>());
 
-        public override bool Equals(object obj)
-        {
-            return obj is SingleAtomExpression other
-                && other.Atom.Equals(Atom);
-        }
-        
-        public override int GetHashCode()
-        {
-            return Atom.GetHashCode();
-        }
 
+        public override string ToString() => $"Atom: {Atom.ToString()}";
+        public override bool Equals(object obj) => obj is SingleAtomExpression other && other.Atom.Equals(Atom);
+        public override int GetHashCode() => Atom.GetHashCode();
     }
 }

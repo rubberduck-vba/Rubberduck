@@ -9,7 +9,7 @@ namespace Rubberduck.RegexAssistant.Atoms
     {
         public static readonly string Pattern = @"(?<!\\)\[(?<expression>.*?)(?<!\\)\]";
         private static readonly Regex Matcher = new Regex($"^{Pattern}$", RegexOptions.Compiled);
-        
+
         public bool InverseMatching { get; }
         public IList<string> CharacterSpecifiers { get; }
 
@@ -72,16 +72,19 @@ namespace Rubberduck.RegexAssistant.Atoms
             return string.Join(", ", CharacterSpecifiers); // join last with and?
         }
 
+        public override string ToString() => Specifier;
         public override bool Equals(object obj)
         {
             return obj is CharacterClass other 
                 && other.Quantifier.Equals(Quantifier)
                 && other.Specifier.Equals(Specifier);
         }
-
         public override int GetHashCode()
         {
-            return Specifier.GetHashCode();
+            var hashCode = 1624226288;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Specifier);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Quantifier>.Default.GetHashCode(Quantifier);
+            return hashCode;
         }
     }
 }

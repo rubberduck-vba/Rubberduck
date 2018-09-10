@@ -16,5 +16,17 @@ namespace Rubberduck.RegexAssistant.Expressions
         public string Description => string.Format(AssistantResources.ExpressionDescription_ErrorExpression, _errorToken);
 
         public IList<IRegularExpression> Subexpressions => new List<IRegularExpression>();
+
+        public override string ToString() => $"Error Expression for {_errorToken}";
+        public override bool Equals(object obj)
+        {
+            var expression = obj as ErrorExpression;
+            return expression != null &&
+                   _errorToken == expression._errorToken;
+        }
+        public override int GetHashCode()
+        {
+            return 330132629 + EqualityComparer<string>.Default.GetHashCode(_errorToken);
+        }
     }
 }

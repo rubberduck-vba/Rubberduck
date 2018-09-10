@@ -1,5 +1,6 @@
 ﻿using Rubberduck.RegexAssistant.i18n;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant.Atoms
@@ -25,6 +26,8 @@ namespace Rubberduck.RegexAssistant.Atoms
 
         public string Description => string.Format(AssistantResources.AtomDescription_Group, Specifier);
 
+
+        public override string ToString() => Specifier;
         public override bool Equals(object obj)
         {
             return obj is Group other
@@ -34,7 +37,10 @@ namespace Rubberduck.RegexAssistant.Atoms
 
         public override int GetHashCode()
         {
-            return Specifier.GetHashCode();
+            var hashCode = -613684608;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Quantifier>.Default.GetHashCode(Quantifier);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Specifier);
+            return hashCode;
         }
     }
 }
