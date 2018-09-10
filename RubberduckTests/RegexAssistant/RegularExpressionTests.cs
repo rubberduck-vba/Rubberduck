@@ -248,5 +248,43 @@ namespace Rubberduck.RegexAssistant.Tests
                     new SingleAtomExpression(new Literal("b", Quantifier.None)),
                 }.ToList()), "(a|b)", Quantifier.None), (expression as SingleAtomExpression).Atom);
         }
+
+        [Category("RegexAssistant")]
+        [Test]
+        public void UnbalancedGroupCorrectlyMarksPrecedingParenAsError()
+        {
+            var expected = new List<IRegularExpression>()
+            {
+                new ErrorExpression("("),
+                new SingleAtomExpression(new Group(new SingleAtomExpression(new Literal("a", Quantifier.None)), "(a)", Quantifier.None))
+            };
+            var expression = VBRegexParser.Parse("((a)");
+            Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
+            var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
+            Assert.AreEqual(expected.Count, subexpressions.Count);
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], subexpressions[i]);
+            }
+        }
+
+        [Category("RegexAssistant")]
+        [Test]
+        public void UnbalancedGroupCorrectlyMarksTrailingParenAsError()
+        {
+            var expected = new List<IRegularExpression>()
+            {
+                new SingleAtomExpression(new Group(new SingleAtomExpression(new Literal("a", Quantifier.None)), "(a)", Quantifier.None)),
+                new ErrorExpression(")"),
+            };
+            var expression = VBRegexParser.Parse("(a))");
+            Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
+            var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
+            Assert.AreEqual(expected.Count, subexpressions.Count);
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], subexpressions[i]);
+            }
+        }
     }
 }
