@@ -9,6 +9,10 @@ namespace Rubberduck.RegexAssistant
 {
     internal class VBRegexParser
     {
+        private static readonly Regex LITERAL_PATTERN = new Regex("^" + Literal.Pattern);
+        private static readonly Regex CHARACTER_CLASS_PATTERN = new Regex("^" + CharacterClass.Pattern);
+        private static readonly Regex QUANTIFIER_PATTERN = new Regex("^" + Quantifier.Pattern);
+
         public static IRegularExpression Parse(string specifier)
         {
             if (specifier == null) throw new ArgumentNullException(nameof(specifier));
@@ -74,8 +78,7 @@ namespace Rubberduck.RegexAssistant
 
         private static string DescendLiteral(string specifier)
         {
-            var regex = new Regex("^" + Literal.Pattern);
-            var matcher = regex.Match(specifier);
+            var matcher = LITERAL_PATTERN.Match(specifier);
             if (matcher.Success)
             {
                 return matcher.Groups["expression"].Value;
@@ -85,8 +88,7 @@ namespace Rubberduck.RegexAssistant
 
         private static string DescendClass(string specifier)
         {
-            var regex = new Regex("^" + CharacterClass.Pattern);
-            var matcher = regex.Match(specifier);
+            var matcher = CHARACTER_CLASS_PATTERN.Match(specifier);
             if (matcher.Success)
             {
                 return $"[{matcher.Groups["expression"].Value}]";
@@ -96,9 +98,8 @@ namespace Rubberduck.RegexAssistant
 
         private static string GetQuantifier(string specifier, int length)
         {
-            var regex = new Regex("^" + Quantifier.Pattern);
             var operationalSubstring = specifier.Substring(length);
-            var matcher = regex.Match(operationalSubstring);
+            var matcher = QUANTIFIER_PATTERN.Match(operationalSubstring);
             if (matcher.Success)
             {
                 return matcher.Groups["quantifier"].Value;
