@@ -88,11 +88,11 @@ namespace Rubberduck.VBEditor.Events
             if (idObject != (int)ObjId.Cursor)
             {
                 var windowClassName = hwnd.ToClassName();
-                if (!WinEventMap.Lookup.TryGetValue(eventType, out var eventName))
+                if (!WinEventMap.Lookup.TryGetValue((int)eventType, out var eventName))
                 {
                     eventName = "Unknown";
                 }
-                Debug.WriteLine("EVT: {0:X4} ({1}) Hwnd {2:X4} ({3}), idObject {4}, idChild {5}", eventType, eventName, (int)hwnd, windowClassName, idObject, idChild);
+                Debug.WriteLine($"EVT: 0x{eventType:X4} ({eventName}) Hwnd 0x{(int)hwnd:X4} ({windowClassName}), idObject {idObject}, idChild {idChild}");
             }
 #endif
 

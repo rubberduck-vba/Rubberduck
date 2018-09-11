@@ -89,11 +89,17 @@ namespace Rubberduck.VBEditor.WindowsApi
 #if (DEBUG && (THIRSTY_DUCK || THIRSTY_DUCK_WM))
             //This is an output window firehose kind of like spy++. Prepare for some spam.
             var windowClassName = ToClassName(hWnd);
-            if (!(WM_MAP.Lookup.TryGetValue((uint) msg, out var wmName)))
+            if (WM_MAP.Lookup.TryGetValue((uint) msg, out var wmName))
+            {
+                wmName = $"WM_{wmName}";
+            }
+            else
             {
                 wmName = "Unknown";
             }
-            Debug.WriteLine("MSG: {0:X4} ({1}), Hwnd {2:X4} ({3}), wParam {4:X4}, lParam {5:X4}", (uint)msg, wmName, (uint)hWnd, windowClassName, (uint)wParam, (uint)lParam);
+
+
+            Debug.WriteLine($"MSG: 0x{(uint)msg:X4} ({wmName}), Hwnd 0x{(uint)hWnd:X4} ({windowClassName}), wParam 0x{(uint)wParam:X4}, lParam 0x{(uint)lParam:X4}");
 #endif
 
             if ((uint) msg == (uint) WM.DESTROY)

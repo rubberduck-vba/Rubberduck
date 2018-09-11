@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
     public enum WinEvent
     {
+        [ReflectionIgnore]
         Min = 0x0001,
         SystemSound = 0x0001,
         SystemAlert = 0x0002,
@@ -66,6 +68,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         ObjectEnd = 0x80FF,
         AiaStart = 0xA000,
         AiaEnd = 0xAFFF,
+        [ReflectionIgnore]
         Max = 0x7FFFFFFF
     }
 
@@ -92,70 +95,7 @@ namespace Rubberduck.VBEditor.WindowsApi
 
     public static class WinEventMap
     {
-        public static readonly Dictionary<uint, string> Lookup = new Dictionary<uint, string>
-        {
-            { 0x0001, "SystemSound"},
-            { 0x0002, "SystemAlert"},
-            { 0x0003, "SystemForeground"},
-            { 0x0004, "SystemMenuStart"},
-            { 0x0005, "SystemMenuEnd"},
-            { 0x0006, "SystemMenuPopupStart"},
-            { 0x0007, "SystemMenuPopupEnd"},
-            { 0x0008, "SystemCaptureStart"},
-            { 0x0009, "SystemCaptureEnd"},
-            { 0x000A, "SystemMoveSizeStart"},
-            { 0x000B, "SystemMoveSizeEnd"},
-            { 0x000C, "SystemContextHelpStart"},
-            { 0x000D, "SystemContextHelpEnd"},
-            { 0x000E, "SystemDragDropStart"},
-            { 0x000F, "SystemDragDropEnd"},
-            { 0x0010, "SystemDialogStart"},
-            { 0x0011, "SystemDialogEnd"},
-            { 0x0012, "SystemScrollingStart"},
-            { 0x0013, "SystemScrollingEnd"},
-            { 0x0014, "SystemSwitchStart"},
-            { 0x0015, "SystemSwitchEnd"},
-            { 0x0016, "SystemMinimizeStart"},
-            { 0x0017, "SystemMinimizeEnd"},
-            { 0x0020, "SystemDesktopSwitch"},
-            { 0x00FF, "SystemEnd"},
-            { 0x8000, "ObjectCreate"},
-            { 0x8001, "ObjectDestroy"},
-            { 0x8002, "ObjectShow"},
-            { 0x8003, "ObjectHide"},
-            { 0x8004, "ObjectReorder"},
-            { 0x8005, "ObjectFocus"},
-            { 0x8006, "ObjectSelection"},
-            { 0x8007, "ObjectSelectionAdd"},
-            { 0x8008, "ObjectSelectionRemove"},
-            { 0x8009, "ObjectSelectionWithin"},
-            { 0x800A, "ObjectStateChange"},
-            { 0x800B, "ObjectLocationChange"},
-            { 0x800C, "ObjectNameChange"},
-            { 0x800D, "ObjectDescriptionChange"},
-            { 0x800E, "ObjectValueChange"},
-            { 0x800F, "ObjectParentChange"},
-            { 0x8010, "ObjectHelpChange"},
-            { 0x8011, "ObjectDefactionChange"},
-            { 0x8013, "ObjectInvoked"},
-            { 0x8014, "ObjectTextSelectionChanged"},
-            { 0x8016, "SystemArrangmentPreview"},
-            { 0x8019, "ObjectLiveRegionChanged"},
-            { 0x8020, "ObjectHostedObjectsInvalidated"},
-            { 0x8021, "ObjectDragStart"},
-            { 0x8022, "ObjectDragCancel"},
-            { 0x8023, "ObjectDragComplete"},
-            { 0x8024, "ObjectDragEnter"},
-            { 0x8025, "ObjectDragLeave"},
-            { 0x8026, "ObjectDragDropped"},
-            { 0x8027, "ObjectImeShow"},
-            { 0x8028, "ObjectImeHide"},
-            { 0x8029, "ObjectImeChange"},
-            { 0x8030, "ObjectTexteditConversionTargetChanged"},
-            { 0x80FF, "ObjectEnd"},
-            { 0xA000, "AiaStart"},
-            { 0xAFFF, "AiaEnd"}
-        };
+        public static readonly Dictionary<int, string> Lookup = EnumHelper.ToDictionary<WinEvent, int>();
     }
 
 #endif

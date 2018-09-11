@@ -98,6 +98,7 @@
     <Compile Include="SafeComWrappers\SafeRedirectedEventedComWrapper.cs" />
     <Compile Include="SafeComWrappers\VB\Abstract\IHostApplication.cs" />
     <Compile Include="SafeComWrappers\VB\Enums\VBEKind.cs" />
+    <Compile Include="Utility\EnumHelper.cs" />
     <Compile Include="Utility\UiContext.cs" />
     <Compile Include="VBERuntime\IVBERuntime.cs" />
     <Compile Include="VBERuntime\Settings\IVBESettings.cs" />
