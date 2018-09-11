@@ -11,11 +11,10 @@ namespace Rubberduck.VBEditor.Utility
         {
             var enumType = typeof(TEnum);
             var underlyingType = typeof(TUnderlying);
+            var actualUnderlyingType = Enum.GetUnderlyingType(enumType);
 
             Debug.Assert(enumType.IsEnum, $"Type '{enumType.Name}' is not an enum");
-
-            Debug.Assert(Enum.GetUnderlyingType(enumType) == underlyingType, 
-                $"Type parameter '{underlyingType}' does not match underlying type for enum '{enumType.Name}' ('{Enum.GetUnderlyingType(enumType).Name}')");
+            Debug.Assert(actualUnderlyingType == underlyingType, $"Underlying type parameter '{underlyingType.Name}' does not match actual underlying type for enum '{enumType.Name}' ('{actualUnderlyingType.Name}')");
             
             var dictionary = new Dictionary<TUnderlying, string>();
 
