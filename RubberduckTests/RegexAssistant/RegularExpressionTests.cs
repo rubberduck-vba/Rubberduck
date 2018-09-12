@@ -286,5 +286,58 @@ namespace Rubberduck.RegexAssistant.Tests
                 Assert.AreEqual(expected[i], subexpressions[i]);
             }
         }
+
+        [Category("RegexAssistant")]
+        [Test]
+        public void EscapedParensGroupIsParsedProperly()
+        {
+            var expected = new List<IRegularExpression>()
+            {
+                new SingleAtomExpression(new Literal("\\(", Quantifier.None)),
+                new SingleAtomExpression(new Group(new ConcatenatedExpression(new IRegularExpression[]{
+                    new SingleAtomExpression(new Literal("\\(", Quantifier.None)),
+                    new SingleAtomExpression(new Literal("\\)", Quantifier.None)),
+                }.ToList()),"(\\(\\))", Quantifier.None)),
+                new SingleAtomExpression(new Literal("\\)", Quantifier.None)),
+            };
+            var expression = VBRegexParser.Parse(@"\((\(\))\)");
+            Assert.IsInstanceOf(typeof(ConcatenatedExpression), expression);
+            var subexpressions = (expression as ConcatenatedExpression).Subexpressions;
+            Assert.AreEqual(expected.Count, subexpressions.Count);
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], subexpressions[i]);
+            }
+        }
+
+        [Category("RegexAssistant")]
+        [Test]
+        public void IncorrectEscapeSequenceIsGroupSubExpression()
+        {
+            var expected = new List<IRegularExpression>
+            {
+                new ErrorExpression("\\"),
+                new SingleAtomExpression(new Literal("m", Quantifier.None))
+            };
+            var expression = VBRegexParser.Parse("(\\m)");
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
+            var subexpressions = (((expression as SingleAtomExpression).Atom as Group)?.Subexpression as ConcatenatedExpression)?.Subexpressions ?? new List<IRegularExpression>();
+            Assert.AreEqual(expected.Count, subexpressions.Count);
+            for (var i = 0; i < expected.Count; i++)
+            {
+                Assert.AreEqual(expected[i], subexpressions[i]);
+            }
+        }
+
+        [Category("RegexAssistant")]
+        [Test]
+        public void CorrectEscapeSequenceIsGroupSubExpression()
+        {
+            var expression = VBRegexParser.Parse(@"(\\)");
+            Assert.IsInstanceOf(typeof(SingleAtomExpression), expression);
+            var inner = (((expression as SingleAtomExpression).Atom as Group)?.Subexpression as SingleAtomExpression);
+            Assert.IsNotNull(inner);
+            Assert.AreEqual(new SingleAtomExpression(new Literal("\\\\", Quantifier.None)), inner);
+        }
     }
 }

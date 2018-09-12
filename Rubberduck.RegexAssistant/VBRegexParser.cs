@@ -128,7 +128,7 @@ namespace Rubberduck.RegexAssistant
                         return openingCount == 0 ? specifier.Substring(0, length + 1) : "";
                     }
                 }
-                if (digit == '\\')
+                if (digit == '\\' || escapeToggle)
                 {
                     escapeToggle = !escapeToggle;
                 }

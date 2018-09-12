@@ -97,6 +97,12 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
