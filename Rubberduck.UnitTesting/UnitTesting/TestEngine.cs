@@ -99,7 +99,7 @@ namespace Rubberduck.UnitTesting
         }
 
         public event EventHandler<TestCompletedEventArgs> TestCompleted;
-        public event EventHandler<long> TestRunCompleted;
+        public event EventHandler<TestRunCompletedEventArgs> TestRunCompleted;
         public event EventHandler TestsRefreshed;
 
         private void OnTestCompleted(TestMethod test, TestResult result)
@@ -268,7 +268,7 @@ namespace Rubberduck.UnitTesting
                 Logger.Error(ex, "Unexpected expection while running unit tests; unit tests will be aborted");
             }
             overallTime.Stop();
-            TestRunCompleted?.Invoke(this, overallTime.ElapsedMilliseconds);
+            TestRunCompleted?.Invoke(this, new TestRunCompletedEventArgs(overallTime.ElapsedMilliseconds));
         }
         
         private TestResult RunTestMethod(ITypeLibWrapper typeLib, TestMethod test)

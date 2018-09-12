@@ -20,15 +20,15 @@ namespace Rubberduck.UI.UnitTesting
             _vbe = vbe;
             this.testEngine = testEngine;
 
-            testEngine.TestsRefreshed += RefreshTests;
+            testEngine.TestsRefreshed += HandleTestsRefreshed;
             testEngine.TestRunCompleted += HandleRunCompletion;
             testEngine.TestCompleted += HandleTestCompletion;
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
-        private void HandleRunCompletion(object sender, long time)
+        private void HandleRunCompletion(object sender, TestRunCompletedEventArgs e)
         {
-            TotalDuration = time;
+            TotalDuration = e.Duration;
             ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
         }
 
@@ -50,7 +50,7 @@ namespace Rubberduck.UI.UnitTesting
             RefreshProgressBarColor();
         }
 
-        private void RefreshTests(object sender, EventArgs args)
+        private void HandleTestsRefreshed(object sender, EventArgs args)
         {
             Tests.Clear();
             foreach (var test in testEngine.Tests.Select(test => new TestMethodViewModel(test)))
@@ -130,7 +130,7 @@ namespace Rubberduck.UI.UnitTesting
             if (testEngine != null)
             {
                 testEngine.TestCompleted -= HandleTestCompletion;
-                testEngine.TestsRefreshed -= RefreshTests;
+                testEngine.TestsRefreshed -= HandleTestsRefreshed;
                 testEngine.TestRunCompleted -= HandleRunCompletion;
             }
         }

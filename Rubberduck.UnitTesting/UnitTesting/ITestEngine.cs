@@ -6,7 +6,7 @@ namespace Rubberduck.UnitTesting
     public interface ITestEngine
     {
         event EventHandler<TestCompletedEventArgs> TestCompleted;
-        event EventHandler<long> TestRunCompleted;
+        event EventHandler<TestRunCompletedEventArgs> TestRunCompleted;
         event EventHandler TestsRefreshed;
 
         IEnumerable<TestMethod> Tests { get; }
@@ -28,6 +28,16 @@ namespace Rubberduck.UnitTesting
         {
             Test = test;
             Result = result;
+        }
+    }
+
+    public class TestRunCompletedEventArgs : EventArgs
+    {
+        public long Duration { get; }
+
+        public TestRunCompletedEventArgs(long duration)
+        {
+            Duration = duration;
         }
     }
 }
