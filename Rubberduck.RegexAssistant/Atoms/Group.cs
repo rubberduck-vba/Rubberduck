@@ -1,4 +1,5 @@
 ﻿using Rubberduck.RegexAssistant.i18n;
+using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -34,13 +35,6 @@ namespace Rubberduck.RegexAssistant.Atoms
                 && other.Quantifier.Equals(Quantifier)
                 && other.Specifier.Equals(Specifier);
         }
-
-        public override int GetHashCode()
-        {
-            var hashCode = -613684608;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Quantifier>.Default.GetHashCode(Quantifier);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Specifier);
-            return hashCode;
-        }
+        public override int GetHashCode() => HashCode.Compute(Specifier, Quantifier);
     }
 }

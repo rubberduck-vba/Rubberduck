@@ -1,4 +1,5 @@
 ﻿using Rubberduck.RegexAssistant.i18n;
+using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 
@@ -16,15 +17,7 @@ namespace Rubberduck.RegexAssistant.Expressions
         public IList<IRegularExpression> Subexpressions { get; }
 
         public override string ToString() => $"Aternatives:{Subexpressions.ToString()}";
-        public override bool Equals(object obj)
-        {
-            var expression = obj as AlternativesExpression;
-            return expression != null &&
-                   EqualityComparer<IList<IRegularExpression>>.Default.Equals(Subexpressions, expression.Subexpressions);
-        }
-        public override int GetHashCode()
-        {
-            return 1015294936 + EqualityComparer<IList<IRegularExpression>>.Default.GetHashCode(Subexpressions);
-        }
+        public override bool Equals(object obj) => obj is AlternativesExpression other && Subexpressions.Equals(other.Subexpressions);
+        public override int GetHashCode() => HashCode.Compute(Subexpressions);
     }
 }
