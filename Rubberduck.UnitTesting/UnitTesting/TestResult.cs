@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Rubberduck.VBEditor;
 
 namespace Rubberduck.UnitTesting
 {
@@ -16,27 +15,13 @@ namespace Rubberduck.UnitTesting
         public TestOutcome Outcome { get; private set; }
         public string Output { get; private set; }
 
+        public override int GetHashCode() => HashCode.Compute(Outcome, Output);
+        public override string ToString() => $"{Outcome} ({Duration} ms) {Output}";
         public override bool Equals(object obj)
         {
-            if (obj is TestResult other)
-            {
-                return Outcome == other.Outcome
+            return obj is TestResult other
+                    && Outcome == other.Outcome
                     && Output == other.Output;
-            }
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            var hashCode = -1268493841;
-            hashCode = hashCode * -1521134295 + Outcome.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Output);
-            return hashCode;
-        }
-
-        public override string ToString()
-        {
-            return $"{Outcome} ({Duration} ms) {Output}";
         }
     }
 }

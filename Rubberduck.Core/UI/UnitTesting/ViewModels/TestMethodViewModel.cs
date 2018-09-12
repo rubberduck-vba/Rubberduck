@@ -26,12 +26,10 @@ namespace Rubberduck.UI.UnitTesting.ViewModels
 
         // Delegate Navigability to encapsulated TestMethod
         public NavigateCodeEventArgs GetNavigationArgs() => Method.GetNavigationArgs();
-        
 
-        public override string ToString()
-        {
-            return $"{Method.Declaration.QualifiedName}: {Result.Outcome} ({Result.Duration}ms) {Result.Output}";
-        }
+        public override string ToString() => $"{Method.Declaration.QualifiedName}: {Result.Outcome} ({Result.Duration}ms) {Result.Output}";
+        public override bool Equals(object obj) => obj is TestMethodViewModel other && Method.Equals(other.Method);
+        public override int GetHashCode() => Method.GetHashCode();
 
         public object[] ToArray()
         {
@@ -44,18 +42,6 @@ namespace Rubberduck.UI.UnitTesting.ViewModels
                 _result.Output,
                 _result.Duration
             };
-        }
-
-        public override bool Equals(object obj)
-        {
-            var model = obj as TestMethodViewModel;
-            return model != null &&
-                   EqualityComparer<TestMethod>.Default.Equals(Method, model.Method);
-        }
-
-        public override int GetHashCode()
-        {
-            return 1003453392 + EqualityComparer<TestMethod>.Default.GetHashCode(Method);
         }
     }
 }
