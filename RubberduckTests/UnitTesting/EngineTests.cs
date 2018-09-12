@@ -43,7 +43,7 @@ End Sub";
 
             using (var state = parser.State)
             {
-                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
+                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object, vbe);
                 int refreshes = 0;
                 engine.TestsRefreshed += (sender, args) => refreshes++;
                 parser.Parse(new CancellationTokenSource());
@@ -82,7 +82,7 @@ End Sub";
 
             using (var state = parser.State)
             {
-                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
+                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object, vbe);
                 const int parserRuns = 5;
                 int refreshes = 0;
                 engine.TestsRefreshed += (sender, args) => refreshes++;
@@ -137,7 +137,7 @@ End Sub";
             var completionEvents = new List<TestCompletedEventArgs>();
             using (var state = parser.State)
             {
-                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
+                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object, vbe);
                 engine.TestCompleted += (source, args) => completionEvents.Add(args);
                 parser.Parse(new CancellationTokenSource());
                 if (!engine.CanRun)
@@ -193,7 +193,7 @@ End Sub";
             var completionEvents = new List<TestCompletedEventArgs>();
             using (var state = parser.State)
             {
-                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
+                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object, vbe);
                 engine.TestCompleted += (source, args) => completionEvents.Add(args);
                 parser.Parse(new CancellationTokenSource());
                 if (!engine.CanRun)
@@ -249,7 +249,7 @@ End Sub";
             var completionEvents = new List<TestCompletedEventArgs>();
             using (var state = parser.State)
             {
-                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
+                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object, vbe);
                 engine.TestCompleted += (source, args) => completionEvents.Add(args);
                 parser.Parse(new CancellationTokenSource());
                 if (!engine.CanRun)
@@ -305,7 +305,7 @@ End Sub";
             var completionEvents = new List<TestCompletedEventArgs>();
             using (var state = parser.State)
             {
-                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object);
+                var engine = new TestEngine(state, fakesFactory.Object, typeLibApi.Object, wrapperProvider.Object, dispatcher.Object, vbe);
                 engine.TestCompleted += (source, args) => completionEvents.Add(args);
                 parser.Parse(new CancellationTokenSource());
                 if (!engine.CanRun)

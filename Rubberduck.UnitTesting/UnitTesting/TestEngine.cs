@@ -12,6 +12,7 @@ using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Resources.UnitTesting;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
@@ -31,18 +32,18 @@ namespace Rubberduck.UnitTesting
         private readonly IVBETypeLibsAPI _typeLibApi;
         private readonly ITypeLibWrapperProvider _wrapperProvider;
         private readonly IUiDispatcher _uiDispatcher;
+        private readonly IVBE _vbe;
 
         private readonly List<TestMethod> LastRun = new List<TestMethod>();
         private readonly Dictionary<TestOutcome, List<TestMethod>> resultsByOutcome = new Dictionary<TestOutcome, List<TestMethod>>();
         public IEnumerable<TestMethod> Tests { get; private set; }
-        // FIXME consider forcing VBE in design mode here, would require injecting a VBE
-        public bool CanRun => AllowedRunStates.Contains(_state.Status);
+        public bool CanRun => !_vbe.IsInDesignMode && AllowedRunStates.Contains(_state.Status);
         public bool CanRepeatLastRun => LastRun.Any();
         
         private bool refreshBackoff;
 
 
-        public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, ITypeLibWrapperProvider wrapperProvider, IUiDispatcher uiDispatcher)
+        public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, ITypeLibWrapperProvider wrapperProvider, IUiDispatcher uiDispatcher, IVBE vbe)
         {
             Debug.WriteLine("TestEngine created.");
             _state = state;
@@ -50,6 +51,7 @@ namespace Rubberduck.UnitTesting
             _typeLibApi = typeLibApi;
             _wrapperProvider = wrapperProvider;
             _uiDispatcher = uiDispatcher;
+            _vbe = vbe;
 
             _state.StateChanged += StateChangedHandler;
 

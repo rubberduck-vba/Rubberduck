@@ -9,20 +9,17 @@ namespace Rubberduck.UI.Command
     /// </summary>
     public class RunAllTestsCommand : CommandBase
     {
-        private readonly IVBE _vbe;
         private readonly ITestEngine _engine;
 
-        public RunAllTestsCommand(IVBE vbe, ITestEngine engine)
+        public RunAllTestsCommand(ITestEngine engine)
             : base(LogManager.GetCurrentClassLogger())
         {
-            _vbe = vbe;
             _engine = engine;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            // the vbe design mode requirement could also be encapsulated into the engine
-            return _vbe.IsInDesignMode && _engine.CanRun;
+            return _engine.CanRun;
         }
 
         protected override void OnExecute(object parameter)
