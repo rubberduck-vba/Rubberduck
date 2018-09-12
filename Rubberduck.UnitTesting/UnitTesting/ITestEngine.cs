@@ -21,8 +21,8 @@ namespace Rubberduck.UnitTesting
 
     public class TestCompletedEventArgs : EventArgs
     {
-        public TestMethod Test { get; private set; }
-        public TestResult Result { get; private set; }
+        public TestMethod Test { get; }
+        public TestResult Result { get; }
 
         public TestCompletedEventArgs(TestMethod test, TestResult result)
         {

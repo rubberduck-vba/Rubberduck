@@ -118,7 +118,7 @@ namespace Rubberduck.UI.UnitTesting.Commands
             _state.OnParseRequested(this);
         }
 
-        [Obsolete] // Duplicates AddTestMethodCommand#GetNextTestMethodName
+        [Obsolete("Duplicates AddTestMethodCommand#GetNextTestMethodName, should be centrally solved in UnitTesting assembly instead")]
         private string GetNextTestMethodName(IVBComponent component)
         {
             var names = new HashSet<string>(_state.DeclarationFinder.Members(component.QualifiedModuleName)

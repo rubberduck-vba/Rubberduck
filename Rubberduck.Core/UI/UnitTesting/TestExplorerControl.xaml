@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Rubberduck.UI.UnitTesting"
-             xmlns:vms="clr-namespace:Rubberduck.UI.UnitTesting.ViewModels"
+             xmlns:vm="clr-namespace:Rubberduck.UI.UnitTesting.ViewModels"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
@@ -631,7 +631,7 @@
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate DataType="vms:TestMethodViewModel">
+                                <DataTemplate DataType="vm:TestMethodViewModel">
                                     <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -650,7 +650,7 @@
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate DataType="vms:TestMethodViewModel">
+                                <DataTemplate DataType="vm:TestMethodViewModel">
                                     <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
@@ -669,7 +669,7 @@
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate DataType="vms:TestMethodViewModel">
+                                <DataTemplate DataType="vm:TestMethodViewModel">
                                     <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
