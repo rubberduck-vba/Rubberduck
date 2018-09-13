@@ -29,7 +29,7 @@ namespace Rubberduck.UnitTesting
 
         private readonly RubberduckParserState _state;
         private readonly IFakesFactory _fakesFactory;
-        private readonly IVBETypeLibsAPI _typeLibApi;
+        private readonly IVBEInteraction _declarationRunner;
         private readonly ITypeLibWrapperProvider _wrapperProvider;
         private readonly IUiDispatcher _uiDispatcher;
         private readonly IVBE _vbe;
@@ -43,12 +43,12 @@ namespace Rubberduck.UnitTesting
         private bool refreshBackoff;
 
 
-        public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBETypeLibsAPI typeLibApi, ITypeLibWrapperProvider wrapperProvider, IUiDispatcher uiDispatcher, IVBE vbe)
+        public TestEngine(RubberduckParserState state, IFakesFactory fakesFactory, IVBEInteraction declarationRunner, ITypeLibWrapperProvider wrapperProvider, IUiDispatcher uiDispatcher, IVBE vbe)
         {
             Debug.WriteLine("TestEngine created.");
             _state = state;
             _fakesFactory = fakesFactory;
-            _typeLibApi = typeLibApi;
+            _declarationRunner = declarationRunner;
             _wrapperProvider = wrapperProvider;
             _uiDispatcher = uiDispatcher;
             _vbe = vbe;
@@ -147,7 +147,7 @@ namespace Rubberduck.UnitTesting
 
             foreach (var project in projectsUsingAddInLibrary)
             {
-                VBEInteraction.EnsureProjectReferencesUnitTesting(project);
+                _declarationRunner.EnsureProjectReferencesUnitTesting(project);
             }
         }
 
@@ -196,7 +196,7 @@ namespace Rubberduck.UnitTesting
                     {
                         try
                         {
-                            VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, TestDiscovery.FindModuleInitializeMethods(moduleName, _state));
+                            _declarationRunner.RunDeclarations(typeLibWrapper, TestDiscovery.FindModuleInitializeMethods(moduleName, _state));
                         }
                         catch (COMException ex)
                         {
@@ -221,7 +221,7 @@ namespace Rubberduck.UnitTesting
                                 fakes.StartTest();
                                 try
                                 {
-                                    VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, testInitialize);
+                                    _declarationRunner.RunDeclarations(typeLibWrapper, testInitialize);
                                 }
                                 catch (COMException trace)
                                 {
@@ -234,7 +234,7 @@ namespace Rubberduck.UnitTesting
                                 OnTestCompleted(test, result);
                                 try
                                 {
-                                    VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, testCleanup);
+                                    _declarationRunner.RunDeclarations(typeLibWrapper, testCleanup);
                                 }
                                 catch (COMException cleanupFail)
                                 {
@@ -249,7 +249,7 @@ namespace Rubberduck.UnitTesting
                         }
                         try
                         {
-                            VBEInteraction.RunDeclarations(_typeLibApi, typeLibWrapper, TestDiscovery.FindModuleCleanupMethods(moduleName, _state));
+                            _declarationRunner.RunDeclarations(typeLibWrapper, TestDiscovery.FindModuleCleanupMethods(moduleName, _state));
                         }
                         catch (COMException ex)
                         {
@@ -277,7 +277,7 @@ namespace Rubberduck.UnitTesting
             try
             {
                 var assertResults = new List<AssertCompletedEventArgs>();
-                VBEInteraction.RunTestMethod(_typeLibApi, typeLib, test, (s, e) => assertResults.Add(e), out duration);
+                _declarationRunner.RunTestMethod(typeLib, test, (s, e) => assertResults.Add(e), out duration);
                 return EvaluateResults(assertResults, duration);
             }
             catch (COMException e)

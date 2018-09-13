@@ -21,6 +21,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Interaction;
 using Rubberduck.UI.UnitTesting.Commands;
+using Rubberduck.UnitTesting;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -652,9 +653,10 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
                 var vbeWrapper = vbe.Object;
                 var uiDispatcher = new Mock<IUiDispatcher>();
+                var interaction = new Mock<IVBEInteraction>();
                 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
-                vm.AddTestModuleCommand = new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object);
+                vm.AddTestModuleCommand = new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -691,10 +693,11 @@ namespace RubberduckTests.CodeExplorer
             {
                 var vbeWrapper = vbe.Object;
                 var uiDispatcher = new Mock<IUiDispatcher>();
+                var interaction = new Mock<IVBEInteraction>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
                 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
-                vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object));
+                vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -729,10 +732,11 @@ namespace RubberduckTests.CodeExplorer
             {
                 var vbeWrapper = vbe.Object;
                 var uiDispatcher = new Mock<IUiDispatcher>();
+                var interaction = new Mock<IVBEInteraction>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
                 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
-                vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object));
+                vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -766,10 +770,11 @@ namespace RubberduckTests.CodeExplorer
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
             {
                 var vbeWrapper = vbe.Object;
+                var interaction = new Mock<IVBEInteraction>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
-                vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object));
+                vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -803,10 +808,11 @@ namespace RubberduckTests.CodeExplorer
             {
                 var vbeWrapper = vbe.Object;
                 var uiDispatcher = new Mock<IUiDispatcher>();
+                var interaction = new Mock<IVBEInteraction>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
-                vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object));
+                vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());

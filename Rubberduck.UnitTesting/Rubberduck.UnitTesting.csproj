@@ -63,6 +63,7 @@
     <Compile Include="UnitTesting\ITestEngine.cs" />
     <Compile Include="ComClientHelpers\PermissiveObjectComparer.cs" />
     <Compile Include="ComClientHelpers\ReturnTypeConverter.cs" />
+    <Compile Include="UnitTesting\IVBEInteraction.cs" />
     <Compile Include="UnitTesting\TestCategory.cs" />
     <Compile Include="UnitTesting\TestEngine.cs" />
     <Compile Include="UnitTesting\TestMethod.cs" />

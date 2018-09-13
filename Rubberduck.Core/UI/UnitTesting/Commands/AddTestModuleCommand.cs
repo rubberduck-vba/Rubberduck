@@ -26,14 +26,16 @@ namespace Rubberduck.UI.UnitTesting.Commands
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configLoader;
         private readonly IMessageBox _messageBox;
+        private readonly IVBEInteraction _interaction;
 
-        public AddTestModuleCommand(IVBE vbe, RubberduckParserState state, IGeneralConfigService configLoader, IMessageBox messageBox)
+        public AddTestModuleCommand(IVBE vbe, RubberduckParserState state, IGeneralConfigService configLoader, IMessageBox messageBox, IVBEInteraction interaction)
             : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
             _configLoader = configLoader;
             _messageBox = messageBox;
+            _interaction = interaction;
         }
 
         private readonly string _testModuleEmptyTemplate = new StringBuilder()
@@ -164,7 +166,8 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
             if (settings.BindingMode == BindingMode.EarlyBinding)
             {
-                VBEInteraction.EnsureProjectReferencesUnitTesting(project);
+                // FIXME: Push the actual adding of TestModules into UnitTesting, which sidesteps VBEInteraction being inaccessble here
+                _interaction.EnsureProjectReferencesUnitTesting(project);
             }
 
             try
@@ -245,6 +248,7 @@ namespace Rubberduck.UI.UnitTesting.Commands
             _state.OnParseRequested(this);
         }
 
+        // FIXME push this into Rubberduck.UnitTesting assembly
         private string GetNextTestModuleName(IVBProject project)
         {
             var names = new HashSet<string>(project.ComponentNames().Where(module => module.StartsWith(TestModuleBaseName)));

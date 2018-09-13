@@ -9,25 +9,33 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 
 namespace Rubberduck.UnitTesting
 { 
     // FIXME litter some logging around here
-    public class VBEInteraction
+    internal class VBEInteraction : IVBEInteraction
     {
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        internal static void RunDeclarations(IVBETypeLibsAPI typeLibApi, ITypeLibWrapper typeLib, IEnumerable<Declaration> declarations)
+        private readonly Version _rubberduckVersion;
+        private readonly IVBETypeLibsAPI _typeLibsApi;
+
+        public VBEInteraction(IVBETypeLibsAPI typeLibsApi, Version rubberduckVersion)
+        {
+            _typeLibsApi = typeLibsApi;
+            _rubberduckVersion = rubberduckVersion;
+        }
+
+        public void RunDeclarations(ITypeLibWrapper typeLib, IEnumerable<Declaration> declarations)
         {
             foreach (var declaration in declarations)
             {
-                typeLibApi.ExecuteCode(typeLib, declaration.QualifiedModuleName.ComponentName,
+                _typeLibsApi.ExecuteCode(typeLib, declaration.QualifiedModuleName.ComponentName,
                     declaration.QualifiedName.MemberName);
             }
         }
 
-        internal static void RunTestMethod(IVBETypeLibsAPI tlApi, ITypeLibWrapper typeLib, TestMethod test, EventHandler<AssertCompletedEventArgs> assertCompletionHandler, out long duration)
+        public void RunTestMethod(ITypeLibWrapper typeLib, TestMethod test, EventHandler<AssertCompletedEventArgs> assertCompletionHandler, out long duration)
         {
             AssertHandler.OnAssertCompleted += assertCompletionHandler;
             var stopwatch = new Stopwatch();
@@ -36,7 +44,7 @@ namespace Rubberduck.UnitTesting
                 var testDeclaration = test.Declaration;
 
                 stopwatch.Start();
-                tlApi.ExecuteCode(typeLib, testDeclaration.ComponentName, testDeclaration.QualifiedName.MemberName);
+                _typeLibsApi.ExecuteCode(typeLib, testDeclaration.ComponentName, testDeclaration.QualifiedName.MemberName);
                 stopwatch.Stop();
 
                 duration = stopwatch.ElapsedMilliseconds;
@@ -54,14 +62,12 @@ namespace Rubberduck.UnitTesting
         }
             
 
-        public static void EnsureProjectReferencesUnitTesting(IVBProject project)
+        public void EnsureProjectReferencesUnitTesting(IVBProject project)
         {
             if (project == null || project.IsWrappingNullReference) { return; }
             var libFolder = IntPtr.Size == 8 ? "win64" : "win32";
-            // FIXME: This assumes the current assembly is same major/minor as the TLB!!!
-            var libVersion = Assembly.GetExecutingAssembly().GetName().Version;
             const string libGuid = RubberduckGuid.RubberduckTypeLibGuid;
-            var pathKey = Registry.ClassesRoot.OpenSubKey($@"TypeLib\{{{libGuid}}}\{libVersion.Major}.{libVersion.Minor}\0\{libFolder}");
+            var pathKey = Registry.ClassesRoot.OpenSubKey($@"TypeLib\{{{libGuid}}}\{_rubberduckVersion.Major}.{_rubberduckVersion.Minor}\0\{libFolder}");
 
             var referencePath = pathKey?.GetValue(string.Empty, string.Empty) as string;
             string name = null;
@@ -69,7 +75,7 @@ namespace Rubberduck.UnitTesting
             if (!string.IsNullOrWhiteSpace(referencePath))
             {
                 var tlbKey =
-                    Registry.ClassesRoot.OpenSubKey($@"TypeLib\{{{libGuid}}}\{libVersion.Major}.{libVersion.Minor}");
+                    Registry.ClassesRoot.OpenSubKey($@"TypeLib\{{{libGuid}}}\{_rubberduckVersion.Major}.{_rubberduckVersion.Minor}");
 
                 name = tlbKey?.GetValue(string.Empty, string.Empty) as string;
             }
@@ -95,9 +101,9 @@ namespace Rubberduck.UnitTesting
             }
         }
 
-        private static IReference FindReferenceByName(IReferences refernences, string name)
+        private static IReference FindReferenceByName(IReferences references, string name)
         {
-            foreach (var reference in refernences)
+            foreach (var reference in references)
             {
                 if (reference.Name == name)
                 {
