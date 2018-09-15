@@ -1,11 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Input;
 using NLog;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.UI.Command
 {
-    public interface INavigateCommand : ICommand { }
 
     /// <summary>
     /// A command that navigates to a specified selection, using a <see cref="NavigateCodeEventArgs"/> parameter.

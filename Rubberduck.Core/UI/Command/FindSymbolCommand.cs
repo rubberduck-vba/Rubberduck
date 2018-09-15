@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.FindSymbol;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;

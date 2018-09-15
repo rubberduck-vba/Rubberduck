@@ -1,6 +1,4 @@
-using Rubberduck.UI.Command;
-
-namespace Rubberduck.UI.Controls
+namespace Rubberduck.Interaction.Navigation
 {
     /// <summary>
     /// Implement this interface in ViewModel classes that contain navigatable items.

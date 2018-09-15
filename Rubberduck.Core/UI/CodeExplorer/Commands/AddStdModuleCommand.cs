@@ -5,7 +5,6 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class AddStdModuleCommand : CommandBase
     {
         private readonly AddComponentCommand _addComponentCommand;
