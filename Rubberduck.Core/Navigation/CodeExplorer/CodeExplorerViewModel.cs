@@ -296,15 +296,21 @@ namespace Rubberduck.Navigation.CodeExplorer
             get => _projects;
             set
             {
-                ReorderChildNodes(value);
-                _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
-                CanSearch = _projects.Any();
+                _projects = ForceProjectsRefresh(value);
 
                 OnPropertyChanged();
                 // Once a Project has been set, show the TreeView
                 OnPropertyChanged("TreeViewVisibility");
                 OnPropertyChanged("CanSearch");
             }
+        }
+
+        private ObservableCollection<CodeExplorerItemViewModel> ForceProjectsRefresh(ObservableCollection<CodeExplorerItemViewModel> projects)
+        {
+            ReorderChildNodes(projects);
+            CanSearch = projects.Any();
+
+            return new ObservableCollection<CodeExplorerItemViewModel>(projects.OrderBy(o => o.NameWithSignature));
         }
 
         private void HandleStateChanged(object sender, ParserStateEventArgs e)
@@ -425,9 +431,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     folderNode.AddChild(newNode);
 
                     // Force a refresh. OnPropertyChanged("Projects") didn't work.
-                    Projects = Projects;
-
-                    
+                    ForceProjectsRefresh(Projects);
                 }
                 catch (Exception exception)
                 {
