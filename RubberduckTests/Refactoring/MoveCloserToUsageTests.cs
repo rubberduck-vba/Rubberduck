@@ -921,7 +921,7 @@ End Sub";
         [Test]
         [Category("Move Closer")]
         [Category("Refactorings")]
-        public void MoveCloser_RespectsWithBlockContexts()
+        public void MoveCloser_RespectsMemberAccess_ContextOwners()
         {
             const string inputCode =
 @"

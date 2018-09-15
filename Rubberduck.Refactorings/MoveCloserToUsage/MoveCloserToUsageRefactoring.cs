@@ -192,6 +192,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             foreach (var reference in references.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
             {
+                // todo: Grab `GetAncestor` and use that
                 var parent = reference.Context.Parent;
                 while (!(parent is VBAParser.MemberAccessExprContext) && parent.Parent != null)
                 {
@@ -199,6 +200,14 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 }
 
                 if (!(parent is VBAParser.MemberAccessExprContext))
+                {
+                    continue;
+                }
+
+                // member access might be to something unrelated to the rewritten target.
+                // check we're not accidentally overwriting some other member-access who just happens to be a parent context
+                var memberAccessContext = (VBAParser.MemberAccessExprContext)parent;
+                if (memberAccessContext.unrestrictedIdentifier().GetText() != _target.IdentifierName)
                 {
                     continue;
                 }
