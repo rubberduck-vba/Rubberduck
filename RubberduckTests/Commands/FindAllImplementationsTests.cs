@@ -1,11 +1,9 @@
 using System.Linq;
 using System.Threading;
-using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
@@ -14,6 +12,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Interaction.Navigation;
 
 namespace RubberduckTests.Commands
 {

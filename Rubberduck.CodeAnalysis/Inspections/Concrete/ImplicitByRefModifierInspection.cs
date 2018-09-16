@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
@@ -26,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var builtInEventHandlerContexts = State.DeclarationFinder.FindEventHandlers().Select(handler => handler.Context).ToHashSet();
-            var interfaceImplementationMemberContexts = UserDeclarations.FindInterfaceImplementationMembers().Select(member => member.Context).ToHashSet();
+            var interfaceImplementationMemberContexts = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Select(member => member.Context).ToHashSet();
 
             var issues = Listener.Contexts.Where(context =>
                 !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line) &&

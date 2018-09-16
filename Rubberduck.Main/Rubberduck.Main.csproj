@@ -268,6 +268,7 @@
     <Compile Include="Extension.cs" />
     <Compile Include="Root\RootComWrapperFactory.cs" />
     <Compile Include="Root\RubberduckIoCInstaller.cs" />
+    <Compile Include="Root\RubberduckPropertiesInspector.cs" />
     <Compile Include="Root\TypeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -338,6 +339,10 @@
       <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
       <Name>Rubberduck.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
+      <Project>{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}</Project>
+      <Name>Rubberduck.Interaction</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Project>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</Project>
       <Name>Rubberduck.Parsing</Name>
@@ -361,6 +366,10 @@
     <ProjectReference Include="..\Rubberduck.StaticCodeAnalysis\Rubberduck.CodeAnalysis.csproj">
       <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
       <Name>Rubberduck.CodeAnalysis</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj">
+      <Project>{68f55404-32ca-4414-96b8-e284f3b1f846}</Project>
+      <Name>Rubberduck.UnitTesting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj">
       <Project>{5d683117-21f1-4a01-a0c7-6ae6f30a16a7}</Project>

@@ -1,11 +1,12 @@
 using System.Drawing;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.UnitTesting.Commands;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class AddTestMethodCommandMenuItem : CommandMenuItemBase
     {
-        public AddTestMethodCommandMenuItem(CommandBase command)
+        public AddTestMethodCommandMenuItem(AddTestMethodCommand command)
             : base(command)
         {
         }

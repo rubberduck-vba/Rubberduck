@@ -111,7 +111,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public override bool Equals(ISafeComWrapper<VB.VBProject> other)
         {
-            return IsEqualIfNull(other) || (other != null && other.Target == Target);
+            // This is only safe in VB6 because project names must be unique within a session (which is not true of VBA)
+            // Need to do it this way as reference equality fails when comparing to VBProjects.StartProject
+            return IsEqualIfNull(other) || (other?.Target != null && other.Target.Name == Target.Name);
         }
 
         public bool Equals(IVBProject other)

@@ -370,4 +370,7 @@
   <data name="CodeExplorer_AddVBFormText" xml:space="preserve">
     <value>Form (.frm)</value>
   </data>
+  <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
+    <value>Set as start up</value>
+  </data>
 </root>

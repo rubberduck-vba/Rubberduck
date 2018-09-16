@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using Rubberduck.Interaction.Navigation;
+using System.Windows;
 using System.Windows.Input;
 
 namespace Rubberduck.UI.Controls

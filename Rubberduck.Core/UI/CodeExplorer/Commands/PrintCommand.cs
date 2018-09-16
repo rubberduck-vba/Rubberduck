@@ -13,7 +13,6 @@ using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class PrintCommand : CommandBase
     {
         private readonly IProjectsProvider _projectsProvider;

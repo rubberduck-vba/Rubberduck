@@ -37,6 +37,11 @@ namespace Rubberduck.VBEditor.Extensions
             return source.ToDictionary(group => group.Key, group => group.ToList());
         }
 
+        public static IReadOnlyDictionary<TKey, IReadOnlyList<TValue>> ToReadonlyDictionary<TKey, TValue>(this IEnumerable<IGrouping<TKey, TValue>> source)
+        {
+            return source.ToDictionary(group => group.Key, group => (IReadOnlyList<TValue>)group.ToList());
+        }
+
         //See https://stackoverflow.com/a/3804852/5536802
         public static bool HasEqualContent<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TValue> otherDictionary)
         {
