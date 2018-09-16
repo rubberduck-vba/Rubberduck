@@ -1038,6 +1038,10 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             List<Declaration> declarationsToAvoid = GetNameCollisionDeclarations(target).ToList();
+            if (HasOtherMembers(target, out List<Declaration> members))
+            {
+                declarationsToAvoid.AddRange(members);
+            }
 
             declarationsToAvoid.AddRange(GetNameCollisionDeclarations(target.References));
 
@@ -1053,11 +1057,14 @@ namespace Rubberduck.Parsing.Symbols
 
             //Filter accessible declarations to those that would result in name collisions or hiding
             var declarationsToAvoid = GetAccessibleUserDeclarations(declaration).Where(candidate =>
-                                        (IsAccessibleInOtherProcedureModule(candidate,declaration)
-                                        || candidate.DeclarationType == DeclarationType.Project
-                                        || candidate.DeclarationType.HasFlag(DeclarationType.Module)
-                                        || IsDeclarationInSameProcedureScope(candidate, declaration)
-                                        )).ToHashSet();
+                (!(candidate.DeclarationType == DeclarationType.UserDefinedTypeMember
+                || candidate.DeclarationType == DeclarationType.EnumerationMember)
+                && (IsAccessibleInOtherProcedureModule(candidate,declaration)
+                || IsAccessibleInSameProcedureModule(candidate, declaration)
+                || candidate.DeclarationType == DeclarationType.Project
+                || candidate.DeclarationType.HasFlag(DeclarationType.Module)
+                || IsDeclarationInSameProcedureScope(candidate, declaration)
+                ))).ToHashSet();
 
             //Add local variables when the target is a method or property
             if(IsSubroutineOrProperty(declaration))
@@ -1085,9 +1092,25 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsAccessibleInOtherProcedureModule(Declaration candidate, Declaration declaration)
         {
-            return IsInProceduralModule(declaration)
-                       && IsInProceduralModule(candidate)
-                       && candidate.Accessibility != Accessibility.Private;
+            var candidateModuleDeclaration = Declaration.GetModuleParent(candidate);
+
+            var decModuleDeclaration = Declaration.GetModuleParent(declaration);
+
+            return candidateModuleDeclaration?.DeclarationType == DeclarationType.ProceduralModule
+                && decModuleDeclaration?.DeclarationType == DeclarationType.ProceduralModule
+                && candidateModuleDeclaration != decModuleDeclaration
+                && candidate.Accessibility != Accessibility.Private;
+        }
+
+        private bool IsAccessibleInSameProcedureModule(Declaration candidate, Declaration declaration)
+        {
+            var candidateModuleDeclaration = Declaration.GetModuleParent(candidate);
+
+            var decModuleDeclaration = Declaration.GetModuleParent(declaration);
+
+            return candidateModuleDeclaration?.DeclarationType == DeclarationType.ProceduralModule
+                && decModuleDeclaration?.DeclarationType == DeclarationType.ProceduralModule
+                && candidateModuleDeclaration == decModuleDeclaration;
         }
 
         private bool UsesScopeResolution(RuleContext ruleContext)
@@ -1106,6 +1129,22 @@ namespace Rubberduck.Parsing.Symbols
         private bool IsDeclarationInSameProcedureScope(Declaration candidateDeclaration, Declaration scopingDeclaration)
         {
             return candidateDeclaration.ParentScope == scopingDeclaration.ParentScope;
+        }
+
+        private bool HasOtherMembers(Declaration candidateDeclaration, out List<Declaration> conflictingMembers)
+        {
+            conflictingMembers = new List<Declaration>();
+            if (candidateDeclaration.DeclarationType == DeclarationType.UserDefinedTypeMember
+                || candidateDeclaration.DeclarationType == DeclarationType.EnumerationMember)
+            {
+                conflictingMembers = Members(candidateDeclaration.ParentDeclaration).Where(m => 
+                    (m.DeclarationType == DeclarationType.EnumerationMember
+                    || m.DeclarationType == DeclarationType.UserDefinedTypeMember)
+                    && !m.IdentifierName.Equals(candidateDeclaration.IdentifierName)
+                    ).ToList();
+                return true;
+            }
+            return false;
         }
 
         private static bool IsSubroutineOrProperty(Declaration declaration)
