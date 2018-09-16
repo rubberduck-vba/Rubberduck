@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rubberduck.UnitTesting
+namespace Rubberduck.UnitTesting.ComClientHelpers
 {
     public class PermissiveObjectComparer : IEqualityComparer<object>
     {

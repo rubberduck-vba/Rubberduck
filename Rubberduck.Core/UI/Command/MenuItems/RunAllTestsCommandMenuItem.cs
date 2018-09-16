@@ -1,13 +1,12 @@
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class RunAllTestsCommandMenuItem : CommandMenuItemBase
     {
-        public RunAllTestsCommandMenuItem(CommandBase command)
+        public RunAllTestsCommandMenuItem(RunAllTestsCommand command)
             : base(command)
         {
         }

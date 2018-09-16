@@ -12,6 +12,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         string HelpFile { get; }
         bool HasVBEExtensions { get; }
         int TypesCount { get; }
+
+        TypeInfosCollection TypeInfos { get; }
+
         System.Runtime.InteropServices.ComTypes.TYPELIBATTR Attributes { get; }
 
         /// <summary>
@@ -30,7 +33,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         TypeInfoReference GetVBEReferenceByIndex(int index);
         TypeLibWrapper GetVBEReferenceTypeLibByIndex(int index);
         TypeInfoReference GetVBEReferenceByGuid(Guid referenceGuid);
-        void Dispose();
         TypeInfoWrapper GetSafeTypeInfoByIndex(int index);
 
         /// <summary>

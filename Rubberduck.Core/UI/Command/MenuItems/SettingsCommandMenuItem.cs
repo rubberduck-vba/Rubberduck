@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class SettingsCommandMenuItem : CommandMenuItemBase
     {
-        public SettingsCommandMenuItem(CommandBase command) : base(command)
+        public SettingsCommandMenuItem(SettingsCommand command) : base(command)
         {
         }
 
