@@ -4,7 +4,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class InspectionResultsCommandMenuItem : CommandMenuItemBase
     {
-        public InspectionResultsCommandMenuItem(CommandBase command) 
+        public InspectionResultsCommandMenuItem(InspectionResultsCommand command) 
             : base(command)
         {
         }

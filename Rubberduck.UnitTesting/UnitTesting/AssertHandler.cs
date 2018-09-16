@@ -26,10 +26,6 @@ namespace Rubberduck.UnitTesting
             OnAssertCompleted?.Invoke(null, new AssertCompletedEventArgs(TestOutcome.Inconclusive, message));
         }
 
-        public static void OnAssertIgnored()
-        {
-            OnAssertCompleted?.Invoke(null, new AssertCompletedEventArgs(TestOutcome.Ignored));
-        }
 
         [DllImport("vbe7.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.IUnknown)]

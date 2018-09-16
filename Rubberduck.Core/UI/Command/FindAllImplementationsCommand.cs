@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Interaction;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;

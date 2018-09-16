@@ -5,9 +5,8 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
-using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.Inspections.Abstract
 {

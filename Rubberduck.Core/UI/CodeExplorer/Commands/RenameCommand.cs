@@ -11,7 +11,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class RenameCommand : CommandBase, IDisposable
     {
         private readonly IVBE _vbe;
