@@ -80,7 +80,7 @@ deploy:
     release: Rubberduck v$(appveyor_build_version)
     description: AppVeyor build on [master] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
     auth_token:
-      secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
+      secure: OHLyvxcoFmF4akSLtR1Ruqt2eUUBGK0fvVSQs+4NWo/RJSF5LCrEZeG1Z4TnkeFe
     artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version).exe
     draft: true
     prerelease: false
