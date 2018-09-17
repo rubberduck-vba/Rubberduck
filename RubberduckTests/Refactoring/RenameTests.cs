@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
-using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -2009,7 +2007,7 @@ End Sub"
         public void RenameRefactoring_RenameEnumerationMemberMemberExists()
         {
             var tdo = new RenameTestsDataObject(selection: "Apple", newName: "Plum");
-            var InputIsExpected =
+            var moduleCode =
                 @"Option Explicit
 
 Public Enum FruitType
@@ -2023,8 +2021,8 @@ Sub DoSomething()
 End Sub";
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
-                Input = InputIsExpected,
-                Expected = InputIsExpected.Replace(FAUX_CURSOR,"")
+                Input = moduleCode,
+                Expected = moduleCode.Replace(FAUX_CURSOR,"")
             };
 
             tdo.MsgBoxReturn = ConfirmationOutcome.No;
@@ -2157,7 +2155,7 @@ End Sub"
         public void RenameRefactoring_RenameUDTMember_MemberExists()
         {
             var tdo = new RenameTestsDataObject(selection: "bar", newName: "foo");
-            var noChangeInput =
+            var moduleCode =
 @"Option Explicit
 
 Private Type UserType
@@ -2171,8 +2169,8 @@ Private Sub DoSomething(baz As UserType)
 End Sub";
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
-                Input = noChangeInput,
-                Expected = noChangeInput.Replace(FAUX_CURSOR, "")
+                Input = moduleCode,
+                Expected = moduleCode.Replace(FAUX_CURSOR, "")
             };
 
             tdo.MsgBoxReturn = ConfirmationOutcome.No;
