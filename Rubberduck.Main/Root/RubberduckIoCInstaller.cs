@@ -123,7 +123,9 @@ namespace Rubberduck.Root
 
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
-            container.Register(Component.For<VBEInteraction>().LifestyleSingleton());
+            container.Register(Component.For<IVBEInteraction>()
+                .ImplementedBy<VBEInteraction>()
+                .LifestyleSingleton());
 
             RegisterRefactoringDialogs(container);
 
