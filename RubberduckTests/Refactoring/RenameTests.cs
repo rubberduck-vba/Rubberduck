@@ -2004,7 +2004,7 @@ End Sub"
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_RenameEnumerationMemberMemberExists()
+        public void RenameRefactoring_RenameEnumerationMember_WarnMemberExists()
         {
             var tdo = new RenameTestsDataObject(selection: "Apple", newName: "Plum");
             var moduleCode =
@@ -2152,7 +2152,7 @@ End Sub"
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_RenameUDTMember_MemberExists()
+        public void RenameRefactoring_RenameUDTMember_WarnMemberExists()
         {
             var tdo = new RenameTestsDataObject(selection: "bar", newName: "foo");
             var moduleCode =
@@ -2177,7 +2177,6 @@ End Sub";
 
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
 
-            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
@@ -2387,7 +2386,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_RenameVariable_4349()
+        public void RenameRefactoring_DoesNotWarnForUDTMember_Issue4349()
         {
             var tdo = new RenameTestsDataObject(selection: "VS", newName: "verySatisfiedResponses");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
@@ -2427,7 +2426,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_RenameVariable_4349_EnumMember()
+        public void RenameRefactoring_DoesNotWarnForEnumMember_Issue4349()
         {
             var tdo = new RenameTestsDataObject(selection: "VerySatisfiedID", newName: "VerySatisfiedResponse");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
