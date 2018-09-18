@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
     public class ShowParserErrorsCommandMenuItem : CommandMenuItemBase
     {
-        public ShowParserErrorsCommandMenuItem(CommandBase command) : base(command)
+        public ShowParserErrorsCommandMenuItem(ShowParserErrorsCommand command) : base(command)
         {
         }
 

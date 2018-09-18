@@ -142,8 +142,6 @@ namespace Rubberduck.Root
             RegisterCommandMenuItems(container);
             RegisterParentMenus(container);
 
-            
-
             RegisterRubberduckCommandBar(container);
             RegisterRubberduckMenu(container);
             RegisterCodePaneContextMenu(container);
