@@ -1,116 +1,97 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Threading;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public class TestExplorerModel : ViewModelBase, IDisposable
+    internal class TestExplorerModel : ViewModelBase, IDisposable
     {
         private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
         private readonly Dispatcher _dispatcher;
+        private readonly ITestEngine testEngine;
 
-        public TestExplorerModel(IVBE vbe, RubberduckParserState state)
+        public TestExplorerModel(IVBE vbe, ITestEngine testEngine)
         {
             _vbe = vbe;
-            _state = state;
-            _state.StateChanged += HandleStateChanged;
+            this.testEngine = testEngine;
 
+            testEngine.TestsRefreshed += HandleTestsRefreshed;
+            testEngine.TestRunCompleted += HandleRunCompletion;
+            testEngine.TestCompleted += HandleTestCompletion;
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
-        private void HandleStateChanged(object sender, ParserStateEventArgs e)
+        private void HandleRunCompletion(object sender, TestRunCompletedEventArgs e)
         {
-            if (e.State != ParserState.ResolvedDeclarations) { return; }
-
-            _dispatcher.Invoke(() =>
-            {
-                var tests = UnitTestUtils.GetAllTests(_vbe, _state).ToList();
-
-                var removedTests = Tests.Where(test =>
-                             !tests.Any(t =>
-                                     t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                                     t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                                     t.Declaration.ProjectId == test.Declaration.ProjectId)).ToList();
-
-                // remove old tests
-                foreach (var test in removedTests)
-                {
-                    Tests.Remove(test);
-                }
-
-                // update declarations for existing tests--declarations are immutable
-                foreach (var test in Tests.Except(removedTests))
-                {
-                    var declaration = tests.First(t =>
-                        t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                        t.Declaration.ProjectId == test.Declaration.ProjectId).Declaration;
-
-                    test.SetDeclaration(declaration);
-                }
-
-                // add new tests
-                foreach (var test in tests)
-                {
-                    if (!Tests.Any(t =>
-                        t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                        t.Declaration.ProjectId == test.Declaration.ProjectId))
-                    {
-                        Tests.Add(test);
-                    }
-                }
-            });
-
-            OnTestsRefreshed();
-        }
-
-        public ObservableCollection<TestMethod> Tests { get; } = new ObservableCollection<TestMethod>();
-
-        public List<TestMethod> LastRun { get; } = new List<TestMethod>();
-
-        public void ClearLastRun()
-        {
-            LastRun.Clear();
-        }
-
-        public void AddExecutedTest(TestMethod test)
-        {
-            LastRun.Add(test);
+            TotalDuration = e.Duration;
             ExecutedCount = Tests.Count(t => t.Result.Outcome != TestOutcome.Unknown);
+        }
 
-            if (Tests.Any(t => t.Result.Outcome == TestOutcome.Failed))
+        private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
+        {
+            var test = e.Test;
+            var vmTest = new TestMethodViewModel(test);
+
+            if (!Tests.Contains(vmTest))
             {
-                ProgressBarColor = Colors.Red;
+                Tests.Add(vmTest);
             }
             else
             {
-                ProgressBarColor = Tests.Any(t => t.Result.Outcome == TestOutcome.Inconclusive)
-                    ? Colors.Gold
-                    : Colors.LimeGreen;
+                vmTest = Tests.First(inside => inside.Equals(vmTest));
             }
+            vmTest.Result = e.Result;
 
-            if (!Tests.Any(t =>
-                        t.Declaration.ComponentName == test.Declaration.ComponentName &&
-                        t.Declaration.IdentifierName == test.Declaration.IdentifierName &&
-                        t.Declaration.ProjectId == test.Declaration.ProjectId))
+            RefreshProgressBarColor();
+        }
+
+        private void HandleTestsRefreshed(object sender, EventArgs args)
+        {
+            Tests.Clear();
+            foreach (var test in testEngine.Tests.Select(test => new TestMethodViewModel(test)))
             {
                 Tests.Add(test);
             }
+            RefreshProgressBarColor();
         }
 
-        public void Refresh()
+        private void RefreshProgressBarColor()
         {
-            _state.OnParseRequested(this);
+            var overallOutcome = testEngine.CurrentAggregateOutcome;
+            switch (overallOutcome)
+            {
+                case TestOutcome.Failed:
+                    ProgressBarColor = Colors.Red;
+                    break;
+                case TestOutcome.Inconclusive:
+                    ProgressBarColor = Colors.Gold;
+                    break;
+                case TestOutcome.Succeeded:
+                    ProgressBarColor = Colors.LimeGreen;
+                    break;
+                default:
+                    ProgressBarColor = Colors.DimGray;
+                    break;
+            }
         }
-
+        
+        public ObservableCollection<TestMethodViewModel> Tests { get; } = new ObservableCollection<TestMethodViewModel>();
+        
+        private long _totalDuration;
+        public long TotalDuration
+        {
+            get { return _totalDuration; } private set
+            {
+                _totalDuration = value;
+                OnPropertyChanged();
+            }
+        }
+        
         private int _executedCount;
         public int ExecutedCount
         {
@@ -141,33 +122,16 @@ namespace Rubberduck.UI.UnitTesting
             {
                 _isBusy = value;
                 OnPropertyChanged();
-
-                IsReady = !_isBusy;
             }
-        }
-
-        private bool _isReady = true;
-        public bool IsReady
-        {
-            get => _isReady;
-            private set
-            {
-                _isReady = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event EventHandler<EventArgs> TestsRefreshed;
-        private void OnTestsRefreshed()
-        {
-            TestsRefreshed?.Invoke(this, EventArgs.Empty);
         }
 
         public void Dispose()
         {
-            if (_state != null)
+            if (testEngine != null)
             {
-                _state.StateChanged -= HandleStateChanged;
+                testEngine.TestCompleted -= HandleTestCompletion;
+                testEngine.TestsRefreshed -= HandleTestsRefreshed;
+                testEngine.TestRunCompleted -= HandleRunCompletion;
             }
         }
     }

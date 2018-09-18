@@ -6,7 +6,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class OpenProjectPropertiesCommand : CommandBase
     {
         private readonly IVBE _vbe;

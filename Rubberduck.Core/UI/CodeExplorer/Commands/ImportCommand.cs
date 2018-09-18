@@ -9,7 +9,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class ImportCommand : CommandBase, IDisposable
     {
         private readonly IVBE _vbe;
