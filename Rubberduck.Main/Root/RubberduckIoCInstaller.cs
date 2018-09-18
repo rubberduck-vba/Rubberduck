@@ -153,7 +153,8 @@ namespace Rubberduck.Root
 
             container.Register(Component.For<HotkeyFactory>()
                 .LifestyleSingleton());
-            container.Register(Component.For<ITestEngine>().ImplementedBy<TestEngine>()
+            container.Register(Component.For<ITestEngine>()
+                .ImplementedBy<TestEngine>()
                 .LifestyleSingleton());
 
             var assembliesToRegister = AssembliesToRegister().ToArray();
