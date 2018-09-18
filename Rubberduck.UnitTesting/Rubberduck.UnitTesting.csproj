@@ -92,7 +92,7 @@
       <Version>4.6.4</Version>
     </PackageReference>
     <PackageReference Include="NLog">
-      <Version>4.5.6</Version>
+      <Version>4.5.10</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime">
       <Version>4.3.0</Version>

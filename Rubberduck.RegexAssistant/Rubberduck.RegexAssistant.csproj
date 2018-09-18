@@ -93,13 +93,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog">
-      <Version>4.5.4</Version>
+      <Version>4.5.10</Version>
     </PackageReference>
     <PackageReference Include="NLog.Schema">
-      <Version>4.5.4</Version>
+      <Version>4.5.10</Version>
     </PackageReference>
     <PackageReference Include="System.ValueTuple">
-      <Version>4.4.0</Version>
+      <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
