@@ -161,66 +161,6 @@ End Sub";
             TestInsertLocalVariableQuickFix(expectedCode, inputCode);
         }
 
-        [Test]
-        [Category("QuickFixes")]
-        public void IntroduceLocalVariable_OnlyFixesFixesFirstOccurrenceOfReDimStatement()
-        {
-            var inputCode = @"
-Public Sub DoSomething()
-    ReDim foo(1)
-    ReDim foo(2)
-End Sub
-";
-            var expectedCode = @"
-Public Sub DoSomething()
-    Dim foo() As Variant
-    ReDim foo(1)
-    ReDim foo(2)
-End Sub
-";
-            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void IntroduceLocalVariable_KeepsAsClauseIfConsistent()
-        {
-            var inputCode = @"
-Public Sub DoSomething()
-    ReDim foo(1) As Long
-    ReDim foo(2) As Long
-End Sub
-";
-            var expectedCode = @"
-Public Sub DoSomething()
-    Dim foo() As Long
-    ReDim foo(1) As Long
-    ReDim foo(2) As Long
-End Sub
-";
-            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
-        }
-
-        [Test]
-        [Category("QuickFixes")]
-        public void IntroduceLocalVariable_DeclaresAsVariantIfInconsistentAsClauses()
-        {
-            var inputCode = @"
-Public Sub DoSomething()
-    ReDim foo(1) As Long
-    ReDim foo(2) As String
-End Sub
-";
-            var expectedCode = @"
-Public Sub DoSomething()
-    Dim foo() As Variant
-    ReDim foo(1) As Long
-    ReDim foo(2) As String
-End Sub
-";
-            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
-        }
-
         private void TestInsertLocalVariableQuickFix(string expectedCode, string inputCode)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);

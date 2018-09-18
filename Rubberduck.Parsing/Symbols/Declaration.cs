@@ -16,7 +16,7 @@ namespace Rubberduck.Parsing.Symbols
     /// <summary>
     /// Defines a declared identifier.
     /// </summary>
-    [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName} As {AsTypeName} | {Selection}")]
+    [DebuggerDisplay("({DeclarationType}) {Accessibility} {IdentifierName}{(IsArray ? \"()\" : string.Empty)} As {AsTypeName} | {Selection}")]
     public class Declaration : IEquatable<Declaration>
     {
         public const int MaxModuleNameLength = 31;

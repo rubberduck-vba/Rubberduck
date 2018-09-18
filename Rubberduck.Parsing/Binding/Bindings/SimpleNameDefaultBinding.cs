@@ -75,16 +75,15 @@ namespace Rubberduck.Parsing.Binding
                 var bracketedExpression = _declarationFinder.OnBracketedExpression(_context.GetText(), _context);
                 return new SimpleNameExpression(bracketedExpression, ExpressionClassification.Unbound, _context);
             }
-            else if (redimVariable != null && _context is VBAParser.SimpleNameExprContext)
+
+            if (redimVariable != null && _context is VBAParser.SimpleNameExprContext context)
             {
-                var newVariable = _declarationFinder.OnRedimVariable(_parent, _name, (VBAParser.SimpleNameExprContext)_context, redimVariable);
+                var newVariable = _declarationFinder.OnRedimVariable(_parent, _name, context, redimVariable);
                 return new SimpleNameExpression(newVariable, ExpressionClassification.Variable, _context);
             }
-            else
-            {
-                var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
-                return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);
-            }
+
+            var undeclaredLocal = _declarationFinder.OnUndeclaredVariable(_parent, _name, _context);
+            return new SimpleNameExpression(undeclaredLocal, ExpressionClassification.Variable, _context);
         }
 
         private VBAParser.RedimVariableDeclarationContext GetRedimVariable()
