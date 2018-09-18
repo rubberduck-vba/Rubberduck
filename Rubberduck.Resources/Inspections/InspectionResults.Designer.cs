@@ -439,7 +439,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Assignment uses obsolete &apos;Call&apos; modifier..
+        ///   Looks up a localized string similar to Procedure call uses the obsolete &apos;Call&apos; keyword..
         /// </summary>
         public static string ObsoleteCallStatementInspection {
             get {

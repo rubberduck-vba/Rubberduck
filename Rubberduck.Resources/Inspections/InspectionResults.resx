@@ -199,7 +199,7 @@
     <value>Project '{0}' has default name.</value>
   </data>
   <data name="ObsoleteCallStatementInspection" xml:space="preserve">
-    <value>Assignment uses obsolete 'Call' modifier.</value>
+    <value>Procedure call uses the obsolete 'Call' keyword.</value>
   </data>
   <data name="ObsoleteCommentSyntaxInspection" xml:space="preserve">
     <value>Comment uses obsolete 'Rem' marker.</value>
