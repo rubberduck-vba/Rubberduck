@@ -1,4 +1,6 @@
 ﻿using Rubberduck.RegexAssistant;
+using Rubberduck.RegexAssistant.Atoms;
+using Rubberduck.RegexAssistant.Expressions;
 using Rubberduck.Resources;
 using System;
 using System.Collections.Generic;

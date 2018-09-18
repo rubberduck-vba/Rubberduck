@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using NUnit.Framework;
+using Rubberduck.RegexAssistant.Atoms;
 
 namespace Rubberduck.RegexAssistant.Tests
 {
