@@ -6,10 +6,10 @@ using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class IndentCommand : CommandBase
     {
         private readonly RubberduckParserState _state;

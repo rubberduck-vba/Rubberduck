@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rubberduck.VBEditor;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Rubberduck.RegexAssistant
@@ -91,16 +92,8 @@ namespace Rubberduck.RegexAssistant
                 && other.MinimumMatches == MinimumMatches 
                 && other.MaximumMatches == MaximumMatches;
         }
-
-        public override int GetHashCode()
-        {
-            return MinimumMatches ^ MaximumMatches ^ Kind.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return $"Quantifier[{Kind}: {MinimumMatches} to {MaximumMatches}";
-        }
+        public override int GetHashCode() => HashCode.Compute(MinimumMatches, MaximumMatches, Kind);
+        public override string ToString() => $"Quantifier[{Kind}: {MinimumMatches} to {MaximumMatches}";
     }
 
     public enum QuantifierKind

@@ -10,6 +10,7 @@ using Rubberduck.UI.Controls;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.Command
 {

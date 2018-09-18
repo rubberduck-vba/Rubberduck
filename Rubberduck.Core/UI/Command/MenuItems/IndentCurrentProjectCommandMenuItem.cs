@@ -4,7 +4,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class IndentCurrentProjectCommandMenuItem : CommandMenuItemBase
     {
-        public IndentCurrentProjectCommandMenuItem(CommandBase command) : base(command) { }
+        public IndentCurrentProjectCommandMenuItem(IndentCurrentProjectCommand command) : base(command) { }
 
         public override string Key => "IndentCurrentProject";
         public override int DisplayOrder => (int)SmartIndenterMenuItemDisplayOrder.CurrentProject;

@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
+      <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -42,12 +45,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDialogView.cs" />
-    <Compile Include="IMessageBox.cs" />
+    <Compile Include="Input\IDialogView.cs" />
+    <Compile Include="Input\IMessageBox.cs" />
+    <Compile Include="Navigation\INavigateCommand.cs" />
+    <Compile Include="Navigation\INavigateSelection.cs" />
+    <Compile Include="Navigation\NavigateCodeEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
+      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
+      <Name>Rubberduck.Parsing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

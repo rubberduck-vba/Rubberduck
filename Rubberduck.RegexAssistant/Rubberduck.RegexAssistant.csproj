@@ -56,18 +56,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Atom.cs" />
+    <Compile Include="Expressions\AlternativesExpression.cs" />
+    <Compile Include="Atoms\CharacterClass.cs" />
+    <Compile Include="Atoms\Group.cs" />
+    <Compile Include="Expressions\ConcatenatedExpression.cs" />
+    <Compile Include="Expressions\ErrorExpression.cs" />
     <Compile Include="i18n\AssistantResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>AssistantResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="IAtom.cs" />
     <Compile Include="IDescribable.cs" />
     <Compile Include="IRegularExpression.cs" />
+    <Compile Include="Atoms\Literal.cs" />
     <Compile Include="Pattern.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Quantifier.cs" />
     <Compile Include="QuantifierExtensions.cs" />
+    <Compile Include="Expressions\SingleAtomExpression.cs" />
+    <Compile Include="VBRegexParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
@@ -88,6 +96,12 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
+      <Name>Rubberduck.VBEditor</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
