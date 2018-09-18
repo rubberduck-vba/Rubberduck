@@ -724,6 +724,7 @@ namespace Foo
     {
         [Test]
         [Category("ChainedWrappers")]
+        [Ignore("See #4377")]
         public void InterfaceContainsInterfaceType()
         {
             var test = @"namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
