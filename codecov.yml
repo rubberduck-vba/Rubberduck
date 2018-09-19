@@ -7,6 +7,7 @@ codecov:
 ignore:
   # as requested by MDoerner, because they aren't really testable
   - Rubberduck.VBEEditor
+  - Rubberduck.VBEditor.*
   # it makes no sense to track coverage on unit-tests
   - RubberduckTests
     
@@ -28,22 +29,3 @@ comment:
   layout: "flags, diff, files"
   behavior: once
   require_changes: yes
-
-flags:
-  core:
-    paths:
-      - Rubberduck.Parsing
-      - Rubberduck.Core
-      # Exclude UI from the core flag, that has a separate flag
-      - !Rubberduck.Core/UI 
-  ui:
-    paths:
-      - Rubberduck.Core/UI
-  inspections:
-    paths:
-      - Rubberduck.Inspections
-  tools:
-     paths:
-       - Rubberduck.SourceControl
-       - Rubberduck.SmartIndenter
-       - Rubberduck.RegexAssistant

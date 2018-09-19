@@ -10,11 +10,11 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.ToDoExplorer;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.ToDoItems
 {

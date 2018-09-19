@@ -78,9 +78,9 @@ deploy:
   - provider: GitHub
     tag: Rubberduck v$(appveyor_build_version)
     release: Rubberduck v$(appveyor_build_version)
-    description: AppVeyor build on [master] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
+    description: AppVeyor build on [master] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
     auth_token:
-      secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
+      secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
     artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version).exe
     draft: true
     prerelease: false
@@ -89,9 +89,9 @@ deploy:
   - provider: GitHub
     tag: Rubberduck v$(appveyor_build_version)
     release: Rubberduck v$(appveyor_build_version)-pre
-    description: AppVeyor build on [next] - https://ci.appveyor.com/project/retailcoder/rubberduck/build/$(appveyor_build_version)
+    description: AppVeyor build on [next] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
     auth_token:
-      secure: oh0SRnZVt0ABeWqFr7ut5TZkxFJjHmS/DZnJnp2HErQTCmX3O8RASJH3ZiYl11gz
+      secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
     artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
     draft: false
     prerelease: true

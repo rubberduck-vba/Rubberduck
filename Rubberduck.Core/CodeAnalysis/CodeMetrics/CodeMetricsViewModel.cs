@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using Rubberduck.Navigation.CodeExplorer;
 using System.Windows;
 using Rubberduck.Navigation.Folders;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
@@ -16,13 +17,15 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
         private readonly RubberduckParserState _state;
         private readonly ICodeMetricsAnalyst _analyst;
         private readonly FolderHelper _folderHelper;
+        private readonly IVBE _vbe;
 
-        public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst, FolderHelper folderHelper)
+        public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst, FolderHelper folderHelper, IVBE vbe)
         {
             _state = state;
             _analyst = analyst;
             _folderHelper = folderHelper;
             _state.StateChanged += OnStateChanged;
+            _vbe = vbe;
         }
         
         private void OnStateChanged(object sender, ParserStateEventArgs e)
@@ -71,7 +74,8 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             var newProjects = userDeclarations.Select(grouping =>
                 new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
-                    grouping)).ToList();
+                    grouping,
+                    _vbe)).ToList();
 
             UpdateNodes(Projects, newProjects);
 

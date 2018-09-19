@@ -1,7 +1,11 @@
-﻿namespace Rubberduck.VBEditor.WindowsApi
+﻿using System.Collections.Generic;
+using Rubberduck.VBEditor.Utility;
+
+namespace Rubberduck.VBEditor.WindowsApi
 {
     public enum WinEvent
     {
+        [ReflectionIgnore]
         Min = 0x0001,
         SystemSound = 0x0001,
         SystemAlert = 0x0002,
@@ -64,6 +68,7 @@
         ObjectEnd = 0x80FF,
         AiaStart = 0xA000,
         AiaEnd = 0xAFFF,
+        [ReflectionIgnore]
         Max = 0x7FFFFFFF
     }
 
@@ -85,4 +90,13 @@
         QueryClasNameIdx = -12,
         NativeOM = -16     
     }
+
+#if (THIRSTY_DUCK || THIRSTY_DUCK_EVT)
+
+    public static class WinEventMap
+    {
+        public static readonly Dictionary<int, string> Lookup = EnumHelper.ToDictionary<WinEvent, int>();
+    }
+
+#endif
 }

@@ -156,9 +156,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Declaring multiple variables in the same instruction is legal, but should be used sparingly. Consider declaring variables closer to their usage, in a single instruction per declaration.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Rubberduck only uses the first '@Folder' annotation in a code module; consider removing extraneous ones.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a 'Sub' procedure instead.</value>
   </data>
@@ -254,7 +251,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>This is the default setting, it does not need to be specified.</value>
   </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level; module and member annotations should only be specified once.</value>
+    <value>An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level.</value>
   </data>
   <data name="MissingAnnotationInspection" xml:space="preserve">
     <value>Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
@@ -333,5 +330,8 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>Windows implementations of Visual Basic only support the StdCall calling convention, and use of of the CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - 'Bad DLL calling convention'. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled.</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>An annotation is specified multiple times, but is intended to be specified only once.</value>
   </data>
 </root>

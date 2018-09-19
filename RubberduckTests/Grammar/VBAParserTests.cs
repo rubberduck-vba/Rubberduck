@@ -2450,7 +2450,7 @@ End Sub";
         {
             string code = @"
 Sub Test()
-    Me.Circle Step(1, 2), 3, 4, 5, 6, 7
+    Me.Circle Step (1, 2), 3, 4, 5, 6, 7
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
@@ -2474,7 +2474,7 @@ End Sub";
         {
             string code = @"
 Sub Test()
-    Me.Circle Step(1, 2), 3
+    Me.Circle Step (1, 2), 3
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
@@ -3476,6 +3476,45 @@ End Sub
 ";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserAcceptsScaleMemberInUDT()
+        {
+            const string code = @"
+Public Type Whatever
+    Scale As Double
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserAcceptsCircleMemberInUDT()
+        {
+            const string code = @"
+Public Type Whatever
+    Circle As Long
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserAcceptsPSetMemberInUDT()
+        {
+            const string code = @"
+Public Type Whatever
+    PSet As Boolean
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
         }
 
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
