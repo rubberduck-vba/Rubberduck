@@ -525,6 +525,9 @@
       <DependentUpon>AutoCompleteSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\AutoCompleteSettingsViewModel.cs" />
+    <Compile Include="UI\Settings\Converters\EmptyLineHandlingToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\EmptyLineHandlingValueTextToEnumValueConverter.cs" />
+    <Compile Include="UI\Settings\Converters\EnumToBooleanConverter.cs" />
     <Compile Include="UnitTesting\IFakes.cs" />
     <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
     <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
