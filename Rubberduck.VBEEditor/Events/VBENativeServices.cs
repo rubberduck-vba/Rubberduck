@@ -53,6 +53,8 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
+        private static bool Suspend { get; set; }
+
         private static void Attach(IntPtr hwnd)
         {
             var subclass = Subclasses.Subclass(hwnd);
@@ -76,13 +78,23 @@ namespace Rubberduck.VBEditor.Events
         public static void VbeEventCallback(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild,
             uint dwEventThread, uint dwmsEventTime)
         {
-            if (hwnd == IntPtr.Zero || _vbe.IsWrappingNullReference) { return; }
+            if (Suspend || hwnd == IntPtr.Zero || _vbe.IsWrappingNullReference) { return; }
 
-#if THIRSTY_DUCK && DEBUG
-            //This is an output window firehose, viewer discretion is advised.
-            if (idObject != (int)ObjId.Cursor) { Debug.WriteLine("Hwnd: {0:X4} - EventType {1:X4}, idObject {2}, idChild {3}", (int)hwnd, eventType, idObject, idChild); }
-#endif
             var windowType = hwnd.ToWindowType();
+
+#if (DEBUG && (THIRSTY_DUCK || THIRSTY_DUCK_EVT))            
+
+            //This is an output window firehose, viewer discretion is advised.
+            if (idObject != (int)ObjId.Cursor)
+            {
+                var windowClassName = hwnd.ToClassName();
+                if (!WinEventMap.Lookup.TryGetValue((int)eventType, out var eventName))
+                {
+                    eventName = "Unknown";
+                }
+                Debug.WriteLine($"EVT: 0x{eventType:X4} ({eventName}) Hwnd 0x{(int)hwnd:X4} ({windowClassName}), idObject {idObject}, idChild {idChild}");
+            }
+#endif
 
             if (windowType == WindowType.IntelliSense)
             {
@@ -118,7 +130,7 @@ namespace Rubberduck.VBEditor.Events
 
         private static void KeyDownDispatcher(object sender, KeyPressEventArgs e)
         {
-            OnKeyDown(e);
+             OnKeyDown(e);
         }
 
         private static void FocusDispatcher(object sender, WindowChangedEventArgs eventArgs)
@@ -154,8 +166,12 @@ namespace Rubberduck.VBEditor.Events
                 {
                     using (var module = pane.CodeModule)
                     {
+                        // bug: Keys.Enter == Keys.M
                         var args = new AutoCompleteEventArgs(module, e);
+                        
+                        Suspend = true;
                         KeyDown?.Invoke(_vbe, args);
+                        Suspend = false;
                         e.Handled = args.Handled;
                     }
                 }

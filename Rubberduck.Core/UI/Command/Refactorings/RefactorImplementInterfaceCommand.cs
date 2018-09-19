@@ -1,11 +1,9 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -33,7 +31,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var targetInterface = _state.AllUserDeclarations.FindInterface(selection.Value);
+            var targetInterface = _state.DeclarationFinder.FindInterface(selection.Value);
             
             var targetClass = _state.DeclarationFinder.Members(selection.Value.QualifiedName)
                 .SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.ClassModule);

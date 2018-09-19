@@ -4,7 +4,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class RefreshCommandMenuItem : CommandMenuItemBase
     {
-        public RefreshCommandMenuItem(CommandBase command) : base(command)
+        public RefreshCommandMenuItem(RefreshCommand command) : base(command)
         {
         }
         public override string Key => "RubberduckMenu_Refresh";

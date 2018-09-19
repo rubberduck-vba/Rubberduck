@@ -1372,6 +1372,110 @@ End Sub"
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
+        public void RenameRefactoring_RenameInterfaceVariable()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Bar");
+            var inputOutput1 = new RenameTestModuleDefinition("IClass1")
+            {
+                Input =
+                    @"Public F|oo As Long",
+                Expected =
+                    @"Public Bar As Long"
+            };
+            var inputOutput2 = new RenameTestModuleDefinition("Class1")
+            {
+                Input =
+                    @"Implements IClass1
+
+Private Property Get IClass1_Foo() As Long
+End Property
+
+Private Property Let IClass1_Foo(rhs As Long)
+End Property",
+                Expected =
+                    @"Implements IClass1
+
+Private Property Get IClass1_Bar() As Long
+End Property
+
+Private Property Let IClass1_Bar(rhs As Long)
+End Property"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameInterfaceVariable_AcceptPrompt()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Bar");
+            var inputOutput1 = new RenameTestModuleDefinition("Class1")
+            {
+                Input = @"Implements IClass1
+
+Private Property Get IClass1_F|oo() As Long
+End Property
+
+Private Property Let IClass1_Foo(rhs As Long)
+End Property",
+                Expected =
+                    @"Implements IClass1
+
+Private Property Get IClass1_Bar() As Long
+End Property
+
+Private Property Let IClass1_Bar(rhs As Long)
+End Property"
+            };
+
+            var inputOutput2 = new RenameTestModuleDefinition("IClass1")
+            {
+                Input =
+                    @"Public Foo As Long",
+                Expected =
+                    @"Public Bar As Long"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
+
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameInterfaceVariable_RejectPrompt()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Bar");
+            var inputOutput1 = new RenameTestModuleDefinition("Class1")
+            {
+                Input = @"Implements IClass1
+
+Private Property Get IClass1_F|oo() As Long
+End Property
+
+Private Property Let IClass1_Foo(rhs As Long)
+End Property"
+            };
+            inputOutput1.Expected = inputOutput1.Input.Replace(FAUX_CURSOR, "");
+
+            var inputOutput2 = new RenameTestModuleDefinition("IClass1")
+            {
+                Input = @"Public Foo As Long"
+            };
+            inputOutput2.Expected = inputOutput2.Input;
+
+            tdo.MsgBoxReturn = DialogResult.No;
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
+
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterfaceFromMemberProperty()
         {
             var tdo = new RenameTestsDataObject(selection: "Something", newName: "Nothing");

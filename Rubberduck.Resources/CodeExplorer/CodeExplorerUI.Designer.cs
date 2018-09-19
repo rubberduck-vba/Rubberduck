@@ -88,11 +88,29 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MDI form (.frm).
+        /// </summary>
+        public static string CodeExplorer_AddMDIFormText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddMDIFormText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Module.
         /// </summary>
         public static string CodeExplorer_AddModule {
             get {
                 return ResourceManager.GetString("CodeExplorer_AddModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Property page (.pag).
+        /// </summary>
+        public static string CodeExplorer_AddPropertyPageText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddPropertyPageText", resourceCulture);
             }
         }
         
@@ -120,6 +138,33 @@ namespace Rubberduck.Resources.CodeExplorer {
         public static string CodeExplorer_AddTestModuleWithStubsText {
             get {
                 return ResourceManager.GetString("CodeExplorer_AddTestModuleWithStubsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UserControl (.ctl).
+        /// </summary>
+        public static string CodeExplorer_AddUserControlText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddUserControlText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User document (.dob).
+        /// </summary>
+        public static string CodeExplorer_AddUserDocumentText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddUserDocumentText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Form (.frm).
+        /// </summary>
+        public static string CodeExplorer_AddVBFormText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddVBFormText", resourceCulture);
             }
         }
         
@@ -327,6 +372,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         public static string CodeExplorer_RunAllTestsText {
             get {
                 return ResourceManager.GetString("CodeExplorer_RunAllTestsText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set as start up.
+        /// </summary>
+        public static string CodeExplorer_SetAsStartupProject {
+            get {
+                return ResourceManager.GetString("CodeExplorer_SetAsStartupProject", resourceCulture);
             }
         }
         

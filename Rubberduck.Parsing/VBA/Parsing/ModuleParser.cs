@@ -104,7 +104,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
             cancellationToken.ThrowIfCancellationRequested();
 
             Logger.Trace($"ParseTaskID {taskId} begins extracting attributes.");
-            var attributes = Attributes(module, attributesParseTree);
+            var (attributes, membersAllowingAttributes) = Attributes(module, attributesParseTree);
             Logger.Trace($"ParseTaskID {taskId} finished extracting attributes.");
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -114,6 +114,7 @@ namespace Rubberduck.Parsing.VBA.Parsing
                 comments,
                 annotations,
                 attributes,
+                membersAllowingAttributes,
                 codePaneRewriter,
                 attributesRewriter
             );
@@ -140,14 +141,16 @@ namespace Rubberduck.Parsing.VBA.Parsing
             return allCommentNodes;
         }
 
-        private IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> Attributes(QualifiedModuleName module, IParseTree tree)
+        private (IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes,
+            IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> membersAllowingAttributes) 
+            Attributes(QualifiedModuleName module, IParseTree tree)
         {
             var type = module.ComponentType == ComponentType.StandardModule
                 ? DeclarationType.ProceduralModule
                 : DeclarationType.ClassModule;
             var attributesListener = new AttributeListener((module.ComponentName, type));
             ParseTreeWalker.Default.Walk(attributesListener, tree);
-            return attributesListener.Attributes;
+            return (attributesListener.Attributes, attributesListener.MembersAllowingAttributes);
         }
 
         private (IParseTree tree, ITokenStream tokenStream) AttributesPassResults(QualifiedModuleName module, CancellationToken token)

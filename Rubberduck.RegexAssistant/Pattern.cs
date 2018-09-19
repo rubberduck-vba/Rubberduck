@@ -25,7 +25,7 @@ namespace Rubberduck.RegexAssistant
 
             var start = AnchoredAtStart ? 1 : 0;
             var end = (AnchoredAtEnd ? 1 : 0) + start;
-            RootExpression = RegularExpression.Parse(expression.Substring(start, expression.Length - end));
+            RootExpression = VBRegexParser.Parse(expression.Substring(start, expression.Length - end));
             Description = AssembleDescription();
         }
 

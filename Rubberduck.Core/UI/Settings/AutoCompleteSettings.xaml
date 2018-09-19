@@ -84,10 +84,13 @@
                         </StackPanel>
                     </DockPanel>
                 </Label>
+                <CheckBox Margin="10,0" VerticalContentAlignment="Center" IsChecked="{Binding IsEnabled}">
+                    <Label Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=EnableAutocompleteLabel}"/>
+                </CheckBox>
                 <WrapPanel HorizontalAlignment="Center">
-                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
-                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
-                    <CheckBox Margin="10,10" IsChecked="{Binding EnableSmartConcat}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableSmartConcat}" />
+                    <CheckBox IsEnabled="{Binding IsEnabled}" Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
+                    <CheckBox IsEnabled="{Binding IsEnabled}" Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
+                    <CheckBox IsEnabled="{Binding IsEnabled}" Margin="10,10" IsChecked="{Binding EnableSmartConcat}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableSmartConcat}" />
                 </WrapPanel>
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
                     <DataGrid Name="AutoCompleteSettingsGrid"
@@ -95,6 +98,7 @@
                               AutoGenerateColumns="False"
                               CanUserReorderColumns="False"
                               IsReadOnly="False"
+                              IsEnabled="{Binding IsEnabled}" 
                               SelectionMode="Single"
                               CanUserAddRows="False"
                               CanUserSortColumns="False"
@@ -126,7 +130,7 @@
             </StackPanel>
         </ScrollViewer>
         <CheckBox Grid.Row="1" HorizontalAlignment="Right" Margin="5"
-                  IsChecked="{Binding Path=SelectAll}" 
+                  IsChecked="{Binding Path=SelectAll}" IsEnabled="{Binding IsEnabled}" 
                   Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SelectAll}" />
     </Grid>
 </UserControl>

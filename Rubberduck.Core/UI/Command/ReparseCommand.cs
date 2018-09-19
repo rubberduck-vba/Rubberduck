@@ -18,7 +18,6 @@ using Rubberduck.VBEditor.VBERuntime.Settings;
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
-    [CodeExplorerCommand]
     public class ReparseCommand : CommandBase
     {
         private readonly IVBE _vbe;

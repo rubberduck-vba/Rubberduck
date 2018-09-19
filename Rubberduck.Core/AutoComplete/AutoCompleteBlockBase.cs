@@ -13,6 +13,7 @@ using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.AutoComplete
 {
+
     public abstract class AutoCompleteBlockBase : AutoCompleteBase
     {
         /// <param name="indenterSettings">Used for auto-indenting blocks as per indenter settings.</param>
@@ -23,6 +24,8 @@ namespace Rubberduck.AutoComplete
         {
             IndenterSettings = indenterSettings;
         }
+
+        public bool IsCapturing { get; set; }
 
         protected virtual bool FindInputTokenAtBeginningOfCurrentLine => false;
         protected virtual bool SkipPreCompilerDirective => true;
@@ -36,13 +39,13 @@ namespace Rubberduck.AutoComplete
 
         public override bool Execute(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            var ignoreTab = e.Keys == Keys.Tab && !settings.CompleteBlockOnTab;
-            var ignoreEnter = e.Keys == Keys.Enter && !settings.CompleteBlockOnEnter;
-            if (IsInlineCharCompletion || e.Keys == Keys.None || ignoreTab || ignoreEnter)
+            var ignoreTab = e.Character == '\t' && !settings.CompleteBlockOnTab;
+            var ignoreEnter = e.Character == '\r' && !settings.CompleteBlockOnEnter;
+            if (IsInlineCharCompletion || e.IsDelete || ignoreTab || ignoreEnter)
             {
                 return false;
             }
-            
+
             var module = e.CodeModule;
             using (var pane = module.CodePane)
             {
@@ -66,8 +69,8 @@ namespace Rubberduck.AutoComplete
                     var indent = originalCode.TakeWhile(c => char.IsWhiteSpace(c)).Count();
                     var newCode = OutputToken.PadLeft(OutputToken.Length + indent, ' ');
 
-                    var stdIndent = IndentBody 
-                        ? IndenterSettings.Create().IndentSpaces 
+                    var stdIndent = IndentBody
+                        ? IndenterSettings.Create().IndentSpaces
                         : 0;
 
                     module.InsertLines(selection.NextLine.StartLine, "\n" + newCode);
@@ -104,7 +107,7 @@ namespace Rubberduck.AutoComplete
             return regexOk && (!hasComment || code.IndexOf(InputToken) < commentIndex);
         }
 
-        private bool IsBlockCompleted(ICodeModule module, Selection selection)
+        protected bool IsBlockCompleted(ICodeModule module, Selection selection)
         {
             string content;
             var proc = module.GetProcOfLine(selection.StartLine);

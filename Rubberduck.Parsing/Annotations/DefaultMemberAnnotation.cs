@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
@@ -9,8 +10,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class DefaultMemberAnnotation : AnnotationBase, IAttributeAnnotation
     {
-        public DefaultMemberAnnotation(QualifiedSelection qualifiedSelection, IEnumerable<string> parameters)
-            : base(AnnotationType.DefaultMember, qualifiedSelection)
+        public DefaultMemberAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
+            : base(AnnotationType.DefaultMember, qualifiedSelection, context)
         {
             Description = parameters.FirstOrDefault();
         }

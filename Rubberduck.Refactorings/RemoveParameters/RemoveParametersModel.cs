@@ -67,14 +67,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private Declaration PromptIfTargetImplementsInterface()
         {
             var declaration = TargetDeclaration;
-            var interfaceImplementation = Declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(declaration));
-            if (declaration == null || interfaceImplementation == null)
+            if (!(declaration is ModuleBodyElementDeclaration member) || !member.IsInterfaceImplementation)
             {
                 return declaration;
             }
 
-            var interfaceMember = Declarations.FindInterfaceMember(interfaceImplementation);
-            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation, declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
+            var interfaceMember = member.InterfaceMemberImplemented;
+            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation,
+                declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
             var args = new RefactoringConfirmEventArgs(message) {Confirm = true};
             ConfirmRemoveParameter?.Invoke(this,args);

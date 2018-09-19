@@ -95,6 +95,9 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="AutoComplete\BlockCompletionTests.cs" />
+    <Compile Include="AutoComplete\CodeStringTests.cs" />
+    <Compile Include="AutoComplete\SelfClosingPairCompletionTests.cs" />
     <Compile Include="Binding\IndexDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessTypeBindingTests.cs" />
@@ -106,15 +109,23 @@
     <Compile Include="CodeAnalysis\CodeMetrics\LineCountTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="FlagSanityTests.cs" />
+    <Compile Include="Grammar\AttributesTests.cs" />
+    <Compile Include="Grammar\MembersAllowingAttributesTests.cs" />
+    <Compile Include="Inspections\DuplicatedAnnotationInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteCallingConventionInspectionTests.cs" />
     <Compile Include="Mocks\MockAddInBuilder.cs" />
     <Compile Include="Inspections\ObsoleteMemberUsageInspectionTests.cs" />
+    <Compile Include="CodeStringExtensions.cs" />
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
+    <Compile Include="Mocks\StaticCachingReferencedDeclarationsCollectorDecorator.cs" />
+    <Compile Include="ParserState\ParserStateTests.cs" />
+    <Compile Include="Parsing\Coordination\TokenStreamParserTests.cs" />
     <Compile Include="Parsing\VBACodeStringParserTests.cs" />
-    <Compile Include="PreProcessing\CompilationArgumentsCahceTests.cs" />
+    <Compile Include="PreProcessing\CompilationArgumentsCacheTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
     <Compile Include="QuickFixes\IntroduceLocalVariableQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveDuplicatedAnnotationQuickFixTests.cs" />
     <Compile Include="Rewriter\ArgumentRewriterInfoFinderTests.cs" />
     <Compile Include="Rewriter\ParameterRewriterInfoFinderTests.cs" />
     <Compile Include="Rewriter\ConstantRewriterInfoFinderTests.cs" />
@@ -130,7 +141,7 @@
     <Compile Include="Mocks\MockExtentions.cs" />
     <Compile Include="Inspections\DefTypeStatementInspectionTests.cs" />
     <Compile Include="Inspections\InspectionProviderTests.cs" />
-    <Compile Include="Symbols\DeclarationExtensionTests.cs" />
+    <Compile Include="Symbols\ModuleBodyElementDeclarationTests.cs" />
     <Compile Include="Symbols\ToVbExpressionTests.cs" />
     <Compile Include="UnitTesting\TestMethodTests.cs" />
     <Compile Include="VBEditor\CodePaneSourceHandlerTests.cs" />
@@ -377,6 +388,10 @@
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
       <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj">
+      <Project>{68f55404-32ca-4414-96b8-e284f3b1f846}</Project>
+      <Name>Rubberduck.UnitTesting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>

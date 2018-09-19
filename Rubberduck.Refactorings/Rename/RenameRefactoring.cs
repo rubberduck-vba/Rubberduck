@@ -142,7 +142,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             if (!IsValidTarget(inputTarget)) { return false; }
 
-            if (!inputTarget.DeclarationType.HasFlag(DeclarationType.Member))
+            if (!(inputTarget is IInterfaceExposable))
             {
                 _model.Target = inputTarget;
                 return true;
@@ -158,7 +158,7 @@ namespace Rubberduck.Refactorings.Rename
                             ResolveRenameTargetIfInterfaceImplementationSelected(inputTarget) ??
                             inputTarget;
 
-            if (inputTarget != _model.Target)
+            if (!ReferenceEquals(inputTarget, _model.Target))
             {
                 //Resolved to a target other than the input target selected by the user.
                 //Check that the resolved target is valid and that the user wants to continue with the rename 
@@ -257,12 +257,12 @@ namespace Rubberduck.Refactorings.Rename
             _model = result;
 
             var conflictDeclarations = _state.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(_model.Target)
-                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase));
+                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             if (conflictDeclarations.Any())
             {
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
-                    conflictDeclarations.FirstOrDefault().IdentifierName);
+                    conflictDeclarations.First().IdentifierName);
 
                 return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
             }
@@ -283,7 +283,7 @@ namespace Rubberduck.Refactorings.Rename
         private Declaration ResolveEventHandlerToUserEvent(Declaration userTarget)
         {
             var withEventsDeclarations = _state.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(varDec => varDec.IsWithEvents);
+                .Where(varDec => varDec.IsWithEvents).ToList();
 
             if (!withEventsDeclarations.Any()) { return null; }
 
@@ -309,11 +309,9 @@ namespace Rubberduck.Refactorings.Rename
 
         private Declaration ResolveRenameTargetIfInterfaceImplementationSelected(Declaration userTarget)
         {
-            var interfaceMember = _state.DeclarationFinder.FindAllInterfaceMembers()
-                .Where(member => member.Equals(userTarget)
-                    || (member.ProjectId.Equals(userTarget.ProjectId)
-                        && member.DeclarationType == userTarget.DeclarationType
-                        && $"{member.ParentDeclaration.IdentifierName}_{member.IdentifierName}".Equals(userTarget.IdentifierName))).FirstOrDefault();
+            var interfaceMember = userTarget is IInterfaceExposable member && member.IsInterfaceMember
+                ? userTarget
+                : (userTarget as ModuleBodyElementDeclaration)?.InterfaceMemberImplemented;
 
             IsInterfaceMemberRename = interfaceMember != null;
             return interfaceMember;
@@ -324,10 +322,10 @@ namespace Rubberduck.Refactorings.Rename
             Debug.Assert(!_model.NewName.Equals(_model.Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase),
                             $"input validation fail: New Name equals Original Name ({_model.Target.IdentifierName})");
 
-            var actionKeys = _renameActions.Keys.Where(decType => _model.Target.DeclarationType.HasFlag(decType));
+            var actionKeys = _renameActions.Keys.Where(decType => _model.Target.DeclarationType.HasFlag(decType)).ToList();
             if (actionKeys.Any())
             {
-                Debug.Assert(actionKeys.Count() == 1, $"{actionKeys.Count()} Rename Actions have flag '{_model.Target.DeclarationType.ToString()}'");
+                Debug.Assert(actionKeys.Count == 1, $"{actionKeys.Count} Rename Actions have flag '{_model.Target.DeclarationType.ToString()}'");
                 _renameActions[actionKeys.FirstOrDefault()]();
             }
             else
@@ -355,15 +353,17 @@ namespace Rubberduck.Refactorings.Rename
                 RenameStandardElements(_model.Target, _model.NewName);
             }
 
-            if (IsInterfaceMemberRename)
+            if (!IsInterfaceMemberRename)
             {
-                var implementations = _state.DeclarationFinder.FindAllInterfaceImplementingMembers()
-                    .Where(member => member.ProjectId == _model.Target.ProjectId
-                        && member.IdentifierName.Equals($"{_model.Target.ComponentName}_{_model.Target.IdentifierName}"));
-
-                RenameDefinedFormatMembers(implementations, PrependUnderscoreFormat);
+                return;
             }
-        }
+
+                var implementations = _state.DeclarationFinder.FindAllInterfaceImplementingMembers()
+                .Where(impl => ReferenceEquals(_model.Target.ParentDeclaration, impl.InterfaceImplemented)
+                               && impl.InterfaceMemberImplemented.IdentifierName.Equals(_model.Target.IdentifierName));
+
+            RenameDefinedFormatMembers(implementations.ToList(), PrependUnderscoreFormat);
+            }
 
         private void RenameParameter()
         {
@@ -394,12 +394,19 @@ namespace Rubberduck.Refactorings.Rename
                 .Where(varDec => varDec.IsWithEvents && varDec.AsTypeName.Equals(_model.Target.ParentDeclaration.IdentifierName));
 
             var eventHandlers = withEventsDeclarations.SelectMany(we => _state.DeclarationFinder.FindHandlersForWithEventsField(we));
-            RenameDefinedFormatMembers(eventHandlers, PrependUnderscoreFormat);
+            RenameDefinedFormatMembers(eventHandlers.ToList(), PrependUnderscoreFormat);
         }
 
         private void RenameVariable()
         {
-            if (_model.Target.DeclarationType.HasFlag(DeclarationType.Control))
+            if ((_model.Target.Accessibility == Accessibility.Public ||
+                 _model.Target.Accessibility == Accessibility.Implicit)
+                && _model.Target.ParentDeclaration is ClassModuleDeclaration classDeclaration
+                && classDeclaration.Subtypes.Any())
+            {
+                RenameMember();
+            }
+            else if (_model.Target.DeclarationType.HasFlag(DeclarationType.Control))
             {
                 var component = _state.ProjectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
                 using (var controls = component.Controls)
@@ -414,7 +421,7 @@ namespace Rubberduck.Refactorings.Rename
                 }
                 RenameReferences(_model.Target, _model.NewName);
                 var controlEventHandlers = FindEventHandlersForControl(_model.Target);
-                RenameDefinedFormatMembers(controlEventHandlers, AppendUnderscoreFormat);
+                RenameDefinedFormatMembers(controlEventHandlers.ToList(), AppendUnderscoreFormat);
             }
             else
             {
@@ -422,7 +429,7 @@ namespace Rubberduck.Refactorings.Rename
                 if (_model.Target.IsWithEvents)
                 {
                     var eventHandlers = _state.DeclarationFinder.FindHandlersForWithEventsField(_model.Target);
-                    RenameDefinedFormatMembers(eventHandlers, AppendUnderscoreFormat);
+                    RenameDefinedFormatMembers(eventHandlers.ToList(), AppendUnderscoreFormat);
                 }
             }
         }
@@ -440,21 +447,26 @@ namespace Rubberduck.Refactorings.Rename
                     var ctxt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
                     if (ctxt != null)
                     {
-                        RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt), AppendUnderscoreFormat);
+                        RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt).ToList(), AppendUnderscoreFormat);
                     }
                 }
             }
 
             var component = _state.ProjectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
-            if (component.Type == ComponentType.Document)
+            switch (component.Type)
             {
+                case ComponentType.Document:
+                    {
                 var properties = component.Properties;
                 var property = properties["_CodeName"];
                 {
                     property.Value = _model.NewName;
                 }
+                        break;
             }
-            else if (component.Type == ComponentType.UserForm)
+                case ComponentType.UserForm:
+                case ComponentType.VBForm:
+                case ComponentType.MDIForm:
             {
                 var properties = component.Properties;
                 var property = properties["Caption"];
@@ -465,14 +477,26 @@ namespace Rubberduck.Refactorings.Rename
                     }
                     component.Name = _model.NewName;
                 }
+                        break;
             }
-            else
+                default:
             {
+                        if (_vbe.Kind == VBEKind.Hosted)
+                        {
+                            // VBA - rename code module
                 using (var codeModule = component.CodeModule)
                 {
                     Debug.Assert(!codeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
                     codeModule.Name = _model.NewName;
                 }
+            }
+                        else
+                        {
+                            // VB6 - rename component
+                            component.Name = _model.NewName;
+        }
+                        break;
+                    }
             }
         }
 
@@ -504,7 +528,7 @@ namespace Rubberduck.Refactorings.Rename
             return null;
         }
 
-        private void RenameDefinedFormatMembers(IEnumerable<Declaration> members, string underscoreFormat)
+        private void RenameDefinedFormatMembers(IReadOnlyCollection<Declaration> members, string underscoreFormat)
         {
             if (!members.Any()) { return; }
 

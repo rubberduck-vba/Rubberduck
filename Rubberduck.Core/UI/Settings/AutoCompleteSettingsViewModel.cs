@@ -14,11 +14,7 @@ namespace Rubberduck.UI.Settings
     {
         public AutoCompleteSettingsViewModel(Configuration config)
         {
-            Settings = new ObservableCollection<AutoCompleteSetting>(config.UserSettings.AutoCompleteSettings.AutoCompletes);
-            CompleteBlockOnEnter = config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter;
-            CompleteBlockOnTab = config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab;
-            EnableSmartConcat = config.UserSettings.AutoCompleteSettings.EnableSmartConcat;
-
+            TransferSettingsToView(config.UserSettings.AutoCompleteSettings);
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
@@ -44,6 +40,7 @@ namespace Rubberduck.UI.Settings
 
         public void UpdateConfig(Configuration config)
         {
+            config.UserSettings.AutoCompleteSettings.IsEnabled = IsEnabled;
             config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab = CompleteBlockOnTab;
             config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter = CompleteBlockOnEnter;
             config.UserSettings.AutoCompleteSettings.EnableSmartConcat = EnableSmartConcat;
@@ -52,10 +49,26 @@ namespace Rubberduck.UI.Settings
 
         private void TransferSettingsToView(Rubberduck.Settings.AutoCompleteSettings toLoad)
         {
+            IsEnabled = toLoad.IsEnabled;
             CompleteBlockOnTab = toLoad.CompleteBlockOnTab;
             CompleteBlockOnEnter = toLoad.CompleteBlockOnEnter;
             EnableSmartConcat = toLoad.EnableSmartConcat;
             Settings = new ObservableCollection<AutoCompleteSetting>(toLoad.AutoCompletes);
+        }
+
+        private bool _isEnabled;
+
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
+            {
+                if (_isEnabled != value)
+                {
+                    _isEnabled = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private bool _completeBlockOnTab;

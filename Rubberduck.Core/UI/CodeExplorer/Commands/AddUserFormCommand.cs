@@ -5,7 +5,6 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class AddUserFormCommand : CommandBase
     {
         private readonly AddComponentCommand _addComponentCommand;
@@ -17,7 +16,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel);
+            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel, ProjectTypes.VBA);
         }
 
         protected override void OnExecute(object parameter)

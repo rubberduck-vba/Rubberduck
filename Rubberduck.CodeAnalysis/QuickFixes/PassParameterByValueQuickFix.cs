@@ -23,7 +23,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result)
         {
             if (result.Target.ParentDeclaration.DeclarationType == DeclarationType.Event ||
-                _state.AllUserDeclarations.FindInterfaceMembers().Contains(result.Target.ParentDeclaration))
+                _state.DeclarationFinder.FindAllInterfaceMembers().Contains(result.Target.ParentDeclaration))
             {
                 FixMethods(result.Target);
             }
@@ -54,7 +54,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 ? _state.AllUserDeclarations.FindHandlersForEvent(target.ParentDeclaration)
                     .Select(s => s.Item2)
                     .ToList()
-                : _state.AllUserDeclarations.FindInterfaceImplementationMembers(target.ParentDeclaration).ToList();
+                : _state.DeclarationFinder.FindInterfaceImplementationMembers(target.ParentDeclaration).Cast<Declaration>().ToList();
 
             foreach (var member in members)
             {

@@ -156,9 +156,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Multiple declarations in single instruction</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Module has more than one folder annotation.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Non-returning function or property getter</value>
   </data>
@@ -332,5 +329,8 @@
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>Use of obsolete 'CDecl' calling convention</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Annotation is duplicated</value>
   </data>
 </root>

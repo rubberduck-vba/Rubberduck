@@ -87,7 +87,7 @@ namespace Rubberduck.Inspections.Concrete
 
         public override bool VisitModuleDeclarationsElement(VBAParser.ModuleDeclarationsElementContext context)
         {
-            return context.variableStmt() == null
+            return context.moduleVariableStmt() == null
                    && context.constStmt() == null
                    && context.enumerationStmt() == null
                    && context.udtDeclaration() == null

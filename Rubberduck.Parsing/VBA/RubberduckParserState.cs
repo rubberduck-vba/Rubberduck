@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
@@ -134,8 +133,6 @@ namespace Rubberduck.Parsing.VBA
         private static readonly List<ParserState> States = new List<ParserState>();
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        public readonly ConcurrentDictionary<List<string>, Declaration> CoClasses = new ConcurrentDictionary<List<string>, Declaration>();
 
         public bool IsEnabled { get; internal set; }
 
@@ -629,6 +626,11 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[module].SetModuleAttributes(attributes);
         }
 
+        internal void SetMembersAllowingAttributes(QualifiedModuleName module, IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> membersAllowingAttributes)
+        {
+            _moduleStates[module].SetMembersAllowingAttributes(membersAllowingAttributes);
+        }
+
         public List<CommentNode> AllComments
         {
             get
@@ -721,9 +723,6 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private readonly ConcurrentBag<SerializableProject> _builtInDeclarationTrees = new ConcurrentBag<SerializableProject>();
-        public IProducerConsumerCollection<SerializableProject> BuiltInDeclarationTrees => _builtInDeclarationTrees;
-
         /// <summary>
         /// Gets a copy of the collected declarations, excluding the built-in ones.
         /// </summary>
@@ -732,6 +731,11 @@ namespace Rubberduck.Parsing.VBA
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> GetModuleAttributes(QualifiedModuleName module)
         {
             return _moduleStates[module].ModuleAttributes;
+        }
+
+        public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> GetMembersAllowingAttributes(QualifiedModuleName module)
+        {
+            return _moduleStates[module].MembersAllowingAttributes;
         }
 
         /// <summary>
@@ -1039,10 +1043,9 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RemoveBuiltInDeclarations(IReference reference)
+        public void RemoveBuiltInDeclarations(ReferenceInfo reference)
         {
-            var projectName = reference.Name;
-            var key = new QualifiedModuleName(projectName, reference.FullPath, projectName);
+            var key = new QualifiedModuleName(reference);
             ClearAsTypeDeclarationPointingToReference(key);
             if (_moduleStates.TryRemove(key, out var moduleState))
             {
@@ -1082,7 +1085,6 @@ namespace Rubberduck.Parsing.VBA
                 item.Value.Dispose();
             }
 
-            CoClasses?.Clear();
             RemoveEventHandlers();
             VBEEvents.Terminate();
 
