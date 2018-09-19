@@ -382,15 +382,18 @@
     <Compile Include="AutoComplete\AutoCompleteClosingParenthese.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingString.cs" />
     <Compile Include="AutoComplete\AutoCompleteService.cs" />
+    <Compile Include="UI\Settings\Converters\EmptyLineHandlingToTextConverter.cs" />
+    <Compile Include="UI\Settings\Converters\EmptyLineHandlingValueTextToEnumValueConverter.cs" />
+    <Compile Include="UI\Settings\Converters\EnumToBooleanConverter.cs" />
+    <Compile Include="UI\UnitTesting\Commands\AddTestModuleWithStubsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddPropertyPageCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserDocumentCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserControlCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddMDIFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddVBFormCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\AddTestModuleWithStubsCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\CodeExplorerCommandAttribute.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddUserFormCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\CopyResultsCommand.cs" />
+    <Compile Include="UI\CodeExplorer\Commands\SetAsStartupProjectCommand.cs" />
     <Compile Include="UI\CodeMetrics\CodeMetricsWindow.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -409,8 +412,6 @@
     <Compile Include="UI\Command\ExportAllCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenProjectPropertiesCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RenameCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\FindAllReferencesCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\FindAllImplementationsCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\IndentCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\OpenCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\RemoveCommand.cs" />
@@ -420,7 +421,6 @@
     <Compile Include="UI\CodeExplorer\Commands\OpenDesignerCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddClassModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddStdModuleCommand.cs" />
-    <Compile Include="UI\CodeExplorer\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\CodeExplorer\Commands\AddComponentCommand.cs" />
     <Compile Include="UI\Command\FormDesignerFindAllReferencesCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentProjectCommand.cs" />
@@ -525,13 +525,12 @@
       <DependentUpon>AutoCompleteSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Settings\AutoCompleteSettingsViewModel.cs" />
-    <Compile Include="UI\Settings\Converters\EmptyLineHandlingToTextConverter.cs" />
-    <Compile Include="UI\Settings\Converters\EmptyLineHandlingValueTextToEnumValueConverter.cs" />
-    <Compile Include="UI\Settings\Converters\EnumToBooleanConverter.cs" />
-    <Compile Include="UnitTesting\IFakes.cs" />
-    <Compile Include="UnitTesting\ReturnTypeConverter.cs" />
-    <Compile Include="UnitTesting\PermissiveObjectComparer.cs" />
-    <Compile Include="UnitTesting\TestCategory.cs" />
+    <Compile Include="UI\UnitTesting\Commands\RepeatLastRunCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\RunFailedTestsCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\RunInconclusiveTestsCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\RunNotExecutedTestsCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\RunSucceededTestsCommand.cs" />
+    <Compile Include="UI\UnitTesting\ViewModels\TestMethodViewModel.cs" />
     <Compile Include="VersionCheck\IVersionCheck.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\AppCommandBarBase.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ContextSelectionLabelMenuItem.cs" />
@@ -602,9 +601,9 @@
     <Compile Include="UI\Inspections\InspectionResultsViewModel.cs" />
     <Compile Include="UI\Inspections\InspectionSeverityImageSourceConverter.cs" />
     <Compile Include="UI\Command\AboutCommand.cs" />
-    <Compile Include="UI\Command\AddTestMethodExpectedErrorCommand.cs" />
-    <Compile Include="UI\Command\AddTestMethodCommand.cs" />
-    <Compile Include="UI\Command\AddTestModuleCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\AddTestMethodExpectedErrorCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\AddTestMethodCommand.cs" />
+    <Compile Include="UI\UnitTesting\Commands\AddTestModuleCommand.cs" />
     <Compile Include="UI\Command\CommandBase.cs" />
     <Compile Include="UI\Command\DelegateCommand.cs" />
     <Compile Include="UI\Command\IndentCurrentProcedureCommand.cs" />
@@ -774,7 +773,6 @@
     </Compile>
     <Compile Include="UI\IdentifierReferences\IdentifierReferencesListDockablePresenter.cs" />
     <Compile Include="UI\FileBrowserDialogFactory.cs" />
-    <Compile Include="UI\Controls\INavigateSelection.cs" />
     <Compile Include="UI\Splash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -799,7 +797,6 @@
     <Compile Include="UI\Inspections\InspectionResultsWindow.Designer.cs">
       <DependentUpon>InspectionResultsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\NavigateCodeEventArgs.cs" />
     <Compile Include="UI\Inspections\QuickFixEventArgs.cs" />
     <Compile Include="UI\DockableToolwindowPresenter.cs" />
     <Compile Include="Settings\Configuration.cs" />
@@ -833,16 +830,7 @@
       <DependentUpon>TestExplorerWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\ViewModelBase.cs" />
-    <Compile Include="UnitTesting\AssertCompletedEventArgs.cs" />
-    <Compile Include="UnitTesting\AssertHandler.cs" />
-    <Compile Include="UnitTesting\UnitTestUtils.cs" />
-    <Compile Include="UnitTesting\ITestEngine.cs" />
-    <Compile Include="UnitTesting\ProjectTestExtensions.cs" />
-    <Compile Include="UnitTesting\TestEngine.cs" />
-    <Compile Include="UnitTesting\TestMethod.cs" />
-    <Compile Include="UnitTesting\TestOutcome.cs" />
     <Compile Include="UI\UnitTesting\TestOutcomeImageSourceConverter.cs" />
-    <Compile Include="UnitTesting\TestResult.cs" />
     <Compile Include="UI\UnitTesting\TestResultToOutcomeTextConverter.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorCommandBase.cs" />
     <Compile Include="UI\Command\Refactorings\RefactorExtractMethodCommand.cs" />
@@ -978,6 +966,10 @@
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
       <Project>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</Project>
       <Name>Rubberduck.SmartIndenter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj">
+      <Project>{68f55404-32ca-4414-96b8-e284f3b1f846}</Project>
+      <Name>Rubberduck.UnitTesting</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
       <Project>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</Project>
