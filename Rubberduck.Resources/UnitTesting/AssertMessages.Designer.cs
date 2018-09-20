@@ -61,15 +61,6 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unexpected COM exception while running tests..
-        /// </summary>
-        public static string Assert_ComException {
-            get {
-                return ResourceManager.GetString("Assert_ComException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to expected has {0} dimensions; actual has {1} dimensions. {2}.
         /// </summary>
         public static string Assert_DimensionMismatchFormat {
@@ -111,15 +102,6 @@ namespace Rubberduck.Resources.UnitTesting {
         public static string Assert_FailedMessageFormat {
             get {
                 return ResourceManager.GetString("Assert_FailedMessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unexpected exception while running tests..
-        /// </summary>
-        public static string Assert_GenericException {
-            get {
-                return ResourceManager.GetString("Assert_GenericException", resourceCulture);
             }
         }
         
@@ -282,6 +264,60 @@ namespace Rubberduck.Resources.UnitTesting {
         public static string Assert_VerifyParameterNotPassed {
             get {
                 return ResourceManager.GetString("Assert_VerifyParameterNotPassed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Reference to Rubberduck required for early-binding tests could not be resolved. It may be corrupt..
+        /// </summary>
+        public static string Prerequisite_EarlyBindingReferenceMissing {
+            get {
+                return ResourceManager.GetString("Prerequisite_EarlyBindingReferenceMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected COM exception while running tests..
+        /// </summary>
+        public static string TestRunner_ComException {
+            get {
+                return ResourceManager.GetString("TestRunner_ComException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Running a test method failed with an exception..
+        /// </summary>
+        public static string TestRunner_ExceptionDuringRun {
+            get {
+                return ResourceManager.GetString("TestRunner_ExceptionDuringRun", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected exception while running tests..
+        /// </summary>
+        public static string TestRunner_GenericException {
+            get {
+                return ResourceManager.GetString("TestRunner_GenericException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong when trying to run @ModuleInitialize. Module skipped..
+        /// </summary>
+        public static string TestRunner_ModuleInitializeFailure {
+            get {
+                return ResourceManager.GetString("TestRunner_ModuleInitializeFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something went wrong when trying to run @TestInitialize. Test skipped..
+        /// </summary>
+        public static string TestRunner_TestInitializeFailure {
+            get {
+                return ResourceManager.GetString("TestRunner_TestInitializeFailure", resourceCulture);
             }
         }
     }

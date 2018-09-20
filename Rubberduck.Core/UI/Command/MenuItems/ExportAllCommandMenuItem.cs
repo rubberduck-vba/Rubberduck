@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class ExportAllCommandMenuItem : CommandMenuItemBase
     {
-        public ExportAllCommandMenuItem(CommandBase command) : base(command)
+        public ExportAllCommandMenuItem(ExportAllCommand command) : base(command)
         {
         }
 

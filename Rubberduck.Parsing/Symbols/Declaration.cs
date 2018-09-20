@@ -368,7 +368,9 @@ namespace Rubberduck.Parsing.Symbols
             Selection selection,
             IEnumerable<IAnnotation> annotations,
             bool isAssignmentTarget = false,
-            bool hasExplicitLetStatement = false)
+            bool hasExplicitLetStatement = false,
+            bool isSetAssigned = false
+            )
         {
             _references.Add(
                 new IdentifierReference(
@@ -381,7 +383,8 @@ namespace Rubberduck.Parsing.Symbols
                     callee,
                     isAssignmentTarget,
                     hasExplicitLetStatement,
-                    annotations));
+                    annotations,
+                    isSetAssigned));
         }
 
         /// <summary>

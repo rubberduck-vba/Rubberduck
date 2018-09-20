@@ -1318,4 +1318,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
     <value>Severity:</value>
   </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Czech</value>
+  </data>
 </root>

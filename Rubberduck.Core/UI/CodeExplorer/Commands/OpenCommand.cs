@@ -1,10 +1,10 @@
 using NLog;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class OpenCommand : CommandBase
     {
         private readonly INavigateCommand _openCommand;

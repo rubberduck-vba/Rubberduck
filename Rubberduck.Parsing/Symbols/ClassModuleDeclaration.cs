@@ -9,15 +9,15 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class ClassModuleDeclaration : Declaration
+    public sealed class ClassModuleDeclaration : ModuleDeclaration
     {
         private readonly List<string> _supertypeNames;
         private readonly HashSet<Declaration> _supertypes;
         private readonly ConcurrentDictionary<Declaration, byte> _subtypes;
 
-        private Lazy<bool> _isExtensible;
-        private Lazy<bool> _isExposed;
-        private Lazy<bool> _hasPredeclaredId;
+        private readonly Lazy<bool> _isExtensible;
+        private readonly Lazy<bool> _isExposed;
+        private readonly Lazy<bool> _hasPredeclaredId;
 
         public ClassModuleDeclaration(
                   QualifiedMemberName qualifiedName,
@@ -26,41 +26,29 @@ namespace Rubberduck.Parsing.Symbols
                   bool isUserDefined,
                   IEnumerable<IAnnotation> annotations,
                   Attributes attributes,
+                  bool isWithEvents = false,
                   bool hasDefaultInstanceVariable = false,
                   bool isControl = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
-                  projectDeclaration,
                   name,
-                  null,
-                  false,
-                  false,
-                  Accessibility.Public,
                   DeclarationType.ClassModule,
-                  null,
-                  null,
-                  Selection.Home,
-                  false,
-                  null,
                   isUserDefined,
                   annotations,
-                  attributes)
+                  attributes,
+                  isWithEvents)
         {
             _supertypeNames = new List<string>();
             _supertypes = new HashSet<Declaration>();
             _subtypes = new ConcurrentDictionary<Declaration, byte>();
             IsControl = isControl;
-            _isExtensible = new Lazy<bool>(() => IsExtensibleToCache());
-            _isExposed = new Lazy<bool>(() => IsExposedToCache());
-            if (hasDefaultInstanceVariable)
-            {
-                _hasPredeclaredId = new Lazy<bool>(() => true);
-            }
-            else
-            {
-                _hasPredeclaredId = new Lazy<bool>(() => HasPredeclaredIdToCache());
-            }
+            _isExtensible = new Lazy<bool>(IsExtensibleToCache);
+            _isExposed = new Lazy<bool>(IsExposedToCache);
+
+            _hasPredeclaredId = hasDefaultInstanceVariable
+                ? new Lazy<bool>(() => true)
+                : new Lazy<bool>(HasPredeclaredIdToCache);
         }
 
         // skip IDispatch.. just about everything implements it and RD doesn't need to care about it; don't care about IUnknown either
@@ -68,24 +56,16 @@ namespace Rubberduck.Parsing.Symbols
 
         public ClassModuleDeclaration(ComCoClass coClass, Declaration parent, QualifiedModuleName module,
             Attributes attributes)
-            : base(
-                module.QualifyMemberName(coClass.Name),
-                parent,
-                parent,
-                coClass.Name,
-                null,
-                false,
-                coClass.EventInterfaces.Any(),
-                Accessibility.Public,
-                DeclarationType.ClassModule,
-                null,
-                null,
-                Selection.Home,
-                false,
-                null,
-                false,
-                new List<IAnnotation>(),
-                attributes)
+            : this(
+                    module.QualifyMemberName(coClass.Name),
+                    parent,
+                    coClass.Name,
+                    false,
+                    new List<IAnnotation>(),
+                    attributes,
+                    coClass.EventInterfaces.Any(),
+                    coClass.IsAppObject,
+                    coClass.IsControl)
         {
             _supertypeNames =
                 coClass.ImplementedInterfaces.Where(i => !i.IsRestricted && !IgnoredInterfaces.Contains(i.Name))
@@ -93,10 +73,9 @@ namespace Rubberduck.Parsing.Symbols
                     .ToList();
             _supertypes = new HashSet<Declaration>();
             _subtypes = new ConcurrentDictionary<Declaration, byte>();
-            IsControl = coClass.IsControl;
-            _isExtensible = new Lazy<bool>(() => IsExtensibleToCache());
-            _isExposed = new Lazy<bool>(() => IsExposedToCache());
-            _hasPredeclaredId = new Lazy<bool>(() => HasPredeclaredIdToCache());
+            _isExtensible = new Lazy<bool>(IsExtensibleToCache);
+            _isExposed = new Lazy<bool>(IsExposedToCache);
+            _hasPredeclaredId = new Lazy<bool>(HasPredeclaredIdToCache);
         }
 
         public ClassModuleDeclaration(ComInterface @interface, Declaration parent, QualifiedModuleName module,
@@ -116,8 +95,8 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return new List<Declaration>();
             }
-            var classType = type as ClassModuleDeclaration;
-            return classType != null ? classType.Supertypes : new List<Declaration>();
+
+            return type is ClassModuleDeclaration classType ? classType.Supertypes : new List<Declaration>();
         }
 
         public static bool HasDefaultMember(Declaration type)
@@ -141,11 +120,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsExposedToCache()
         {
-            if (!IsUserDefined)
-            {
-                return IsExposedForBuiltInModules;
-            }
-            return HasAttribute("VB_Exposed");
+            return !IsUserDefined ? IsExposedForBuiltInModules : HasAttribute("VB_Exposed");
         }
 
         // TODO: This should only be a boolean in VBA ('Private' (false) and 'PublicNotCreatable' (true)) . For VB6 it will also need to support
@@ -153,7 +128,7 @@ namespace Rubberduck.Parsing.Symbols
         // All built-ins are public (by definition).
         private static bool IsExposedForBuiltInModules { get; } = true;
 
-        public bool IsControl { get; private set; }
+        public bool IsControl { get; }
 
         private bool HasAttribute(string attributeName)
         {
@@ -186,7 +161,7 @@ namespace Rubberduck.Parsing.Symbols
 
         private bool IsGlobalFromSubtypes()
         {
-            return Subtypes.Any(subtype => subtype is ClassModuleDeclaration && ((ClassModuleDeclaration)subtype).IsGlobalClassModule);
+            return Subtypes.Any(subtype => subtype is ClassModuleDeclaration declaration && declaration.IsGlobalClassModule);
         }
 
         /// <summary>
@@ -212,6 +187,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<Declaration> Subtypes => _subtypes.Keys;
 
+        public bool IsInterface => _subtypes.Count > 0;
+
+        public bool IsUserInterface => Subtypes.Any(s => s.IsUserDefined);
+
+        public IEnumerable<ClassModuleDeclaration> ImplementedInterfaces =>
+            _supertypes.Cast<ClassModuleDeclaration>().Where(type => type.Subtypes.Contains(this));
+
         public void AddSupertypeName(string supertypeName)
         {
             _supertypeNames.Add(supertypeName);
@@ -227,9 +209,22 @@ namespace Rubberduck.Parsing.Symbols
         {
             foreach (var supertype in _supertypes)
             {
-                (supertype as ClassModuleDeclaration)?.RemoveSubtype(this);
+                if (supertype is ClassModuleDeclaration classModule)
+                {
+                    classModule.RemoveSubtype(this);
+                    classModule.ClearMemberImplementationCache();
+                }
             }
             _supertypes.Clear();
+            ClearMemberImplementationCache();
+        }
+
+        private void ClearMemberImplementationCache()
+        {
+            foreach (var member in Members)
+            {
+                (member as ModuleBodyElementDeclaration)?.InvalidateInterfaceCache();
+            }
         }
 
         private void AddSubtype(Declaration subtype)

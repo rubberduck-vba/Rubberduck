@@ -38,38 +38,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private readonly bool _wrappedObjectIsWeakReference;
-
-        /// <summary>
-        /// Exposes an enumerable collection of TypeInfo objects exposed by this ITypeLib
-        /// </summary>
-        public class TypeInfosCollection : IIndexedCollectionBase<TypeInfoWrapper>
-        {
-            private readonly TypeLibWrapper _parent;
-            public TypeInfosCollection(TypeLibWrapper parent) => _parent = parent;
-            public override int Count => _parent.TypesCount;
-            public override TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeTypeInfoByIndex(index);
-
-            public TypeInfoWrapper Find(string searchTypeName)
-            {
-                foreach (var typeInfo in this)
-                {
-                    if (typeInfo.Name == searchTypeName) return typeInfo;
-                    typeInfo.Dispose();
-                }
-                return null;
-            }
-
-            public TypeInfoWrapper Get(string searchTypeName)
-            {
-                var retVal = Find(searchTypeName);
-                if (retVal == null)
-                {
-                    throw new ArgumentException($"TypeInfosCollection::Get failed. '{searchTypeName}' component not found.");
-                }
-                return retVal;
-            }
-        }
-        public TypeInfosCollection TypeInfos;
+        public TypeInfosCollection TypeInfos { get; private set; }
         
         /// <summary>
         /// Exposes an enumerable collection of references used by the VBE type library
@@ -197,7 +166,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }*/
 
-        public static TypeLibWrapper FromVBProject(IVBProject vbProject)
+        
+        internal static TypeLibWrapper FromVBProject(IVBProject vbProject)
         {
             using (var references = vbProject.References)
             {
