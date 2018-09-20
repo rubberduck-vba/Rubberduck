@@ -22,70 +22,59 @@ namespace RubberduckTests.Refactoring
     {
         private const string FAUX_CURSOR = "|";
 
-        [Test]
+        [TestCase(1, "1")]
+        [TestCase(2, "1")]
+        [TestCase(2, "2")]
+        [TestCase(2, "1,2")]
+        [TestCase(3, "2,3")]   //Replicates Issue #4319
+        [TestCase(5, "1,4,5")]  //Replicates Issue #4319
+        [TestCase(6, "1,5,6")]  //Replicates Issue #4319
+        [TestCase(6, "1,6")]
+        [TestCase(8, "1,3,4,5,6,7,8")] //Replicates Issue #4319
+        [TestCase(8, "1,3,4")]
+        [TestCase(8, "1,3,4,7,8")] //Replicates Issue #4319
+        [TestCase(10, "1,5")]
+        [TestCase(10, "1,5,10")]
+        [TestCase(10, "1,5,9,10")] //Replicates Issue #4319
+        [TestCase(10, "1,5,6,7,8,10")]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
-        public void RemoveParametersRefactoring_RemoveBothParams()
+        public void RemoveParametersRefactoring_SignatureParamRemovals(int numParams, string paramsToRemove)
         {
-            const string inputCode =
-@"Private Sub Foo(ByVal arg|1 As Integer, ByVal arg2 As String)
+            var preamble = "Private Sub Foo(";
+            var input = preamble;
+            for (var argNum = 1; argNum <= numParams; argNum++)
+            {
+                input = argNum == 1 ? input + $"ar|g{argNum} As Long, " : input + $"arg{argNum} As Long, ";
+            }
+            input = input.Equals(preamble) ? input : input.Remove(input.Length - 2);
+            input = input + ")";
+
+            var paramsTR = paramsToRemove.Split(',');
+            var userParamRemovalChoices = new List<int>();
+            foreach (var idxString in paramsTR)
+            {
+                userParamRemovalChoices.Add(int.Parse(idxString) - 1);
+            }
+
+            var expect = preamble;
+            for (var argNum = 1; argNum <= numParams; argNum++)
+            {
+                if (!userParamRemovalChoices.Contains(argNum - 1))
+                {
+                    expect = expect + $"arg{argNum} As Long, ";
+                }
+            }
+            expect = expect.Equals(preamble) ? expect : expect.Remove(expect.Length - 2);
+            expect = expect + ")";
+
+            string inputCode =
+$@"{input}
 End Sub";
 
-            const string expectedCode =
-@"Private Sub Foo()
+            string expectedCode =
+$@"{expect}
 End Sub";
-
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode));
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Remove Parameters")]
-        public void RemoveParametersRefactoring_RemoveOnlyParam()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByVal ar|g1 As Integer)
-End Sub";
-
-            const string expectedCode =
-@"Private Sub Foo()
-End Sub";
-
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode));
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Remove Parameters")]
-        public void RemoveParametersRefactoring_RemoveFirstParam()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByVal ar|g1 As Integer, ByVal arg2 As String)
-End Sub";
-
-            const string expectedCode =
-@"Private Sub Foo(ByVal arg2 As String)
-End Sub";
-
-            var userParamRemovalChoices = new int[] { 0 };
-
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Remove Parameters")]
-        public void RemoveParametersRefactoring_RemoveSecondParam()
-        {
-            const string inputCode =
-@"Private Sub Foo(ByVal arg|1 As Integer, ByVal arg2 As String)
-End Sub";
-
-            const string expectedCode =
-@"Private Sub Foo(ByVal arg1 As Integer)
-End Sub";
-
-            var userParamRemovalChoices = new int[] { 1 };
 
             Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
         }
@@ -206,6 +195,34 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_UpdateCallReferences_4319()
+        {
+            const string inputCode =
+@"Private Function Foo(ByVal ar|g1 As Integer, ByVal arg2 As String, ByVal arg3 As Long) As Boolean
+End Function
+
+Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Long)
+    Foo arg1, arg2, arg3
+End Sub
+";
+
+            const string expectedCode =
+@"Private Function Foo(ByVal arg1 As Integer) As Boolean
+End Function
+
+Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String, ByVal arg3 As Long)
+    Foo arg1
+End Sub
+";
+
+            var userParamRemovalChoices = new int[] { 1,2 };
+
+            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParametersRefactoring_ParentIdentifierContainsParameterName()
         {
             const string inputCode =
@@ -289,7 +306,6 @@ End Property";
             const string inputCode =
 @"Private Property Set Foo(ByVal ar|g1 As Integer, ByVal arg2 As String)
 End Property";
-            //var selection = new Selection(1, 23, 1, 27);
 
             const string expectedCode =
 @"Private Property Set Foo(ByVal arg2 As String)
@@ -377,7 +393,7 @@ Private Function foo(ByRe|f a As Integer, ByVal b As Integer) As Integer
     a = b
     foo = a + b
 End Function";
-
+            //TODO: Is leaving param's 'a' usage behind looks wrong - what happens in Excel
             const string expectedCode =
 @"Private Sub bar()
     Dim x As Integer
@@ -807,31 +823,15 @@ End Sub";   // note: VBE removes excess spaces
     ByVal arg2 As String, _
     ByVal arg3 As Date)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27);
 
             const string expectedCode =
 @"Private Sub Foo(ByVal arg2 As String, _
     ByVal arg3 As Date)
 End Sub";   // note: VBE removes excess spaces
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
+            var userParamRemovalChoices = new int[] { 0 };
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                //Specify Params to remove
-                var model = new RemoveParametersModel(state, qualifiedSelection, null);
-                model.RemoveParameters = new[] { model.Parameters[0] }.ToList();
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
-                refactoring.Refactor(model.TargetDeclaration);
-
-                Assert.AreEqual(expectedCode, component.CodeModule.Content());
-            }
+            Assert.AreEqual(expectedCode, RemoveParams(inputCode, true, paramIndices: userParamRemovalChoices));
         }
 
         [Test]
@@ -1559,7 +1559,7 @@ End Sub";
             }
         }
 
-        private string RemoveParams(string inputCode, Selection? selection = null, IEnumerable<int> paramIndices = null)
+        private string RemoveParams(string inputCode, bool passInTarget = false, Selection? selection = null, IEnumerable<int> paramIndices = null)
         {
             if (!selection.HasValue)
             {
@@ -1599,7 +1599,14 @@ End Sub";
                 var factory = SetupFactory(model);
 
                 var refactoring = new RemoveParametersRefactoring(vbe.Object, factory.Object);
-                refactoring.Refactor(qualifiedSelection);
+                if (passInTarget)
+                {
+                    refactoring.Refactor(model.TargetDeclaration);
+                }
+                else
+                {
+                    refactoring.Refactor(qualifiedSelection);
+                }
                 result = component.CodeModule.Content();
             }
             return result;
