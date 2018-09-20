@@ -5,7 +5,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class FormDesignerFindAllReferencesCommandMenuItem : CommandMenuItemBase
     {
-        public FormDesignerFindAllReferencesCommandMenuItem(CommandBase command)
+        public FormDesignerFindAllReferencesCommandMenuItem(FormDesignerFindAllReferencesCommand command)
             : base(command)
         {
         }

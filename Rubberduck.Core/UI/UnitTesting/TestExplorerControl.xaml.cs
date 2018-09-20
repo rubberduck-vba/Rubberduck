@@ -55,8 +55,8 @@ namespace Rubberduck.UI.UnitTesting
         {
             if (_isDisposed || DataContext == null) { return; }
 
-            DataContextChanged -= TestExplorerControl_DataContextChanged;
             ((TestExplorerViewModel)DataContext).TestCompleted -= OnTestCompleted;
+            DataContextChanged -= TestExplorerControl_DataContextChanged;
 
             _isDisposed = true;
         }

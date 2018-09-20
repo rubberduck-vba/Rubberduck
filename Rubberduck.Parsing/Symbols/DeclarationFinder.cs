@@ -1015,22 +1015,6 @@ namespace Rubberduck.Parsing.Symbols
             return handlers.ToList();
         }
 
-
-        public IEnumerable<Declaration> GetAccessibleDeclarations(Declaration target)
-        {
-            if (target == null)
-            {
-                return Enumerable.Empty<Declaration>();
-            }
-
-            return _declarations.AllValues()
-                .Where(callee => AccessibilityCheck.IsAccessible(
-                    Declaration.GetProjectParent(target),
-                    Declaration.GetModuleParent(target), 
-                    target.ParentDeclaration, 
-                    callee));
-        }
-
         public IEnumerable<Declaration> GetAccessibleUserDeclarations(Declaration target)
         {
             if (target == null)

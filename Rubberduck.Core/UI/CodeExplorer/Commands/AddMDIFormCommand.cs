@@ -6,7 +6,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class AddMDIFormCommand : CommandBase
     {
         private readonly IVBE _vbe;
@@ -29,9 +28,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             if (project == null  && _vbe.ProjectsCount == 1)
             {
-                project = _vbe.VBProjects[1];
+                using (var vbProjects = _vbe.VBProjects)
+                using (project = vbProjects[1])
+                {
+                    return EvaluateCanExecuteCore(project, parameter as CodeExplorerItemViewModel);
+                }
             }
 
+            return EvaluateCanExecuteCore(project, parameter as CodeExplorerItemViewModel);
+        }
+
+        private bool EvaluateCanExecuteCore(IVBProject project, CodeExplorerItemViewModel itemViewModel)
+        {
             if (project == null)
             {
                 return false;
@@ -46,10 +54,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         // Only one MDI Form allowed per project
                         return false;
                     }
-                }                    
-            }            
+                }
+            }
 
-            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel, new[] { ProjectType.StandardExe, ProjectType.ActiveXExe });
+            return _addComponentCommand.CanAddComponent(itemViewModel, new[] {ProjectType.StandardExe, ProjectType.ActiveXExe});
         }
 
         protected override void OnExecute(object parameter)

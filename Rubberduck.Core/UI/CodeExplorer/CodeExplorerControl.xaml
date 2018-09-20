@@ -88,6 +88,7 @@
             <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
                 <Setter Property="Text" Value="{Binding Name}" />
                 <Setter Property="FontSize" Value="{Binding ElementName=ChosenFontSize, Path=SelectedItem, Mode=OneWay}" />
+                <Setter Property="FontWeight" Value="{Binding FontWeight}"/>
                 <Setter Property="Margin" Value="2,0,2,0" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="ToolTip" Value="{Binding Name}" />
@@ -104,6 +105,7 @@
             <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
                 <Setter Property="Text" Value="{Binding NameWithSignature}" />
                 <Setter Property="FontSize" Value="{Binding ElementName=ChosenFontSize, Path=SelectedItem, Mode=OneWay}" />
+                <Setter Property="FontWeight" Value="{Binding FontWeight}"/>
                 <Setter Property="Margin" Value="2,0,2,0" />
                 <Setter Property="VerticalAlignment" Value="Center" />
                 <Setter Property="ToolTip" Value="{Binding NameWithSignature}" />
@@ -168,6 +170,10 @@
                                   Command="{Binding RenameCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
                             <Separator />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SetAsStartupProject}"
+                                      Command="{Binding SetAsStartupProjectCommand}"
+                                      CommandParameter="{Binding SelectedItem}"  
+                                      Visibility="{Binding VB6Visibility}"/>
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_OpenProjectProperties}"
                                   Command="{Binding OpenProjectPropertiesCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
@@ -418,7 +424,7 @@
         </Grid.RowDefinitions>
 
         <ToolBarTray Grid.Row="0" IsLocked="True" >
-            <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}" >
+            <ToolBar Style="{DynamicResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
                 <Button Command="{Binding RefreshCommand}">
                     <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png">

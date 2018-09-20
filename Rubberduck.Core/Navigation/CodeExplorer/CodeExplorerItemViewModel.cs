@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI;
@@ -202,6 +203,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public abstract BitmapImage CollapsedIcon { get; }
         public abstract BitmapImage ExpandedIcon { get; }
         public abstract CodeExplorerItemViewModel Parent { get; }
+
+        public virtual FontWeight FontWeight => FontWeights.Normal;
 
         public abstract QualifiedSelection? QualifiedSelection { get; }
 

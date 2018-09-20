@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.VBA.ComReferenceLoading;
 using Rubberduck.VBEditor;
 
@@ -28,6 +30,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             {
                 return;
             }
+
+            var parsingStageTimer = ParsingStageTimer.StartNew();
 
             _projectDeclarations.Clear();
             token.ThrowIfCancellationRequested();
@@ -56,6 +60,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.ResolverError, token);
                 throw;
             }
+
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Resolved user declaration in {0}ms.");
         }
     }
 }

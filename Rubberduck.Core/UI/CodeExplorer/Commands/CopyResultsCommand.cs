@@ -9,7 +9,6 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class CopyResultsCommand : CommandBase
     {
         private readonly RubberduckParserState _state;

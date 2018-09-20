@@ -1,10 +1,11 @@
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class ProjectExplorerRefactorRenameCommandMenuItem : CommandMenuItemBase
     {
-        public ProjectExplorerRefactorRenameCommandMenuItem(CommandBase command)
+        public ProjectExplorerRefactorRenameCommandMenuItem(ProjectExplorerRefactorRenameCommand command)
             : base(command)
         {
         }

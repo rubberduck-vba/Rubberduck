@@ -385,6 +385,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set as start up.
+        /// </summary>
+        public static string CodeExplorer_SetAsStartupProject {
+            get {
+                return ResourceManager.GetString("CodeExplorer_SetAsStartupProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Designer.
         /// </summary>
         public static string CodeExplorer_ShowDesignerToolTip {

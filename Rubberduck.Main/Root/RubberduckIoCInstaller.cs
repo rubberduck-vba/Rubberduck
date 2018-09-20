@@ -59,6 +59,7 @@ using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.Root
 {
@@ -87,7 +88,7 @@ namespace Rubberduck.Root
         {
             SetUpCollectionResolver(container);
             ActivateAutoMagicFactories(container);
-            DeactivatePropertyInjection(container);
+            OverridePropertyInjection(container);
 
             RegisterConstantVbeAndAddIn(container);
             RegisterAppWithSpecialDependencies(container);
@@ -122,6 +123,9 @@ namespace Rubberduck.Root
 
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IVBEInteraction>()
+                .ImplementedBy<VBEInteraction>()
+                .LifestyleSingleton());
 
             RegisterRefactoringDialogs(container);
 
@@ -137,7 +141,6 @@ namespace Rubberduck.Root
             RegisterCommands(container);
             RegisterCommandMenuItems(container);
             RegisterParentMenus(container);
-            RegisterCodeExplorerViewModelWithCodeExplorerCommands(container);
 
             RegisterRubberduckCommandBar(container);
             RegisterRubberduckMenu(container);
@@ -150,7 +153,8 @@ namespace Rubberduck.Root
 
             container.Register(Component.For<HotkeyFactory>()
                 .LifestyleSingleton());
-            container.Register(Component.For<ITestEngine>().ImplementedBy<TestEngine>()
+            container.Register(Component.For<ITestEngine>()
+                .ImplementedBy<TestEngine>()
                 .LifestyleSingleton());
 
             var assembliesToRegister = AssembliesToRegister().ToArray();
@@ -597,18 +601,6 @@ namespace Rubberduck.Root
             return items.ToArray();
         }
 
-        private void RegisterCodeExplorerViewModelWithCodeExplorerCommands(IWindsorContainer container)
-        {
-            // Assumption: All Commands are defined in the same assembly as CommandBase
-            var codeExplorerCommands = Assembly.GetAssembly(typeof(CommandBase)).GetTypes()
-                .Where(type => type.IsClass && type.Namespace != null
-                               && type.CustomAttributes.Any(a => a.AttributeType == typeof(CodeExplorerCommandAttribute))
-                               && type.NotDisabledOrExperimental(_initialSettings));
-            container.Register(Component.For<CodeExplorerViewModel>()
-                .DependsOn(Dependency.OnComponentCollection<List<CommandBase>>(codeExplorerCommands.ToArray()))
-                .LifestyleSingleton());
-        }
-
         private void RegisterRefactoringDialogs(IWindsorContainer container)
         {
             container.Register(Component.For<IRefactoringDialog<RenameViewModel>>()
@@ -621,84 +613,24 @@ namespace Rubberduck.Root
             //note: The name of a registration is the full name of the implementation if not specified otherwise.
             container.Register(Classes.FromAssemblyContaining<ICommandMenuItem>()
                 .IncludeNonPublicTypes()
-                .BasedOn<ICommandMenuItem >()
+                .BasedOn<ICommandMenuItem>()
                 .If(type => type.NotDisabledOrExperimental(_initialSettings))
-                .WithService.Base() 
-                .Configure(item => item.DependsOn(Dependency.OnComponent(typeof(CommandBase),
-                    CommandNameFromCommandMenuName(item.Implementation.Name))))
+                .WithService.Base()
                 .LifestyleTransient());
-        }
-
-        private string CommandNameFromCommandMenuName(string itemName)
-        {
-            //note: CommandBase naming convention: [Foo]Command
-            //note: ICommandMenuItem naming convention for [Foo]Command: [Foo]CommandMenuItem
-            return itemName.Substring(0, itemName.Length - "MenuItem".Length);
         }
 
         private void RegisterCommands(IWindsorContainer container)
         {
-            //note: convention: the registration name for commands is the type name, not the full type name.
-            //Otherwise, namespaces would get in the way when binding to the menu items.
-            RegisterCommandsWithPresenters(container);
-
-            // assumption: All Commands (and CommandMenuItems by extension) are in the same assembly as CommandBase
-            var commandsForCommandMenuItems = Assembly.GetAssembly(typeof(CommandBase)).GetTypes()
-                .Where(type => type.IsClass 
-                               && typeof(ICommandMenuItem).IsAssignableFrom(type) 
-                               && type.NotDisabledOrExperimental(_initialSettings))
-                .Select(type => CommandNameFromCommandMenuName(type.Name))
-                .ToHashSet();
-
-            container.Register(Classes.FromAssemblyContaining<CommandBase>()
-                .Where(type => type.Namespace != null
-                            && type.Namespace.StartsWith(typeof(CommandBase).Namespace ?? string.Empty)
-                            && (type.BaseType == typeof(CommandBase) || type.BaseType == typeof(RefactorCommandBase))
-                            && type.Name.EndsWith("Command")
-                            && type.NotDisabledOrExperimental(_initialSettings)
-                            && commandsForCommandMenuItems.Contains(type.Name))
-                .WithService.Self()
+            // assumption: All Commands are in the same assembly as CommandBase
+            container.Register(Classes.FromAssemblyContaining(typeof(CommandBase))
+                .IncludeNonPublicTypes()
+                .Where(type => type.IsBasedOn(typeof(CommandBase))
+                    && type != typeof(DelegateCommand) // DelegateCommand is not intended to be injected!
+                    && type.NotDisabledOrExperimental(_initialSettings))
                 .WithService.Select(new[] { typeof(CommandBase) })
-                .LifestyleTransient()
-                .Configure(c => c.Named(c.Implementation.Name)));
-        }
-
-        private void RegisterCommandsWithPresenters(IWindsorContainer container)
-        {
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<RunAllTestsCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, TestExplorerDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(RunAllTestsCommand).Name));
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<TestExplorerCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, TestExplorerDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(TestExplorerCommand).Name));
-
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<InspectionResultsCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, InspectionResultsDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(InspectionResultsCommand).Name));
-
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<CodeExplorerCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, CodeExplorerDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(CodeExplorerCommand).Name));
-
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<CodeMetricsCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, CodeMetricsDockablePresenter>())
-                .LifestyleSingleton()
-                .Named(typeof(CodeMetricsCommand).Name));
-
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<ToDoExplorerCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, ToDoExplorerDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(ToDoExplorerCommand).Name));
+                .WithService.Self()
+                .WithService.DefaultInterfaces()
+                .LifestyleTransient());
         }
 
         private void RegisterSmartIndenter(IWindsorContainer container)
@@ -735,17 +667,11 @@ namespace Rubberduck.Root
 
         private void RegisterDockablePresenters(IWindsorContainer container)
         {
-            container.Register(Component.For<IDockablePresenter>()
-                .ImplementedBy<TestExplorerDockablePresenter>()
-                .LifestyleSingleton());
-            container.Register(Component.For<IDockablePresenter>()
-                .ImplementedBy<InspectionResultsDockablePresenter>()
-                .LifestyleSingleton());
-            container.Register(Component.For<IDockablePresenter>()
-                .ImplementedBy<CodeExplorerDockablePresenter>()
-                .LifestyleSingleton());
-            container.Register(Component.For<IDockablePresenter>()
-                .ImplementedBy<ToDoExplorerDockablePresenter>()
+            container.Register(Classes.FromAssemblyContaining<IDockablePresenter>()
+                .IncludeNonPublicTypes()
+                .BasedOn<IDockablePresenter>()
+                .WithServiceSelf()
+                .WithServices(new[] { typeof(IDockablePresenter) })
                 .LifestyleSingleton());
         }
 
@@ -759,15 +685,16 @@ namespace Rubberduck.Root
             container.Kernel.AddFacility<TypedFactoryFacility>();
         }
 
-        private void DeactivatePropertyInjection(IWindsorContainer container)
+        private void OverridePropertyInjection(IWindsorContainer container)
         {
-            // We don't want to inject properties, only ctors. 
-            //There are too many properties that would be injected otherwise, which causes code to execute at resolve time.
+            // remove default property injection
             var propInjector = container.Kernel.ComponentModelBuilder
                 .Contributors
                 .OfType<PropertiesDependenciesModelInspector>()
                 .Single();
             container.Kernel.ComponentModelBuilder.RemoveContributor(propInjector);
+
+            container.Kernel.ComponentModelBuilder.AddContributor(new RubberduckPropertiesInspector());
         }
 
         private void RegisterParsingEngine(IWindsorContainer container)
@@ -841,6 +768,9 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IStringParser>()
                 .ImplementedBy<TokenStreamParserStringParserAdapterWithPreprocessing>()
+                .LifestyleSingleton());
+            container.Register(Component.For<ITokenStreamParser>()
+                .ImplementedBy<VBATokenStreamParser>()
                 .LifestyleSingleton());
             container.Register(Component.For<IModuleParser>()
                 .ImplementedBy<ModuleParser>()
