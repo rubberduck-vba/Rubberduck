@@ -37,7 +37,7 @@ namespace Rubberduck.UnitTesting
         private readonly List<TestMethod> LastRun = new List<TestMethod>();
         private readonly Dictionary<TestOutcome, List<TestMethod>> resultsByOutcome = new Dictionary<TestOutcome, List<TestMethod>>();
         public IEnumerable<TestMethod> Tests { get; private set; }
-        public bool CanRun => AllowedRunStates.Contains(_state.Status);// && !_vbe.IsInDesignMode;
+        public bool CanRun => AllowedRunStates.Contains(_state.Status) && _vbe.IsInDesignMode;
         public bool CanRepeatLastRun => LastRun.Any();
         
         private bool refreshBackoff;
@@ -126,7 +126,7 @@ namespace Rubberduck.UnitTesting
 
         private void RunInternal(IEnumerable<TestMethod> tests)
         {
-            if (!CanRun || _vbe.IsInDesignMode)
+            if (!CanRun)
             {
                 return;
             }

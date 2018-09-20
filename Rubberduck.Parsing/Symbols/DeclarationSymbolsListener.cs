@@ -118,15 +118,14 @@ namespace Rubberduck.Parsing.Symbols
             // VBE 1-based indexing
             for (var i = line - 1; i >= 1; i--)
             {
-                var annotation = _annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i);
+                var lineAnnotations = _annotations.Where(a => a.QualifiedSelection.Selection.StartLine == i);
 
-                if (annotation == null)
+                if (!lineAnnotations.Any())
                 {
                     break;
                 }
 
-                annotations.Add(annotation);
-
+                annotations.AddRange(lineAnnotations);
             }
 
             return annotations;
