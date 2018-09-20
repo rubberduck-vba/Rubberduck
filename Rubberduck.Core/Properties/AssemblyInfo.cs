@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright ©  2014-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: InternalsVisibleTo("Rubberduck.Main")]
+[assembly: InternalsVisibleTo("Rubberduck")]
 // internals visible for testing and mocking
 [assembly: InternalsVisibleTo("RubberduckTests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

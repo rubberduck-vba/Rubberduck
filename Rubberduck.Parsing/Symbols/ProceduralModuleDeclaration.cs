@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class ProceduralModuleDeclaration : Declaration
+    public sealed class ProceduralModuleDeclaration : ModuleDeclaration
     {
         public ProceduralModuleDeclaration(
             QualifiedMemberName qualifiedName,
@@ -18,21 +18,12 @@ namespace Rubberduck.Parsing.Symbols
             : base(
                   qualifiedName,
                   projectDeclaration,
-                  projectDeclaration,
                   name,
-                  null,
-                  false,
-                  false,
-                  Accessibility.Public,
                   DeclarationType.ProceduralModule,
-                  null,
-                  null,
-                  Selection.Home,
-                  false,
-                  null,
                   isUserDefined,
                   annotations,
-                  attributes) { }
+                  attributes)
+        { }
 
         public ProceduralModuleDeclaration(ComModule statics, Declaration parent, QualifiedModuleName module,
             Attributes attributes)

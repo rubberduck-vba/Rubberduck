@@ -33,7 +33,7 @@ namespace RubberduckTests.Symbols
             private static ClassModuleDeclaration GetTestClassModule(Declaration projectDeclatation, string name, bool isUserDefined, Attributes attributes, bool hasDefaultInstanceVariable = false)
             {
                 var qualifiedClassModuleMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new ClassModuleDeclaration(qualifiedClassModuleMemberName, projectDeclatation, name, isUserDefined, null, attributes, hasDefaultInstanceVariable);
+                return new ClassModuleDeclaration(qualifiedClassModuleMemberName, projectDeclatation, name, isUserDefined, null, attributes, false, hasDefaultInstanceVariable);
             }
 
 

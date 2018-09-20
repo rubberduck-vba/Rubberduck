@@ -115,6 +115,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Annotation is duplicated.
+        /// </summary>
+        public static string DuplicatedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("DuplicatedAnnotationInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Empty &apos;Case&apos; block.
         /// </summary>
         public static string EmptyCaseBlockInspection {
@@ -381,15 +390,6 @@ namespace Rubberduck.Resources.Inspections {
         public static string MultipleDeclarationsInspection {
             get {
                 return ResourceManager.GetString("MultipleDeclarationsInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Module has more than one folder annotation..
-        /// </summary>
-        public static string MultipleFolderAnnotationsInspection {
-            get {
-                return ResourceManager.GetString("MultipleFolderAnnotationsInspection", resourceCulture);
             }
         }
         

@@ -1,14 +1,15 @@
 using System.Runtime.InteropServices;
 using NLog;
+using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
-    public class TestExplorerCommand : CommandBase
+    internal class TestExplorerCommand : CommandBase
     {
-        private readonly IDockablePresenter _presenter;
+        private readonly TestExplorerDockablePresenter _presenter;
 
-        public TestExplorerCommand(IDockablePresenter presenter)
+        public TestExplorerCommand(TestExplorerDockablePresenter presenter)
             : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;

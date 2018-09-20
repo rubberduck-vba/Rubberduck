@@ -1,35 +1,30 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
 {
     public sealed class IgnoreModuleAnnotation : AnnotationBase
     {
-        private readonly IEnumerable<string> _inspectionNames;
-
-        public IgnoreModuleAnnotation(QualifiedSelection qualifiedSelection, IEnumerable<string> parameters)
-            : base(AnnotationType.IgnoreModule, qualifiedSelection)
+        public IgnoreModuleAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
+            : base(AnnotationType.IgnoreModule, qualifiedSelection, context)
         {
-            _inspectionNames = parameters;
+            InspectionNames = parameters;
         }
 
-        public IEnumerable<string> InspectionNames
-        {
-            get
-            {
-                return _inspectionNames;
-            }
-        }
+        public IEnumerable<string> InspectionNames { get; }
 
         public bool IsIgnored(string inspectionName)
         {
-            return !_inspectionNames.Any() || _inspectionNames.Contains(inspectionName);
+            return !InspectionNames.Any() || InspectionNames.Contains(inspectionName);
         }
+
+        public override bool AllowMultiple { get; } = true;
 
         public override string ToString()
         {
-            return string.Format("Ignored inspections: {0}", string.Join(", ", _inspectionNames));
+            return $"Ignored inspections: {string.Join(", ", InspectionNames)}";
         }
     }
 }

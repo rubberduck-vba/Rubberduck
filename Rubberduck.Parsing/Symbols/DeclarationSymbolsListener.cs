@@ -118,15 +118,14 @@ namespace Rubberduck.Parsing.Symbols
             // VBE 1-based indexing
             for (var i = line - 1; i >= 1; i--)
             {
-                var annotation = _annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i);
+                var lineAnnotations = _annotations.Where(a => a.QualifiedSelection.Selection.StartLine == i);
 
-                if (annotation == null)
+                if (!lineAnnotations.Any())
                 {
                     break;
                 }
 
-                annotations.Add(annotation);
-
+                annotations.AddRange(lineAnnotations);
             }
 
             return annotations;
@@ -349,6 +348,24 @@ namespace Rubberduck.Parsing.Symbols
                             (context as VBAParser.EnumerationStmt_ConstantContext)?.expression()?.GetText() ?? string.Empty,
                             context,
                             selection);
+                        break;
+                    case DeclarationType.Variable:
+                        result = new VariableDeclaration(
+                            new QualifiedMemberName(_qualifiedModuleName, identifierName),
+                            _parentDeclaration,
+                            _currentScopeDeclaration,
+                            asTypeName,
+                            typeHint,
+                            selfAssigned,
+                            withEvents,
+                            accessibility,
+                            context,
+                            attributesPassContext,
+                            selection,
+                            isArray,
+                            asTypeContext,
+                            annotations,
+                            attributes);
                         break;
                     default:
                         result = new Declaration(

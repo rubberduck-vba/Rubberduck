@@ -4,7 +4,7 @@ using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public partial class TestExplorerWindow : UserControl, IDockableUserControl
+    internal partial class TestExplorerWindow : UserControl, IDockableUserControl
     {
         private TestExplorerWindow()
         {
@@ -13,16 +13,12 @@ namespace Rubberduck.UI.UnitTesting
 
         public TestExplorerWindow(TestExplorerViewModel viewModel) : this()
         {
-            _viewModel = viewModel;
-            wpfTestExplorerControl.DataContext = _viewModel;
+            ViewModel = viewModel;
+            wpfTestExplorerControl.DataContext = ViewModel;
         }
+        public TestExplorerViewModel ViewModel { get; }
 
-        private readonly TestExplorerViewModel _viewModel;
-        public TestExplorerViewModel ViewModel
-        {
-            get { return _viewModel; }
-        }
-
+        // FIXME bare ClassId... not good
         public string ClassId
         {
             get { return "9CF1392A-2DC9-48A6-AC0B-E601A9802608"; }

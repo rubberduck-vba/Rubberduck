@@ -8,10 +8,8 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class SubroutineDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
+    public sealed class SubroutineDeclaration : ModuleBodyElementDeclaration
     {
-        private readonly List<ParameterDeclaration> _parameters;
-
         public SubroutineDeclaration(
             QualifiedMemberName name,
             Declaration parent,
@@ -30,60 +28,52 @@ namespace Rubberduck.Parsing.Symbols
                   parentScope,
                   asTypeName,
                   null,
-                  false,
-                  false,
+                  string.Empty,
                   accessibility,
                   DeclarationType.Procedure,
                   context,
                   attributesPassContext,
                   selection,
                   false,
-                  null,
                   isUserDefined,
                   annotations,
                   attributes)
-        {
-            _parameters = new List<ParameterDeclaration>();
-        }
+        { }
 
-        public SubroutineDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
-            Attributes attributes, bool eventHandler)
+        public SubroutineDeclaration(ComMember member, Declaration parent, QualifiedModuleName module, Attributes attributes, bool eventHandler)
             : base(
                   module.QualifyMemberName(member.Name),
                   parent,
                   parent,
                   string.Empty,
                   null,
-                  false,
-                  false,
+                  string.Empty,
                   Accessibility.Global,
                   eventHandler ? DeclarationType.Event : DeclarationType.Procedure,
                   null,
                   null,
                   Selection.Home,
                   false,
-                  null,
                   false,
                   null,
                   attributes)
         {
-            _parameters =
-                member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
-                    .ToList();          
+            AddParameters(member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module)));
         }
 
-        public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
-
-        public void AddParameter(ParameterDeclaration parameter)
+        /// <inheritdoc/>
+        protected override bool Implements(IInterfaceExposable member)
         {
-            _parameters.Add(parameter);
-        }
+            if (ReferenceEquals(member, this))
+            {
+                return false;
+            }
 
-        /// <summary>
-        /// Gets an attribute value indicating whether a member is a class' default member.
-        /// If this value is true, any reference to an instance of the class it's the default member of,
-        /// should count as a member call to this member.
-        /// </summary>
-        public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
+            return DeclarationType == DeclarationType.Procedure
+                   && member.DeclarationType == DeclarationType.Procedure
+                   && IdentifierName.Equals(member.ImplementingIdentifierName)
+                   && member.IsInterfaceMember
+                   && ((ClassModuleDeclaration)member.ParentDeclaration).Subtypes.Any(implementation => ReferenceEquals(implementation, ParentDeclaration));
+        }
     }
 }
