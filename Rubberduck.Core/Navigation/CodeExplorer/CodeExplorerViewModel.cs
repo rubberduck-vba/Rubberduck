@@ -503,10 +503,6 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public CommandBase RefreshCommand { get; }
-        
-        public CommandBase OpenCommand { get; }
-        
 
         public ReparseCommand RefreshCommand { get; set; }
 
