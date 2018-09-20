@@ -259,6 +259,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove duplicated annotation.
+        /// </summary>
+        public static string RemoveDuplicatedAnnotationQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveDuplicatedAnnotationQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove empty &apos;Else&apos; block.
         /// </summary>
         public static string RemoveEmptyElseBlockQuickFix {

@@ -1,6 +1,7 @@
 ﻿using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Annotations
 {
@@ -13,8 +14,9 @@ namespace Rubberduck.Parsing.Annotations
 
         public IgnoreAnnotation(
             QualifiedSelection qualifiedSelection,
+            VBAParser.AnnotationContext context,
             IEnumerable<string> parameters)
-            : base(AnnotationType.Ignore, qualifiedSelection)
+            : base(AnnotationType.Ignore, qualifiedSelection, context)
         {
             _inspectionNames = parameters;
         }
@@ -25,6 +27,8 @@ namespace Rubberduck.Parsing.Annotations
         {
             return _inspectionNames.Contains(inspectionName);
         }
+
+        public override bool AllowMultiple { get; } = true;
 
         public override string ToString()
         {

@@ -142,8 +142,6 @@ namespace Rubberduck.Root
             RegisterCommandMenuItems(container);
             RegisterParentMenus(container);
 
-            
-
             RegisterRubberduckCommandBar(container);
             RegisterRubberduckMenu(container);
             RegisterCodePaneContextMenu(container);
@@ -155,7 +153,8 @@ namespace Rubberduck.Root
 
             container.Register(Component.For<HotkeyFactory>()
                 .LifestyleSingleton());
-            container.Register(Component.For<ITestEngine>().ImplementedBy<TestEngine>()
+            container.Register(Component.For<ITestEngine>()
+                .ImplementedBy<TestEngine>()
                 .LifestyleSingleton());
 
             var assembliesToRegister = AssembliesToRegister().ToArray();
@@ -622,10 +621,6 @@ namespace Rubberduck.Root
 
         private void RegisterCommands(IWindsorContainer container)
         {
-            //note: convention: the registration name for commands is the type name, not the full type name.
-            //Otherwise, namespaces would get in the way when binding to the menu items.
-            RegisterCommandsWithPresenters(container);
-
             // assumption: All Commands are in the same assembly as CommandBase
             container.Register(Classes.FromAssemblyContaining(typeof(CommandBase))
                 .IncludeNonPublicTypes()
@@ -636,46 +631,6 @@ namespace Rubberduck.Root
                 .WithService.Self()
                 .WithService.DefaultInterfaces()
                 .LifestyleTransient());
-        }
-
-        private void RegisterCommandsWithPresenters(IWindsorContainer container)
-        {
-            // FIXME these registrations shouldn't be IoC's business. the presenters should require those themselves!
-            // Possible solution: Property Injection
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<RunAllTestsCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, TestExplorerDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(RunAllTestsCommand).Name));
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<TestExplorerCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, TestExplorerDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(TestExplorerCommand).Name));
-
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<InspectionResultsCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, InspectionResultsDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(InspectionResultsCommand).Name));
-
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<CodeExplorerCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, CodeExplorerDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(CodeExplorerCommand).Name));
-
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<CodeMetricsCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, CodeMetricsDockablePresenter>())
-                .LifestyleSingleton()
-                .Named(typeof(CodeMetricsCommand).Name));
-
-            container.Register(Component.For<CommandBase>()
-                .ImplementedBy<ToDoExplorerCommand>()
-                .DependsOn(Dependency.OnComponent<IDockablePresenter, ToDoExplorerDockablePresenter>())
-                .LifestyleTransient()
-                .Named(typeof(ToDoExplorerCommand).Name));
         }
 
         private void RegisterSmartIndenter(IWindsorContainer container)
@@ -712,17 +667,11 @@ namespace Rubberduck.Root
 
         private void RegisterDockablePresenters(IWindsorContainer container)
         {
-            container.Register(Component.For<IDockablePresenter>()
-                .ImplementedBy<TestExplorerDockablePresenter>()
-                .LifestyleSingleton());
-            container.Register(Component.For<IDockablePresenter>()
-                .ImplementedBy<InspectionResultsDockablePresenter>()
-                .LifestyleSingleton());
-            container.Register(Component.For<IDockablePresenter>()
-                .ImplementedBy<CodeExplorerDockablePresenter>()
-                .LifestyleSingleton());
-            container.Register(Component.For<IDockablePresenter>()
-                .ImplementedBy<ToDoExplorerDockablePresenter>()
+            container.Register(Classes.FromAssemblyContaining<IDockablePresenter>()
+                .IncludeNonPublicTypes()
+                .BasedOn<IDockablePresenter>()
+                .WithServiceSelf()
+                .WithServices(new[] { typeof(IDockablePresenter) })
                 .LifestyleSingleton());
         }
 
