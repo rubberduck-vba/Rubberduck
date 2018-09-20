@@ -9,6 +9,7 @@
     <TargetFramework>net46</TargetFramework>
     <ProjectGuid>{AC1B4A57-364A-4F90-A0CD-6EE818349CE5}</ProjectGuid>
     <AppDesignerFolder>Properties</AppDesignerFolder>
+    <Deterministic>false</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -16,11 +17,6 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
     <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj" />
