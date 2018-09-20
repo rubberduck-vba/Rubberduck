@@ -76,15 +76,17 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-                pane.Selection = target.QualifiedSelection.Selection;
-                Refactor();
-            }
+            Refactor(target.QualifiedSelection);
+
+            //using (var pane = _vbe.ActiveCodePane)
+            //{
+            //    if (pane.IsWrappingNullReference)
+            //    {
+            //        return;
+            //    }
+            //    pane.Selection = target.QualifiedSelection.Selection;
+            //    Refactor();
+            //}
         }
 
         public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
@@ -256,15 +258,45 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 && item.DeclarationType == declarationType);
         }
 
+        private List<int> CreateSeries(int start, int end)
+        {
+            var result = new List<int>();
+            for(var val = start; val <= end; val++)
+            {
+                result.Add(val);
+            }
+            return result;
+        }
+
         private void RemoveSignatureParameters(Declaration target)
         {
             var rewriter = _model.State.GetRewriter(target);
 
             var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
-            
+
             foreach (var index in _model.RemoveParameters.Select(rem => _model.Parameters.IndexOf(rem)))
             {
                 rewriter.Remove(parameters[index]);
+            }
+
+            //If there are 3 or more parameters, and the user elects to delete the last two or more
+            //parameters, we need to remove them as a range - or issue #4319 occurs leaving uncompilable VBA code behind
+            if (parameters.Count() > 2)
+            {
+                var remainingIndexes = new List<int>();
+                var indexesToRemove = _model.RemoveParameters.Select(rem => _model.Parameters.IndexOf(rem));
+                var allIndexes = CreateSeries(0, parameters.Count() - 1);
+                for (var idx = 0; idx < parameters.Count() - 1; idx++)
+                {
+                    remainingIndexes = CreateSeries(idx, parameters.Count() - 1);
+                    if (remainingIndexes.All(a => indexesToRemove.Contains(a)))
+                    {
+                        var tokenStart = parameters[idx - 1].Context.Stop.TokenIndex + 1;
+                        var tokenStop = parameters[indexesToRemove.Last()].Context.Stop.TokenIndex;
+                        rewriter.RemoveRange(tokenStart, tokenStop);
+                        idx = parameters.Count();
+                    }
+                }
             }
 
             _rewriters.Add(rewriter);
