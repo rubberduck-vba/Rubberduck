@@ -228,7 +228,20 @@ namespace Rubberduck.SmartIndenter
 
         public string Indent(int indents, bool atProcStart, bool absolute = false)
         {
-            if (IsEmpty || (ContainsOnlyComment && !_settings.AlignCommentsWithCode && !absolute))
+            if (IsEmpty)
+            {
+                switch (_settings.EmptyLineHandlingMethod)
+                {
+                    case EmptyLineHandling.Ignore:
+                        return Original;
+                    case EmptyLineHandling.Remove:
+                        return string.Empty;
+                    case EmptyLineHandling.Indent:
+                        return new string(' ', _settings.IndentSpaces * indents);
+                }
+            }
+
+            if (ContainsOnlyComment && !_settings.AlignCommentsWithCode && !absolute)
             {
                 return Original;
             }
