@@ -1,34 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Copyright>Copyright © 2018</Copyright>
+    <Product>Rubberduck.Interaction</Product>
+    <Title>Rubberduck.Interaction</Title>
     <ProjectGuid>{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rubberduck.Interaction</RootNamespace>
-    <AssemblyName>Rubberduck.Interaction</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <TargetFramework>net46</TargetFramework>
+    <LanguageLevel>7.2</LanguageLevel>
+    <Deterministic>false</Deterministic>
+    <AssemblyVersion>2.2.*</AssemblyVersion>
+    <FileVersion>2.2.*</FileVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,30 +31,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Input\IDialogView.cs" />
-    <Compile Include="Input\IMessageBox.cs" />
-    <Compile Include="Navigation\INavigateCommand.cs" />
-    <Compile Include="Navigation\INavigateSelection.cs" />
-    <Compile Include="Navigation\NavigateCodeEventArgs.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
-      <Name>Rubberduck.Parsing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime">
       <Version>4.6.4</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
