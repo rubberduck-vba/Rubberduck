@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
+using Rubberduck.Common;
 
 namespace RubberduckTests.Refactoring
 {
@@ -1456,7 +1457,6 @@ End Property
 Private Property Let IClass1_Foo(rhs As Long)
 End Property"
             };
-            inputOutput1.Expected = inputOutput1.Input.Replace(FAUX_CURSOR, "");
 
             var inputOutput2 = new RenameTestModuleDefinition("IClass1")
             {
@@ -1746,7 +1746,6 @@ End Sub"
 Private Sub ICla|ss1_DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub"
             };
-            inputOutput1.Expected = inputOutput1.Input.Replace(FAUX_CURSOR, "");
 
             var inputOutput2 = new RenameTestModuleDefinition("IClass1")
             {
@@ -1854,7 +1853,6 @@ End Sub"
         {
             const string newName = "RenameModule";
 
-            //Input
             const string inputCode =
                 @"Private Sub Foo(ByVal a As Integer, ByVal b As String)
 End Sub";
@@ -1875,7 +1873,6 @@ End Sub";
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
                 model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
 
-                //SetupFactory
                 var factory = SetupFactory(model);
 
                 var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
@@ -1912,7 +1909,6 @@ End Sub";
                 var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection)) { NewName = newName };
                 model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
 
-                //SetupFactory
                 var factory = SetupFactory(model);
 
                 var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
@@ -2022,7 +2018,6 @@ End Sub";
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input = moduleCode,
-                Expected = moduleCode.Replace(FAUX_CURSOR,"")
             };
 
             tdo.MsgBoxReturn = ConfirmationOutcome.No;
@@ -2170,7 +2165,6 @@ End Sub";
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input = moduleCode,
-                Expected = moduleCode.Replace(FAUX_CURSOR, "")
             };
 
             tdo.MsgBoxReturn = ConfirmationOutcome.No;
@@ -2349,7 +2343,11 @@ Public Sub useColValue()
     Dim instance As MyClass
     Set instance = New MyClass
     instance.{oldName} = 97521
-    Debug.Print instance.{oldName};""is the value""
+    PrintValue instance.{oldName} & ""is the value""
+End Sub
+
+Private Sub PrintValue(value As String)
+    Debug.Print value
 End Sub
 ",
                 Expected = $@"Option Explicit
@@ -2358,7 +2356,11 @@ Public Sub useColValue()
     Dim instance As MyClass
     Set instance = New MyClass
     instance.{refactoredName} = 97521
-    Debug.Print instance.{refactoredName};""is the value""
+    PrintValue instance.{refactoredName} & ""is the value""
+End Sub
+
+Private Sub PrintValue(value As String)
+    Debug.Print value
 End Sub
 "
             };
@@ -2367,7 +2369,7 @@ End Sub
             var projectName = "Test";
             var vbe = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected)
                 .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, major: 4, minor: 1, isBuiltIn: true)
-                .AddComponent("MyClass", ComponentType.ClassModule, classInputOutput.Input.Replace(FAUX_CURSOR, ""))
+                .AddComponent("MyClass", ComponentType.ClassModule, classInputOutput.Input)
                 .AddComponent("Usage", ComponentType.StandardModule, usageInputOutput.Input)
                 .AddProjectToVbeBuilder()
                 .Build();
@@ -2634,7 +2636,6 @@ End Sub",
         {
             const string newName = "RenamedClassModule";
 
-            //Input
             const string inputCode =
                 @"Property Get Self() As IClassModule
     Set Self = Me
@@ -2656,7 +2657,6 @@ End Property";
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
                 model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "ClassModule1");
 
-                //SetupFactory
                 var factory = SetupFactory(model);
 
                 var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
@@ -2702,12 +2702,10 @@ End Property";
                 if (io.HasValue)
                 {
                     var renameTMD = io.Value;
-                    if (renameTMD.Input.Contains(FAUX_CURSOR))
+                    if (!renameTMD.Input_WithFauxCursor.Equals(string.Empty))
                     {
                         if (cursorFound) { Assert.Inconclusive($"Found multiple selection cursors ('{FAUX_CURSOR}') in the test input"); }
                         cursorFound = true;
-                        renameTMD.Input_WithFauxCursor = renameTMD.Input;
-                        renameTMD.Input = renameTMD.Input.Replace(FAUX_CURSOR, "");
                     }
                     renameTMDs.Add(renameTMD);
                 }
@@ -2747,12 +2745,7 @@ End Property";
 
         private static void AddTestModuleDefinition(RenameTestsDataObject tdo, RenameTestModuleDefinition inputOutput)
         {
-            if (inputOutput.RenameSelection.HasValue)
-            {
-                tdo.SelectionModuleName = inputOutput.ModuleName;
-                tdo.RawSelection = inputOutput.RenameSelection;
-            }
-            else if (inputOutput.Input_WithFauxCursor.Length > 0)
+            if (inputOutput.Input_WithFauxCursor.Length > 0)
             {
                 tdo.SelectionModuleName = inputOutput.ModuleName;
                 if (inputOutput.Input_WithFauxCursor.Contains(FAUX_CURSOR))
@@ -2762,7 +2755,7 @@ End Property";
                     {
                         Assert.Inconclusive($"{numCursors} found in FauxCursor input - only a single cursor is allowed.");
                     }
-                    tdo.RawSelection = FindSelection(inputOutput.Input_WithFauxCursor, tdo.OriginalName);
+                    tdo.RawSelection = inputOutput.RenameSelection;
                     if (!tdo.RawSelection.HasValue)
                     {
                         Assert.Inconclusive($"Unable to set RawSelection field for test module {inputOutput.ModuleName}");
@@ -2770,37 +2763,6 @@ End Property";
                 }
             }
             tdo.ModuleTestSetupDefs.Add(inputOutput);
-        }
-
-        private static Selection? FindSelection(string input, string originalName)
-        {
-            var lines = input.Split(new[] { "\r\n" }, StringSplitOptions.None);
-            for (var idx = 0; idx < lines.Count(); idx++)
-            {
-                var testLine = lines[idx];
-                if (testLine.Contains(FAUX_CURSOR))
-                {
-                    var fauxCursorLine = idx + 1;
-                    var fauxCursorColumn = testLine.IndexOf(FAUX_CURSOR);
-                    if (!testLine.Replace(FAUX_CURSOR, "").Contains(originalName))
-                    {
-                        Assert.Inconclusive($"Module line with faux cursor does not contain target '{originalName}'");
-                    }
-
-                    int fauxCursorColumnOffset = 0;
-                    if (testLine.StartsWith($"{FAUX_CURSOR}") || testLine.Contains($" {FAUX_CURSOR}"))
-                    {
-                        fauxCursorColumnOffset = 1;
-                    }
-                    else if (testLine.EndsWith($"{FAUX_CURSOR}") || testLine.Contains($"{FAUX_CURSOR} "))
-                    {
-                        fauxCursorColumnOffset = -1;
-                    }
-
-                    return new Selection(fauxCursorLine, fauxCursorColumn + fauxCursorColumnOffset);
-                }
-            }
-            return null;
         }
 
         private static void RunRenameRefactorScenario(RenameTestsDataObject tdo)
@@ -2894,27 +2856,53 @@ End Property";
 
         internal struct RenameTestModuleDefinition
         {
-            public string Input_WithFauxCursor;
-            public string Input;
-            public string Expected;
+            private CodeString _codeString;
+            private string _inputWithFauxCursor;
+            private string _expected;
+
+            public string Input_WithFauxCursor => _inputWithFauxCursor;
+            public string Input
+            {
+                set
+                {
+                    _inputWithFauxCursor = value.Contains(FAUX_CURSOR) ? value : _inputWithFauxCursor;
+                    _codeString = value.ToCodeString();
+                }
+                get
+                {
+                    return _codeString.Code;
+                }
+            }
+
+            public string Expected
+            {
+                set
+                {
+                    _expected = value;
+                }
+                get
+                {
+                    return _expected.Equals(string.Empty) ? Input : _expected;
+                }
+            }
+
             public string ModuleName;
             public ComponentType ModuleType;
             public bool CheckExpectedEqualsActual;
             public List<string> ControlNames;
             public string NewName;
-            public Selection? RenameSelection;
+            public Selection? RenameSelection => _codeString.CaretPosition.ToOneBased();
 
             public RenameTestModuleDefinition(string moduleName, ComponentType moduleType = ComponentType.ClassModule)
             {
-                Input_WithFauxCursor = "";
-                Expected = "";
-                Input = "";
+                _codeString = new CodeString();
+                _inputWithFauxCursor = string.Empty;
+                _expected = string.Empty;
                 ModuleName = moduleName;
                 ModuleType = moduleType;
                 CheckExpectedEqualsActual = true;
                 ControlNames = new List<String>();
                 NewName = "";
-                RenameSelection = null;
             }
         }
 
