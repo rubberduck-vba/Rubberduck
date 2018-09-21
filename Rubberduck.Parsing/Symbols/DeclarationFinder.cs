@@ -1037,29 +1037,34 @@ namespace Rubberduck.Parsing.Symbols
                 return Enumerable.Empty<Declaration>();
             }
 
-            var declarationsToAvoid = GetNameCollisionDeclarations(target).ToList();
+            var declarationsToAvoid = GetCollidableNameDeclarations(target).ToList();
 
-            declarationsToAvoid.AddRange(GetNameCollisionDeclarations(target.References));
+            declarationsToAvoid.AddRange(GetCollidableNameDeclarations(target.References));
 
             return declarationsToAvoid;
         }
 
-        private HashSet<Declaration> GetNameCollisionDeclarations(Declaration declaration)
+        private HashSet<Declaration> GetCollidableNameDeclarations(Declaration declaration)
         {
             if (declaration is null)
             {
                 return new HashSet<Declaration>();
             }
 
+            //Retrieve the declaration's ModuleParent outside the LINQ so GetModuleParent is 
+            //only called once (on 'declaration') for all accessible declarations
+            var declarationModuleDeclaration = Declaration.GetModuleParent(declaration);
+
             //Filter accessible declarations to those that would result in name collisions or hiding
             var declarationsToAvoid = GetAccessibleUserDeclarations(declaration).Where(candidate =>
                 (!(candidate.DeclarationType == DeclarationType.UserDefinedTypeMember
                     || candidate.DeclarationType == DeclarationType.EnumerationMember)
-                && (IsAccessibleInOtherProcedureModule(candidate,declaration)
-                    || IsAccessibleInSameProcedureModule(candidate, declaration)
-                    || candidate.DeclarationType == DeclarationType.Project
+                && (candidate.DeclarationType == DeclarationType.Project
                     || candidate.DeclarationType.HasFlag(DeclarationType.Module)
-                    || IsDeclarationInSameProcedureScope(candidate, declaration)
+                    || (declarationModuleDeclaration?.DeclarationType == DeclarationType.ProceduralModule
+                        && IsInProceduralModule(candidate, out Declaration candidateProcModule)
+                        && (candidateProcModule == declarationModuleDeclaration 
+                        || !(candidateProcModule == declarationModuleDeclaration) && candidate.Accessibility != Accessibility.Private))
                     )
                 )).ToHashSet();
 
@@ -1075,38 +1080,23 @@ namespace Rubberduck.Parsing.Symbols
             return declarationsToAvoid;
         }
 
-        private IEnumerable<Declaration> GetNameCollisionDeclarations(IEnumerable<IdentifierReference> references)
+        private IEnumerable<Declaration> GetCollidableNameDeclarations(IEnumerable<IdentifierReference> references)
         {
             var declarationsToAvoid = new HashSet<Declaration>();
             foreach (var reference in references)
             {
                 if (!UsesScopeResolution(reference.Context.Parent))
                 {
-                    declarationsToAvoid.UnionWith(GetNameCollisionDeclarations(reference.ParentNonScoping));
+                    declarationsToAvoid.UnionWith(GetCollidableNameDeclarations(reference.ParentNonScoping));
                 }
             }
             return declarationsToAvoid;
         }
 
-        private bool IsAccessibleInOtherProcedureModule(Declaration candidate, Declaration declaration)
-            => AreProceduralModules(candidate, declaration, out bool isSameModule)
-                && !isSameModule && candidate.Accessibility != Accessibility.Private;
-
-        private bool IsAccessibleInSameProcedureModule(Declaration candidate, Declaration declaration)
-            => AreProceduralModules(candidate, declaration, out bool isSameModule)
-                && isSameModule;
-
-        private bool AreProceduralModules(Declaration candidate, Declaration declaration, out bool sameModule)
+        private bool IsInProceduralModule(Declaration candidate, out Declaration decProcedureModule)
         {
-            sameModule = false;
-            var candidateModuleDeclaration = Declaration.GetModuleParent(candidate);
-
-            var decModuleDeclaration = Declaration.GetModuleParent(declaration);
-
-            sameModule = candidateModuleDeclaration != null && candidateModuleDeclaration == decModuleDeclaration;
-
-            return candidateModuleDeclaration?.DeclarationType == DeclarationType.ProceduralModule
-                && decModuleDeclaration?.DeclarationType == DeclarationType.ProceduralModule;
+            decProcedureModule = Declaration.GetModuleParent(candidate);
+            return decProcedureModule?.DeclarationType == DeclarationType.ProceduralModule;
         }
 
         private bool UsesScopeResolution(RuleContext ruleContext)
