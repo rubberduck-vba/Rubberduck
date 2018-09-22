@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.Annotations
         {
             var annotationName = context.annotationName().GetText();
             var parameters = AnnotationParametersFromContext(context);
-            return CreateAnnotation(annotationName, parameters, qualifiedSelection);
+            return CreateAnnotation(annotationName, parameters, qualifiedSelection, context);
         }
 
             private static List<string> AnnotationParametersFromContext(VBAParser.AnnotationContext context)
@@ -50,14 +50,15 @@ namespace Rubberduck.Parsing.Annotations
                 return parameters;
             }
 
-            private IAnnotation CreateAnnotation(string annotationName, List<string> parameters, QualifiedSelection qualifiedSelection)
+        private IAnnotation CreateAnnotation(string annotationName, List<string> parameters,
+            QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context)
+        {
+            if (_creators.TryGetValue(annotationName.ToUpperInvariant(), out var annotationClrType))
             {
-                Type annotationClrType;
-                if (_creators.TryGetValue(annotationName.ToUpperInvariant(), out annotationClrType))
-                {
-                    return (IAnnotation)Activator.CreateInstance(annotationClrType, qualifiedSelection, parameters);
-                }
-                return null;
+                return (IAnnotation) Activator.CreateInstance(annotationClrType, qualifiedSelection, context, parameters);
             }
+
+            return null;
+        }
     }
 }

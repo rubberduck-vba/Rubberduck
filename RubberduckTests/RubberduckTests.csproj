@@ -115,6 +115,7 @@
     <Compile Include="FlagSanityTests.cs" />
     <Compile Include="Grammar\AttributesTests.cs" />
     <Compile Include="Grammar\MembersAllowingAttributesTests.cs" />
+    <Compile Include="Inspections\DuplicatedAnnotationInspectionTests.cs" />
     <Compile Include="Inspections\ObsoleteCallingConventionInspectionTests.cs" />
     <Compile Include="Mocks\MockAddInBuilder.cs" />
     <Compile Include="Inspections\ObsoleteMemberUsageInspectionTests.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="PreProcessing\CompilationArgumentsCacheTests.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
     <Compile Include="QuickFixes\IntroduceLocalVariableQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveDuplicatedAnnotationQuickFixTests.cs" />
     <Compile Include="Rewriter\ArgumentRewriterInfoFinderTests.cs" />
     <Compile Include="Rewriter\ParameterRewriterInfoFinderTests.cs" />
     <Compile Include="Rewriter\ConstantRewriterInfoFinderTests.cs" />

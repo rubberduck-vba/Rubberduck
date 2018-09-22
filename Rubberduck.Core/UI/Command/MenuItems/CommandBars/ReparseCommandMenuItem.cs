@@ -7,7 +7,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
     public class ReparseCommandMenuItem : CommandMenuItemBase
     {
-        public ReparseCommandMenuItem(CommandBase command) : base(command)
+        public ReparseCommandMenuItem(ReparseCommand command) : base(command)
         {
         }
 

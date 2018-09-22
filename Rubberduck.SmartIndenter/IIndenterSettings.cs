@@ -20,6 +20,7 @@
         bool AlignDims { get; set; }
         int AlignDimColumn { get; set; }
         EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
+        EmptyLineHandling EmptyLineHandlingMethod { get; set; }
         int EndOfLineCommentColumnSpaceAlignment { get; set; }
         int IndentSpaces { get; set; }
         bool VerticallySpaceProcedures { get; set; }
@@ -34,5 +35,12 @@
         SameGap,
         StandardGap,
         AlignInColumn
+    }
+
+    public enum EmptyLineHandling
+    {
+        Ignore,
+        Remove,
+        Indent
     }
 }

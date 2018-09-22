@@ -252,4 +252,7 @@
   <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
     <value>Refer to statically accessible sheet by its code name</value>
   </data>
+  <data name="RemoveDuplicatedAnnotationQuickFix" xml:space="preserve">
+    <value>Remove duplicated annotation</value>
+  </data>
 </root>

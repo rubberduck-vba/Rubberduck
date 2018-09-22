@@ -8,11 +8,11 @@ namespace Rubberduck.Parsing.Annotations
     public enum AnnotationType
     {
         /// <summary>
-        /// A flag indicating that the annotation type is valid once per module.
+        /// A flag indicating that the annotation type is valid for module.
         /// </summary>
         ModuleAnnotation = 1 << 1,
         /// <summary>
-        /// A flag indicating that the annotation type is valid once per member.
+        /// A flag indicating that the annotation type is valid for member.
         /// </summary>
         MemberAnnotation = 1 << 2,
 

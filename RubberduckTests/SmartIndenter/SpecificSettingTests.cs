@@ -1221,7 +1221,108 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        [Test]
+        [Category("Indenter")]
+        public void IgnoreEmptyLinesWorks()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "If Foo Then",
+                "Debug.Print",
+                "     ",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "    If Foo Then",
+                "        Debug.Print",
+                "     ",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.EmptyLineHandlingMethod = EmptyLineHandling.Ignore;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+
+        [Test]
+        [Category("Indenter")]
+        public void RemoveEmptyLinesWorks()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "If Foo Then",
+                "Debug.Print",
+                "     ",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "    If Foo Then",
+                "        Debug.Print",
+                "",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.EmptyLineHandlingMethod = EmptyLineHandling.Remove;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void IndentEmptyLinesWorks()
+        {
+            var code = new[]
+            {
+                "Private Sub Test()",
+                "If Foo Then",
+                "Debug.Print",
+                "     ",
+                "End If",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Private Sub Test()",
+                "    If Foo Then",
+                "        Debug.Print",
+                "        ",
+                "    End If",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () =>
+            {
+                var s = IndenterSettingsTests.GetMockIndenterSettings();
+                s.EmptyLineHandlingMethod = EmptyLineHandling.Indent;
+                return s;
+            });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
-
-
 }

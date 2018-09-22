@@ -126,9 +126,6 @@
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
     <value>Move module-level variable '{0}' to a smaller scope.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>'{0}' has more than one '@Folder' annotation.</value>
-  </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
     <value>Procedure '{0}' can be written as a function.</value>
     <comment>{0} Procedure name</comment>
@@ -362,5 +359,8 @@
   </data>
   <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
     <value>Unreachable: Case Statement will cause a Run-time error 6 (Overflow).</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Annotation '{0}' is duplicated.</value>
   </data>
 </root>

@@ -151,6 +151,20 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private EmptyLineHandling _emptyLineHandlingMethod;
+        public EmptyLineHandling EmptyLineHandlingMethod
+        {
+            get => _emptyLineHandlingMethod;
+            set
+            {
+                if (_emptyLineHandlingMethod != value)
+                {
+                    _emptyLineHandlingMethod = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private bool _forceCompilerDirectivesInColumn1;
         public bool ForceCompilerDirectivesInColumn1
         {
@@ -398,6 +412,7 @@ namespace Rubberduck.UI.Settings
                 AlignDims = AlignDims,
                 EndOfLineCommentColumnSpaceAlignment = EndOfLineCommentColumnSpaceAlignment,
                 EndOfLineCommentStyle = EndOfLineCommentStyle,
+                EmptyLineHandlingMethod = EmptyLineHandlingMethod,
                 ForceCompilerDirectivesInColumn1 = ForceCompilerDirectivesInColumn1,
                 ForceDebugStatementsInColumn1 = ForceDebugStatementsInColumn1,
                 ForceDebugPrintInColumn1 = ForceDebugPrintInColumn1,
@@ -427,6 +442,7 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.IndenterSettings.AlignDims = AlignDims;
             config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment = EndOfLineCommentColumnSpaceAlignment;
             config.UserSettings.IndenterSettings.EndOfLineCommentStyle = EndOfLineCommentStyle;
+            config.UserSettings.IndenterSettings.EmptyLineHandlingMethod = EmptyLineHandlingMethod;
             config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1 = ForceCompilerDirectivesInColumn1;
             config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1 = ForceDebugStatementsInColumn1;
             config.UserSettings.IndenterSettings.ForceDebugPrintInColumn1 = ForceDebugPrintInColumn1;
@@ -458,6 +474,7 @@ namespace Rubberduck.UI.Settings
             AlignDims = toLoad.AlignDims;
             EndOfLineCommentColumnSpaceAlignment = toLoad.EndOfLineCommentColumnSpaceAlignment;
             EndOfLineCommentStyle = toLoad.EndOfLineCommentStyle;
+            EmptyLineHandlingMethod = toLoad.EmptyLineHandlingMethod;
             ForceCompilerDirectivesInColumn1 = toLoad.ForceCompilerDirectivesInColumn1;
             ForceDebugStatementsInColumn1 = toLoad.ForceDebugStatementsInColumn1;
             ForceDebugPrintInColumn1 = toLoad.ForceDebugPrintInColumn1;
