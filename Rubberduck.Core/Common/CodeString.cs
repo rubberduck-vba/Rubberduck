@@ -9,18 +9,7 @@ namespace Rubberduck.Common
 
         public TestCodeString(string code, Selection zPosition, Selection pPosition = default)
             : base(code, zPosition, pPosition)
-        {
-            var lines = code.Split('\n');
-            var line = lines[zPosition.StartLine];
-            if (line != string.Empty && line[Math.Min(line.Length - 1, zPosition.StartColumn)] == PseudoCaret)
-            {
-                Code = line.Remove(Math.Min(line.Length - 1, zPosition.StartColumn), 1);
-            }
-            else
-            {
-                Code = code;
-            }
-        }
+        { }
 
         public override string ToString()
         {
