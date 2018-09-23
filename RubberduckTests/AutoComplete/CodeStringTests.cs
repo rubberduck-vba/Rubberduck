@@ -11,19 +11,16 @@ namespace RubberduckTests.AutoComplete
         [Test]
         public void ToStringIncludesCaretPipe()
         {
-            var input = $"foo = MsgBox(|)";
-            var sut = new TestCodeString(input, new Selection(0, input.IndexOf(TestCodeString.PseudoCaret)));
-
+            var input = "foo = MsgBox(|)";
+            var sut = input.ToCodeString();
             Assert.AreEqual(input, sut.ToString());
         }
 
         [Test]
         public void CodeExcludesCaretPipe()
         {
-            var input = $"foo = MsgBox(|)";
+            var sut = "foo = MsgBox(|)".ToCodeString();
             var expected = "foo = MsgBox()";
-            var sut = new TestCodeString(input, new Selection(0, input.IndexOf(TestCodeString.PseudoCaret)));
-
             Assert.AreEqual(expected, sut.Code);
         }
 
