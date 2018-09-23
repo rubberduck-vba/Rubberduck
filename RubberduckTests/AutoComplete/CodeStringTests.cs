@@ -11,8 +11,8 @@ namespace RubberduckTests.AutoComplete
         [Test]
         public void ToStringIncludesCaretPipe()
         {
-            var input = @"foo = MsgBox(|)";
-            var sut = new CodeString(input, new Selection(0, input.IndexOf('|')));
+            var input = $"foo = MsgBox(|)";
+            var sut = new TestCodeString(input, new Selection(0, input.IndexOf(TestCodeString.PseudoCaret)));
 
             Assert.AreEqual(input, sut.ToString());
         }
@@ -20,9 +20,9 @@ namespace RubberduckTests.AutoComplete
         [Test]
         public void CodeExcludesCaretPipe()
         {
-            var input = @"foo = MsgBox(|)";
-            var expected = @"foo = MsgBox()";
-            var sut = new CodeString(input, new Selection(0, input.IndexOf('|')));
+            var input = $"foo = MsgBox(|)";
+            var expected = "foo = MsgBox()";
+            var sut = new TestCodeString(input, new Selection(0, input.IndexOf(TestCodeString.PseudoCaret)));
 
             Assert.AreEqual(expected, sut.Code);
         }
@@ -30,7 +30,7 @@ namespace RubberduckTests.AutoComplete
         [Test]
         public void SnippetPositionIsL1C1ifUnspecified()
         {
-            var sut = new CodeString("|", new Selection());
+            var sut = new TestCodeString(TestCodeString.PseudoCaret.ToString(), new Selection());
             Assert.AreEqual(Selection.Home, sut.SnippetPosition);
         }
 

@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
+using Rubberduck.Common;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.AutoComplete
@@ -13,7 +14,7 @@ namespace RubberduckTests.AutoComplete
         {
             var original = "MsgBox (|".ToCodeString();
             var module = new Mock<ICodeModule>();
-            module.Setup(m => m.GetLines(original.CaretPosition)).Returns(original.Code);
+            module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(original.Code);
 
             var sut = new CodeStringPrettifier(module.Object);
             var actual = sut.Prettify(original);
@@ -28,7 +29,7 @@ namespace RubberduckTests.AutoComplete
             var prettified = "MsgBox".ToCodeString();
             var expected = "MsgBox|".ToCodeString();
             var module = new Mock<ICodeModule>();
-            module.Setup(m => m.GetLines(original.CaretPosition)).Returns(prettified.Code);
+            module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(prettified.Code);
 
             var sut = new CodeStringPrettifier(module.Object);
             var actual = sut.Prettify(original);
@@ -45,7 +46,7 @@ namespace RubberduckTests.AutoComplete
             var expected = "MsgBox (\"test|\")".ToCodeString();
 
             var module = new Mock<ICodeModule>();
-            module.Setup(m => m.GetLines(original.CaretPosition)).Returns(prettified.Code);
+            module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(prettified.Code);
 
             var sut = new CodeStringPrettifier(module.Object);
             var actual = sut.Prettify(original);
