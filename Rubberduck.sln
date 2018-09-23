@@ -55,7 +55,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.RegexAssistant",
 		{E85E1253-86D6-45EE-968B-F37348D44132} = {E85E1253-86D6-45EE-968B-F37348D44132}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.CodeAnalysis", "Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj", "{DEF2FB9D-6E62-49D6-8E26-9983AC025768}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.CodeAnalysis", "Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj", "{DEF2FB9D-6E62-49D6-8E26-9983AC025768}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
 	EndProjectSection
@@ -75,12 +75,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Core", "Rubberdu
 		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.API", "Rubberduck.API\Rubberduck.API.csproj", "{AC1B4A57-364A-4F90-A0CD-6EE818349CE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.API", "Rubberduck.API\Rubberduck.API.csproj", "{AC1B4A57-364A-4F90-A0CD-6EE818349CE5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Deployment", "Rubberduck.Deployment\Rubberduck.Deployment.csproj", "{4B9BD3FE-DDC8-4842-BC3D-B8EF43011F0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Deployment", "Rubberduck.Deployment\Rubberduck.Deployment.csproj", "{4B9BD3FE-DDC8-4842-BC3D-B8EF43011F0C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
 	EndProjectSection
@@ -109,7 +109,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Refactorings", "
 		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rubberduck.Interaction", "Rubberduck.Interaction\Rubberduck.Interaction.csproj", "{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rubberduck.Interaction", "Rubberduck.Interaction\Rubberduck.Interaction.csproj", "{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323} = {F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}
 	EndProjectSection
@@ -335,11 +335,15 @@ Global
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Debug|x86.Build.0 = Debug|Any CPU
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Debug64|Any CPU.ActiveCfg = Debug|Any CPU
-		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Debug64|x64.ActiveCfg = Debug|x64
-		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Debug64|x86.ActiveCfg = Debug|x86
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Debug64|x64.ActiveCfg = Debug|Any CPU
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Debug64|x64.Build.0 = Debug|Any CPU
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Debug64|x86.ActiveCfg = Debug|Any CPU
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Debug64|x86.Build.0 = Debug|Any CPU
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.DebugAccess|Any CPU.ActiveCfg = Debug|Any CPU
-		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.DebugAccess|x64.ActiveCfg = Debug|x64
-		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.DebugAccess|x86.ActiveCfg = Debug|x86
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.DebugAccess|x64.ActiveCfg = Debug|Any CPU
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.DebugAccess|x64.Build.0 = Debug|Any CPU
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.DebugAccess|x86.ActiveCfg = Debug|Any CPU
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.DebugAccess|x86.Build.0 = Debug|Any CPU
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release|x64.ActiveCfg = Release|Any CPU
@@ -347,8 +351,10 @@ Global
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release|x86.ActiveCfg = Release|Any CPU
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release|x86.Build.0 = Release|Any CPU
 		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release64|Any CPU.ActiveCfg = Release|Any CPU
-		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release64|x64.ActiveCfg = Release|x64
-		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release64|x86.ActiveCfg = Release|x86
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release64|x64.ActiveCfg = Release|Any CPU
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release64|x64.Build.0 = Release|Any CPU
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release64|x86.ActiveCfg = Release|Any CPU
+		{E8AB5D93-2D0F-423D-BC15-5EE118673E48}.Release64|x86.Build.0 = Release|Any CPU
 		{A1587EAC-7B54-407E-853F-4C7493D0323E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1587EAC-7B54-407E-853F-4C7493D0323E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1587EAC-7B54-407E-853F-4C7493D0323E}.Debug|x64.ActiveCfg = Debug|Any CPU
