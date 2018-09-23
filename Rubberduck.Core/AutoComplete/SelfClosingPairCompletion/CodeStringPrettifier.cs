@@ -1,8 +1,6 @@
 ﻿using Rubberduck.Common;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
@@ -29,9 +27,9 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 }
             }
 
-            _module.DeleteLines(original.CaretPosition.StartLine);
-            _module.InsertLines(original.CaretPosition.StartLine, originalCode);
-            var prettifiedCode = _module.GetLines(original.CaretPosition);
+            _module.DeleteLines(original.SnippetPosition.StartLine);
+            _module.InsertLines(original.SnippetPosition.StartLine, originalCode);
+            var prettifiedCode = _module.GetLines(original.SnippetPosition);
 
             var prettifiedNonSpacePosition = 0;
             var index = 0;

@@ -25,7 +25,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             if (input == pair.OpeningChar)
             {
                 var result = HandleOpeningChar(pair, original);
-                if (result != default && prettifier != null)
+                if (!result.Equals(default) && prettifier != null)
                 {
                     if (prettifier.IsSpacingUnchanged(result, original))
                     {

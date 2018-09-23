@@ -159,7 +159,7 @@ namespace Rubberduck.AutoComplete
                     result = _selfClosingPairCompletion.Execute(selfClosingPair, original, e.Character, prettifier);
                 }
 
-                if (result != default)
+                if (!result.Equals(default))
                 {
                     using (var pane = module.CodePane)
                     {

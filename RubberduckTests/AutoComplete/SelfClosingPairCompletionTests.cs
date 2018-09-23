@@ -63,10 +63,10 @@ namespace RubberduckTests.AutoComplete
             var pair = new SelfClosingPair('"', '"');
             var input = Keys.Back;
             var original = $"{pair.OpeningChar}{pair.ClosingChar}".ToCodeString();
-            var expected = string.Empty.ToCodeString();
+            var expected = string.Empty;
 
             var result = Run(pair, original, input);
-            Assert.AreEqual(expected, result);
+            Assert.AreEqual(expected, result.Code);
         }
 
         [Test]
@@ -145,7 +145,7 @@ foo = | _
             var original = @"MsgBox (|)".ToCodeString();
 
             var result = Run(pair, original, input);
-            Assert.IsTrue(result == default);
+            Assert.AreEqual(result ,default);
         }
 
         [Test]
@@ -156,7 +156,7 @@ foo = | _
             var original = @"MsgBox |".ToCodeString();
 
             var result = Run(pair, original, input);
-            Assert.IsTrue(result == default);
+            Assert.AreEqual(result, default);
         }
     }
 }
