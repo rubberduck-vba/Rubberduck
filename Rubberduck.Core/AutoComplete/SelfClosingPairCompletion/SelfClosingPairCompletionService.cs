@@ -20,23 +20,15 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             _showIntelliSense = showIntelliSense;
         }
 
-        public CodeString Execute(SelfClosingPair pair, CodeString original, char input, ICodeStringPrettifier prettifier = null)
+        public CodeString Execute(SelfClosingPair pair, CodeString original, char input)
         {
             if (input == pair.OpeningChar)
             {
                 var result = HandleOpeningChar(pair, original);
-                if (!result.Equals(default) && prettifier != null)
+                if (!result.Equals(default))
                 {
-                    if (prettifier.IsSpacingUnchanged(result, original))
-                    {
-                        //_showIntelliSense?.Execute(); /* lovely VBE makes a loud "DING!!" if the command has no effect */
-                        return result;
-                    }
-                    
-                    return default;
+                    return result;
                 }
-
-                return result;
             }
 
             if (input == pair.ClosingChar)

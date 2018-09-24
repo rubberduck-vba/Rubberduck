@@ -142,11 +142,10 @@ namespace Rubberduck.AutoComplete
 
             var currentCode = e.CurrentLine;
             var currentSelection = e.CurrentSelection;
-            //var surroundingCode = GetSurroundingCode(module, currentSelection); // todo: find a way to parse the current instruction
-
-            var original = new CodeString(currentCode, new Selection(0, currentSelection.EndColumn - 1), new Selection(pSelection.StartLine, 1));
 
             var prettifier = new CodeStringPrettifier(module);
+            var original = new CodeString(currentCode, new Selection(0, currentSelection.EndColumn - 1), new Selection(pSelection.StartLine, 1));
+            
             foreach (var selfClosingPair in _selfClosingPairs)
             {
                 CodeString result;
@@ -156,13 +155,23 @@ namespace Rubberduck.AutoComplete
                 }
                 else
                 {
-                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, e.Character, prettifier);
+                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, e.Character);
                 }
 
                 if (!result.Equals(default))
                 {
                     using (var pane = module.CodePane)
                     {
+                        var prettified = prettifier.Prettify(original);
+                        if (e.Character == '\b' && pSelection.StartColumn > 1)
+                        {
+                            result = _selfClosingPairCompletion.Execute(selfClosingPair, prettified, '\b');
+                        }
+                        else
+                        {
+                            result = _selfClosingPairCompletion.Execute(selfClosingPair, prettified, e.Character);
+                        }
+
                         module.DeleteLines(result.SnippetPosition);
                         module.InsertLines(result.SnippetPosition.StartLine, result.Code);
                         pane.Selection = result.SnippetPosition.Offset(result.CaretPosition);
@@ -205,22 +214,6 @@ namespace Rubberduck.AutoComplete
             }
 
             return false;
-        }
-
-        private string GetSurroundingCode(ICodeModule module, Selection selection)
-        {
-            // throws AccessViolationException!
-            var declarationLines = module.CountOfDeclarationLines;
-            if (selection.StartLine <= declarationLines)
-            {
-                return module.GetLines(1, declarationLines);
-            }
-
-            var currentProc = module.GetProcOfLine(selection.StartLine);
-            var procKind = module.GetProcKindOfLine(selection.StartLine);
-            var procStart = module.GetProcStartLine(currentProc, procKind);
-            var lineCount = module.GetProcCountLines(currentProc, procKind);
-            return module.GetLines(procStart, lineCount);
         }
 
         private bool IsInsideStringLiteral(Selection pSelection, ref string currentContent)
