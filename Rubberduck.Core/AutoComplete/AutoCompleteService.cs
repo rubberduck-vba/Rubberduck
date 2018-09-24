@@ -158,7 +158,7 @@ namespace Rubberduck.AutoComplete
                     result = _selfClosingPairCompletion.Execute(selfClosingPair, original, e.Character);
                 }
 
-                if (!result.Equals(default))
+                if (!result?.Equals(default) ?? false)
                 {
                     using (var pane = module.CodePane)
                     {
@@ -174,7 +174,8 @@ namespace Rubberduck.AutoComplete
 
                         module.DeleteLines(result.SnippetPosition);
                         module.InsertLines(result.SnippetPosition.StartLine, result.Code);
-                        pane.Selection = result.SnippetPosition.Offset(result.CaretPosition);
+                        var finalSelection = new Selection(result.SnippetPosition.StartLine, result.CaretPosition.StartColumn + 1);
+                        pane.Selection = finalSelection;
                         e.Handled = true;
                         return;
                     }

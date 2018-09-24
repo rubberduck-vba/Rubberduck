@@ -1,4 +1,5 @@
-﻿using Rubberduck.Common;
+﻿using System;
+using Rubberduck.Common;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor;
 
@@ -45,7 +46,16 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 }
             }
 
-            return new CodeString(prettifiedCode, new Selection(0, index + 1));
+            if (string.IsNullOrEmpty(original.Code) || original.Code[Math.Max(0, original.Code.Length - 1)] == ' ')
+            {
+                prettifiedCode += ' ';
+            }
+            var selection = new Selection(original.SnippetPosition.StartLine - 1, index).ToOneBased();
+            using (var pane = _module.CodePane)
+            {
+                pane.Selection = selection;
+            }
+            return new CodeString(prettifiedCode, new Selection(0, selection.StartColumn - 1), selection);
         }
     }
 }
