@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 using System.Linq;
 using Antlr4.Runtime.Misc;
+using System;
 
 namespace Rubberduck.Parsing
 {
@@ -221,6 +222,24 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
+        /// Determines if the context's module declares or defaults to 
+        /// Option Compare Binary 
+        /// </summary>
+        public static bool IsOptionCompareBinary(this ParserRuleContext context)
+        {
+            if( !(context is VBAParser.ModuleContext moduleContext))
+            {
+                moduleContext = context.GetAncestor<VBAParser.ModuleContext>();
+                if (moduleContext is null)
+                {
+                    throw new ArgumentException($"Unable to obtain a VBAParser.ModuleContext reference from 'context'");
+                }
+            }
+
+            var optionContext = moduleContext.GetDescendent<VBAParser.OptionCompareStmtContext>();
+            return (optionContext is null) || !(optionContext.BINARY() is null);
+        }
+
         /// Returns the context's first descendent of the generic type containing the token with the specified token index.
         /// </summary>
         public static TContext GetDescendentContainingTokenIndex<TContext>(this ParserRuleContext context, int tokenIndex) where TContext : ParserRuleContext
@@ -303,7 +322,6 @@ namespace Rubberduck.Parsing
             followingContext = ancestorContainingFollowingIndex.GetDescendentContainingTokenIndex<TContext>(followingTokenIndex);
             return followingContext != null;
         }
-
 
         private class ChildNodeListener<TContext> : VBAParserBaseListener where TContext : ParserRuleContext
         {

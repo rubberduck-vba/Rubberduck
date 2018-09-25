@@ -65,6 +65,7 @@
         public static readonly string Enum = "Enum";
         public static readonly string Environ = "Environ";
         public static readonly string EOF = "EOF";
+        public static readonly string Eqv = "Eqv";
         public static readonly string Err = "Err";
         public static readonly string Error = "Error";
         public static readonly string Exit = "Exit";
@@ -84,6 +85,7 @@
         public static readonly string Hex = "Hex";
         public static readonly string Hour = "Hour";
         public static readonly string If = "If";
+        public static readonly string Imp = "Imp";
         public static readonly string Implements = "Implements";
         public static readonly string In = "In";
         public static readonly string Input = "Input";

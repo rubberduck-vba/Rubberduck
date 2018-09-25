@@ -1,8 +1,13 @@
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
+using Rubberduck.Inspections.Concrete;
+using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using RubberduckTests.Settings;
 
@@ -276,6 +281,44 @@ namespace RubberduckTests.SmartIndenter
             });
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Ignore("Ignoring this until the indenter is re-written to use the parse tree. Less work than parsing the freak'n code to set up the mocks.")]
+        [Category("Indenter")]
+        public void VerticalSpacing_IndentProcedureDoesntRemoveSurroundingWhitespace()
+        {
+            const string inputCode =
+                @"Type Foo
+    Bar As Long
+End Type
+
+Function TestFunction() As Long
+TestFunction = 42
+End Function
+
+Sub TestSub()
+End Sub";
+
+            const string expectedCode =
+                @"Type Foo
+    Bar As Long
+End Type
+
+Function TestFunction() As Long
+    TestFunction = 42
+End Function
+
+Sub TestSub()
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, new Selection(6, 1));
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var indentCommand = new IndentCurrentProcedureCommand(vbe.Object, new Indenter(vbe.Object, () => IndenterSettingsTests.GetMockIndenterSettings()), state);
+                indentCommand.Execute(null);
+                Assert.AreEqual(expectedCode, component.CodeModule.Content());
+            }
         }
 
         [Test]
