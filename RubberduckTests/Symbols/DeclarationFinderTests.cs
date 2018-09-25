@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -18,24 +17,18 @@ namespace RubberduckTests.Symbols
     [TestFixture]
     public class DeclarationFinderTests
     {
-
-        [Test]
+        [TestCase("member1", true)]
+        [TestCase("adder", true)]
+        [TestCase("Foo", false)]
         [Category("Resolver")]
-        public void DeclarationFinder_InProcedure_MethodDeclaration()
+        public void DeclarationFinder_InProcedure_MethodDeclaration(string nameToCheck, bool isConflict)
         {
-            var expectedResults = new string[]
-            {
-                "member1",
-                "adder",
-                "Foo"
-            };
-
-            var moduleContent1 = 
+            var moduleContent1 =
             @"
 
 Private member1 As Long
 
-Public Function Foo() As Long   'Selecting 'Foo' to rename
+Public Function F|oo() As Long
     Dim adder as Long
     adder = 10
     member1 = member1 + adder
@@ -43,24 +36,22 @@ Public Function Foo() As Long   'Selecting 'Foo' to rename
 End Function
 ";
 
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "CFirstClass", "Foo", "Function Foo() As Long");
-
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.ClassModule);
-
-            TestAccessibleDeclarations(tdo, expectedResults);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void DeclarationFinder_InProcedure_LocalVariableReference()
-        {
-            var expectedResults = new string[]
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
             {
-                "member1",
-                "Foo"
+                SelectionModuleName = "CFirstClass"
             };
 
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.ClassModule);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
+        }
+
+        [TestCase("member1", true)]
+        [TestCase("adder", false)]
+        [TestCase("Foo", true)]
+        [Category("Resolver")]
+        public void DeclarationFinder_InProcedure_LocalVariableReferences(string nameToCheck, bool isConflict)
+        {
             var moduleContent1 =
             @"
 
@@ -69,29 +60,27 @@ Private member1 As Long
 Public Function Foo() As Long
     Dim adder as Long
     adder = 10
-    member1 = member1 + adder   'Selecting 'adder' to rename
+    member1 = member1 + ad|der
     Foo = member1
 End Function
 ";
 
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "modTest", "adder", "member1 + adder");
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
-
-            TestAccessibleDeclarations(tdo, expectedResults);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void DeclarationFinder_InProcedure_MemberDeclaration()
-        {
-            var expectedResults = new string[]
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
             {
-                "adder",
-                "member1",
-                "Foo"
+                SelectionModuleName = "CFirstClass"
             };
 
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.ClassModule);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
+        }
+
+        [TestCase("member1", false)]
+        [TestCase("adder", true)]
+        [TestCase("Foo", true)]
+        [Category("Resolver")]
+        public void DeclarationFinder_InProcedure_MemberDeclaration(string nameToCheck, bool isConflict)
+        {
             var moduleContent1 =
 @"
 Private member1 As Long
@@ -99,28 +88,29 @@ Private member1 As Long
 Public Function Foo() As Long
     Dim adder as Long
     adder = 10
-    member1 = member1 + adder       'Selecting member1 to rename
-    Foo = member1
+    member1 = member1 + adder
+    Foo = m|ember1
 End Function
 ";
-
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "CFirstClass", "member1", "member1 + adder");
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.ClassModule);
-
-            TestAccessibleDeclarations(tdo, expectedResults);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void DeclarationFinder_ModuleScope()
-        {
-            var expectedResults = new string[]
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
             {
-                "adder",
-                "Foo"
+                SelectionModuleName = "CFirstClass"
             };
 
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.ClassModule);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
+        }
+
+        [TestCase("member1", false)]
+        [TestCase("member2", true)]
+        [TestCase("adder", true)]
+        [TestCase("Foo", true)]
+        [TestCase("Foo2", true)]
+        [TestCase("Bar", false)]
+        [Category("Resolver")]
+        public void DeclarationFinder_ModuleScope(string nameToCheck, bool isConflict)
+        {
             var moduleContent1 =
             @"
 
@@ -129,14 +119,14 @@ Private member1 As Long
 Public Function Foo() As Long
     Dim adder as Long
     adder = 10
-    member1 = member1 + adder       'Selecting 'member1' to rename
+    member1 = memb|er1 + adder
     Foo = member1
 End Function
 ";
             var moduleContent2 =
             @"
 
-Private member11 As Long
+Private member1 As Long
 Public member2 As Long
 
 Public Function Foo2() As Long
@@ -151,27 +141,41 @@ Private Sub Bar()
 End Sub
 ";
 
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "CFirstClass", "member1", "member1 + adder");
+            //var tdo = new AccessibilityTestsDataObject();
+            //AddTestSelectionCriteria(tdo, "CFirstClass", "member1", "member1 + adder");
 
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.ClassModule);
-            AddTestComponent(tdo, "modOne", moduleContent2, ComponentType.StandardModule);
+            //AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.ClassModule);
+            //AddTestComponent(tdo, "modOne", moduleContent2, ComponentType.StandardModule);
 
-            TestAccessibleDeclarations(tdo, expectedResults);
-        }
+            //TestAccessibleDeclarations(tdo, expectedResults);
 
-        [Test]
-        [Category("Resolver")]
-        public void DeclarationFinder_PublicClassAndPublicModuleSub_RenameClassSub()
-        {
-            var expectedResults = new string[]
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
             {
-                "Foo"
+                SelectionModuleName = "CFirstClass"
             };
 
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.ClassModule);
+            AddTestComponent(tdo, "modOne", moduleContent2, ComponentType.StandardModule);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck,conflicts)); 
+        }
+
+        private string ConflictMessage(bool isConflict, string name, IEnumerable<Declaration> conflicts)
+        {
+            return isConflict ? $"Identifier '{name}' is a conflict but was not identified" : $"Identifier '{name}' was incorrectly found as a conflict";
+        }
+
+
+        //[Test]
+        [TestCase("Foo", false)]
+        [TestCase("Foo2", true)]    //TODO: Check this with the VBE
+        //[TestCase("Food", false)]
+        [Category("Resolver")]
+        public void DeclarationFinder_PublicClassAndPublicModuleSub_RenameClassSub(string nameToCheck, bool isConflict)
+        {
             var moduleContent1 = 
             @"
-Public Function Foo() As Long   'Selecting 'Foo' to rename
+Public Function Fo|o() As Long
     Foo = 5
 End Function
 ";
@@ -182,25 +186,40 @@ Public Function Foo2() As Long
 End Function
 ";
 
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "CFirstClass", "Foo", "Function Foo() As Long");
+            //var tdo = new AccessibilityTestsDataObject();
+            //AddTestSelectionCriteria(tdo, "CFirstClass", "Foo", "Function Foo() As Long");
 
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.ClassModule);
+            //AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.ClassModule);
+            //AddTestComponent(tdo, "modOne", moduleContent2, ComponentType.StandardModule);
+
+            //TestAccessibleDeclarations(tdo, expectedResults);
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
+            {
+                SelectionModuleName = "CFirstClass"
+            };
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.ClassModule);
             AddTestComponent(tdo, "modOne", moduleContent2, ComponentType.StandardModule);
-
-            TestAccessibleDeclarations(tdo, expectedResults);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
         }
 
         [Test]
+        [TestCase("Foo", true)]
+        [TestCase("Foo2", true)]
+        [TestCase("member11", true)]
+        [TestCase("member1", false)]
+        [TestCase("Bar", true)]
+        [TestCase("adder", false)]
         [Category("Resolver")]
-        public void DeclarationFinder_Module_To_ClassScope()
+        public void DeclarationFinder_Module_To_ClassScope(string nameToCheck, bool isConflict)
         {
-            var expectedResults = new string[]
-            {
-                "Foo2",
-                "Bar",
-                "member11"
-            };
+            //var expectedResults = new string[]
+            //{
+            //    "Foo2",
+            //    "Bar",
+            //    "member11"
+            //};
 
             var moduleContent1 =
             @"
@@ -216,7 +235,7 @@ Public Function Foo2() As Long
 End Function
 
 Private Sub Bar()
-    member2 = member2 * 4   'Selecting member2 to rename
+    member2 = membe|r2 * 4
 End Sub
 ";
             var moduleContent2 =
@@ -232,30 +251,35 @@ Public Function Foo() As Long
 End Function
 ";
 
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "modOne", "member2", "member2 * 4");
+            //var tdo = new AccessibilityTestsDataObject();
+            //AddTestSelectionCriteria(tdo, "modOne", "member2", "member2 * 4");
 
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
-            AddTestComponent(tdo, "CFirstClass", moduleContent2, ComponentType.ClassModule);
+            //AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            //AddTestComponent(tdo, "CFirstClass", moduleContent2, ComponentType.ClassModule);
 
-            TestAccessibleDeclarations(tdo, expectedResults);
-        }
-
-        [Test]
-        [Category("Resolver")]
-        public void DeclarationFinder_PrivateSub_RespectPublicSubInOtherModule()
-        {
-            var expectedResults = new string[]
+            //TestAccessibleDeclarations(tdo, expectedResults);
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
             {
-                "DoThis",
-                "filename",
-                "member1"
+                SelectionModuleName = "modOne"
             };
 
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.ClassModule);
+            AddTestComponent(tdo, "CFirstClass", moduleContent2, ComponentType.StandardModule);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
+        }
+
+        //[Test]
+        //TODO: is 'filename a conflict or not?
+        [TestCase("DoThis", true)]
+        [TestCase("member1", true)]
+        [Category("Resolver")]
+        public void DeclarationFinder_PrivateSub_CheckConflictsInOtherModule(string nameToCheck, bool isConflict)
+        {
             var moduleContent1 =
 @"
 Private Sub DoThis(filename As String)
-    SetFilename filename            'Selecting 'SetFilename' to rename
+    SetFi|lename filename
 End Sub
 ";
             var moduleContent2 =
@@ -267,34 +291,45 @@ Public Sub SetFilename(filename As String)
 End Sub
 ";
 
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
+            //var tdo = new AccessibilityTestsDataObject();
+            //AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
 
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            //AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            //AddTestComponent(tdo, "modTwo", moduleContent2, ComponentType.StandardModule);
+
+            //TestAccessibleDeclarations(tdo, expectedResults);
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
+            {
+                SelectionModuleName = "modOne"
+            };
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.StandardModule);
             AddTestComponent(tdo, "modTwo", moduleContent2, ComponentType.StandardModule);
-
-            TestAccessibleDeclarations(tdo, expectedResults);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
         }
 
-        [Test]
+        //[Test]
+        //TODO: Add more tests
+        [TestCase("DoThis", true)]
         [Category("Resolver")]
-        public void DeclarationFinder_PrivateSub_MultipleReferences()
+        public void DeclarationFinder_PrivateSub_MultipleReferences(string nameToCheck, bool isConflict)
         {
-            var expectedResults = new string[]
-            {
-                "DoThis",
-                "filename",
-                "member1",
-                "StoreFilename",
-                "ExtractFilename",
-                "mFolderpath",
-                "filepath"
-            };
+            //var expectedResults = new string[]
+            //{
+            //    "DoThis",
+            //    "filename",
+            //    "member1",
+            //    "StoreFilename",
+            //    "ExtractFilename",
+            //    "mFolderpath",
+            //    "filepath"
+            //};
 
             var moduleContent1 =
 @"
 Private Sub DoThis(filename As String)
-    SetFilename filename       'Selecting 'SetFilename' to rename
+    SetFil|ename filename
 End Sub
 ";
             var moduleContent2 =
@@ -320,29 +355,41 @@ Private Function ExtractFilename(filepath As String) As String
 End Function"
 ;
 
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
+            //var tdo = new AccessibilityTestsDataObject();
+            //AddTestSelectionCriteria(tdo, "modOne", "SetFilename", "SetFilename filename");
 
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            //AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            //AddTestComponent(tdo, "modTwo", moduleContent2, ComponentType.StandardModule);
+            //AddTestComponent(tdo, "modThree", moduleContent3, ComponentType.StandardModule);
+
+            //TestAccessibleDeclarations(tdo, expectedResults);
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
+            {
+                SelectionModuleName = "modOne"
+            };
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.StandardModule);
             AddTestComponent(tdo, "modTwo", moduleContent2, ComponentType.StandardModule);
             AddTestComponent(tdo, "modThree", moduleContent3, ComponentType.StandardModule);
-
-            TestAccessibleDeclarations(tdo, expectedResults);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
         }
 
-        [Test]
+        //[Test]
+        //TODO: Add more tests
+        [TestCase("Bar", true)]
         [Category("Resolver")]
-        public void DeclarationFinder_PrivateSub_WithBlock()
+        public void DeclarationFinder_PrivateSub_WithBlock(string nameToCheck, bool isConflict)
         {
-            var expectedResults = new string[]
-            {
-                "mFolderpath",
-                "ExtractFilename",
-                "SetFilename",
-                "filename",
-                "input",
-                "Bar"
-            };
+            //var expectedResults = new string[]
+            //{
+            //    "mFolderpath",
+            //    "ExtractFilename",
+            //    "SetFilename",
+            //    "filename",
+            //    "input",
+            //    "Bar"
+            //};
 
             var moduleContent1 =
 @"
@@ -355,7 +402,7 @@ Public Sub Foo(filenm As String)
     Dim helper As CFileHelper
     Set helper = new CFileHelper
     With helper
-        .StoreFilename filepath     'Selecting 'StoreFilename' to rename
+        .StoreFile|name filepath
         mDupData = filepath
     End With
 End Sub
@@ -382,28 +429,40 @@ Public Sub Bar()
 End Sub
 ";
 
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "modOne", "StoreFilename", ".StoreFilename filepath");
+            //var tdo = new AccessibilityTestsDataObject();
+            //AddTestSelectionCriteria(tdo, "modOne", "StoreFilename", ".StoreFilename filepath");
 
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            //AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            //AddTestComponent(tdo, "CFileHelper", moduleContent2, ComponentType.ClassModule);
+
+            //TestAccessibleDeclarations(tdo, expectedResults);
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
+            {
+                SelectionModuleName = "modOne"
+            };
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.StandardModule);
             AddTestComponent(tdo, "CFileHelper", moduleContent2, ComponentType.ClassModule);
-
-            TestAccessibleDeclarations(tdo, expectedResults);
+            //AddTestComponent(tdo, "modThree", moduleContent3, ComponentType.StandardModule);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
         }
 
-        [Test]
+        //[Test]
+        //TODO: Add more tests
+        [TestCase("gConstant", true)]
         [Category("Resolver")]
-        public void DeclarationFinder_Module_To_ModuleScopeResolution()
+        public void DeclarationFinder_Module_To_ModuleScopeResolution(string nameToCheck, bool isConflict)
         {
-            var expectedResults = new string[]
-            {
-                "Foo1",
-                "Foo2",
-                "Foo3",
-                "Foo4",
-                "gConstant",
-                "member2"
-            };
+            //var expectedResults = new string[]
+            //{
+            //    "Foo1",
+            //    "Foo2",
+            //    "Foo3",
+            //    "Foo4",
+            //    "gConstant",
+            //    "member2"
+            //};
 
             var moduleContent1 =
 @"
@@ -412,7 +471,7 @@ Public member2 As Long
 
 Private Function Bar1() As Long
     Bar2
-    Bar1 = member2 + modTwo.Foo1 + modTwo.Foo2 + modTwo.Foo3   'Selecting Foo2 to rename
+    Bar1 = member2 + modTwo.Foo1 + modTwo.Fo|o2 + modTwo.Foo3
 End Function
 
 Private Sub Bar2()
@@ -440,13 +499,22 @@ Private Sub Foo4()
 End Sub
 ";
 
-            var tdo = new AccessibilityTestsDataObject();
-            AddTestSelectionCriteria(tdo, "modOne", "Foo2", "Foo2 + modTwo.Foo3");
+            //var tdo = new AccessibilityTestsDataObject();
+            //AddTestSelectionCriteria(tdo, "modOne", "Foo2", "Foo2 + modTwo.Foo3");
 
-            AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            //AddTestComponent(tdo, tdo.SelectionModuleName, moduleContent1, ComponentType.StandardModule);
+            //AddTestComponent(tdo, "modTwo", moduleContent2, ComponentType.StandardModule);
+
+            //TestAccessibleDeclarations(tdo, expectedResults);
+            var tdo = new AccessibilityTestsDataObject(moduleContent1)
+            {
+                SelectionModuleName = "modOne"
+            };
+
+            AddTestComponent(tdo, tdo.SelectionModuleName, ComponentType.StandardModule);
             AddTestComponent(tdo, "modTwo", moduleContent2, ComponentType.StandardModule);
-
-            TestAccessibleDeclarations(tdo, expectedResults);
+            var conflicts = TestConflictingDeclaration(tdo, nameToCheck);
+            Assert.AreEqual(isConflict, conflicts.Where(cf => cf.IdentifierName.Equals(nameToCheck)).Any(), ConflictMessage(isConflict, nameToCheck, conflicts));
         }
 
         private void TestAccessibleDeclarations(AccessibilityTestsDataObject tdo, string[] testSpecificExpectedResults)
@@ -455,15 +523,53 @@ End Sub
             PrepareScenarioTestData(tdo, testSpecificExpectedResults);
 
             var target = tdo.Parser.AllUserDeclarations.FindTarget(tdo.QualifiedSelection);
-            if(null == target)  { Assert.Inconclusive("Unable to find target from QualifiedSelection"); }
+            if (null == target) { Assert.Inconclusive("Unable to find target from QualifiedSelection"); }
 
-            var accessibleNames = tdo.Parser.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(target)
-                    .Select(d => d.IdentifierName);
+            var accessibleNames = new List<string>(); // tdo.Parser.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(target)
+                    //.Select(d => d.IdentifierName);
+
+            //var accessibleNames = tdo.Parser.DeclarationFinder.NewDeclarationNameConflictsWithExisting(, out List<Declaration> conflicts);
 
             Assert.IsFalse(accessibleNames.Except(tdo.ExpectedResults).Any()
                     || tdo.ExpectedResults.Except(accessibleNames).Any()
                         , BuildIdentifierListToDisplay(accessibleNames.Except(tdo.ExpectedResults), tdo.ExpectedResults.Except(accessibleNames)));
         }
+
+        private IEnumerable<Declaration> TestConflictingDeclaration(AccessibilityTestsDataObject tdo, string name)
+        {
+
+            tdo.VBE = BuildProject(tdo.ProjectName, tdo.Components);
+            tdo.Parser = MockParser.CreateAndParse(tdo.VBE);
+            PrepareScenarioTestData(tdo, name);
+            //PrepareScenarioTestData(tdo, testSpecificExpectedResults);
+
+            //var target = tdo.Parser.AllUserDeclarations.FindTarget(tdo.QualifiedSelection);
+            //var target = tdo.Parser.DeclarationFinder.MatchName(name);
+            AcquireTarget(tdo, out Declaration target, tdo.QualifiedSelection);
+            return tdo.Parser.DeclarationFinder.NewDeclarationNameConflictsWithExisting(name, target);
+
+            //if (null == target) { Assert.Inconclusive("Unable to find target from QualifiedSelection"); }
+
+            //var accessibleNames = tdo.Parser.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(target)
+            //        .Select(d => d.IdentifierName);
+
+            ////var accessibleNames = tdo.Parser.DeclarationFinder.NewDeclarationNameConflictsWithExisting(, out List<Declaration> conflicts);
+
+            //Assert.IsFalse(accessibleNames.Except(tdo.ExpectedResults).Any()
+            //        || tdo.ExpectedResults.Except(accessibleNames).Any()
+            //            , BuildIdentifierListToDisplay(accessibleNames.Except(tdo.ExpectedResults), tdo.ExpectedResults.Except(accessibleNames)));
+        }
+
+        private void AcquireTarget(AccessibilityTestsDataObject tdo, out Declaration target, QualifiedSelection selection)
+        {
+            target = tdo.Parser.DeclarationFinder.AllDeclarations
+                .Where(item => item.IsUserDefined)
+                .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
+            //target = _declarations
+            //    .Where(item => item.IsUserDefined)
+            //    .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
+        }
+
 
         private void PrepareScenarioTestData(AccessibilityTestsDataObject tdo, string[] testSpecificExpectedResults)
         {
@@ -473,6 +579,20 @@ End Sub
             tdo.Parser = MockParser.CreateAndParse(tdo.VBE);
 
             CreateQualifiedSelectionForTestCase(tdo);
+        }
+
+        private void PrepareScenarioTestData(AccessibilityTestsDataObject tdo, string name)
+        {
+            //SetExpectedResults(tdo, testSpecificExpectedResults);
+
+            tdo.VBE = BuildProject(tdo.ProjectName, tdo.Components);
+            tdo.Parser = MockParser.CreateAndParse(tdo.VBE);
+
+            var component = RetrieveComponent(tdo, tdo.SelectionModuleName);
+            var moduleParent = component.CodeModule.Parent;
+            tdo.QualifiedSelection = new QualifiedSelection(new QualifiedModuleName(moduleParent), tdo.Target); // new Selection(lineOfInterestNumber, column, lineOfInterestNumber, column));
+
+            //CreateQualifiedSelectionForTestCase(tdo);
         }
 
         private void SetExpectedResults(AccessibilityTestsDataObject tdo, string[] testSpecificExpectedResults)
@@ -543,6 +663,15 @@ End Sub
             tdo.QualifiedSelection = new QualifiedSelection(new QualifiedModuleName(moduleParent), new Selection(lineOfInterestNumber, column, lineOfInterestNumber, column));
         }
 
+        private void AddTestComponent(AccessibilityTestsDataObject tdo, string moduleIdentifier, ComponentType componentType)
+        {
+            if (null == tdo.Components)
+            {
+                tdo.Components = new List<TestComponentSpecification>();
+            }
+            tdo.Components.Add(new TestComponentSpecification(moduleIdentifier, tdo.Code, componentType));
+        }
+
         private void AddTestComponent(AccessibilityTestsDataObject tdo, string moduleIdentifier, string moduleContent, ComponentType componentType)
         {
             if (null == tdo.Components)
@@ -578,27 +707,33 @@ End Sub
 
         internal class TestComponentSpecification
         {
-            private string _name;
-            private string _content;
-            private ComponentType _componentType;
+            //private string _name;
+            //private string _content;
+            //private ComponentType _componentType;
             public TestComponentSpecification(string componentName, string componentContent, ComponentType componentType)
             {
-                _name = componentName;
-                _content = componentContent;
-                _componentType = componentType;
+                Name = componentName;
+                Content = componentContent;
+                ModuleType = componentType;
             }
 
-            public string Name { get { return _name; } }
-            public string Content { get { return _content; } }
-            public ComponentType ModuleType { get { return _componentType; } }
+            public string Name { set;  get; } //{ return _name; } }
+            public string Content { set; get; } // { return _content; } }
+            public ComponentType ModuleType { set; get; } // { return _componentType; } }
         }
 
 
         internal class AccessibilityTestsDataObject
         {
+            private CodeString _codeString;
             public AccessibilityTestsDataObject()
             {
                 ProjectName = "TestProject";
+            }
+            public AccessibilityTestsDataObject(string moduleCode)
+            {
+                ProjectName = "TestProject";
+                _codeString = moduleCode.ToCodeString();
             }
             public IVBE VBE { get; set; }
             public RubberduckParserState Parser { get; set; }
@@ -609,6 +744,8 @@ End Sub
             public string SelectionLineIdentifier { get; set; }
             public List<string> ExpectedResults { get; set; }
             public QualifiedSelection QualifiedSelection { get; set; }
+            public string Code => _codeString.Code;
+            public Selection Target => _codeString.CaretPosition.ToOneBased();
         }
         
         [Test]

@@ -244,19 +244,73 @@ namespace Rubberduck.Refactorings.Rename
             var result = presenter.Show(_model.Target);
             if (result == null) { return false; }
 
-            var conflictDeclarations = _state.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(_model.Target)
-                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            var conflicts = _state.DeclarationFinder.NewDeclarationNameConflictsWithExisting(_model.NewName, _model.Target);
+            //bool hasConflict = false;
 
-            if (conflictDeclarations.Any())
+            //var nameCollisions = _state.DeclarationFinder.MatchName(_model.NewName);
+            //if (_model.Target.DeclarationType == DeclarationType.EnumerationMember
+            //    || _model.Target.DeclarationType == DeclarationType.UserDefinedTypeMember)
+            //{
+            //    nameCollisions = nameCollisions
+            //        .Where(nc => nc.ParentDeclaration == _model.Target.ParentDeclaration);
+            //}
+            //else
+            //{
+            //    nameCollisions = _state.DeclarationFinder.MatchName(_model.NewName)
+            //           .Where(nc => nc.DeclarationType != DeclarationType.EnumerationMember
+            //            && nc.DeclarationType != DeclarationType.UserDefinedTypeMember);
+            //}
+
+            //if (nameCollisions.Any())
+            //{
+            //    foreach (var conflictDec in nameCollisions)
+            //    {
+            //        var accessible = _state.DeclarationFinder.GetAccessibleUserDeclarations(_model.Target);
+            //        if (accessible.Contains(conflictDec))
+            //        {
+            //            hasConflict = true;
+            //        }
+            //        else if (IsSubroutineOrProperty(_model.Target))
+            //        {
+            //            hasConflict = conflictDec.ParentDeclaration == _model.Target;
+            //        }
+            //    }
+            //}
+
+            if (conflicts.Any())
             {
                 var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
-                    conflictDeclarations.First().IdentifierName);
+                    _model.NewName/*nameCollisions.First().IdentifierName*/);
 
                 return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
             }
 
             return true;
         }
+
+        private static bool IsSubroutineOrProperty(Declaration declaration)
+        {
+            return declaration.DeclarationType.HasFlag(DeclarationType.Property)
+                || declaration.DeclarationType == DeclarationType.Function
+                || declaration.DeclarationType == DeclarationType.Procedure;
+        }
+        //private HashSet<Declaration> AddRelatedMembers(Declaration candidateDeclaration, HashSet<Declaration> conflictingMembers)
+        //{
+        //    if (candidateDeclaration.DeclarationType == DeclarationType.UserDefinedTypeMember
+        //        || candidateDeclaration.DeclarationType == DeclarationType.EnumerationMember)
+        //    {
+        //        var relatedMembers = Members(candidateDeclaration.ParentDeclaration).Where(m =>
+        //            (m.DeclarationType == DeclarationType.EnumerationMember
+        //            || m.DeclarationType == DeclarationType.UserDefinedTypeMember)
+        //            && !m.IdentifierName.Equals(candidateDeclaration.IdentifierName)
+        //            );
+        //        foreach (var rm in relatedMembers)
+        //        {
+        //            conflictingMembers.Add(rm);
+        //        }
+        //    }
+        //    return conflictingMembers;
+        //}
 
         private Declaration ResolveEventHandlerToControl(Declaration userTarget)
         {

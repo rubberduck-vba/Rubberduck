@@ -388,10 +388,10 @@ End Property"
                     @"Private Sub Fo|o()
     Dim Goo As Integer
 End Sub",
-                Expected =
-                    @"Private Sub Foo()
-    Dim Goo As Integer
-End Sub"
+//                Expected =
+//                    @"Private Sub Foo()
+//    Dim Goo As Integer
+//End Sub"
             };
             tdo.MsgBoxReturn = ConfirmationOutcome.No;
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
