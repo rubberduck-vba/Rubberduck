@@ -151,7 +151,7 @@ namespace Rubberduck.AutoComplete
                 CodeString result;
                 if (e.Character == '\b' && pSelection.StartColumn > 1)
                 {
-                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, '\b');
+                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, Keys.Back);
                 }
                 else
                 {
@@ -165,7 +165,7 @@ namespace Rubberduck.AutoComplete
                         var prettified = prettifier.Prettify(original);
                         if (e.Character == '\b' && pSelection.StartColumn > 1)
                         {
-                            result = _selfClosingPairCompletion.Execute(selfClosingPair, prettified, '\b');
+                            result = _selfClosingPairCompletion.Execute(selfClosingPair, prettified, Keys.Back);
                         }
                         else
                         {

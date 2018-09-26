@@ -18,44 +18,42 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
         {
             var originalCode = original.Code;
             var originalPosition = original.CaretPosition.StartColumn;
-            var originalNonSpacePosition = 0;
+            var originalNonWhitespaceCharacters = 0;
             for (var i = 0; i < originalPosition; i++)
             {
                 if (originalCode[i] != ' ')
                 {
-                    originalNonSpacePosition++;
+                    originalNonWhitespaceCharacters++;
                 }
             }
 
-            _module.DeleteLines(original.SnippetPosition.StartLine);
+            _module.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount);
             _module.InsertLines(original.SnippetPosition.StartLine, originalCode);
             var prettifiedCode = _module.GetLines(original.SnippetPosition);
 
-            var prettifiedNonSpacePosition = 0;
-            var index = 0;
+            var prettifiedNonWhitespaceCharacters = 0;
+            var prettifiedCaretCharIndex = 0;
             for (var i = 0; i < prettifiedCode.Length; i++)
             {
                 if (prettifiedCode[i] != ' ')
                 {
-                    prettifiedNonSpacePosition++;
-                    if (prettifiedNonSpacePosition == originalNonSpacePosition)
+                    prettifiedNonWhitespaceCharacters++;
+                    if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters)
                     {
-                        index = i;
+                        prettifiedCaretCharIndex = i;
                         break;
                     }
                 }
             }
 
-            if (string.IsNullOrEmpty(original.Code) || original.Code[Math.Max(0, original.Code.Length - 1)] == ' ')
-            {
-                prettifiedCode += ' ';
-            }
-            var selection = new Selection(original.SnippetPosition.StartLine - 1, index).ToOneBased();
+            var prettifiedPosition = new Selection(original.SnippetPosition.StartLine - 1, prettifiedCaretCharIndex + 1).ToOneBased();
             using (var pane = _module.CodePane)
             {
-                pane.Selection = selection;
+                pane.Selection = prettifiedPosition;
             }
-            return new CodeString(prettifiedCode, new Selection(0, selection.StartColumn - 1), selection);
+
+            var result = new CodeString(prettifiedCode, new Selection(0, prettifiedPosition.StartColumn - 1), prettifiedPosition);
+            return result;
         }
     }
 }

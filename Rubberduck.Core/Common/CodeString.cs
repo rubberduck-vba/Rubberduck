@@ -7,6 +7,10 @@ namespace Rubberduck.Common
     {
         public static readonly char PseudoCaret = '|';
 
+        public TestCodeString(CodeString codeString)
+            : this(codeString.Code, codeString.CaretPosition, codeString.SnippetPosition)
+        { }
+
         public TestCodeString(string code, Selection zPosition, Selection pPosition = default)
             : base(code, zPosition, pPosition)
         { }

@@ -22,6 +22,30 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void PlacesCaretBetweenOpeningAndClosingChars()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = pair.OpeningChar;
+            var original = "foo = MsgBox |".ToCodeString();
+            var expected = "foo = MsgBox \"|\"".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void PlacesCaretBetweenOpeningAndClosingChars_PreservesPosition()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = pair.OpeningChar;
+            var original = "foo = |".ToCodeString();
+            var expected = "foo = (|)".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
         public void WhenNextPositionIsClosingChar_ClosingCharMovesSelection()
         {
             var pair = new SelfClosingPair('(', ')');
