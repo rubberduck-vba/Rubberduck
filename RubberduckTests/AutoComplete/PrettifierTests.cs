@@ -36,7 +36,19 @@ namespace RubberduckTests.AutoComplete
 
         [Test]
         [Category("AutoComplete")]
-        public void GivenTrailingWhitespace_PrettifiedCaretIsAtLastCharacter()
+        public void GivenLeadingWhitespace_YieldsSameCodeString()
+        {
+            var original = "    MsgBox|".ToCodeString();
+
+            var sut = InitializeSut(original, original, out _, out _);
+            var actual = new TestCodeString(sut.Prettify(original));
+
+            Assert.AreEqual(original, actual);
+        }
+
+        [Test]
+        [Category("AutoComplete")]
+        public void GivenTrailingWhitespace_IsTrimmedAndPrettifiedCaretIsAtLastCharacter()
         {
             var original = "MsgBox |".ToCodeString();
             var prettified = "MsgBox".ToCodeString();

@@ -1,15 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Windows.Forms;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
-using Rubberduck.Common;
-using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.AutoComplete
 {
@@ -24,16 +18,21 @@ namespace Rubberduck.AutoComplete
             new SelfClosingPair('{', '}'),
         };
 
+        private readonly AutoCompleteKeyDownHandler _handler;
         private readonly SelfClosingPairCompletionService _selfClosingPairCompletion;
+        private readonly ICodeStringPrettifier _prettifier;
 
         private AutoCompleteSettings _settings;
         private bool _popupShown;
-        private bool _enabled = false;
+        private bool _enabled;
         private bool _initialized;
 
-        public AutoCompleteService(IGeneralConfigService configService, SelfClosingPairCompletionService selfClosingPairCompletion)
+        public AutoCompleteService(IGeneralConfigService configService, SelfClosingPairCompletionService selfClosingPairCompletion, ICodeStringPrettifier prettifier)
         {
+            _handler = new AutoCompleteKeyDownHandler(()=>_settings, ()=>_selfClosingPairs, ()=>_selfClosingPairCompletion, ()=>_prettifier);
+
             _selfClosingPairCompletion = selfClosingPairCompletion;
+            _prettifier = prettifier;
             _configService = configService;
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
         }
@@ -124,120 +123,7 @@ namespace Rubberduck.AutoComplete
                 return;
             }
 
-            var currentContent = module.GetLines(pSelection);
-            if (HandleSmartConcat(e, pSelection, currentContent, module))
-            {
-                return;
-            }
-
-            HandleSelfClosingPairs(e, module, pSelection);
-        }
-
-        private void HandleSelfClosingPairs(AutoCompleteEventArgs e, ICodeModule module, Selection pSelection)
-        {
-            if (!pSelection.IsSingleCharacter)
-            {
-                return;
-            }
-
-            var currentCode = e.CurrentLine;
-            var currentSelection = e.CurrentSelection;
-
-            var prettifier = new CodeStringPrettifier(module);
-            var original = new CodeString(currentCode, new Selection(0, currentSelection.EndColumn - 1), new Selection(pSelection.StartLine, 1));
-            
-            foreach (var selfClosingPair in _selfClosingPairs)
-            {
-                CodeString result;
-                if (e.Character == '\b' && pSelection.StartColumn > 1)
-                {
-                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, Keys.Back);
-                }
-                else
-                {
-                    result = _selfClosingPairCompletion.Execute(selfClosingPair, original, e.Character);
-                }
-
-                if (!result?.Equals(default) ?? false)
-                {
-                    using (var pane = module.CodePane)
-                    {
-                        var prettified = prettifier.Prettify(original);
-                        if (e.Character == '\b' && pSelection.StartColumn > 1)
-                        {
-                            result = _selfClosingPairCompletion.Execute(selfClosingPair, prettified, Keys.Back);
-                        }
-                        else
-                        {
-                            result = _selfClosingPairCompletion.Execute(selfClosingPair, prettified, e.Character);
-                        }
-
-                        module.DeleteLines(result.SnippetPosition);
-                        module.InsertLines(result.SnippetPosition.StartLine, result.Code);
-                        var finalSelection = new Selection(result.SnippetPosition.StartLine, result.CaretPosition.StartColumn + 1);
-                        pane.Selection = finalSelection;
-                        e.Handled = true;
-                        return;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Adds a line continuation when {ENTER} is pressed inside a string literal; returns false otherwise.
-        /// </summary>
-        private bool HandleSmartConcat(AutoCompleteEventArgs e, Selection pSelection, string currentContent, ICodeModule module)
-        {
-            var shouldHandle = _settings.EnableSmartConcat &&
-                               e.Character == '\r' &&
-                               IsInsideStringLiteral(pSelection, ref currentContent);
-
-            var lastIndexLeftOfCaret = currentContent.Length > 2 ? currentContent.Substring(0, pSelection.StartColumn - 1).LastIndexOf('"') : 0;
-            if (shouldHandle && lastIndexLeftOfCaret > 0)
-            {
-                var indent = currentContent.NthIndexOf('"', 1);
-                var whitespace = new string(' ', indent);
-                var code = $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
-
-                if (e.ControlDown)
-                {
-                    code = $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & vbNewLine & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
-
-                }
-
-                module.ReplaceLine(pSelection.StartLine, code);
-                using (var pane = module.CodePane)
-                {
-                    pane.Selection = new Selection(pSelection.StartLine + 1, indent + currentContent.Substring(pSelection.StartColumn - 2).Length);
-                    e.Handled = true;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private bool IsInsideStringLiteral(Selection pSelection, ref string currentContent)
-        {
-            if (!currentContent.Substring(pSelection.StartColumn - 1).Contains("\"") || 
-                currentContent.StripStringLiterals().HasComment(out _))
-            {
-                return false;
-            }
-
-            var zSelection = pSelection.ToZeroBased();
-            var leftOfCaret = currentContent.Substring(0, zSelection.StartColumn);
-            var rightOfCaret = currentContent.Substring(Math.Min(zSelection.StartColumn + 1, currentContent.Length - 1));
-            if (!rightOfCaret.Contains("\""))
-            {
-                // the string isn't terminated, but VBE would terminate it here.
-                currentContent += "\"";
-                rightOfCaret += "\"";
-            }
-
-            // odd number of double quotes on either side of the caret means we're inside a string literal, right?
-            return (leftOfCaret.Count(c => c.Equals('"')) % 2) != 0 &&
-                   (rightOfCaret.Count(c => c.Equals('"')) % 2) != 0;
+            _handler.Run(module, pSelection, e);
         }
 
         public void Dispose()

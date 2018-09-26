@@ -6,13 +6,17 @@ namespace Rubberduck.VBEditor.Events
     public class AutoCompleteEventArgs : EventArgs
     {
         public AutoCompleteEventArgs(ICodeModule module, KeyPressEventArgs e)
+            : this(module, e.Character, e.ControlDown, e.IsDelete)
+        { }
+
+        public AutoCompleteEventArgs(ICodeModule module, char character, bool controlDown, bool isDelete)
         {
-            Character = e.Character;
+            Character = character;
             CodeModule = module;
             CurrentSelection = module.GetQualifiedSelection().Value.Selection;
             CurrentLine = module.GetLines(CurrentSelection);
-            ControlDown = e.ControlDown;
-            IsDelete = e.IsDelete;
+            ControlDown = controlDown;
+            IsDelete = isDelete;
         }
 
         /// <summary>
