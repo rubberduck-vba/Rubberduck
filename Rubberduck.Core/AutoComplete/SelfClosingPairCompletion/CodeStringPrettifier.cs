@@ -8,13 +8,6 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 {
     public class CodeStringPrettifier : ICodeStringPrettifier
     {
-        private readonly ICodeModule _module;
-
-        public CodeStringPrettifier(ICodeModule module)
-        {
-            _module = module;
-        }
-
         public CodeString Prettify(ICodeModule module, CodeString original)
         {
             var originalCode = original.Code;
@@ -28,9 +21,9 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 }
             }
 
-            _module.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount);
-            _module.InsertLines(original.SnippetPosition.StartLine, originalCode);
-            var prettifiedCode = _module.GetLines(original.SnippetPosition);
+            module.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount);
+            module.InsertLines(original.SnippetPosition.StartLine, originalCode);
+            var prettifiedCode = module.GetLines(original.SnippetPosition);
 
             var prettifiedNonWhitespaceCharacters = 0;
             var prettifiedCaretCharIndex = 0;
@@ -48,7 +41,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             }
 
             var prettifiedPosition = new Selection(original.SnippetPosition.StartLine - 1, prettifiedCaretCharIndex + 1).ToOneBased();
-            using (var pane = _module.CodePane)
+            using (var pane = module.CodePane)
             {
                 pane.Selection = prettifiedPosition;
             }
