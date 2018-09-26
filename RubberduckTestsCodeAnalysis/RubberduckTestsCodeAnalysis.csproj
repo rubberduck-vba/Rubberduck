@@ -1,28 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <RootNamespace>RubberduckTestsCodeAnalysis</RootNamespace>
+    <AssemblyName>RubberduckTestsCodeAnalysis</AssemblyName>
+    <!-- default ot release because this is an analyzer -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E9FC6518-F9E8-4E57-BD28-583A9EA69297}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>RubberduckTestsCodeAnalysis</RootNamespace>
-    <AssemblyName>RubberduckTestsCodeAnalysis</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>net46</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,20 +20,7 @@
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject />
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Helpers\CodeFixVerifier.Helper.cs" />
-    <Compile Include="Helpers\DiagnosticResult.cs" />
-    <Compile Include="Helpers\DiagnosticVerifier.Helper.cs" />
-    <Compile Include="RubberduckCodeAnalysisUnitTests.cs" />
-    <Compile Include="Verifiers\CodeFixVerifier.cs" />
-    <Compile Include="Verifiers\DiagnosticVerifier.cs" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -58,74 +35,23 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj">
-      <Project>{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}</Project>
-      <Name>Rubberduck.API</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
-      <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
-      <Name>Rubberduck.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Inspections\Rubberduck.Inspections.csproj">
-      <Project>{ac4f1d22-d74b-45ff-ab0c-cc2a104fe023}</Project>
-      <Name>Rubberduck.Inspections</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
-      <Project>{ac54b7fb-170d-4da6-a30b-8cad182f0e6b}</Project>
-      <Name>Rubberduck.Interaction</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
-      <Project>{e8ab5d93-2d0f-423d-bc15-5ee118673e48}</Project>
-      <Name>Rubberduck.Main</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
-      <Name>Rubberduck.Parsing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj">
-      <Project>{d4b6a510-14e1-420a-a8d5-6a09890fd7d8}</Project>
-      <Name>Rubberduck.Refactorings</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj">
-      <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
-      <Name>Rubberduck.RegexAssistant</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
-      <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
-      <Name>Rubberduck.SettingsProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
-      <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
-      <Name>Rubberduck.SmartIndenter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj">
-      <Project>{5d683117-21f1-4a01-a0c7-6ae6f30a16a7}</Project>
-      <Name>Rubberduck.VBEditor.VB6</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj">
-      <Project>{d488071e-edcb-4601-b734-1a3109ed903c}</Project>
-      <Name>Rubberduck.VBEditor.VBA</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RubberduckCodeAnalysis\RubberduckCodeAnalysis.csproj">
-      <Project>{f83b6746-49a6-4cfd-9a29-3d7bbd4f0323}</Project>
-      <Name>RubberduckCodeAnalysis</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RubberduckTests\RubberduckTests.csproj">
-      <Project>{adade971-75e3-40c4-8c19-ab7409372f2e}</Project>
-      <Name>RubberduckTests</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj" />
+    <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
+    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj" />
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
+    <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj" />
+    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj" />
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj" />
+    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
+    <ProjectReference Include="..\RubberduckCodeAnalysis\RubberduckCodeAnalysis.csproj" />
+    <ProjectReference Include="..\RubberduckTests\RubberduckTests.csproj" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis">
@@ -246,5 +172,4 @@
       <Version>4.3.0</Version>
     </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
