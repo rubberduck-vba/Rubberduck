@@ -58,7 +58,9 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             lines[original.CaretPosition.StartLine] = 
                 string.IsNullOrEmpty(original.Code) 
                     ? autoCode 
-                    : line.Insert(original.CaretPosition.StartColumn, autoCode);
+                    : original.CaretPosition.StartColumn == line.Length 
+                        ? line + autoCode 
+                        : line.Insert(original.CaretPosition.StartColumn, autoCode);
 
             return new CodeString(string.Join("\n", lines), nextPosition, original.SnippetPosition);
         }

@@ -30,18 +30,20 @@ namespace Rubberduck.AutoComplete
         public void Run(ICodeModule module, Selection pSelection, AutoCompleteEventArgs e)
         {
             var currentContent = module.GetLines(pSelection);
-            if (HandleSmartConcat(e, pSelection, currentContent, module))
-            {
-                return;
-            }
+            HandleSmartConcat(e, pSelection, currentContent, module);
+            if (e.Handled) { return; }
 
             HandleSelfClosingPairs(e, module, pSelection);
+            if (e.Handled) { return; }
+
+            //HandleSomethingElse(?)
+            //if (e.Handled) { return; }
         }
 
         /// <summary>
-        /// Adds a line continuation when {ENTER} is pressed inside a string literal; returns false otherwise.
+        /// Adds a line continuation when {ENTER} is pressed inside a string literal.
         /// </summary>
-        private bool HandleSmartConcat(AutoCompleteEventArgs e, Selection pSelection, string currentContent, ICodeModule module)
+        private void HandleSmartConcat(AutoCompleteEventArgs e, Selection pSelection, string currentContent, ICodeModule module)
         {
             var shouldHandle = _getSettings().EnableSmartConcat &&
                                e.Character == '\r' &&
@@ -57,7 +59,6 @@ namespace Rubberduck.AutoComplete
                 if (e.ControlDown)
                 {
                     code = $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & vbNewLine & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
-
                 }
 
                 module.ReplaceLine(pSelection.StartLine, code);
@@ -65,11 +66,8 @@ namespace Rubberduck.AutoComplete
                 {
                     pane.Selection = new Selection(pSelection.StartLine + 1, indent + currentContent.Substring(pSelection.StartColumn - 2).Length);
                     e.Handled = true;
-                    return true;
                 }
             }
-
-            return false;
         }
 
         private void HandleSelfClosingPairs(AutoCompleteEventArgs e, ICodeModule module, Selection pSelection)
@@ -115,7 +113,10 @@ namespace Rubberduck.AutoComplete
 
                         module.DeleteLines(result.SnippetPosition);
                         module.InsertLines(result.SnippetPosition.StartLine, result.Code);
-                        var finalSelection = new Selection(result.SnippetPosition.StartLine, result.CaretPosition.StartColumn + 1);
+                        var offByOne = result.Code != module.GetLines(result.SnippetPosition);
+
+                        var finalSelection = new Selection(result.SnippetPosition.StartLine, result.CaretPosition.StartColumn + 1)
+                            .ShiftRight(offByOne ? 1 : 0);
                         pane.Selection = finalSelection;
                         e.Handled = true;
                         return;

@@ -21,6 +21,8 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 }
             }
 
+            var indent = originalCode.TakeWhile(c => c == ' ').Count();
+
             module.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount);
             module.InsertLines(original.SnippetPosition.StartLine, originalCode);
             var prettifiedCode = module.GetLines(original.SnippetPosition);
@@ -40,7 +42,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 }
             }
 
-            var prettifiedPosition = new Selection(original.SnippetPosition.StartLine - 1, prettifiedCaretCharIndex + 1).ToOneBased();
+            var prettifiedPosition = new Selection(original.SnippetPosition.StartLine - 1, originalCode.Trim().Length == 0 ? indent : prettifiedCaretCharIndex + 1).ToOneBased();
             using (var pane = module.CodePane)
             {
                 pane.Selection = prettifiedPosition;
