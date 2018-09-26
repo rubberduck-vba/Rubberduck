@@ -84,7 +84,7 @@ namespace RubberduckTests.AutoComplete
             module.Setup(m => m.CodePane).Returns(pane.Object);
             module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(prettified.Code);
 
-            var sut = new CodeStringPrettifier(module.Object);
+            var sut = new CodeStringPrettifier();
             return sut;
         }
     }
