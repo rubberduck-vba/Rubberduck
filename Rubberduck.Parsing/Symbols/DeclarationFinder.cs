@@ -1030,96 +1030,101 @@ namespace Rubberduck.Parsing.Symbols
                     callee));
         }
 
-        public IEnumerable<Declaration> NewDeclarationNameConflictsWithExisting(string newName, Declaration renameTarget)
+        public IEnumerable<Declaration> FindNewDeclarationNameConflicts(string newName, Declaration renameTarget)
         {
-            bool hasConflict = false;
-            var identifierMatches = MatchName(newName);//.ToList();
-
-            if (!identifierMatches.Any() || newName.Equals(renameTarget.IdentifierName))
+            if (newName.Equals(renameTarget.IdentifierName))
             {
-                return new List<Declaration>();// identifierMatches;
+                return new List<Declaration>();
             }
 
-            if (renameTarget.DeclarationType == DeclarationType.EnumerationMember
-                || renameTarget.DeclarationType == DeclarationType.UserDefinedTypeMember)
+            var identifierMatches = MatchName(newName);
+            if (!identifierMatches.Any())
             {
-                identifierMatches = identifierMatches.Where(nc => nc.ParentDeclaration == renameTarget.ParentDeclaration); //.ToList();
+                return new List<Declaration>();
+            }
+
+            if (IsEnumOrUDTMemberDeclaration(renameTarget)) 
+            {
+                identifierMatches = identifierMatches.Where(idm =>
+                    IsEnumOrUDTMemberDeclaration(idm) && idm.ParentDeclaration == renameTarget.ParentDeclaration);
                 if (identifierMatches.Any())
                 {
                     return identifierMatches;
                 }
             }
-            else
+
+            identifierMatches = identifierMatches.Where(nc => !IsEnumOrUDTMemberDeclaration(nc));
+#if DEBUG
+            foreach (var idMatch in identifierMatches)
             {
-                identifierMatches =  identifierMatches
-                    .Where(nc => !(nc.DeclarationType == DeclarationType.EnumerationMember
-                        || nc.DeclarationType == DeclarationType.UserDefinedTypeMember));
-
-                //if (accessible.Any())
-                //{
-                //    return accessible;
-                //}
-                //if (IsSubroutineOrProperty(renameTarget))
-                //{
-                //    //identifierMatches = identifierMatches.Where(idm => idm.ParentDeclaration == renameTarget);
-                //    //retain member variables of the module
-                //    identifierMatches = identifierMatches.Where(dec => ReferenceEquals(renameTarget.ParentDeclaration, dec.ParentDeclaration));
-                //    //identifierMatches = identifierMatches.Where(dec => ((ParserRuleContext)dec.Context).GetAncestor)
-                //}
-                var localConflicts = identifierMatches.Where(idm => renameTarget.References.Any(rt => rt.ParentScoping == idm.ParentDeclaration)
-                || renameTarget.References.Any(tref => idm == tref.ParentScoping)
-                || renameTarget == idm.ParentDeclaration);
-                if (localConflicts.Any())
-                {
-                    return localConflicts;
-                }
-
-                identifierMatches = identifierMatches.Where(callee =>
-                   AccessibilityCheck.IsAccessible(
-                       Declaration.GetProjectParent(renameTarget),
-                       Declaration.GetModuleParent(renameTarget),
-                       renameTarget.ParentDeclaration,
-                       callee));
-                //return identifierMatches.Where(callee =>
-                //    AccessibilityCheck.IsAccessible(
-                //        Declaration.GetProjectParent(renameTarget),
-                //        Declaration.GetModuleParent(renameTarget),
-                //        renameTarget.ParentDeclaration,
-                //        callee));
-                //    || AccessibilityCheck.IsAccessible(
-                //        Declaration.GetProjectParent(callee),
-                //        Declaration.GetModuleParent(callee),
-                //        callee.ParentDeclaration,
-                //        renameTarget));
-                //if (identifierMatches.Any())
-                //{
-                //    return identifierMatches;
-                //}
+                var predicate1 = renameTarget.References.Any(renameTargetRef => renameTargetRef.ParentScoping == idMatch.ParentDeclaration);
+                var predicate2 = renameTarget.References.Any(renameTargetRefs => renameTarget.ParentDeclaration.DeclarationType != DeclarationType.ClassModule 
+                    && idMatch == renameTargetRefs.ParentScoping
+                    && !UsesScopeResolution(renameTargetRefs.Context.Parent));
+                var predicate3 = renameTarget.References
+                    .Any(renameTargetRef => idMatch.References
+                        .Any(idmRefs => idmRefs.ParentScoping == renameTargetRef.ParentScoping
+                        && !UsesScopeResolution(renameTargetRef.Context.Parent)));
+                var predicate4 = RenameTargetReferencedInConflictingNameDeclaringModule(renameTarget, idMatch);
+                var predicate5 = renameTarget == idMatch.ParentDeclaration;
+                var isLocalConflict = predicate1 || predicate2 || predicate3 || predicate4 || predicate5;
+            }
+#endif
+            var referenceConflicts = identifierMatches.Where(idm => renameTarget.References.Any(renameTargetRef => renameTargetRef.ParentScoping == idm.ParentDeclaration)
+            || renameTarget.References.Any(renameTargetRef => renameTarget.ParentDeclaration.DeclarationType != DeclarationType.ClassModule 
+                        && idm == renameTargetRef.ParentScoping
+                        && !UsesScopeResolution(renameTargetRef.Context.Parent))
+            || renameTarget.References
+                    .Any(renameTargetRef => idm.References
+                        .Any(idmRefs => idmRefs.ParentScoping == renameTargetRef.ParentScoping
+                        && !UsesScopeResolution(renameTargetRef.Context.Parent)))
+            || RenameTargetReferencedInConflictingNameDeclaringModule(renameTarget, idm)
+            || renameTarget == idm.ParentDeclaration);
+            if (referenceConflicts.Any())
+            {
+                return referenceConflicts;
             }
 
-            //if (identifierMatches.Any())
-            //{
-            //    //var accessible = GetAccessibleUserDeclarations(renameTarget);
-            //    //foreach (var conflictDec in conflicts)
-            //    //{
-            //        //if (accessible.Any(ad => ad.Equals(conflictDec)))
-            //        //{
-            //        //    hasConflict = true;
-            //        //}
-            //        return identifierMatches.Where(idms => identifierMatches.Any(ad => ad.Equals(idms))
-            //            || IsSubroutineOrProperty(renameTarget) && idms.ParentDeclaration == renameTarget);
-            //        //var accessible = GetAccessibleUserDeclarations(renameTarget);
-            //        //if (accessible.Contains(conflictDec))
-            //        //{
-            //        //    hasConflict = true;
-            //        //}
-            //        //if (!hasConflict && IsSubroutineOrProperty(renameTarget))
-            //        //{
-            //        //    hasConflict = conflictDec.ParentDeclaration == renameTarget;
-            //        //}
-            //    //}
-            //}
-            return identifierMatches;
+            var renameTargetModule = Declaration.GetModuleParent(renameTarget);
+            var declarationConflicts = identifierMatches.Where(idm =>
+                AccessibilityCheck.IsAccessible(
+                    Declaration.GetProjectParent(renameTarget),
+                    renameTargetModule,
+                    renameTarget.ParentDeclaration,
+                    idm)
+                    && IsConflictingMember(renameTarget, renameTargetModule, idm));
+
+            return declarationConflicts;
+        }
+
+        private bool IsEnumOrUDTMemberDeclaration(Declaration candidate)
+        {
+            return candidate.DeclarationType == DeclarationType.EnumerationMember
+                       || candidate.DeclarationType == DeclarationType.UserDefinedTypeMember;
+        }
+
+        public bool IsConflictingMember(Declaration renameTarget, Declaration renameTargetModule, Declaration candidate)
+        {
+            var candidateModule = Declaration.GetModuleParent(candidate);
+            return renameTargetModule == candidateModule //member of same module
+             || renameTargetModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule) 
+                && candidate.Accessibility != Accessibility.Private
+                && candidateModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule)
+             ;
+        }
+
+        public bool RenameTargetReferencedInConflictingNameDeclaringModule(Declaration renameTarget, Declaration conflictCandidate)
+        {
+            if (conflictCandidate.DeclarationType != DeclarationType.Variable)
+            {
+                return false;
+            }
+            var candidateModule = Declaration.GetModuleParent(conflictCandidate);
+            if (candidateModule != conflictCandidate.ParentDeclaration)
+            {
+                return false;
+            }
+            return renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == candidateModule.QualifiedModuleName);
         }
 
         public IEnumerable<Declaration> GetDeclarationsWithIdentifiersToAvoid(Declaration target)
