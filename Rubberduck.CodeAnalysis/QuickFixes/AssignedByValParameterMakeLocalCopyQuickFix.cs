@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.Common;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
@@ -36,9 +35,8 @@ namespace Rubberduck.Inspections.QuickFixes
             Debug.Assert(null != ((ParserRuleContext)result.Target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>());
 
             _quickFixTarget = result.Target;
-            //var forbiddenNames = _parserState.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(result.Target).Select(n => n.IdentifierName);
 
-            var localIdentifier = PromptForLocalVariableName(result.Target); //, forbiddenNames.ToList());
+            var localIdentifier = PromptForLocalVariableName(result.Target);
             if (string.IsNullOrEmpty(localIdentifier))
             {
                 return;
@@ -55,16 +53,16 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInModule => false;
         public override bool CanFixInProject => false;
 
-        private string PromptForLocalVariableName(Declaration target) //, List<string> forbiddenNames)
+        private string PromptForLocalVariableName(Declaration target)
         {
             IAssignedByValParameterQuickFixDialog view = null;
             try
             {
-                view = _dialogFactory.Create(target.IdentifierName, target.DeclarationType.ToString(), IsNameCollision); //, forbiddenNames);
-                view.NewName = GetDefaultLocalIdentifier(target); //, forbiddenNames);
+                view = _dialogFactory.Create(target.IdentifierName, target.DeclarationType.ToString(), IsNameCollision);
+                view.NewName = GetDefaultLocalIdentifier(target);
                 view.ShowDialog();
 
-                if (view.DialogResult == DialogResult.Cancel || !IsValidVariableName(view.NewName)) //, forbiddenNames))
+                if (view.DialogResult == DialogResult.Cancel || !IsValidVariableName(view.NewName))
                 {
                     return string.Empty;
                 }
@@ -78,42 +76,7 @@ namespace Rubberduck.Inspections.QuickFixes
         }
 
         private bool IsNameCollision(string newName)
-        {
-            var conflicts = _parserState.DeclarationFinder.NewDeclarationNameConflictsWithExisting(newName, _quickFixTarget);
-            return conflicts.Any();
-            //bool hasConflict = false;
-
-            //var nameCollisions = _parserState.DeclarationFinder.MatchName(newName);
-            //if (_quickFixTarget.DeclarationType == DeclarationType.EnumerationMember
-            //    || _quickFixTarget.DeclarationType == DeclarationType.UserDefinedTypeMember)
-            //{
-            //    nameCollisions = nameCollisions
-            //        .Where(nc => nc.ParentDeclaration == _quickFixTarget.ParentDeclaration);
-            //}
-            //else
-            //{
-            //    nameCollisions = _parserState.DeclarationFinder.MatchName(newName)
-            //           .Where(nc => nc.DeclarationType != DeclarationType.EnumerationMember
-            //            && nc.DeclarationType != DeclarationType.UserDefinedTypeMember);
-            //}
-
-            //if (nameCollisions.Any())
-            //{
-            //    foreach (var conflictDec in nameCollisions)
-            //    {
-            //        var accessible = _parserState.DeclarationFinder.GetAccessibleUserDeclarations(_quickFixTarget);
-            //        if (accessible.Contains(conflictDec))
-            //        {
-            //            hasConflict = true;
-            //        }
-            //        else if (IsSubroutineOrProperty(_quickFixTarget))
-            //        {
-            //            hasConflict = conflictDec.ParentDeclaration == _quickFixTarget;
-            //        }
-            //    }
-            //}
-            //return hasConflict;
-        }
+            => _parserState.DeclarationFinder.FindNewDeclarationNameConflicts(newName, _quickFixTarget).Any();
 
         private static bool IsSubroutineOrProperty(Declaration declaration)
         {
@@ -122,10 +85,10 @@ namespace Rubberduck.Inspections.QuickFixes
                 || declaration.DeclarationType == DeclarationType.Procedure;
         }
 
-        private string GetDefaultLocalIdentifier(Declaration target) //, List<string> forbiddenNames)
+        private string GetDefaultLocalIdentifier(Declaration target)
         {
             var newName = $"local{target.IdentifierName.CapitalizeFirstLetter()}";
-            if (IsValidVariableName(newName))//, forbiddenNames))
+            if (IsValidVariableName(newName))
             {
                 return newName;
             }
@@ -133,7 +96,7 @@ namespace Rubberduck.Inspections.QuickFixes
             for ( var attempt = 2; attempt < 10; attempt++)
             {
                 var result = newName + attempt;
-                if (IsValidVariableName(result)) //, forbiddenNames))
+                if (IsValidVariableName(result))
                 {
                     return result;
                 }
@@ -141,11 +104,10 @@ namespace Rubberduck.Inspections.QuickFixes
             return newName;
         }
 
-        private bool IsValidVariableName(string variableName) //, IEnumerable<string> forbiddenNames)
+        private bool IsValidVariableName(string variableName)
         {
             return VariableNameValidator.IsValidName(variableName)
-                && !IsNameCollision(variableName); //, StringComparison.InvariantCultureIgnoreCase));
-                //&& !forbiddenNames.Any(name => name.Equals(variableName, StringComparison.InvariantCultureIgnoreCase));
+                && !IsNameCollision(variableName);
         }
 
         private void ReplaceAssignedByValParameterReferences(IModuleRewriter rewriter, Declaration target, string localIdentifier)
