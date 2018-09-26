@@ -227,7 +227,8 @@ namespace Rubberduck.Refactorings.Rename
             }
             else if (target.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                using (var module = _state.ProjectsProvider.Component(target.QualifiedName.QualifiedModuleName).CodeModule)
+                var component = _state.ProjectsProvider.Component(target.QualifiedName.QualifiedModuleName);
+                using (var module = component.CodeModule)
                 {
                     if (module.IsWrappingNullReference)
                     {
@@ -591,7 +592,8 @@ namespace Rubberduck.Refactorings.Rename
 
         private void CacheInitialSelection(QualifiedSelection qSelection)
         {
-            using (var codeModule = _state.ProjectsProvider.Component(qSelection.QualifiedName).CodeModule)
+            var component = _state.ProjectsProvider.Component(qSelection.QualifiedName);
+            using (var codeModule = component.CodeModule)
             {
                 using (var codePane = codeModule.CodePane)
                 {
