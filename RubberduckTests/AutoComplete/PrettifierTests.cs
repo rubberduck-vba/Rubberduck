@@ -16,7 +16,7 @@ namespace RubberduckTests.AutoComplete
             var code = "MsgBox|".ToCodeString();
 
             var sut = InitializeSut(code, code, out var module, out _);
-            sut.Prettify(code);
+            sut.Prettify(module.Object, code);
 
             module.Verify(m => m.DeleteLines(code.SnippetPosition.StartLine, code.SnippetPosition.LineCount), Times.Once);
             module.Verify(m => m.InsertLines(code.SnippetPosition.StartLine, code.Code), Times.Once);
@@ -28,8 +28,8 @@ namespace RubberduckTests.AutoComplete
         {
             var original = "MsgBox (|".ToCodeString();
 
-            var sut = InitializeSut(original, original, out _, out _);
-            var actual = new TestCodeString(sut.Prettify(original));
+            var sut = InitializeSut(original, original, out var module, out _);
+            var actual = new TestCodeString(sut.Prettify(module.Object, original));
 
             Assert.AreEqual(original, actual);
         }
@@ -40,8 +40,8 @@ namespace RubberduckTests.AutoComplete
         {
             var original = "    MsgBox|".ToCodeString();
 
-            var sut = InitializeSut(original, original, out _, out _);
-            var actual = new TestCodeString(sut.Prettify(original));
+            var sut = InitializeSut(original, original, out var module, out _);
+            var actual = new TestCodeString(sut.Prettify(module.Object, original));
 
             Assert.AreEqual(original, actual);
         }
@@ -54,8 +54,8 @@ namespace RubberduckTests.AutoComplete
             var prettified = "MsgBox".ToCodeString();
             var expected = "MsgBox|".ToCodeString();
 
-            var sut = InitializeSut(original, prettified, out _, out _);
-            var actual = new TestCodeString(sut.Prettify(original));
+            var sut = InitializeSut(original, prettified, out var module, out _);
+            var actual = new TestCodeString(sut.Prettify(module.Object, original));
 
             Assert.AreEqual(expected, actual);
         }
@@ -68,13 +68,13 @@ namespace RubberduckTests.AutoComplete
             var prettified = "MsgBox (\"test\")".ToCodeString();
             var expected = "MsgBox (\"test|\")".ToCodeString();
 
-            var sut = InitializeSut(original, prettified, out _, out _);
-            var actual = new TestCodeString(sut.Prettify(original));
-
+            var sut = InitializeSut(original, prettified, out var module, out _);
+            var actual = new TestCodeString(sut.Prettify(module.Object, original));
+            
             Assert.AreEqual(expected, actual);
         }
 
-        private static CodeStringPrettifier InitializeSut(TestCodeString original, TestCodeString prettified, out Mock<ICodeModule> module, out Mock<ICodePane> pane)
+        private static ICodeStringPrettifier InitializeSut(TestCodeString original, TestCodeString prettified, out Mock<ICodeModule> module, out Mock<ICodePane> pane)
         {
             module = new Mock<ICodeModule>();
             pane = new Mock<ICodePane>();

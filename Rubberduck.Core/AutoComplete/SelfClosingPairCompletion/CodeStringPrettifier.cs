@@ -15,7 +15,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             _module = module;
         }
 
-        public CodeString Prettify(CodeString original)
+        public CodeString Prettify(ICodeModule module, CodeString original)
         {
             var originalCode = original.Code;
             var originalPosition = original.CaretPosition.StartColumn;
