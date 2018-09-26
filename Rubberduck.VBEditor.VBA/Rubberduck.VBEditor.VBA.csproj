@@ -4,7 +4,6 @@
     <Title>Rubberduck.VBEditor.VBA</Title>
     <Product>Rubberduck.VBEditor.VBA</Product>
     <Copyright>Copyright © 2018</Copyright>
-    <Version>2.2.*</Version>
     <AssemblyVersion>2.2.*</AssemblyVersion>
     <ProjectGuid>{D488071E-EDCB-4601-B734-1A3109ED903C}</ProjectGuid>
     <OutputType>Library</OutputType>

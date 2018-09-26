@@ -7,7 +7,6 @@
     <Product>Rubberduck.VBEditor</Product>
     <Company>Rubberduck-VBA</Company>
     <Copyright>Copyright © 2015-2018</Copyright>
-    <Version>2.2.*</Version>
     <AssemblyVersion>2.2.*</AssemblyVersion>
     <ProjectGuid>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</ProjectGuid>
     <OutputType>Library</OutputType>

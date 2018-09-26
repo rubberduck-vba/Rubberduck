@@ -4,7 +4,6 @@
     <Title>Rubberduck.SettingsProvider</Title>
     <Product>Rubberduck.SettingsProvider</Product>
     <Copyright>Copyright © 2016-2018</Copyright>
-    <Version>2.2.*</Version>
     <AssemblyVersion>2.2.*</AssemblyVersion>
     <ProjectGuid>{E85E1253-86D6-45EE-968B-F37348D44132}</ProjectGuid>
     <OutputType>Library</OutputType>

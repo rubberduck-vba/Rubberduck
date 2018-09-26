@@ -4,7 +4,6 @@
     <Title>Rubberduck.VBEditor.VB6</Title>
     <Product>Rubberduck.VBEditor.VB6</Product>
     <Copyright>Copyright © 2018</Copyright>
-    <Version>2.2.*</Version>
     <AssemblyVersion>2.2.*</AssemblyVersion>
     <ProjectGuid>{5D683117-21F1-4A01-A0C7-6AE6F30A16A7}</ProjectGuid>
     <OutputType>Library</OutputType>

@@ -7,7 +7,6 @@
     <RootNamespace>Rubberduck.Refactorings</RootNamespace>
     <AssemblyName>Rubberduck.Refactorings</AssemblyName>
     <Copyright>Copyright © 2018</Copyright>
-    <Version>2.2.*</Version>
     <AssemblyVersion>2.2.*</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup>

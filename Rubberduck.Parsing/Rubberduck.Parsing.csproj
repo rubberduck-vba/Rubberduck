@@ -6,8 +6,7 @@
     <Company>Rubberduck-VBA</Company>
     <Product>Rubberduck.Parsing</Product>
     <Copyright>Copyright © 2015-2016</Copyright>
-    <Version>2.0.*</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <AssemblyVersion>2.2.*</AssemblyVersion>
     <Deterministic>false</Deterministic>
     <LangVersion>7.2</LangVersion>
     <TargetFramework>net46</TargetFramework>

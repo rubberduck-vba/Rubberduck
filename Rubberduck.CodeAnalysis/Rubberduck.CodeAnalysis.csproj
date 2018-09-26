@@ -7,7 +7,6 @@
     <Copyright>Copyright © 2017-2018</Copyright>
     <AssemblyName>Rubberduck.CodeAnalysis</AssemblyName>
     <RootNamespace>Rubberduck.Inspections</RootNamespace>
-    <Version>2.2.*</Version>
     <AssemblyVersion>2.2.*</AssemblyVersion>
     <TargetFramework>net46</TargetFramework>
     <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
