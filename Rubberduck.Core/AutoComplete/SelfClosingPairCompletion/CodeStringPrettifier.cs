@@ -51,24 +51,5 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             var result = new CodeString(prettifiedCode, new Selection(0, prettifiedPosition.StartColumn - 1), prettifiedPosition);
             return result;
         }
-
-        private static string ReinstateOriginalTrailingSpaces(string originalCode, string prettifiedCode)
-        {
-            if (string.IsNullOrEmpty(originalCode) || originalCode.EndsWith(" "))
-            {
-                var trailingSpaces = 0;
-                for (var i = (originalCode?.Length - 1) ?? -1; i >= 0; i--)
-                {
-                    if (originalCode?[i] == ' ')
-                    {
-                        trailingSpaces++;
-                    }
-                }
-
-                prettifiedCode += new string(' ', trailingSpaces);
-            }
-
-            return prettifiedCode;
-        }
     }
 }
