@@ -249,9 +249,7 @@ namespace Rubberduck.Refactorings.Rename
 
             if (conflicts.Any())
             {
-                //TODO: Fix this message? - takes same name parameter twice
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
-                    _model.NewName);
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, _model.Target.IdentifierName);
 
                 return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
             }
