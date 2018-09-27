@@ -704,6 +704,60 @@ namespace Foo
         }
     }
 
+    public interface IFoo
+    {
+        FooImp Execute();
+    }
+
+    public abstract class Foo : IFoo
+    {
+        public virtual FooImp Execute() { return new FooImp(); }
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Execute() { return base.Execute(); }
+    }
+
+    [TestFixture]
+    public class ChainedWrapperUnitTests : ChainedWrapperAnalyzer
+    {
+        [Test]
+        [Category("ChainedWrappers")]
+        [Ignore("See #4377")]
+        public void InterfaceContainsInterfaceType()
+        {
+            var test = @"namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
+{
+    public interface ISafeComWrapper
+    {
+        FooImp Execute();
+    }
+
+    public abstract class Foo : ISafeComWrapper
+    {
+        public virtual FooImp Execute() { return new FooImp(); }
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Execute() { return base.Execute(); }
+    }
+
+    public class D
+    {
+        public void B()
+        {
+            var v = new FooImp();
+            v.Execute().Execute();
+        }
+    }
+}";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.AreEqual("ChainedWrapper", diagnostics.Single().Descriptor.Id);
+        }
+    }
+
     public class ComManagementAnalyzer : CodeFixVerifier
     {
         protected override CodeFixProvider GetCSharpCodeFixProvider()
@@ -714,6 +768,20 @@ namespace Foo
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new ComVisibleTypeAnalyzer();
+
+        }
+    }
+
+    public class ChainedWrapperAnalyzer : CodeFixVerifier
+    {
+        protected override CodeFixProvider GetCSharpCodeFixProvider()
+        {
+            return null;
+        }
+
+        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
+        {
+            return new RubberduckCodeAnalysis.ChainedWrapperAnalyzer();
 
         }
     }
