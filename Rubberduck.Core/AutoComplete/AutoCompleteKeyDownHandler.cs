@@ -78,10 +78,7 @@ namespace Rubberduck.AutoComplete
                 return;
             }
 
-            var currentCode = e.CurrentLine;
-            var currentSelection = e.CurrentSelection;
-
-            var original = new CodeString(currentCode, new Selection(0, currentSelection.EndColumn - 1), new Selection(pSelection.StartLine, 1));
+            var original = GetEntireLogicalCodeLine(module, pSelection); // todo: see if AutoCompleteEventArgs can give us the logical line
 
             var prettifier = _getPrettifier();
             var scp = _getClosingPairCompletion();
@@ -127,6 +124,56 @@ namespace Rubberduck.AutoComplete
                     }
                 }
             }
+        }
+
+        private CodeString GetEntireLogicalCodeLine(ICodeModule module, Selection pSelection)
+        {
+            var lines = new List<(int Line, string Content)>();
+            var currentLineIndex = pSelection.StartLine;
+            var currentLine = module.GetLines(currentLineIndex, 1);
+
+            var caretLine = (currentLineIndex, currentLine);
+            lines.Add(caretLine);
+
+            while (currentLineIndex >= 1)
+            {
+                currentLineIndex--;
+                if (currentLineIndex >= 1)
+                {
+                    currentLine = module.GetLines(currentLineIndex, 1);
+                    if (currentLine.Replace("\r\n", string.Empty).EndsWith(" _"))
+                    {
+                        lines.Insert(0, (currentLineIndex, currentLine));
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+
+            currentLineIndex = pSelection.StartLine;
+            currentLine = caretLine.currentLine;
+            while (currentLineIndex <= module.CountOfLines && currentLine.Replace("\r\n", string.Empty).EndsWith(" _"))
+            {
+                currentLineIndex++;
+                if (currentLineIndex <= module.CountOfLines)
+                {
+                    currentLine = module.GetLines(currentLineIndex, 1);
+                    lines.Add((currentLineIndex,currentLine));
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            var logicalLine = string.Join("\r\n", lines.Select(e => e.Content));
+            var zCaretLine = lines.IndexOf(caretLine);
+            var zCaretColumn = pSelection.StartColumn - 1;
+
+            var result = new CodeString(logicalLine, new Selection(zCaretLine, zCaretColumn), new Selection(pSelection.StartLine, 1));
+            return result;
         }
 
         private bool IsInsideStringLiteral(Selection pSelection, ref string currentContent)
