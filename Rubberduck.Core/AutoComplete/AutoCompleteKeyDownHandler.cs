@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
@@ -113,7 +114,10 @@ namespace Rubberduck.AutoComplete
 
                         module.DeleteLines(result.SnippetPosition);
                         module.InsertLines(result.SnippetPosition.StartLine, result.Code);
-                        var offByOne = result.Code != module.GetLines(result.SnippetPosition);
+
+                        var reprettified = module.GetLines(result.SnippetPosition);
+                        var offByOne = result.Code != reprettified;
+                        Debug.Assert(!offByOne || reprettified.Length - result.Code.Length == 1, "Prettified code is off by more than one character.");
 
                         var finalSelection = new Selection(result.SnippetPosition.StartLine, result.CaretPosition.StartColumn + 1)
                             .ShiftRight(offByOne ? 1 : 0);
