@@ -198,7 +198,7 @@ foo = | _
         public void GivenClosingCharForUnmatchedOpeningChar_MatchedPairOnlyAddsClosingChar()
         {
             var pair = new SelfClosingPair('"', '"');
-            var input = ')';
+            var input = '"';
             var original = "MsgBox \"|".ToCodeString();
             var expected = "MsgBox \"\"|".ToCodeString();
 
