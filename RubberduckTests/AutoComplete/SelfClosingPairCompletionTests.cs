@@ -189,10 +189,9 @@ foo = | _
             var pair = new SelfClosingPair('(', ')');
             var input = ')';
             var original = "MsgBox (|".ToCodeString();
-            var expected = "MsgBox ()|".ToCodeString();
 
             var result = Run(pair, original, input);
-            Assert.AreEqual(expected, result);
+            Assert.IsNull(result);
         }
 
         [Test]
@@ -204,7 +203,7 @@ foo = | _
             var expected = "MsgBox \"\"|".ToCodeString();
 
             var result = Run(pair, original, input);
-            Assert.AreEqual(expected, result);
+            Assert.IsNull(result);
         }
     }
 }
