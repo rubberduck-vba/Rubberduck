@@ -184,7 +184,7 @@ foo = | _
         }
 
         [Test]
-        public void GivenClosingCharForUnmatchedOpeningChar_MismatchedPairBailsOut()
+        public void GivenClosingCharForUnmatchedOpeningChar_AsymetricPairBailsOut()
         {
             var pair = new SelfClosingPair('(', ')');
             var input = ')';
@@ -195,7 +195,7 @@ foo = | _
         }
 
         [Test]
-        public void GivenClosingCharForUnmatchedOpeningChar_MatchedPairBailsOut()
+        public void GivenClosingCharForUnmatchedOpeningChar_SymetricPairBailsOut()
         {
             var pair = new SelfClosingPair('"', '"');
             var input = '"';
@@ -204,5 +204,17 @@ foo = | _
             var result = Run(pair, original, input);
             Assert.IsNull(result);
         }
+
+        [Test]
+        public void GivenClosingCharForUnmatchedOpeningChar_SingleChar_SymetricPairBailsOut()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = '"';
+            var original = "\"|".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.IsNull(result);
+        }
+
     }
 }
