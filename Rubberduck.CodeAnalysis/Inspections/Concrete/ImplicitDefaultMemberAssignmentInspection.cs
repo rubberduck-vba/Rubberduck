@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
@@ -28,7 +29,10 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(reference =>
                 {
                     var letStmtContext = reference.Context.GetAncestor<VBAParser.LetStmtContext>();
-                    return reference.IsAssignment && letStmtContext != null && letStmtContext.LET() == null;
+                    return reference.IsAssignment 
+                           && letStmtContext != null 
+                           && letStmtContext.LET() == null
+                           && !reference.IsIgnoringInspectionResultFor(AnnotationName);
                 });
 
             return interestingReferences.Select(reference => new IdentifierReferenceInspectionResult(this,
