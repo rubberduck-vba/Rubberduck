@@ -184,7 +184,7 @@ foo = | _
         }
 
         [Test]
-        public void GivenClosingCharForUnmatchedOpeningChar_MismatchedPairOnlyAddsClosingChar()
+        public void GivenClosingCharForUnmatchedOpeningChar_MismatchedPairBailsOut()
         {
             var pair = new SelfClosingPair('(', ')');
             var input = ')';
@@ -195,12 +195,11 @@ foo = | _
         }
 
         [Test]
-        public void GivenClosingCharForUnmatchedOpeningChar_MatchedPairOnlyAddsClosingChar()
+        public void GivenClosingCharForUnmatchedOpeningChar_MatchedPairBailsOut()
         {
             var pair = new SelfClosingPair('"', '"');
             var input = '"';
             var original = "MsgBox \"|".ToCodeString();
-            var expected = "MsgBox \"\"|".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.IsNull(result);

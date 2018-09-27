@@ -22,6 +22,13 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
         public CodeString Execute(SelfClosingPair pair, CodeString original, char input)
         {
+            if (pair.IsSymetric &&
+                original.Code.Length >= 1 &&
+                original.Code[original.CaretPosition.StartColumn - 1] == pair.ClosingChar)
+            {
+                return default;
+            }
+
             if (input == pair.OpeningChar)
             {
                 var result = HandleOpeningChar(pair, original);
