@@ -1,5 +1,6 @@
 ﻿using Rubberduck.VBEditor;
 using System;
+using System.Linq;
 
 namespace Rubberduck.Common
 {
@@ -27,10 +28,10 @@ namespace Rubberduck.Common
                 return string.Empty;
             }
 
-            var lines = Code.Split('\n');
+            var lines = Lines;
             var line = lines[CaretPosition.StartLine];
             lines[CaretPosition.StartLine] = line.Insert(CaretPosition.StartColumn, PseudoCaret.ToString());
-            return string.Join("\n", lines);
+            return string.Join("\r\n", lines);
         }
     }
 
@@ -50,7 +51,7 @@ namespace Rubberduck.Common
             Code = code ?? throw new ArgumentNullException(nameof(code));
             CaretPosition = zPosition;
 
-            var lines = Code.Split('\n');
+            var lines = Lines;
             SnippetPosition = pPosition == default
                 ? new Selection(1, 1, lines.Length, lines[lines.Length-1].Length)
                 : pPosition;
@@ -71,7 +72,7 @@ namespace Rubberduck.Common
         /// <summary>
         /// Gets the individual <see cref="Code"/> string lines.
         /// </summary>
-        public string[] Lines => Code?.Split('\n') ?? new string[] { };
+        public string[] Lines => Code?.Replace("\r", string.Empty).Split('\n') ?? new string[] { };
 
         public override bool Equals(object obj)
         {
