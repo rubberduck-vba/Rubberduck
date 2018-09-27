@@ -60,7 +60,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
         {
             var nextPosition = original.CaretPosition.ShiftRight();
             var autoCode = new string(new[] { pair.OpeningChar, pair.ClosingChar });
-            var lines = original.Code.Split('\n');
+            var lines = original.Lines;
             var line = lines[original.CaretPosition.StartLine];
             lines[original.CaretPosition.StartLine] = 
                 string.IsNullOrEmpty(original.Code) 
@@ -69,7 +69,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                         ? line + autoCode 
                         : line.Insert(original.CaretPosition.StartColumn, autoCode);
 
-            return new CodeString(string.Join("\n", lines), nextPosition, original.SnippetPosition);
+            return new CodeString(string.Join("\r\n", lines), nextPosition, original.SnippetPosition);
         }
 
         private CodeString HandleClosingChar(SelfClosingPair pair, CodeString original)
@@ -105,7 +105,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                     return new CodeString(string.Empty, default, Selection.Empty.ShiftRight());
                 }
                 lines[original.CaretPosition.StartLine] = line.Length == 2 ? string.Empty : line.Remove(previous, 2);
-                return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
+                return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
             }
 
             if (previous < line.Length - 1 && line[previous] == pair.OpeningChar)
@@ -130,7 +130,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                         lines[original.CaretPosition.StartLine] = openingLine;
                     }
 
-                    return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
+                    return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
                 }
             }
 
