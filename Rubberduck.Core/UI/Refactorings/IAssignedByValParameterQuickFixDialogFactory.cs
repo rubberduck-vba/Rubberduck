@@ -1,12 +1,10 @@
-﻿using Rubberduck.Parsing.Symbols;
-using System;
-using System.Collections.Generic;
+﻿using System;
 
 namespace Rubberduck.UI.Refactorings
 {
     public interface IAssignedByValParameterQuickFixDialogFactory
     {
-        IAssignedByValParameterQuickFixDialog Create(string identifier, string identifierType, Func<string, bool> nameCollisionChecker); //, IEnumerable<string> forbiddenNames);
+        IAssignedByValParameterQuickFixDialog Create(string identifier, string identifierType, Func<string, bool> nameCollisionChecker);
         void Release(IAssignedByValParameterQuickFixDialog dialog);
     }
 }

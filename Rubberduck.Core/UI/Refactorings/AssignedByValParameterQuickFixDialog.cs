@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Resources;
 
@@ -9,14 +7,12 @@ namespace Rubberduck.UI.Refactorings
 {
     public partial class AssignedByValParameterQuickFixDialog : Form, IAssignedByValParameterQuickFixDialog
     {
-        //private readonly IEnumerable<string> _forbiddenNames;
         private readonly Func<string, bool> _isConflictingName;
 
         public AssignedByValParameterQuickFixDialog(string identifier, string identifierType, Func<string, bool> nameCollisionChecker)//, IEnumerable<string> forbiddenNames)
         {
             InitializeComponent();
             InitializeCaptions(identifier, identifierType);
-            //_forbiddenNames = forbiddenNames;
             _isConflictingName = nameCollisionChecker;
         }
 
@@ -56,10 +52,6 @@ namespace Rubberduck.UI.Refactorings
             {
                 return string.Empty;
             }
-            //if (_forbiddenNames.Any(name => name.Equals(NewName, StringComparison.OrdinalIgnoreCase)))
-            //{
-            //    return string.Format(RubberduckUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
-            //}
             if (_isConflictingName(NewName))
             {
                 return string.Format(RubberduckUI.AssignedByValDialog_NewNameAlreadyUsedFormat, NewName);
@@ -85,8 +77,7 @@ namespace Rubberduck.UI.Refactorings
 
         private void SetControlsProperties()
         {
-            //var isValid = VariableNameValidator.IsValidName(NewName) && !_forbiddenNames.Any(name => name.Equals(NewName, StringComparison.OrdinalIgnoreCase));
-            var isValid = VariableNameValidator.IsValidName(NewName); // && !_forbiddenNames.Any(name => name.Equals(NewName, StringComparison.OrdinalIgnoreCase));
+            var isValid = VariableNameValidator.IsValidName(NewName);
             OkButton.Visible = isValid;
             OkButton.Enabled = isValid;
             InvalidNameValidationIcon.Visible = !isValid;

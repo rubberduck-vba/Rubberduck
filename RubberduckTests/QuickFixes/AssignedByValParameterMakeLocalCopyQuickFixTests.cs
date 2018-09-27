@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Rubberduck.Inspections.QuickFixes;
@@ -393,7 +392,7 @@ End Sub"
             mockDialog.SetupGet(m => m.DialogResult).Returns(() => DialogResult.OK);
 
             var mockDialogFactory = new Mock<IAssignedByValParameterQuickFixDialogFactory>();
-            mockDialogFactory.Setup(f => f.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Func<string,bool>>()/*, It.IsAny<IEnumerable<string>>()*/)).Returns(mockDialog.Object);
+            mockDialogFactory.Setup(f => f.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Func<string,bool>>())).Returns(mockDialog.Object);
 
             return mockDialogFactory;
         }
