@@ -182,5 +182,29 @@ foo = | _
             var result = Run(pair, original, input);
             Assert.AreEqual(result, default);
         }
+
+        [Test]
+        public void GivenClosingCharForUnmatchedOpeningChar_MismatchedPairOnlyAddsClosingChar()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = ')';
+            var original = "MsgBox (|".ToCodeString();
+            var expected = "MsgBox ()|".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GivenClosingCharForUnmatchedOpeningChar_MatchedPairOnlyAddsClosingChar()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = ')';
+            var original = "MsgBox \"|".ToCodeString();
+            var expected = "MsgBox \"\"|".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
     }
 }
