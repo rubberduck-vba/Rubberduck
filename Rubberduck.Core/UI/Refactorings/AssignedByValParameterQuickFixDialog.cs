@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Refactorings
     {
         private readonly Func<string, bool> _isConflictingName;
 
-        public AssignedByValParameterQuickFixDialog(string identifier, string identifierType, Func<string, bool> nameCollisionChecker)//, IEnumerable<string> forbiddenNames)
+        public AssignedByValParameterQuickFixDialog(string identifier, string identifierType, Func<string, bool> nameCollisionChecker)
         {
             InitializeComponent();
             InitializeCaptions(identifier, identifierType);

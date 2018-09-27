@@ -2902,7 +2902,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; conflicts with an existing name. Renaming &apos;{1}&apos; to&apos;{0}&apos; may result in uncompilable code or a change in logic.
+        ///   Looks up a localized string similar to &apos;{0}&apos; conflicts with an existing name. Renaming &apos;{1}&apos; to &apos;{0}&apos; may result in uncompilable code or a change in logic.
         ///Do you want to proceed with this rename?.
         /// </summary>
         public static string RenameDialog_ConflictingNames {

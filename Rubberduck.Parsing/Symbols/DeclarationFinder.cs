@@ -1015,17 +1015,21 @@ namespace Rubberduck.Parsing.Symbols
             return handlers.ToList();
         }
 
+        /// <summary>
+        /// Finds declarations that would be in conflict with the target declaration if renamed.
+        /// </summary>
+        /// <returns>Zero or more declarations that would be in conflict if the target declaration is renamed.</returns>
         public IEnumerable<Declaration> FindNewDeclarationNameConflicts(string newName, Declaration renameTarget)
         {
             if (newName.Equals(renameTarget.IdentifierName))
             {
-                return new List<Declaration>();
+                return Enumerable.Empty<Declaration>();
             }
 
             var identifierMatches = MatchName(newName);
             if (!identifierMatches.Any())
             {
-                return new List<Declaration>();
+                return Enumerable.Empty<Declaration>();
             }
 
             if (IsEnumOrUDTMemberDeclaration(renameTarget)) 
@@ -1049,7 +1053,7 @@ namespace Rubberduck.Parsing.Symbols
                             .Any(idmRef => idmRef.ParentScoping == renameTargetRef.ParentScoping
                                 && !UsesScopeResolution(renameTargetRef.Context.Parent)))
                 || idm.DeclarationType.HasFlag(DeclarationType.Variable)
-                    && idm.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module) //?
+                    && idm.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)
                     && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName));
 
             if (referenceConflicts.Any())

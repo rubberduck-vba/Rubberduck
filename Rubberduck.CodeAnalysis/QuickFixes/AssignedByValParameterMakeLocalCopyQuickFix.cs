@@ -78,13 +78,6 @@ namespace Rubberduck.Inspections.QuickFixes
         private bool IsNameCollision(string newName)
             => _parserState.DeclarationFinder.FindNewDeclarationNameConflicts(newName, _quickFixTarget).Any();
 
-        private static bool IsSubroutineOrProperty(Declaration declaration)
-        {
-            return declaration.DeclarationType.HasFlag(DeclarationType.Property)
-                || declaration.DeclarationType == DeclarationType.Function
-                || declaration.DeclarationType == DeclarationType.Procedure;
-        }
-
         private string GetDefaultLocalIdentifier(Declaration target)
         {
             var newName = $"local{target.IdentifierName.CapitalizeFirstLetter()}";
