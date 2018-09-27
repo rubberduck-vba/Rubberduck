@@ -1,6 +1,5 @@
 ﻿using Rubberduck.VBEditor;
 using System;
-using System.Linq;
 
 namespace Rubberduck.Common
 {
@@ -60,7 +59,7 @@ namespace Rubberduck.Common
         /// <summary>
         /// The code string.
         /// </summary>
-        public string Code { get; protected set; }
+        public string Code { get; }
         /// <summary>
         /// Zero-based caret position in the code string.
         /// </summary>
