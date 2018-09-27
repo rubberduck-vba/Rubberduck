@@ -93,11 +93,11 @@ End Sub";
         public void UnassignedVariableUsage_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
-                @"Sub Foo()
-    '@Ignore UnassignedVariableUsage
+                @"Sub Foo()    
     Dim b As Boolean
     Dim bb As Boolean
 
+'@Ignore UnassignedVariableUsage
     bb = b
 End Sub";
 
