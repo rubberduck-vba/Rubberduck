@@ -1561,9 +1561,11 @@ End Sub";
 
         private string RemoveParams(string inputCode, bool passInTarget = false, Selection? selection = null, IEnumerable<int> paramIndices = null)
         {
+            var codeString = inputCode.ToCodeString();
             if (!selection.HasValue)
             {
-                var derivedSelect = FindSelection(inputCode);
+                Selection? derivedSelect = codeString.CaretPosition.ToOneBased();
+
                 if (!derivedSelect.HasValue)
                 {
                     Assert.Fail($"Unable to derive user selection for test");
@@ -1571,9 +1573,7 @@ End Sub";
                 selection = derivedSelect;
             }
 
-            inputCode = inputCode.Replace(FAUX_CURSOR, "");
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component, selection.Value);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(codeString.Code, out IVBComponent component, selection.Value);
             var result = string.Empty;
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
@@ -1612,33 +1612,33 @@ End Sub";
             return result;
         }
 
-        private static Selection? FindSelection(string input)
-        {
-            var lines = input.Split(new[] { "\r\n" }, StringSplitOptions.None);
-            for (var idx = 0; idx < lines.Count(); idx++)
-            {
-                var testLine = lines[idx];
-                if (testLine.Contains(FAUX_CURSOR))
-                {
-                    var fauxCursorLine = idx + 1;
-                    var fauxCursorColumn = testLine.IndexOf(FAUX_CURSOR);
+        //private static Selection? FindSelection(string input)
+        //{
+        //    var lines = input.Split(new[] { "\r\n" }, StringSplitOptions.None);
+        //    for (var idx = 0; idx < lines.Count(); idx++)
+        //    {
+        //        var testLine = lines[idx];
+        //        if (testLine.Contains(FAUX_CURSOR))
+        //        {
+        //            var fauxCursorLine = idx + 1;
+        //            var fauxCursorColumn = testLine.IndexOf(FAUX_CURSOR);
 
-                    int fauxCursorColumnOffset = 0;
-                    if (testLine.StartsWith($"{FAUX_CURSOR}") || testLine.Contains($" {FAUX_CURSOR}"))
-                    {
-                        fauxCursorColumnOffset = 1;
-                    }
-                    else if (testLine.EndsWith($"{FAUX_CURSOR}") || testLine.Contains($"{FAUX_CURSOR} "))
-                    {
-                        fauxCursorColumnOffset = -1;
-                    }
+        //            int fauxCursorColumnOffset = 0;
+        //            if (testLine.StartsWith($"{FAUX_CURSOR}") || testLine.Contains($" {FAUX_CURSOR}"))
+        //            {
+        //                fauxCursorColumnOffset = 1;
+        //            }
+        //            else if (testLine.EndsWith($"{FAUX_CURSOR}") || testLine.Contains($"{FAUX_CURSOR} "))
+        //            {
+        //                fauxCursorColumnOffset = -1;
+        //            }
 
-                    return new Selection(fauxCursorLine, fauxCursorColumn + fauxCursorColumnOffset);
-                }
-            }
-            Assert.Fail($"Input code does not contain faux cursor ('{FAUX_CURSOR}')");
-            return null;
-        }
+        //            return new Selection(fauxCursorLine, fauxCursorColumn + fauxCursorColumnOffset);
+        //        }
+        //    }
+        //    Assert.Fail($"Input code does not contain faux cursor ('{FAUX_CURSOR}')");
+        //    return null;
+        //}
 
 
         #region setup
