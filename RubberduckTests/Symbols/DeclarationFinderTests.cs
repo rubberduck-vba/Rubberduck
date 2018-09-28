@@ -448,21 +448,6 @@ End Sub
             return isConflict ? $"Identifier '{name}' is a conflict but was not identified" : $"Identifier '{name}' was incorrectly found as a conflict";
         }
 
-        private void TestAccessibleDeclarations(AccessibilityTestsDataObject tdo, string[] testSpecificExpectedResults)
-        {
-
-            PrepareScenarioTestData(tdo, testSpecificExpectedResults);
-
-            var target = tdo.Parser.AllUserDeclarations.FindTarget(tdo.QualifiedSelection);
-            if (null == target) { Assert.Inconclusive("Unable to find target from QualifiedSelection"); }
-
-            var accessibleNames = new List<string>();
-
-            Assert.IsFalse(accessibleNames.Except(tdo.ExpectedResults).Any()
-                    || tdo.ExpectedResults.Except(accessibleNames).Any()
-                        , BuildIdentifierListToDisplay(accessibleNames.Except(tdo.ExpectedResults), tdo.ExpectedResults.Except(accessibleNames)));
-        }
-
         private IEnumerable<Declaration> TestConflictingDeclaration(AccessibilityTestsDataObject tdo, string name)
         {
 
@@ -482,16 +467,6 @@ End Sub
         }
 
 
-        private void PrepareScenarioTestData(AccessibilityTestsDataObject tdo, string[] testSpecificExpectedResults)
-        {
-            SetExpectedResults(tdo, testSpecificExpectedResults);
-
-            tdo.VBE = BuildProject(tdo.ProjectName, tdo.Components);
-            tdo.Parser = MockParser.CreateAndParse(tdo.VBE);
-
-            CreateQualifiedSelectionForTestCase(tdo);
-        }
-
         private void PrepareScenarioTestData(AccessibilityTestsDataObject tdo, string name)
         {
             tdo.VBE = BuildProject(tdo.ProjectName, tdo.Components);
@@ -500,74 +475,6 @@ End Sub
             var component = RetrieveComponent(tdo, tdo.SelectionModuleName);
             var moduleParent = component.CodeModule.Parent;
             tdo.QualifiedSelection = new QualifiedSelection(new QualifiedModuleName(moduleParent), tdo.Target);
-        }
-
-        private void SetExpectedResults(AccessibilityTestsDataObject tdo, string[] testSpecificExpectedResults)
-        {
-            tdo.ExpectedResults = new List<string>();
-            tdo.ExpectedResults.AddRange(testSpecificExpectedResults);
-
-            //Add module name(s) and project name
-            tdo.ExpectedResults.Add(tdo.SelectionTarget);
-            tdo.Components.ForEach(c => tdo.ExpectedResults.Add(c.Name));
-            tdo.ExpectedResults.Add(tdo.ProjectName);
-        }
-
-        private string BuildIdentifierListToDisplay(IEnumerable<string> extraIdentifiers, IEnumerable<string> missedIdentifiers)
-        {
-            var extraNamesPreface = "Returned unexpected identifier(s): ";
-            var missedNamesPreface = "Did not return expected identifier(s): ";
-            string extraResults = string.Empty;
-            string missingResults = string.Empty;
-            if (extraIdentifiers.Any())
-            {
-                extraResults = extraNamesPreface + GetListOfNames(extraIdentifiers);
-            }
-            if (missedIdentifiers.Any())
-            {
-                missingResults = missedNamesPreface + GetListOfNames(missedIdentifiers);
-            }
-
-            return "\r\n" + extraResults + "\r\n" + missingResults;
-        }
-
-        private string GetListOfNames(IEnumerable<string> identifiers)
-        {
-            if (!identifiers.Any()) { return ""; }
-
-            string result = string.Empty;
-            string postPend = "', ";
-            foreach (var identifier in identifiers)
-            {
-                result = result + "'" + identifier + postPend;
-            }
-            return result.Remove(result.Length - postPend.Length + 1);
-        }
-
-        private void CreateQualifiedSelectionForTestCase(AccessibilityTestsDataObject tdo)
-        {
-            var component = RetrieveComponent(tdo, tdo.SelectionModuleName);
-            var moduleContent = component.CodeModule.GetLines(1, component.CodeModule.CountOfLines);
-
-            var splitToken = new string[] { "\r\n" };
-
-            var lines = moduleContent.Split(splitToken, System.StringSplitOptions.None);
-            int lineOfInterestNumber = 0;
-            string lineOfInterestContent = string.Empty;
-            for (int idx = 0; idx < lines.Count() && lineOfInterestNumber < 1; idx++)
-            {
-                if (lines[idx].Contains(tdo.SelectionLineIdentifier))
-                {
-                    lineOfInterestNumber = idx + 1;
-                    lineOfInterestContent = lines[idx];
-                }
-            }
-            Assert.IsTrue(lineOfInterestNumber > 0, "Unable to find target '" + tdo.SelectionTarget + "' in " + tdo.SelectionModuleName + " content.");
-            var column = lineOfInterestContent.IndexOf(tdo.SelectionLineIdentifier);
-            column = column + tdo.SelectionLineIdentifier.IndexOf(tdo.SelectionTarget) + 1;
-
-            var moduleParent = component.CodeModule.Parent;
-            tdo.QualifiedSelection = new QualifiedSelection(new QualifiedModuleName(moduleParent), new Selection(lineOfInterestNumber, column, lineOfInterestNumber, column));
         }
 
         private void AddTestComponent(AccessibilityTestsDataObject tdo, string moduleIdentifier, ComponentType componentType)
@@ -603,13 +510,6 @@ End Sub
         {
             var vbProject = tdo.VBE.VBProjects.Where(item => item.Name == tdo.ProjectName).SingleOrDefault();
             return vbProject.VBComponents.Where(item => item.Name == componentName).SingleOrDefault();
-        }
-
-        private void AddTestSelectionCriteria(AccessibilityTestsDataObject tdo, string moduleName, string selectionTarget, string selectionLineIdentifier)
-        {
-            tdo.SelectionModuleName = moduleName;
-            tdo.SelectionTarget = selectionTarget;
-            tdo.SelectionLineIdentifier = selectionLineIdentifier;
         }
 
         internal class TestComponentSpecification
