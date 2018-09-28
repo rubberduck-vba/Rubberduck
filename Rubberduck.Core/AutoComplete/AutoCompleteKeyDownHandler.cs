@@ -30,6 +30,8 @@ namespace Rubberduck.AutoComplete
 
         public void Run(ICodeModule module, Selection pSelection, AutoCompleteEventArgs e)
         {
+            if (!pSelection.IsSingleCharacter) { return; }
+
             var currentContent = module.GetLines(pSelection);
             HandleSmartConcat(e, pSelection, currentContent, module);
             if (e.Handled) { return; }
@@ -73,11 +75,6 @@ namespace Rubberduck.AutoComplete
 
         private void HandleSelfClosingPairs(AutoCompleteEventArgs e, ICodeModule module, Selection pSelection)
         {
-            if (!pSelection.IsSingleCharacter)
-            {
-                return;
-            }
-
             var original = GetEntireLogicalCodeLine(module, pSelection); // todo: see if AutoCompleteEventArgs can give us the logical line
 
             var prettifier = _getPrettifier();
