@@ -130,7 +130,12 @@ namespace Rubberduck.SmartIndenter
 
         public string Indented()
         {
-            if (_lines.Count <= 1)
+            if (!_lines.Any())
+            {
+                return string.Empty;
+            }
+
+            if (_lines.Count == 1)
             {
                 return _lines.First().Indent(IndentationLevel, AtProcedureStart);
             }

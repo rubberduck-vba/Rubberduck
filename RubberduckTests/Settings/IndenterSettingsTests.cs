@@ -12,6 +12,7 @@ namespace RubberduckTests.Settings
         // Defaults
         private const int DefaultAlignDimColumn = 15;
         private const EndOfLineCommentStyle DefaultEndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
+        private const EmptyLineHandling DefaultEmptyLineHandlingMethod = EmptyLineHandling.Ignore;
         private const int DefaultEndOfLineCommentColumnSpaceAlignment = 50;
         private const int DefaultIndentSpaces = 4;
         private const int DefaultLinesBetweenProcedures = 1;
@@ -19,6 +20,7 @@ namespace RubberduckTests.Settings
         // Nondefaults
         private const int NondefaultAlignDimColumn = 16;
         private const EndOfLineCommentStyle NondefaultEndOfLineCommentStyle = EndOfLineCommentStyle.Absolute;
+        private const EmptyLineHandling NondefaultEmptyLineHandlingMethod = EmptyLineHandling.Remove;
         private const int NondefaultEndOfLineCommentColumnSpaceAlignment = 60;
         private const int NondefaultIndentSpaces = 2;
         private const int NondefaultLinesBetweenProcedures = 2;
@@ -45,6 +47,7 @@ namespace RubberduckTests.Settings
             output.SetupProperty(s => s.AlignDimColumn);
             output.SetupProperty(s => s.EndOfLineCommentStyle);
             output.SetupProperty(s => s.EndOfLineCommentColumnSpaceAlignment);
+            output.SetupProperty(s => s.EmptyLineHandlingMethod);
             output.SetupProperty(s => s.IndentSpaces);
             output.SetupProperty(s => s.VerticallySpaceProcedures);
             output.SetupProperty(s => s.LinesBetweenProcedures);
@@ -67,6 +70,7 @@ namespace RubberduckTests.Settings
             output.Object.AlignDimColumn = nondefault ? NondefaultAlignDimColumn : DefaultAlignDimColumn;
             output.Object.EndOfLineCommentStyle = nondefault ? NondefaultEndOfLineCommentStyle : DefaultEndOfLineCommentStyle;
             output.Object.EndOfLineCommentColumnSpaceAlignment = nondefault ? NondefaultEndOfLineCommentColumnSpaceAlignment : DefaultEndOfLineCommentColumnSpaceAlignment;
+            output.Object.EmptyLineHandlingMethod = nondefault ? NondefaultEmptyLineHandlingMethod : DefaultEmptyLineHandlingMethod;
             output.Object.IndentSpaces = nondefault ? NondefaultIndentSpaces : DefaultIndentSpaces;
             output.Object.VerticallySpaceProcedures = !nondefault;
             output.Object.LinesBetweenProcedures = nondefault ? NondefaultLinesBetweenProcedures : DefaultLinesBetweenProcedures;
@@ -104,6 +108,7 @@ namespace RubberduckTests.Settings
                 Assert.AreEqual(config.UserSettings.IndenterSettings.AlignDims, viewModel.AlignDims);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment, viewModel.EndOfLineCommentColumnSpaceAlignment);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.EndOfLineCommentStyle, viewModel.EndOfLineCommentStyle);
+                Assert.AreEqual(config.UserSettings.IndenterSettings.EmptyLineHandlingMethod, viewModel.EmptyLineHandlingMethod);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1, viewModel.ForceCompilerDirectivesInColumn1);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1, viewModel.ForceDebugStatementsInColumn1);
                 Assert.AreEqual(config.UserSettings.IndenterSettings.ForceDebugPrintInColumn1, viewModel.ForceDebugPrintInColumn1);
@@ -140,6 +145,7 @@ namespace RubberduckTests.Settings
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignDims, viewModel.AlignDims);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment, viewModel.EndOfLineCommentColumnSpaceAlignment);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentStyle, viewModel.EndOfLineCommentStyle);
+                Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EmptyLineHandlingMethod, viewModel.EmptyLineHandlingMethod);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1, viewModel.ForceCompilerDirectivesInColumn1);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceDebugPrintInColumn1, viewModel.ForceDebugPrintInColumn1);
                 Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceDebugAssertInColumn1, viewModel.ForceDebugAssertInColumn1);
@@ -327,6 +333,16 @@ namespace RubberduckTests.Settings
             var viewModel = new IndenterSettingsViewModel(defaultConfig);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures);
+        }
+
+        [Test]
+        [Category("Settings")]
+        public void EmptyLineHandlingMethodIsSetInCtor()
+        {
+            var defaultConfig = GetDefaultConfig();
+            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+
+            Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EmptyLineHandlingMethod, viewModel.EmptyLineHandlingMethod);
         }
     }
 }

@@ -48,7 +48,7 @@ namespace Rubberduck.SmartIndenter
                     selection = new Selection(startLine, 1, endLine, 1);
                     using (var component = module.Parent)
                     {
-                        Indent(component, selection);
+                        Indent(component, selection, true);
                     }
                 }
             }
@@ -126,7 +126,8 @@ namespace Rubberduck.SmartIndenter
         /// </summary>
         /// <param name="component">The VBComponent to indent</param>
         /// <param name="selection">The selection to indent</param>
-        private void Indent(IVBComponent component, Selection selection)
+        /// <param name="procedure">Whether the selection is a single procedure</param>
+        private void Indent(IVBComponent component, Selection selection, bool procedure = false)
         {
             using (var module = component.CodeModule)
             {
@@ -139,7 +140,7 @@ namespace Rubberduck.SmartIndenter
                 var codeLines = module.GetLines(selection.StartLine, selection.LineCount).Replace("\r", string.Empty)
                     .Split('\n');
 
-                var indented = Indent(codeLines, false);
+                var indented = Indent(codeLines, false, procedure);
 
                 var start = selection.StartLine;
                 var lines = selection.LineCount;

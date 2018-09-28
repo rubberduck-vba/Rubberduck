@@ -153,7 +153,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
                     continue; 
                 }
 
-                using (var module = _projectsProvider.Component(reference.QualifiedModuleName).CodeModule)
+                var component = _projectsProvider.Component(reference.QualifiedModuleName);
+                using (var module = component.CodeModule)
                 {
                     RewriteCall(argumentList, module);
                 }

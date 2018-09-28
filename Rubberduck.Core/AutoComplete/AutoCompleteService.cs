@@ -35,6 +35,7 @@ namespace Rubberduck.AutoComplete
         {
             _selfClosingPairCompletion = selfClosingPairCompletion;
             _configService = configService;
+            InitializeConfig();
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
         }
 
