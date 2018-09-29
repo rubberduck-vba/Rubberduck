@@ -5,7 +5,7 @@
     <RootNamespace>Rubberduck</RootNamespace>
     <AssemblyName>Rubberduck</AssemblyName>
     <Company>Rubberduck-VBA</Company>
-    <Copyright>Copyright ©  2014-2018</Copyright>
+    <Copyright>Copyright © 2014-2018</Copyright>
     <Description>Rubberduck AddIn</Description>
     <AssemblyVersion>2.2.*</AssemblyVersion>
     <OutputType>Library</OutputType>

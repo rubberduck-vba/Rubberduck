@@ -41,6 +41,9 @@
     <None Include="tools\uninstall.ps1" />
   </ItemGroup>
   <ItemGroup>
+    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckCodeAnalysis.dll" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis">
       <Version>1.0.1</Version>
     </PackageReference>
