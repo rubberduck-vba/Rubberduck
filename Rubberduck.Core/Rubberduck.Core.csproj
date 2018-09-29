@@ -114,8 +114,8 @@
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 
   <!--BEGIN XAML WORKAROUND SECTION -->
-
   <ItemGroup>
+    <Compile Include="$(IntermediateOutputPath)**\*.g.cs" Visible="false" />
     <Page Include="**\*.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -125,7 +125,6 @@
       <SubType>Code</SubType>
       <DependentUpon>%(Filename)</DependentUpon>
     </Compile>
-    <Compile Include="$(IntermediateOutputPath)**\*.g.cs" Visible="false" />
     <!-- Resources -->
     <EmbeddedResource Update="Properties\Resources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" />
     <Compile Update="Properties\Resources.Designer.cs" AutoGen="True" DependentUpon="Resources.resx" DesignTime="True" />
@@ -133,7 +132,6 @@
     <None Update="Properties\Settings.settings" Generator="SettingsSingleFileGenerator" LastGenOutput="Settings.Designer.cs" />
     <Compile Update="Properties\Settings.Designer.cs" AutoGen="True" DependentUpon="Settings.settings" />
   </ItemGroup>
-
   <!-- END XAML WORKAROUND SECTION -->
 
 </Project>
