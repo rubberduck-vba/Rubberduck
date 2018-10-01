@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing;
@@ -76,26 +77,24 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            Refactor(target.QualifiedSelection);
-
-            //using (var pane = _vbe.ActiveCodePane)
-            //{
-            //    if (pane.IsWrappingNullReference)
-            //    {
-            //        return;
-            //    }
-            //    pane.Selection = target.QualifiedSelection.Selection;
-            //    Refactor();
-            //}
+            using (var pane = _vbe.ActiveCodePane)
+            {
+                if (pane.IsWrappingNullReference)
+                {
+                    return;
+                }
+                pane.Selection = target.QualifiedSelection.Selection;
+                Refactor();
+            }
         }
 
         public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
         {
             _model = new RemoveParametersModel(state, selection, new MessageBox());
-            
+
             var target = _model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
             Debug.Assert(target != null, "Target was not found");
-            
+
             if (target != null)
             {
                 _model.RemoveParameters.Add(target);
@@ -167,6 +166,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var rewriter = _model.State.GetRewriter(module);
             _rewriters.Add(rewriter);
 
+            var usesNamedArguments = false;
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
             {
@@ -175,7 +175,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 {
                     continue;
                 }
-                
+
                 if (_model.Parameters[i].IsParamArray)
                 {
                     //The following code works because it is neither allowed to use both named arguments
@@ -194,6 +194,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 }
                 else
                 {
+                    usesNamedArguments = true;
                     var arg = args.Where(a => a.namedArgument() != null)
                                   .SingleOrDefault(a =>
                                         a.namedArgument().unrestrictedIdentifier().GetText() ==
@@ -205,6 +206,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     }
                 }
             }
+
+            RemoveTrailingComma(rewriter, argList, usesNamedArguments);
         }
 
         private void AdjustSignatures()
@@ -253,15 +256,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return _model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName) 
-                && item.IdentifierName == declaration.IdentifierName 
+            return _model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName)
+                && item.IdentifierName == declaration.IdentifierName
                 && item.DeclarationType == declarationType);
         }
 
         private List<int> CreateSeries(int start, int end)
         {
             var result = new List<int>();
-            for(var val = start; val <= end; val++)
+            for (var val = start; val <= end; val++)
             {
                 result.Add(val);
             }
@@ -272,34 +275,119 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             var rewriter = _model.State.GetRewriter(target);
 
-            var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
+            var parameters = ((IParameterizedDeclaration)target).Parameters.OrderBy(o => o.Selection).ToList();
 
             foreach (var index in _model.RemoveParameters.Select(rem => _model.Parameters.IndexOf(rem)))
             {
                 rewriter.Remove(parameters[index]);
             }
 
-            //If there are 3 or more parameters, and the user elects to delete the last two or more
-            //parameters, we need to remove them as a range - or issue #4319 occurs leaving uncompilable VBA code behind
-            if (parameters.Count() > 2)
+            RemoveTrailingComma(rewriter);
+            _rewriters.Add(rewriter);
+        }
+
+        //Issue 4319.  If there are 3 or more arguments and the user elects to remove 2 or more of
+        //the last arguments, then we need to specifically remove the trailing comma from
+        //the last 'kept' argument.
+        private void RemoveTrailingComma(IModuleRewriter rewriter, VBAParser.ArgumentListContext argList = null, bool usesNamedParams = false)
+        {
+            //return;
+            var commaLocator = RetrieveTrailingCommaInfo(_model.RemoveParameters, _model.Parameters);
+            if (!commaLocator.RequiresTrailingCommaRemoval)
             {
-                var remainingIndexes = new List<int>();
-                var indexesToRemove = _model.RemoveParameters.Select(rem => _model.Parameters.IndexOf(rem));
-                var allIndexes = CreateSeries(0, parameters.Count() - 1);
-                for (var idx = 0; idx < parameters.Count() - 1; idx++)
-                {
-                    remainingIndexes = CreateSeries(idx, parameters.Count() - 1);
-                    if (remainingIndexes.All(a => indexesToRemove.Contains(a)))
-                    {
-                        var tokenStart = parameters[idx - 1].Context.Stop.TokenIndex + 1;
-                        var tokenStop = parameters[indexesToRemove.Last()].Context.Stop.TokenIndex;
-                        rewriter.RemoveRange(tokenStart, tokenStop);
-                        idx = parameters.Count();
-                    }
-                }
+                return;
             }
 
-            _rewriters.Add(rewriter);
+            var tokenStart = 0;
+            var tokenStop = 0;
+
+            if (argList is null)
+            {
+                //Handle Signatures only
+                tokenStart = commaLocator.LastRetainedArg.Param.Declaration.Context.Stop.TokenIndex + 1;
+                tokenStop = commaLocator.FirstOfRemovedArgSeries.Param.Declaration.Context.Start.TokenIndex - 1;
+                rewriter.RemoveRange(tokenStart, tokenStop);
+                return;
+            }
+
+
+            //Handles References
+            var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
+
+            if (usesNamedParams)
+            {
+                var lastKeptArg = args.Where(a => a.namedArgument() != null)
+                    .SingleOrDefault(a => a.namedArgument().unrestrictedIdentifier().GetText() ==
+                                            commaLocator.LastRetainedArg.Identifier);
+
+                var firstOfRemovedArgSeries = args.Where(a => a.namedArgument() != null)
+                    .SingleOrDefault(a => a.namedArgument().unrestrictedIdentifier().GetText() ==
+                                            commaLocator.FirstOfRemovedArgSeries.Identifier);
+
+                tokenStart = lastKeptArg.Stop.TokenIndex + 1;
+                tokenStop = firstOfRemovedArgSeries.Start.TokenIndex - 1;
+                rewriter.RemoveRange(tokenStart, tokenStop);
+                return;
+            }
+            tokenStart = args[commaLocator.LastRetainedArg.Index].Stop.TokenIndex + 1;
+            tokenStop = args[commaLocator.FirstOfRemovedArgSeries.Index].Start.TokenIndex - 1;
+            rewriter.RemoveRange(tokenStart, tokenStop);
+        }
+
+        private CommaLocator RetrieveTrailingCommaInfo(List<Parameter> toRemove, List<Parameter> allParams)
+        {
+            if (toRemove.Count == allParams.Count || allParams.Count < 3)
+            {
+                return new CommaLocator();
+            }
+
+            var reversedAllParams = allParams.OrderByDescending(tr => tr.Declaration.Selection);
+            var rangeRemoval = new List<Parameter>();
+            for (var idx = 0; idx < reversedAllParams.Count(); idx++)
+            {
+                if (toRemove.Contains(reversedAllParams.ElementAt(idx)))
+                {
+                    rangeRemoval.Add(reversedAllParams.ElementAt(idx));
+                    continue;
+                }
+
+                if (rangeRemoval.Count >= 2)
+                {
+                    var startIndex = allParams.FindIndex(par => par == reversedAllParams.ElementAt(idx));
+                    var stopIndex = allParams.FindIndex(par => par == rangeRemoval.First());
+
+                    return new CommaLocator()
+                    {
+                        RequiresTrailingCommaRemoval = true,
+                        LastRetainedArg = new CommaBoundary()
+                        {
+                            Param = reversedAllParams.ElementAt(idx),
+                            Index = startIndex,
+                        },
+                        FirstOfRemovedArgSeries = new CommaBoundary()
+                        {
+                            Param = rangeRemoval.First(),
+                            Index = stopIndex,
+                        }
+                    };
+                }
+                break;
+            }
+            return new CommaLocator();
+        }
+
+        private struct CommaLocator
+        {
+            public bool RequiresTrailingCommaRemoval;
+            public CommaBoundary LastRetainedArg;
+            public CommaBoundary FirstOfRemovedArgSeries;
+        }
+
+        private struct CommaBoundary
+        {
+            public Parameter Param;
+            public int Index;
+            public string Identifier => Param.Declaration.IdentifierName;
         }
     }
 }

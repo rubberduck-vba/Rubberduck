@@ -20,26 +20,35 @@ namespace RubberduckTests.Refactoring
     [TestFixture]
     public class RemoveParametersTests
     {
-        private const string FAUX_CURSOR = "|";
-
+        //TestCase arg1 => number of arguments in the Sub or Function call
+        //TestCase arg2 => arguement numbers to remove
+        //Input and Expected results generated for each test
         [TestCase(1, "1")]
         [TestCase(2, "1")]
         [TestCase(2, "2")]
         [TestCase(2, "1,2")]
+        [TestCase(3, "1")]
+        [TestCase(3, "2")]
+        [TestCase(3, "3")]
+        [TestCase(3, "1,2")]
         [TestCase(3, "2,3")]   //Replicates Issue #4319
-        [TestCase(5, "1,4,5")]  //Replicates Issue #4319
-        [TestCase(6, "1,5,6")]  //Replicates Issue #4319
-        [TestCase(6, "1,6")]
-        [TestCase(8, "1,3,4,5,6,7,8")] //Replicates Issue #4319
-        [TestCase(8, "1,3,4")]
-        [TestCase(8, "1,3,4,7,8")] //Replicates Issue #4319
-        [TestCase(10, "1,5")]
-        [TestCase(10, "1,5,10")]
-        [TestCase(10, "1,5,9,10")] //Replicates Issue #4319
-        [TestCase(10, "1,5,6,7,8,10")]
+        [TestCase(3, "1,2,3")]
+        [TestCase(6, "1,2")]
+        [TestCase(6, "2,3")]
+        [TestCase(6, "3,4")]
+        [TestCase(6, "4,5")]
+        [TestCase(6, "5,6")]
+        [TestCase(6, "1,3,5")]
+        [TestCase(6, "1,2,3")]
+        [TestCase(6, "4,5,6")] //Replicates Issue #4319
+        [TestCase(6, "1,5,6")] //Replicates Issue #4319
+        [TestCase(6, "2,5,6")] //Replicates Issue #4319
+        [TestCase(6, "3,5,6")] //Replicates Issue #4319
+        [TestCase(6, "2,3,4,5,6")] //Replicates Issue #4319
+        [TestCase(6, "1,2,3,4,5,6")]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
-        public void RemoveParametersRefactoring_SignatureParamRemovals(int numParams, string paramsToRemove)
+        public void RemoveParametersRefactoring_SignatureParamRemoval(int numParams, string paramsToRemove)
         {
             var preamble = "Private Sub Foo(";
             var input = preamble;
@@ -75,8 +84,140 @@ End Sub";
             string expectedCode =
 $@"{expect}
 End Sub";
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
+        }
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+        //TestCase arg1 => number of arguments in the Sub or Function call
+        //TestCase arg2 => arguement numbers to remove
+        //Input and Expected results generated for each test.  This test generates references to modify as well
+        [TestCase(2, "1")]
+        [TestCase(3, "2,3")] //Replicates Issue #4319
+        [TestCase(4, "3,4")] //Replicates Issue #4319
+        [TestCase(5, "4,5")] //Replicates Issue #4319
+        [TestCase(5, "3,4,5")] //Replicates Issue #4319
+        [TestCase(5, "2,3,4,5")] //Replicates Issue #4319
+        [TestCase(5, "1,2,3,4,5")]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_SignatureAndReferenceParamRemoval(int numParams, string paramsToRemove)
+        {
+            var preamble = "Private Sub Foo(";
+            var refPreamble = "Foo ";
+            var input = preamble;
+            var refInput = refPreamble;
+            for (var argNum = 1; argNum <= numParams; argNum++)
+            {
+                input = argNum == 1 ? input + $"ar|g{argNum} As Long, " : input + $"arg{argNum} As Long, ";
+                refInput = refInput + $"{argNum},";
+            }
+            input = input.Equals(preamble) ? input : input.Remove(input.Length - 2);
+            input = input + ")";
+
+            refInput = refInput.Remove(refInput.Length - 1);
+
+            var paramsTR = paramsToRemove.Split(',');
+            var userParamRemovalChoices = new List<int>();
+            foreach (var idxString in paramsTR)
+            {
+                userParamRemovalChoices.Add(int.Parse(idxString) - 1);
+            }
+
+            var expect = preamble;
+            var refExpect = refPreamble;
+            for (var argNum = 1; argNum <= numParams; argNum++)
+            {
+                if (!userParamRemovalChoices.Contains(argNum - 1))
+                {
+                    expect = expect + $"arg{argNum} As Long, ";
+                    refExpect = refExpect + $"{argNum},";
+                }
+            }
+            expect = expect.Equals(preamble) ? expect : expect.Remove(expect.Length - 2);
+            expect = expect + ")";
+            refExpect = refExpect.Equals(refPreamble) ? refExpect : refExpect.Remove(refExpect.Length - 1);
+
+            string inputCode =
+$@"{input}
+End Sub
+
+Private Sub Bar()
+    {refInput}
+End Sub
+
+Private Sub AnotherBar()
+    {refInput}
+End Sub";
+
+            string expectedCode =
+$@"{expect}
+End Sub
+
+Private Sub Bar()
+    {refExpect}
+End Sub
+
+Private Sub AnotherBar()
+    {refExpect}
+End Sub";
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveNamedParam_4params_4319()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal ar|g2 As String, ByVal arg3 As Double, ByVal arg4 As Double)
+End Sub
+
+Public Sub Goo()
+    Foo arg2:=""test44"", arg3:=6.1, arg1:=3, arg4:= 8.2
+End Sub
+";
+            const string expectedCode =
+@"Public Sub Foo(ByVal arg1 As Integer)
+End Sub
+
+Public Sub Goo()
+    Foo arg1:=3
+End Sub
+";
+
+            var userParamRemovalChoices = new int[] { 1, 2, 3 };
+
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveNamedParam_3params_4319()
+        {
+            const string inputCode =
+@"Public Sub Foo(ByVal arg1 As Integer, ByVal ar|g2 As String, ByVal arg3 As Double)
+End Sub
+
+Public Sub Goo()
+    Foo arg1:=3, arg2:=""test44"", arg3:=6.1
+End Sub
+";
+            const string expectedCode =
+@"Public Sub Foo(ByVal arg1 As Integer)
+End Sub
+
+Public Sub Goo()
+    Foo arg1:=3
+End Sub
+";
+
+            var userParamRemovalChoices = new int[] { 1, 2 };
+
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -103,7 +244,8 @@ End Sub
 
             var userParamRemovalChoices = new int[] { 2 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -129,7 +271,8 @@ End Sub";
 
             var userParamRemovalChoices = new int[] { 2 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -147,7 +290,8 @@ End Function";
 
             var userParamRemovalChoices = new int[] { 1 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -163,33 +307,38 @@ End Function";
 @"Private Function Foo() As Boolean
 End Function";
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode));
+            var actual = RemoveParams(inputCode);
+            Assert.AreEqual(expectedCode, actual);
         }
 
-        [Test]
+        [TestCase("Foo arg1, arg2", "Foo ")]
+        [TestCase("test = Foo(arg1, arg2)", "test = Foo()")]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
-        public void RemoveParametersRefactoring_RemoveAllFromFunction_UpdateCallReferences()
+        public void RemoveParametersRefactoring_RemoveAllFromFunction_UpdateCallReferences(string input, string expected)
         {
-            const string inputCode =
-@"Private Function Foo(ByVal ar|g1 As Integer, ByVal arg2 As String) As Boolean
+            string inputCode =
+$@"Private Function Foo(ByVal ar|g1 As Integer, ByVal arg2 As String) As Boolean
 End Function
 
 Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Foo arg1, arg2
+    Dim test As Boolean
+    {input}
 End Sub
 ";
 
-            const string expectedCode =
-@"Private Function Foo() As Boolean
+            string expectedCode =
+$@"Private Function Foo() As Boolean
 End Function
 
 Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
-    Foo 
+    Dim test As Boolean
+    {expected}
 End Sub
 ";
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode));
+            var actual = RemoveParams(inputCode);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -217,7 +366,8 @@ End Sub
 
             var userParamRemovalChoices = new int[] { 1,2 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -243,7 +393,8 @@ End Sub";
 
             var userParamRemovalChoices = new int[] {2,3,5};
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -259,7 +410,35 @@ End Property";
 @"Private Property Get Foo() As Boolean
 End Property";
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode));
+            var actual = RemoveParams(inputCode);
+            Assert.AreEqual(expectedCode, actual);
+        }
+
+        //This scenario fails when run in Excel: 'Let' is not modified if 'Get' arg2 is removed
+        //But, the MockParser returns a ParseError
+        [Test,Ignore("MockParser unable to parse multiparam Let/Get (or Set/Get)")]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_RemoveFromMultiParamProperty()
+        {
+            const string inputCode =
+@"Private Property Let Foo(ByVal arg1 As Integer, arg2 As Integer, arg3 As Integer, prop As Integer)
+End Property;
+
+Private Property Get Foo(ByVal arg1 As Integer, arg2 As Integer, arg3 As Integer) As Integer
+End Property";
+
+            const string expectedCode =
+@"Private Property Let Foo(ByVal arg1 As Integer, arg3 As Integer, prop As Integer)
+End Property;
+
+Private Property Get Foo(ByVal arg1 As Integer, arg3 As Integer) As Integer
+End Property";
+
+            var userParamRemovalChoices = new int[] { 1 };
+
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -275,7 +454,7 @@ End Property";
 Private Property Set Foo(ByVal arg2 As String)
 End Property";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode,  out IVBComponent component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -313,7 +492,8 @@ End Property";
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -341,7 +521,8 @@ End Sub
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -373,7 +554,8 @@ End Sub
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -393,7 +575,6 @@ Private Function foo(ByRe|f a As Integer, ByVal b As Integer) As Integer
     a = b
     foo = a + b
 End Function";
-            //TODO: Is leaving param's 'a' usage behind looks wrong - what happens in Excel
             const string expectedCode =
 @"Private Sub bar()
     Dim x As Integer
@@ -409,7 +590,8 @@ End Function";
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -437,7 +619,8 @@ End Sub
 
             var userParamRemovalChoices = new int[] { 1 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -513,8 +696,8 @@ Public Sub Goo(ByVal arg1 As Integer, _
 End Sub
 ";
 
-const string expectedCode =
-@"Sub Foo(ByVal arg1 As String)
+            const string expectedCode =
+            @"Sub Foo(ByVal arg1 As String)
 End Sub
 
 Public Sub Goo(ByVal arg1 As Integer, _
@@ -530,7 +713,49 @@ End Sub
 
             var userParamRemovalChoices = new int[] { 1 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
+        public void RemoveParametersRefactoring_ParamArrayReference_Issue4319()
+        {
+            const string inputCode =
+@"Sub Fo|o(ByVal arg1 As String, ByVal arg2 As String, ParamArray arg3())
+End Sub
+
+Public Sub Goo(ByVal arg1 As Integer, _
+               ByVal arg2 As Integer, _
+               ByVal arg3 As Integer, _
+               ByVal arg4 As Integer, _
+               ByVal arg5 As Integer, _
+               ByVal arg6 As Integer)
+              
+    Foo ""test"",""test2"", test1x, test2x, test3x, test4x, test5x, test6x
+End Sub
+";
+
+            const string expectedCode =
+@"Sub Foo(ByVal arg1 As String)
+End Sub
+
+Public Sub Goo(ByVal arg1 As Integer, _
+               ByVal arg2 As Integer, _
+               ByVal arg3 As Integer, _
+               ByVal arg4 As Integer, _
+               ByVal arg5 As Integer, _
+               ByVal arg6 As Integer)
+              
+    Foo ""test""
+End Sub
+";
+
+            var userParamRemovalChoices = new int[] { 1,2 };
+
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -585,14 +810,14 @@ End Property";
         public void RemoveParametersRefactoring_RemoveFirstParamFromGetterAndSetter()
         {
             const string inputCode =
-@"Private Property Get Foo(ByVal a|rg1 As Integer)
+@"Private Property Get Foo(ByVal a|rg1 As Integer) As String
 End Property
 
 Private Property Set Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Property";
 
             const string expectedCode =
-@"Private Property Get Foo()
+@"Private Property Get Foo() As String
 End Property
 
 Private Property Set Foo(ByVal arg2 As String)
@@ -600,7 +825,8 @@ End Property";
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -624,7 +850,8 @@ End Property";
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -650,7 +877,8 @@ End Sub";
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -678,7 +906,8 @@ End Sub";
 
             var userParamRemovalChoices = new int[] { 1 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -708,7 +937,8 @@ End Sub";
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -746,7 +976,8 @@ End Sub";
 
             var userParamRemovalChoices = new int[] { 1 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -767,7 +998,8 @@ End Sub";   // note: VBE removes excess spaces
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -788,7 +1020,8 @@ End Sub";   // note: VBE removes excess spaces
 
             var userParamRemovalChoices = new int[] { 1 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -810,7 +1043,8 @@ End Sub";   // note: VBE removes excess spaces
 
             var userParamRemovalChoices = new int[] { 2 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -831,7 +1065,8 @@ End Sub";   // note: VBE removes excess spaces
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, true, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -866,7 +1101,8 @@ End Sub
 
             var userParamRemovalChoices = new int[] { 0 };
 
-            Assert.AreEqual(expectedCode, RemoveParams(inputCode, paramIndices: userParamRemovalChoices));
+            var actual = RemoveParams(inputCode, paramIndices: userParamRemovalChoices);
+            Assert.AreEqual(expectedCode, actual);
         }
 
         [Test]
@@ -1611,35 +1847,6 @@ End Sub";
             }
             return result;
         }
-
-        //private static Selection? FindSelection(string input)
-        //{
-        //    var lines = input.Split(new[] { "\r\n" }, StringSplitOptions.None);
-        //    for (var idx = 0; idx < lines.Count(); idx++)
-        //    {
-        //        var testLine = lines[idx];
-        //        if (testLine.Contains(FAUX_CURSOR))
-        //        {
-        //            var fauxCursorLine = idx + 1;
-        //            var fauxCursorColumn = testLine.IndexOf(FAUX_CURSOR);
-
-        //            int fauxCursorColumnOffset = 0;
-        //            if (testLine.StartsWith($"{FAUX_CURSOR}") || testLine.Contains($" {FAUX_CURSOR}"))
-        //            {
-        //                fauxCursorColumnOffset = 1;
-        //            }
-        //            else if (testLine.EndsWith($"{FAUX_CURSOR}") || testLine.Contains($"{FAUX_CURSOR} "))
-        //            {
-        //                fauxCursorColumnOffset = -1;
-        //            }
-
-        //            return new Selection(fauxCursorLine, fauxCursorColumn + fauxCursorColumnOffset);
-        //        }
-        //    }
-        //    Assert.Fail($"Input code does not contain faux cursor ('{FAUX_CURSOR}')");
-        //    return null;
-        //}
-
 
         #region setup
         private static Mock<IRefactoringPresenterFactory<IRemoveParametersPresenter>> SetupFactory(RemoveParametersModel model)
