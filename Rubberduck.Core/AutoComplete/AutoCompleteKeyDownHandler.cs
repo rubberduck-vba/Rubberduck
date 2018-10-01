@@ -107,7 +107,7 @@ namespace Rubberduck.AutoComplete
                         }
 
                         var currentLine = result.Lines[result.CaretPosition.StartLine];
-                        if (currentLine.EndsWith(" ") && result.CaretPosition.StartColumn == currentLine.Length)
+                        if (!string.IsNullOrWhiteSpace(currentLine) && currentLine.EndsWith(" ") && result.CaretPosition.StartColumn == currentLine.Length)
                         {
                             result = result.ReplaceLine(result.CaretPosition.StartLine, currentLine.TrimEnd());
                             result = new CodeString(result.Code, result.CaretPosition.ShiftLeft(), result.SnippetPosition);
@@ -115,7 +115,7 @@ namespace Rubberduck.AutoComplete
 
                         var reprettified = prettifier.Prettify(module, result);
                         var offByOne = reprettified.Code.Length - result.Code.Length == 1;
-                        if (!offByOne && result.Code != reprettified.Code)
+                        if (!string.IsNullOrWhiteSpace(currentLine) && !offByOne && result.Code != reprettified.Code)
                         {
                             Debug.Assert(false, "Prettified code is off by more than one character.");
                         }
@@ -176,7 +176,10 @@ namespace Rubberduck.AutoComplete
             var zCaretLine = lines.IndexOf(caretLine);
             var zCaretColumn = pSelection.StartColumn - 1;
 
-            var result = new CodeString(logicalLine, new Selection(zCaretLine, zCaretColumn), new Selection(pSelection.StartLine, 1));
+            var startLine = lines[0].Line;
+            var endLine = lines[lines.Count - 1].Line;
+
+            var result = new CodeString(logicalLine, new Selection(zCaretLine, zCaretColumn), new Selection(startLine, 1, endLine, lines[lines.Count - 1].Content.Length));
             return result;
         }
 

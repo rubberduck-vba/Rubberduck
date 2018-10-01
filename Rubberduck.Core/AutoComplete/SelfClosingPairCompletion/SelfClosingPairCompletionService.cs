@@ -95,11 +95,14 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             var position = original.CaretPosition;
             var lines = original.Lines;
 
-            var previous = Math.Max(0, position.StartColumn - 1);
-            var next = previous + 1;
-
             var line = lines[original.CaretPosition.StartLine];
-            if (original.CaretPosition.EndColumn < next && line[previous] == pair.OpeningChar && line[next] == pair.ClosingChar)
+            var previous = Math.Max(0, position.StartColumn - 1);
+            var next = Math.Min(line.Length - 1, position.StartColumn);
+
+            var previousChar = line[previous];
+            var nextChar = line[next];
+
+            if (original.CaretPosition.EndColumn < next && previousChar == pair.OpeningChar && nextChar == pair.ClosingChar)
             {
                 if (line.Length == 2)
                 {
@@ -109,7 +112,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
             }
 
-            if (previous < line.Length - 1 && line[previous] == pair.OpeningChar)
+            if (previous < line.Length - 1 && previousChar == pair.OpeningChar)
             {
                 Selection closingTokenPosition;
                 closingTokenPosition = line[Math.Min(line.Length - 1, next)] == pair.ClosingChar
@@ -123,7 +126,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
                     if (closingLine == pair.OpeningChar.ToString())
                     {
-                        lines[original.CaretPosition.StartLine] = string.Empty;
+                        lines = lines.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
                     }
                     else
                     {
@@ -150,7 +153,11 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 result = VBACodeStringParser.Parse(code, p => p.mainBlockStmt());
                 if (((ParserRuleContext)result.parseTree).exception != null)
                 {
-                    return default;
+                    result = VBACodeStringParser.Parse(code, p => p.blockStmt());
+                    if (((ParserRuleContext)result.parseTree).exception != null)
+                    {
+                        return default;
+                    }
                 }
             }
             var visitor = new MatchingTokenVisitor(pair, original);
