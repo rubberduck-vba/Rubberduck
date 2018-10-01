@@ -260,16 +260,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 && item.DeclarationType == declarationType);
         }
 
-        private List<int> CreateSeries(int start, int end)
-        {
-            var result = new List<int>();
-            for (var val = start; val <= end; val++)
-            {
-                result.Add(val);
-            }
-            return result;
-        }
-
         private void RemoveSignatureParameters(Declaration target)
         {
             var rewriter = _model.State.GetRewriter(target);
@@ -290,7 +280,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
         //the last 'kept' argument.
         private void RemoveTrailingComma(IModuleRewriter rewriter, VBAParser.ArgumentListContext argList = null, bool usesNamedParams = false)
         {
-            //return;
             var commaLocator = RetrieveTrailingCommaInfo(_model.RemoveParameters, _model.Parameters);
             if (!commaLocator.RequiresTrailingCommaRemoval)
             {
