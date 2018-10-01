@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PreProcessing;
 using System;
+using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -162,31 +163,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         public static double AsDouble(this IParseTreeValue parseTreeValue)
-            => double.Parse(LetCoerce.Coerce((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Double));
+            => double.Parse(LetCoerce.Coerce((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Double), CultureInfo.InvariantCulture);
 
         public static decimal AsCurrency(this IParseTreeValue parseTreeValue)
-            => decimal.Parse(LetCoerce.Coerce((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Currency));
+            => decimal.Parse(LetCoerce.Coerce((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Currency), CultureInfo.InvariantCulture);
 
         public static long AsLong(this IParseTreeValue parseTreeValue)
-            => long.Parse(LetCoerce.Coerce((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Long));
+            => long.Parse(LetCoerce.Coerce((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Long), CultureInfo.InvariantCulture);
 
         public static bool AsBoolean(this IParseTreeValue parseTreeValue)
-            =>LetCoerce.Coerce((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Boolean).Equals(Tokens.True);
+            => LetCoerce.Coerce((parseTreeValue.ValueType, parseTreeValue.Token), Tokens.Boolean).Equals(Tokens.True);
 
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out long newValue)
-            => TryLetCoerce(parseTreeValue, long.Parse, Tokens.Long, out newValue);
+            => TryLetCoerce(parseTreeValue, s => long.Parse(s, CultureInfo.InvariantCulture), Tokens.Long, out newValue);
 
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out double newValue)
-        => TryLetCoerce(parseTreeValue, double.Parse, Tokens.Double, out newValue);
+        => TryLetCoerce(parseTreeValue, s => double.Parse(s, CultureInfo.InvariantCulture), Tokens.Double, out newValue);
 
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out decimal newValue)
-            => TryLetCoerce(parseTreeValue, decimal.Parse, Tokens.Currency, out newValue);
+            => TryLetCoerce(parseTreeValue, s => decimal.Parse(s, CultureInfo.InvariantCulture), Tokens.Currency, out newValue);
 
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out bool value)
             => TryLetCoerce(parseTreeValue, bool.Parse, Tokens.Boolean, out value);
 
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out string value)
-            => TryLetCoerce(parseTreeValue, (a) => { return a; }, Tokens.String, out value);
+            => TryLetCoerce(parseTreeValue, a => a, Tokens.String, out value);
 
         private static bool TryLetCoerce(this IParseTreeValue parseTreeValue, out ComparableDateValue value)
             => TryLetCoerceToDate(parseTreeValue, out value);
