@@ -74,6 +74,20 @@ namespace RubberduckTests.AutoComplete
             Assert.AreEqual(expected, actual);
         }
 
+        [Test]
+        [Category("AutoComplete")]
+        public void GivenMultilineLogicalLine_StillTracksCaret()
+        {
+            var original = @"
+MsgBox ""test"" & vbNewLine & _
+       ""|"")".ToCodeString();
+
+            var sut = InitializeSut(original, original, out var module, out _);
+            var actual = new TestCodeString(sut.Prettify(module.Object, original));
+
+            Assert.AreEqual(original, actual);
+        }
+
         private static ICodeStringPrettifier InitializeSut(TestCodeString original, TestCodeString prettified, out Mock<ICodeModule> module, out Mock<ICodePane> pane)
         {
             module = new Mock<ICodeModule>();

@@ -78,18 +78,18 @@ namespace Rubberduck.AutoComplete
             var original = GetEntireLogicalCodeLine(module, pSelection); // todo: see if AutoCompleteEventArgs can give us the logical line
 
             var prettifier = _getPrettifier();
-            var scp = _getClosingPairCompletion();
+            var scpService = _getClosingPairCompletion();
 
             foreach (var selfClosingPair in _getClosingPairs())
             {
                 CodeString result;
                 if (e.Character == '\b' && pSelection.StartColumn > 1)
                 {
-                    result = scp.Execute(selfClosingPair, original, Keys.Back);
+                    result = scpService.Execute(selfClosingPair, original, Keys.Back);
                 }
                 else
                 {
-                    result = scp.Execute(selfClosingPair, original, e.Character);
+                    result = scpService.Execute(selfClosingPair, original, e.Character);
                 }
 
                 if (!result?.Equals(default) ?? false)
@@ -99,19 +99,26 @@ namespace Rubberduck.AutoComplete
                         var prettified = prettifier.Prettify(module, original);
                         if (e.Character == '\b' && pSelection.StartColumn > 1)
                         {
-                            result = scp.Execute(selfClosingPair, prettified, Keys.Back);
+                            result = scpService.Execute(selfClosingPair, prettified, Keys.Back);
                         }
                         else
                         {
-                            result = scp.Execute(selfClosingPair, prettified, e.Character);
+                            result = scpService.Execute(selfClosingPair, prettified, e.Character);
                         }
 
-                        module.DeleteLines(result.SnippetPosition);
-                        module.InsertLines(result.SnippetPosition.StartLine, result.Code);
+                        var currentLine = result.Lines[result.CaretPosition.StartLine];
+                        if (currentLine.EndsWith(" ") && result.CaretPosition.StartColumn == currentLine.Length)
+                        {
+                            result = result.ReplaceLine(result.CaretPosition.StartLine, currentLine.TrimEnd());
+                            result = new CodeString(result.Code, result.CaretPosition.ShiftLeft(), result.SnippetPosition);
+                        }
 
-                        var reprettified = module.GetLines(result.SnippetPosition);
-                        var offByOne = result.Code != reprettified;
-                        Debug.Assert(!offByOne || reprettified.Length - result.Code.Length == 1, "Prettified code is off by more than one character.");
+                        var reprettified = prettifier.Prettify(module, result);
+                        var offByOne = reprettified.Code.Length - result.Code.Length == 1;
+                        if (!offByOne && result.Code != reprettified.Code)
+                        {
+                            Debug.Assert(false, "Prettified code is off by more than one character.");
+                        }
 
                         var finalSelection = new Selection(result.SnippetPosition.StartLine, result.CaretPosition.StartColumn + 1)
                             .ShiftRight(offByOne ? 1 : 0);

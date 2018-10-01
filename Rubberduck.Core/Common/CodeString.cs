@@ -1,5 +1,6 @@
 ﻿using Rubberduck.VBEditor;
 using System;
+using System.Diagnostics;
 
 namespace Rubberduck.Common
 {
@@ -29,7 +30,7 @@ namespace Rubberduck.Common
 
             var lines = Lines;
             var line = lines[CaretPosition.StartLine];
-            lines[CaretPosition.StartLine] = line.Insert(CaretPosition.StartColumn, PseudoCaret.ToString());
+            lines[CaretPosition.StartLine] = line.Insert(Math.Min(CaretPosition.StartColumn, line.Length), PseudoCaret.ToString());
             return string.Join("\r\n", lines);
         }
     }
@@ -72,6 +73,16 @@ namespace Rubberduck.Common
         /// Gets the individual <see cref="Code"/> string lines.
         /// </summary>
         public string[] Lines => Code?.Replace("\r", string.Empty).Split('\n') ?? new string[] { };
+
+        public CodeString ReplaceLine(int index, string content)
+        {
+            var lines = Lines;
+            Debug.Assert(index >= 0 && index < lines.Length);
+
+            lines[index] = content;
+            var code = string.Join("\r\n", lines);
+            return new CodeString(code, CaretPosition, SnippetPosition);
+        }
 
         public override bool Equals(object obj)
         {

@@ -10,28 +10,28 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
     {
         public CodeString Prettify(ICodeModule module, CodeString original)
         {
-            var originalCode = original.Code;
+            var originalCode = original.Code.Replace("\r", string.Empty).Split('\n');
             var originalPosition = original.CaretPosition.StartColumn;
             var originalNonWhitespaceCharacters = 0;
-            for (var i = 0; i < originalPosition; i++)
+            for (var i = 0; i <= originalPosition - 1; i++)
             {
-                if (originalCode[i] != ' ')
+                if (originalCode[original.CaretPosition.StartLine][i] != ' ')
                 {
                     originalNonWhitespaceCharacters++;
                 }
             }
 
-            var indent = originalCode.TakeWhile(c => c == ' ').Count();
-
+            var indent = originalCode[original.CaretPosition.StartLine].TakeWhile(c => c == ' ').Count();
+            
             module.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount);
-            module.InsertLines(original.SnippetPosition.StartLine, originalCode);
-            var prettifiedCode = module.GetLines(original.SnippetPosition);
+            module.InsertLines(original.SnippetPosition.StartLine, string.Join("\r\n", originalCode));
+            var prettifiedCode = module.GetLines(original.SnippetPosition).Replace("\r", string.Empty).Split('\n');
 
             var prettifiedNonWhitespaceCharacters = 0;
             var prettifiedCaretCharIndex = 0;
-            for (var i = 0; i < prettifiedCode.Length; i++)
+            for (var i = 0; i < prettifiedCode[original.CaretPosition.StartLine].Length; i++)
             {
-                if (prettifiedCode[i] != ' ')
+                if (prettifiedCode[original.CaretPosition.StartLine][i] != ' ')
                 {
                     prettifiedNonWhitespaceCharacters++;
                     if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters)
@@ -42,13 +42,19 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 }
             }
 
-            var prettifiedPosition = new Selection(original.SnippetPosition.StartLine - 1, originalCode.Trim().Length == 0 ? indent : prettifiedCaretCharIndex + 1).ToOneBased();
+            var prettifiedPosition = new Selection(
+                original.SnippetPosition.StartLine - 1 + original.CaretPosition.StartLine, 
+                prettifiedCode[original.CaretPosition.StartLine].Trim().Length == 0 ? indent : Math.Min(prettifiedCode[original.CaretPosition.StartLine].Length, prettifiedCaretCharIndex + 1))
+                .ToOneBased();
+
             using (var pane = module.CodePane)
             {
                 pane.Selection = prettifiedPosition;
             }
 
-            var result = new CodeString(prettifiedCode, new Selection(0, prettifiedPosition.StartColumn - 1), prettifiedPosition);
+            var caretPosition = new Selection(original.CaretPosition.StartLine, prettifiedPosition.StartColumn - 1);
+            var snippetPosition = new Selection(original.SnippetPosition.StartLine, original.SnippetPosition.StartColumn, original.SnippetPosition.EndLine, prettifiedCode[prettifiedCode.Length - 1].Length);
+            var result = new CodeString(string.Join("\r\n", prettifiedCode), caretPosition, snippetPosition);
             return result;
         }
     }

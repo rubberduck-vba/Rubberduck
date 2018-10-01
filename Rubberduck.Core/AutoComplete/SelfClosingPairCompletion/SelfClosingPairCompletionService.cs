@@ -24,6 +24,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
         {
             if (pair.IsSymetric &&
                 original.Code.Length >= 1 &&
+                original.CaretPosition.StartColumn > 0 &&
                 original.Code[original.CaretPosition.StartColumn - 1] == pair.ClosingChar)
             {
                 return default;
