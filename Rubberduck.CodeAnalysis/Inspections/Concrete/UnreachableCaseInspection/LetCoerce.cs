@@ -120,7 +120,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 [Tokens.LongLong] = a => long.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
                 [Tokens.Double] = a => a,
                 [Tokens.Single] = a => a,
-                [Tokens.Currency] = a => decimal.Parse(a).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Currency] = a => decimal.Parse(a, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
                 [Tokens.Boolean] = NumericToBoolean,
                 [Tokens.Date] = NumericToDate,
             },

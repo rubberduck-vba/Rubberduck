@@ -154,7 +154,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         public static bool TryLetCoerce(this IParseTreeValue parseTreeValue, string destinationType, out IParseTreeValue newValue)
         {
             newValue = null;
-            if (LetCoerce.TryCoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), destinationType, out string valueText))
+            if (LetCoerce.TryCoerceToken((parseTreeValue.ValueType, parseTreeValue.Token), destinationType, out var valueText))
             {
                 newValue = ParseTreeValue.CreateValueType(new TypeTokenPair(destinationType, valueText));
                 return true;
