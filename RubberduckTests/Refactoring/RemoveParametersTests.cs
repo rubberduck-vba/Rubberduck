@@ -6,13 +6,11 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings.RemoveParameters;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace RubberduckTests.Refactoring

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing;
