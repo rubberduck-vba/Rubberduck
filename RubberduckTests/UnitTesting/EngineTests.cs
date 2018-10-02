@@ -45,6 +45,7 @@ End Sub";
                 int refreshes = 0;
                 engine.TestsRefreshed += (sender, args) => refreshes++;
                 parser.Parse(new CancellationTokenSource());
+                var status = state.Status;
                 if (!engine.CanRun)
                 {
                     Assert.Inconclusive("Parser Error");
