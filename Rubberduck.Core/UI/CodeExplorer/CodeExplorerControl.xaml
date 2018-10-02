@@ -621,8 +621,8 @@
                          VerticalContentAlignment="Center"
                          IsEnabled="{Binding CanSearch}"
                          PreviewKeyDown="SearchBox_OnPreviewKeyDown"
-                         TextChanged="SearchBox_OnTextChanged" />
-        
+                         Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
                 <Image Source="{StaticResource SearchImage}" 
                        HorizontalAlignment="Right" VerticalAlignment="Center" 
                        MaxHeight="16" Margin="0,0,1,0" 
@@ -632,7 +632,7 @@
         
                 <Button Style="{StaticResource XButtonStyle}" 
                         HorizontalAlignment="Right" VerticalAlignment="Center" 
-                        Height="18" Width="18" Margin="0,1,1,0" 
+                        Height="16" Width="16" Margin="0,1,1,0" 
                         IsEnabled="{Binding CanSearch}"
                         Visibility="{Binding ElementName=SearchBox, Path=Text.Length, Converter={StaticResource StringHasNoValueToVisibility}}" 
                         Click="ButtonBase_OnClick" />
