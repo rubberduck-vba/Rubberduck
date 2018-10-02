@@ -60,7 +60,10 @@ namespace Rubberduck.Inspections.Concrete
                 var component = GetVBComponentMatchingSheetName(reference);
                 if (component != null)
                 {
-                    reference.Properties.CodeName = (string)component.Properties.Single(property => property.Name == "CodeName").Value;
+                    using (var properties = component.Properties)
+                    {
+                        reference.Properties.CodeName = (string)properties.Single(property => property.Name == "CodeName").Value;
+                    }
                     issues.Add(reference);
                 }
             }
@@ -98,9 +101,28 @@ namespace Rubberduck.Inspections.Concrete
             var sheetName = FormatSheetName(sheetArgumentContext.GetText());
             var project = State.Projects.First(p => p.ProjectId == reference.QualifiedName.ProjectId);
 
-            return project.VBComponents.FirstOrDefault(c =>
-                c.Type == ComponentType.Document &&
-                (string) c.Properties.First(property => property.Name == "Name").Value == sheetName);
+            using (var components = project.VBComponents)
+            {
+                for (var i = 0; i < components.Count; i++)
+                {
+                    using (var component = components[i])
+                    using (var properties = component.Properties)
+                    {
+                        for (var j = 0; j < properties.Count; j++)
+                        {
+                            using (var property = properties[j])
+                            {
+                                if (component.Type == ComponentType.Document && property.Name == "Name" && (string)property.Value == sheetName)
+                                {
+                                    return component;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return null;
+            }
         }
 
         private static string FormatSheetName(string sheetName)
