@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/5751684/46272484-347c0080-c51f-11e8-8fc1-ca817971c8b9.png" />
+<img src="https://user-images.githubusercontent.com/5751684/46327997-aeb98d00-c5d2-11e8-9de5-ba6f9cd1eea3.png" />
 
 <!-- campaign is no longer accepting donations
 ### Donate!
