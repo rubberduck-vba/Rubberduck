@@ -86,7 +86,8 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             if (oldSelection.HasValue)
             {
-                using (var module = _state.ProjectsProvider.Component(oldSelection.Value.QualifiedName).CodeModule)
+                var component = _state.ProjectsProvider.Component(oldSelection.Value.QualifiedName);
+                using (var module = component.CodeModule)
                 {
                     using (var pane = module.CodePane)
                     {

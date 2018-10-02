@@ -99,7 +99,8 @@ namespace Rubberduck.Settings
             var inspectOnReparse = toSerialize.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
             var oldAutoCompleteSettings = _autoCompleteProvider.Create().AutoCompletes.Select(s => Tuple.Create(s.Key, s.IsEnabled));
             var newAutoCompleteSettings = toSerialize.UserSettings.AutoCompleteSettings.AutoCompletes.Select(s => Tuple.Create(s.Key, s.IsEnabled));
-            var autoCompletesChanged = !oldAutoCompleteSettings.SequenceEqual(newAutoCompleteSettings);
+            var autoCompletesChanged = !oldAutoCompleteSettings.SequenceEqual(newAutoCompleteSettings) ||
+                                       toSerialize.UserSettings.AutoCompleteSettings.IsEnabled != _autoCompleteProvider.Create().IsEnabled;
 
             _generalProvider.Save(toSerialize.UserSettings.GeneralSettings);
             _hotkeyProvider.Save(toSerialize.UserSettings.HotkeySettings);

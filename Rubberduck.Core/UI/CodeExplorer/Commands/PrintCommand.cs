@@ -33,7 +33,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             try
             {
-                using (var codeModule = _projectsProvider.Component(node.Declaration.QualifiedName.QualifiedModuleName).CodeModule)
+                var component = _projectsProvider.Component(node.Declaration.QualifiedName.QualifiedModuleName);
+                using (var codeModule = component.CodeModule)
                 {
                     return codeModule.CountOfLines != 0;
                 }
@@ -54,7 +55,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 qualifiedComponentName.ComponentName + ".txt");
 
             List<string> text;
-            using (var codeModule = _projectsProvider.Component(qualifiedComponentName).CodeModule)
+            var component = _projectsProvider.Component(qualifiedComponentName);
+            using (var codeModule = component.CodeModule)
             {
                 text = codeModule.GetLines(1, codeModule.CountOfLines)
                     .Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();

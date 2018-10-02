@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/5751684/38372412-c3247d70-38bc-11e8-8eaa-2f2d19595a42.png" width=100% />
+<img src="https://user-images.githubusercontent.com/5751684/46327997-aeb98d00-c5d2-11e8-9de5-ba6f9cd1eea3.png" />
 
 <!-- campaign is no longer accepting donations
 ### Donate!
@@ -29,7 +29,6 @@ If you like this project and would like to thank its contributors, you are welco
  * [Installing](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing)
  * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md) using Rubberduck
  * [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
- * [User Testimonials](https://github.com/rubberduck-vba/Rubberduck/blob/next/thanks.md)
 
 ---
 
