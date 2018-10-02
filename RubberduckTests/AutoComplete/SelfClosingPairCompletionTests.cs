@@ -86,11 +86,11 @@ namespace RubberduckTests.AutoComplete
         {
             var pair = new SelfClosingPair('"', '"');
             var input = Keys.Back;
-            var original = $"{pair.OpeningChar}{pair.ClosingChar}".ToCodeString();
+            var original = $"{pair.OpeningChar}|{pair.ClosingChar}".ToCodeString();
             var expected = string.Empty;
 
             var result = Run(pair, original, input);
-            Assert.AreEqual(expected, result.Code);
+            Assert.AreEqual(expected, result?.Code);
         }
 
         [Test]

@@ -126,13 +126,14 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
                     if (closingLine == pair.OpeningChar.ToString())
                     {
-                        lines = lines.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                        lines[closingTokenPosition.EndLine] = string.Empty;
                     }
                     else
                     {
                         var openingLine = lines[original.CaretPosition.StartLine].Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
                         lines[original.CaretPosition.StartLine] = openingLine;
                     }
+                    lines = lines.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
 
                     return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
                 }
