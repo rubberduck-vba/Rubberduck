@@ -479,8 +479,23 @@ namespace Rubberduck.Navigation.CodeExplorer
                 SwitchNodeState(item, expandedState);
             }
         }
-        
 
+        public ObservableCollection<double> FontSizes { get; } = new ObservableCollection<double> { 8, 10, 12, 14, 16 };
+
+        private double _fontSize = 10;
+        public double FontSize
+        {
+            get => _fontSize;
+            set
+            {
+                if (!_fontSize.Equals(value))
+                {
+                    _fontSize = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
         public ReparseCommand RefreshCommand { get; set; }
 
         public OpenCommand OpenCommand { get; set; }
