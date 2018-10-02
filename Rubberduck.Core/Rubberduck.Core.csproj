@@ -10,7 +10,7 @@
     <DocumentationFile>bin\Debug\Rubberduck.Core.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
-    <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
+    <!--<ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>-->
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
@@ -104,7 +104,7 @@
 
   <!--BEGIN XAML WORKAROUND SECTION -->
   <ItemGroup>
-    <Compile Include="$(IntermediateOutputPath)**\*.g.cs" Visible="false" />
+    <!--<Compile Include="$(IntermediateOutputPath)**\*.g.cs" Visible="false" />-->
     <Page Include="**\*.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
