@@ -110,6 +110,7 @@
     <Compile Include="CodeAnalysis\CodeMetrics\LineCountTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspectionTests.cs" />
+    <Compile Include="Inspections\ModuleWithoutFolderInspectionTests.cs" />
     <Compile Include="Inspections\UnreachableCase\ExpressionFilterUnitTests.cs" />
     <Compile Include="Inspections\UnreachableCase\ParseTreeExpressionEvaluatorUnitTests.cs" />
     <Compile Include="Inspections\UnreachableCase\ParseTreeValueUnitTests.cs" />

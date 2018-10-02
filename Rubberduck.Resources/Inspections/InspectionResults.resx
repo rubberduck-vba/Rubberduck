@@ -363,4 +363,7 @@
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Annotation '{0}' is duplicated.</value>
   </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Module '{0}' has no '@Folder' annotation</value>
+  </data>
 </root>
