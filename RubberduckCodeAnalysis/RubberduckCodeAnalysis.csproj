@@ -3,20 +3,15 @@
   <PropertyGroup>
     <Title>Rubberduck Code Analysis</Title>
     <Description>Internal Analyzer to enforce standards for Rubberduck solution's codebase</Description>
-    <Company>Rubberduck-VBA</Company>
     <Copyright>Copyright © 2018</Copyright>
     <Product>RubberduckCodeAnalysis</Product>
     <RootNamespace>RubberduckCodeAnalysis</RootNamespace>
     <AssemblyName>RubberduckCodeAnalysis</AssemblyName>
     <!-- default to release, since this is code analysis. we want it fast -->
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Configuration>Release</Configuration>
     <ProjectGuid>{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net46</TargetFramework>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>

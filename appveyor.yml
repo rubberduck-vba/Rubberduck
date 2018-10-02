@@ -48,6 +48,7 @@ before_build:
   - nuget restore
 build:
   verbosity: minimal
+  project: Rubberduck.sln
 
 test_script:
   # we use -returntargetcode to fail the build if tests fail
