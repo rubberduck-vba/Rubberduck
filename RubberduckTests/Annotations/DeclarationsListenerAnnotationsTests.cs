@@ -148,8 +148,7 @@ End Function";
         public void AnnotationsRightAboveFirstMemberAreNotModuleAnnotations_WithoutDeclarationOnTop()
         {
             const string inputCode =
-                @"
-'@TestMethod
+                @"'@TestMethod
 '@Enumerator 17, _
 12 _
 @DefaultMember
@@ -221,6 +220,30 @@ End Function";
                 var moduleDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
 
                 var expectedAnnotationCount = 2;
+                var actualAnnotationCount = moduleDeclaration.Annotations.Count();
+
+                Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
+            }
+        }
+
+        [Test]
+        public void AllAnnotationsAreModuleAnnotationsIfThereIsNoBody()
+        {
+            const string inputCode =
+                @"
+'@TestModule
+'@Folder(""Test"")
+'SomeComment
+'@Enumerator 17, _
+12 _
+@DefaultMember
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var moduleDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+
+                var expectedAnnotationCount = 4;
                 var actualAnnotationCount = moduleDeclaration.Annotations.Count();
 
                 Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
