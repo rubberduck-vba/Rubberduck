@@ -113,6 +113,22 @@
   </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 
+  <!-- BEGIN WINDOWS FORMS WORKAROUND SECTION -->
+  <ItemGroup>
+    <Compile Update="**\*Window.cs" SubType="Form" />
+    <Compile Update="**\*Dialog.cs" SubType="Form" />
+    <Compile Update="**\SettingsForm.cs" SubType="Form" />
+    <Compile Update="**\SimpleListControl.cs" SubType="Form" />
+    <Compile Update="**\Splash.cs" SubType="Form" />
+    <Compile Update="**\*.Designer.cs">
+      <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="**\*.resx">
+      <DependentUpon>%(Filename).cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <!-- END WINDOWS FORMS WORKAROUND SECTION -->
+
   <!--BEGIN XAML WORKAROUND SECTION -->
   <ItemGroup>
     <Compile Include="$(IntermediateOutputPath)**\*.g.cs" Visible="false" />
