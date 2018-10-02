@@ -107,7 +107,7 @@ namespace Rubberduck.Parsing.Symbols
             return annotations.ToList();
         }
 
-        private IEnumerable<IAnnotation> FindAnnotations(int line)
+        private IEnumerable<IAnnotation> FindMemberAnnotations(int firstMemberLine)
         {
             if (_annotations == null)
             {
@@ -117,16 +117,17 @@ namespace Rubberduck.Parsing.Symbols
             var annotations = new List<IAnnotation>();
 
             // VBE 1-based indexing
-            for (var i = line - 1; i >= 1; i--)
+            for (var currentLine = firstMemberLine - 1; currentLine >= 1; currentLine--)
             {
-                var lineAnnotations = _annotations.Where(a => a.QualifiedSelection.Selection.StartLine == i);
-
-                if (!lineAnnotations.Any())
+                if (!_annotations.Any(annotation => annotation.QualifiedSelection.Selection.StartLine <= currentLine
+                                                        && annotation.QualifiedSelection.Selection.EndLine >= currentLine))
                 {
                     break;
                 }
 
-                annotations.AddRange(lineAnnotations);
+                var annotationsStartingOnCurrentLine = _annotations.Where(a => a.QualifiedSelection.Selection.StartLine == currentLine);
+
+                annotations.AddRange(annotationsStartingOnCurrentLine);
             }
 
             return annotations;
@@ -225,7 +226,7 @@ namespace Rubberduck.Parsing.Symbols
                 _attributes.TryGetValue(key, out var attributes);
                 _membersAllowingAttributes.TryGetValue(key, out var attributesPassContext);
 
-                var annotations = FindAnnotations(selection.StartLine);
+                var annotations = FindMemberAnnotations(selection.StartLine);
                 switch (declarationType)
                 {
                     case DeclarationType.Procedure:
@@ -821,7 +822,7 @@ namespace Rubberduck.Parsing.Symbols
                 asTypeName,
                 asTypeClause,
                 typeHint,
-                FindAnnotations(constStmt.Start.Line),
+                FindMemberAnnotations(constStmt.Start.Line),
                 accessibility,
                 DeclarationType.Constant,
                 value,
