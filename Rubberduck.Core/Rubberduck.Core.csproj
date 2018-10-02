@@ -6,30 +6,13 @@
     <Title>Rubberduck.Core</Title>
     <Product>Rubberduck.Core</Product>
     <Copyright>Copyright © 2014-2018</Copyright>
-    <Company>Rubbberduck-VBA</Company>
-    <AssemblyVersion>2.2.*</AssemblyVersion>
-    <Deterministic>false</Deterministic>
-    <LangVersion>7.2</LangVersion>
-    <TargetFramework>net46</TargetFramework>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A1587EAC-7B54-407E-853F-4C7493D0323E}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
     <DocumentationFile>bin\Debug\Rubberduck.Core.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\DebugAccess\</OutputPath>
@@ -77,9 +60,6 @@
     <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckCodeAnalysis.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Antlr4.Runtime">
       <Version>4.6.4</Version>
     </PackageReference>
@@ -105,14 +85,7 @@
       <Version>2.0.20525</Version>
     </PackageReference>
   </ItemGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-
+  
   <!-- BEGIN WINDOWS FORMS WORKAROUND SECTION -->
   <ItemGroup>
     <Compile Update="**\*Window.cs" SubType="Form" />

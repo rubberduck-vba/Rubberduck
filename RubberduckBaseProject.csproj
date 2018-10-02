@@ -7,12 +7,18 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <TargetFramework>net46</TargetFramework>
     <LangVersion>7.2</LangVersion>
-    <SolutionDir>$(MSBuildProjectDirectory)\</SolutionDir>
-    <AssemblyVersion>2.2.*</AssemblyVersion>
-    <Deterministic>False</Deterministic>
+    <SolutionDir>$(MSBuildProjectDirectory)</SolutionDir>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputPath>bin\$(Configuration)\</OutputPath>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(AssemblyVersion)' == ''">
+    <AssemblyVersion>2.2.*</AssemblyVersion>
+    <FileVersion Condition=" '$(FileVersion)' == '' ">2.2.*</FileVersion>
+    <Deterministic>False</Deterministic>
   </PropertyGroup>
 
   <ItemGroup>

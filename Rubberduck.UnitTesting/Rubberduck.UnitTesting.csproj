@@ -4,21 +4,10 @@
     <Title>Rubberduck.UnitTesting</Title>
     <Product>Rubberduck.UnitTesting</Product>
     <Copyright>Copyright © 2018</Copyright>
-    <AssemblyVersion>2.2.*</AssemblyVersion>
     <ProjectGuid>{68F55404-32CA-4414-96B8-E284F3B1F846}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <Deterministic>false</Deterministic>
-    <TargetFramework>net46</TargetFramework>
-    <LangVersion>7.2</LangVersion>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -40,9 +29,6 @@
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime">

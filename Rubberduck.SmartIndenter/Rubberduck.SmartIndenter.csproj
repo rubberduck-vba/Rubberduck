@@ -4,20 +4,10 @@
     <Title>Rubberduck.SmartIndenter</Title>
     <Product>Rubberduck.SmartIndenter</Product>
     <Copyright>Copyright © 2015-2018</Copyright>
-    <AssemblyVersion>2.2.*</AssemblyVersion>
     <ProjectGuid>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <Deterministic>false</Deterministic>
-    <TargetFramework>net46</TargetFramework>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+  
   <ItemGroup>
     <Reference Include="Microsoft.Vbe.Interop, Version=12.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <SpecificVersion>False</SpecificVersion>
@@ -47,9 +37,6 @@
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog">

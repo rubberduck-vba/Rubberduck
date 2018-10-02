@@ -1,22 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Company>Rubberduck-VBA</Company>
     <Product>Rubberduck.API</Product>
     <Description>Rubberduck Reflection API</Description>
     <Copyright>Copyright © 2018</Copyright>
-    <AssemblyVersion>2.1.*</AssemblyVersion>
-    <TargetFramework>net46</TargetFramework>
     <ProjectGuid>{AC1B4A57-364A-4F90-A0CD-6EE818349CE5}</ProjectGuid>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <Deterministic>false</Deterministic>
+    <!-- 
+    FIXME: Special-Case AssemblyVersion and/or FileVersion because COM-Registration issues?!
+    -->
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
     <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj" />
@@ -26,8 +20,5 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
 </Project>

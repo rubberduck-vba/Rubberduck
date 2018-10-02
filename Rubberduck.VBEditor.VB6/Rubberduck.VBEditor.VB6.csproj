@@ -4,20 +4,10 @@
     <Title>Rubberduck.VBEditor.VB6</Title>
     <Product>Rubberduck.VBEditor.VB6</Product>
     <Copyright>Copyright © 2018</Copyright>
-    <AssemblyVersion>2.2.*</AssemblyVersion>
     <ProjectGuid>{5D683117-21F1-4A01-A0C7-6AE6F30A16A7}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <Deterministic>false</Deterministic>
-    <TargetFramework>net46</TargetFramework>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+  
   <ItemGroup>
     <Reference Include="Microsoft.Vbe.Interop.VB6">
       <HintPath>..\libs\Microsoft.Vbe.Interop.VB6.dll</HintPath>
@@ -46,9 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog">

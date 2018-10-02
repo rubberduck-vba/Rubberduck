@@ -3,24 +3,14 @@
   <PropertyGroup>
     <RootNamespace>RubberduckTestsCodeAnalysis</RootNamespace>
     <AssemblyName>RubberduckTestsCodeAnalysis</AssemblyName>
-    <!-- default ot release because this is an analyzer -->
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <!-- enforce release because this is an analyzer -->
+    <Configuration>Release</Configuration>
     <ProjectGuid>{E9FC6518-F9E8-4E57-BD28-583A9EA69297}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <TargetFramework>net46</TargetFramework>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <PlatformTarget Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />

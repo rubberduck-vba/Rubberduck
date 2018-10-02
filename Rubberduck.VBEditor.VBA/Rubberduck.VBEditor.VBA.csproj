@@ -4,20 +4,10 @@
     <Title>Rubberduck.VBEditor.VBA</Title>
     <Product>Rubberduck.VBEditor.VBA</Product>
     <Copyright>Copyright © 2018</Copyright>
-    <AssemblyVersion>2.2.*</AssemblyVersion>
     <ProjectGuid>{D488071E-EDCB-4601-B734-1A3109ED903C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <Deterministic>false</Deterministic>
-    <TargetFramework>net46</TargetFramework>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <ItemGroup>
     <Reference Include="Autodesk.AutoCAD.Interop">
       <HintPath>..\libs\Autodesk.AutoCAD.Interop.dll</HintPath>
@@ -122,9 +112,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="NLog">

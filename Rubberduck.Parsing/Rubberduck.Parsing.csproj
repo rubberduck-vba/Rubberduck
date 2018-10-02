@@ -3,30 +3,15 @@
   <PropertyGroup>
     <AssemblyName>Rubberduck.Parsing</AssemblyName>
     <Title>Rubberduck.Parsing</Title>
-    <Company>Rubberduck-VBA</Company>
     <Product>Rubberduck.Parsing</Product>
     <Copyright>Copyright © 2015-2016</Copyright>
-    <AssemblyVersion>2.2.*</AssemblyVersion>
-    <Deterministic>false</Deterministic>
-    <LangVersion>7.2</LangVersion>
-    <TargetFramework>net46</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup>
     <ProjectGuid>{A4A618E1-CBCA-435F-9C6C-5181E030ADFC}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <WarningLevel>1</WarningLevel>
     <UseVSHostingProcess>true</UseVSHostingProcess>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
     <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
@@ -62,9 +47,6 @@
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Antlr4">
       <Version>4.6.4</Version>
     </PackageReference>
@@ -84,10 +66,4 @@
       <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
 </Project>

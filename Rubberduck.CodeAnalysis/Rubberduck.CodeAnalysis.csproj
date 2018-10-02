@@ -1,31 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Company>Rubberduck-VBA</Company>
     <Product>Rubberduck.CodeAnalysis</Product>
     <Description>Assembly Containing the Code Analysis features exposed by Rubberduck</Description>
     <Copyright>Copyright © 2017-2018</Copyright>
     <AssemblyName>Rubberduck.CodeAnalysis</AssemblyName>
     <RootNamespace>Rubberduck.Inspections</RootNamespace>
-    <AssemblyVersion>2.2.*</AssemblyVersion>
-    <TargetFramework>net46</TargetFramework>
     <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <OutputType>Library</OutputType>
-    <LangVersion>7.2</LangVersion>
-    <!-- 
-      FIXME consider the implications and possibly fall back to 
-      explicitly specifying a build version through an env variable or similar
-      using a -local suffix for dev-builds?
-     -->
-    <Deterministic>False</Deterministic>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -62,9 +46,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Antlr4.Runtime">

@@ -6,18 +6,9 @@
     <ProjectGuid>{4B9BD3FE-DDC8-4842-BC3D-B8EF43011F0C}</ProjectGuid>
     <RootNamespace>Rubberduck.Deployment</RootNamespace>
     <AssemblyName>Rubberduck.Deployment</AssemblyName>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <TargetFramework>net46</TargetFramework>
-    <LanguageLevel>7.2</LanguageLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>bin\Debug\</OutputPath>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -34,17 +25,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj" />
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
-    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
-      <Aliases></Aliases>
-    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj" />
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
     <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj" />
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="olewoo">

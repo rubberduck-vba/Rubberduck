@@ -5,22 +5,10 @@
     <AssemblyName>Rubberduck.VBEditor</AssemblyName>
     <Title>Rubberduck.VBEditor</Title>
     <Product>Rubberduck.VBEditor</Product>
-    <Company>Rubberduck-VBA</Company>
     <Copyright>Copyright © 2015-2018</Copyright>
-    <AssemblyVersion>2.2.*</AssemblyVersion>
     <ProjectGuid>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <Deterministic>false</Deterministic>
-    <TargetFramework>net46</TargetFramework>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
   <ItemGroup>
     <Reference Include="CustomMarshalers" />
     <Reference Include="Microsoft.CSharp" />
@@ -39,9 +27,6 @@
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
