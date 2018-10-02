@@ -1,8 +1,7 @@
-﻿using Rubberduck.VBEditor;
-using System;
+﻿using System;
 using System.Diagnostics;
 
-namespace Rubberduck.Common
+namespace Rubberduck.VBEditor
 {
     public class TestCodeString : CodeString
     {
@@ -66,6 +65,32 @@ namespace Rubberduck.Common
         /// </summary>
         public Selection CaretPosition { get; }
         /// <summary>
+        /// Gets the 0-based index of the caret position in the flattened <see cref="Code"/> string.
+        /// </summary>
+        public int CaretCharIndex
+        {
+            get
+            {
+                var i = 0;
+                for (var line = 0; line <= CaretPosition.StartLine; line++)
+                {
+                    if (line < CaretPosition.StartLine)
+                    {
+                        i += Lines[line].Length;
+                    }
+                    else
+                    {
+                        i += CaretPosition.StartColumn;
+                        return i;
+                    }
+
+                    i += 2; // "\r\n"
+                }
+
+                return i;
+            }
+        }
+        /// <summary>
         /// One-based position of the code string in the containing module.
         /// </summary>
         public Selection SnippetPosition { get; }
@@ -73,6 +98,19 @@ namespace Rubberduck.Common
         /// Gets the individual <see cref="Code"/> string lines.
         /// </summary>
         public string[] Lines => Code?.Replace("\r", string.Empty).Split('\n') ?? new string[] { };
+        /// <summary>
+        /// Gets the contents of the line that is immediately before the line that contains the caret.
+        /// </summary>
+        public string PreviousLine => CaretPosition.StartLine == 0 ? null : Lines[CaretPosition.StartLine - 1];
+        /// <summary>
+        /// Gets the contents of the line that is immediately after the line that contains the caret.
+        /// </summary>
+        public string NextLine => CaretPosition.StartLine == Lines.Length ? null : Lines[CaretPosition.StartLine + 1];
+
+        /// <summary>
+        /// Gets the contents of the line that contains the caret.
+        /// </summary>
+        public string CaretLine => Lines[CaretPosition.StartLine];
 
         public CodeString ReplaceLine(int index, string content)
         {

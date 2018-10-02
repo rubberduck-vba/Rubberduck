@@ -115,11 +115,8 @@ foo = (| _
     (2 + 2) + 42 _
 )
 ".ToCodeString();
-            var expected = @"
-foo = | _
-    (2 + 2) + 42 _
-
-".ToCodeString();
+            var expected = @"foo = | _
+    (2 + 2) + 42".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
