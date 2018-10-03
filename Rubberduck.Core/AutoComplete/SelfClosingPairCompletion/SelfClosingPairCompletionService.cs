@@ -106,9 +106,13 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             {
                 if (line.Length == 2)
                 {
+                    // entire line consists in the self-closing pair itself
                     return new CodeString(string.Empty, default, Selection.Empty.ShiftRight());
                 }
-                lines[original.CaretPosition.StartLine] = line.Length == 2 ? string.Empty : line.Remove(previous, 2);
+                lines[original.CaretPosition.StartLine] = line.Length == 2
+                    ? string.Empty 
+                    : line.Remove(previous, 2);
+
                 return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
             }
 
@@ -134,6 +138,11 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                         lines[original.CaretPosition.StartLine] = openingLine;
                     }
                     lines = lines.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                    if (lines[lines.Length - 1].EndsWith(" _"))
+                    {
+                        // logical line can't end with a line continuation token...
+                        lines[lines.Length - 1] = lines[lines.Length - 1].TrimEnd(' ', '_');
+                    }
 
                     return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
                 }
