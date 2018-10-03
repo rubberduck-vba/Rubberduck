@@ -1,42 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using Rubberduck.AutoComplete.SelfClosingPairCompletion;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.AutoComplete
 {
     public class AutoCompleteService : IDisposable
     {
         private readonly IGeneralConfigService _configService;
-        private readonly List<SelfClosingPair> _selfClosingPairs = new List<SelfClosingPair>
-        {
-            new SelfClosingPair('(', ')'),
-            new SelfClosingPair('"', '"'),
-            new SelfClosingPair('[', ']'),
-            new SelfClosingPair('{', '}'),
-        };
-
         private readonly AutoCompleteKeyDownHandler _handler;
-        private readonly SelfClosingPairCompletionService _selfClosingPairCompletion;
-        private readonly ICodePaneHandler _codePaneHandler;
 
-        private AutoCompleteSettings _settings;
         private bool _popupShown;
         private bool _enabled;
         private bool _initialized;
 
-        public AutoCompleteService(IGeneralConfigService configService, SelfClosingPairCompletionService selfClosingPairCompletion, ICodePaneHandler codePaneHandler)
+        public AutoCompleteService(IGeneralConfigService configService, AutoCompleteKeyDownHandler handler)
         {
-            _handler = new AutoCompleteKeyDownHandler(codePaneHandler, ()=>_settings, ()=>_selfClosingPairs, ()=>_selfClosingPairCompletion);
-
-            _selfClosingPairCompletion = selfClosingPairCompletion;
-            _codePaneHandler = codePaneHandler;
             _configService = configService;
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
+
+            _handler = handler;
         }
 
         public void Enable()
@@ -96,8 +79,8 @@ namespace Rubberduck.AutoComplete
         
         public void ApplyAutoCompleteSettings(Configuration config)
         {
-            _settings = config.UserSettings.AutoCompleteSettings;
-            if (_settings.IsEnabled)
+            _handler.Settings = config.UserSettings.AutoCompleteSettings;
+            if (_handler.Settings.IsEnabled)
             {
                 Enable();
             }

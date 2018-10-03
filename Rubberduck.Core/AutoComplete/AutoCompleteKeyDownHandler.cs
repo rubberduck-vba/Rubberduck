@@ -14,20 +14,24 @@ namespace Rubberduck.AutoComplete
 {
     public class AutoCompleteKeyDownHandler
     {
-        private readonly ICodePaneHandler _codePane;
-        private readonly Func<AutoCompleteSettings> _getSettings;
-        private readonly Func<List<SelfClosingPair>> _getClosingPairs;
-        private readonly Func<SelfClosingPairCompletionService> _getClosingPairCompletion;
+        private static readonly IEnumerable<SelfClosingPair> SelfClosingPairs = new List<SelfClosingPair>
+        {
+            new SelfClosingPair('(', ')'),
+            new SelfClosingPair('"', '"'),
+            new SelfClosingPair('[', ']'),
+            new SelfClosingPair('{', '}'),
+        };
 
-        public AutoCompleteKeyDownHandler(ICodePaneHandler codePane, Func<AutoCompleteSettings> getSettings,
-            Func<List<SelfClosingPair>> getClosingPairs,
-            Func<SelfClosingPairCompletionService> getClosingPairCompletion)
+        private readonly ICodePaneHandler _codePane;
+        private readonly SelfClosingPairCompletionService _scpService;
+
+        public AutoCompleteKeyDownHandler(ICodePaneHandler codePane, SelfClosingPairCompletionService scpService)
         {
             _codePane = codePane;
-            _getSettings = getSettings;
-            _getClosingPairs = getClosingPairs;
-            _getClosingPairCompletion = getClosingPairCompletion;
+            _scpService = scpService;
         }
+
+        public AutoCompleteSettings Settings { get; internal set; }
 
         public void Run(AutoCompleteEventArgs e)
         {
@@ -64,7 +68,7 @@ namespace Rubberduck.AutoComplete
         /// </summary>
         private void HandleSmartConcat(AutoCompleteEventArgs e)
         {
-            if (!_getSettings().EnableSmartConcat || e.Character != '\r')
+            if (e.Character != '\r' || (!Settings?.EnableSmartConcat ?? true))
             {
                 return;
             }
@@ -120,18 +124,16 @@ namespace Rubberduck.AutoComplete
         private void HandleSelfClosingPairs(AutoCompleteEventArgs e)
         {
             var original = _codePane.GetCurrentLogicalLine(e.Module);
-            var scpService = _getClosingPairCompletion();
-
-            foreach (var selfClosingPair in _getClosingPairs())
+            foreach (var selfClosingPair in SelfClosingPairs)
             {
                 CodeString result;
                 if (e.Character == '\b' && original.CaretPosition.StartColumn > 1)
                 {
-                    result = scpService.Execute(selfClosingPair, original, Keys.Back);
+                    result = _scpService.Execute(selfClosingPair, original, Keys.Back);
                 }
                 else
                 {
-                    result = scpService.Execute(selfClosingPair, original, e.Character);
+                    result = _scpService.Execute(selfClosingPair, original, e.Character);
                 }
 
                 if (!result?.Equals(default) ?? false)
@@ -139,11 +141,11 @@ namespace Rubberduck.AutoComplete
                     var prettified = _codePane.Prettify(e.Module, original);
                     if (e.Character == '\b' && original.CaretPosition.StartColumn > 1)
                     {
-                        result = scpService.Execute(selfClosingPair, prettified, Keys.Back);
+                        result = _scpService.Execute(selfClosingPair, prettified, Keys.Back);
                     }
                     else
                     {
-                        result = scpService.Execute(selfClosingPair, prettified, e.Character);
+                        result = _scpService.Execute(selfClosingPair, prettified, e.Character);
                     }
 
                     var currentLine = result.Lines[result.CaretPosition.StartLine];

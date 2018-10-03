@@ -1,6 +1,5 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Parsing;
@@ -77,7 +76,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
         {
             var isBalanced = original.Code.Count(c => c == pair.OpeningChar) ==
                              original.Code.Count(c => c == pair.ClosingChar);
-            var nextIsClosingChar = original.CaretLine.Length >= original.CaretCharIndex &&  original.CaretLine[original.CaretCharIndex] == pair.ClosingChar;
+            var nextIsClosingChar = original.CaretLine.Length > original.CaretCharIndex &&  original.CaretLine[original.CaretCharIndex] == pair.ClosingChar;
 
             if (isBalanced && nextIsClosingChar)
             {
