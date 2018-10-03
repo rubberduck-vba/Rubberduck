@@ -1321,4 +1321,16 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="Language_CS" xml:space="preserve">
     <value>Czech</value>
   </data>
+  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
+    <value>Ignore</value>
+  </data>
+  <data name="EmptyLineHandling_Indent" xml:space="preserve">
+    <value>Indent</value>
+  </data>
+  <data name="EmptyLineHandling_Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
+    <value>Empty line handling:</value>
+  </data>
 </root>

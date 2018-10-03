@@ -12,11 +12,22 @@
         <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility"/>
         <converters:EndOfLineCommentStyleToTextConverter x:Key="LocalizedEndOfLineCommentStyles"/>
         <converters:EndOfLineCommentStyleValueTextToEnumValueConverter x:Key="EndOfLineCommentStyleTextToEnumValue"/>
+
+        <converters:EmptyLineHandlingToTextConverter x:Key="LocalizedEmptyLineHandlers"/>
+        <converters:EmptyLineHandlingValueTextToEnumValueConverter x:Key="EmptyLineHandlingValueTextToEnumValue"/>
+
         <ObjectDataProvider x:Key="CommentStyles"
                  MethodName="GetValues"
                  ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:TypeExtension Type="{x:Type smartIndenter:EndOfLineCommentStyle}"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="EmptyLineOptions"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:TypeExtension Type="{x:Type smartIndenter:EmptyLineHandling}"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>
@@ -299,6 +310,13 @@
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
+                        <Label FontWeight="SemiBold" HorizontalAlignment="Left">
+                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_EmptyLineHeading"/>
+                        </Label>
+                        <ComboBox Margin="5,0,0,5"
+                                  HorizontalAlignment="Left"
+                                  ItemsSource="{Binding Source={StaticResource EmptyLineOptions},Converter={StaticResource LocalizedEmptyLineHandlers},UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding EmptyLineHandlingMethod,Mode=TwoWay,Converter={StaticResource EmptyLineHandlingValueTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </Expander>
                 <Expander Grid.Row="3"

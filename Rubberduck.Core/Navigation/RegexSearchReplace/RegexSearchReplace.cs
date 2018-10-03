@@ -89,7 +89,11 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private void SetSelection(RegexSearchResult item)
         {
-            item.Module.CodePane.Selection = item.Selection;
+            var module = item.Module;
+            using (var codePane = module.CodePane)
+            {
+                codePane.Selection = item.Selection;
+            }
         }
 
         private List<RegexSearchResult> SearchSelection(string searchPattern)

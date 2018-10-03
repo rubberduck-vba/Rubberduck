@@ -363,6 +363,7 @@
     <EmbeddedResource Include="CodeExplorer\CodeExplorerUI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CodeExplorerUI.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CodeExplorer\CodeExplorerUI.cs.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

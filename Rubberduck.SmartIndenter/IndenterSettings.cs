@@ -91,6 +91,8 @@ namespace Rubberduck.SmartIndenter
 
         public virtual EndOfLineCommentStyle EndOfLineCommentStyle { get; set; }
 
+        public virtual EmptyLineHandling EmptyLineHandlingMethod { get; set; }
+
         private int _commentAlignment;
         public virtual int EndOfLineCommentColumnSpaceAlignment
         {
@@ -164,6 +166,7 @@ namespace Rubberduck.SmartIndenter
             AlignDims = false;
             AlignDimColumn = 15;
             EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
+            EmptyLineHandlingMethod = EmptyLineHandling.Ignore;
             EndOfLineCommentColumnSpaceAlignment = 50;
             IndentSpaces = tabWidth;
             VerticallySpaceProcedures = true;
@@ -195,7 +198,8 @@ namespace Rubberduck.SmartIndenter
                    EndOfLineCommentColumnSpaceAlignment == other.EndOfLineCommentColumnSpaceAlignment &&
                    IndentSpaces == other.IndentSpaces &&
                    VerticallySpaceProcedures == other.VerticallySpaceProcedures &&
-                   LinesBetweenProcedures == other.LinesBetweenProcedures;
+                   LinesBetweenProcedures == other.LinesBetweenProcedures &&
+                   EmptyLineHandlingMethod == other.EmptyLineHandlingMethod;
         }
 
         private const string LegacySettingsSubKey = @"Software\VB and VBA Program Settings\Office Automation Ltd.\Smart Indenter";
