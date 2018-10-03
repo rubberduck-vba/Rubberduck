@@ -132,6 +132,20 @@ namespace RubberduckTests.AutoComplete
             Assert.AreEqual(expected, result);
         }
 
+        [Test] // fixme: passes, but in-editor behavior seems different.
+        public void DeletingPairInLogicalLine_SelectionRemainsOnThatLine()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = @"foo = ""abc"" & _
+      ""|""".ToCodeString();
+            var expected = @"foo = ""abc"" & _
+      |".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
         [Test]
         public void DeletingMatchingPair_RemovesTrailingEmptyContinuatedLine()
         {
