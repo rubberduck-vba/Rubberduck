@@ -4,12 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
-using Rubberduck.Common;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.AutoComplete
@@ -31,76 +29,85 @@ namespace Rubberduck.AutoComplete
             _getClosingPairCompletion = getClosingPairCompletion;
         }
 
-        public void Run(QualifiedModuleName module, Selection pSelection, AutoCompleteEventArgs e)
+        public void Run(AutoCompleteEventArgs e)
         {
-            if (!pSelection.IsSingleCharacter)
+            Selection pSelection;
+            using (var pane = e.Module.CodePane)
+            {
+                pSelection = pane.Selection;
+            }
+
+            if (pSelection.LineCount > 1)
             {
                 return;
             }
 
-            HandleSmartConcat(e, module);
-            if (e.Handled)
+            var handlers = new Action<AutoCompleteEventArgs>[]
             {
-                return;
-            }
+                HandleSmartConcat,
+                HandleSelfClosingPairs
+            };
 
-            HandleSelfClosingPairs(e, module);
-            if (e.Handled)
+            foreach (var handler in handlers)
             {
-                // redundant now, bug if deleted and not reinstated later.
-                return;
+                handler.Invoke(e);
+                if (e.Handled)
+                {
+                    return;
+                }
             }
         }
 
         /// <summary>
         /// Adds a line continuation when {ENTER} is pressed inside a string literal.
         /// </summary>
-        private void HandleSmartConcat(AutoCompleteEventArgs e, QualifiedModuleName module)
+        private void HandleSmartConcat(AutoCompleteEventArgs e)
         {
-            var currentContent = _codePane.GetCurrentLogicalLine(module);
-            var shouldHandle = _getSettings().EnableSmartConcat &&
-                               e.Character == '\r' &&
-                               IsInsideStringLiteral(ref currentContent);
-            
-            var lastIndexLeftOfCaret = currentContent.Length > 2 ? currentContent.Substring(0, pSelection.StartColumn - 1).LastIndexOf('"') : 0;
-            if (shouldHandle && lastIndexLeftOfCaret > 0)
+            if (!_getSettings().EnableSmartConcat || e.Character != '\r')
             {
-                var indent = currentContent.NthIndexOf('"', 1);
+                return;
+            }
+
+            var currentContent = _codePane.GetCurrentLogicalLine(e.Module);
+            var shouldHandle = IsInsideStringLiteral(ref currentContent);
+            if (!shouldHandle)
+            {
+                return;
+            }
+            
+            var lastIndexLeftOfCaret = currentContent.Code.Length > 2 ? currentContent.Code.Substring(0, currentContent.CaretCharIndex).LastIndexOf('"') : 0;
+            if (lastIndexLeftOfCaret > 0)
+            {
+                var indent = currentContent.Code.NthIndexOf('"', 1);
                 var whitespace = new string(' ', indent);
-                var code =
-                    $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
 
-                if (e.ControlDown)
-                {
-                    code =
-                        $"{currentContent.Substring(0, pSelection.StartColumn - 1)}\" & vbNewLine & _\r\n{whitespace}\"{currentContent.Substring(pSelection.StartColumn - 1)}";
-                }
+                var autoCode = $"\" & {(e.IsControlKeyDown ? " vbNewLine & " : string.Empty)}\" _\r\n{whitespace}\"";
+                var code = $"{currentContent.Code.Substring(0, currentContent.CaretCharIndex)}{autoCode}{currentContent.Code.Substring(currentContent.CaretCharIndex + 1)}";
 
-                module.ReplaceLine(pSelection.StartLine, code);
-                using (var pane = module.CodePane)
-                {
-                    pane.Selection = new Selection(pSelection.StartLine + 1,
-                        indent + currentContent.Substring(pSelection.StartColumn - 2).Length);
-                    e.Handled = true;
-                }
+                var newContent = new CodeString(code, currentContent.CaretPosition, currentContent.SnippetPosition);
+                _codePane.SubstituteCode(e.Module, newContent);
+
+                var newSelection = new Selection(newContent.CaretPosition.StartLine + newContent.SnippetPosition.StartLine + 1,
+                                                 newContent.Code.Substring(newContent.CaretCharIndex - 1).Length + indent);
+                _codePane.SetSelection(e.Module, newSelection);
+                e.Handled = true;
             }
         }
 
-        private bool IsInsideStringLiteral(ref CodeString logicalLine)
+        private bool IsInsideStringLiteral(ref CodeString currentContent)
         {
-            var caretCharIndex = logicalLine.CaretCharIndex;
-            if (!logicalLine.Code.Substring(caretCharIndex).Contains("\"") ||
-                logicalLine.Code.StripStringLiterals().HasComment(out _))
+            if (!currentContent.Code.Substring(currentContent.CaretPosition.StartColumn).Contains("\"") ||
+                currentContent.Code.StripStringLiterals().HasComment(out _))
             {
                 return false;
             }
 
-            var leftOfCaret = logicalLine.Code.Substring(0, caretCharIndex);
-            var rightOfCaret = logicalLine.Code.Substring(Math.Min(caretCharIndex + 1, logicalLine.Code.Length - 1));
+            var leftOfCaret = currentContent.Code.Substring(0, currentContent.CaretCharIndex);
+            var rightOfCaret = currentContent.Code.Substring(Math.Min(currentContent.CaretCharIndex + 1, currentContent.Code.Length - 1));
             if (!rightOfCaret.Contains("\""))
             {
                 // the string isn't terminated, but VBE would terminate it here.
-                logicalLine += "\"";
+                currentContent = new CodeString(currentContent.Code + "\"", currentContent.CaretPosition, currentContent.SnippetPosition);
                 rightOfCaret += "\"";
             }
 
@@ -109,9 +116,9 @@ namespace Rubberduck.AutoComplete
                    (rightOfCaret.Count(c => c.Equals('"')) % 2) != 0;
         }
 
-        private void HandleSelfClosingPairs(AutoCompleteEventArgs e, QualifiedModuleName module)
+        private void HandleSelfClosingPairs(AutoCompleteEventArgs e)
         {
-            var original = _codePane.GetCurrentLogicalLine(module);
+            var original = _codePane.GetCurrentLogicalLine(e.Module);
             var scpService = _getClosingPairCompletion();
 
             foreach (var selfClosingPair in _getClosingPairs())
@@ -128,7 +135,7 @@ namespace Rubberduck.AutoComplete
 
                 if (!result?.Equals(default) ?? false)
                 {
-                    var prettified = _codePane.Prettify(module, original);
+                    var prettified = _codePane.Prettify(e.Module, original);
                     if (e.Character == '\b' && original.CaretPosition.StartColumn > 1)
                     {
                         result = scpService.Execute(selfClosingPair, prettified, Keys.Back);
@@ -146,7 +153,7 @@ namespace Rubberduck.AutoComplete
                         result = new CodeString(result.Code, result.CaretPosition.ShiftLeft(), result.SnippetPosition);
                     }
 
-                    var reprettified = _codePane.Prettify(module, result);
+                    var reprettified = _codePane.Prettify(e.Module, result);
                     var offByOne = reprettified.Code.Length - result.Code.Length == 1;
                     if (!string.IsNullOrWhiteSpace(currentLine) && !offByOne && result.Code != reprettified.Code)
                     {
@@ -156,9 +163,8 @@ namespace Rubberduck.AutoComplete
                     var finalSelection = new Selection(result.SnippetPosition.StartLine,
                             result.CaretPosition.StartColumn + 1)
                         .ShiftRight(offByOne ? 1 : 0);
-                    _codePane.SetSelection(module, finalSelection);
+                    _codePane.SetSelection(e.Module, finalSelection);
                     e.Handled = true;
-                    return;
                 }
             }
         }

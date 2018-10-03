@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        private void SetSelection(ICodeModule module, Selection selection)
+        public void SetSelection(ICodeModule module, Selection selection)
         {
             using (var pane = module.CodePane)
             {
@@ -51,7 +51,27 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public void SubstituteCode(QualifiedModuleName module, string newCode) // todo: overload that takes a CodeString to set the selection back?
+        public void SubstituteCode(ICodeModule module, CodeString newCode)
+        {
+            module.DeleteLines(newCode.SnippetPosition);
+            module.InsertLines(newCode.SnippetPosition.StartLine, newCode.Code);
+        }
+
+        public void SubstituteCode(QualifiedModuleName module, CodeString newCode)
+        {
+            var component = _projectsProvider.Component(module);
+            if (component == null)
+            {
+                return;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                SubstituteCode(codeModule, newCode);
+            }
+        }
+
+        public void SubstituteCode(QualifiedModuleName module, string newCode)
         {
             var component = _projectsProvider.Component(module);
             if (component == null)
@@ -66,6 +86,55 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
+        public CodeString Prettify(ICodeModule module, CodeString original)
+        {
+            var originalCode = original.Code.Replace("\r", string.Empty).Split('\n');
+            var originalPosition = original.CaretPosition.StartColumn;
+            var originalNonWhitespaceCharacters = 0;
+            for (var i = 0; i <= originalPosition - 1; i++)
+            {
+                if (originalCode[original.CaretPosition.StartLine][i] != ' ')
+                {
+                    originalNonWhitespaceCharacters++;
+                }
+            }
+
+            var indent = originalCode[original.CaretPosition.StartLine].TakeWhile(c => c == ' ').Count();
+
+            module.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount);
+            module.InsertLines(original.SnippetPosition.StartLine, string.Join("\r\n", originalCode));
+
+            var prettifiedCode = module.GetLines(original.SnippetPosition)
+                                           .Replace("\r", string.Empty)
+                                           .Split('\n');
+
+            var prettifiedNonWhitespaceCharacters = 0;
+            var prettifiedCaretCharIndex = 0;
+            for (var i = 0; i < prettifiedCode[original.CaretPosition.StartLine].Length; i++)
+            {
+                if (prettifiedCode[original.CaretPosition.StartLine][i] != ' ')
+                {
+                    prettifiedNonWhitespaceCharacters++;
+                    if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters)
+                    {
+                        prettifiedCaretCharIndex = i;
+                        break;
+                    }
+                }
+            }
+
+            var prettifiedPosition = new Selection(
+                    original.SnippetPosition.StartLine - 1 + original.CaretPosition.StartLine,
+                    prettifiedCode[original.CaretPosition.StartLine].Trim().Length == 0
+                        ? indent
+                        : Math.Min(prettifiedCode[original.CaretPosition.StartLine].Length, prettifiedCaretCharIndex + 1))
+                .ToOneBased();
+
+            SetSelection(module, prettifiedPosition);
+
+            return GetPrettifiedCodeString(original, prettifiedPosition, prettifiedCode);
+        }
+
         public CodeString Prettify(QualifiedModuleName module, CodeString original)
         {
             var component = _projectsProvider.Component(module);
@@ -76,51 +145,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
             using (var codeModule = component.CodeModule)
             {
-                var originalCode = original.Code.Replace("\r", string.Empty).Split('\n');
-                var originalPosition = original.CaretPosition.StartColumn;
-                var originalNonWhitespaceCharacters = 0;
-                for (var i = 0; i <= originalPosition - 1; i++)
-                {
-                    if (originalCode[original.CaretPosition.StartLine][i] != ' ')
-                    {
-                        originalNonWhitespaceCharacters++;
-                    }
-                }
-
-                var indent = originalCode[original.CaretPosition.StartLine].TakeWhile(c => c == ' ').Count();
-
-                codeModule.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount);
-                codeModule.InsertLines(original.SnippetPosition.StartLine, string.Join("\r\n", originalCode));
-
-                var prettifiedCode = codeModule.GetLines(original.SnippetPosition)
-                                               .Replace("\r", string.Empty)
-                                               .Split('\n');
-
-                var prettifiedNonWhitespaceCharacters = 0;
-                var prettifiedCaretCharIndex = 0;
-                for (var i = 0; i < prettifiedCode[original.CaretPosition.StartLine].Length; i++)
-                {
-                    if (prettifiedCode[original.CaretPosition.StartLine][i] != ' ')
-                    {
-                        prettifiedNonWhitespaceCharacters++;
-                        if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters)
-                        {
-                            prettifiedCaretCharIndex = i;
-                            break;
-                        }
-                    }
-                }
-
-                var prettifiedPosition = new Selection(
-                        original.SnippetPosition.StartLine - 1 + original.CaretPosition.StartLine,
-                        prettifiedCode[original.CaretPosition.StartLine].Trim().Length == 0
-                            ? indent
-                            : Math.Min(prettifiedCode[original.CaretPosition.StartLine].Length, prettifiedCaretCharIndex + 1))
-                    .ToOneBased();
-
-                SetSelection(codeModule, prettifiedPosition);
-
-                return GetPrettifiedCodeString(original, prettifiedPosition, prettifiedCode);
+                return Prettify(codeModule, original);
             }
         }
 
@@ -137,69 +162,91 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             return result;
         }
 
-        public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
+        public CodeString GetCurrentLogicalLine(ICodeModule module)
         {
-            var lines = new List<(int Line, string Content)>();
-            var component = _projectsProvider.Component(module);
-
-            using (var codeModule = component.CodeModule)
-            using (var pane = codeModule.CodePane)
+            Selection pSelection;
+            using (var pane = module.CodePane)
             {
-                var pSelection = pane.Selection;
+                pSelection = pane.Selection;
+            }
 
-                var currentLineIndex = pSelection.StartLine;
-                var currentLine = codeModule.GetLines(currentLineIndex, 1);
+            var currentLineIndex = pSelection.StartLine;
+            var currentLine = module.GetLines(currentLineIndex, 1);
 
-                var caretLine = (currentLineIndex, currentLine);
-                lines.Add(caretLine);
+            var caretLine = (currentLineIndex, currentLine);
+            var lines = new List<(int Line, string Content)> {caretLine};
 
-                while (currentLineIndex >= 1)
+            while (currentLineIndex >= 1)
+            {
+                currentLineIndex--;
+                if (currentLineIndex >= 1)
                 {
-                    currentLineIndex--;
-                    if (currentLineIndex >= 1)
+                    currentLine = module.GetLines(currentLineIndex, 1);
+                    if (currentLine.Replace("\r\n", string.Empty).EndsWith(" _"))
                     {
-                        currentLine = codeModule.GetLines(currentLineIndex, 1);
-                        if (currentLine.Replace("\r\n", string.Empty).EndsWith(" _"))
-                        {
-                            lines.Insert(0, (currentLineIndex, currentLine));
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-                }
-
-                currentLineIndex = pSelection.StartLine;
-                currentLine = caretLine.currentLine;
-                while (currentLineIndex <= codeModule.CountOfLines &&
-                       currentLine.Replace("\r\n", string.Empty).EndsWith(" _"))
-                {
-                    currentLineIndex++;
-                    if (currentLineIndex <= codeModule.CountOfLines)
-                    {
-                        currentLine = codeModule.GetLines(currentLineIndex, 1);
-                        lines.Add((currentLineIndex, currentLine));
+                        lines.Insert(0, (currentLineIndex, currentLine));
                     }
                     else
                     {
                         break;
                     }
                 }
+            }
 
-                var logicalLine = string.Join("\r\n", lines.Select(e => e.Content));
-                var zCaretLine = lines.IndexOf(caretLine);
-                var zCaretColumn = pSelection.StartColumn - 1;
+            currentLineIndex = pSelection.StartLine;
+            currentLine = caretLine.currentLine;
+            while (currentLineIndex <= module.CountOfLines &&
+                   currentLine.Replace("\r\n", string.Empty).EndsWith(" _"))
+            {
+                currentLineIndex++;
+                if (currentLineIndex <= module.CountOfLines)
+                {
+                    currentLine = module.GetLines(currentLineIndex, 1);
+                    lines.Add((currentLineIndex, currentLine));
+                }
+                else
+                {
+                    break;
+                }
+            }
 
-                var startLine = lines[0].Line;
-                var endLine = lines[lines.Count - 1].Line;
+            var logicalLine = string.Join("\r\n", lines.Select(e => e.Content));
+            var zCaretLine = lines.IndexOf(caretLine);
+            var zCaretColumn = pSelection.StartColumn - 1;
 
-                var result = new CodeString(
-                    logicalLine, 
-                    new Selection(zCaretLine, zCaretColumn),
-                    new Selection(startLine, 1, endLine, lines[lines.Count - 1].Content.Length));
+            var startLine = lines[0].Line;
+            var endLine = lines[lines.Count - 1].Line;
 
-                return result;
+            var result = new CodeString(
+                logicalLine,
+                new Selection(zCaretLine, zCaretColumn),
+                new Selection(startLine, 1, endLine, lines[lines.Count - 1].Content.Length));
+
+            return result;
+
+        }
+
+        public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
+        {
+            var component = _projectsProvider.Component(module);
+            if (component == null)
+            {
+                return null;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                return GetCurrentLogicalLine(codeModule);
+            }
+        }
+
+        public Selection GetSelection(QualifiedModuleName module)
+        {
+            using (var component = _projectsProvider.Component(module))
+            using (var codeModule = component.CodeModule)
+            using (var pane = codeModule.CodePane)
+            {
+                return pane.Selection;
             }
         }
     }

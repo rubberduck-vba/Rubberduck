@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
 using Rubberduck.Settings;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.AutoComplete
 {
@@ -20,19 +22,19 @@ namespace Rubberduck.AutoComplete
 
         private readonly AutoCompleteKeyDownHandler _handler;
         private readonly SelfClosingPairCompletionService _selfClosingPairCompletion;
-        private readonly ICodeStringPrettifier _prettifier;
+        private readonly ICodePaneHandler _codePaneHandler;
 
         private AutoCompleteSettings _settings;
         private bool _popupShown;
         private bool _enabled;
         private bool _initialized;
 
-        public AutoCompleteService(IGeneralConfigService configService, SelfClosingPairCompletionService selfClosingPairCompletion, ICodeStringPrettifier prettifier)
+        public AutoCompleteService(IGeneralConfigService configService, SelfClosingPairCompletionService selfClosingPairCompletion, ICodePaneHandler codePaneHandler)
         {
-            _handler = new AutoCompleteKeyDownHandler(()=>_settings, ()=>_selfClosingPairs, ()=>_selfClosingPairCompletion, ()=>_prettifier);
+            _handler = new AutoCompleteKeyDownHandler(codePaneHandler, ()=>_settings, ()=>_selfClosingPairs, ()=>_selfClosingPairCompletion);
 
             _selfClosingPairCompletion = selfClosingPairCompletion;
-            _prettifier = prettifier;
+            _codePaneHandler = codePaneHandler;
             _configService = configService;
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
         }
@@ -109,22 +111,12 @@ namespace Rubberduck.AutoComplete
         private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
         {
             Debug.Assert(_enabled, "KeyDown controller is executing, but auto-completion service is disabled.");
-            if (e.Character == default && !e.IsDelete)
+            if (_popupShown || e.Character == default && e.IsDeleteKey)
             {
                 return;
             }
 
-            var module = e.CodeModule;
-            var qualifiedSelection = module.GetQualifiedSelection();
-            Debug.Assert(qualifiedSelection != null, nameof(qualifiedSelection) + " != null");
-            var pSelection = qualifiedSelection.Value.Selection;
-
-            if (_popupShown || pSelection.LineCount > 1 || e.IsDelete)
-            {
-                return;
-            }
-
-            _handler.Run(module, pSelection, e);
+            _handler.Run(e);
         }
 
         public void Dispose()
