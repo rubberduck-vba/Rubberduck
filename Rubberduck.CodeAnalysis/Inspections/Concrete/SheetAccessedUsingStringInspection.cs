@@ -101,6 +101,10 @@ namespace Rubberduck.Inspections.Concrete
             var sheetName = FormatSheetName(sheetArgumentContext.GetText());
             var project = State.Projects.First(p => p.ProjectId == reference.QualifiedName.ProjectId);
 
+
+            //return project.VBComponents.FirstOrDefault(c =>
+            //    c.Type == ComponentType.Document &&
+            //    (string)c.Properties.First(property => property.Name == "Name").Value == sheetName);
             using (var components = project.VBComponents)
             {
                 for (var i = 0; i < components.Count; i++)
@@ -108,13 +112,16 @@ namespace Rubberduck.Inspections.Concrete
                     using (var component = components[i])
                     using (var properties = component.Properties)
                     {
-                        for (var j = 0; j < properties.Count; j++)
+                        if (component.Type == ComponentType.Document)
                         {
-                            using (var property = properties[j])
+                            for (var j = 0; j < properties.Count; j++)
                             {
-                                if (component.Type == ComponentType.Document && property.Name == "Name" && (string)property.Value == sheetName)
+                                using (var property = properties[j])
                                 {
-                                    return component;
+                                    if (property.Name == "Name" && (string)property.Value == sheetName)
+                                    {
+                                        return component;
+                                    }
                                 }
                             }
                         }
