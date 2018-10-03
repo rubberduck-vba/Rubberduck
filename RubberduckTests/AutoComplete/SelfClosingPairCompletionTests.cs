@@ -12,13 +12,15 @@ namespace RubberduckTests.AutoComplete
         private TestCodeString Run(SelfClosingPair pair, CodeString original, char input)
         {
             var sut = new SelfClosingPairCompletionService(null);
-            return new TestCodeString(sut.Execute(pair, original, input));
+            var result = sut.Execute(pair, original, input);
+            return result != null ? new TestCodeString(result) : null;
         }
 
         private TestCodeString Run(SelfClosingPair pair, CodeString original, Keys input)
-        { 
+        {
             var sut = new SelfClosingPairCompletionService(null);
-            return new TestCodeString(sut.Execute(pair, original, input));
+            var result = sut.Execute(pair, original, input);
+            return result != null ? new TestCodeString(result) : null;
         }
 
         [Test]
@@ -94,6 +96,17 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void CanTypeClosingChar()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = pair.ClosingChar;
+            var original = "foo = |".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.IsNull(result);
+        }
+
+        [Test]
         public void DeletingOpeningCharRemovesPairedClosingChar_NestedParens()
         {
             var pair = new SelfClosingPair('(', ')');
@@ -107,6 +120,21 @@ namespace RubberduckTests.AutoComplete
 
         [Test]
         public void DeletingOpeningCharRemovesPairedClosingChar_NestedParensMultiline()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = Keys.Back;
+            var original = @"foo = (| _
+    (2 + 2) + 42)
+".ToCodeString();
+            var expected = @"foo = | _
+    (2 + 2) + 42".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DeletingMatchingPair_RemovesTrailingEmptyContinuatedLine()
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;

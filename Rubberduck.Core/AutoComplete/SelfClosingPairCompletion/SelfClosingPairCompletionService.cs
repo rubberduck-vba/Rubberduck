@@ -75,7 +75,11 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
         private CodeString HandleClosingChar(SelfClosingPair pair, CodeString original)
         {
-            if (original.Code.Count(c => c == pair.OpeningChar) == original.Code.Count(c => c == pair.ClosingChar))
+            var isBalanced = original.Code.Count(c => c == pair.OpeningChar) ==
+                             original.Code.Count(c => c == pair.ClosingChar);
+            var nextIsClosingChar = original.CaretLine.Length >= original.CaretCharIndex &&  original.CaretLine[original.CaretCharIndex] == pair.ClosingChar;
+
+            if (isBalanced && nextIsClosingChar)
             {
                 var nextPosition = original.CaretPosition.ShiftRight();
                 var newCode = original.Code;
