@@ -134,10 +134,10 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                     }
                     else
                     {
-                        var openingLine = lines[original.CaretPosition.StartLine].Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
-                        lines[original.CaretPosition.StartLine] = openingLine;
+                        var openingLine = lines[position.StartLine].Remove(position.ShiftLeft().StartColumn, 1);
+                        lines[position.StartLine] = openingLine;
                     }
-                    lines = lines.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+                    lines = lines.Where((x, i) => i <= position.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
                     if (lines[lines.Length - 1].EndsWith(" _"))
                     {
                         // logical line can't end with a line continuation token...

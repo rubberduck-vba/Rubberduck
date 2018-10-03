@@ -9,16 +9,16 @@ namespace RubberduckTests.AutoComplete
     [TestFixture]
     public class SelfClosingPairCompletionTests
     {
-        private CodeString Run(SelfClosingPair pair, CodeString original, char input)
+        private TestCodeString Run(SelfClosingPair pair, CodeString original, char input)
         {
             var sut = new SelfClosingPairCompletionService(null);
-            return sut.Execute(pair, original, input);
+            return new TestCodeString(sut.Execute(pair, original, input));
         }
 
-        private CodeString Run(SelfClosingPair pair, CodeString original, Keys input)
+        private TestCodeString Run(SelfClosingPair pair, CodeString original, Keys input)
         { 
             var sut = new SelfClosingPairCompletionService(null);
-            return sut.Execute(pair, original, input);
+            return new TestCodeString(sut.Execute(pair, original, input));
         }
 
         [Test]
@@ -110,8 +110,7 @@ namespace RubberduckTests.AutoComplete
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;
-            var original = @"
-foo = (| _
+            var original = @"foo = (| _
     (2 + 2) + 42 _
 )
 ".ToCodeString();
