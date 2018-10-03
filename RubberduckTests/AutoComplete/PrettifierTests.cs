@@ -2,7 +2,12 @@
 using NUnit.Framework;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
 using Rubberduck.Common;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SourceCodeHandling;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.AutoComplete
 {
@@ -88,8 +93,13 @@ MsgBox ""test"" & vbNewLine & _
             Assert.AreEqual(original, actual);
         }
 
-        private static ICodeStringPrettifier InitializeSut(TestCodeString original, TestCodeString prettified, out Mock<ICodeModule> module, out Mock<ICodePane> pane)
+        private static ICodePaneHandler InitializeSut(TestCodeString original, TestCodeString prettified, out Mock<ICodeModule> module, out Mock<ICodePane> pane)
         {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, "");
+            var vbe = builder.AddProject(project.Build()).Build();
+
             module = new Mock<ICodeModule>();
             pane = new Mock<ICodePane>();
             pane.SetupProperty(m => m.Selection);
@@ -98,7 +108,7 @@ MsgBox ""test"" & vbNewLine & _
             module.Setup(m => m.CodePane).Returns(pane.Object);
             module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(prettified.Code);
 
-            var sut = new CodeStringPrettifier();
+            var sut = new CodePaneSourceCodeHandler(new ProjectsRepository(vbe.Object));
             return sut;
         }
     }
