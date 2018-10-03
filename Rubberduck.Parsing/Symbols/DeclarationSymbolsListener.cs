@@ -21,7 +21,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _currentScopeDeclaration;
         private Declaration _parentDeclaration;
 
-        private readonly IEnumerable<IAnnotation> _annotations;
+        private readonly ICollection<IAnnotation> _annotations;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> _attributes;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> _membersAllowingAttributes;
 
@@ -40,7 +40,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             _state = state;
             _qualifiedModuleName = qualifiedModuleName;
-            _annotations = annotations;
+            _annotations = annotations.ToList();
             _attributes = attributes;
             _membersAllowingAttributes = membersAllowingAttributes;
 
@@ -61,7 +61,7 @@ namespace Rubberduck.Parsing.Symbols
                     projectDeclaration,
                     _qualifiedModuleName.ComponentName,
                     true,
-                    FindAnnotations(),
+                    FindModuleAnnotations(),
                     moduleAttributes);
             }
             else
@@ -73,7 +73,7 @@ namespace Rubberduck.Parsing.Symbols
                     projectDeclaration,
                     _qualifiedModuleName.ComponentName,
                     true,
-                    FindAnnotations(),
+                    FindModuleAnnotations(),
                     moduleAttributes,
                     hasDefaultInstanceVariable: hasDefaultInstanceVariable);
             }
@@ -88,25 +88,73 @@ namespace Rubberduck.Parsing.Symbols
             }
         }
 
-        private IEnumerable<IAnnotation> FindAnnotations()
+        private IEnumerable<IAnnotation> FindModuleAnnotations()
         {
             if (_annotations == null)
             {
                 return null;
             }
 
-            int lastDeclarationsSectionLine;
-            using (var codeModule = _state.ProjectsProvider.Component(_qualifiedModuleName).CodeModule)
+            var lastDeclarationsSectionLine = LastDeclarationsSectionLine();
+
+            //There is no module body.
+            if (lastDeclarationsSectionLine == null)
             {
-                lastDeclarationsSectionLine = codeModule.CountOfDeclarationLines;
+                return _annotations;
             }
 
-            var annotations = _annotations.Where(annotation => annotation.QualifiedSelection.QualifiedName.Equals(_qualifiedModuleName)
-                && annotation.QualifiedSelection.Selection.EndLine <= lastDeclarationsSectionLine);
+            var lastPossibleModuleAnnotationLine = lastDeclarationsSectionLine.Value;
+            var annotations = _annotations.Where(annotation => annotation.QualifiedSelection.Selection.EndLine <= lastPossibleModuleAnnotationLine);
             return annotations.ToList();
         }
 
-        private IEnumerable<IAnnotation> FindAnnotations(int line)
+        private int? LastDeclarationsSectionLine()
+        {
+            var firstModuleBodyElementLine = FirstModuleBodyElementLine();
+
+            if (firstModuleBodyElementLine == null)
+            {
+                return null;
+            }
+
+            //The VBE uses 1-based lines.
+            for (var currentLine = firstModuleBodyElementLine.Value - 1; currentLine >= 1; currentLine--)
+            {
+                if (_annotations.Any(annotation => annotation.QualifiedSelection.Selection.StartLine <= currentLine
+                                                   && annotation.QualifiedSelection.Selection.EndLine >=
+                                                   currentLine))
+                {
+                    continue;
+                }
+
+                return currentLine;
+            }
+
+            //There is no declaration section.
+            return 0;
+        }
+
+        private int? FirstModuleBodyElementLine()
+        {
+            var moduleTrees = _state.ParseTrees.Where(kvp => kvp.Key.Equals(_qualifiedModuleName)).ToList();
+            if (!moduleTrees.Any())
+            {
+                return null;
+            }
+
+            var startContext = (ParserRuleContext) moduleTrees.First().Value;
+            var moduleBody = startContext.GetDescendent<VBAParser.ModuleBodyContext>();
+
+            var moduleBodyElements = moduleBody.moduleBodyElement();
+            if (!moduleBodyElements.Any())
+            {
+                return null;
+            }
+
+            return moduleBodyElements.Select(context => context.start.Line).Min();
+        }
+
+        private IEnumerable<IAnnotation> FindMemberAnnotations(int firstMemberLine)
         {
             if (_annotations == null)
             {
@@ -116,16 +164,17 @@ namespace Rubberduck.Parsing.Symbols
             var annotations = new List<IAnnotation>();
 
             // VBE 1-based indexing
-            for (var i = line - 1; i >= 1; i--)
+            for (var currentLine = firstMemberLine - 1; currentLine >= 1; currentLine--)
             {
-                var lineAnnotations = _annotations.Where(a => a.QualifiedSelection.Selection.StartLine == i);
-
-                if (!lineAnnotations.Any())
+                if (!_annotations.Any(annotation => annotation.QualifiedSelection.Selection.StartLine <= currentLine
+                                                        && annotation.QualifiedSelection.Selection.EndLine >= currentLine))
                 {
                     break;
                 }
 
-                annotations.AddRange(lineAnnotations);
+                var annotationsStartingOnCurrentLine = _annotations.Where(a => a.QualifiedSelection.Selection.StartLine == currentLine);
+
+                annotations.AddRange(annotationsStartingOnCurrentLine);
             }
 
             return annotations;
@@ -224,7 +273,7 @@ namespace Rubberduck.Parsing.Symbols
                 _attributes.TryGetValue(key, out var attributes);
                 _membersAllowingAttributes.TryGetValue(key, out var attributesPassContext);
 
-                var annotations = FindAnnotations(selection.StartLine);
+                var annotations = FindMemberAnnotations(selection.StartLine);
                 switch (declarationType)
                 {
                     case DeclarationType.Procedure:
@@ -820,7 +869,7 @@ namespace Rubberduck.Parsing.Symbols
                 asTypeName,
                 asTypeClause,
                 typeHint,
-                FindAnnotations(constStmt.Start.Line),
+                FindMemberAnnotations(constStmt.Start.Line),
                 accessibility,
                 DeclarationType.Constant,
                 value,

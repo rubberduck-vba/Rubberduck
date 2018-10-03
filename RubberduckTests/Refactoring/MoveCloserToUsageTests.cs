@@ -921,6 +921,59 @@ End Sub";
         [Test]
         [Category("Move Closer")]
         [Category("Refactorings")]
+        public void MoveCloser_RespectsMemberAccess_ContextOwners()
+        {
+            const string inputCode =
+@"
+Public Sub foo()
+  Dim count As Long
+  Dim report As Worksheet
+  Set report = ThisWorkbook.ActiveSheet
+  With report
+    For count = 1 To 10
+      If .Cells(1, count) > count Then
+        .Cells(2, count).Value2 = count
+      End If
+    Next
+  End With
+End Sub";
+
+            const string expectedCode =
+@"
+Public Sub foo()
+  Dim report As Worksheet
+  Set report = ThisWorkbook.ActiveSheet
+  With report
+    Dim count As Long
+    For count = 1 To 10
+      If .Cells(1, count) > count Then
+        .Cells(2, count).Value2 = count
+      End If
+    Next
+  End With
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var qualifiedSelection = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Variable)
+                    .Where(d => d.IdentifierName == "count")
+                    .Single().QualifiedSelection;
+
+                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
+
+                var rewriter = state.GetRewriter(component);
+                Assert.NotNull(rewriter);
+                Assert.AreEqual(expectedCode, rewriter.GetText());
+            }
+        }
+
+
+        [Test]
+        [Category("Move Closer")]
+        [Category("Refactorings")]
         public void MoveCloser_RespectsObjectProperties_InUsages()
         {
             string inputClassCode =

@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
     public class SerializeDeclarationsCommandMenuItem : CommandMenuItemBase
     {
-        public SerializeDeclarationsCommandMenuItem(CommandBase command) : base(command)
+        public SerializeDeclarationsCommandMenuItem(SerializeDeclarationsCommand command) : base(command)
         {
         }
 

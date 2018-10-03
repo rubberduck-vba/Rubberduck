@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using NLog;
+using Rubberduck.UI.Inspections;
 
 namespace Rubberduck.UI.Command
 {
@@ -9,9 +10,9 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class InspectionResultsCommand : CommandBase
     {
-        private readonly IDockablePresenter _presenter;
+        private readonly InspectionResultsDockablePresenter _presenter;
 
-        public InspectionResultsCommand(IDockablePresenter presenter)
+        public InspectionResultsCommand(InspectionResultsDockablePresenter presenter)
             : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;

@@ -16,7 +16,7 @@ namespace Rubberduck.UI.CodeExplorer
         }
 
         private CodeExplorerViewModel ViewModel => DataContext as CodeExplorerViewModel;
-
+        
         private void TreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (ViewModel != null && ViewModel.OpenCommand.CanExecute(ViewModel.SelectedItem))
@@ -30,11 +30,6 @@ namespace Rubberduck.UI.CodeExplorer
         {
             ((TreeViewItem)sender).IsSelected = true;
             e.Handled = true;
-        }
-
-        private void SearchBox_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            ViewModel.FilterByName(ViewModel.Projects, ((TextBox)sender).Text);
         }
 
         private void SearchIcon_OnMouseDown(object sender, MouseButtonEventArgs e)
