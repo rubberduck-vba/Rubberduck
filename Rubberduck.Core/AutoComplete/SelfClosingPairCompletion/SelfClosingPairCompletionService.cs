@@ -21,7 +21,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
         public CodeString Execute(SelfClosingPair pair, CodeString original, char input)
         {
-            if (pair.IsSymetric &&
+            if (pair.IsSymetric && input != '\b' &&
                 original.Code.Length >= 1 &&
                 original.CaretPosition.StartColumn > 0 &&
                 original.Code[original.CaretPosition.StartColumn - 1] == pair.ClosingChar)
@@ -41,6 +41,11 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             if (input == pair.ClosingChar)
             {
                 return HandleClosingChar(pair, original);
+            }
+
+            if (input == '\b')
+            {
+                return Execute(pair, original, Keys.Back);
             }
 
             return default;

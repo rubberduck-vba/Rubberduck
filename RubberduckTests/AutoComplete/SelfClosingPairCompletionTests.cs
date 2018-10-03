@@ -5,7 +5,6 @@ using Rubberduck.VBEditor;
 
 namespace RubberduckTests.AutoComplete
 {
-
     [TestFixture]
     public class SelfClosingPairCompletionTests
     {

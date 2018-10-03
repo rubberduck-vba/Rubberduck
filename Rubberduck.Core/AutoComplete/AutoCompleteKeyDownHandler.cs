@@ -86,14 +86,13 @@ namespace Rubberduck.AutoComplete
                 var indent = currentContent.Code.NthIndexOf('"', 1);
                 var whitespace = new string(' ', indent);
 
-                var autoCode = $"\" & {(e.IsControlKeyDown ? " vbNewLine & " : string.Empty)}\" _\r\n{whitespace}\"";
+                var autoCode = $"\" {(e.IsControlKeyDown ? " & vbNewLine " : string.Empty)} & _\r\n{whitespace}\"";
                 var code = $"{currentContent.Code.Substring(0, currentContent.CaretCharIndex)}{autoCode}{currentContent.Code.Substring(currentContent.CaretCharIndex + 1)}";
 
                 var newContent = new CodeString(code, currentContent.CaretPosition, currentContent.SnippetPosition);
                 _codePane.SubstituteCode(e.Module, newContent);
 
-                var newSelection = new Selection(newContent.CaretPosition.StartLine + newContent.SnippetPosition.StartLine + 1,
-                                                 newContent.Code.Substring(newContent.CaretCharIndex - 1).Length + indent);
+                var newSelection = new Selection(newContent.CaretPosition.StartLine + newContent.SnippetPosition.StartLine + 1, indent + 2);
                 _codePane.SetSelection(e.Module, newSelection);
                 e.Handled = true;
             }

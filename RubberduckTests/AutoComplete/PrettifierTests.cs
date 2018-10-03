@@ -1,7 +1,5 @@
 ﻿using Moq;
 using NUnit.Framework;
-using Rubberduck.AutoComplete.SelfClosingPairCompletion;
-using Rubberduck.Common;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
