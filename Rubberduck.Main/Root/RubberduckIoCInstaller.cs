@@ -270,6 +270,9 @@ namespace Rubberduck.Root
 
         private void RegisterSpecialFactories(IWindsorContainer container)
         {
+            container.Register(Component.For<ICodePaneHandler>()
+                .ImplementedBy<CodePaneSourceCodeHandler>()
+                .LifestyleSingleton());
             container.Register(Component.For<IFolderBrowserFactory>()
                 .ImplementedBy<DialogFactory>()
                 .LifestyleSingleton());

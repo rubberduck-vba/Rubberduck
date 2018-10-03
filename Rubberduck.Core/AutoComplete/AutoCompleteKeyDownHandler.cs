@@ -32,7 +32,8 @@ namespace Rubberduck.AutoComplete
         public void Run(AutoCompleteEventArgs e)
         {
             Selection pSelection;
-            using (var pane = e.Module.CodePane)
+            var module = e.Module;
+            using (var pane = module.CodePane)
             {
                 pSelection = pane.Selection;
             }

@@ -91,7 +91,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             var originalCode = original.Code.Replace("\r", string.Empty).Split('\n');
             var originalPosition = original.CaretPosition.StartColumn;
             var originalNonWhitespaceCharacters = 0;
-            for (var i = 0; i <= originalPosition - 1; i++)
+            for (var i = 0; i <= Math.Min(originalPosition - 1, originalCode[original.CaretPosition.StartLine].Length - 1); i++)
             {
                 if (originalCode[original.CaretPosition.StartLine][i] != ' ')
                 {
