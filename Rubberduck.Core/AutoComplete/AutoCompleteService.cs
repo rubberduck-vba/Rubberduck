@@ -93,7 +93,12 @@ namespace Rubberduck.AutoComplete
 
         private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
         {
-            Debug.Assert(_enabled, "KeyDown controller is executing, but auto-completion service is disabled.");
+            if (!_enabled)
+            {
+                Debug.Assert(_enabled, "KeyDown controller is executing, but auto-completion service is disabled.");
+                return; // release build should bail out here!
+            }
+
             if (_popupShown || e.Character == default && e.IsDeleteKey)
             {
                 return;
