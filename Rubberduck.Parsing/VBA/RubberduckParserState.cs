@@ -466,7 +466,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (_moduleStates.IsEmpty)
             {
-                return ParserState.Pending;
+                return ParserState.Ready;
             }
 
             var moduleStates = new List<ParserState>();
@@ -482,7 +482,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (moduleStates.Count == 0)
             {
-                return ParserState.Pending;
+                return ParserState.Ready;
             }
 
             var state = moduleStates[0];
