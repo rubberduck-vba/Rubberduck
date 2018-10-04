@@ -6,7 +6,6 @@ using Rubberduck.Parsing.VBA.DeclarationResolving;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -86,6 +85,16 @@ namespace Rubberduck.Parsing.VBA
         public void ParseModules(IReadOnlyCollection<QualifiedModuleName> modulesToParse, CancellationToken token)
         {
             _parseRunner.ParseModules(modulesToParse, token);
+        }
+
+        public void CreateProjectDeclarations(IReadOnlyCollection<string> projectIds)
+        {
+            _declarationResolver.CreateProjectDeclarations(projectIds);
+        }
+
+        public void RefreshProjectReferences()
+        {
+            _declarationResolver.RefreshProjectReferences();
         }
 
         public void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
