@@ -243,6 +243,41 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void GivenClosingCharForUnmatchedOpeningCharNonConsecutive_SymetricPairBailsOut()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = '"';
+            var original = "MsgBox \"foo|".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.IsNull(result);
+        }
+
+        [Test]
+        public void GivenOpeningCharInsideTerminatedStringLiteral_BailsOut()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = '(';
+            var original = "MsgBox \"foo|\"".ToCodeString();
+            var expected = "MsgBox \"foo(|\"".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void GivenOpeningCharInsideNonTerminatedStringLiteral_BailsOut()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = '(';
+            var original = "MsgBox \"foo|".ToCodeString();
+            var expected = "MsgBox \"foo(|".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
         public void GivenClosingCharForUnmatchedOpeningChar_SingleChar_SymetricPairBailsOut()
         {
             var pair = new SelfClosingPair('"', '"');
@@ -252,6 +287,5 @@ namespace RubberduckTests.AutoComplete
             var result = Run(pair, original, input);
             Assert.IsNull(result);
         }
-
     }
 }
