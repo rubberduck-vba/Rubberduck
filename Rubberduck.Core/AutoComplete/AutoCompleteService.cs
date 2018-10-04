@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.Events;
@@ -8,18 +9,19 @@ namespace Rubberduck.AutoComplete
     public class AutoCompleteService : IDisposable
     {
         private readonly IGeneralConfigService _configService;
-        private readonly AutoCompleteKeyDownHandler _handler;
+        private readonly IEnumerable<AutoCompleteHandlerBase> _handlers;
 
+        private AutoCompleteSettings _settings;
         private bool _popupShown;
         private bool _enabled;
         private bool _initialized;
 
-        public AutoCompleteService(IGeneralConfigService configService, AutoCompleteKeyDownHandler handler)
+        public AutoCompleteService(IGeneralConfigService configService, IEnumerable<AutoCompleteHandlerBase> handlers)
         {
             _configService = configService;
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
 
-            _handler = handler;
+            _handlers = handlers;
         }
 
         public void Enable()
@@ -38,6 +40,7 @@ namespace Rubberduck.AutoComplete
         }
 
         private bool _initializing;
+
         private void InitializeConfig()
         {
             _initializing = true;
@@ -79,8 +82,8 @@ namespace Rubberduck.AutoComplete
         
         public void ApplyAutoCompleteSettings(Configuration config)
         {
-            _handler.Settings = config.UserSettings.AutoCompleteSettings;
-            if (_handler.Settings.IsEnabled)
+            _settings = config.UserSettings.AutoCompleteSettings;
+            if (_settings.IsEnabled)
             {
                 Enable();
             }
@@ -91,20 +94,57 @@ namespace Rubberduck.AutoComplete
             _initialized = true;
         }
 
-        private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
+        private bool WillHandle(AutoCompleteEventArgs e)
         {
+            Debug.Assert(_settings != null);
+
             if (!_enabled)
             {
                 Debug.Assert(_enabled, "KeyDown controller is executing, but auto-completion service is disabled.");
-                return; // release build should bail out here!
+                return false; // release build should bail out here!
             }
 
             if (_popupShown || e.Character == default && e.IsDeleteKey)
             {
+                return false;
+            }
+
+            var module = e.Module;
+            using (var pane = module.CodePane)
+            {
+                if (pane.Selection.LineCount > 1)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private void HandleKeyDown(object sender, AutoCompleteEventArgs e)
+        {
+            if (!WillHandle(e))
+            {
                 return;
             }
 
-            _handler.Run(e);
+            foreach (var handler in _handlers)
+            {
+                var result = handler.Handle(e, _settings);
+                if (result != null && e.Handled)
+                {
+                    var module = e.Module;
+                    using (var pane = module.CodePane)
+                    {
+                        // fixme: SnippetPosition is incorrect for SmartConcat, and this rewrite is redundant for SCP.
+                        // note: still produces the correct output though.
+                        module.DeleteLines(result.SnippetPosition);
+                        module.InsertLines(result.SnippetPosition.StartLine, result.Code);
+                        pane.Selection = result.SnippetPosition.Offset(result.CaretPosition);
+                    }
+                    return;
+                }
+            }
         }
 
         public void Dispose()

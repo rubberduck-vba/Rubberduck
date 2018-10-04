@@ -279,8 +279,8 @@
     <Compile Include="AutoComplete\AutoCompleteDoBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteEnumBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteForBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteHandlerBase.cs" />
     <Compile Include="AutoComplete\AutoCompleteIfBlock.cs" />
-    <Compile Include="AutoComplete\AutoCompleteKeyDownHandler.cs" />
     <Compile Include="AutoComplete\AutoCompleteOnErrorResumeNextBlock.cs" />
     <Compile Include="AutoComplete\AutoCompletePrecompilerIfBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteSelectBlock.cs" />
@@ -289,9 +289,11 @@
     <Compile Include="AutoComplete\AutoCompleteWithBlock.cs" />
     <Compile Include="AutoComplete\BlockCompletion\BlockCompletion.cs" />
     <Compile Include="AutoComplete\BlockCompletion\BlockCompletionService.cs" />
+    <Compile Include="AutoComplete\SelfClosingPairHandler.cs" />
     <Compile Include="AutoComplete\ShowIntelliSenseCommand.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletion\SelfClosingPair.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletion\SelfClosingPairCompletionService.cs" />
+    <Compile Include="AutoComplete\SmartConcatenationHandler.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\AggregationLevel.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\CodeMetric.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\CodeMetricsViewModel.cs" />

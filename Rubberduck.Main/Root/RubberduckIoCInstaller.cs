@@ -328,6 +328,13 @@ namespace Rubberduck.Root
                     .If(type => type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.Base()
                     .LifestyleTransient());
+
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<AutoCompleteHandlerBase>()
+                    .If(type => type.NotDisabledOrExperimental(_initialSettings))
+                    .WithService.Base()
+                    .LifestyleTransient());
             }
         }
 
