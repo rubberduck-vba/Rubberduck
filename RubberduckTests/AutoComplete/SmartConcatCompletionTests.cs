@@ -1,7 +1,9 @@
-﻿using Moq;
+﻿using System.Linq;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.AutoComplete;
 using Rubberduck.AutoComplete.SelfClosingPairCompletion;
+using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
@@ -21,18 +23,18 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = \"a|\"".ToCodeString();
             var expected = "foo = \"a\" & _\r\n      \"|\"".ToCodeString();
 
-            var sut = InitializeSut(original, out var module);
+            var sut = InitializeSut(original, out var module, out var settings);
             var args = new AutoCompleteEventArgs(module.Object, '\r', false, false);
 
-            sut.Run(args);
+            sut.Handle(args, settings);
         }
 
-        private static AutoCompleteKeyDownHandler InitializeSut(TestCodeString code, out Mock<ICodeModule> module)
+        private static SmartConcatenationHandler InitializeSut(TestCodeString code, out Mock<ICodeModule> module, out AutoCompleteSettings settings)
         {
-            return InitializeSut(code, code, out module, out _);
+            return InitializeSut(code, code, out module, out _, out settings);
         }
 
-        private static AutoCompleteKeyDownHandler InitializeSut(TestCodeString original, TestCodeString prettified, out Mock<ICodeModule> module, out Mock<ICodePane> pane)
+        private static SmartConcatenationHandler InitializeSut(TestCodeString original, TestCodeString prettified, out Mock<ICodeModule> module, out Mock<ICodePane> pane, out AutoCompleteSettings settings)
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
@@ -47,9 +49,10 @@ namespace RubberduckTests.AutoComplete
             module.Setup(m => m.CodePane).Returns(pane.Object);
             module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(prettified.Code);
 
-            var handler = new CodePaneSourceCodeHandler(new ProjectsRepository(vbe.Object));
-            var sut = new AutoCompleteKeyDownHandler(handler, new SelfClosingPairCompletionService(new Mock<IShowIntelliSenseCommand>().Object));
+            settings = new AutoCompleteSettings(Enumerable.Empty<AutoCompleteSetting>()) { EnableSmartConcat = true };
 
+            var handler = new CodePaneSourceCodeHandler(new ProjectsRepository(vbe.Object));
+            var sut = new SmartConcatenationHandler(handler);
             return sut;
         }
     }
