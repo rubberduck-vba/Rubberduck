@@ -188,7 +188,8 @@ namespace Rubberduck.UI.Command
 
         private string GetModuleLine(QualifiedModuleName module, int line)
         {
-            using (var codeModule = _state.ProjectsProvider.Component(module).CodeModule)
+            var component = _state.ProjectsProvider.Component(module);
+            using (var codeModule = component.CodeModule)
             {
                 return codeModule.GetLines(line, 1).Trim();
             }

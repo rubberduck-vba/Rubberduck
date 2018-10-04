@@ -216,7 +216,9 @@ namespace RubberduckTests.Mocks
 
             var commandBars = DummyCommandBars();
             vbe.SetupGet(m => m.CommandBars).Returns(() => commandBars);
-            
+
+            vbe.Setup(m => m.IsInDesignMode).Returns(true);
+
             return vbe;
         }
 

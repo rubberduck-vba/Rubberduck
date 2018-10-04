@@ -19,7 +19,17 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly IVBComponent _component;
         public string ComponentName { get { return _component.Name; } }
-        public string ProjectName { get { return _component.Collection.Parent.Name; } }
+        public string ProjectName
+        {
+            get
+            {
+                using (var collection = _component.Collection)
+                using (var parent = collection.Parent)
+                {
+                    return parent.Name;
+                }
+            }
+        }
 
         public void Navigate()
         {

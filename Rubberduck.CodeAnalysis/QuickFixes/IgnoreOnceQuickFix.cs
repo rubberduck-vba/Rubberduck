@@ -31,7 +31,9 @@ namespace Rubberduck.Inspections.QuickFixes
             var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
 
             int annotationLine;
-            using (var module = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName).CodeModule)
+            string codeLine;
+            var component = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName);
+            using (var module = component.CodeModule)
             {
                 annotationLine = result.QualifiedSelection.Selection.StartLine;
                 while (annotationLine != 1 && module.GetLines(annotationLine - 1, 1).EndsWith(" _"))

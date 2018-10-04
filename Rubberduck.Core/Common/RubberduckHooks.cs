@@ -33,7 +33,6 @@ namespace Rubberduck.Common
             _hooks.Clear();
 
             var config = _config.LoadConfiguration();
-            AutoComplete.ApplyAutoCompleteSettings(config);
             var settings = config.UserSettings.HotkeySettings;
 
             foreach (var hotkeySetting in settings.Settings.Where(hotkeySetting => hotkeySetting.IsEnabled))
@@ -74,7 +73,6 @@ namespace Rubberduck.Common
 
             try
             {
-                AutoComplete.Enable();
                 foreach (var hook in Hooks)
                 {
                     hook.Attach();
@@ -97,7 +95,6 @@ namespace Rubberduck.Common
 
             try
             {
-                AutoComplete.Disable();
                 foreach (var hook in Hooks)
                 {
                     hook.MessageReceived -= hook_MessageReceived;

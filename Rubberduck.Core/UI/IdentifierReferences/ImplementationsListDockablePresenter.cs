@@ -33,7 +33,8 @@ namespace Rubberduck.UI.IdentifierReferences
 
         private void OnNavigateImplementation(Declaration implementation)
         {
-            using (var codeModule = _projectsProvider.Component(implementation.QualifiedName.QualifiedModuleName).CodeModule)
+            var component = _projectsProvider.Component(implementation.QualifiedName.QualifiedModuleName);
+            using (var codeModule = component.CodeModule)
             {
                 using (var codePane = codeModule.CodePane)
                 {
