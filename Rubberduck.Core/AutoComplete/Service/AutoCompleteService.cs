@@ -22,22 +22,7 @@ namespace Rubberduck.AutoComplete.Service
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
 
             _handlers = handlers;
-            InitializeConfig(); // I/O work in constructor?
-        }
-
-        public void Enable()
-        {
-            if (!_initializing)
-            {
-                InitializeConfig();
-            }
-
-            if (!_enabled)
-            {
-                VBENativeServices.KeyDown += HandleKeyDown;
-                VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
-                _enabled = true;
-            }
+            InitializeConfig(); // todo: remove I/O work from constructor
         }
 
         private bool _initializing;
@@ -57,7 +42,22 @@ namespace Rubberduck.AutoComplete.Service
             finally
             {
                 _initializing = false;
-            }            
+            }
+        }
+
+        public void Enable()
+        {
+            if (!_initializing)
+            {
+                InitializeConfig();
+            }
+
+            if (!_enabled)
+            {
+                VBENativeServices.KeyDown += HandleKeyDown;
+                VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
+                _enabled = true;
+            }
         }
 
         public void Disable()
