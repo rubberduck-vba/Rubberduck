@@ -283,8 +283,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorDeclaredType);
             }
 
-            if (!LHS.TryLetCoerce(opProvider.OperatorEffectiveType, out IParseTreeValue effLHS)
-                || !RHS.TryLetCoerce(opProvider.OperatorEffectiveType, out IParseTreeValue effRHS))
+            if (!LHS.TryLetCoerce(opProvider.OperatorEffectiveType, out var effLHS)
+                || !RHS.TryLetCoerce(opProvider.OperatorEffectiveType, out var effRHS))
             {
                 return _valueFactory.CreateExpression($"{LHS.Token} {opSymbol} {RHS.Token}", opProvider.OperatorDeclaredType);
             }
@@ -299,17 +299,17 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (opSymbol.Equals(ArithmeticOperators.MULTIPLY))
             {
-                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a * b; }, (double a, double b) => { return a * b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => a * b, (double a, double b) => a * b), opProvider.OperatorDeclaredType);
             }
-            else if (opSymbol.Equals(ArithmeticOperators.DIVIDE))
+            if (opSymbol.Equals(ArithmeticOperators.DIVIDE))
             {
-                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a / b; }, (double a, double b) => { return a / b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => a / b, (double a, double b) => a / b), opProvider.OperatorDeclaredType);
             }
-            else if (opSymbol.Equals(ArithmeticOperators.INTEGER_DIVIDE))
+            if (opSymbol.Equals(ArithmeticOperators.INTEGER_DIVIDE))
             {
                 return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, IntDivision, IntDivision), opProvider.OperatorDeclaredType);
             }
-            else if (opSymbol.Equals(ArithmeticOperators.PLUS))
+            if (opSymbol.Equals(ArithmeticOperators.PLUS))
             {
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.String))
                 {
@@ -317,27 +317,27 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 }
                 if (opProvider.OperatorEffectiveType.Equals(Tokens.Date))
                 {
-                    var result = _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, null, (double a, double b) => { return a + b; }), Tokens.Double);
+                    var result = _valueFactory.CreateDeclaredType(Calculate(effLHS, effRHS, null, (double a, double b) => a + b), Tokens.Double);
                     return _valueFactory.CreateDate(result.AsDouble());
                 }
-                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a + b; }, (double a, double b) => { return a + b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => a + b, (double a, double b) => a + b), opProvider.OperatorDeclaredType);
             }
-            else if (opSymbol.Equals(ArithmeticOperators.MINUS))
+            if (opSymbol.Equals(ArithmeticOperators.MINUS))
             {
                 if (LHS.ValueType.Equals(Tokens.Date) && RHS.ValueType.Equals(Tokens.Date))
                 {
                     return _valueFactory.CreateDate(LHS.AsDouble() - RHS.AsDouble());
                 }
-                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a - b; }, (double a, double b) => { return a - b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => a - b, (double a, double b) => a - b), opProvider.OperatorDeclaredType);
             }
-            else if (opSymbol.Equals(ArithmeticOperators.EXPONENT))
+            if (opSymbol.Equals(ArithmeticOperators.EXPONENT))
             {
                 //Math.Pow only takes doubles, so the decimal conversion option is null
-                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, null, (double a, double b) => { return Math.Pow(a, b); }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, null, Math.Pow), opProvider.OperatorDeclaredType);
             }
-            else if (opSymbol.Equals(ArithmeticOperators.MODULO))
+            if (opSymbol.Equals(ArithmeticOperators.MODULO))
             {
-                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => { return a % b; }, (double a, double b) => { return a % b; }), opProvider.OperatorDeclaredType);
+                return _valueFactory.CreateValueType(Calculate(effLHS, effRHS, (decimal a, decimal b) => a % b, (double a, double b) => a % b), opProvider.OperatorDeclaredType);
             }
 
             //ArithmeticOperators.AMPERSAND
@@ -377,9 +377,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
             if (!(DecimalCalc is null) && LHS.TryLetCoerce(out decimal lhsValue) && RHS.TryLetCoerce(out decimal rhsValue))
             {
-                return DecimalCalc(lhsValue, rhsValue).ToString();
+                return DecimalCalc(lhsValue, rhsValue).ToString(CultureInfo.InvariantCulture);
             }
-            return DoubleCalc(LHS.AsDouble(), RHS.AsDouble()).ToString();
+            return DoubleCalc(LHS.AsDouble(), RHS.AsDouble()).ToString(CultureInfo.InvariantCulture);
         }
 
         private string Compare(IParseTreeValue LHS, IParseTreeValue RHS, Func<decimal, decimal, bool> DecimalCompare, Func<double, double, bool> DoubleCompare)

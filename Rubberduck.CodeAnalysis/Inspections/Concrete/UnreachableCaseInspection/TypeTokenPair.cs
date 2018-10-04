@@ -8,8 +8,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
     public struct TypeTokenPair
     {
-        public string ValueType { private set; get; }
-        public string Token { private set; get; }
+        public string ValueType { get; }
+        public string Token { get; }
 
         public TypeTokenPair(string valueType, string token)
         {
