@@ -22,6 +22,7 @@ namespace Rubberduck.AutoComplete.Service
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
 
             _handlers = handlers;
+            InitializeConfig(); // I/O work in constructor?
         }
 
         public void Enable()
