@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using Rubberduck.AutoComplete.SelfClosingPairCompletion;
 using System.Windows.Forms;
+using Rubberduck.AutoComplete.Service;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.AutoComplete

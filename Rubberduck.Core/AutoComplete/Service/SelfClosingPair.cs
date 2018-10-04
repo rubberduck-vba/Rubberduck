@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
+﻿namespace Rubberduck.AutoComplete.Service
 {
     public class SelfClosingPair
     {

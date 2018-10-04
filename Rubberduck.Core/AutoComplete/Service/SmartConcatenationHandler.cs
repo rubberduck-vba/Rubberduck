@@ -4,7 +4,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
-namespace Rubberduck.AutoComplete
+namespace Rubberduck.AutoComplete.Service
 {
     /// <summary>
     /// Adds a line continuation when {ENTER} is pressed when inside a string literal.
@@ -43,8 +43,12 @@ namespace Rubberduck.AutoComplete
                 var newPosition = new Selection(newContent.CaretPosition.StartLine + 1, indent + 1);
 
                 e.Handled = true;
-                return new CodeString(newContent.Code, newPosition, 
+                var result = new CodeString(newContent.Code, newPosition, 
                     new Selection(newContent.SnippetPosition.StartLine, 1, newContent.SnippetPosition.EndLine, 1));
+
+                CodePaneHandler.SubstituteCode(e.Module, result);
+                CodePaneHandler.SetSelection(e.Module, result.SnippetPosition.Offset(result.CaretPosition));
+                return result;
             }
 
             return null;

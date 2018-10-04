@@ -164,7 +164,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
         public CodeString GetCurrentLogicalLine(ICodeModule module)
         {
-            const string LineContinuation = " _\r\n";
+            const string LineContinuation = " _";
 
             Selection pSelection;
             using (var pane = module.CodePane)

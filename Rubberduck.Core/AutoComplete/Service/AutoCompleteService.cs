@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.Events;
 
-namespace Rubberduck.AutoComplete
+namespace Rubberduck.AutoComplete.Service
 {
     public class AutoCompleteService : IDisposable
     {
@@ -133,15 +133,6 @@ namespace Rubberduck.AutoComplete
                 var result = handler.Handle(e, _settings);
                 if (result != null && e.Handled)
                 {
-                    var module = e.Module;
-                    using (var pane = module.CodePane)
-                    {
-                        // fixme: SnippetPosition is incorrect for SmartConcat, and this rewrite is redundant for SCP.
-                        // note: still produces the correct output though.
-                        module.DeleteLines(result.SnippetPosition);
-                        module.InsertLines(result.SnippetPosition.StartLine, result.Code);
-                        pane.Selection = result.SnippetPosition.Offset(result.CaretPosition);
-                    }
                     return;
                 }
             }

@@ -8,6 +8,7 @@ using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.WindowsApi;
 using Rubberduck.AutoComplete;
+using Rubberduck.AutoComplete.Service;
 
 namespace Rubberduck.Common
 {

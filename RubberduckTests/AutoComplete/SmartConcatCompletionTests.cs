@@ -2,7 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using Rubberduck.AutoComplete;
-using Rubberduck.AutoComplete.SelfClosingPairCompletion;
+using Rubberduck.AutoComplete.Service;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
@@ -14,7 +14,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.AutoComplete
 {
-    [TestFixture][Ignore("need to extract class for this sut.")]
+    [TestFixture][Ignore("nothing to see here. yet.")]
     public class SmartConcatCompletionTests
     {
         [Test]

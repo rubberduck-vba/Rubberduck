@@ -1,14 +1,14 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using System.Linq;
+using System.Windows.Forms;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
-using System;
-using System.Linq;
-using System.Windows.Forms;
 
-namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
+namespace Rubberduck.AutoComplete.Service
 {
     public class SelfClosingPairCompletionService
     {
