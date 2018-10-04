@@ -172,6 +172,7 @@
     <Compile Include="Symbols\VariableDeclaration.cs" />
     <Compile Include="TokenStreamExtensions.cs" />
     <Compile Include="Common\DisabledAttribute.cs" />
+    <Compile Include="ExpressionContextExtensions.cs" />
     <Compile Include="ComReflection\ComTypeName.cs" />
     <Compile Include="Inspections\RequiredHostAttribute.cs" />
     <Compile Include="ProjectsProviderExtensions.cs" />

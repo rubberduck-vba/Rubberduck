@@ -96,7 +96,8 @@ namespace Rubberduck.UI.UnitTesting.Commands
                 {
                     var declaration = _state.GetTestModules().FirstOrDefault(f =>
                     {
-                        using (var thisModule = _state.ProjectsProvider.Component(f.QualifiedName.QualifiedModuleName).CodeModule)
+                        var component = _state.ProjectsProvider.Component(f.QualifiedName.QualifiedModuleName);
+                        using (var thisModule = component.CodeModule)
                         {
                             return thisModule.Equals(activeModule);
                         }

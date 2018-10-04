@@ -120,6 +120,15 @@
   <data name="AnalyzerCategory" xml:space="preserve">
     <value>COM Management</value>
   </data>
+  <data name="ChainedWrapperDescription" xml:space="preserve">
+    <value>Chained Wrappers</value>
+  </data>
+  <data name="ChainedWrapperMessageFormat" xml:space="preserve">
+    <value>Chained Wrappers</value>
+  </data>
+  <data name="ChainedWrapperTitle" xml:space="preserve">
+    <value>Chained Wrappers</value>
+  </data>
   <data name="MissingClassInterfaceDescription" xml:space="preserve">
     <value>COM-visible classes must have an explicit ClassInterface attribute and be set to `None`. This is required to avoid versioning problems.</value>
   </data>

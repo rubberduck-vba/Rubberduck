@@ -13,11 +13,22 @@
         <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility"/>
         <converters:EndOfLineCommentStyleToTextConverter x:Key="LocalizedEndOfLineCommentStyles"/>
         <converters:EndOfLineCommentStyleValueTextToEnumValueConverter x:Key="EndOfLineCommentStyleTextToEnumValue"/>
+
+        <converters:EmptyLineHandlingToTextConverter x:Key="LocalizedEmptyLineHandlers"/>
+        <converters:EmptyLineHandlingValueTextToEnumValueConverter x:Key="EmptyLineHandlingValueTextToEnumValue"/>
+
         <ObjectDataProvider x:Key="CommentStyles"
                  MethodName="GetValues"
                  ObjectType="{x:Type core:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:TypeExtension Type="{x:Type smartIndenter:EndOfLineCommentStyle}"/>
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+        <ObjectDataProvider x:Key="EmptyLineOptions"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type core:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:TypeExtension Type="{x:Type smartIndenter:EmptyLineHandling}"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
         <Style TargetType="ScrollViewer">
@@ -26,8 +37,7 @@
             </Style.Setters>
         </Style>
     </UserControl.Resources>
-    <ScrollViewer x:Name="ScrollViewer"
-                  Margin="0,0,10,0">
+    <ScrollViewer Margin="0,0,10,0">
         <StackPanel Margin="5">
             <Label Background="#FFA9A9A9"
                      HorizontalContentAlignment="Stretch"
@@ -306,6 +316,13 @@
                                 </AccessText.Text>
                             </AccessText>
                         </CheckBox>
+                        <Label FontWeight="SemiBold" HorizontalAlignment="Left">
+                            <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_EmptyLineHeading"/>
+                        </Label>
+                        <ComboBox Margin="5,0,0,5"
+                                  HorizontalAlignment="Left"
+                                  ItemsSource="{Binding Source={StaticResource EmptyLineOptions},Converter={StaticResource LocalizedEmptyLineHandlers},UpdateSourceTrigger=PropertyChanged}"
+                                  SelectedItem="{Binding EmptyLineHandlingMethod,Mode=TwoWay,Converter={StaticResource EmptyLineHandlingValueTextToEnumValue},UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </Expander>
                 <Expander Grid.Row="3"
