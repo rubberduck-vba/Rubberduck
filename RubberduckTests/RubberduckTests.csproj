@@ -6,8 +6,8 @@
     <Title>RubberduckTests</Title>
     <Product>RubberduckTests</Product>
     <Copyright>Copyright © 2016-2018</Copyright>
-    <!-- enforce Debug configuration. Tests always need debug information anyways -->
-    <Configuration>Debug</Configuration>
+    <!-- default to Debug configuration. AppVeyor expects to be able to build Release tests -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <ProjectGuid>{ADADE971-75E3-40C4-8C19-AB7409372F2E}</ProjectGuid>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
