@@ -21,9 +21,10 @@
     <Deterministic>False</Deterministic>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Analyzer Condition=" '$(AssemblyName)' != 'RubberduckCodeAnalysis' "
-        Include="$(SolutionDir)\RubberduckCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckCodeAnalysis.dll" />
+  <ItemGroup Condition=" '$(AssemblyName)' != 'RubberduckCodeAnalysis' 
+                          AND '$(AssemblyName)' != 'RubberduckTests'
+                          AND '$(AssemblyName)' != 'RubberduckCodeAnalysisTests'">
+    <Analyzer Include="$(SolutionDir)\RubberduckCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">

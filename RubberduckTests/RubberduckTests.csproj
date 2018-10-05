@@ -78,6 +78,10 @@
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Analyzer Include="$(SolutionDir)\RubberduckTestsCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckTestsCodeAnalysis.dll"/>
+  </ItemGroup>
+  
+  <ItemGroup>
     <PackageReference Include="Antlr4.Runtime">
       <Version>4.6.4</Version>
     </PackageReference>
