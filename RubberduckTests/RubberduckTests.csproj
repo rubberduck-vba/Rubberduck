@@ -59,6 +59,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj" />
     <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj" />
@@ -76,9 +77,6 @@
     <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="$(SolutionDir)\RubberduckTestsCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckTestsCodeAnalysis.dll"/>
   </ItemGroup>
   
   <ItemGroup>
