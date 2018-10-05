@@ -71,6 +71,7 @@ End Sub";
         }
 
         [Test]
+        [Ignore("Ref #4329")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbooksProperty()
         {

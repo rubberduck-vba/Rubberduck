@@ -141,6 +141,12 @@ namespace Rubberduck.Parsing.ComReflection
         private IEnumerable<Declaration> UnwrapTree(SerializableDeclarationTree tree, Declaration parent = null)
         {
             var current = tree.Node.Unwrap(parent);
+
+            if (parent is ClassModuleDeclaration classModule && current.Attributes.HasDefaultMemberAttribute())
+            {
+                classModule.DefaultMember = current;
+            }
+
             yield return current;
 
             foreach (var serializableDeclarationTree in tree.Children)
@@ -236,7 +242,7 @@ namespace Rubberduck.Parsing.ComReflection
             var attributes = new Attributes();
             foreach (var attribute in Attributes)
             {
-                attributes.Add(new AttributeNode(attribute.Name, attribute.Values));
+                attributes.Add(new AttributeNode(attribute.Name, attribute.Values));               
             }
 
             switch (DeclarationType)
@@ -260,7 +266,12 @@ namespace Rubberduck.Parsing.ComReflection
                 case DeclarationType.PropertySet:
                     return new PropertySetDeclaration(QualifiedMemberName, parent, parent, AsTypeName, Accessibility, null, null, Selection.Empty, false, annotations, attributes);
                 case DeclarationType.Parameter:
-                    return new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray, DefaultValue);
+                    var output = new ParameterDeclaration(QualifiedMemberName, parent, AsTypeName, null, TypeHint, IsOptionalParam, IsByRefParam, IsArray, IsParamArray, DefaultValue);
+                    if (parent is IParameterizedDeclaration hasParams)
+                    {
+                        hasParams.AddParameter(output);
+                    }
+                    return output;
                 case DeclarationType.EnumerationMember:
                     return new ValuedDeclaration(QualifiedMemberName, parent, ParentScope, AsTypeName, null, TypeHint, annotations, Accessibility, DeclarationType.EnumerationMember, Expression, null, Selection.Home, false);
                 case DeclarationType.Constant:
