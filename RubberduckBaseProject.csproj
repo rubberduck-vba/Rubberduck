@@ -27,7 +27,7 @@
         <Analyzer Include="$(SolutionDir)\RubberduckTestsCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckTestsCodeAnalysis.dll"/>
       </ItemGroup>
     </When>
-    <When Condition=" '$(AssemblyName)' == 'RubberduckCodeAnalysis' OR '$(AssemblyName)' == 'RubberduckCodeAnalysis'" />
+    <When Condition=" '$(AssemblyName)' == 'RubberduckCodeAnalysis' OR '$(AssemblyName)' == 'RubberduckTestsCodeAnalysis'" />
     <Otherwise>
       <ItemGroup>
         <Analyzer Include="$(SolutionDir)\RubberduckCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckCodeAnalysis.dll" />
