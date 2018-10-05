@@ -277,6 +277,15 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uncategorized.
+        /// </summary>
+        public static string TestExplorer_Uncategorized {
+            get {
+                return ResourceManager.GetString("TestExplorer_Uncategorized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Two or more projects containing test methods have the same name and identically named tests. Please rename one to continue..
         /// </summary>
         public static string TestExplorerDockablePresenter_MultipleTestsSameNameError {
