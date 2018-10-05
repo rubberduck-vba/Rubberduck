@@ -50,12 +50,14 @@ build:
   verbosity: minimal
   project: Rubberduck.sln
 
+# TestScript depends on the build matrix to only contain Release cpu
+# Otherwise we might run tests against artifacts that do not exist
 test_script:
   # we use -returntargetcode to fail the build if tests fail
-  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\Release\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
+  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
   # when using test_script, after_test seems to not be executed
-  - codecov -f "Rubberduck_Coverage.xml"
+  - codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
 
 for:
   - branches:

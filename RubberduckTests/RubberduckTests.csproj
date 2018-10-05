@@ -15,6 +15,8 @@
     <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
     <IsCodedUITest>False</IsCodedUITest>
     <TestProjectType>UnitTest</TestProjectType>
+    
+    <UnifyOutputPath>true</UnifyOutputPath>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 

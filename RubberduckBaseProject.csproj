@@ -13,24 +13,38 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <RestorePackages>true</RestorePackages>
+    <!-- do not unify output paths by default -->
+    <UnifyOutputPath Condition=" '$(UnifyOutputPath)' == ''">false</UnifyOutputPath>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(AssemblyVersion)' == ''">
+    <!--
+     This assembly version specification is considered nonstandard.
+     As such builds that do not override the assembly version generate a warning.
+     -->
     <AssemblyVersion>2.2.*</AssemblyVersion>
     <FileVersion Condition=" '$(FileVersion)' == '' ">2.2.*</FileVersion>
+    <!-- Wildcards are not deterministic, ensure build passes when setting wildcard versions -->
     <Deterministic>False</Deterministic>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" $(UnifyOutputPath) ">
+    <OutputPath>bin\</OutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+
+  <!-- Analyzer projects must set UnifyOutputPath to have this reference correctly -->
   <Choose>
     <When Condition=" '$(AssemblyName)' == 'RubberduckTests' ">
       <ItemGroup>
-        <Analyzer Include="$(SolutionDir)\RubberduckTestsCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckTestsCodeAnalysis.dll"/>
+        <Analyzer Include="$(SolutionDir)\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll"/>
       </ItemGroup>
     </When>
     <When Condition=" '$(AssemblyName)' == 'RubberduckCodeAnalysis' OR '$(AssemblyName)' == 'RubberduckTestsCodeAnalysis'" />
     <Otherwise>
       <ItemGroup>
-        <Analyzer Include="$(SolutionDir)\RubberduckCodeAnalysis\bin\Release\$(TargetFramework)\RubberduckCodeAnalysis.dll" />
+        <Analyzer Include="$(SolutionDir)\RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll" />
       </ItemGroup>
     </Otherwise>
   </Choose>
