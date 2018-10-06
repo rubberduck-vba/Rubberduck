@@ -222,6 +222,60 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void NonExistentModuleAnnotation_OneResult()
+        {
+            const string inputCode = @"
+'@ThisDoesNotExist
+Option Explicit
+Option Private Module
+
+Public Sub Test1()
+End Sub
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void NonExistentMemberAnnotation_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public Sub Test1()
+End Sub
+
+'@ThisDoesNotExist
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ModuleAnnotationOnTopMostMember_NoResult()
         {
             const string inputCode = @"
