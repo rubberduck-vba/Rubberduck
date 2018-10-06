@@ -5,7 +5,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Extensions;
 
-namespace Rubberduck.Parsing.VBA
+namespace Rubberduck.Parsing.Symbols
 {
     //Needed for VB6 support, although 1 and 2 are applicable to VBA.  See 5.2.4.1.1 https://msdn.microsoft.com/en-us/library/ee177292.aspx
     //and 5.2.4.1.2 https://msdn.microsoft.com/en-us/library/ee199159.aspx

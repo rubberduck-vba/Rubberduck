@@ -384,7 +384,7 @@
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
     <Compile Include="TokenExtensions.cs" />
     <Compile Include="VBA\Parsing\AttributeListener.cs" />
-    <Compile Include="VBA\Attributes.cs" />
+    <Compile Include="Symbols\Attributes.cs" />
     <Compile Include="VBA\BuiltInDeclarationLoader.cs" />
     <Compile Include="PreProcessing\TokensValue.cs" />
     <Compile Include="VBA\ReferenceManagement\SupertypeClearer.cs" />
