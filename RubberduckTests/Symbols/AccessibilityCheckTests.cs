@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Symbols
