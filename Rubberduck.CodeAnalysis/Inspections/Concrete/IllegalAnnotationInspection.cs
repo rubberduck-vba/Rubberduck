@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
         public IllegalAnnotationInspection(RubberduckParserState state)
             : base(state)
         {
-            Listener = new IllegalAttributeAnnotationsListener(state);
+            Listener = new IllegalAnnotationsListener(state);
         }
         
         public override IInspectionListener Listener { get; }
@@ -33,14 +33,14 @@ namespace Rubberduck.Inspections.Concrete
                 string.Format(InspectionResults.IllegalAnnotationInspection, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), context));
         }
 
-        public class IllegalAttributeAnnotationsListener : VBAParserBaseListener, IInspectionListener
+        public class IllegalAnnotationsListener : VBAParserBaseListener, IInspectionListener
         {
             private readonly RubberduckParserState _state;
 
             private Lazy<Declaration> _module;
             private Lazy<IDictionary<string, Declaration>> _members;
 
-            public IllegalAttributeAnnotationsListener(RubberduckParserState state)
+            public IllegalAnnotationsListener(RubberduckParserState state)
             {
                 _state = state;
             }
@@ -149,7 +149,11 @@ namespace Rubberduck.Inspections.Concrete
             public override void ExitAnnotation(VBAParser.AnnotationContext context)
             {
                 var name = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
-                var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name, true);
+                if (!Enum.TryParse<AnnotationType>(name, true, out var annotationType))
+                {
+                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                    return;
+                }
 
                 var moduleHasMembers = _members.Value.Any();
 
