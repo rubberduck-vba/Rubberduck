@@ -6,14 +6,11 @@ using Rubberduck.VBEditor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols
 {
     public class DeclarationSymbolsListener : VBAParserBaseListener
     {
-        private readonly RubberduckParserState _state;
         private readonly QualifiedModuleName _qualifiedModuleName;
         private readonly Declaration _moduleDeclaration;
 
@@ -29,129 +26,20 @@ namespace Rubberduck.Parsing.Symbols
         public IReadOnlyList<Declaration> CreatedDeclarations => _createdDeclarations;
 
         public DeclarationSymbolsListener(
-            RubberduckParserState state,
-            QualifiedModuleName qualifiedModuleName,
-            IEnumerable<IAnnotation> annotations,
+            Declaration moduleDeclaration,
+            ICollection<IAnnotation> annotations,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),
             Attributes> attributes,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),
-                ParserRuleContext> membersAllowingAttributes,
-            Declaration projectDeclaration)
+                ParserRuleContext> membersAllowingAttributes)
         {
-            _state = state;
-            _qualifiedModuleName = qualifiedModuleName;
-            _annotations = annotations.ToList();
+            _moduleDeclaration = moduleDeclaration;
+            _qualifiedModuleName = moduleDeclaration.QualifiedModuleName;
+            _annotations = annotations;
             _attributes = attributes;
             _membersAllowingAttributes = membersAllowingAttributes;
 
-            var componentType = _qualifiedModuleName.ComponentType;
-            var declarationType = componentType == ComponentType.StandardModule
-                ? DeclarationType.ProceduralModule
-                : DeclarationType.ClassModule;
-
-            var key = (_qualifiedModuleName.ComponentName, declarationType);
-            var moduleAttributes = attributes.ContainsKey(key)
-                ? attributes[key]
-                : new Attributes();
-
-            if (declarationType == DeclarationType.ProceduralModule)
-            {
-                _moduleDeclaration = new ProceduralModuleDeclaration(
-                    _qualifiedModuleName.QualifyMemberName(_qualifiedModuleName.ComponentName),
-                    projectDeclaration,
-                    _qualifiedModuleName.ComponentName,
-                    true,
-                    FindModuleAnnotations(),
-                    moduleAttributes);
-            }
-            else
-            {
-                bool hasDefaultInstanceVariable = componentType != ComponentType.ClassModule && componentType != ComponentType.StandardModule;
-
-                _moduleDeclaration = new ClassModuleDeclaration(
-                    _qualifiedModuleName.QualifyMemberName(_qualifiedModuleName.ComponentName),
-                    projectDeclaration,
-                    _qualifiedModuleName.ComponentName,
-                    true,
-                    FindModuleAnnotations(),
-                    moduleAttributes,
-                    hasDefaultInstanceVariable: hasDefaultInstanceVariable);
-            }
-
             SetCurrentScope();
-            AddDeclaration(_moduleDeclaration);
-
-            var component = _state.ProjectsProvider.Component(_qualifiedModuleName);
-            if (component != null && (componentType == ComponentType.UserForm || component.HasDesigner))
-            {
-                DeclareControlsAsMembers(component);
-            }
-        }
-
-        private IEnumerable<IAnnotation> FindModuleAnnotations()
-        {
-            if (_annotations == null)
-            {
-                return null;
-            }
-
-            var lastDeclarationsSectionLine = LastDeclarationsSectionLine();
-
-            //There is no module body.
-            if (lastDeclarationsSectionLine == null)
-            {
-                return _annotations;
-            }
-
-            var lastPossibleModuleAnnotationLine = lastDeclarationsSectionLine.Value;
-            var annotations = _annotations.Where(annotation => annotation.QualifiedSelection.Selection.EndLine <= lastPossibleModuleAnnotationLine);
-            return annotations.ToList();
-        }
-
-        private int? LastDeclarationsSectionLine()
-        {
-            var firstModuleBodyElementLine = FirstModuleBodyElementLine();
-
-            if (firstModuleBodyElementLine == null)
-            {
-                return null;
-            }
-
-            //The VBE uses 1-based lines.
-            for (var currentLine = firstModuleBodyElementLine.Value - 1; currentLine >= 1; currentLine--)
-            {
-                if (_annotations.Any(annotation => annotation.QualifiedSelection.Selection.StartLine <= currentLine
-                                                   && annotation.QualifiedSelection.Selection.EndLine >=
-                                                   currentLine))
-                {
-                    continue;
-                }
-
-                return currentLine;
-            }
-
-            //There is no declaration section.
-            return 0;
-        }
-
-        private int? FirstModuleBodyElementLine()
-        {
-            var moduleTrees = _state.ParseTrees.Where(kvp => kvp.Key.Equals(_qualifiedModuleName)).ToList();
-            if (!moduleTrees.Any())
-            {
-                return null;
-            }
-
-            var startContext = (ParserRuleContext) moduleTrees.First().Value;
-            var moduleBody = startContext.GetDescendent<VBAParser.ModuleBodyContext>();
-
-            var moduleBodyElements = moduleBody.moduleBodyElement();
-            if (!moduleBodyElements.Any())
-            {
-                return null;
-            }
-
-            return moduleBodyElements.Select(context => context.start.Line).Min();
         }
 
         private IEnumerable<IAnnotation> FindMemberAnnotations(int firstMemberLine)
@@ -178,55 +66,6 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             return annotations;
-        }
-
-        /// <summary>
-        /// Scans form designer to create a public, self-assigned field for each control on a form.
-        /// </summary>
-        /// <remarks>
-        /// These declarations are meant to be used to identify control event procedures.
-        /// </remarks>
-        private void DeclareControlsAsMembers(IVBComponent form)
-        {
-            using (var controls = form.Controls)
-            {
-                if (controls == null) { return; }
-
-                var libraryQualifier = string.Empty;
-                if (_qualifiedModuleName.ComponentType == ComponentType.UserForm)
-                {
-                    var msFormsLib = _state.DeclarationFinder.FindProject("MSForms");
-                    if (msFormsLib != null)
-                    {
-                        // given a UserForm component, MSForms reference is in use and cannot be removed.
-                        libraryQualifier = "MSForms.";
-                    }
-                }
-
-                foreach (var control in controls)
-                {
-                    var typeName = $"{libraryQualifier}{control.TypeName()}";
-                    // The as type declaration should be TextBox, CheckBox, etc. depending on the type.
-                    var declaration = new Declaration(
-                        _qualifiedModuleName.QualifyMemberName(control.Name),
-                        _parentDeclaration,
-                        _currentScopeDeclaration,
-                        string.IsNullOrEmpty(typeName) ? "Control" : typeName,
-                        null,
-                        true,
-                        true,
-                        Accessibility.Public,
-                        DeclarationType.Control,
-                        null,
-                        null,
-                        Selection.Home,
-                        false,
-                        null,
-                        true);
-
-                    AddDeclaration(declaration);
-                }
-            }
         }
 
         private Declaration CreateDeclaration(

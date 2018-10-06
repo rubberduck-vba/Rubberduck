@@ -6,7 +6,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Annotations
 {
     [TestFixture]
-    public class DeclarationsListenerAnnotationsTests
+    public class AnnotationResolutionTests
     {
         [Test]
         public void AnnotationsAboveMemberGetScopedToMember_NotFirstMember()
