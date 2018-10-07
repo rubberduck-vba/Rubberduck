@@ -52,6 +52,13 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void IsInsideStringLiteral_FalseGivenComment()
+        {
+            var sut = "'foo = \"|\"".ToCodeString();
+            Assert.IsFalse(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
         public void IsInsideStringLiteral_TrueGivenCaretInsideStringWithEscapedQuotes()
         {
             var sut = "foo = \"\"\"string|\"\"\"".ToCodeString();
