@@ -7,8 +7,10 @@ using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 

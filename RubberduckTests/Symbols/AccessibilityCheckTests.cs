@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Symbols
@@ -47,7 +48,7 @@ namespace RubberduckTests.Symbols
             private static ClassModuleDeclaration GetTestClassModule(Declaration projectDeclatation, string name, bool isExposed = false)
             {
                 var qualifiedClassModuleMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                var classModuleAttributes = new Rubberduck.Parsing.VBA.Attributes();
+                var classModuleAttributes = new Attributes();
                 if (isExposed)
                 {
                     classModuleAttributes.AddExposedClassAttribute();

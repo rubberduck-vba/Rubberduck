@@ -2112,7 +2112,7 @@ End Property
         private static ClassModuleDeclaration GetTestClassModule(Declaration projectDeclatation, string name, bool isExposed = false)
         {
             var qualifiedClassModuleMemberName = new QualifiedMemberName(StubQualifiedModuleName(name), name);
-            var classModuleAttributes = new Rubberduck.Parsing.VBA.Attributes();
+            var classModuleAttributes = new Attributes();
             if (isExposed)
             {
                 classModuleAttributes.AddExposedClassAttribute();
