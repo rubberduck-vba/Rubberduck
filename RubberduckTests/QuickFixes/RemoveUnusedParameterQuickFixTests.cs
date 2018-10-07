@@ -16,6 +16,7 @@ namespace RubberduckTests.QuickFixes
 
         [Test]
         [Category("QuickFixes")]
+        [Ignore("Pending fixes to XAML code-behind generation that correctly handles wildcard versions")]
         [Apartment(ApartmentState.STA)]
         public void GivenPrivateSub_DefaultQuickFixRemovesParameter()
         {
