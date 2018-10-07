@@ -5,7 +5,7 @@ using Rubberduck.Parsing.Grammar;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// Used for specifying the Code Explorer folder a appears under.
+    /// Used for all annotations not recognized by RD.
     /// </summary>
     public sealed class NotRecognizedAnnotation : AnnotationBase
     {
