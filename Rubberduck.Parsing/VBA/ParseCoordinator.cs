@@ -224,9 +224,9 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             _parsingStageService.SyncComReferences(token);
-            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedUnloadedInLastSync.Any())
+            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedInLastSync.Any())
             {
-                var unloadedReferences = _parsingStageService.COMReferencesUnloadedUnloadedInLastSync;
+                var unloadedReferences = _parsingStageService.COMReferencesUnloadedInLastSync;
                 var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedReferences.ToHashSet().AsReadOnly(), toParse);
                 toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
                 _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);

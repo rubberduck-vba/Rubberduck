@@ -52,30 +52,10 @@ namespace Rubberduck.Parsing.VBA
             _referenceResolver = referenceResolver;
         }
 
-
-        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations
-        {
-            get
-            {
-                return _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
-            }
-        }
-
-        public bool LastSyncOfCOMReferencesLoadedReferences
-        {
-            get
-            {
-                return _comSynchronizer.LastSyncOfCOMReferencesLoadedReferences;
-            }
-        }
-
-        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync
-        {
-            get
-            {
-                return _comSynchronizer.COMReferencesUnloadedUnloadedInLastSync;
-            }
-        }
+        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations => _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
+        public bool LastSyncOfCOMReferencesLoadedReferences => _comSynchronizer.LastSyncOfCOMReferencesLoadedReferences;
+        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedInLastSync => _comSynchronizer.COMReferencesUnloadedInLastSync;
+        public IEnumerable<(string projectId, string referencedProjectId)>COMReferencesAffectedByPriorityChangesInLastSync =>_comSynchronizer.COMReferencesAffectedByPriorityChangesInLastSync;
 
         public void LoadBuitInDeclarations()
         {
