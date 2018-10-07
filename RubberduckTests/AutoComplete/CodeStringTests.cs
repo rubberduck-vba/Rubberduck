@@ -73,6 +73,13 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void IsInsideStringLiteral_TrueGivenUnfinishedString()
+        {
+            var sut = "foo = \"unfinished string|".ToCodeString();
+            Assert.IsTrue(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
         public void IsComment_TrueGivenIsTrivialSingleQuoteComment()
         {
             var sut = "'\"not a string literal|, just a comment\"".ToCodeString();

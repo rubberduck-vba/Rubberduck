@@ -279,10 +279,9 @@ namespace RubberduckTests.AutoComplete
 
             var input = pair.OpeningChar;
             var original = "MsgBox \"foo|\"".ToCodeString();
-            var expected = "MsgBox \"foo(|\"".ToCodeString();
 
             var result = Run(pair, original, input);
-            Assert.AreEqual(expected, result);
+            Assert.IsNull(result);
         }
 
         [Test]
@@ -296,10 +295,9 @@ namespace RubberduckTests.AutoComplete
 
             var input = pair.OpeningChar;
             var original = "MsgBox \"foo|".ToCodeString();
-            var expected = "MsgBox \"foo(|".ToCodeString();
 
             var result = Run(pair, original, input);
-            Assert.AreEqual(expected, result);
+            Assert.IsNull(result);
         }
 
         [Test]

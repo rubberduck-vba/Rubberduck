@@ -191,7 +191,7 @@ namespace Rubberduck.VBEditor
         {
             get
             {
-                if (!Code.Substring(CaretPosition.StartColumn).Contains('"') || IsComment)
+                if (!Code.Substring(0, CaretPosition.StartColumn).Contains('"') || IsComment)
                 {
                     return false;
                 }
@@ -202,7 +202,7 @@ namespace Rubberduck.VBEditor
 
                 var leftOfCaret = escaped.Substring(0, CaretCharIndex);
                 var rightOfCaret = escaped.Substring(Math.Min(CaretCharIndex + 1, Code.Length - 1));
-                if (!rightOfCaret.Contains('"'))
+                if (!rightOfCaret.Contains('"') || CaretCharIndex + 1 > Code.Length)
                 {
                     // the string isn't terminated, but VBE would terminate it here.
                     rightOfCaret += '"';

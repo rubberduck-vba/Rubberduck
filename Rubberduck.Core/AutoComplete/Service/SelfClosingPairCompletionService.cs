@@ -24,7 +24,8 @@ namespace Rubberduck.AutoComplete.Service
             if (pair.IsSymetric && input != '\b' &&
                 original.Code.Length >= 1 &&
                 original.CaretPosition.StartColumn > 0 &&
-                original.Code[original.CaretPosition.StartColumn - 1] == pair.ClosingChar)
+                original.Code[original.CaretPosition.StartColumn - 1] == pair.ClosingChar
+                || original.IsComment || original.IsInsideStringLiteral)
             {
                 return null;
             }
@@ -60,11 +61,6 @@ namespace Rubberduck.AutoComplete.Service
 
         private CodeString HandleOpeningChar(SelfClosingPair pair, CodeString original)
         {
-            if (pair.IsSymetric)
-            {
-                // todo
-            }
-
             var nextPosition = original.CaretPosition.ShiftRight();
             var autoCode = new string(new[] { pair.OpeningChar, pair.ClosingChar });
             var lines = original.Lines;
