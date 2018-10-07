@@ -224,7 +224,12 @@ namespace RubberduckTests.AutoComplete
         public void GivenClosingCharForUnmatchedOpeningChar_AsymetricPairBailsOut()
         {
             var pair = new SelfClosingPair('(', ')');
-            var input = ')';
+            if (pair.IsSymetric)
+            {
+                Assert.Inconclusive("Pair symetry is inconsistent with the purpose of the test.");
+            }
+
+            var input = pair.ClosingChar;
             var original = "MsgBox (|".ToCodeString();
 
             var result = Run(pair, original, input);
@@ -235,7 +240,12 @@ namespace RubberduckTests.AutoComplete
         public void GivenClosingCharForUnmatchedOpeningChar_SymetricPairBailsOut()
         {
             var pair = new SelfClosingPair('"', '"');
-            var input = '"';
+            if (!pair.IsSymetric)
+            {
+                Assert.Inconclusive("Pair symetry is inconsistent with the purpose of the test.");
+            }
+
+            var input = pair.ClosingChar;
             var original = "MsgBox \"|".ToCodeString();
 
             var result = Run(pair, original, input);
@@ -246,7 +256,12 @@ namespace RubberduckTests.AutoComplete
         public void GivenClosingCharForUnmatchedOpeningCharNonConsecutive_SymetricPairBailsOut()
         {
             var pair = new SelfClosingPair('"', '"');
-            var input = '"';
+            if (!pair.IsSymetric)
+            {
+                Assert.Inconclusive("Pair symetry is inconsistent with the purpose of the test.");
+            }
+
+            var input = pair.ClosingChar;
             var original = "MsgBox \"foo|".ToCodeString();
 
             var result = Run(pair, original, input);
@@ -257,7 +272,12 @@ namespace RubberduckTests.AutoComplete
         public void GivenOpeningCharInsideTerminatedStringLiteral_BailsOut()
         {
             var pair = new SelfClosingPair('(', ')');
-            var input = '(';
+            if (pair.IsSymetric)
+            {
+                Assert.Inconclusive("Pair symetry is inconsistent with the purpose of the test.");
+            }
+
+            var input = pair.OpeningChar;
             var original = "MsgBox \"foo|\"".ToCodeString();
             var expected = "MsgBox \"foo(|\"".ToCodeString();
 
@@ -269,7 +289,12 @@ namespace RubberduckTests.AutoComplete
         public void GivenOpeningCharInsideNonTerminatedStringLiteral_BailsOut()
         {
             var pair = new SelfClosingPair('(', ')');
-            var input = '(';
+            if (pair.IsSymetric)
+            {
+                Assert.Inconclusive("Pair symetry is inconsistent with the purpose of the test.");
+            }
+
+            var input = pair.OpeningChar;
             var original = "MsgBox \"foo|".ToCodeString();
             var expected = "MsgBox \"foo(|".ToCodeString();
 
@@ -281,7 +306,12 @@ namespace RubberduckTests.AutoComplete
         public void GivenClosingCharForUnmatchedOpeningChar_SingleChar_SymetricPairBailsOut()
         {
             var pair = new SelfClosingPair('"', '"');
-            var input = '"';
+            if (!pair.IsSymetric)
+            {
+                Assert.Inconclusive("Pair symetry is inconsistent with the purpose of the test.");
+            }
+
+            var input = pair.ClosingChar;
             var original = "\"|".ToCodeString();
 
             var result = Run(pair, original, input);

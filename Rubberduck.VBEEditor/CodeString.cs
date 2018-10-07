@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Rubberduck.VBEditor
 {
@@ -120,6 +123,95 @@ namespace Rubberduck.VBEditor
             lines[index] = content;
             var code = string.Join("\r\n", lines);
             return new CodeString(code, CaretPosition, SnippetPosition);
+        }
+
+        private static readonly IReadOnlyList<string> ValidRemCommentMarkers =
+            new []
+            {
+                "Rem" + ' ',
+                "Rem" + '?',
+                "Rem" + '<',
+                "Rem" + '>',
+                "Rem" + '{',
+                "Rem" + '}',
+                "Rem" + '~',
+                "Rem" + '`',
+                "Rem" + '!',
+                "Rem" + '/',
+                "Rem" + '*',
+                "Rem" + '(',
+                "Rem" + ')',
+                "Rem" + '-',
+                "Rem" + '=',
+                "Rem" + '+',
+                "Rem" + '\\',
+                "Rem" + '|',
+                "Rem" + ';',
+                "Rem" + ':',
+                "Rem" + '\'',
+                "Rem" + '"',
+                "Rem" + ',',
+                "Rem" + '.',
+            };
+
+        public bool IsComment
+        {
+            get
+            {
+                var noIndent = CaretLine.TrimStart();
+                if (noIndent.StartsWith("'") || noIndent.StartsWith("rem ", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    // no-brainer comment
+                    return true;
+                }
+
+                var stripped = StripStringLiterals(Code);
+                var leftOfCaret = stripped.Substring(0, CaretCharIndex);
+                if (leftOfCaret.IndexOf('\'') >= 0)
+                {
+                    // single-quote comment
+                    return true;
+                }
+                else
+                {
+                    // Rem comment
+                    var instructions = leftOfCaret.Split(':');
+                    return ValidRemCommentMarkers.Any(marker => instructions.Any(instruction => instruction.TrimStart().StartsWith(marker)));
+                }
+                    
+            }
+        }
+
+        private string StripStringLiterals(string line)
+        {
+            return Regex.Replace(line, "\"[^\"]*\"", match => new string(' ', match.Length));
+        }
+
+        public bool IsInsideStringLiteral
+        {
+            get
+            {
+                if (!Code.Substring(CaretPosition.StartColumn).Contains('"') || IsComment)
+                {
+                    return false;
+                }
+
+                var stringStart = Code.IndexOf('"');
+                var escaped = Code.Substring(0, stringStart + 1) + 
+                              Code.Substring(stringStart + 1).Replace("\"\"", "__");
+
+                var leftOfCaret = escaped.Substring(0, CaretCharIndex);
+                var rightOfCaret = escaped.Substring(Math.Min(CaretCharIndex + 1, Code.Length - 1));
+                if (!rightOfCaret.Contains('"'))
+                {
+                    // the string isn't terminated, but VBE would terminate it here.
+                    rightOfCaret += '"';
+                }
+
+                // odd number of double quotes on either side of the caret means we're inside a string literal:
+                return (leftOfCaret.Count(c => c.Equals('"')) % 2) != 0 && 
+                       (rightOfCaret.Count(c => c.Equals('"')) % 2) != 0;
+            }
         }
 
         public override bool Equals(object obj)

@@ -164,7 +164,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
         public CodeString GetCurrentLogicalLine(ICodeModule module)
         {
-            const string LineContinuation = " _";
+            const string lineContinuation = " _";
 
             Selection pSelection;
             using (var pane = module.CodePane)
@@ -184,7 +184,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                 if (currentLineIndex >= 1)
                 {
                     currentLine = module.GetLines(currentLineIndex, 1);
-                    if (currentLine.EndsWith(LineContinuation))
+                    if (currentLine.EndsWith(lineContinuation))
                     {
                         lines.Insert(0, (currentLineIndex, currentLine));
                     }
@@ -197,7 +197,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
             currentLineIndex = pSelection.StartLine;
             currentLine = caretLine.currentLine;
-            while (currentLineIndex <= module.CountOfLines && currentLine.EndsWith(LineContinuation))
+            while (currentLineIndex <= module.CountOfLines && currentLine.EndsWith(lineContinuation))
             {
                 currentLineIndex++;
                 if (currentLineIndex <= module.CountOfLines)

@@ -9,7 +9,7 @@ namespace RubberduckTests.AutoComplete
     public class CodeStringTests
     {
         [Test]
-        public void ToStringIncludesCaretPipe()
+        public void TestCodeString_ToStringIncludesCaretPipe()
         {
             var input = "foo = MsgBox(|)";
             var sut = input.ToCodeString();
@@ -25,7 +25,7 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
-        public void SnippetPositionIsL1C1ifUnspecified()
+        public void SnippetPositionIsL1C1IfUnspecified()
         {
             var sut = new TestCodeString(TestCodeString.PseudoCaret.ToString(), new Selection());
             Assert.AreEqual(Selection.Home, sut.SnippetPosition);
@@ -35,6 +35,69 @@ namespace RubberduckTests.AutoComplete
         public void NullCodeStringArgThrows()
         {
             Assert.Throws<ArgumentNullException>(() => new CodeString(null, Selection.Empty));
+        }
+
+        [Test]
+        public void IsInsideStringLiteral_TrueGivenCaretInsideSimpleString()
+        {
+            var sut = "foo = \"str|ing\"".ToCodeString();
+            Assert.IsTrue(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
+        public void IsInsideStringLiteral_FalseGivenCaretOutsideSimpleString()
+        {
+            var sut = "foo = |\"string\"".ToCodeString();
+            Assert.IsFalse(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
+        public void IsInsideStringLiteral_TrueGivenCaretInsideStringWithEscapedQuotes()
+        {
+            var sut = "foo = \"\"\"string|\"\"\"".ToCodeString();
+            Assert.IsTrue(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
+        public void IsInsideStringLiteral_TrueGivenCaretInsideStringBetweenEscapedQuotes()
+        {
+            var sut = "foo = \"\"|\"string\"\"\"".ToCodeString();
+            Assert.IsTrue(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
+        public void IsInsideStringLiteral_FalseGivenIsTrivialSingleQuoteComment()
+        {
+            var sut = "'\"not a string literal|, just a comment\"".ToCodeString();
+            Assert.IsFalse(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
+        public void IsInsideStringLiteral_FalseGivenIsRemComment()
+        {
+            var sut = "Rem \"not a string literal|, just a comment\"".ToCodeString();
+            Assert.IsFalse(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
+        public void IsInsideStringLiteral_FalseGivenIsRemCommentInSecondInstruction()
+        {
+            var sut = "foo = 2 + 2 : Rem \"not a string literal|, just a comment\"".ToCodeString();
+            Assert.IsFalse(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
+        public void IsInsideStringLiteral_FalseGivenIsCommentStartingInPreviousPhysicalLine()
+        {
+            var sut = "' _\r\n\"not a string literal|, just a comment\"".ToCodeString();
+            Assert.IsFalse(sut.IsInsideStringLiteral);
+        }
+
+        [Test]
+        public void IsComment_TrueGivenSingleQuoteCommentLine()
+        {
+            var sut = "'\"not a string literal|, just a comment\"".ToCodeString();
+            Assert.IsTrue(sut.IsComment);
         }
     }
 }

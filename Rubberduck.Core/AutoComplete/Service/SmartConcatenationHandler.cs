@@ -24,7 +24,7 @@ namespace Rubberduck.AutoComplete.Service
             }
 
             var currentContent = CodePaneHandler.GetCurrentLogicalLine(e.Module);
-            var shouldHandle = IsInsideStringLiteral(ref currentContent);
+            var shouldHandle = currentContent.IsInsideStringLiteral;
             if (!shouldHandle)
             {
                 return null;

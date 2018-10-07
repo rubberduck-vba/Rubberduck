@@ -123,11 +123,11 @@ namespace Rubberduck.AutoComplete.Service
                     // entire line consists in the self-closing pair itself
                     return new CodeString(string.Empty, default, Selection.Empty.ShiftRight());
                 }
-                lines[original.CaretPosition.StartLine] = line.Length == 2
-                    ? string.Empty 
-                    : line.Remove(previous, 2);
-
-                return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
+                else
+                {
+                    lines[original.CaretPosition.StartLine] = line.Remove(previous, 2);
+                    return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
+                }
             }
 
             if (previous < line.Length - 1 && previousChar == pair.OpeningChar)
