@@ -358,6 +358,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rename.
+        /// </summary>
+        public static string CodeExplorer_Rename {
+            get {
+                return ResourceManager.GetString("CodeExplorer_Rename", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resources.
         /// </summary>
         public static string CodeExplorer_ResourceFileText {

@@ -2,6 +2,7 @@
 using Rubberduck.Inspections.Concrete.UnreachableCaseInspection;
 using Rubberduck.Parsing.Grammar;
 using System;
+using System.Globalization;
 
 namespace RubberduckTests.Inspections.UnreachableCase
 {
@@ -942,8 +943,8 @@ namespace RubberduckTests.Inspections.UnreachableCase
             {
                 var compareLength = expected.Length > 5 ? 5 : expected.Length;
                 var accuracy = Math.Pow(10, -1.0 * compareLength);
-                var lhs = double.Parse(result.Token.Substring(0, compareLength));
-                var rhs = double.Parse(expected.Substring(0, compareLength));
+                var lhs = double.Parse(result.Token.Substring(0, compareLength), CultureInfo.InvariantCulture);
+                var rhs = double.Parse(expected.Substring(0, compareLength), CultureInfo.InvariantCulture);
                 Assert.IsTrue(Math.Abs(lhs - rhs) <= accuracy, $"Actual={result.Token} Expected={expected}");
                 return (result,result);
             }

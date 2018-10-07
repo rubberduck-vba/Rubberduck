@@ -20,6 +20,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UnitTesting;
 

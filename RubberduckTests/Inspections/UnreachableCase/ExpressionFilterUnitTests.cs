@@ -491,7 +491,7 @@ namespace RubberduckTests.Inspections.UnreachableCase
             {
                 var args = RetrieveDelimitedElements(valAndType, VALUE_TYPE_DELIMITER);
                 var value = args[0];
-                string declaredType = args[1].Equals(string.Empty) ? null : args[1];
+                var declaredType = args[1].Equals(string.Empty) ? null : args[1];
                 if (declaredType is null)
                 {
                     return ValueFactory.Create(value);
@@ -533,12 +533,12 @@ namespace RubberduckTests.Inspections.UnreachableCase
                 var operandDelimiters = clause.Where(ch => ch.Equals('_'));
                 if (operandDelimiters.Count() == 2)
                 {
-                    (IParseTreeValue lhs, IParseTreeValue rhs, string symbol) = GetBinaryOpValues(clause);
+                    var (lhs, rhs, symbol) = GetBinaryOpValues(clause);
                     expressionClause = CreateRangeClauseExpression((lhs, rhs, symbol));
                 }
                 else if (operandDelimiters.Count() <= 1)
                 {
-                    (IParseTreeValue operand, string symbol) = GetUnaryOpValues(clause);
+                    var (operand, symbol) = GetUnaryOpValues(clause);
                     if (symbol.Equals(LogicalOperators.NOT))
                     {
                         expressionClause = new UnaryExpression(operand, symbol);

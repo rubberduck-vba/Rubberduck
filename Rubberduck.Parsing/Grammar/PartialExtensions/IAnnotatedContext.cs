@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
 // ReSharper disable once CheckNamespace

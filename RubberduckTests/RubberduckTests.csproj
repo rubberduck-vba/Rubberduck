@@ -95,6 +95,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Annotations\AnnotationResolutionTests.cs" />
     <Compile Include="AutoComplete\BlockCompletionTests.cs" />
     <Compile Include="AutoComplete\CodeStringTests.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletionTests.cs" />
