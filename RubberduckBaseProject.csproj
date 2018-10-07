@@ -35,19 +35,11 @@
   </PropertyGroup>
 
   <!-- Analyzer projects must set UnifyOutputPath to have this reference correctly -->
-  <Choose>
-    <When Condition=" '$(AssemblyName)' == 'RubberduckTests' ">
-      <ItemGroup>
-        <Analyzer Include="$(SolutionDir)\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll"/>
-      </ItemGroup>
-    </When>
-    <When Condition=" '$(AssemblyName)' == 'RubberduckCodeAnalysis' OR '$(AssemblyName)' == 'RubberduckTestsCodeAnalysis'" />
-    <Otherwise>
-      <ItemGroup>
+  <ItemGroup Condition=" '$(AssemblyName)' != 'RubberduckTests' 
+                        AND '$(AssemblyName)' != 'RubberduckCodeAnalysis'
+                        AND '$(AssemblyName)' != 'RubberduckTestsCodeAnalysis'">
         <Analyzer Include="$(SolutionDir)\RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll" />
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
+  </ItemGroup>
 
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
     <DebugType>full</DebugType>
