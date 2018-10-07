@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
         private readonly IProjectsProvider _projectsProvider;
         private readonly IReferencedDeclarationsCollector _referencedDeclarationsCollector;
 
-        private readonly List<QualifiedModuleName> _unloadedCOMReferences = new List<QualifiedModuleName>();
+        private readonly List<string> _unloadedCOMReferences = new List<string>();
         private readonly List<(string projectId, string referencedProjectId)> _referencesAffectedByPriorityChanges = new List<(string projectId, string referencedProjectId)>();
 
         private readonly Dictionary<(string identifierName, string fullPath), string> _projectIdsByFilePathAndProjectName = new Dictionary<(string identifierName, string fullPath), string>();
@@ -59,7 +59,7 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
 
 
         public bool LastSyncOfCOMReferencesLoadedReferences { get; private set; }
-        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedInLastSync => _unloadedCOMReferences;
+        public IEnumerable<string> COMReferencesUnloadedInLastSync => _unloadedCOMReferences;
         public IEnumerable<(string projectId, string referencedProjectId)> COMReferencesAffectedByPriorityChangesInLastSync => _referencesAffectedByPriorityChanges;
 
         private readonly IDictionary<string, ReferencePriorityMap> _projectReferences = new Dictionary<string, ReferencePriorityMap>();
@@ -362,9 +362,9 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
             //There is nothing to unload for a user project.
             if (!IsUserProjectProjectId(referencedProjectId))
             {
-                var projectQMN = ProjectQMNFromBuildInProjectId(referencedProjectId);
+                _unloadedCOMReferences.Add(referencedProjectId);
 
-                _unloadedCOMReferences.Add(projectQMN);
+                var projectQMN = ProjectQMNFromBuildInProjectId(referencedProjectId);
                 _state.RemoveBuiltInDeclarations(projectQMN);
             }
         }

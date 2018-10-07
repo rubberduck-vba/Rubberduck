@@ -226,12 +226,31 @@ namespace Rubberduck.Parsing.VBA
             _parsingStageService.SyncComReferences(token);
             if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedInLastSync.Any())
             {
-                var unloadedReferences = _parsingStageService.COMReferencesUnloadedInLastSync;
-                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedReferences.ToHashSet().AsReadOnly(), toParse);
+                var unloadedReferences = _parsingStageService.COMReferencesUnloadedInLastSync.ToHashSet();
+                var unloadedModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => unloadedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
                 toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
                 _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
-                ClearModuleToModuleReferences(unloadedReferences);
+                ClearModuleToModuleReferences(unloadedModules);
                 RefreshDeclarationFinder();
+            }
+
+            if (_parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync.Any())
+            {
+                //We only use the referencedProjectId because that simplifies the reference management immensely.  
+                var affectedReferences = _parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync
+                    .Select(tpl => tpl.referencedProjectId)
+                    .ToHashSet();
+                var referenceModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => affectedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(referenceModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
             }
             token.ThrowIfCancellationRequested();
 

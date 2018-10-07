@@ -54,7 +54,7 @@ namespace Rubberduck.Parsing.VBA
 
         public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations => _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
         public bool LastSyncOfCOMReferencesLoadedReferences => _comSynchronizer.LastSyncOfCOMReferencesLoadedReferences;
-        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedInLastSync => _comSynchronizer.COMReferencesUnloadedInLastSync;
+        public IEnumerable<string> COMReferencesUnloadedInLastSync => _comSynchronizer.COMReferencesUnloadedInLastSync;
         public IEnumerable<(string projectId, string referencedProjectId)>COMReferencesAffectedByPriorityChangesInLastSync =>_comSynchronizer.COMReferencesAffectedByPriorityChangesInLastSync;
 
         public void LoadBuitInDeclarations()
