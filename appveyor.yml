@@ -36,10 +36,17 @@ cache:
 
 install:
   set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
-assembly_info:
+
+# patch version specifiers in the base project
+# also patch version specifier in Core that's fixed to deal with XAML generated code
+dotnet_csproj:
   patch: true
-  file: Rubberduck.Main\Properties\AssemblyInfo.cs
+  file: 'RubberduckBaseProject.csproj;*\Rubberduck.Core.csproj'
+  version: '{version}'
   assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+
 
 before_build:
   - cinst innosetup
