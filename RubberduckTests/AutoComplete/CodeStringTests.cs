@@ -66,31 +66,31 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
-        public void IsInsideStringLiteral_FalseGivenIsTrivialSingleQuoteComment()
+        public void IsComment_TrueGivenIsTrivialSingleQuoteComment()
         {
             var sut = "'\"not a string literal|, just a comment\"".ToCodeString();
-            Assert.IsFalse(sut.IsInsideStringLiteral);
+            Assert.IsTrue(sut.IsComment);
         }
 
         [Test]
-        public void IsInsideStringLiteral_FalseGivenIsRemComment()
+        public void IsComment_TrueGivenIsRemComment()
         {
             var sut = "Rem \"not a string literal|, just a comment\"".ToCodeString();
-            Assert.IsFalse(sut.IsInsideStringLiteral);
+            Assert.IsTrue(sut.IsComment);
         }
 
         [Test]
-        public void IsInsideStringLiteral_FalseGivenIsRemCommentInSecondInstruction()
+        public void IsComment_TrueGivenIsRemCommentInSecondInstruction()
         {
             var sut = "foo = 2 + 2 : Rem \"not a string literal|, just a comment\"".ToCodeString();
-            Assert.IsFalse(sut.IsInsideStringLiteral);
+            Assert.IsTrue(sut.IsComment);
         }
 
         [Test]
-        public void IsInsideStringLiteral_FalseGivenIsCommentStartingInPreviousPhysicalLine()
+        public void IsComment_TrueGivenIsCommentStartingInPreviousPhysicalLine()
         {
             var sut = "' _\r\n\"not a string literal|, just a comment\"".ToCodeString();
-            Assert.IsFalse(sut.IsInsideStringLiteral);
+            Assert.IsTrue(sut.IsComment);
         }
 
         [Test]
