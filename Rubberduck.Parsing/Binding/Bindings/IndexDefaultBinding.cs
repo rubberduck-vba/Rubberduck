@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
 {

@@ -1,4 +1,4 @@
-﻿using Rubberduck.Parsing.Symbols;
+﻿using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.VBA
 {
