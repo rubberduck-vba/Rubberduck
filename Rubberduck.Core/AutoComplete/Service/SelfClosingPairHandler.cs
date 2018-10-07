@@ -38,8 +38,13 @@ namespace Rubberduck.AutoComplete.Service
                 }
 
                 var prettified = CodePaneHandler.Prettify(e.Module, original);
-                result = CodePaneHandler.Prettify(e.Module, ExecuteSelfClosingPair(e, prettified, selfClosingPair));
-                Debug.Assert(result != null, "SCP against original was non-null, and now null against prettified.");
+                result = ExecuteSelfClosingPair(e, prettified, selfClosingPair);
+                if (result == null)
+                {
+                    continue;
+                }
+
+                result = CodePaneHandler.Prettify(e.Module, result);
 
                 var currentLine = result.Lines[result.CaretPosition.StartLine];
                 if (!string.IsNullOrWhiteSpace(currentLine) && 

@@ -106,6 +106,11 @@ namespace Rubberduck.AutoComplete.Service
             var lines = original.Lines;
 
             var line = lines[original.CaretPosition.StartLine];
+            if (line.Length == 0)
+            {
+                return null;
+            }
+
             var previous = Math.Max(0, position.StartColumn - 1);
             var next = Math.Min(line.Length - 1, position.StartColumn);
 
