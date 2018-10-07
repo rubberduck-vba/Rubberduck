@@ -98,7 +98,9 @@
     <Compile Include="Annotations\AnnotationResolutionTests.cs" />
     <Compile Include="AutoComplete\BlockCompletionTests.cs" />
     <Compile Include="AutoComplete\CodeStringTests.cs" />
+    <Compile Include="AutoComplete\PrettifierTests.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletionTests.cs" />
+    <Compile Include="AutoComplete\SmartConcatCompletionTests.cs" />
     <Compile Include="Binding\IndexDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessDefaultBindingTests.cs" />
     <Compile Include="Binding\MemberAccessTypeBindingTests.cs" />

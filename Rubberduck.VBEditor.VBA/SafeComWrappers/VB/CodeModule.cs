@@ -1,3 +1,5 @@
+using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
@@ -122,8 +124,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void InsertLines(int line, string content)
         {
-            if (IsWrappingNullReference) return; 
-            Target.InsertLines(line, content);
+            if (IsWrappingNullReference) return;
+            try
+            {
+                Target.InsertLines(line, content);
+
+            }
+            catch (Exception e)
+            {
+                // "too many line continuations" is one possible cause for a COMException here.
+                Debug.Assert(false, e.ToString());
+            }
         }
 
         public void DeleteLines(int startLine, int count = 1)
@@ -131,20 +142,30 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             if (IsWrappingNullReference) return;
             if (Target.CountOfLines > 0)
             {
-                Target.DeleteLines(startLine, count);
+
+                try
+                {
+                    Target.DeleteLines(startLine, count);
+
+                }
+                catch (Exception e)
+                {
+                    // "too many line continuations" is one possible cause for a COMException here.
+                    Debug.Assert(false, e.ToString());
+                }
             }
         }
 
         public void ReplaceLine(int line, string content)
         {
             if (IsWrappingNullReference) return;
-            if (Target.CountOfLines == 0)
+            try
             {
-                Target.AddFromString(content);
-            }
-            else
-            {
-                try
+                if (Target.CountOfLines == 0)
+                {
+                    Target.AddFromString(content);
+                }
+                else
                 {
                     using (var pane = CodePane)
                     {
@@ -153,7 +174,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                         pane.Selection = selection;
                     }
                 }
-                catch { /* "too many line continuations" is one possible cause */ }
+            }
+            catch (Exception e)
+            {
+                // "too many line continuations" is one possible cause for a COMException here.
+                Debug.Assert(false, e.ToString());
             }
         }
 

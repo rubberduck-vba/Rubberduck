@@ -48,6 +48,7 @@ using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.AutoComplete;
+using Rubberduck.AutoComplete.Service;
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.ComReferenceLoading;
@@ -271,6 +272,9 @@ namespace Rubberduck.Root
 
         private void RegisterSpecialFactories(IWindsorContainer container)
         {
+            container.Register(Component.For<ICodePaneHandler>()
+                .ImplementedBy<CodePaneSourceCodeHandler>()
+                .LifestyleSingleton());
             container.Register(Component.For<IFolderBrowserFactory>()
                 .ImplementedBy<DialogFactory>()
                 .LifestyleSingleton());
@@ -323,6 +327,13 @@ namespace Rubberduck.Root
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .BasedOn<IAutoComplete>()
+                    .If(type => type.NotDisabledOrExperimental(_initialSettings))
+                    .WithService.Base()
+                    .LifestyleTransient());
+
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<AutoCompleteHandlerBase>()
                     .If(type => type.NotDisabledOrExperimental(_initialSettings))
                     .WithService.Base()
                     .LifestyleTransient());

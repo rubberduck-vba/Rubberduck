@@ -279,6 +279,7 @@
     <Compile Include="AutoComplete\AutoCompleteDoBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteEnumBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteForBlock.cs" />
+    <Compile Include="AutoComplete\AutoCompleteHandlerBase.cs" />
     <Compile Include="AutoComplete\AutoCompleteIfBlock.cs" />
     <Compile Include="AutoComplete\AutoCompleteOnErrorResumeNextBlock.cs" />
     <Compile Include="AutoComplete\AutoCompletePrecompilerIfBlock.cs" />
@@ -288,12 +289,11 @@
     <Compile Include="AutoComplete\AutoCompleteWithBlock.cs" />
     <Compile Include="AutoComplete\BlockCompletion\BlockCompletion.cs" />
     <Compile Include="AutoComplete\BlockCompletion\BlockCompletionService.cs" />
-    <Compile Include="AutoComplete\SelfClosingPairCompletion\CodeStringPrettifier.cs" />
-    <Compile Include="AutoComplete\SelfClosingPairCompletion\ICodeStringPrettifier.cs" />
-    <Compile Include="AutoComplete\ShowIntelliSenseCommand.cs" />
-    <Compile Include="Common\CodeString.cs" />
-    <Compile Include="AutoComplete\SelfClosingPairCompletion\SelfClosingPair.cs" />
-    <Compile Include="AutoComplete\SelfClosingPairCompletion\SelfClosingPairCompletionService.cs" />
+    <Compile Include="AutoComplete\Service\SelfClosingPairHandler.cs" />
+    <Compile Include="AutoComplete\Service\ShowIntelliSenseCommand.cs" />
+    <Compile Include="AutoComplete\Service\SelfClosingPair.cs" />
+    <Compile Include="AutoComplete\Service\SelfClosingPairCompletionService.cs" />
+    <Compile Include="AutoComplete\Service\SmartConcatenationHandler.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\AggregationLevel.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\CodeMetric.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\CodeMetricsViewModel.cs" />
@@ -381,7 +381,7 @@
     <Compile Include="AutoComplete\AutoCompleteClosingBracket.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingParenthese.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingString.cs" />
-    <Compile Include="AutoComplete\AutoCompleteService.cs" />
+    <Compile Include="AutoComplete\Service\AutoCompleteService.cs" />
     <Compile Include="UI\Settings\Converters\EmptyLineHandlingToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EmptyLineHandlingValueTextToEnumValueConverter.cs" />
     <Compile Include="UI\Settings\Converters\EnumToBooleanConverter.cs" />
