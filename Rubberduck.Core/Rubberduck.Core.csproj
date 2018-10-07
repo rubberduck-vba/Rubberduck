@@ -10,6 +10,8 @@
     <DocumentationFile>bin\Debug\Rubberduck.Core.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
+    <!-- Give a fixed version to not blow XAML generated code to smithereens -->
+    <AssemblyVersion>2.2</AssemblyVersion>
     <!--<ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>-->
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
