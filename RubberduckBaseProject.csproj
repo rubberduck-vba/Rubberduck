@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project>
-
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- We're specifying the Sdk here to make appveyor happy, but this generates warning MSB4011 -->
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <Company>Rubberduck-VBA</Company>
@@ -17,13 +16,13 @@
     <UnifyOutputPath Condition=" '$(UnifyOutputPath)' == ''">false</UnifyOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(AssemblyVersion)' == ''">
+  <PropertyGroup Condition=" '$(Version)' == ''">
+    <Version>2.2.0</Version>
     <!--
      This assembly version specification is considered nonstandard.
      As such builds that do not override the assembly version generate a warning.
      -->
-    <AssemblyVersion>2.2.*</AssemblyVersion>
-    <FileVersion Condition=" '$(FileVersion)' == '' ">2.2.*</FileVersion>
+    <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">2.2.*</AssemblyVersion>
     <!-- Wildcards are not deterministic, ensure build passes when setting wildcard versions -->
     <Deterministic>False</Deterministic>
   </PropertyGroup>
