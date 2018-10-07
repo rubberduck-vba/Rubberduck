@@ -11,6 +11,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.ComReferenceLoading;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -158,6 +159,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 {
                     _state.AddDeclaration(createdDeclaration);
                 }
+
+                //This is a hack to deal with annotations on module level variables.
+                var memberAnnotations = declarationsListener.CreatedDeclarations
+                    .SelectMany(declaration => declaration.Annotations)
+                    .ToHashSet();
+                moduleDeclaration.RemoveAnnotations(memberAnnotations);
             }
             catch (Exception exception)
             {
@@ -168,7 +175,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             Logger.Debug($"{stopwatch.ElapsedMilliseconds}ms to resolve declarations for component {module.Name}");
         }
 
-        private Declaration NewModuleDeclaration(
+        private ModuleDeclaration NewModuleDeclaration(
             QualifiedModuleName qualifiedModuleName,
             IParseTree tree,
             ICollection<IAnnotation> annotations,

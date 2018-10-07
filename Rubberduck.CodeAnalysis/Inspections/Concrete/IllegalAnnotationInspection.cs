@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -41,13 +42,13 @@ namespace Rubberduck.Inspections.Concrete
 
         private static ICollection<IAnnotation> UnboundAnnotations(IEnumerable<IAnnotation> annotations, IEnumerable<Declaration> userDeclarations, IEnumerable<IdentifierReference> identifierReferences)
         {
-            var boundAnnotations = userDeclarations
+            var boundAnnotationsSelections = userDeclarations
                 .SelectMany(declaration => declaration.Annotations)
                 .Concat(identifierReferences.SelectMany(reference => reference.Annotations))
-                .Distinct()
-                .ToDictionary(annotation => annotation.QualifiedSelection);
+                .Select(annotation => annotation.QualifiedSelection)
+                .ToHashSet();
             
-            return annotations.Where(annotation => !boundAnnotations.ContainsKey(annotation.QualifiedSelection)).ToList();
+            return annotations.Where(annotation => !boundAnnotationsSelections.Contains(annotation.QualifiedSelection)).ToList();
         }
 
         private static ICollection<IAnnotation> NonIdentifierAnnotationsOnIdentifiers(IEnumerable<IdentifierReference> identifierReferences)
