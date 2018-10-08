@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
             illegalAnnotations.AddRange(NonModuleAnnotationsOnModules(userDeclarations));
             illegalAnnotations.AddRange(NonMemberAnnotationsOnMembers(userDeclarations));
             illegalAnnotations.AddRange(NonVariableAnnotationsOnVariables(userDeclarations));
-            illegalAnnotations.AddRange(NoneGeneralAnnotationsWhereNoOtherAnnotationsBelong(userDeclarations));
+            illegalAnnotations.AddRange(NonGeneralAnnotationsWhereOnlyGeneralAnnotationsBelong(userDeclarations));
 
             return illegalAnnotations.Select(annotation => 
                 new QualifiedContextInspectionResult(
@@ -98,7 +98,7 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.UserDefinedTypeMember
         };
 
-        private static ICollection<IAnnotation> NoneGeneralAnnotationsWhereNoOtherAnnotationsBelong(IEnumerable<Declaration> userDeclarations)
+        private static ICollection<IAnnotation> NonGeneralAnnotationsWhereOnlyGeneralAnnotationsBelong(IEnumerable<Declaration> userDeclarations)
         {
             return userDeclarations
                 .Where(declaration => !declaration.DeclarationType.HasFlag(DeclarationType.Module) 
@@ -106,6 +106,7 @@ namespace Rubberduck.Inspections.Concrete
                                       && !VariableAnnotationDeclarationTypes.Contains(declaration.DeclarationType) 
                                       && declaration.DeclarationType != DeclarationType.Project)
                 .SelectMany(member => member.Annotations)
+                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.GeneralAnnotation))
                 .ToList();
         }
     }
