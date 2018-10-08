@@ -14,19 +14,64 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.AutoComplete
 {
-    [TestFixture][Ignore("nothing to see here. yet.")]
+    [TestFixture]
     public class SmartConcatCompletionTests
     {
         [Test]
         public void MaintainsIndent()
         {
             var original = "foo = \"a|\"".ToCodeString();
+            var expected = original.Lines[0].IndexOf('"');
+
+            var result = Run(original, '\r');
+            if (result.Lines.Length != original.Lines.Length + 1)
+            {
+                Assert.Inconclusive();
+            }
+            var actual = result.Lines[1].IndexOf('"');
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void CtrlEnterAddsVbNewLineToken()
+        {
+            var original = "foo = \"a|\"".ToCodeString();
+            var expected = "foo = \"a\" & vbNewLine & _";
+
+            var result = Run(original, '\r', true);
+            var actual = result.Lines[0];
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void PlacesCaretOnNextLineBetweenStringDelimiters()
+        {
+            var original = "foo = \"a|\"".ToCodeString();
             var expected = "foo = \"a\" & _\r\n      \"|\"".ToCodeString();
 
-            var sut = InitializeSut(original, out var module, out var settings);
-            var args = new AutoCompleteEventArgs(module.Object, '\r', false, false);
+            var actual = Run(original, '\r');
+            Assert.AreEqual(expected, actual);
+        }
 
-            sut.Handle(args, settings);
+        [Test]
+        public void WorksGivenCaretOnSecondPhysicalCodeLine()
+        {
+            var original = "foo = \"a\" & _\r\n      \"|\"".ToCodeString();
+            var expected = "foo = \"a\" & _\r\n      \"\" & _\r\n      \"|\"".ToCodeString();
+
+            var actual = Run(original, '\r');
+            Assert.AreEqual(expected, actual);
+        }
+
+        private static TestCodeString Run(TestCodeString original, char input, bool isCtrlDown = false, bool isDeleteKey = false)
+        {
+            var sut = InitializeSut(original, out var module, out var settings);
+            var args = new AutoCompleteEventArgs(module.Object, input, isCtrlDown, isDeleteKey);
+
+            var result = sut.Handle(args, settings);
+            return result == null ? null : new TestCodeString(result);
         }
 
         private static SmartConcatenationHandler InitializeSut(TestCodeString code, out Mock<ICodeModule> module, out AutoCompleteSettings settings)
@@ -44,9 +89,15 @@ namespace RubberduckTests.AutoComplete
             module = new Mock<ICodeModule>();
             pane = new Mock<ICodePane>();
             pane.SetupProperty(m => m.Selection);
+            pane.Object.Selection = new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1).Offset(original.CaretPosition);
             module.Setup(m => m.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount));
             module.Setup(m => m.InsertLines(original.SnippetPosition.StartLine, original.Code));
             module.Setup(m => m.CodePane).Returns(pane.Object);
+            for (var i = 0; i < original.SnippetPosition.LineCount; i++)
+            {
+                var index = i;
+                module.Setup(m => m.GetLines(index + 1, 1)).Returns(original.Lines[index]);
+            }
             module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(prettified.Code);
 
             settings = new AutoCompleteSettings(Enumerable.Empty<AutoCompleteSetting>()) { EnableSmartConcat = true };

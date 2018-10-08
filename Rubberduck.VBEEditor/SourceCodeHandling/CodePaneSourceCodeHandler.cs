@@ -221,7 +221,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             var result = new CodeString(
                 logicalLine,
                 new Selection(zCaretLine, zCaretColumn),
-                new Selection(startLine, 1, endLine, lines[lines.Count - 1].Content.Length));
+                new Selection(startLine, 1, endLine, 1));
 
             return result;
 

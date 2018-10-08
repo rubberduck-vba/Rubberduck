@@ -133,14 +133,14 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test] // fixme: passes, but in-editor behavior seems different.
-        public void DeletingPairInLogicalLine_SelectionRemainsOnThatLine()
+        public void DeletingPairInLogicalLine_SelectionRemainsOnThatLineIfNonEmpty()
         {
             var pair = new SelfClosingPair('"', '"');
             var input = Keys.Back;
             var original = @"foo = ""abc"" & _
-      ""|""".ToCodeString();
+      ""|"" & ""a""".ToCodeString();
             var expected = @"foo = ""abc"" & _
-      |".ToCodeString();
+      | & ""a""".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
@@ -181,6 +181,30 @@ namespace RubberduckTests.AutoComplete
             var input = Keys.Back;
             var original = @"foo = MsgBox(|)".ToCodeString();
             var expected = @"foo = MsgBox|".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void WhenBackspacingClearsLineContinuatedCaretLine_PlacesCaretInsideStringOnPreviousLine()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = "foo = \"test\" & _\r\n     \"|\"".ToCodeString();
+            var expected = "foo = \"test|\"".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void WhenBackspacingClearsLineContinuatedCaretLine_WithConcatenatedVbNewLine_PlacesCaretRightOfVbNewLineOnPreviousLine()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = "foo = \"test\" & vbNewLine & _\r\n     \"|\"".ToCodeString();
+            var expected = "foo = \"test\" & vbNewLine|".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);

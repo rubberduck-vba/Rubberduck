@@ -152,14 +152,29 @@ namespace Rubberduck.AutoComplete.Service
                         var openingLine = lines[position.StartLine].Remove(position.ShiftLeft().StartColumn, 1);
                         lines[position.StartLine] = openingLine;
                     }
-                    lines = lines.Where((x, i) => i <= position.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
+
+                    var finalCaretPosition = original.CaretPosition.ShiftLeft();
+                    lines = lines.Where((x, i) => i <= finalCaretPosition.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
                     if (lines[lines.Length - 1].EndsWith(" _"))
                     {
                         // logical line can't end with a line continuation token...
                         lines[lines.Length - 1] = lines[lines.Length - 1].TrimEnd(' ', '_');
                     }
 
-                    return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(),
+                    if (position.StartLine >= 1 &&
+                        string.IsNullOrWhiteSpace(lines[position.StartLine].Trim()) &&
+                        lines[position.StartLine - 1].EndsWith(" & _"))
+                    {
+
+                        lines[position.StartLine - 1] = lines[position.StartLine - 1]
+                            .Remove(lines[position.StartLine - 1].Length - 4);
+                        var quoteOffset = lines[position.StartLine - 1].EndsWith("\"") ? 1 : 0;
+                        finalCaretPosition = new Selection(finalCaretPosition.StartLine - 1, lines[position.StartLine - 1].Length - quoteOffset);
+                    }
+
+                    lines = lines.Where((x, i) => i <= finalCaretPosition.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
+
+                    return new CodeString(string.Join("\r\n", lines), finalCaretPosition,
                         new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
                 }
             }

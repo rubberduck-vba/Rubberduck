@@ -10,7 +10,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.AutoComplete
 {
     [TestFixture]
-    public class PrettifierTests
+    public class CodePaneHandlerTests
     {
         [Test]
         [Category("AutoComplete")]
