@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
     public class SerializeProjectsCommandMenuItem : CommandMenuItemBase
     {
-        public SerializeProjectsCommandMenuItem(SerializeDeclarationsCommand command) : base(command)
+        public SerializeProjectsCommandMenuItem(SerializeProjectsCommand command) : base(command)
         {
         }
 
@@ -19,13 +19,13 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         public override string Key => "SerializeProjects";
     }
 
-    public class SerializeDeclarationsCommand : CommandBase
+    public class SerializeProjectsCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IComProjectSerializationProvider _serializationProvider;
         private readonly IComLibraryProvider _comLibraryProvider;
 
-        public SerializeDeclarationsCommand(RubberduckParserState state, IComProjectSerializationProvider serializationProvider, IComLibraryProvider comLibraryProvider) 
+        public SerializeProjectsCommand(RubberduckParserState state, IComProjectSerializationProvider serializationProvider, IComLibraryProvider comLibraryProvider) 
             : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
@@ -49,19 +49,24 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             foreach (var project in _state.ProjectsProvider.Projects().Select(proj => proj.Project))
             {
-                foreach (var reference in project.References.Select(lib => new ReferenceInfo(lib)))
+                using (var references = project.References)
                 {
-                    var library = _comLibraryProvider.LoadTypeLibrary(reference.FullPath);
-                    if (library == null)
+                    foreach (var reference in references)
                     {
-                        Logger.Warn($"Could not load library {reference.FullPath} for serialization.");
-                        continue;
-                    }
+                        var info = new ReferenceInfo(reference);
+                        reference.Dispose();
+                        var library = _comLibraryProvider.LoadTypeLibrary(info.FullPath);
+                        if (library == null)
+                        {
+                            Logger.Warn($"Could not load library {info.FullPath} for serialization.");
+                            continue;
+                        }
 
-                    var type = new ComProject(library, reference.FullPath);
-                    if (!toSerialize.ContainsKey(type.Guid))
-                    {
-                        toSerialize.Add(type.Guid, type);
+                        var type = new ComProject(library, info.FullPath);
+                        if (!toSerialize.ContainsKey(type.Guid))
+                        {
+                            toSerialize.Add(type.Guid, type);
+                        }                      
                     }
                 }
             }

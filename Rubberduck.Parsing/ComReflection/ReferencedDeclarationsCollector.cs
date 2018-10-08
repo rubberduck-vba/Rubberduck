@@ -4,12 +4,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    public abstract class ReferencedDeclarationsCollector : IReferencedDeclarationsCollector
+    public abstract class ReferencedDeclarationsCollectorBase : IReferencedDeclarationsCollector
     {
         public abstract IReadOnlyCollection<Declaration> CollectedDeclarations(ReferenceInfo reference);
 

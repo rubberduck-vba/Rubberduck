@@ -5,7 +5,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    public class LibraryReferencedDeclarationsCollector : ReferencedDeclarationsCollector
+    public class LibraryReferencedDeclarationsCollector : ReferencedDeclarationsCollectorBase
     {
         private readonly IComLibraryProvider _comLibraryProvider;
 

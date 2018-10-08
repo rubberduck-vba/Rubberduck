@@ -4,7 +4,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    public class SerializedReferencedDeclarationsCollector : ReferencedDeclarationsCollector
+    public class SerializedReferencedDeclarationsCollector : ReferencedDeclarationsCollectorBase
     {
         private readonly IComProjectSerializationProvider _serializer;
 
