@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics
 {

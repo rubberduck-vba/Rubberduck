@@ -40,7 +40,6 @@ namespace Rubberduck.Inspections.QuickFixes
                 var annotationList = (VBAParser.AnnotationListContext)annotation.Context.Parent;
 
                 RemoveAnnotationMarker(annotationList, annotation, rewriter);
-                RemoveWhiteSpaceAfterAnnotation(annotationList, annotation, rewriter);
 
                 rewriter.Remove(annotation.Context);
 
@@ -69,18 +68,6 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             var index = Array.IndexOf(annotationList.annotation(), annotation.Context);
             rewriter.Remove(annotationList.AT(index));
-        }
-
-        private static void RemoveWhiteSpaceAfterAnnotation(VBAParser.AnnotationListContext annotationList,
-            IAnnotation annotation, IModuleRewriter rewriter)
-        {
-            var whitespace = annotationList.whiteSpace().FirstOrDefault(ws =>
-                ws.Start.StartIndex == annotation.Context.Stop.StopIndex + 1);
-
-            if (whitespace != null)
-            {
-                rewriter.Remove(whitespace);
-            }
         }
 
         private static bool OnlyQuoteRemainedFromAnnotationList(KeyValuePair<VBAParser.AnnotationListContext, int> pair)

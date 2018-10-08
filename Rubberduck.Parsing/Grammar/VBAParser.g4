@@ -926,8 +926,8 @@ commentOrAnnotation :
 remComment : REM whiteSpace? commentBody;
 comment : SINGLEQUOTE commentBody;
 commentBody : (~NEWLINE)*;
-annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+ (COLON commentBody)?;
-annotation : annotationName annotationArgList?;
+annotationList : SINGLEQUOTE (AT annotation)+ (COLON commentBody)?;
+annotation : annotationName annotationArgList? whiteSpace?;
 annotationName : unrestrictedIdentifier;
 annotationArgList : 
     whiteSpace annotationArg

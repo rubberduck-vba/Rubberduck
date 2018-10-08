@@ -2,7 +2,7 @@
 using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.PreProcessing;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 
 namespace Rubberduck.Parsing.VBA.Parsing
 {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA.ReferenceManagement
