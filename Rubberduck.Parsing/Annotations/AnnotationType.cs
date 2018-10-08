@@ -33,6 +33,8 @@ namespace Rubberduck.Parsing.Annotations
         Folder = 1 << 17 | ModuleAnnotation,
         NoIndent = 1 << 18 | ModuleAnnotation,
         Interface = 1 << 19 | ModuleAnnotation,
+        Flags = 1 << 20 | MemberAnnotation,
+
         [AttributeAnnotation("VB_Description")]
         Description = 1 << 13 | Attribute | MemberAnnotation,
         [AttributeAnnotation("VB_UserMemId", "0")]

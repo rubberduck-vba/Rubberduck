@@ -91,6 +91,7 @@
     <Compile Include="Annotations\DescriptionAnnotation.cs" />
     <Compile Include="Annotations\EnumeratorMemberAnnotation.cs" />
     <Compile Include="Annotations\ExposedModuleAnnotation.cs" />
+    <Compile Include="Annotations\FlagsAnnotation.cs" />
     <Compile Include="Annotations\FolderAnnotation.cs" />
     <Compile Include="Annotations\IAnnotation.cs" />
     <Compile Include="Annotations\IAnnotationFactory.cs" />
