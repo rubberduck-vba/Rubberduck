@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Symbols;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 
@@ -17,14 +18,26 @@ namespace Rubberduck.Parsing.ComReflection
         ComProject Project { get; }
     }
 
+    [DataContract]
     public abstract class ComBase : IComBase
     {
+        [DataMember(IsRequired = true)]
         public Guid Guid { get; protected set; }
+
+        [DataMember(IsRequired = true)]
         public int Index { get; protected set; }
+
+        [DataMember(IsRequired = true)]
         public ComDocumentation Documentation { get; protected set; }
+
         public string Name => Documentation == null ? string.Empty : Documentation.Name;
+
+        [DataMember(IsRequired = true)]
         public DeclarationType Type { get; protected set; }
+
+        [DataMember(IsRequired = true)]
         public IComBase Parent { get; protected set; }
+
         public ComProject Project => Parent != null ? Parent.Project : this as ComProject;
 
         protected ComBase(IComBase parent, ITypeLib typeLib, int index)

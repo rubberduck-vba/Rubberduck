@@ -147,11 +147,12 @@
     <Compile Include="Common\ParsingStageTimer.cs" />
     <Compile Include="ComReflection\ComLibraryProvider.cs" />
     <Compile Include="ComReflection\IComLibraryProvider.cs" />
-    <Compile Include="ComReflection\ISerializableProjectBuilder.cs" />
+    <Compile Include="ComReflection\IComProjectSerializationProvider.cs" />
     <Compile Include="ComReflection\LibraryReferencedDeclarationsCollector.cs" />
-    <Compile Include="ComReflection\SerializableProjectBuilder.cs" />
+    <Compile Include="ComReflection\ReferencedDeclarationsCollector.cs" />
     <Compile Include="ComReflection\SerializedReferencedDeclarationsCollector.cs" />
     <Compile Include="ComReflection\IReferencedDeclarationsCollector.cs" />
+    <Compile Include="ComReflection\XmlComProjectSerializer.cs" />
     <Compile Include="PreProcessing\CompilationArgumentsCache.cs" />
     <Compile Include="PreProcessing\CompilationArgumentsProvider.cs" />
     <Compile Include="PreProcessing\ICompilationArgumentsProvider.cs" />
@@ -355,7 +356,6 @@
     <Compile Include="Symbols\PropertyGetDeclaration.cs" />
     <Compile Include="Symbols\FunctionDeclaration.cs" />
     <Compile Include="Symbols\DeclarationLoaders\RubberduckApiDeclarations.cs" />
-    <Compile Include="ComReflection\SerializableDeclaration.cs" />
     <Compile Include="Symbols\SquareBracketedNameComparer.cs" />
     <Compile Include="Symbols\SubroutineDeclaration.cs" />
     <Compile Include="Symbols\ProjectReferencePass.cs" />
@@ -380,7 +380,6 @@
     <Compile Include="Symbols\IdentifierReference.cs" />
     <Compile Include="Symbols\IdentifierReferenceListener.cs" />
     <Compile Include="Symbols\ValuedDeclaration.cs" />
-    <Compile Include="ComReflection\XmlPersistableDeclarations.cs" />
     <Compile Include="Symbols\UnboundMemberDeclaration.cs" />
     <Compile Include="TokenExtensions.cs" />
     <Compile Include="VBA\Parsing\AttributeListener.cs" />

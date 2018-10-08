@@ -15,7 +15,7 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class ImplicitDefaultMemberAssignmentInspectionTests
     {
-        [Test]       
+        [Test]
         [Category("Inspections")]
         public void ImplicitDefaultMemberAssignment_ReturnsResult()
         {

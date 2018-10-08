@@ -12,7 +12,7 @@ namespace RubberduckTests.Inspections
     public class ImplicitActiveWorkbookReferenceInspectionTests
     {
         [Test]
-        [Ignore("This test was broken by bad serialized declarations?")]
+        [Ignore("This was apparently only passing due to the test setup. See #4404")]
         [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsWorksheets()
         {
