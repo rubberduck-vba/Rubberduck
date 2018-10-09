@@ -640,7 +640,7 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void VariableAnnotationOnIdentifier_OneResult()
+        public void VariableAnnotationOnLabel_OneResult()
         {
             const string inputCode = @"
 Option Explicit
