@@ -128,7 +128,7 @@ namespace RubberduckTests.AutoComplete
             Assert.AreEqual(expected, result);
         }
 
-        [Test]
+        [Test][Ignore("Issue #4420")]
         public void DeletingOpeningChar_CallStmtArgList()
         {
             var pair = new SelfClosingPair('(', ')');
