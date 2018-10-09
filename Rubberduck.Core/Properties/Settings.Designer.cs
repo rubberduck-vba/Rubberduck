@@ -456,9 +456,9 @@ namespace Rubberduck.Properties {
             "ion\" Severity=\"Error\" InspectionType=\"RubberduckOpportunities\" />\r\n    <CodeInsp" +
             "ection Name=\"ModuleWithoutFolderInspection\" Severity=\"Suggestion\" InspectionType" +
             "=\"RubberduckOpportunities\" />\r\n    <CodeInspection Name=\"OnLocalErrorInspection\"" +
-            " Severity=\"Suggestion\" InspectionType=\"RubberduckOpportunities\" />\r\n  </CodeInsp" +
-            "ections>\r\n  <WhitelistedIdentifiers />\r\n  <RunInspectionsOnSuccessfulParse>true<" +
-            "/RunInspectionsOnSuccessfulParse>\r\n</CodeInspectionSettings>")]
+            " Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n  </CodeInspec" +
+            "tions>\r\n  <WhitelistedIdentifiers />\r\n  <RunInspectionsOnSuccessfulParse>true</R" +
+            "unInspectionsOnSuccessfulParse>\r\n</CodeInspectionSettings>")]
         public global::Rubberduck.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));
