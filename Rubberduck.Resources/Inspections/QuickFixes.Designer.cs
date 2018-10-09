@@ -286,6 +286,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;On Local Error&apos; with &apos;On Error&apos;.
+        /// </summary>
+        public static string RemoveLocalErrorQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveLocalErrorQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove obsolete statement.
         /// </summary>
         public static string RemoveObsoleteStatementQuickFix {
