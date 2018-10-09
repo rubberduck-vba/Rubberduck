@@ -369,4 +369,7 @@
   <data name="OnLocalErrorInspection" xml:space="preserve">
     <value>'On Local Error' statement detected.</value>
   </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>An assignment is immediately overridden by another assignment or is never referenced.</value>
+  </data>
 </root>
