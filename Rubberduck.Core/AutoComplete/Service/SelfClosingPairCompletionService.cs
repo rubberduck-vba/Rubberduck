@@ -264,7 +264,7 @@ namespace Rubberduck.AutoComplete.Service
                     && context.RPAREN()?.Symbol.Text[0] == _pair.ClosingChar)
                 {
                     if (_code.CaretPosition.StartLine == context.LPAREN().Symbol.Line - 1
-                        && _code.CaretPosition.StartColumn == context.RPAREN().Symbol.Column)
+                        && _code.CaretPosition.StartColumn == context.LPAREN().Symbol.Column + 1)
                     {
                         var token = context.RPAREN().Symbol;
                         return new Selection(token.Line - 1, token.Column);
