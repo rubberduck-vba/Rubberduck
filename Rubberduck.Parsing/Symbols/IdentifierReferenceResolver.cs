@@ -8,6 +8,8 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 
 namespace Rubberduck.Parsing.Symbols
 {

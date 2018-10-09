@@ -724,7 +724,6 @@ namespace Foo
     {
         [Test]
         [Category("ChainedWrappers")]
-        [Ignore("See #4377")]
         public void InterfaceContainsInterfaceType()
         {
             var test = @"namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
@@ -750,6 +749,76 @@ namespace Foo
         {
             var v = new FooImp();
             v.Execute().Execute();
+        }
+    }
+}";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.AreEqual("ChainedWrapper", diagnostics.Single().Descriptor.Id);
+        }
+        [Test]
+        [Category("ChainedWrappers")]
+        public void InterfaceContainsInterfaceType_Property()
+        {
+            var test = @"namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
+{
+    public interface ISafeComWrapper
+    {
+        FooImp Value { get; }
+    }
+
+    public abstract class Foo : ISafeComWrapper
+    {
+        public virtual FooImp Value => new FooImp();
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Value => base.Value;
+    }
+
+    public class D
+    {
+        public void B()
+        {
+            var v = new FooImp();
+            var x = v.Value.Value;
+        }
+    }
+}";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.AreEqual("ChainedWrapper", diagnostics.Single().Descriptor.Id);
+        }
+        [Test]
+        [Category("ChainedWrappers")]
+        public void InterfaceContainsInterfaceType_Property_ReverseAssignment()
+        {
+            var test = @"namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
+{
+    public interface ISafeComWrapper
+    {
+        FooImp Value { get; set; }
+    }
+
+    public abstract class Foo : ISafeComWrapper
+    {
+        public virtual FooImp Value
+        {
+            get => new FooImp();
+            set => new FooImp().Value = value;
+        }
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Value => base.Value;
+    }
+
+    public class D
+    {
+        public void B()
+        {
+            var v = new FooImp();
+            v.Value.Value = new FooImp();
         }
     }
 }";
@@ -783,6 +852,37 @@ namespace Foo
         {
             return new RubberduckCodeAnalysis.ChainedWrapperAnalyzer();
 
+        }
+    }
+}
+
+namespace Rubberduck.VBEditor.SafeComWrappers.Abstract1
+{
+    public interface ISafeComWrapper
+    {
+        FooImp Value { get; set; }
+    }
+
+    public abstract class Foo : ISafeComWrapper
+    {
+        public virtual FooImp Value
+        {
+            get => new FooImp();
+            set => new FooImp().Value = value;
+        }
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Value => base.Value;
+    }
+
+    public class D
+    {
+        public void B()
+        {
+            var v = new FooImp();
+            v.Value.Value = new FooImp();
         }
     }
 }

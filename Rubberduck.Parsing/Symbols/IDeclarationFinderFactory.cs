@@ -1,6 +1,7 @@
 ﻿using System;
 using Rubberduck.Parsing.Annotations;
 using System.Collections.Generic;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.Symbols

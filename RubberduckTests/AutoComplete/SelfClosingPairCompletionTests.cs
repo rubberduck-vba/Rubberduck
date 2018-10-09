@@ -128,13 +128,25 @@ namespace RubberduckTests.AutoComplete
             Assert.AreEqual(expected, result);
         }
 
-        [Test][Ignore("Issue #4420")]
+        [Test]
         public void DeletingOpeningChar_CallStmtArgList()
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.Back;
-            var original = "foo = Call xy(|z)".ToCodeString();
-            var expected = "foo = Call xy|z".ToCodeString();
+            var original = "Call xy(|z)".ToCodeString();
+            var expected = "Call xy|z".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void DeletingOpeningChar_IndexExpr()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = Keys.Back;
+            var original = "foo = CInt(|z)".ToCodeString();
+            var expected = "foo = CInt|z".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);
