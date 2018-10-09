@@ -51,6 +51,11 @@ namespace Rubberduck.AutoComplete.Service
 
         public CodeString Execute(SelfClosingPair pair, CodeString original, Keys input)
         {
+            if (original.IsComment)
+            {
+                return null;
+            }
+
             if (input == Keys.Back)
             {
                 return HandleBackspace(pair, original);
@@ -163,7 +168,8 @@ namespace Rubberduck.AutoComplete.Service
 
                     if (position.StartLine >= 1 &&
                         string.IsNullOrWhiteSpace(lines[position.StartLine].Trim()) &&
-                        lines[position.StartLine - 1].EndsWith(" & _"))
+                        lines[position.StartLine - 1].EndsWith(" & _") &&
+                        position.StartLine == lines.Length - 1)
                     {
 
                         lines[position.StartLine - 1] = lines[position.StartLine - 1]

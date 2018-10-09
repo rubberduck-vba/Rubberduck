@@ -95,6 +95,17 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void BackspacingInsideComment_BailsOut()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = Keys.Back;
+            var original = "' _\r\n    (|)".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.IsNull(result);
+        }
+
+        [Test]
         public void CanTypeClosingChar()
         {
             var pair = new SelfClosingPair('(', ')');

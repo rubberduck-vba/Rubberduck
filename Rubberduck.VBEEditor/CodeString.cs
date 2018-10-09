@@ -166,7 +166,8 @@ namespace Rubberduck.VBEditor
                 }
 
                 var stripped = StripStringLiterals(Code);
-                var leftOfCaret = stripped.Substring(0, CaretCharIndex);
+                var length = stripped.Length;
+                var leftOfCaret = stripped.Substring(0, Math.Max(0, Math.Min(length - 1, CaretCharIndex)));
                 if (leftOfCaret.IndexOf('\'') >= 0)
                 {
                     // single-quote comment
@@ -191,7 +192,7 @@ namespace Rubberduck.VBEditor
         {
             get
             {
-                if (!CaretLine.Substring(0, CaretPosition.StartColumn).Contains('"') || IsComment)
+                if (string.IsNullOrWhiteSpace(CaretLine) || !CaretLine.Substring(0, CaretPosition.StartColumn).Contains('"') || IsComment)
                 {
                     return false;
                 }

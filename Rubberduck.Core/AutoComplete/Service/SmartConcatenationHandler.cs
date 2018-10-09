@@ -24,20 +24,25 @@ namespace Rubberduck.AutoComplete.Service
             }
 
             var currentContent = CodePaneHandler.GetCurrentLogicalLine(e.Module);
-            var shouldHandle = currentContent.IsInsideStringLiteral;
-            if (!shouldHandle)
+            if (!currentContent.IsInsideStringLiteral)
             {
                 return null;
             }
 
-            var lastIndexLeftOfCaret = currentContent.Code.Length > 2 ? currentContent.Code.Substring(0, currentContent.CaretCharIndex).LastIndexOf('"') : 0;
+            var lastIndexLeftOfCaret = currentContent.CaretLine.Length > 2 ? currentContent.CaretLine.Substring(0, currentContent.CaretPosition.StartColumn).LastIndexOf('"') : 0;
             if (lastIndexLeftOfCaret > 0)
             {
-                var indent = currentContent.Code.NthIndexOf('"', 1);
+                var indent = currentContent.CaretLine.NthIndexOf('"', 1);
                 var whitespace = new string(' ', indent);
 
-                var autoCode = $"\" {(e.IsControlKeyDown ? "& vbNewLine " : string.Empty)}& _\r\n{whitespace}\"\"";
-                var code = $"{currentContent.Code.Substring(0, currentContent.CaretCharIndex)}{autoCode}{currentContent.Code.Substring(currentContent.CaretCharIndex + 1)}";
+                var autoCode = $"\" {(e.IsControlKeyDown ? "& vbNewLine " : string.Empty)}& _\r\n{whitespace}\"";
+                var left = currentContent.CaretLine.Substring(0, currentContent.CaretPosition.StartColumn);
+                var right = currentContent.CaretLine.Substring(currentContent.CaretPosition.StartColumn);
+
+                var caretLine = $"{left}{autoCode}{right}";
+                var lines = currentContent.Lines;
+                lines[currentContent.CaretPosition.StartLine] = caretLine;
+                var code = string.Join("\r\n", lines);
 
                 var newContent = new CodeString(code, currentContent.CaretPosition, currentContent.SnippetPosition);
                 var newPosition = new Selection(newContent.CaretPosition.StartLine + 1, indent + 1);

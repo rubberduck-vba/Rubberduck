@@ -65,6 +65,16 @@ namespace RubberduckTests.AutoComplete
             Assert.AreEqual(expected, actual);
         }
 
+        [Test]
+        public void SplittingExistingString_PutsCaretAtSameRelativePosition()
+        {
+            var original = "foo = \"ab|cd\"".ToCodeString();
+            var expected = "foo = \"ab\" & _\r\n      \"|cd\"".ToCodeString();
+
+            var actual = Run(original, '\r');
+            Assert.AreEqual(expected, actual);
+        }
+
         private static TestCodeString Run(TestCodeString original, char input, bool isCtrlDown = false, bool isDeleteKey = false)
         {
             var sut = InitializeSut(original, out var module, out var settings);

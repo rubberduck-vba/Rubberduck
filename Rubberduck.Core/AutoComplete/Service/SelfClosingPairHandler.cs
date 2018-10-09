@@ -29,16 +29,25 @@ namespace Rubberduck.AutoComplete.Service
         public override CodeString Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
             var original = CodePaneHandler.GetCurrentLogicalLine(e.Module);
-            foreach (var selfClosingPair in SelfClosingPairs)
+            foreach (var pair in SelfClosingPairs)
             {
-                var result = ExecuteSelfClosingPair(e, original, selfClosingPair);
+                var isPresent = original.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}");
+
+                var result = ExecuteSelfClosingPair(e, original, pair);
                 if (result == null)
                 {
                     continue;
                 }
 
                 var prettified = CodePaneHandler.Prettify(e.Module, original);
-                result = ExecuteSelfClosingPair(e, prettified, selfClosingPair);
+                if (!isPresent && original.CaretLine.Length + 2 == prettified.CaretLine.Length && 
+                    prettified.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}"))
+                {
+                    // prettifier just added the pair for us; likely a Sub or Function statement.
+                    prettified = original; // pretend this didn't happen. note: probably breaks if original has extra whitespace.
+                }
+
+                result = ExecuteSelfClosingPair(e, prettified, pair);
                 if (result == null)
                 {
                     continue;
@@ -62,16 +71,16 @@ namespace Rubberduck.AutoComplete.Service
             return null;
         }
 
-        private CodeString ExecuteSelfClosingPair(AutoCompleteEventArgs e, CodeString original, SelfClosingPair selfClosingPair)
+        private CodeString ExecuteSelfClosingPair(AutoCompleteEventArgs e, CodeString original, SelfClosingPair pair)
         {
             CodeString result;
             if (e.Character == '\b' && original.CaretPosition.StartColumn > 1)
             {
-                result = _scpService.Execute(selfClosingPair, original, Keys.Back);
+                result = _scpService.Execute(pair, original, Keys.Back);
             }
             else
             {
-                result = _scpService.Execute(selfClosingPair, original, e.Character);
+                result = _scpService.Execute(pair, original, e.Character);
             }
 
             return result;
