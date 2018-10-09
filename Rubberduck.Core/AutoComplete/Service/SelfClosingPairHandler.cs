@@ -63,6 +63,12 @@ namespace Rubberduck.AutoComplete.Service
                     result = result.ReplaceLine(result.CaretPosition.StartLine, currentLine.TrimEnd());
                 }
 
+                if (e.Character != '\b' && !result.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}"))
+                {
+                    // VBE eats it. just bail out.
+                    return null;
+                }
+
                 e.Handled = true;
                 result = new CodeString(result.Code, result.CaretPosition, new Selection(result.SnippetPosition.StartLine, 1, result.SnippetPosition.EndLine, 1));
                 return result;

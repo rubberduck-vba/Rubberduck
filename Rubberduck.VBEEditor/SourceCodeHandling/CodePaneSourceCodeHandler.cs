@@ -115,7 +115,8 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                 if (prettifiedCode[original.CaretPosition.StartLine][i] != ' ')
                 {
                     prettifiedNonWhitespaceCharacters++;
-                    if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters)
+                    if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters 
+                        || i == prettifiedCode[original.CaretPosition.StartLine].Length - 1)
                     {
                         prettifiedCaretCharIndex = i;
                         break;
