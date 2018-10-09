@@ -39,7 +39,9 @@ namespace RubberduckCodeAnalysis
             }
 
             var expInterfaces = context.SemanticModel.GetTypeInfo(node.Expression).Type?.AllInterfaces;
-            var nameInterfaces = context.SemanticModel.GetTypeInfo(node.Name).Type?.AllInterfaces;
+
+            var nameValue = node.Name.Parent.Parent is InvocationExpressionSyntax ? node.Name.Parent.Parent : node.Name;
+            var nameInterfaces = context.SemanticModel.GetTypeInfo(nameValue).Type?.AllInterfaces;
 
             if (!expInterfaces.HasValue || !nameInterfaces.HasValue)
             {
