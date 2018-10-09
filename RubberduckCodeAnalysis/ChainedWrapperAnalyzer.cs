@@ -51,7 +51,10 @@ namespace RubberduckCodeAnalysis
             if (expInterfaces.Value.Any(a => a.ToDisplayString() == "Rubberduck.VBEditor.SafeComWrappers.Abstract.ISafeComWrapper") &&
                 nameInterfaces.Value.Any(a => a.ToDisplayString() == "Rubberduck.VBEditor.SafeComWrappers.Abstract.ISafeComWrapper"))
             {
-                var diagnostic = Diagnostic.Create(ChainedWrapperRule, node.GetLocation());
+                var targetType = context.SemanticModel.GetTypeInfo(nameValue).Type.Name;
+                var containingType = context.SemanticModel.GetTypeInfo(node.Expression).Type.Name;
+                var diagnostic = Diagnostic.Create(ChainedWrapperRule, node.GetLocation(), targetType, containingType, node.GetText());
+                
                 context.ReportDiagnostic(diagnostic);
             }
         }
