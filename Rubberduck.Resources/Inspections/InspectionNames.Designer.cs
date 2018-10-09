@@ -367,6 +367,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Module without &apos;@Folder&apos; annotation.
+        /// </summary>
+        public static string ModuleWithoutFolderInspection {
+            get {
+                return ResourceManager.GetString("ModuleWithoutFolderInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scope of variable is broader than it needs to be.
         /// </summary>
         public static string MoveFieldCloserToUsageInspection {

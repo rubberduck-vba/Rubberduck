@@ -279,6 +279,7 @@
     &lt;CodeInspection Name="ObsoleteMemberUsageInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
     &lt;CodeInspection Name="ObsoleteCallingConventionInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="DuplicatedAnnotationInspection" Severity="Error" InspectionType="RubberduckOpportunities" /&gt;
+    &lt;CodeInspection Name="ModuleWithoutFolderInspection" Severity="Suggestion" InspectionType="RubberduckOpportunities" /&gt;
   &lt;/CodeInspections&gt;
   &lt;WhitelistedIdentifiers /&gt;
   &lt;RunInspectionsOnSuccessfulParse&gt;true&lt;/RunInspectionsOnSuccessfulParse&gt;
