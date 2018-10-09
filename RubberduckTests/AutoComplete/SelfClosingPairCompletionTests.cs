@@ -129,6 +129,18 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void DeletingOpeningChar_CallStmtArgList()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = Keys.Back;
+            var original = "foo = Call xy(|z)".ToCodeString();
+            var expected = "foo = Call xy|z".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
         public void DeletingOpeningCharRemovesPairedClosingChar_NestedParensMultiline()
         {
             var pair = new SelfClosingPair('(', ')');

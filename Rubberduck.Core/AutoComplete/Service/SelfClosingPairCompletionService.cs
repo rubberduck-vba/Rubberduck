@@ -190,7 +190,7 @@ namespace Rubberduck.AutoComplete.Service
 
         private Selection FindMatchingTokenPosition(SelfClosingPair pair, CodeString original)
         {
-            var code = original.Code;
+            var code = string.Join("\r\n", original.Lines) + "\r\n";
             code = code.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}")
                 ? code.Substring(0, code.LastIndexOf(pair.ClosingChar) + 1)
                 : code;
@@ -225,6 +225,34 @@ namespace Rubberduck.AutoComplete.Service
             {
                 _pair = pair;
                 _code = code;
+            }
+
+
+            public override Selection VisitArgumentList(VBAParser.ArgumentListContext context)
+            {
+                if (context.Start.Text.StartsWith(_pair.OpeningChar.ToString())
+                    && context.Start.Text.EndsWith(_pair.ClosingChar.ToString()))
+                {
+                    if (_code.CaretPosition.StartLine == context.Start.Line - 1
+                        && _code.CaretPosition.StartColumn == context.Start.Column + 1)
+                    {
+                        Result = new Selection(context.Start.Line - 1, context.Stop.Column + context.Stop.Text.Length - 1);
+                    }
+                }
+                var inner = context.GetDescendents<VBAParser.ArgumentListContext>();
+                foreach (var item in inner)
+                {
+                    if (context != item)
+                    {
+                        var result = Visit(item);
+                        if (result != default)
+                        {
+                            Result = result;
+                        }
+                    }
+                }
+
+                return base.VisitArgumentList(context);
             }
 
             public override Selection VisitLiteralExpr([NotNull] VBAParser.LiteralExprContext context)
