@@ -121,10 +121,10 @@
     <value>COM Management</value>
   </data>
   <data name="ChainedWrapperDescription" xml:space="preserve">
-    <value>Chained Wrappers</value>
+    <value>All types derived from SafeComWrappers should not be chained as it leaks unmanaged resources. Use an explicit local variable for each chained member.</value>
   </data>
   <data name="ChainedWrapperMessageFormat" xml:space="preserve">
-    <value>Chained Wrappers</value>
+    <value>The type '{0}' derives from a SafeComWrapper base. It is called via other SafeComWrapper-derived type '{1}' in the expression '{2}'.</value>
   </data>
   <data name="ChainedWrapperTitle" xml:space="preserve">
     <value>Chained Wrappers</value>
