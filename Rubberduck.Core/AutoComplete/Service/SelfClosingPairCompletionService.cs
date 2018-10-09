@@ -1,15 +1,14 @@
-﻿using Antlr4.Runtime;
+﻿using System;
+using System.Linq;
+using System.Windows.Forms;
+using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
-using System;
-using System.Linq;
-using System.Windows.Forms;
 
-namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
+namespace Rubberduck.AutoComplete.Service
 {
     public class SelfClosingPairCompletionService
     {
@@ -20,22 +19,20 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             _showIntelliSense = showIntelliSense;
         }
 
-        public CodeString Execute(SelfClosingPair pair, CodeString original, char input, ICodeStringPrettifier prettifier = null)
+        public CodeString Execute(SelfClosingPair pair, CodeString original, char input)
         {
+            if (pair.IsSymetric && input != '\b' &&
+                original.Code.Length >= 1 &&
+                original.CaretPosition.StartColumn > 0 &&
+                original.Code[original.CaretPosition.StartColumn - 1] == pair.ClosingChar
+                || original.IsComment || original.IsInsideStringLiteral)
+            {
+                return null;
+            }
+
             if (input == pair.OpeningChar)
             {
                 var result = HandleOpeningChar(pair, original);
-                if (result != default && prettifier != null)
-                {
-                    if (prettifier.IsSpacingUnchanged(result, original))
-                    {
-                        //_showIntelliSense?.Execute(); /* lovely VBE makes a loud "DING!!" if the command has no effect */
-                        return result;
-                    }
-                    
-                    return default;
-                }
-
                 return result;
             }
 
@@ -44,40 +41,63 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 return HandleClosingChar(pair, original);
             }
 
-            return default;
+            if (input == '\b')
+            {
+                return Execute(pair, original, Keys.Back);
+            }
+
+            return null;
         }
 
         public CodeString Execute(SelfClosingPair pair, CodeString original, Keys input)
         {
+            if (original.IsComment)
+            {
+                return null;
+            }
+
             if (input == Keys.Back)
             {
                 return HandleBackspace(pair, original);
             }
 
-            return default;
+            return null;
         }
 
         private CodeString HandleOpeningChar(SelfClosingPair pair, CodeString original)
         {
             var nextPosition = original.CaretPosition.ShiftRight();
             var autoCode = new string(new[] { pair.OpeningChar, pair.ClosingChar });
-            var lines = original.Code.Split('\n');
+            var lines = original.Lines;
             var line = lines[original.CaretPosition.StartLine];
-            lines[original.CaretPosition.StartLine] = line.Insert(original.CaretPosition.StartColumn, autoCode);
+            lines[original.CaretPosition.StartLine] = string.IsNullOrEmpty(original.Code) 
+                    ? autoCode 
+                    : original.CaretPosition.StartColumn == line.Length 
+                        ? line + autoCode 
+                        : line.Insert(original.CaretPosition.StartColumn, autoCode);
 
-            return new CodeString(string.Join("\n", lines), nextPosition, original.SnippetPosition);
+            return new CodeString(string.Join("\r\n", lines), nextPosition, new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
         }
 
         private CodeString HandleClosingChar(SelfClosingPair pair, CodeString original)
         {
-            if (original.Code.Count(c => c == pair.OpeningChar) == original.Code.Count(c => c == pair.ClosingChar))
+            if (pair.IsSymetric)
+            {
+                return null;
+            }
+
+            var isBalanced = original.Code.Count(c => c == pair.OpeningChar) ==
+                             original.Code.Count(c => c == pair.ClosingChar);
+            var nextIsClosingChar = original.CaretLine.Length > original.CaretCharIndex &&  original.CaretLine[original.CaretCharIndex] == pair.ClosingChar;
+
+            if (isBalanced && nextIsClosingChar)
             {
                 var nextPosition = original.CaretPosition.ShiftRight();
                 var newCode = original.Code;
 
-                return new CodeString(newCode, nextPosition, original.SnippetPosition);
+                return new CodeString(newCode, nextPosition, new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
             }
-            return default;
+            return null;
         }
 
         private CodeString HandleBackspace(SelfClosingPair pair, CodeString original)
@@ -90,21 +110,33 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             var position = original.CaretPosition;
             var lines = original.Lines;
 
-            var previous = Math.Max(0, position.StartColumn - 1);
-            var next = previous + 1;
-
             var line = lines[original.CaretPosition.StartLine];
-            if (original.CaretPosition.EndColumn < next && line[previous] == pair.OpeningChar && line[next] == pair.ClosingChar)
+            if (line.Length == 0)
+            {
+                return null;
+            }
+
+            var previous = Math.Max(0, position.StartColumn - 1);
+            var next = Math.Min(line.Length - 1, position.StartColumn);
+
+            var previousChar = line[previous];
+            var nextChar = line[next];
+
+            if (original.CaretPosition.EndColumn < next && previousChar == pair.OpeningChar && nextChar == pair.ClosingChar)
             {
                 if (line.Length == 2)
                 {
+                    // entire line consists in the self-closing pair itself
                     return new CodeString(string.Empty, default, Selection.Empty.ShiftRight());
                 }
-                lines[original.CaretPosition.StartLine] = line.Length == 2 ? string.Empty : line.Remove(previous, 2);
-                return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
+                else
+                {
+                    lines[original.CaretPosition.StartLine] = line.Remove(previous, 2);
+                    return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
+                }
             }
 
-            if (previous < line.Length - 1 && line[previous] == pair.OpeningChar)
+            if (previous < line.Length - 1 && previousChar == pair.OpeningChar)
             {
                 Selection closingTokenPosition;
                 closingTokenPosition = line[Math.Min(line.Length - 1, next)] == pair.ClosingChar
@@ -118,24 +150,47 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
 
                     if (closingLine == pair.OpeningChar.ToString())
                     {
-                        lines[original.CaretPosition.StartLine] = string.Empty;
+                        lines[closingTokenPosition.EndLine] = string.Empty;
                     }
                     else
                     {
-                        var openingLine = lines[original.CaretPosition.StartLine].Remove(original.CaretPosition.ShiftLeft().StartColumn, 1);
-                        lines[original.CaretPosition.StartLine] = openingLine;
+                        var openingLine = lines[position.StartLine].Remove(position.ShiftLeft().StartColumn, 1);
+                        lines[position.StartLine] = openingLine;
                     }
 
-                    return new CodeString(string.Join("\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
+                    var finalCaretPosition = original.CaretPosition.ShiftLeft();
+                    lines = lines.Where((x, i) => i <= finalCaretPosition.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
+                    if (lines[lines.Length - 1].EndsWith(" _"))
+                    {
+                        // logical line can't end with a line continuation token...
+                        lines[lines.Length - 1] = lines[lines.Length - 1].TrimEnd(' ', '_');
+                    }
+
+                    if (position.StartLine >= 1 &&
+                        string.IsNullOrWhiteSpace(lines[position.StartLine].Trim()) &&
+                        lines[position.StartLine - 1].EndsWith(" & _") &&
+                        position.StartLine == lines.Length - 1)
+                    {
+
+                        lines[position.StartLine - 1] = lines[position.StartLine - 1]
+                            .Remove(lines[position.StartLine - 1].Length - 4);
+                        var quoteOffset = lines[position.StartLine - 1].EndsWith("\"") ? 1 : 0;
+                        finalCaretPosition = new Selection(finalCaretPosition.StartLine - 1, lines[position.StartLine - 1].Length - quoteOffset);
+                    }
+
+                    lines = lines.Where((x, i) => i <= finalCaretPosition.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
+
+                    return new CodeString(string.Join("\r\n", lines), finalCaretPosition,
+                        new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
                 }
             }
 
-            return default;
+            return null;
         }
 
         private Selection FindMatchingTokenPosition(SelfClosingPair pair, CodeString original)
         {
-            var code = original.Code;
+            var code = string.Join("\r\n", original.Lines) + "\r\n";
             code = code.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}")
                 ? code.Substring(0, code.LastIndexOf(pair.ClosingChar) + 1)
                 : code;
@@ -145,7 +200,11 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
                 result = VBACodeStringParser.Parse(code, p => p.mainBlockStmt());
                 if (((ParserRuleContext)result.parseTree).exception != null)
                 {
-                    return default;
+                    result = VBACodeStringParser.Parse(code, p => p.blockStmt());
+                    if (((ParserRuleContext)result.parseTree).exception != null)
+                    {
+                        return default;
+                    }
                 }
             }
             var visitor = new MatchingTokenVisitor(pair, original);
@@ -166,6 +225,34 @@ namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
             {
                 _pair = pair;
                 _code = code;
+            }
+
+
+            public override Selection VisitArgumentList(VBAParser.ArgumentListContext context)
+            {
+                if (context.Start.Text.StartsWith(_pair.OpeningChar.ToString())
+                    && context.Start.Text.EndsWith(_pair.ClosingChar.ToString()))
+                {
+                    if (_code.CaretPosition.StartLine == context.Start.Line - 1
+                        && _code.CaretPosition.StartColumn == context.Start.Column + 1)
+                    {
+                        Result = new Selection(context.Start.Line - 1, context.Stop.Column + context.Stop.Text.Length - 1);
+                    }
+                }
+                var inner = context.GetDescendents<VBAParser.ArgumentListContext>();
+                foreach (var item in inner)
+                {
+                    if (context != item)
+                    {
+                        var result = Visit(item);
+                        if (result != default)
+                        {
+                            Result = result;
+                        }
+                    }
+                }
+
+                return base.VisitArgumentList(context);
             }
 
             public override Selection VisitLiteralExpr([NotNull] VBAParser.LiteralExprContext context)

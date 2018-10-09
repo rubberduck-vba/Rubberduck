@@ -31,7 +31,7 @@ namespace Rubberduck.AutoComplete
                 return false;
             }
 
-            var module = e.CodeModule;
+            var module = e.Module;
             using (var pane = module.CodePane)
             {
                 var pSelection = pane.Selection;

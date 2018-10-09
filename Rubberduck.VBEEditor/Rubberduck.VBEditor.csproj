@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeString.cs" />
     <Compile Include="ComManagement\ComMessagePumper.cs" />
     <Compile Include="ComManagement\TypeLibs\ITypeLibWrapper.cs" />
     <Compile Include="ComManagement\TypeLibs\ITypeLibWrapperProvider.cs" />

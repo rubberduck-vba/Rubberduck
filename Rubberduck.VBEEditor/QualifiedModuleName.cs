@@ -56,7 +56,7 @@ namespace Rubberduck.VBEditor
             ComponentType = component.Type;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
-            //note: We set this property in order to stabelize the component.
+            //note: We set this property in order to stabilize the component.
             //For some reason, components sometimes seem to get removed on the COM side although 
             //an RCW is still holding a reference. For some reason, opening the CodeModule of a 
             //component seems to prevent this. 

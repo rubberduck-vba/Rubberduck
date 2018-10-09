@@ -41,12 +41,12 @@ namespace Rubberduck.AutoComplete
         {
             var ignoreTab = e.Character == '\t' && !settings.CompleteBlockOnTab;
             var ignoreEnter = e.Character == '\r' && !settings.CompleteBlockOnEnter;
-            if (IsInlineCharCompletion || e.IsDelete || ignoreTab || ignoreEnter)
+            if (IsInlineCharCompletion || e.IsDeleteKey || ignoreTab || ignoreEnter)
             {
                 return false;
             }
 
-            var module = e.CodeModule;
+            var module = e.Module;
             using (var pane = module.CodePane)
             {
                 var selection = pane.Selection;
