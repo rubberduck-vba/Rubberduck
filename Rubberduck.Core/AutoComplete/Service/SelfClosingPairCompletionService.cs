@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Parsing;
@@ -208,8 +209,8 @@ namespace Rubberduck.AutoComplete.Service
                 }
             }
             var visitor = new MatchingTokenVisitor(pair, original);
-            visitor.Visit(result.parseTree);
-            return visitor.Result;
+            var matchingTokenPosition = visitor.Visit(result.parseTree);
+            return matchingTokenPosition;
         }
 
 
@@ -219,71 +220,46 @@ namespace Rubberduck.AutoComplete.Service
             private readonly SelfClosingPair _pair;
             private readonly CodeString _code;
 
-            public Selection Result { get; private set; }
-
             public MatchingTokenVisitor(SelfClosingPair pair, CodeString code)
             {
                 _pair = pair;
                 _code = code;
             }
 
-
-            public override Selection VisitArgumentList(VBAParser.ArgumentListContext context)
+            protected override bool ShouldVisitNextChild(IRuleNode node, Selection currentResult)
             {
-                if (context.Start.Text.StartsWith(_pair.OpeningChar.ToString())
-                    && context.Start.Text.EndsWith(_pair.ClosingChar.ToString()))
-                {
-                    if (_code.CaretPosition.StartLine == context.Start.Line - 1
-                        && _code.CaretPosition.StartColumn == context.Start.Column + 1)
-                    {
-                        Result = new Selection(context.Start.Line - 1, context.Stop.Column + context.Stop.Text.Length - 1);
-                    }
-                }
-                var inner = context.GetDescendents<VBAParser.ArgumentListContext>();
-                foreach (var item in inner)
-                {
-                    if (context != item)
-                    {
-                        var result = Visit(item);
-                        if (result != default)
-                        {
-                            Result = result;
-                        }
-                    }
-                }
-
-                return base.VisitArgumentList(context);
+                return currentResult.Equals(default);
             }
 
             public override Selection VisitLiteralExpr([NotNull] VBAParser.LiteralExprContext context)
             {
+                var innerResult = VisitChildren(context);
+                if (innerResult != DefaultResult)
+                {
+                    return innerResult;
+                }
+
                 if (context.Start.Text.StartsWith(_pair.OpeningChar.ToString())
                     && context.Start.Text.EndsWith(_pair.ClosingChar.ToString()))
                 {
                     if (_code.CaretPosition.StartLine == context.Start.Line - 1
                         && _code.CaretPosition.StartColumn == context.Start.Column + 1)
                     {
-                        Result = new Selection(context.Start.Line - 1, context.Stop.Column + context.Stop.Text.Length - 1);
-                    }
-                }
-                var inner = context.GetDescendents<VBAParser.LiteralExprContext>();
-                foreach (var item in inner)
-                {
-                    if (context != item)
-                    {
-                        var result = Visit(item);
-                        if (result != default)
-                        {
-                            Result = result;
-                        }
+                        return new Selection(context.Start.Line - 1, context.Stop.Column + context.Stop.Text.Length - 1);
                     }
                 }
 
-                return base.VisitLiteralExpr(context);
+                return DefaultResult;
             }
 
             public override Selection VisitIndexExpr([NotNull] VBAParser.IndexExprContext context)
             {
+                var innerResult = VisitChildren(context);
+                if (innerResult != DefaultResult)
+                {
+                    return innerResult;
+                }
+
                 if (context.LPAREN()?.Symbol.Text[0] == _pair.OpeningChar
                     && context.RPAREN()?.Symbol.Text[0] == _pair.ClosingChar)
                 {
@@ -291,27 +267,21 @@ namespace Rubberduck.AutoComplete.Service
                         && _code.CaretPosition.StartColumn == context.RPAREN().Symbol.Column)
                     {
                         var token = context.RPAREN().Symbol;
-                        Result = new Selection(token.Line - 1, token.Column);
-                    }
-                }
-                var inner = context.GetDescendents<VBAParser.IndexExprContext>();
-                foreach (var item in inner)
-                {
-                    if (context != item)
-                    {
-                        var result = Visit(item);
-                        if (result != default)
-                        {
-                            Result = result;
-                        }
+                        return new Selection(token.Line - 1, token.Column);
                     }
                 }
 
-                return base.VisitIndexExpr(context);
+                return DefaultResult;
             }
 
             public override Selection VisitArgList([NotNull] VBAParser.ArgListContext context)
             {
+                var innerResult = VisitChildren(context);
+                if (innerResult != DefaultResult)
+                {
+                    return innerResult;
+                }
+
                 if (context.Start.Text[0] == _pair.OpeningChar
                     && context.Stop.Text[0] == _pair.ClosingChar)
                 {
@@ -319,27 +289,21 @@ namespace Rubberduck.AutoComplete.Service
                         && _code.CaretPosition.StartColumn == context.Start.Column + 1)
                     {
                         var token = context.Stop;
-                        Result = new Selection(token.Line - 1, token.Column);
-                    }
-                }
-                var inner = context.GetDescendents<VBAParser.ArgListContext>();
-                foreach (var item in inner)
-                {
-                    if (context != item)
-                    {
-                        var result = Visit(item);
-                        if (result != default)
-                        {
-                            Result = result;
-                        }
+                        return new Selection(token.Line - 1, token.Column);
                     }
                 }
 
-                return base.VisitArgList(context);
+                return DefaultResult;
             }
 
             public override Selection VisitParenthesizedExpr([NotNull] VBAParser.ParenthesizedExprContext context)
             {
+                var innerResult = VisitChildren(context);
+                if (innerResult != DefaultResult)
+                {
+                    return innerResult;
+                }
+
                 if (context.Start.Text[0] == _pair.OpeningChar
                     && context.Stop.Text[0] == _pair.ClosingChar)
                 {
@@ -347,23 +311,11 @@ namespace Rubberduck.AutoComplete.Service
                         && _code.CaretPosition.StartColumn == context.Start.Column + 1)
                     {
                         var token = context.Stop;
-                        Result = new Selection(token.Line - 1, token.Column);
-                    }
-                }
-                var inner = context.GetDescendents<VBAParser.ParenthesizedExprContext>();
-                foreach (var item in inner)
-                {
-                    if (context != item)
-                    {
-                        var result = Visit(item);
-                        if (result != default)
-                        {
-                            Result = result;
-                        }
+                        return new Selection(token.Line - 1, token.Column);
                     }
                 }
 
-                return base.VisitParenthesizedExpr(context);
+                return DefaultResult;
             }
         }
     }
