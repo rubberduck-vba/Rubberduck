@@ -165,7 +165,7 @@ namespace Rubberduck.VBEditor
                     return true;
                 }
 
-                var stripped = StripStringLiterals(Code);
+                var stripped = StripBracketedExpressions(StripStringLiterals(Code));
                 var length = stripped.Length;
                 var leftOfCaret = stripped.Substring(0, Math.Max(0, Math.Min(length - 1, CaretCharIndex)));
                 if (leftOfCaret.IndexOf('\'') >= 0)
@@ -186,6 +186,11 @@ namespace Rubberduck.VBEditor
         private string StripStringLiterals(string line)
         {
             return Regex.Replace(line, "\"[^\"]*\"", match => new string(' ', match.Length));
+        }
+
+        private string StripBracketedExpressions(string line)
+        {
+            return Regex.Replace(line, "\\[[^\\]]*\\]", match => new string(' ', match.Length));
         }
 
         public bool IsInsideStringLiteral
