@@ -382,6 +382,7 @@
     <Compile Include="AutoComplete\AutoCompleteClosingParenthese.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingString.cs" />
     <Compile Include="AutoComplete\AutoCompleteService.cs" />
+    <Compile Include="UI\Settings\ScrollViewerCorrector.cs" />
     <Compile Include="UI\Settings\Converters\EmptyLineHandlingToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EmptyLineHandlingValueTextToEnumValueConverter.cs" />
     <Compile Include="UI\Settings\Converters\EnumToBooleanConverter.cs" />

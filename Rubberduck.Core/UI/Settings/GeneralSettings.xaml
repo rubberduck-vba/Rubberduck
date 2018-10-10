@@ -69,9 +69,14 @@
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="ScrollViewer">
+            <Style.Setters>
+                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
+            </Style.Setters>
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer>
+        <ScrollViewer x:Name="ScrollViewer">
             <Grid>
                 <StackPanel Grid.Row="0" Margin="5,5,5,0">
                     <Label Background="DarkGray"
@@ -151,22 +156,22 @@
                     </DockPanel>
 
                     <DataGrid ItemsSource="{Binding Hotkeys}"
-                      HorizontalAlignment="Stretch"
-                      AutoGenerateColumns="False"
-                      CanUserDeleteRows="False"
-                      CanUserReorderColumns="False"
-                      CanUserResizeColumns="True"
-                      IsReadOnly="False"
-                      SelectionMode="Single"
-                      CanUserAddRows="False"
-                      HorizontalGridLinesBrush="Transparent"
-                      VerticalGridLinesBrush="Transparent"
-                      HeadersVisibility="Column"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Hidden"
-                      ItemContainerStyle="{StaticResource PrettifyRow}"
-                      ColumnHeaderHeight="22"
-                      BorderThickness="0">
+                              HorizontalAlignment="Stretch"
+                              AutoGenerateColumns="False"
+                              CanUserDeleteRows="False"
+                              CanUserReorderColumns="False"
+                              CanUserResizeColumns="True"
+                              IsReadOnly="False"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              HorizontalGridLinesBrush="Transparent"
+                              VerticalGridLinesBrush="Transparent"
+                              HeadersVisibility="Column"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Hidden"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ColumnHeaderHeight="22"
+                              BorderThickness="0">
                         <DataGrid.CellStyle>
                             <Style TargetType="{x:Type DataGridCell}">
                                 <Setter Property="BorderThickness" Value="0" />
