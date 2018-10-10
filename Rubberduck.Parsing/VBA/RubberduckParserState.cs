@@ -1045,14 +1045,13 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RemoveBuiltInDeclarations(ReferenceInfo reference)
+        public void RemoveBuiltInDeclarations(QualifiedModuleName projectQmn)
         {
-            var key = new QualifiedModuleName(reference);
-            ClearAsTypeDeclarationPointingToReference(key);
-            if (_moduleStates.TryRemove(key, out var moduleState))
+            ClearAsTypeDeclarationPointingToReference(projectQmn);
+            if (_moduleStates.TryRemove(projectQmn, out var moduleState))
             {
                 moduleState?.Dispose();
-                Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
+                Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", projectQmn.Name, projectQmn.ProjectId);
             }
         }
         

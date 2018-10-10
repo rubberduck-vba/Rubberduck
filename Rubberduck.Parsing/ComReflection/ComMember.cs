@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Symbols;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
@@ -24,20 +25,36 @@ namespace Rubberduck.Parsing.ComReflection
         Value = 0               //The default member for the object.
     }
 
+    [DataContract]
+    [KnownType(typeof(ComBase))]
 #if DEBUG
     [DebuggerDisplay("{" + nameof(MemberDeclaration) + "}")]
 #endif
     public class ComMember : ComBase
     {
-        public bool IsHidden { get; }
-        public bool IsRestricted { get; }
-        public bool ReturnsWithEventsObject { get; }
-        public bool IsDefault { get; }
-        public bool IsEnumerator { get; }
+        [DataMember(IsRequired = true)]
+        public bool IsHidden { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsRestricted { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool ReturnsWithEventsObject { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsDefault { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsEnumerator { get; private set; }
+
         //This member is called on an interface when a bracketed expression is dereferenced.
-        public bool IsEvaluateFunction { get; }
+        [DataMember(IsRequired = true)]
+        public bool IsEvaluateFunction { get; private set; }
+
+        [DataMember(IsRequired = true)]
         public ComParameter AsTypeName { get; private set; } = ComParameter.Void;
 
+        [DataMember(IsRequired = true)]
         private List<ComParameter> _parameters = new List<ComParameter>();
 
         //See https://docs.microsoft.com/en-us/windows/desktop/midl/retval
@@ -101,7 +118,7 @@ namespace Rubberduck.Parsing.ComReflection
         private void LoadParameters(FUNCDESC funcDesc, ITypeInfo info)
         {
             var names = new string[255];
-            info.GetNames(Index, names, names.Length, out int count);
+            info.GetNames(Index, names, names.Length, out _);
 
             for (var index = 0; index < funcDesc.cParams; index++)
             {

@@ -8,6 +8,7 @@ using System.Threading;
 using NLog;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.ComReflection;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
@@ -23,7 +24,8 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
         private readonly IProjectsProvider _projectsProvider;
         private readonly IReferencedDeclarationsCollector _referencedDeclarationsCollector;
 
-        private readonly List<QualifiedModuleName> _unloadedCOMReferences;
+        private readonly List<string> _unloadedCOMReferences = new List<string>();
+        private readonly List<(string projectId, string referencedProjectId)> _referencesAffectedByPriorityChanges = new List<(string projectId, string referencedProjectId)>();
 
         private readonly Dictionary<(string identifierName, string fullPath), string> _projectIdsByFilePathAndProjectName = new Dictionary<(string identifierName, string fullPath), string>();
 
@@ -53,15 +55,15 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
             _parserStateManager = parserStateManager;
             _projectsProvider = projectsProvider;
             _referencedDeclarationsCollector = referencedDeclarationsCollector;
-            _unloadedCOMReferences = new List<QualifiedModuleName>();
         }
 
 
         public bool LastSyncOfCOMReferencesLoadedReferences { get; private set; }
-        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync => _unloadedCOMReferences;
+        public IEnumerable<string> COMReferencesUnloadedInLastSync => _unloadedCOMReferences;
+        public IEnumerable<(string projectId, string referencedProjectId)> COMReferencesAffectedByPriorityChangesInLastSync => _referencesAffectedByPriorityChanges;
 
-        private readonly HashSet<ReferencePriorityMap> _projectReferences = new HashSet<ReferencePriorityMap>();
-        public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences => _projectReferences.AsReadOnly();
+        private readonly IDictionary<string, ReferencePriorityMap> _projectReferences = new Dictionary<string, ReferencePriorityMap>();
+        public IReadOnlyCollection<ReferencePriorityMap> ProjectReferences => _projectReferences.Values.AsReadOnly();
 
 
         protected abstract void LoadReferences(IEnumerable<ReferenceInfo> referencesToLoad, ConcurrentBag<ReferenceInfo> unmapped, CancellationToken token);
@@ -71,14 +73,18 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
         {
             var parsingStageTimer = ParsingStageTimer.StartNew();
 
+            var oldProjectReferences = _projectReferences.ToDictionary();
+            _projectReferences.Clear();
+
             LastSyncOfCOMReferencesLoadedReferences = false;
             _unloadedCOMReferences.Clear();
+            _referencesAffectedByPriorityChanges.Clear();
             RefreshReferencedByProjectId();
 
             var unmapped = new ConcurrentBag<ReferenceInfo>();
 
             var referencesByProjectId = ReferencedByProjectId();
-            var referencesToLoad = GetReferencesToLoadAndSaveReferencePriority(referencesByProjectId);
+            var referencesToLoad = GetReferencesToLoadAndSaveReferencePriority(referencesByProjectId, oldProjectReferences);
 
             if (referencesToLoad.Any())
             {
@@ -86,20 +92,114 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
                 LoadReferences(referencesToLoad, unmapped, token);
             }
 
-            var allReferences = referencesByProjectId.Values.SelectMany(references => references).ToHashSet();
-            var notMappedReferences = NonMappedReferences(allReferences);
-            foreach (var item in notMappedReferences)
-            {
-                unmapped.Add(item);
-            }
-
-            foreach (var reference in unmapped)
-            {
-                UnloadComReference(reference);
-            }
+            DetermineReferencesAffectedByPriorityChanges(_projectReferences, oldProjectReferences);
+            UnloadNoLongerExistingReferences(_projectReferences, oldProjectReferences);
 
             parsingStageTimer.Stop();
             parsingStageTimer.Log("Loaded and unloaded referenced libraries in {0}ms.");
+        }
+
+        private void UnloadNoLongerExistingReferences(IDictionary<string, ReferencePriorityMap> newProjectReferences, IDictionary<string, ReferencePriorityMap> oldProjectReferences)
+        {
+            var noLongerReferencedProjectIds = oldProjectReferences.Keys
+                .Where(projectId => !newProjectReferences.ContainsKey(projectId))
+                .ToList();
+
+            foreach (var referencedProjectId in noLongerReferencedProjectIds)
+            {
+                UnloadComReference(referencedProjectId);
+            }
+        }
+
+        private void DetermineReferencesAffectedByPriorityChanges(IDictionary<string, ReferencePriorityMap> newProjectReferences, IDictionary<string, ReferencePriorityMap> oldProjectReferences)
+        {
+            var referencePriorityChanges = ReferencePriorityChanges(newProjectReferences, oldProjectReferences);
+
+            foreach (var oldMap in oldProjectReferences.Values)
+            {
+                foreach (var projectId in referencePriorityChanges.Keys)
+                {
+                    if (oldMap.TryGetValue(projectId, out var priority)
+                        && referencePriorityChanges[projectId]
+                            .Any(tpl => (tpl.oldPriority <= priority && tpl.newPriority >= priority)
+                                        || (tpl.oldPriority >= priority && tpl.newPriority <= priority)))
+                    {
+                        _referencesAffectedByPriorityChanges.Add((projectId, oldMap.ReferencedProjectId));
+                    }
+                }
+            }
+        }
+
+        private static IDictionary<string, List<(int newPriority, int oldPriority)>> ReferencePriorityChanges(IDictionary<string, ReferencePriorityMap> newProjectReferences, IDictionary<string, ReferencePriorityMap> oldProjectReferences)
+        {
+            var referencePriorityChanges = new Dictionary<string, List<(int newPriority, int oldPriority)>>();
+            foreach (var referencedProjectId in oldProjectReferences.Keys)
+            {
+                var oldMap = oldProjectReferences[referencedProjectId];
+                if (!newProjectReferences.TryGetValue(referencedProjectId, out var newMap))
+                {
+                    foreach (var projectId in oldMap.Keys)
+                    {
+                        AddPriorityChangeToDictionary(projectId, int.MaxValue, oldMap[projectId], referencePriorityChanges);
+                    }
+                }
+                else
+                {
+                    foreach (var projectId in oldMap.Keys)
+                    {
+                        var oldPriority = oldMap[projectId];
+                        if (!newMap.TryGetValue(referencedProjectId, out var newPriority))
+                        {
+                            newPriority = int.MaxValue;
+                        }
+
+                        if (newPriority != oldPriority)
+                        {
+                            AddPriorityChangeToDictionary(projectId, newPriority, oldMap[projectId], referencePriorityChanges);
+                        }
+                    }
+
+                    foreach (var projectId in newMap.Keys)
+                    {
+                        if (!oldMap.ContainsKey(projectId))
+                        {
+                            AddPriorityChangeToDictionary(projectId, newMap[projectId], int.MaxValue, referencePriorityChanges);
+                        }
+                    }
+                }
+            }
+
+            foreach (var referencedProjectId in newProjectReferences.Keys)
+            {
+                if (oldProjectReferences.ContainsKey(referencedProjectId))
+                {
+                    continue;
+                }
+
+                var newMap = newProjectReferences[referencedProjectId];
+                foreach (var projectId in newMap.Keys)
+                {
+                    AddPriorityChangeToDictionary(projectId, newMap[projectId], int.MaxValue, referencePriorityChanges);
+                }
+            }
+
+            return referencePriorityChanges;
+        }
+
+        private static void AddPriorityChangeToDictionary(
+            string projectId, 
+            int newPriority, 
+            int oldPriority,
+            IDictionary<string, List<(int newPriority, int oldPriority)>> dict)
+        {
+            if (dict.TryGetValue(projectId, out var changeList))
+            {
+                changeList.Add((newPriority, oldPriority));
+            }
+            else
+            {
+                dict.Add(projectId, new List<(int newPriority, int oldPriority)> { (newPriority, oldPriority) });
+            }
         }
 
         private Dictionary<string, List<ReferenceInfo>> ReferencedByProjectId()
@@ -173,7 +273,7 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
             return true;
         }
 
-        private ICollection<ReferenceInfo> GetReferencesToLoadAndSaveReferencePriority(Dictionary<string, List<ReferenceInfo>> referencedByProjectId)
+        private ICollection<ReferenceInfo> GetReferencesToLoadAndSaveReferencePriority(Dictionary<string, List<ReferenceInfo>> referencedByProjectId, IDictionary<string, ReferencePriorityMap> oldProjectReferences)
         {
             var referencesToLoad = new List<ReferenceInfo>();
 
@@ -188,13 +288,15 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
                     // todo: figure out why Rubberduck.tlb *sometimes* throws
 
                     var referencedProjectId = GetReferenceProjectId(reference);
-                    var map = _projectReferences.FirstOrDefault(item =>
-                        item.ReferencedProjectId == referencedProjectId);
-
-                    if (map == null)
+                    if (!_projectReferences.TryGetValue(referencedProjectId, out var map))
                     {
                         map = new ReferencePriorityMap(referencedProjectId) { { projectId, priority } };
-                        _projectReferences.Add(map);
+                        _projectReferences.Add(referencedProjectId, map);
+
+                        if (oldProjectReferences.TryGetValue(referencedProjectId, out var oldMap))
+                        {
+                            map.IsLoaded = oldMap.IsLoaded;
+                        }
                     }
                     else
                     {
@@ -252,43 +354,18 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
 
         private IEnumerable<ReferenceInfo> NonMappedReferences(ICollection<ReferenceInfo> references)
         {
-            var mappedIds = _projectReferences.Select(item => item.ReferencedProjectId).ToHashSet();
-            return references.Where(item => !mappedIds.Contains(GetReferenceProjectId(item))).ToList();
+            return references.Where(item => !_projectReferences.ContainsKey(GetReferenceProjectId(item))).ToList();
         }
 
-        private void UnloadComReference(ReferenceInfo reference)
+        private void UnloadComReference(string referencedProjectId)
         {
-            var referencedProjectId = GetReferenceProjectId(reference);
-
-            ReferencePriorityMap map = null;
-            try
+            //There is nothing to unload for a user project.
+            if (!IsUserProjectProjectId(referencedProjectId))
             {
-                map = _projectReferences.SingleOrDefault(item => item.ReferencedProjectId == referencedProjectId);
-            }
-            catch (InvalidOperationException exception)
-            {
-                //There are multiple maps with the same referencedProjectId. That should not happen. (ghost?).
-                Logger.Error(exception, "Failed To unload com reference with referencedProjectID {0} because RD stores multiple instances of it.", referencedProjectId);
-                return;
-            }
+                _unloadedCOMReferences.Add(referencedProjectId);
 
-            if (map == null || !map.IsLoaded)
-            {
-                Logger.Warn("Tried to unload untracked project reference."); //This shouldn't happen.
-                return;
-            }
-
-            map.Remove(referencedProjectId);
-            if (map.Count == 0)
-            {
-                _projectReferences.Remove(map);
-
-                //There is nothing to unload for a user project.
-                if (!IsUserProjectProjectId(referencedProjectId))
-                {
-                    AddUnloadedReferenceToUnloadedReferences(reference);
-                    _state.RemoveBuiltInDeclarations(reference);
-                }
+                var projectQMN = ProjectQMNFromBuildInProjectId(referencedProjectId);
+                _state.RemoveBuiltInDeclarations(projectQMN);
             }
         }
 
@@ -297,10 +374,13 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
             return _projectIdsByFilePathAndProjectName.Values.Contains(projectId);
         }
 
-        private void AddUnloadedReferenceToUnloadedReferences(ReferenceInfo reference)
+        private QualifiedModuleName ProjectQMNFromBuildInProjectId(string projectId)
         {
-            var projectQMN = new QualifiedModuleName(reference);
-            _unloadedCOMReferences.Add(projectQMN);
+            return _state.DeclarationFinder
+                .BuiltInDeclarations(DeclarationType.Project)
+                .First(declaration => declaration.ProjectId == projectId)
+                .QualifiedModuleName;
+
         }
     }
 }

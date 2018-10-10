@@ -10,6 +10,15 @@ namespace RubberduckTests.Grammar
         [Category("Grammar")]
         [Category("Annotations")]
         [Test]
+        public void NotRecognizedAnnotation_TypeIsNotRecognized()
+        {
+            var annotation = new NotRecognizedAnnotation(new QualifiedSelection(), null, null);
+            Assert.AreEqual(AnnotationType.NotRecognized, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
         public void TestModuleAnnotation_TypeIsTestModule()
         {
             var annotation = new TestModuleAnnotation(new QualifiedSelection(), null, null);

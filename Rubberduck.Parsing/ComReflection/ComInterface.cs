@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -14,20 +15,27 @@ using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DataContract]
+    [KnownType(typeof(ComType))]
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComInterface : ComType, IComTypeWithMembers
     {
+        [DataMember(IsRequired = true)]
         public bool IsExtensible { get; private set; }
 
-        private readonly List<ComInterface> _inherited = new List<ComInterface>();
+        [DataMember(IsRequired = true)]
+        private List<ComInterface> _inherited = new List<ComInterface>();
         public IEnumerable<ComInterface> InheritedInterfaces => _inherited;
 
-        private readonly List<ComMember> _members = new List<ComMember>();
+        [DataMember(IsRequired = true)]
+        private List<ComMember> _members = new List<ComMember>();
         public IEnumerable<ComMember> Members => _members;
 
-        private readonly List<ComField> _properties = new List<ComField>();
+        [DataMember(IsRequired = true)]
+        private List<ComField> _properties = new List<ComField>();
         public IEnumerable<ComField> Properties => _properties;
 
+        [DataMember(IsRequired = true)]
         public ComMember DefaultMember { get; private set; }
 
         public ComInterface(IComBase parent, ITypeInfo info, TYPEATTR attrib) : base(parent, info, attrib)

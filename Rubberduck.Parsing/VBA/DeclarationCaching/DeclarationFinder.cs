@@ -1122,5 +1122,13 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 ? value
                 : Enumerable.Empty<IdentifierReference>();
         }
+
+        /// <summary>
+        /// Gets all identifier references.
+        /// </summary>
+        public IEnumerable<IdentifierReference> AllIdentifierReferences()
+        {
+            return _referencesByModule.Values.SelectMany(list => list);
+        }
     }
 }

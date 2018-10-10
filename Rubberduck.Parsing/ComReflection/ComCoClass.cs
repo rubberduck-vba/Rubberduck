@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -12,15 +13,22 @@ using TYPEFLAGS = System.Runtime.InteropServices.ComTypes.TYPEFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DataContract]
+    [KnownType(typeof(ComType))]
     public class ComCoClass : ComType, IComTypeWithMembers
     {
-        private readonly Dictionary<ComInterface, bool> _interfaces = new Dictionary<ComInterface, bool>();
-        private readonly List<ComInterface> _events = new List<ComInterface>();
+        [DataMember(IsRequired = true)]
+        private Dictionary<ComInterface, bool> _interfaces = new Dictionary<ComInterface, bool>();
 
-        public bool IsControl { get; }
+        [DataMember(IsRequired = true)]
+        private List<ComInterface> _events = new List<ComInterface>();
+
+        [DataMember(IsRequired = true)]
+        public bool IsControl { get; private set; }
 
         public bool IsExtensible => _interfaces.Keys.Any(i => i.IsExtensible);
 
+        [DataMember(IsRequired = true)]
         public ComInterface DefaultInterface { get; private set; }
 
         public IEnumerable<ComInterface> EventInterfaces => _events;
@@ -90,6 +98,11 @@ namespace Rubberduck.Parsing.ComReflection
                     }
                     _interfaces.Add(intface, flags.HasFlag(IMPLTYPEFLAGS.IMPLTYPEFLAG_FRESTRICTED));
                 }
+            }
+
+            if (DefaultInterface == null)
+            {
+                DefaultInterface = VisibleInterfaces.FirstOrDefault();
             }
         }
     }

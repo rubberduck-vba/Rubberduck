@@ -2,7 +2,6 @@ using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
@@ -12,6 +11,7 @@ namespace RubberduckTests.Inspections
     public class ImplicitActiveWorkbookReferenceInspectionTests
     {
         [Test]
+        [Ignore("This was apparently only passing due to the test setup. See #4404")]
         [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_ReportsWorksheets()
         {
@@ -22,20 +22,142 @@ Sub foo()
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
-                .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
+            const int expected = 1;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            Assert.AreEqual(expected, actual);
+        }
 
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_ExplicitApplication()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim sheet As Worksheet
+    Set sheet = Application.Worksheets(""Sheet1"")
+End Sub";
+
+            const int expected = 1;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_ReportsSheets()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim sheet As Worksheet
+    Set sheet = Sheets(""Sheet1"")
+End Sub";
+
+            const int expected = 1;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_ReportsNames()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Names.Add ""foo"", Rows(1)
+End Sub";
+
+            const int expected = 1;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_ExplicitReference_NotReported()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim book As Workbook
+    Dim sheet As Worksheet
+    Set sheet = book.Worksheets(1)
+End Sub";
+
+            const int expected = 0;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_ExplicitParameterReference_NotReported()
+        {
+            const string inputCode =
+                @"
+Sub foo(book As Workbook)
+    Debug.Print book.Worksheets.Count
+End Sub";
+
+            const int expected = 0;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_DimAsTypeWorksheets_NotReported()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim allSheets As Worksheets
+End Sub";
+
+            const int expected = 0;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_DimAsTypeSheets_NotReported()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim allSheets As Sheets
+End Sub";
+
+            const int expected = 0;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_DimAsTypeNames_NotReported()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim allNames As Names
+End Sub";
+
+            const int expected = 0;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -51,9 +173,17 @@ Sub foo()
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
 
+            const int expected = 0;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        private int ArrangeAndGetInspectionCount(string code)
+        {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode)
+                .AddComponent("Module1", ComponentType.StandardModule, code)
                 .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -64,7 +194,7 @@ End Sub";
                 var inspection = new ImplicitActiveWorkbookReferenceInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                Assert.AreEqual(0, inspectionResults.Count());
+                return inspectionResults.Count();
             }
         }
 
