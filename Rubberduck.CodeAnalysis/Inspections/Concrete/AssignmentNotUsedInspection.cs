@@ -5,6 +5,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.CodePathAnalysis.Nodes;
+using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
 using Rubberduck.Inspections.Results;
 
@@ -28,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
             {
                 var tree = _walker.GenerateTree(variable.ParentScopeDeclaration.Context, variable);
 
-                nodes.AddRange(GetReferences(tree, variable));
+                nodes.AddRange(GetIdentifierReferences(tree, variable));
             }
 
             return nodes
@@ -36,15 +37,15 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
         }
 
-        private List<IdentifierReference> GetReferences(INode node, Declaration declaration)
+        private List<IdentifierReference> GetIdentifierReferences(INode node, Declaration declaration)
         {
             var nodes = new List<IdentifierReference>();
 
-            var blockNodes = GetBlocks(node);
+            var blockNodes = node.GetNodes(new[] { typeof(BlockNode) });
             foreach (var block in blockNodes)
             {
                 INode lastNode = default;
-                foreach (var flattenedNode in GetFlattenedNodes(block))
+                foreach (var flattenedNode in block.GetFlattenedNodes(new[] { typeof(GenericNode), typeof(BlockNode) }))
                 {
                     if (flattenedNode is AssignmentNode &&
                         lastNode is AssignmentNode)
@@ -56,59 +57,13 @@ namespace Rubberduck.Inspections.Concrete
                 }
 
                 if (lastNode is AssignmentNode &&
-                    GetFirstNonGenericNode(block.Children[0]) is DeclarationNode)
+                    block.Children[0].GetFirstNode(new[] { typeof(GenericNode) }) is DeclarationNode)
                 {
                     nodes.Add(lastNode.Reference);
                 }
             }
 
             return nodes;
-        }
-
-        private IEnumerable<INode> GetFlattenedNodes(INode node)
-        {
-            foreach (var child in node.Children)
-            {
-                switch (child)
-                {
-                    case GenericNode _:
-                    case BlockNode _:
-                        foreach (var nextChild in GetFlattenedNodes(child))
-                        {
-                            yield return nextChild;
-                        }
-                        break;
-                    default:
-                        yield return child;
-                        break;
-                }
-            }
-        }
-
-        private IEnumerable<INode> GetBlocks(INode node)
-        {
-            if (node is BlockNode)
-            {
-                yield return node;
-            }
-
-            foreach (var child in node.Children)
-            {
-                foreach (var block in GetBlocks(child))
-                {
-                    yield return block;
-                }
-            }
-        }
-
-        private INode GetFirstNonGenericNode(INode parent)
-        {
-            if (!(parent is GenericNode))
-            {
-                return parent;
-            }
-
-            return GetFirstNonGenericNode(parent.Children[0]);
         }
     }
 }

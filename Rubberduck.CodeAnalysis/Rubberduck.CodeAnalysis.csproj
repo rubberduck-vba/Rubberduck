@@ -71,6 +71,7 @@
     <Compile Include="CodeMetrics\CyclomaticComplexityMetric.cs" />
     <Compile Include="CodeMetrics\LineCountMetric.cs" />
     <Compile Include="CodeMetrics\NestingLevelMetric.cs" />
+    <Compile Include="CodePathAnalysis\Extensions\NodeExtensions.cs" />
     <Compile Include="CodePathAnalysis\Nodes\ILoopNode.cs" />
     <Compile Include="CodePathAnalysis\Nodes\Implementations\AssignmentNode.cs" />
     <Compile Include="CodePathAnalysis\Nodes\Implementations\BlockNode.cs" />
