@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class SheetAccessedUsingStringInspectionTests
     {
         [Test]
+        [Ignore("See #4411")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_ReturnsResult_AccessingUsingWorkbookModule()
         {
@@ -71,6 +72,7 @@ End Sub";
         }
 
         [Test]
+        [Ignore("Ref #4329")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbooksProperty()
         {
@@ -180,6 +182,7 @@ End Sub";
             return MockParser.CreateAndParse(vbe.Object);
         }
 
+        // ReSharper disable once InconsistentNaming
         private static Mock<IProperty> CreateVBComponentPropertyMock(string propertyName, string propertyValue)
         {
             var propertyMock = new Mock<IProperty>();
