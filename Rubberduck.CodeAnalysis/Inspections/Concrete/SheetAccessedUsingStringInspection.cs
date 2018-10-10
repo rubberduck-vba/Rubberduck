@@ -17,13 +17,16 @@ namespace Rubberduck.Inspections.Concrete
     [RequiredLibrary("Excel")]
     public class SheetAccessedUsingStringInspection : InspectionBase
     {
-        public SheetAccessedUsingStringInspection(RubberduckParserState state) : base(state)
-        {
-        }
+        public SheetAccessedUsingStringInspection(RubberduckParserState state) : base(state) { }
 
-        private static readonly string[] Targets =
+        private static readonly string[] InterestingMembers =
         {
             "Worksheets", "Sheets"
+        };
+
+        private static readonly string[] InterestingClasses =
+        {
+            "_Global", "_Application", "Global", "Application", "Workbook"
         };
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
@@ -31,40 +34,37 @@ namespace Rubberduck.Inspections.Concrete
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
             if (excel == null)
             {
-                return Enumerable.Empty<IInspectionResult>();
-                
+                return Enumerable.Empty<IInspectionResult>();                
             }
 
-            var modules = new[]
-            {
-                State.DeclarationFinder.FindClassModule("_Global", excel, true),
-                State.DeclarationFinder.FindClassModule("_Application", excel, true),
-                State.DeclarationFinder.FindClassModule("Global", excel, true),
-                State.DeclarationFinder.FindClassModule("Application", excel, true),
-                State.DeclarationFinder.FindClassModule("Workbook", excel, true),
-            };
+            var targetProperties = BuiltInDeclarations
+                .OfType<PropertyDeclaration>()
+                .Where(x => InterestingMembers.Contains(x.IdentifierName) && InterestingClasses.Contains(x.ParentDeclaration?.IdentifierName))
+                .ToList();
 
-            var references = Targets
-                .SelectMany(target => modules.SelectMany(module => State.DeclarationFinder.FindMemberMatches(module, target)))
-                .Where(declaration => declaration.References.Any())
-                .SelectMany(declaration => declaration.References
-                    .Where(reference =>
-                        !IsIgnoringInspectionResultFor(reference, AnnotationName) && IsAccessedWithStringLiteralParameter(reference))
-                    .Select(reference => new IdentifierReferenceInspectionResult(this,
-                        InspectionResults.SheetAccessedUsingStringInspection, State, reference)));
+            var references = targetProperties.SelectMany(declaration => declaration.References
+                .Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName) &&
+                                    IsAccessedWithStringLiteralParameter(reference))
+                .Select(reference => new IdentifierReferenceInspectionResult(this,
+                    InspectionResults.SheetAccessedUsingStringInspection, State, reference)));
 
             var issues = new List<IdentifierReferenceInspectionResult>();
 
             foreach (var reference in references)
             {
-                var component = GetVBComponentMatchingSheetName(reference);
-                if (component != null)
+                using (var component = GetVBComponentMatchingSheetName(reference)) 
                 {
-                    reference.Properties.CodeName = (string)component.Properties.Single(property => property.Name == "CodeName").Value;
+                    if (component == null)
+                    {
+                        continue;
+                    }
+                    using (var properties = component.Properties)
+                    {
+                        reference.Properties.CodeName = (string)properties.Single(property => property.Name == "CodeName").Value;
+                    }
                     issues.Add(reference);
                 }
             }
-
             return issues;
         }
 
@@ -98,21 +98,38 @@ namespace Rubberduck.Inspections.Concrete
             var sheetName = FormatSheetName(sheetArgumentContext.GetText());
             var project = State.Projects.First(p => p.ProjectId == reference.QualifiedName.ProjectId);
 
-            return project.VBComponents.FirstOrDefault(c =>
-                c.Type == ComponentType.Document &&
-                (string) c.Properties.First(property => property.Name == "Name").Value == sheetName);
+            using (var components = project.VBComponents)
+            {
+                foreach (var component in components)
+                {
+                    using (var properties = component.Properties)
+                    {
+                        if (component.Type != ComponentType.Document)
+                        {
+                            component.Dispose();
+                            continue;
+                        }
+                        foreach (var property in properties)
+                        {
+                            var found = property.Name.Equals("Name") && ((string)property.Value).Equals(sheetName);
+                            property.Dispose();
+                            if (found)
+                            {
+                                return component;
+                            }                          
+                        }
+                    }
+                    component.Dispose();
+                }
+                return null;
+            }
         }
 
         private static string FormatSheetName(string sheetName)
         {
-            var formattedName = sheetName.First() == '"' ? sheetName.Skip(1) : sheetName;
-
-            if (sheetName.Last() == '"')
-            {
-                formattedName = formattedName.Take(formattedName.Count() - 1);
-            }
-
-            return string.Concat(formattedName);
+            return sheetName.StartsWith("\"") && sheetName.EndsWith("\"")
+                ? sheetName.Substring(1, sheetName.Length - 2)
+                : sheetName;
         }
     }
 }

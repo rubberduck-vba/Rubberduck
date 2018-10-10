@@ -44,14 +44,19 @@
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
-
+        <Style TargetType="ScrollViewer">
+            <Style.Setters>
+                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
+            </Style.Setters>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="32" />
         </Grid.RowDefinitions>
-        <ScrollViewer Grid.Row="0">
+        <ScrollViewer x:Name="ScrollViewer"
+                      Grid.Row="0">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Label Background="DarkGray"
                        HorizontalContentAlignment="Stretch"
@@ -93,8 +98,7 @@
                     <CheckBox IsEnabled="{Binding IsEnabled}" Margin="10,10" IsChecked="{Binding EnableSmartConcat}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableSmartConcat}" />
                 </WrapPanel>
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
-                    <DataGrid Name="AutoCompleteSettingsGrid"
-                              ItemsSource="{Binding Settings}"
+                    <DataGrid ItemsSource="{Binding Settings}"
                               AutoGenerateColumns="False"
                               CanUserReorderColumns="False"
                               IsReadOnly="False"

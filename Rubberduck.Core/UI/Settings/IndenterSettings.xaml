@@ -1,12 +1,13 @@
 ﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
-  xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-  xmlns:core="clr-namespace:System;assembly=mscorlib"
-  xmlns:smartIndenter="clr-namespace:Rubberduck.SmartIndenter;assembly=Rubberduck.SmartIndenter"
-  xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
+             xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
+             xmlns:smartIndenter="clr-namespace:Rubberduck.SmartIndenter;assembly=Rubberduck.SmartIndenter"
+             xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
              x:Class="Rubberduck.UI.Settings.IndenterSettings">
     <UserControl.Resources>
         <converters:EndOfLineCommentStyleToVisibilityConverter x:Key="EndOfLineCommentStyleToVisibility"/>
@@ -30,6 +31,11 @@
                 <x:TypeExtension Type="{x:Type smartIndenter:EmptyLineHandling}"/>
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
+        <Style TargetType="ScrollViewer">
+            <Style.Setters>
+                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
+            </Style.Setters>
+        </Style>
     </UserControl.Resources>
     <ScrollViewer Margin="0,0,10,0">
         <StackPanel Margin="5">
@@ -360,7 +366,7 @@
                             <Resx ResxName="Rubberduck.Resources.RubberduckUI" Key="IndenterSettings_CodeSampleHeader"/>
                         </Label>
                     </Expander.Header>
-                    <controls:BindableTextEditor 
+                    <controls:BindableTextEditor
                                Margin="10,10,10,10"
                                FontFamily="Courier New "
                                ShowLineNumbers="False"

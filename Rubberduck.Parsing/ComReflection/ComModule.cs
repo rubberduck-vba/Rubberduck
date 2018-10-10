@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Utility;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
@@ -13,16 +14,20 @@ using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DataContract]
+    [KnownType(typeof(ComType))]
     public class ComModule : ComType, IComTypeWithMembers, IComTypeWithFields
     {
-        private readonly List<ComMember> _members = new List<ComMember>();
+        [DataMember(IsRequired = true)]
+        private List<ComMember> _members = new List<ComMember>();
         public IEnumerable<ComMember> Members => _members;
 
         public ComMember DefaultMember => null;
 
         public bool IsExtensible => false;
 
-        private readonly List<ComField> _fields = new List<ComField>();
+        [DataMember(IsRequired = true)]
+        private List<ComField> _fields = new List<ComField>();
         public IEnumerable<ComField> Fields => _fields;
 
         public IEnumerable<ComField> Properties => Enumerable.Empty<ComField>();

@@ -4,8 +4,8 @@ using Antlr4.Runtime.Atn;
 using Antlr4.Runtime.Tree;
 using Moq;
 using NUnit.Framework;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 
 namespace RubberduckTests.Parsing.Coordination
 {

@@ -206,7 +206,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferencesInput, CancellationToken token)
+        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferencesInput, IReadOnlyCollection<string> newProjectIds, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
 
@@ -224,22 +224,49 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             _parsingStageService.SyncComReferences(token);
-            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedUnloadedInLastSync.Any())
+            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedInLastSync.Any())
             {
-                var unloadedReferences = _parsingStageService.COMReferencesUnloadedUnloadedInLastSync;
-                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedReferences.ToHashSet().AsReadOnly(), toParse);
+                var unloadedReferences = _parsingStageService.COMReferencesUnloadedInLastSync.ToHashSet();
+                var unloadedModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => unloadedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
                 toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
                 _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
-                ClearModuleToModuleReferences(unloadedReferences);
+                ClearModuleToModuleReferences(unloadedModules);
                 RefreshDeclarationFinder();
+            }
+
+            if (_parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync.Any())
+            {
+                //We only use the referencedProjectId because that simplifies the reference management immensely.  
+                var affectedReferences = _parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync
+                    .Select(tpl => tpl.referencedProjectId)
+                    .ToHashSet();
+                var referenceModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => affectedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(referenceModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
             }
             token.ThrowIfCancellationRequested();
 
             _parsingStageService.LoadBuitInDeclarations();
-            if (_parsingStageService.LastLoadOfBuiltInDeclarationsLoadedDeclarations)
+            if (newProjectIds.Any())
+            {
+                _parsingStageService.CreateProjectDeclarations(newProjectIds);
+                RefreshDeclarationFinder();
+            }
+            if (_parsingStageService.LastLoadOfBuiltInDeclarationsLoadedDeclarations || newProjectIds.Any())
             { 
                 RefreshDeclarationFinder();
             }
+            token.ThrowIfCancellationRequested();
+
+            _parsingStageService.RefreshProjectReferences();
             token.ThrowIfCancellationRequested();
 
             IReadOnlyCollection<QualifiedModuleName> toResolveReferences;
@@ -413,6 +440,7 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             var projects = _projectManager.Projects;
+            var projectIds = projects.Select(tpl => tpl.ProjectId).ToList().AsReadOnly();
             token.ThrowIfCancellationRequested();
 
             var toParse = modules.Where(module => State.IsNewOrModified(module)).ToHashSet();
@@ -421,7 +449,7 @@ namespace Rubberduck.Parsing.VBA
             toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
             token.ThrowIfCancellationRequested();
 
-            _parsingCacheService.ReloadCompilationArguments(projects.Select(tpl => tpl.ProjectId));
+            _parsingCacheService.ReloadCompilationArguments(projectIds);
             token.ThrowIfCancellationRequested();
 
             var projectsWithChangedCompilationArguments = _parsingCacheService.ProjectWhoseCompilationArgumentsChanged();
@@ -461,7 +489,22 @@ namespace Rubberduck.Parsing.VBA
             CleanUpProjects(notRemovedDisposedProjects);
             token.ThrowIfCancellationRequested();
 
-            ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, token);
+            var newProjects = NewProjects(projectIds);
+
+            ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, newProjects, token);
+        }
+
+        private IReadOnlyCollection<string> NewProjects(IReadOnlyCollection<string> projectIds)
+        {
+            var existingProjects = State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Project)
+                .Select(declaration => declaration.ProjectId)
+                .ToHashSet();
+            var newProjects = projectIds.Where(projectId => !existingProjects
+                    .Contains(projectId))
+                    .ToList()
+                    .AsReadOnly();
+            return newProjects;
         }
 
         private IReadOnlyCollection<QualifiedModuleName> OtherModulesReferencingAnyNotToBeParsed(IReadOnlyCollection<QualifiedModuleName> removedModules, IReadOnlyCollection<QualifiedModuleName> toParse)

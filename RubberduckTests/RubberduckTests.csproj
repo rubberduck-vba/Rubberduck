@@ -95,7 +95,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Annotations\DeclarationsListenerAnnotationsTests.cs" />
+    <Compile Include="Annotations\AnnotationResolutionTests.cs" />
     <Compile Include="AutoComplete\BlockCompletionTests.cs" />
     <Compile Include="AutoComplete\CodeStringTests.cs" />
     <Compile Include="AutoComplete\SelfClosingPairCompletionTests.cs" />
@@ -110,6 +110,8 @@
     <Compile Include="CodeAnalysis\CodeMetrics\LineCountTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspectionTests.cs" />
+    <Compile Include="Inspections\ModuleWithoutFolderInspectionTests.cs" />
+    <Compile Include="Inspections\OnLocalErrorInspectionTests.cs" />
     <Compile Include="Inspections\UnreachableCase\ExpressionFilterUnitTests.cs" />
     <Compile Include="Inspections\UnreachableCase\ParseTreeExpressionEvaluatorUnitTests.cs" />
     <Compile Include="Inspections\UnreachableCase\ParseTreeValueUnitTests.cs" />
@@ -132,6 +134,7 @@
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFixTests.cs" />
     <Compile Include="QuickFixes\IntroduceLocalVariableQuickFixTests.cs" />
     <Compile Include="QuickFixes\RemoveDuplicatedAnnotationQuickFixTests.cs" />
+    <Compile Include="QuickFixes\RemoveLocalErrorQuickFixTests.cs" />
     <Compile Include="Rewriter\ArgumentRewriterInfoFinderTests.cs" />
     <Compile Include="Rewriter\ParameterRewriterInfoFinderTests.cs" />
     <Compile Include="Rewriter\ConstantRewriterInfoFinderTests.cs" />

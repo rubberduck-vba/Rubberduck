@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Utility;
@@ -14,25 +15,40 @@ using VARFLAGS = System.Runtime.InteropServices.ComTypes.VARFLAGS;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DataContract]
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComField
     {
-        public string Name { get; }
-        public int Index { get; }
-        public DeclarationType Type { get; }
-        public object DefaultValue { get; }
+        [DataMember(IsRequired = true)]
+        public string Name { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public int Index { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public DeclarationType Type { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public object DefaultValue { get; private set; }
+
+        [DataMember(IsRequired = true)]
         public bool IsReferenceType { get; private set; }
 
+        [DataMember(IsRequired = true)]
         private string _valueType = Tokens.Object;
         public string ValueType => IsArray ? $"{_valueType}()" : _valueType;
 
+        [DataMember(IsRequired = true)]
         private Guid _enumGuid = Guid.Empty;
         public bool IsEnumMember => !_enumGuid.Equals(Guid.Empty);
 
+        [DataMember(IsRequired = true)]
         public bool IsArray { get; private set; }
-        public VARFLAGS Flags { get; }
+        [DataMember(IsRequired = true)]
+        public VARFLAGS Flags { get; private set; }
 
-        IComBase Parent { get; }
+        [DataMember(IsRequired = true)]
+        IComBase Parent { get; set; }
         public ComProject Project => Parent?.Project;
 
         public ComField(IComBase parent, ITypeInfo info, string name, VARDESC varDesc, int index, DeclarationType type)

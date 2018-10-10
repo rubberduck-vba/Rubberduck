@@ -13,13 +13,14 @@ using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Antlr4.Runtime;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 
 // ReSharper disable LoopCanBeConvertedToQuery
 
@@ -466,7 +467,7 @@ namespace Rubberduck.Parsing.VBA
         {
             if (_moduleStates.IsEmpty)
             {
-                return ParserState.Pending;
+                return ParserState.Ready;
             }
 
             var moduleStates = new List<ParserState>();
@@ -482,7 +483,7 @@ namespace Rubberduck.Parsing.VBA
 
             if (moduleStates.Count == 0)
             {
-                return ParserState.Pending;
+                return ParserState.Ready;
             }
 
             var state = moduleStates[0];
@@ -1044,14 +1045,13 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void RemoveBuiltInDeclarations(ReferenceInfo reference)
+        public void RemoveBuiltInDeclarations(QualifiedModuleName projectQmn)
         {
-            var key = new QualifiedModuleName(reference);
-            ClearAsTypeDeclarationPointingToReference(key);
-            if (_moduleStates.TryRemove(key, out var moduleState))
+            ClearAsTypeDeclarationPointingToReference(projectQmn);
+            if (_moduleStates.TryRemove(projectQmn, out var moduleState))
             {
                 moduleState?.Dispose();
-                Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", reference.Name, QualifiedModuleName.GetProjectId(reference));
+                Logger.Warn("Could not remove declarations for removed reference '{0}' ({1}).", projectQmn.Name, projectQmn.ProjectId);
             }
         }
         

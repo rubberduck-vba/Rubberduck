@@ -43,128 +43,128 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             [Tokens.String] = new Dictionary<string, Func<string, string>>
             {
-                [Tokens.String] = (a) => { return a; },
-                [Tokens.Byte] = (a) => { return byte.Parse(StringToByte(a)).ToString(CultureInfo.InvariantCulture); },
-                [Tokens.Integer] = (a) => { return short.Parse(StringToIntegral(a)).ToString(CultureInfo.InvariantCulture); },
-                [Tokens.Long] = (a) => { return Int32.Parse(StringToIntegral(a)).ToString(CultureInfo.InvariantCulture); },
-                [Tokens.LongLong] = (a) => { return Int64.Parse(StringToIntegral(a)).ToString(CultureInfo.InvariantCulture); },
-                [Tokens.Double] = (a) => { return double.Parse(StringToRational(a), NumberStyles.Float, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture); },
-                [Tokens.Single] = (a) => { return float.Parse(StringToRational(a), NumberStyles.Float, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture); },
-                [Tokens.Currency] = (a) => { return VBACurrency.Parse(StringToRational(a)).ToString(CultureInfo.InvariantCulture); },
-                [Tokens.Boolean] = (a) => { return bool.Parse(StringToBoolean(a)) ? Tokens.True : Tokens.False; },
-                [Tokens.Date] = (a) => { return StringToDate(a); }
+                [Tokens.String] = a => a,
+                [Tokens.Byte] = a => byte.Parse(StringToByte(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Integer] = a => short.Parse(StringToIntegral(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Long] = a => int.Parse(StringToIntegral(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.LongLong] = a => long.Parse(StringToIntegral(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Double] = a => double.Parse(StringToRational(a), NumberStyles.Float, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Single] = a => float.Parse(StringToRational(a), NumberStyles.Float, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Currency] = a => VBACurrency.Parse(StringToRational(a)).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Boolean] = a => bool.Parse(StringToBoolean(a)) ? Tokens.True : Tokens.False,
+                [Tokens.Date] = StringToDate
             },
 
             [Tokens.Byte] = new Dictionary<string, Func<string, string>>
             {
-                [Tokens.String] = (a) => { return a; },
-                [Tokens.Byte] = (a) => { return a; },
-                [Tokens.Integer] = (a) => { return a; },
-                [Tokens.Long] = (a) => { return a; },
-                [Tokens.LongLong] = (a) => { return a; },
-                [Tokens.Double] = (a) => { return a; },
-                [Tokens.Single] = (a) => { return a; },
-                [Tokens.Currency] = (a) => { return a; },
-                [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
-                [Tokens.Date] = (a) => { return NumericToDate(a); },
+                [Tokens.String] = a => a,
+                [Tokens.Byte] = a => a,
+                [Tokens.Integer] = a => a,
+                [Tokens.Long] = a => a,
+                [Tokens.LongLong] = a => a,
+                [Tokens.Double] = a => a,
+                [Tokens.Single] = a => a,
+                [Tokens.Currency] = a => a,
+                [Tokens.Boolean] = NumericToBoolean,
+                [Tokens.Date] = NumericToDate,
             },
 
             [Tokens.Integer] = new Dictionary<string, Func<string, string>>
             {
-                [Tokens.String] = (a) => { return a; },
-                [Tokens.Byte] = (a) => { return byte.Parse(a).ToString(); },
-                [Tokens.Integer] = (a) => { return a; },
-                [Tokens.Long] = (a) => { return a; },
-                [Tokens.LongLong] = (a) => { return a; },
-                [Tokens.Double] = (a) => { return a; },
-                [Tokens.Single] = (a) => { return a; },
-                [Tokens.Currency] = (a) => { return a; },
-                [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
-                [Tokens.Date] = (a) => { return NumericToDate(a); },
+                [Tokens.String] = a => a,
+                [Tokens.Byte] = a => byte.Parse(a, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Integer] = a => a,
+                [Tokens.Long] = a => a,
+                [Tokens.LongLong] = a => a,
+                [Tokens.Double] = a => a,
+                [Tokens.Single] = a => a,
+                [Tokens.Currency] = a => a,
+                [Tokens.Boolean] = NumericToBoolean,
+                [Tokens.Date] = NumericToDate,
             },
 
             [Tokens.Long] = new Dictionary<string, Func<string, string>>
             {
-                [Tokens.String] = (a) => { return a; },
-                [Tokens.Byte] = (a) => { return byte.Parse(a).ToString(); },
-                [Tokens.Integer] = (a) => { return Int16.Parse(a).ToString(); },
-                [Tokens.Long] = (a) => { return a; },
-                [Tokens.LongLong] = (a) => { return a; },
-                [Tokens.Double] = (a) => { return a; },
-                [Tokens.Single] = (a) => { return a; },
-                [Tokens.Currency] = (a) => { return a; },
-                [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
-                [Tokens.Date] = (a) => { return NumericToDate(a); },
+                [Tokens.String] = a => a,
+                [Tokens.Byte] = a => byte.Parse(a, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Integer] = a => short.Parse(a, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Long] = a => a,
+                [Tokens.LongLong] = a => a,
+                [Tokens.Double] = a => a,
+                [Tokens.Single] = a => a,
+                [Tokens.Currency] = a => a,
+                [Tokens.Boolean] = NumericToBoolean,
+                [Tokens.Date] = NumericToDate,
             },
 
             [Tokens.Double] = new Dictionary<string, Func<string, string>>
             {
-                [Tokens.String] = (a) => { return a; },
-                [Tokens.Byte] = (a) => { a = BankersRound(a); return byte.Parse(a).ToString(); },
-                [Tokens.Integer] = (a) => { a = BankersRound(a); return Int16.Parse(a).ToString(); },
-                [Tokens.Long] = (a) => { a = BankersRound(a); return Int32.Parse(a).ToString(); },
-                [Tokens.LongLong] = (a) => { a = BankersRound(a); return long.Parse(a).ToString(); },
-                [Tokens.Double] = (a) => { return a; },
-                [Tokens.Single] = (a) => { return float.Parse(a).ToString(); },
-                [Tokens.Currency] = (a) => { return decimal.Parse(a).ToString(); },
-                [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
-                [Tokens.Date] = (a) => { return NumericToDate(a); },
+                [Tokens.String] = a => a,
+                [Tokens.Byte] = a => byte.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Integer] = a => short.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Long] = a => int.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.LongLong] = a => long.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Double] = a => a,
+                [Tokens.Single] = a => float.Parse(a, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Currency] = a => decimal.Parse(a, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Boolean] = NumericToBoolean,
+                [Tokens.Date] = NumericToDate,
             },
 
             [Tokens.Single] = new Dictionary<string, Func<string, string>>
             {
-                [Tokens.String] = (a) => { return a; },
-                [Tokens.Byte] = (a) => { a = BankersRound(a); return byte.Parse(a).ToString(); },
-                [Tokens.Integer] = (a) => { a = BankersRound(a); return Int16.Parse(a).ToString(); },
-                [Tokens.Long] = (a) => { a = BankersRound(a); return Int32.Parse(a).ToString(); },
-                [Tokens.LongLong] = (a) => { a = BankersRound(a); return long.Parse(a).ToString(); },
-                [Tokens.Double] = (a) => { return a; },
-                [Tokens.Single] = (a) => { return a; },
-                [Tokens.Currency] = (a) => { return decimal.Parse(a).ToString(); },
-                [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
-                [Tokens.Date] = (a) => { return NumericToDate(a); },
+                [Tokens.String] = a => a,
+                [Tokens.Byte] = a => byte.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Integer] = a => short.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Long] = a => int.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.LongLong] = a => long.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Double] = a => a,
+                [Tokens.Single] = a => a,
+                [Tokens.Currency] = a => decimal.Parse(a, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Boolean] = NumericToBoolean,
+                [Tokens.Date] = NumericToDate,
             },
 
             [Tokens.Currency] = new Dictionary<string, Func<string, string>>
             {
-                [Tokens.String] = (a) => { return a; },
-                [Tokens.Byte] = (a) => { a = BankersRound(a); return byte.Parse(a).ToString(); },
-                [Tokens.Integer] = (a) => { a = BankersRound(a); return Int16.Parse(a).ToString(); },
-                [Tokens.Long] = (a) => { a = BankersRound(a); return Int32.Parse(a).ToString(); },
-                [Tokens.LongLong] = (a) => { a = BankersRound(a); return long.Parse(a).ToString(); },
-                [Tokens.Double] = (a) => { return a; },
-                [Tokens.Single] = (a) => { return float.Parse(a).ToString(); },
-                [Tokens.Currency] = (a) => { return a; },
-                [Tokens.Boolean] = (a) => { return NumericToBoolean(a); },
-                [Tokens.Date] = (a) => { return NumericToDate(a); },
+                [Tokens.String] = a => a,
+                [Tokens.Byte] = a => byte.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Integer] = a => short.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Long] = a => int.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.LongLong] = a => long.Parse(BankersRound(a), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Double] = a => a,
+                [Tokens.Single] = a => float.Parse(a, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Currency] = a => a,
+                [Tokens.Boolean] = NumericToBoolean,
+                [Tokens.Date] = NumericToDate,
             },
 
             [Tokens.Boolean] = new Dictionary<string, Func<string, string>>
             {
-                [Tokens.String] = (a) => { return BooleanToString(a); },
-                [Tokens.Byte] = (a) => { var val = BooleanAsLong(a); return val != 0 ? byte.MaxValue.ToString() : byte.MinValue.ToString(); },
-                [Tokens.Integer] = (a) => { return BooleanAsLong(a).ToString(); },
-                [Tokens.Long] = (a) => { return BooleanAsLong(a).ToString(); },
-                [Tokens.LongLong] = (a) => { return BooleanAsLong(a).ToString(); },
-                [Tokens.Double] = (a) => { return BooleanAsLong(a).ToString(); },
-                [Tokens.Single] = (a) => { return BooleanAsLong(a).ToString(); },
-                [Tokens.Currency] = (a) => { return BooleanAsLong(a).ToString(); },
-                [Tokens.Boolean] = (a) => { return a; },
-                [Tokens.Date] = (a) => { var val = BooleanAsLong(a); return NumericToDate(val.ToString()); },
+                [Tokens.String] = BooleanToString,
+                [Tokens.Byte] = a => BooleanAsLong(a) != 0 ? byte.MaxValue.ToString(CultureInfo.InvariantCulture) : byte.MinValue.ToString(CultureInfo.InvariantCulture),
+                [Tokens.Integer] = a => BooleanAsLong(a).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Long] = a => BooleanAsLong(a).ToString(CultureInfo.InvariantCulture),
+                [Tokens.LongLong] = a => BooleanAsLong(a).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Double] = a => BooleanAsLong(a).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Single] = a => BooleanAsLong(a).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Currency] = a => BooleanAsLong(a).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Boolean] = a => a,
+                [Tokens.Date] = a => NumericToDate(BooleanAsLong(a).ToString(CultureInfo.InvariantCulture)),
             },
 
             [Tokens.Date] = new Dictionary<string, Func<string, string>>
             {
-                [Tokens.String] = (a) => { return RemoveStartAndEnd(a, "#"); },
-                [Tokens.Byte] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToByte(result.AsDecimal).ToString(); },
-                [Tokens.Integer] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToInt16(result.AsDecimal).ToString(); },
-                [Tokens.Long] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToInt32(result.AsDecimal).ToString(); },
-                [Tokens.LongLong] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToInt64(result.AsDecimal).ToString(); },
-                [Tokens.Double] = (a) => { var result = ComparableDateValue.Parse(a); return Convert.ToDouble(result.AsDecimal).ToString(); },
-                [Tokens.Single] = (a) => { var result = ComparableDateValue.Parse(a); return float.Parse(result.AsDecimal.ToString()).ToString(); },
-                [Tokens.Currency] = (a) => { var result = ComparableDateValue.Parse(a); return result.AsDecimal.ToString(); },
-                [Tokens.Boolean] = (a) => { var result = ComparableDateValue.Parse(a); return result.AsDecimal != 0 ? Tokens.True : Tokens.False; },
-                [Tokens.Date] = (a) => { return a; },
+                [Tokens.String] = a => RemoveStartAndEnd(a, "#"),
+                [Tokens.Byte] = a => Convert.ToByte(ComparableDateValue.Parse(a).AsDecimal, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Integer] = a => Convert.ToInt16(ComparableDateValue.Parse(a).AsDecimal, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Long] = a => Convert.ToInt32(ComparableDateValue.Parse(a).AsDecimal, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.LongLong] = a => Convert.ToInt64(ComparableDateValue.Parse(a).AsDecimal, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Double] = a => Convert.ToDouble(ComparableDateValue.Parse(a).AsDecimal, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Single] = a => float.Parse(ComparableDateValue.Parse(a).AsDecimal.ToString(CultureInfo.InvariantCulture), CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture),
+                [Tokens.Currency] = a => ComparableDateValue.Parse(a).AsDecimal.ToString(CultureInfo.InvariantCulture),
+                [Tokens.Boolean] = a => ComparableDateValue.Parse(a).AsDecimal != 0 ? Tokens.True : Tokens.False,
+                [Tokens.Date] = a => a,
             },
         };
 
@@ -218,22 +218,22 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         public static bool TryCoerce(string valueText, out byte value)
-            => TryCoerce(valueText, Tokens.Byte, out value, byte.Parse);
+            => TryCoerce(valueText, Tokens.Byte, out value, s => byte.Parse(s, CultureInfo.InvariantCulture));
 
-        public static bool TryCoerce(string valueText, out Int16 value)
-            => TryCoerce(valueText, Tokens.Integer, out value, Int16.Parse);
+        public static bool TryCoerce(string valueText, out short value)
+            => TryCoerce(valueText, Tokens.Integer, out value, s => short.Parse(s, CultureInfo.InvariantCulture));
 
-        public static bool TryCoerce(string valueText, out Int32 value)
-            => TryCoerce(valueText, Tokens.Long, out value, Int32.Parse);
+        public static bool TryCoerce(string valueText, out int value)
+            => TryCoerce(valueText, Tokens.Long, out value, s => int.Parse(s, CultureInfo.InvariantCulture));
 
         public static bool TryCoerce(string valueText, out long value)
-            => TryCoerce(valueText, Tokens.LongLong, out value, long.Parse);
+            => TryCoerce(valueText, Tokens.LongLong, out value, s => long.Parse(s, CultureInfo.InvariantCulture));
 
         public static bool TryCoerce(string valueText, out double value)
-            => TryCoerce(valueText, Tokens.Double, out value, double.Parse);
+            => TryCoerce(valueText, Tokens.Double, out value, s => double.Parse(s, CultureInfo.InvariantCulture));
 
         public static bool TryCoerce(string valueText, out float value)
-            => TryCoerce(valueText, Tokens.Single, out value, float.Parse);
+            => TryCoerce(valueText, Tokens.Single, out value, s => float.Parse(s, CultureInfo.InvariantCulture));
 
         public static bool TryCoerce(string valueText, out decimal value)
             => TryCoerce(valueText, Tokens.Currency, out value, VBACurrency.Parse);
@@ -274,7 +274,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private static bool TryCoerce<T>(string valueText, string typeName, out T value, Func<string, T> parser)
         {
             value = default;
-            if (TryCoerceToken((Tokens.String, valueText), typeName, out string valueToken))
+            if (TryCoerceToken((Tokens.String, valueText), typeName, out var valueToken))
             {
                 value = parser(valueToken);
                 return true;
@@ -284,14 +284,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static string StringToDate(string sourceText)
         {
-            int? intValue = BooleanTokenToInt(sourceText);
+            var intValue = BooleanTokenToInt(sourceText);
             var parseValue = intValue.HasValue ? intValue.ToString() : sourceText;
 
-            if (double.TryParse(parseValue, out double doubleValue))
+            if (double.TryParse(parseValue, NumberStyles.Any, CultureInfo.InvariantCulture, out _))
             {
                 return NumericToDate(parseValue);
             }
-            if (ComparableDateValue.TryParse(AnnotateAsDateLiteral(parseValue), out ComparableDateValue dvComparable))
+            if (ComparableDateValue.TryParse(AnnotateAsDateLiteral(parseValue), out var dvComparable))
             {
                 return dvComparable.AsDateLiteral();
             }
@@ -321,8 +321,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var parseValue = intValue.HasValue ? intValue.ToString() : sourceText;
             parseValue = CoerceDateTokenToDouble(parseValue);
 
-            return decimal.TryParse(parseValue, out decimal decValue) ? decValue.ToString()
-                : double.TryParse(parseValue, out double value) ? value.ToString() : sourceText;
+            return decimal.TryParse(parseValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var decValue) 
+                ? decValue.ToString(CultureInfo.InvariantCulture)
+                : double.TryParse(parseValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var value) 
+                    ? value.ToString(CultureInfo.InvariantCulture) 
+                    : sourceText;
         }
 
         private static string StringToBoolean(string sourceText)
@@ -349,7 +352,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
 
             parseValue = CoerceDateTokenToDouble(parseValue);
-            if (double.TryParse(parseValue, out double asDouble))
+            if (double.TryParse(parseValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var asDouble))
             {
                 return asDouble != 0 ? Tokens.True : Tokens.False;
             }
@@ -358,7 +361,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private static string NumericToDate(string source)
         {
-            if (double.TryParse(source, out double dateAsDouble))
+            if (double.TryParse(source, NumberStyles.Any, CultureInfo.InvariantCulture, out double dateAsDouble))
             {
                 var dv = new DateValue(DateTime.FromOADate(dateAsDouble));
                 var dateValue = new ComparableDateValue(dv);
@@ -430,10 +433,10 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         private static string BankersRound(string source)
-             => Math.Round(double.Parse(source), MidpointRounding.ToEven).ToString();
+             => Math.Round(double.Parse(source, CultureInfo.InvariantCulture), MidpointRounding.ToEven).ToString(CultureInfo.InvariantCulture);
 
         private static string NumericToBoolean(string source)
-             => double.Parse(source) != 0 ? Tokens.True : Tokens.False;
+             => double.Parse(source, CultureInfo.InvariantCulture) != 0 ? Tokens.True : Tokens.False;
 
         private static long BooleanAsLong(string source)
             => source.Equals(Tokens.True) ? -1 : 0;

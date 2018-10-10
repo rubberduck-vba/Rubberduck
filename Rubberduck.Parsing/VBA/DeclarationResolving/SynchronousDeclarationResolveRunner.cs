@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.ComReferenceLoading;
 using Rubberduck.VBEditor;
 
@@ -20,21 +21,20 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         { }
 
 
-        public override void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
+        protected override void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, IDictionary<string, ProjectDeclaration> projects, CancellationToken token)
         {
             if (!modules.Any())
             {
                 return;
             }
 
-            _projectDeclarations.Clear();
             token.ThrowIfCancellationRequested();
 
             try
             {
                 foreach(var module in modules)
                 {
-                    ResolveDeclarations(module, _state.ParseTrees.Find(s => s.Key == module).Value, token);
+                    ResolveDeclarations(module, _state.ParseTrees.Find(s => s.Key == module).Value, projects, token);
                 }
             }
             catch(OperationCanceledException)

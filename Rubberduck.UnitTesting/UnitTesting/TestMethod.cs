@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting
 {
@@ -25,7 +26,8 @@ namespace Rubberduck.UnitTesting
                 var testMethodAnnotation = (TestMethodAnnotation) Declaration.Annotations
                     .First(annotation => annotation.AnnotationType == AnnotationType.TestMethod);
 
-                return new TestCategory(testMethodAnnotation.Category);
+                var categorization = testMethodAnnotation.Category.Equals(string.Empty) ? TestExplorer.TestExplorer_Uncategorized : testMethodAnnotation.Category;
+                return new TestCategory(categorization);
             }
         }
 

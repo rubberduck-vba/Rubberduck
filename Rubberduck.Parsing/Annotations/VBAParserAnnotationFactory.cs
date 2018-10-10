@@ -58,7 +58,7 @@ namespace Rubberduck.Parsing.Annotations
                 return (IAnnotation) Activator.CreateInstance(annotationClrType, qualifiedSelection, context, parameters);
             }
 
-            return null;
+            return new NotRecognizedAnnotation(qualifiedSelection, context, parameters);
         }
     }
 }

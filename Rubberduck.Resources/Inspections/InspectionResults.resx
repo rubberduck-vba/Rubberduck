@@ -240,7 +240,7 @@
   </data>
   <data name="AggregateInspection" xml:space="preserve">
     <value>{0} ({1} results).</value>
-    <comment>{0} inpection description, {1} result count</comment>
+    <comment>{0} inspection description, {1} result count</comment>
   </data>
   <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
     <value>Member '{0}' was not found on the compile-time interface for type '{1}'.</value>
@@ -362,5 +362,11 @@
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Annotation '{0}' is duplicated.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Module '{0}' has no '@Folder' annotation</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>'On Local Error' statement detected.</value>
   </data>
 </root>
