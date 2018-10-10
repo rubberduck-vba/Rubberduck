@@ -113,12 +113,44 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_DimAsTypeWorksheets_NotReported()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim allSheets As Worksheets
+End Sub";
+
+            const int expected = 0;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ImplicitActiveWorkbookReference_DimAsTypeSheets_NotReported()
         {
             const string inputCode =
                 @"
 Sub foo()
     Dim allSheets As Sheets
+End Sub";
+
+            const int expected = 0;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ImplicitActiveWorkbookReference_DimAsTypeNames_NotReported()
+        {
+            const string inputCode =
+                @"
+Sub foo()
+    Dim allNames As Names
 End Sub";
 
             const int expected = 0;
