@@ -162,6 +162,7 @@
     <Compile Include="Symbols\IInterfaceExposable.cs" />
     <Compile Include="Symbols\ModuleBodyElementDeclaration.cs" />
     <Compile Include="Symbols\ModuleDeclaration.cs" />
+    <Compile Include="VBA\Extensions\DictionaryExtensions.cs" />
     <Compile Include="VBA\Parsing\ParsingExceptions\ExceptionErrorListenerFactory.cs" />
     <Compile Include="VBA\Parsing\ParsingExceptions\PreprocessingParseErrorListenerFactory.cs" />
     <Compile Include="VBA\Parsing\ParsingExceptions\IRubberduckParserErrorListenerFactory.cs" />
