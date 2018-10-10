@@ -1,25 +1,19 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.Serialization;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DataContract]
-    [KnownType(typeof(ComProject))]
     public class ComTypeName
     {
-        [DataMember(IsRequired = true)]
-        public Guid EnumGuid { get; private set; } = Guid.Empty;
+        public Guid EnumGuid { get; } = Guid.Empty;
         public bool IsEnumMember => !EnumGuid.Equals(Guid.Empty);
 
-        [DataMember(IsRequired = true)]
-        public Guid AliasGuid { get; private set; } = Guid.Empty;
+        public Guid AliasGuid { get; } = Guid.Empty;
         public bool IsAliased => !AliasGuid.Equals(Guid.Empty);
 
-        public ComProject Project { get; set; }
+        public ComProject Project { get; }
 
-        [DataMember(IsRequired = true)]
-        private string _rawName;
+        private readonly string _rawName;
         public string Name
         {
             get

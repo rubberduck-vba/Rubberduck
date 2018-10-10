@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DataContract]
-    [KnownType(typeof(Variant))]
     //See https://limbioliong.wordpress.com/2011/09/04/using-variants-in-managed-code-part-1/
     public class ComVariant : IEquatable<ComVariant>
     {
@@ -48,7 +45,7 @@ namespace Rubberduck.Parsing.ComReflection
             {VarEnum.VT_R8, Tokens.Double}
         };
 
-        [DataContract]
+
         [StructLayout(LayoutKind.Sequential)]
         private struct Variant
         {
@@ -60,11 +57,8 @@ namespace Rubberduck.Parsing.ComReflection
             private readonly int data02;
         }
 
-        [DataMember(IsRequired = true)]
-        public VarEnum VariantType { get; private set; }
-
-        [DataMember(IsRequired = true)]
-        public object Value { get; private set; }
+        public VarEnum VariantType { get; }
+        public object Value { get; }
 
         public ComVariant(IntPtr variant)
         {
@@ -83,7 +77,8 @@ namespace Rubberduck.Parsing.ComReflection
 
         public override bool Equals(object obj)
         {
-            return obj is ComVariant other ? Equals(other) : Value.Equals(obj);
+            var other = obj as ComVariant;
+            return other != null ? Equals(other) : Value.Equals(obj);
         }
 
         public bool Equals(ComVariant other)

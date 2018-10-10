@@ -161,5 +161,23 @@ namespace RubberduckTests.Mocks
                 DeclarationType.Procedure, DeclarationType.Function, DeclarationType.PropertyGet,
                 DeclarationType.PropertyLet, DeclarationType.PropertySet
             });
+
+        // ReSharper disable once UnusedMember.Global; used by RubberduckWeb to load serialized declarations.
+        public static void AddTestLibrary(this RubberduckParserState state, Stream stream)
+        {
+            var reader = new XmlPersistableDeclarations();
+            var deserialized = reader.Load(stream);
+            AddTestLibrary(state, deserialized);
+        }
+
+        private static void AddTestLibrary(RubberduckParserState state, SerializableProject deserialized)
+        {
+            var declarations = deserialized.Unwrap();
+
+            foreach (var declaration in declarations)
+            {
+                state.AddDeclaration(declaration);
+            }
+        }
     }
 }

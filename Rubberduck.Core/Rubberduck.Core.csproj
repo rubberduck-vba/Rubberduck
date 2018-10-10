@@ -539,7 +539,7 @@
     <Compile Include="UI\Command\MenuItems\CommandBars\ReferenceCounterLabelMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ReparseCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\RubberduckCommandBar.cs" />
-    <Compile Include="UI\Command\MenuItems\CommandBars\SerializeProjectsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\SerializeDeclarationsCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ShowParserErrorsCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\IAppCommandBar.cs" />
     <Compile Include="UI\Command\RegexAssistantCommand.cs" />

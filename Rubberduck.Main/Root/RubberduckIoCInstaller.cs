@@ -220,8 +220,8 @@ namespace Rubberduck.Root
             //    .LifestyleSingleton()
             //    .Instance(experimentalTypes));
 
-            container.Register(Component.For<IComProjectSerializationProvider>()
-                .ImplementedBy<XmlComProjectSerializer>()
+            container.Register(Component.For<IPersistable<SerializableProject>>()
+                .ImplementedBy<XmlPersistableDeclarations>()
                 .LifestyleTransient());
             container.Register(Component.For(typeof(IPersistanceService<>), typeof(IFilePersistanceService<>))
                 .ImplementedBy(typeof(XmlPersistanceService<>))
@@ -514,7 +514,7 @@ namespace Rubberduck.Root
                 typeof(ContextDescriptionLabelMenuItem),
                 typeof(ReferenceCounterLabelMenuItem),
 #if DEBUG
-                typeof(SerializeProjectsCommandMenuItem)
+                typeof(SerializeDeclarationsCommandMenuItem)
 #endif
             };
         }

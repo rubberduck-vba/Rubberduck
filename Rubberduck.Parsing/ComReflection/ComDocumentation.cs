@@ -1,23 +1,15 @@
 ﻿using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Serialization;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DataContract]
     public class ComDocumentation
     {
         public const int LibraryIndex = -1;
-        [DataMember(IsRequired = true)]
-        public string Name { get; private set; }
 
-        [DataMember(IsRequired = true)]
-        public string DocString { get; private set; }
-
-        [DataMember(IsRequired = true)]
-        public string HelpFile { get; private set; }
-
-        [DataMember(IsRequired = true)]
-        public int HelpContext { get; private set; }
+        public string Name { get; }
+        public string DocString { get; }
+        public string HelpFile { get; }
+        public int HelpContext { get; }
 
         public ComDocumentation(ITypeLib typeLib, int index)
         {
@@ -25,7 +17,7 @@ namespace Rubberduck.Parsing.ComReflection
             Name = name;
             DocString = docString;
             HelpContext = helpContext;
-            HelpFile = helpFile?.Trim('\0');
+            HelpFile = helpFile;
         }
 
         public ComDocumentation(ITypeInfo info, int index)
@@ -34,7 +26,7 @@ namespace Rubberduck.Parsing.ComReflection
             Name = name;
             DocString = docString;
             HelpContext = helpContext;
-            HelpFile = helpFile?.Trim('\0');
+            HelpFile = helpFile;
         }
     }
 }

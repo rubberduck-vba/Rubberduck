@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
+using ParserState = Rubberduck.Parsing.VBA.ParserState;
 
 namespace RubberduckTests.Inspections
 {
@@ -334,14 +335,14 @@ End Sub";
         public void MemberNotOnInterface_CatchesInvalidUseOfMember()
         {
             const string userForm1Code = @"
-Private mfooBar As String
+Private _fooBar As String
 
 Public Property Let FooBar(value As String)
-    mfooBar = value
+    _fooBar = value
 End Property
 
 Public Property Get FooBar() As String
-    FooBar = mfooBar
+    FooBar = _fooBar
 End Property
 ";
 
@@ -363,7 +364,7 @@ End Sub
             var projectBuilder = vbeBuilder.ProjectBuilder("testproject", ProjectProtection.Unprotected);
             projectBuilder.MockUserFormBuilder("UserForm1", userForm1Code).AddFormToProjectBuilder()
                 .AddComponent("ReferencingModule", ComponentType.StandardModule, analyzedCode)
-                .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms, 2, 0, true);
+                .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms, 2, 0);
 
             vbeBuilder.AddProject(projectBuilder.Build());
             var vbe = vbeBuilder.Build();
