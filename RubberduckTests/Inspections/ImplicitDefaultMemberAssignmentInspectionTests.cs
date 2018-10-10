@@ -16,6 +16,7 @@ namespace RubberduckTests.Inspections
     public class ImplicitDefaultMemberAssignmentInspectionTests
     {
         [Test]
+        [Ignore("Ignored pending #4390")]
         [Category("Inspections")]
         public void ImplicitDefaultMemberAssignment_ReturnsResult()
         {

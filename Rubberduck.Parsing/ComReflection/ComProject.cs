@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Serialization;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
@@ -13,8 +12,6 @@ using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DataContract]
-    [KnownType(typeof(ComBase))]
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComProject : ComBase
     {
@@ -22,41 +19,30 @@ namespace Rubberduck.Parsing.ComReflection
         public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>();
         public static readonly ConcurrentDictionary<Guid, ComAlias> KnownAliases = new ConcurrentDictionary<Guid, ComAlias>();
 
-        [DataMember(IsRequired = true)]
-        public string Path { get; set; }
-
-        [DataMember(IsRequired = true)]
-        public long MajorVersion { get; set; }
-
-        [DataMember(IsRequired = true)]
-        public long MinorVersion { get; set; }
+        public string Path { get; }
+        public long MajorVersion { get; }
+        public long MinorVersion { get; }
 
         // YGNI...
         // ReSharper disable once NotAccessedField.Local
-        private readonly TypeLibTypeFlags _flags;
+        private TypeLibTypeFlags _flags;
 
-        [DataMember(IsRequired = true)]
-        private List<ComAlias> _aliases = new List<ComAlias>();
+        private readonly List<ComAlias> _aliases = new List<ComAlias>();
         public IEnumerable<ComAlias> Aliases => _aliases;
 
-        [DataMember(IsRequired = true)]
-        private List<ComInterface> _interfaces = new List<ComInterface>();
+        private readonly List<ComInterface> _interfaces = new List<ComInterface>();
         public IEnumerable<ComInterface> Interfaces => _interfaces;
 
-        [DataMember(IsRequired = true)]
-        private List<ComEnumeration> _enumerations = new List<ComEnumeration>();
+        private readonly List<ComEnumeration> _enumerations = new List<ComEnumeration>();
         public IEnumerable<ComEnumeration> Enumerations => _enumerations;
 
-        [DataMember(IsRequired = true)]
-        private List<ComCoClass> _classes = new List<ComCoClass>();
+        private readonly List<ComCoClass> _classes = new List<ComCoClass>();
         public IEnumerable<ComCoClass> CoClasses => _classes;
 
-        [DataMember(IsRequired = true)]
-        private List<ComModule> _modules = new List<ComModule>();
+        private readonly List<ComModule> _modules = new List<ComModule>();
         public IEnumerable<ComModule> Modules => _modules;
 
-        [DataMember(IsRequired = true)]
-        private List<ComStruct> _structs = new List<ComStruct>();
+        private readonly List<ComStruct> _structs = new List<ComStruct>();
         public IEnumerable<ComStruct> Structs => _structs;
 
         //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)

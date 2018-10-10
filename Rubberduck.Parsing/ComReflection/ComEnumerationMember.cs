@@ -1,28 +1,17 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.Serialization;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DataContract]
-    [KnownType(typeof(ComEnumeration))]
     [DebuggerDisplay("{Name} = {Value} ({ValueType})")]
     public class ComEnumerationMember
     {
-        [DataMember(IsRequired = true)]
-        public string Name { get; private set; }
-
-        [DataMember(IsRequired = true)]
-        public int Value { get; private set; }
-
-        [DataMember(IsRequired = true)]
-        public VarEnum ValueType { get; private set; }
-
-        [DataMember(IsRequired = true)]
-        ComEnumeration Parent { get; set; }
-
+        public string Name { get; }
+        public int Value { get; }
+        public VarEnum ValueType { get; }
+        ComEnumeration Parent { get; }
         public ComProject Project => Parent?.Project;
 
         public ComEnumerationMember(ComEnumeration parent, ITypeInfo info, VARDESC varDesc)
