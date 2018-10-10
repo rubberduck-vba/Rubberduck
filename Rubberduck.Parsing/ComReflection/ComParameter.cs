@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor.Utility;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
@@ -13,6 +14,8 @@ using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DataContract]
+    [KnownType(typeof(ComTypeName))]
 #if DEBUG
     [DebuggerDisplay("{" + nameof(DeclarationName) + "}")]
 #endif
@@ -20,9 +23,11 @@ namespace Rubberduck.Parsing.ComReflection
     {
         public static ComParameter Void = new ComParameter { _typeName = new ComTypeName(null, string.Empty) };
 
-        public string Name { get; }
+        [DataMember(IsRequired = true)]
+        public string Name { get; private set; }
 
 #if DEBUG
+        // ReSharper disable once UseStringInterpolation
         public string DeclarationName => string.Format("{0}{1} {2} As {3}{4}{5}",
             IsOptional ? "Optional " : string.Empty,
             IsByRef ? "ByRef" : "ByVal",
@@ -34,12 +39,23 @@ namespace Rubberduck.Parsing.ComReflection
                 : string.Empty);
 #endif
 
+        [DataMember(IsRequired = true)]
         public bool IsArray { get; private set; }
+
+        [DataMember(IsRequired = true)]
         public bool IsByRef { get; private set; }
-        public bool IsOptional { get; }
-        public bool IsReturnValue { get; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsOptional { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsReturnValue { get; private set; }
+
+        [DataMember(IsRequired = true)]
         public bool IsParamArray { get; set; }
-        public object DefaultValue { get; }
+
+        [DataMember(IsRequired = true)]
+        public object DefaultValue { get; private set; }
         public bool HasDefaultValue => DefaultValue != null;
 
         public string DefaultAsEnum
@@ -55,10 +71,12 @@ namespace Rubberduck.Parsing.ComReflection
             }
         }
 
+        [DataMember(IsRequired = true)]
         private ComTypeName _typeName;
         public string TypeName => IsArray ? $"{_typeName.Name}()" : _typeName.Name;
 
-        ComMember Parent { get; }
+        [DataMember(IsRequired = true)]
+        ComMember Parent { get; set; }
         public ComProject Project => Parent?.Project;
 
         private ComParameter() { }
