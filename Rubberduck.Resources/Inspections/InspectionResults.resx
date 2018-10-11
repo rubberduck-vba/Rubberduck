@@ -366,4 +366,7 @@
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
     <value>Module '{0}' has no '@Folder' annotation</value>
   </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>'On Local Error' statement detected.</value>
+  </data>
 </root>

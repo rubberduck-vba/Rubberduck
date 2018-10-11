@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
@@ -46,6 +42,11 @@ namespace Rubberduck.Parsing.Symbols
         internal void AddMember(Declaration member)
         {
             _members.Add(member);
+        }
+
+        internal void RemoveAnnotations(ICollection<IAnnotation> annotationsToRemove)
+        {
+            _annotations = _annotations?.Where(annotation => !annotationsToRemove.Contains(annotation)).ToList();
         }
     }
 }

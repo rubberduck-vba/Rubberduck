@@ -381,7 +381,8 @@
     <Compile Include="AutoComplete\AutoCompleteClosingBracket.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingParenthese.cs" />
     <Compile Include="AutoComplete\AutoCompleteClosingString.cs" />
-    <Compile Include="AutoComplete\Service\AutoCompleteService.cs" />
+    <Compile Include="AutoComplete\AutoCompleteService.cs" />
+    <Compile Include="UI\Settings\ScrollViewerCorrector.cs" />
     <Compile Include="UI\Settings\Converters\EmptyLineHandlingToTextConverter.cs" />
     <Compile Include="UI\Settings\Converters\EmptyLineHandlingValueTextToEnumValueConverter.cs" />
     <Compile Include="UI\Settings\Converters\EnumToBooleanConverter.cs" />
@@ -538,7 +539,7 @@
     <Compile Include="UI\Command\MenuItems\CommandBars\ReferenceCounterLabelMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ReparseCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\RubberduckCommandBar.cs" />
-    <Compile Include="UI\Command\MenuItems\CommandBars\SerializeDeclarationsCommandMenuItem.cs" />
+    <Compile Include="UI\Command\MenuItems\CommandBars\SerializeProjectsCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\ShowParserErrorsCommandMenuItem.cs" />
     <Compile Include="UI\Command\MenuItems\CommandBars\IAppCommandBar.cs" />
     <Compile Include="UI\Command\RegexAssistantCommand.cs" />

@@ -16,8 +16,6 @@ namespace Rubberduck.Parsing.ComReflection
             /// <summary>
             /// Use default register behavior.
             /// </summary>
-
-
             REGKIND_DEFAULT = 0,
             /// <summary>
             /// Register this type library.

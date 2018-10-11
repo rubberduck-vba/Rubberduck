@@ -27,6 +27,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 {0}";
 
@@ -56,6 +57,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 '@TestMethod
 Public Sub TestMethod1()
@@ -93,6 +95,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 Public Function TestMethod1() As Long
 End Function
@@ -129,6 +132,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 '@TestMethod
 Public Sub TestMethod1()
@@ -166,6 +170,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 '@TestMethod
 Public Sub TestMethod2()
@@ -203,6 +208,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 '@TestMethod
 Public Sub TestMethod1()
@@ -238,6 +244,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 '@TestMethod
 Public Function TestMethod1() As Long
@@ -273,6 +280,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 '@TestMethod
 Public Sub TestMethod1()
@@ -308,6 +316,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 '@TestMethod
 Public Sub TestMethod2()
@@ -401,6 +410,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 ";
 
@@ -423,6 +433,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 {0}";
 
@@ -482,6 +493,7 @@ Option Explicit
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 ";
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -25,13 +26,22 @@ namespace Rubberduck.Parsing.ComReflection
         IEnumerable<ComField> Fields { get; }
     }
 
+    [DataContract]
+    [KnownType(typeof(ComBase))]
     [DebuggerDisplay("{" + nameof(Name) + "}")]
     public abstract class ComType : ComBase, IComType
     {
-        public bool IsAppObject { get; }
-        public bool IsPreDeclared { get; }
-        public bool IsHidden { get; }
-        public bool IsRestricted { get; }
+        [DataMember(IsRequired = true)]
+        public bool IsAppObject { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsPreDeclared { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsHidden { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsRestricted { get; private set; }
 
         protected ComType(IComBase parent, ITypeInfo info, TYPEATTR attrib)
             : base(parent, info)
