@@ -25,7 +25,7 @@ namespace Rubberduck.AutoComplete.Service
             _configService.SettingsChanged += ConfigServiceSettingsChanged;
 
             _handlers = handlers;
-            InitializeConfig(); // todo: remove I/O work from constructor
+            InitializeConfig();
         }
 
         private bool _initializing;
