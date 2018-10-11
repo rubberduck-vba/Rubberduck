@@ -2891,7 +2891,7 @@ End Property";
 
             public RenameTestModuleDefinition(string moduleName, ComponentType moduleType = ComponentType.ClassModule)
             {
-                _codeString = new CodeString();
+                _codeString = new CodeString(string.Empty, default);
                 _inputWithFauxCursor = string.Empty;
                 _expected = string.Empty;
                 ModuleName = moduleName;
