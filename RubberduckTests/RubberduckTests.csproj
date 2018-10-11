@@ -111,6 +111,7 @@
     <Compile Include="CodeAnalysis\CodeMetrics\CyclomaticComplexityTests.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\LineCountTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Inspections\AssignmentNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspectionTests.cs" />
     <Compile Include="Inspections\ModuleWithoutFolderInspectionTests.cs" />
     <Compile Include="Inspections\OnLocalErrorInspectionTests.cs" />

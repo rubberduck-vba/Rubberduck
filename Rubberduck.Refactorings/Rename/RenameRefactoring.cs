@@ -245,13 +245,11 @@ namespace Rubberduck.Refactorings.Rename
             var result = presenter.Show(_model.Target);
             if (result == null) { return false; }
 
-            var conflictDeclarations = _state.DeclarationFinder.GetDeclarationsWithIdentifiersToAvoid(_model.Target)
-                .Where(d => d.IdentifierName.Equals(_model.NewName, StringComparison.InvariantCultureIgnoreCase)).ToList();
+            var conflicts = _state.DeclarationFinder.FindNewDeclarationNameConflicts(_model.NewName, _model.Target);
 
-            if (conflictDeclarations.Any())
+            if (conflicts.Any())
             {
-                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName,
-                    conflictDeclarations.First().IdentifierName);
+                var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, _model.NewName, _model.Target.IdentifierName);
 
                 return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
             }

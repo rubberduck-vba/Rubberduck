@@ -45,6 +45,9 @@
       <HintPath>..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard1.3\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression" />
@@ -68,6 +71,18 @@
     <Compile Include="CodeMetrics\CyclomaticComplexityMetric.cs" />
     <Compile Include="CodeMetrics\LineCountMetric.cs" />
     <Compile Include="CodeMetrics\NestingLevelMetric.cs" />
+    <Compile Include="CodePathAnalysis\Extensions\NodeExtensions.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\ILoopNode.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\Implementations\AssignmentNode.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\Implementations\BlockNode.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\Implementations\DeclarationNode.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\Implementations\LoopNode.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\Implementations\GenericNode.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\Implementations\BranchNode.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\IBranchNode.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\Implementations\ReferenceNode.cs" />
+    <Compile Include="CodePathAnalysis\Nodes\INode.cs" />
+    <Compile Include="CodePathAnalysis\Walker.cs" />
     <Compile Include="Inspections\Abstract\InspectionBase.cs" />
     <Compile Include="Inspections\Abstract\ParseTreeInspectionBase.cs" />
     <Compile Include="Inspections\Concrete\ApplicationWorksheetFunctionInspection.cs" />
@@ -87,6 +102,7 @@
     <Compile Include="Inspections\Concrete\ObsoleteCallingConventionInspection.cs" />
     <Compile Include="Inspections\Concrete\ObsoleteErrorSyntaxInspection.cs" />
     <Compile Include="Inspections\Concrete\ObsoleteMemberUsageInspection.cs" />
+    <Compile Include="Inspections\Concrete\AssignmentNotUsedInspection.cs" />
     <Compile Include="Inspections\Concrete\SheetAccessedUsingStringInspection.cs" />
     <Compile Include="Inspections\Concrete\StepIsNotSpecifiedInspection.cs" />
     <Compile Include="Inspections\Concrete\StepOneIsRedundantInspection.cs" />
