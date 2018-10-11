@@ -349,4 +349,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>An assignment is immediately overridden by another assignment or is never referenced.</value>
   </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>A class module with public members with underscores cannot implement interfaces that do not expose said member.</value>
+  </data>
 </root>

@@ -378,4 +378,7 @@
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>An assignment is immediately overridden by another assignment or is never referenced.</value>
   </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Public member '{0}' has underscore in name.</value>
+  </data>
 </root>

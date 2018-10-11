@@ -348,4 +348,7 @@
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Assignment is not used</value>
   </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Underscore in public class module member</value>
+  </data>
 </root>

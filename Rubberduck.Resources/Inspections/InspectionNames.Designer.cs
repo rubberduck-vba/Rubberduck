@@ -682,6 +682,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Underscore in public class module member.
+        /// </summary>
+        public static string UnderscoreInPublicClassModuleMemberInspection {
+            get {
+                return ResourceManager.GetString("UnderscoreInPublicClassModuleMemberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unhandled &apos;On Error Resume Next&apos;.
         /// </summary>
         public static string UnhandledOnErrorResumeNextInspection {

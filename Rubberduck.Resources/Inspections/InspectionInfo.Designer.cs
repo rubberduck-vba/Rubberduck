@@ -682,6 +682,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A class module with public members with underscores cannot implement interfaces that do not expose said member..
+        /// </summary>
+        public static string UnderscoreInPublicClassModuleMemberInspection {
+            get {
+                return ResourceManager.GetString("UnderscoreInPublicClassModuleMemberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error handling should be restored after using &apos;On Error Resume Next&apos;..
         /// </summary>
         public static string UnhandledOnErrorResumeNextInspection {
