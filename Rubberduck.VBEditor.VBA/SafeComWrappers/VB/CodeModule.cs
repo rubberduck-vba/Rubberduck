@@ -1,9 +1,5 @@
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
-using System.Text;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
@@ -133,7 +129,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             catch (Exception e)
             {
                 // "too many line continuations" is one possible cause for a COMException here.
-                Debug.Assert(false, e.ToString());
+                _logger.Error(e);
             }
         }
 
@@ -151,7 +147,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 catch (Exception e)
                 {
                     // "too many line continuations" is one possible cause for a COMException here.
-                    Debug.Assert(false, e.ToString());
+                    _logger.Error(e);
                 }
             }
         }
@@ -178,7 +174,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             catch (Exception e)
             {
                 // "too many line continuations" is one possible cause for a COMException here.
-                Debug.Assert(false, e.ToString());
+                _logger.Error(e);
             }
         }
 

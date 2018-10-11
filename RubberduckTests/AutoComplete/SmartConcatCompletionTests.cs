@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using Moq;
 using NUnit.Framework;
-using Rubberduck.AutoComplete;
 using Rubberduck.AutoComplete.Service;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;

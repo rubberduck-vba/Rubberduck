@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using NLog;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.Events;
 
@@ -8,6 +9,8 @@ namespace Rubberduck.AutoComplete.Service
 {
     public class AutoCompleteService : IDisposable
     {
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+
         private readonly IGeneralConfigService _configService;
         private readonly IEnumerable<AutoCompleteHandlerBase> _handlers;
 
@@ -45,7 +48,7 @@ namespace Rubberduck.AutoComplete.Service
             }
         }
 
-        public void Enable()
+        private void Enable()
         {
             if (!_initializing)
             {
@@ -60,13 +63,14 @@ namespace Rubberduck.AutoComplete.Service
             }
         }
 
-        public void Disable()
+        private void Disable()
         {
             if (_enabled && _initialized)
             {
                 VBENativeServices.KeyDown -= HandleKeyDown;
                 VBENativeServices.IntelliSenseChanged -= HandleIntelliSenseChanged;
                 _enabled = false;
+                _popupShown = false;
             }
         }
 
@@ -101,8 +105,8 @@ namespace Rubberduck.AutoComplete.Service
 
             if (!_enabled)
             {
-                Debug.Assert(_enabled, "KeyDown controller is executing, but auto-completion service is disabled.");
-                return false; // release build should bail out here!
+                Logger.Warn("KeyDown controller is executing, but auto-completion service is disabled.");
+                return false;
             }
 
             if (_popupShown || e.Character == default && e.IsDeleteKey)
