@@ -6,7 +6,6 @@ using Rubberduck.Parsing.VBA.DeclarationResolving;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -53,30 +52,10 @@ namespace Rubberduck.Parsing.VBA
             _referenceResolver = referenceResolver;
         }
 
-
-        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations
-        {
-            get
-            {
-                return _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
-            }
-        }
-
-        public bool LastSyncOfCOMReferencesLoadedReferences
-        {
-            get
-            {
-                return _comSynchronizer.LastSyncOfCOMReferencesLoadedReferences;
-            }
-        }
-
-        public IEnumerable<QualifiedModuleName> COMReferencesUnloadedUnloadedInLastSync
-        {
-            get
-            {
-                return _comSynchronizer.COMReferencesUnloadedUnloadedInLastSync;
-            }
-        }
+        public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations => _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
+        public bool LastSyncOfCOMReferencesLoadedReferences => _comSynchronizer.LastSyncOfCOMReferencesLoadedReferences;
+        public IEnumerable<string> COMReferencesUnloadedInLastSync => _comSynchronizer.COMReferencesUnloadedInLastSync;
+        public IEnumerable<(string projectId, string referencedProjectId)>COMReferencesAffectedByPriorityChangesInLastSync =>_comSynchronizer.COMReferencesAffectedByPriorityChangesInLastSync;
 
         public void LoadBuitInDeclarations()
         {
@@ -86,6 +65,16 @@ namespace Rubberduck.Parsing.VBA
         public void ParseModules(IReadOnlyCollection<QualifiedModuleName> modulesToParse, CancellationToken token)
         {
             _parseRunner.ParseModules(modulesToParse, token);
+        }
+
+        public void CreateProjectDeclarations(IReadOnlyCollection<string> projectIds)
+        {
+            _declarationResolver.CreateProjectDeclarations(projectIds);
+        }
+
+        public void RefreshProjectReferences()
+        {
+            _declarationResolver.RefreshProjectReferences();
         }
 
         public void ResolveDeclarations(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)

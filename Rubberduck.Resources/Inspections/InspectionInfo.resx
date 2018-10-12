@@ -334,4 +334,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>An annotation is specified multiple times, but is intended to be specified only once.</value>
   </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Modules without the '@Folder' annotation cannot receive custom groupings in the Code Explorer. </value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>On Local Error exists only for compatibility with previous versions of Visual Basic, and all Errors are treated as Local regardless of the Error statement. Use of this keyword inaccurately gives the impression that there is a distinction between types of error handling when there is not.</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>An assignment is immediately overridden by another assignment or is never referenced.</value>
+  </data>
 </root>

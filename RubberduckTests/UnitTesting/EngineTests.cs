@@ -346,6 +346,7 @@ End Sub";
 Option Private Module
 
 '@TestModule
+
 Private Assert As Object
 
 '@ModuleInitialize

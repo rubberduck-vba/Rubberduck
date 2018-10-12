@@ -39,7 +39,9 @@ namespace RubberduckCodeAnalysis
             }
 
             var expInterfaces = context.SemanticModel.GetTypeInfo(node.Expression).Type?.AllInterfaces;
-            var nameInterfaces = context.SemanticModel.GetTypeInfo(node.Name).Type?.AllInterfaces;
+
+            var nameValue = node.Name.Parent.Parent is InvocationExpressionSyntax ? node.Name.Parent.Parent : node.Name;
+            var nameInterfaces = context.SemanticModel.GetTypeInfo(nameValue).Type?.AllInterfaces;
 
             if (!expInterfaces.HasValue || !nameInterfaces.HasValue)
             {
@@ -49,7 +51,10 @@ namespace RubberduckCodeAnalysis
             if (expInterfaces.Value.Any(a => a.ToDisplayString() == "Rubberduck.VBEditor.SafeComWrappers.Abstract.ISafeComWrapper") &&
                 nameInterfaces.Value.Any(a => a.ToDisplayString() == "Rubberduck.VBEditor.SafeComWrappers.Abstract.ISafeComWrapper"))
             {
-                var diagnostic = Diagnostic.Create(ChainedWrapperRule, node.GetLocation());
+                var targetType = context.SemanticModel.GetTypeInfo(nameValue).Type.Name;
+                var containingType = context.SemanticModel.GetTypeInfo(node.Expression).Type.Name;
+                var diagnostic = Diagnostic.Create(ChainedWrapperRule, node.GetLocation(), targetType, containingType, node.GetText());
+                
                 context.ReportDiagnostic(diagnostic);
             }
         }

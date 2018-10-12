@@ -189,7 +189,7 @@ namespace RubberduckTests.Mocks
 
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(index => Components.ElementAt(index));
             result.Setup(m => m[It.IsAny<string>()]).Returns<string>(name => Components.Single(item => item.Name == name));
-            result.SetupGet(m => m.Count).Returns(Components.Count);
+            result.SetupGet(m => m.Count).Returns(() => Components.Count);
 
             result.Setup(m => m.Add(It.IsAny<ComponentType>()))
                 .Callback((ComponentType c) =>
@@ -284,6 +284,8 @@ namespace RubberduckTests.Mocks
 
             var propertiesMock = new Mock<IProperties>();
             propertiesMock.Setup(m => m.GetEnumerator()).Returns(() => properties?.GetEnumerator());
+            propertiesMock.SetupGet(m => m.Count).Returns(properties?.Count() ?? 0);
+            propertiesMock.Setup(m => m[It.IsAny<int>()]).Returns<int>(index => properties.ElementAt(index));
             result.SetupGet(m => m.Properties).Returns(propertiesMock.Object);
 
             var module = CreateCodeModuleMock(name, content, selection, result);

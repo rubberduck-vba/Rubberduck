@@ -340,6 +340,7 @@ End Sub";
 Option Private Module
 
 {0}
+
 Private Assert As New Rubberduck.AssertClass
 
 '@ModuleInitialize

@@ -26,7 +26,7 @@ End Sub";
         }
 
         [Test]
-        public void TestCategoryIsEmptyWhenNoCategorySpecified()
+        public void TestCategoryIsUncategorizedWhenNoCategorySpecified()
         {
             const string code = @"
 '@TestMethod
@@ -38,12 +38,12 @@ End Sub";
                 var testMethodDeclaration = state.AllUserDeclarations.First(declaration => declaration.IdentifierName == "Foo");
                 var testMethod = new TestMethod(testMethodDeclaration);
 
-                Assert.AreEqual("", testMethod.Category.Name);
+                Assert.AreEqual("Uncategorized", testMethod.Category.Name);
             }
         }
 
         [Test]
-        public void TestCategoryIsEmptyWhenSpecifiedCategoryHasWhiteSpaceOnly()
+        public void TestCategoryIsUncategorizedWhenSpecifiedCategoryHasWhiteSpaceOnly()
         {
             const string code = @"
 '@TestMethod(""   "")
@@ -55,7 +55,7 @@ End Sub";
                 var testMethodDeclaration = state.AllUserDeclarations.First(declaration => declaration.IdentifierName == "Foo");
                 var testMethod = new TestMethod(testMethodDeclaration);
 
-                Assert.AreEqual("", testMethod.Category.Name);
+                Assert.AreEqual("Uncategorized", testMethod.Category.Name);
             }
         }
     }

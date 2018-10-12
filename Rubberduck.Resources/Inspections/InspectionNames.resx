@@ -333,4 +333,13 @@
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Annotation is duplicated</value>
   </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Module without '@Folder' annotation</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>On Local Error statement</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Assignment is not used</value>
+  </data>
 </root>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
@@ -9,9 +10,12 @@ using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DataContract]
+    [KnownType(typeof(ComType))]
     public class ComEnumeration : ComType
     {
-        public List<ComEnumerationMember> Members { get; }
+        [DataMember(IsRequired = true)]
+        public List<ComEnumerationMember> Members { get; private set; }
 
         public ComEnumeration(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(parent, typeLib, attrib, index)
         {

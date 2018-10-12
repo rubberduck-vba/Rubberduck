@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SourceCodeHandling;
 

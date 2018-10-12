@@ -4,6 +4,7 @@ using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {

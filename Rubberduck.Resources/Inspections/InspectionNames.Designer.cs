@@ -79,6 +79,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Assignment is not used.
+        /// </summary>
+        public static string AssignmentNotUsedInspection {
+            get {
+                return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Boolean literal assignment in conditional.
         /// </summary>
         public static string BooleanAssignedInIfElseInspection {
@@ -367,6 +376,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Module without &apos;@Folder&apos; annotation.
+        /// </summary>
+        public static string ModuleWithoutFolderInspection {
+            get {
+                return ResourceManager.GetString("ModuleWithoutFolderInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Scope of variable is broader than it needs to be.
         /// </summary>
         public static string MoveFieldCloserToUsageInspection {
@@ -480,6 +498,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ObsoleteTypeHintInspection {
             get {
                 return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On Local Error statement.
+        /// </summary>
+        public static string OnLocalErrorInspection {
+            get {
+                return ResourceManager.GetString("OnLocalErrorInspection", resourceCulture);
             }
         }
         

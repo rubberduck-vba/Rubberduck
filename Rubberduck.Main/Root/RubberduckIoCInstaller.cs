@@ -50,7 +50,6 @@ using Rubberduck.VBEditor.Utility;
 using Rubberduck.AutoComplete;
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA.ComReferenceLoading;
 using Rubberduck.Parsing.VBA.DeclarationResolving;
 using Rubberduck.Parsing.VBA.Extensions;
@@ -60,6 +59,8 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 
 namespace Rubberduck.Root
 {
@@ -219,8 +220,8 @@ namespace Rubberduck.Root
             //    .LifestyleSingleton()
             //    .Instance(experimentalTypes));
 
-            container.Register(Component.For<IPersistable<SerializableProject>>()
-                .ImplementedBy<XmlPersistableDeclarations>()
+            container.Register(Component.For<IComProjectSerializationProvider>()
+                .ImplementedBy<XmlComProjectSerializer>()
                 .LifestyleTransient());
             container.Register(Component.For(typeof(IPersistanceService<>), typeof(IFilePersistanceService<>))
                 .ImplementedBy(typeof(XmlPersistanceService<>))
@@ -513,7 +514,7 @@ namespace Rubberduck.Root
                 typeof(ContextDescriptionLabelMenuItem),
                 typeof(ReferenceCounterLabelMenuItem),
 #if DEBUG
-                typeof(SerializeDeclarationsCommandMenuItem)
+                typeof(SerializeProjectsCommandMenuItem)
 #endif
             };
         }

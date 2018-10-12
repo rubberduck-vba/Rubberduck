@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics

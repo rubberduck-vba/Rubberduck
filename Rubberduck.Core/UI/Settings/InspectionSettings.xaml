@@ -10,7 +10,7 @@
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              mc:Ignorable="d" 
-             d:DesignWidth="700"
+             d:DesignWidth="500"
              d:DataContext="{d:DesignInstance {x:Type settings:InspectionSettingsViewModel}, IsDesignTimeCreatable=False}">
     <UserControl.Resources>
         <converters:CodeInspectionSeverityEnumToTextConverter x:Key="CodeInspectionSeverityEnumToText" />
@@ -19,7 +19,7 @@
 
         <BitmapImage x:Key="AddImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
-
+        
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
             <GradientStop Color="#FF9BDDFB" Offset="1"/>
@@ -30,7 +30,7 @@
         </LinearGradientBrush>
         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
         <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
+        
         <ObjectDataProvider x:Key="Severities"
                             MethodName="GetValues"
                             ObjectType="{x:Type core:Enum}">
@@ -268,9 +268,14 @@
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
         <BitmapImage x:Key="FilterIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
+        <Style TargetType="ScrollViewer">
+            <Style.Setters>
+                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
+            </Style.Setters>
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer>
+        <ScrollViewer x:Name="ScrollViewer">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Border Style="{StaticResource BorderHeader}"
                        Margin="0,5,0,5">

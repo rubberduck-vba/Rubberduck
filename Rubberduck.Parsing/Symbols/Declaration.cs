@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Concurrent;
@@ -296,7 +295,7 @@ namespace Rubberduck.Parsing.Symbols
         private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
         public IEnumerable<IdentifierReference> References => _references;
 
-        private readonly IEnumerable<IAnnotation> _annotations;
+        protected IEnumerable<IAnnotation> _annotations;
         public IEnumerable<IAnnotation> Annotations => _annotations ?? new List<IAnnotation>();
 
         private readonly Attributes _attributes;

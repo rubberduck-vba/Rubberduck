@@ -6,8 +6,8 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
