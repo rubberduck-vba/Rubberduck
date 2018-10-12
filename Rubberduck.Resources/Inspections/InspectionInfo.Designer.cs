@@ -79,6 +79,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An assignment is immediately overridden by another assignment or is never referenced..
+        /// </summary>
+        public static string AssignmentNotUsedInspection {
+            get {
+                return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A member is assigned True/False in different branches of an if statement with no other statements in the conditional. Use the condition directly to the member instead..
         /// </summary>
         public static string BooleanAssignedInIfElseInspection {
