@@ -62,7 +62,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 }
             }
 
-            if (node == default)
+            if (node == null)
             {
                 node = new GenericNode();
             }
