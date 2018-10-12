@@ -21,8 +21,8 @@ namespace Rubberduck.VBEditor.ComManagement
             {
                 _comWrapperCache.AddOrUpdate(
                     GetComWrapperObjectHashCode(comWrapper), 
-                    key => (DateTime.UtcNow, new WeakReference<ISafeComWrapper>(comWrapper)), 
-                    (key, value) => (DateTime.UtcNow, new WeakReference<ISafeComWrapper>(comWrapper)));
+                    key => (DateTime.UtcNow, new WeakReference<ISafeComWrapper>(comWrapper)),
+                    (key, value) => (value.insertTime, new WeakReference<ISafeComWrapper>(comWrapper)));
             }
 
         }
