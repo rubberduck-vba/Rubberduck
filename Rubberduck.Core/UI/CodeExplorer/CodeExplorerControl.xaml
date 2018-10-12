@@ -21,7 +21,6 @@
             <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
             <BitmapImage x:Key="CollaseNodesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder.png" />
             <BitmapImage x:Key="ExpandNodesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder-open.png" />
-            <BitmapImage x:Key="UndoImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-left.png" />
             <BitmapImage x:Key="PrintImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/printer.png" />
             <BitmapImage x:Key="AddVBFormImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/AddForm.png" />
             <BitmapImage x:Key="AddMDIFormImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/AddMDIForm.png" />
