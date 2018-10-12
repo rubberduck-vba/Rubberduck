@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 #if DEBUG
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 #endif
@@ -15,14 +17,27 @@ namespace Rubberduck.VBEditor.ComManagement
         //We use weak references to allow the GC to reclaim RCWs earlier if possible.
         private readonly ConcurrentDictionary<int, (DateTime insertTime, WeakReference<ISafeComWrapper> weakRef)> _comWrapperCache = new ConcurrentDictionary<int, (DateTime, WeakReference<ISafeComWrapper>)>();
 
+#if DEBUG
+        private IEnumerable<string> trace = null;
+#endif
+
         public void Add(ISafeComWrapper comWrapper)
         {
             if (comWrapper != null)
             {
+#if DEBUG
+                trace = GetStackTrace(3, 3);
+#endif
                 _comWrapperCache.AddOrUpdate(
                     GetComWrapperObjectHashCode(comWrapper), 
                     key => (DateTime.UtcNow, new WeakReference<ISafeComWrapper>(comWrapper)),
-                    (key, value) => (value.insertTime, new WeakReference<ISafeComWrapper>(comWrapper)));
+                    (key, value) =>
+                    {
+#if DEBUG
+                        Debug.Assert(false);
+#endif
+                        return (value.insertTime, new WeakReference<ISafeComWrapper>(comWrapper));
+                    });
             }
 
         }
@@ -71,16 +86,37 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             using (var stream = System.IO.File.AppendText($"comSafeOutput {DateTime.UtcNow:yyyyMMddhhmmss}.csv"))
             {
-                stream.WriteLine("Ordinal\tKey\tCOM Wrapper Type\tWrapping Null?\tIUnknown Pointer Address");
+                stream.WriteLine("Ordinal\tKey\tCOM Wrapper Type\tWrapping Null?\tIUnknown Pointer Address\tLevel 1\tLevel 2\tLevel 3");
                 var i = 0;
                 foreach (var kvp in _comWrapperCache.OrderBy(kvp => kvp.Value.insertTime))
                 {
                     var line = kvp.Value.weakRef.TryGetTarget(out var target) 
-                        ? $"{i++}\t{kvp.Key}\t\"{target.GetType().FullName}\"\t\"{target.IsWrappingNullReference}\"\t\"{(target.IsWrappingNullReference ? "null" : GetPtrAddress(target.Target))}\"" 
-                        : $"{i++}\t{kvp.Key}\t\"null\"\t\"null\"\t\"null\"";
+                        ? $"{i++}\t{kvp.Key}\t\"{target.GetType().FullName}\"\t\"{target.IsWrappingNullReference}\"\t\"{(target.IsWrappingNullReference ? "null" : GetPtrAddress(target.Target))}\"\t\"{string.Join("\"\t\"", trace)}\"" 
+                        : $"{i++}\t{kvp.Key}\t\"null\"\t\"null\"\t\"null\"\t\"{string.Join("\"\t\"", trace)}\"";
                     stream.WriteLine(line);
                 }
             }
+        }
+
+        private static IEnumerable<string> GetStackTrace(int frames, int offset)
+        {
+            var list = new List<string>();
+            var trace = new StackTrace();
+            if ((trace.FrameCount - offset) < frames)
+            {
+                frames = (trace.FrameCount - offset);
+            }
+
+            for (var i = 1; i <= frames; i++)
+            {
+                var frame = trace.GetFrame(i + offset);
+                var typeName = frame.GetMethod().DeclaringType?.FullName ?? string.Empty;
+                var methodName = frame.GetMethod().Name;
+
+                var qualifiedName = $"{typeName}{(typeName.Length > 0 ? "::" : string.Empty)}{methodName}";
+                list.Add(qualifiedName);
+            }
+            return list;
         }
 
         private static string GetPtrAddress(object target)
