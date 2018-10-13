@@ -117,37 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="MoveDownButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHcSURBVDhPpYxPSJNxHMZ/rA1iQyXIYIOWLASJDjoj
-        ENkSsi7pQfDPoHdBpHnQLpWJGxh1cqcGSjQpD86Da4hWqPR3WUwP/jwEetr8B8vcxbAYTpA9/b5ji/fP
-        dvIHn/fl+T4PHwbgWGQ/V17tKmgYSwYEXEZAvVEIHKM/1fCRLeBZLIPhTYCyqlcK6p5vq+G+tSN4l9IY
-        Wj0CZVWvFFx4usIu+WNy+JOVNO69/4PHywegLO9prxCce/CFVXqjrNq3mod7l1K4+3YPnsUUKOc72tFe
-        I6joi7DzA9+zdgHvW9hHR3AT3e8SoEx36mlXVEDY+hdYpSfKb0+to9HP4Q7FQZnu+Y1GYL3/OSCOXI4r
-        vAHnyA+0hdah7mivEFh65yVzzxzvje6jaeYXbkzvwDGxjerROOqDW7gWTqDxdQKts0nQjvYKgTiy8q4Z
-        6XTnNG//9hfWYFLD1fnfoJ52tNcIRMnKboWkUvckd349RGk49Z+aD2nQnXraaQQll28yo93FTNcHmckV
-        lIwd47wqkoHuTQa2TxlQpjv1BvNFRk8hkD/dmSqmdzySDC0vueUjQH/KdJe/QgKD4KzALqjV2e881DW/
-        4PSnnMMmOCkoKDghKBOYBZYinBLoBTkB2D81oQPH+IFhdgAAAABJRU5ErkJggg==
-</value>
-  </data>
-  <data name="MoveUpButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHJSURBVDhPpY1PSNNhHMZf1qwwEcw1zYNiYmQRDRZE
-        wsKDdBA8eJAFNSIWXaTTiNU81am8bEWbOqKDg2oOGRq52SGiMbu8HaLokNua2g4S8xAMQ9we32f4G1ub
-        KfSFz16eP79nAsB/Ufw5/eCTMD36Ks57lsRF37Kw+DOi7/naNYXkS02fOXvs7zXAj+RkBuBLvf8Bb5pl
-        Ob4KjH78A98KQE1/7wH3d5akd7mA2wu/SzxO5kGf+a4D5x5+YSifpPK4Nbdexdi3TTBnr2qg576kKd1L
-        W3At5nAvnsNIJAtr4AeuvkzBHk7jeigJZ+wX2GO/YuDk6OJktysuy7kxk0S/R8IWTODvjP2KAWWKrrux
-        IiecH0SH4528Ekrh0tPPGA4mQU1f67Bfc6DzzntxfGSeyIGZDEz+BC5P/wQ1fea7Dqh/EYabYQ15YXYd
-        7YE1mMNZUGsZe1UDzRa7OGwaFo22Vxqy+80GGkM5dL5Wr9Japm89I3gVA9odMPaIeusUkcZoAbrZAo5G
-        CqCmz1y7mgM83bFTom7omTS+BRrmgaYoQE2//GoNHFKwZdb1Ol7oBidkCaXpK84qjihqDugVBkXbP2hR
-        HFTsDEBsA+DL/+xB8T2EAAAAAElFTkSuQmCC
-</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.Icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\..\..\Ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
 </root>
