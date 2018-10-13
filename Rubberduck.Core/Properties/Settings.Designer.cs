@@ -12,7 +12,7 @@ namespace Rubberduck.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
     public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -456,9 +456,11 @@ namespace Rubberduck.Properties {
             "ion\" Severity=\"Error\" InspectionType=\"RubberduckOpportunities\" />\r\n    <CodeInsp" +
             "ection Name=\"ModuleWithoutFolderInspection\" Severity=\"Suggestion\" InspectionType" +
             "=\"RubberduckOpportunities\" />\r\n    <CodeInspection Name=\"OnLocalErrorInspection\"" +
-            " Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n  </CodeInspec" +
-            "tions>\r\n  <WhitelistedIdentifiers />\r\n  <RunInspectionsOnSuccessfulParse>true</R" +
-            "unInspectionsOnSuccessfulParse>\r\n</CodeInspectionSettings>")]
+            " Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspe" +
+            "ction Name=\"IsMissingOnInappropriateArgumentInspection\" Severity=\"Warning\" Inspe" +
+            "ctionType=\"CodeQualityIssues\" />\r\n  </CodeInspections>\r\n  <WhitelistedIdentifier" +
+            "s />\r\n  <RunInspectionsOnSuccessfulParse>true</RunInspectionsOnSuccessfulParse>\r" +
+            "\n</CodeInspectionSettings>")]
         public global::Rubberduck.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));

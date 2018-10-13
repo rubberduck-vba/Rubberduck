@@ -313,6 +313,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IsMissing is only intended to be called on optional arguments, and will only return correct results if the type of the argument is &apos;Variant&apos; with no explicit default value. All other uses will return &apos;False&apos;..
+        /// </summary>
+        public static string IsMissingOnInappropriateArgumentInspection {
+            get {
+                return ResourceManager.GetString("IsMissingOnInappropriateArgumentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A line label that is never jumpted to (&apos;GoTo&apos;, &apos;Resume&apos;, ...), serves no purpose. Consider removing it..
         /// </summary>
         public static string LineLabelNotUsedInspection {

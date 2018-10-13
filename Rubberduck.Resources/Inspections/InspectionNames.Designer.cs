@@ -313,6 +313,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Inappropriate use of &apos;IsMissing&apos; function.
+        /// </summary>
+        public static string IsMissingOnInappropriateArgumentInspection {
+            get {
+                return ResourceManager.GetString("IsMissingOnInappropriateArgumentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Line label is not used.
         /// </summary>
         public static string LineLabelNotUsedInspection {

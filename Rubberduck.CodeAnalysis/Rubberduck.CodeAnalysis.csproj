@@ -81,6 +81,7 @@
     <Compile Include="Inspections\Concrete\EmptyForEachBlockInspection.cs" />
     <Compile Include="Inspections\Concrete\EmptyForLoopBlockInspection.cs" />
     <Compile Include="Inspections\Concrete\BooleanAssignedInIfElseInspection.cs" />
+    <Compile Include="Inspections\Concrete\IsMissingOnInappropriateArgumentInspection.cs" />
     <Compile Include="Inspections\Concrete\OnLocalErrorInspection.cs" />
     <Compile Include="Inspections\Concrete\ModuleWithoutFolderInspection.cs" />
     <Compile Include="Inspections\Concrete\EmptyWhileWendBlockInspection.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Inspections\Concrete\ProcedureNotUsedInspection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFix.cs" />
+    <Compile Include="QuickFixes\IsMissingOnInappropriateArgumentQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveLocalErrorQuickFix.cs" />
     <Compile Include="QuickFixes\RemoveDuplicatedAnnotationQuickFix.cs" />
     <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFix.cs" />

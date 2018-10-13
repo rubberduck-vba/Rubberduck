@@ -369,4 +369,7 @@
   <data name="OnLocalErrorInspection" xml:space="preserve">
     <value>'On Local Error' statement detected.</value>
   </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>'IsMissing' will always return false with the passed argument.</value>
+  </data>
 </root>
