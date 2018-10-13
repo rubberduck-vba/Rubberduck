@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.ComManagement
@@ -8,7 +9,7 @@ namespace Rubberduck.VBEditor.ComManagement
     {
         //We override the equality comparison and hash code because subclasses of SafeComWrapper<T> override the corresponding methods.
         //We need to distinguish between the individual wrapper instances no matter whether they are semantically equal.
-        private readonly ConcurrentDictionary<int, ISafeComWrapper> _comWrapperCache = new ConcurrentDictionary<int, ISafeComWrapper>();
+        private readonly ConcurrentDictionary<ISafeComWrapper, byte> _comWrapperCache = new ConcurrentDictionary<ISafeComWrapper, byte>(new ReferenceEqualityComparer());
 
         public override void Add(ISafeComWrapper comWrapper)
         {
@@ -18,8 +19,8 @@ namespace Rubberduck.VBEditor.ComManagement
                 Trace = GetStackTrace(3, 3);
 #endif
                 _comWrapperCache.AddOrUpdate(
-                    GetComWrapperObjectHashCode(comWrapper), 
-                    value => comWrapper, 
+                    comWrapper, 
+                    key => 1, 
                     (key, value) =>
                     {
 #if DEBUG
@@ -32,8 +33,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public override bool TryRemove(ISafeComWrapper comWrapper)
         {
-            return !_disposed && comWrapper != null &&
-                   _comWrapperCache.TryRemove(GetComWrapperObjectHashCode(comWrapper), out _);
+            return !_disposed && comWrapper != null && _comWrapperCache.TryRemove(comWrapper, out _);
         }
 
         private bool _disposed;
@@ -46,7 +46,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
             _disposed = true;
 
-            foreach (var comWrapper in _comWrapperCache.Values)
+            foreach (var comWrapper in _comWrapperCache.Keys)
             {
                 comWrapper.Dispose();
             }
@@ -57,7 +57,7 @@ namespace Rubberduck.VBEditor.ComManagement
 #if DEBUG
         protected override IDictionary<int, ISafeComWrapper> GetWrappers()
         {
-            return _comWrapperCache;
+            return _comWrapperCache.Keys.ToDictionary(GetComWrapperObjectHashCode);
         }
 #endif
     }
