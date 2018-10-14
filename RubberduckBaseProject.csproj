@@ -66,4 +66,12 @@
   </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 
+  <PropertyGroup>
+    <!--
+     Visual Studio warning ignores work through NoWarn and ignore DisabledWarnings.
+     Accordingly we amend NoWarn to include DisabledWarnings.
+    -->
+    <NoWarn>$(NoWarn);$(DisabledWarnings)</NoWarn>
+  </PropertyGroup>
+
 </Project>
