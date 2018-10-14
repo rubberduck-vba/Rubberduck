@@ -7,5 +7,8 @@ namespace Rubberduck.VBEditor.ComManagement
     {
         void Add(ISafeComWrapper comWrapper);
         bool TryRemove(ISafeComWrapper comWrapper);
+#if DEBUG
+        void Serialize(string targetDirectory);
+#endif
     }
 }

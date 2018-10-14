@@ -5,6 +5,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 #if DEBUG
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 #endif
 
@@ -12,11 +13,9 @@ namespace Rubberduck.VBEditor.ComManagement
 {
     public abstract class ComSafeBase : IComSafe
     {
-#if DEBUG
-        protected IEnumerable<string> Trace = null;
-#endif
-
         public abstract void Add(ISafeComWrapper comWrapper);
+
+        public abstract bool TryRemove(ISafeComWrapper comWrapper);
 
         //We do not use GetHashCode because subclasses of SafeComWrapper<T> overwrite this method 
         //and we need to distinguish between individual instances.
@@ -25,54 +24,200 @@ namespace Rubberduck.VBEditor.ComManagement
             return RuntimeHelpers.GetHashCode(comWrapper);
         }
 
-        public abstract bool TryRemove(ISafeComWrapper comWrapper);
-
+        private bool _disposed;
         public void Dispose()
         {
             Dispose(true);
+
+#if DEBUG
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+
+            lock (_streamLock)
+            {
+                try
+                {
+                    if (_traceStream == null)
+                    {
+                        return;
+                    }
+
+                    _traceStream.Close();
+                    if (string.IsNullOrWhiteSpace(_directory))
+                    {
+                        File.Delete(_traceFilePath);
+                    }
+                    else
+                    {
+                        File.Move(_traceFilePath,
+                            Path.Combine(_directory,
+                                Path.GetFileNameWithoutExtension(_traceFilePath) + " final.csv"));
+                    }
+                }
+                finally
+                {
+                    _traceStream?.Dispose();
+                    _traceStream = null;
+                }
+            }
+#endif
         }
 
         protected abstract void Dispose(bool disposing);
 
 #if DEBUG
+        private struct TraceData
+        {
+            internal int HashCode { get; set; }
+            internal string IUnknownAddress { get; set; }
+            internal IEnumerable<string> StackTrace { get; set; }
+        }
+        private StreamWriter _traceStream;
+        private string _traceFilePath;
+        private string _directory;
+        private readonly object _streamLock = new object();
+        
+        /// <summary>
+        /// The first few stack frames come from the ComSafe and thus are not
+        /// particularly interesting. Typically, we want to look at the frames
+        /// outside the ComSafe. 
+        /// </summary>
+        private const int StackTraceNumberOfElementsToSkipOnRemoval = 6;
+        private const int StackTrackNumberOfElementsToSkipOnAddUpdate = 8;
+        private const int StackTraceDepth = 5;
+
         /// <summary>
         /// Provide a serialized list of the COM Safe
         /// to make it easy to analyze what is inside
         /// the COM Safe at the different points of
         /// the session's lifetime.
         /// </summary>
-        public void Serialize()
+        public void Serialize(string targetDirectory)
         {
-            using (var stream = System.IO.File.AppendText($"comSafeOutput {DateTime.UtcNow:yyyyMMddhhmmss}.csv"))
+            lock (_streamLock)
             {
-                stream.WriteLine(
-                    "Ordinal\tKey\tCOM Wrapper Type\tWrapping Null?\tIUnknown Pointer Address\tLevel 1\tLevel 2\tLevel 3");
-                var i = 0;
-                foreach (var kvp in GetWrappers())
+                _directory = targetDirectory;
+                var serializeTime = DateTime.UtcNow;
+                using (var stream = File.AppendText(Path.Combine(_directory,
+                    $"COM Safe Content Snapshot {serializeTime:yyyyMMddhhmmss}.csv")))
                 {
-                    var line = kvp.Value != null
-                        ? $"{i++}\t{kvp.Key}\t\"{kvp.Value.GetType().FullName}\"\t\"{kvp.Value.IsWrappingNullReference}\"\t\"{(kvp.Value.IsWrappingNullReference ? "null" : GetPtrAddress(kvp.Value))}\"\t\"{string.Join("\"\t\"", Trace)}\""
-                        : $"{i++}\t{kvp.Key}\t\"null\"\t\"null\"\t\"null\"\t\"{string.Join("\"\t\"", Trace)}\"";
-                    stream.WriteLine(line);
+                    stream.WriteLine(
+                        $"Ordinal\tKey\tCOM Wrapper Type\tWrapping Null?\tIUnknown Pointer Address");
+                    var i = 0;
+                    foreach (var kvp in GetWrappers())
+                    {
+                        var line = kvp.Value != null
+                            ? $"{i++}\t{kvp.Key}\t\"{kvp.Value.GetType().FullName}\"\t\"{kvp.Value.IsWrappingNullReference}\"\t\"{(kvp.Value.IsWrappingNullReference ? "null" : GetPtrAddress(kvp.Value.Target))}\""
+                            : $"{i++}\t{kvp.Key}\t\"null\"\t\"null\"\t\"null\"";
+                        stream.WriteLine(line);
+                    }
                 }
+
+                if (_traceStream == null)
+                {
+                    return;
+                }
+
+                _traceStream.Flush();
+                File.Copy(_traceFilePath, Path.Combine(_directory, $"COM Safe Stack Trace {serializeTime:yyyyMMddhhmmss}.csv"));
             }
+        }
+
+        protected void TraceAdd(ISafeComWrapper comWrapper)
+        {
+            Trace("Add", comWrapper, StackTrackNumberOfElementsToSkipOnAddUpdate);
+        }
+
+        protected void TraceUpdate(ISafeComWrapper comWrapper)
+        {
+            Trace("Update", comWrapper, StackTrackNumberOfElementsToSkipOnAddUpdate);
+        }
+
+        protected void TraceRemove(ISafeComWrapper comWrapper, bool wasRemoved)
+        {
+            var activity = wasRemoved ? "Removed" : "Not removed";
+            Trace(activity, comWrapper, StackTraceNumberOfElementsToSkipOnRemoval);
+        }
+
+        private readonly object _idLock = new object();
+        private int _id;
+        private void Trace(string activity, ISafeComWrapper comWrapper, int framesToSkip)
+        {
+            lock (_streamLock)
+            {
+                if (_disposed)
+                {
+                    return;
+                }
+
+                if (_traceStream == null)
+                {
+                    var directory = Path.GetTempPath();
+                    _traceFilePath = Path.Combine(directory,
+                        $"COM Safe Stack Trace {DateTime.UtcNow:yyyyMMddhhmmss}.{GetHashCode()}.csv");
+                    _traceStream = File.AppendText(_traceFilePath);
+                    _traceStream.WriteLine(
+                        $"Ordinal\tTimestamp\tActivity\tKey\tIUnknown Pointer Address\t{FrameHeaders()}");
+                }
+
+                int id;
+                lock (_idLock)
+                {
+                    id = _id++;
+                }
+
+                var traceData = new TraceData
+                {
+                    HashCode = GetComWrapperObjectHashCode(comWrapper),
+                    IUnknownAddress = comWrapper.IsWrappingNullReference ? "null" : GetPtrAddress(comWrapper.Target),
+                    StackTrace = GetStackTrace(StackTraceDepth, framesToSkip)
+                };
+
+                var line =
+                    $"{id}\t{DateTime.UtcNow}\t\"{activity}\"\t{traceData.HashCode}\t{traceData.IUnknownAddress}\t\"{string.Join("\"\t\"", traceData.StackTrace)}\"";
+                _traceStream.WriteLine(line);
+            }
+        }
+
+        private static string FrameHeaders()
+        {
+            var headers = new System.Text.StringBuilder();
+            for(var i = 1; i <= StackTraceDepth; i++)
+            {
+                headers.Append($"Frame {i}\t");
+            }
+
+            return headers.ToString();
         }
 
         protected abstract IDictionary<int, ISafeComWrapper> GetWrappers();
 
-        protected static IEnumerable<string> GetStackTrace(int frames, int offset)
+        private static IEnumerable<string> GetStackTrace(int frames, int framesToSkip)
         {
             var list = new List<string>();
             var trace = new StackTrace();
-            if ((trace.FrameCount - offset) < frames)
+            if (trace.FrameCount < (frames + framesToSkip))
             {
-                frames = (trace.FrameCount - offset);
+                frames = trace.FrameCount;
+            }
+            else
+            {
+                frames += framesToSkip;
             }
 
-            for (var i = 1; i <= frames; i++)
+            framesToSkip -= 1;
+            frames -= 1;
+
+            for (var i = framesToSkip; i < frames; i++)
             {
-                var frame = trace.GetFrame(i + offset);
-                var typeName = frame.GetMethod().DeclaringType?.FullName ?? string.Empty;
+                var frame = trace.GetFrame(i);
+                var type = frame.GetMethod().DeclaringType;
+                
+                var typeName = type?.FullName ?? string.Empty;
                 var methodName = frame.GetMethod().Name;
 
                 var qualifiedName = $"{typeName}{(typeName.Length > 0 ? "::" : string.Empty)}{methodName}";

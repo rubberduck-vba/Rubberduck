@@ -76,6 +76,16 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 Logger.Warn($"Serializing {library.Path}.");
                 _serializationProvider.SerializeProject(library);
             }
+
+#if DEBUG
+            //Dumb hack cos I'm too lazy to wire up another button...
+            var traceDirectory = Path.Combine(Path.GetDirectoryName(_serializationProvider.Target), "COM Trace");
+            if (!Directory.Exists(traceDirectory))
+            {
+                Directory.CreateDirectory(traceDirectory);
+            }
+            Rubberduck.VBEditor.ComManagement.ComSafeManager.GetCurrentComSafe().Serialize(traceDirectory);
+#endif
         }
     }
 }

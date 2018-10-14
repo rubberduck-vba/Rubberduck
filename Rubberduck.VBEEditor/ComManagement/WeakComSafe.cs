@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 #if DEBUG
-using System.Diagnostics;
 using System.Linq;
 #endif
 
@@ -19,16 +18,19 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             if (comWrapper != null)
             {
-#if DEBUG
-                Trace = GetStackTrace(3, 3);
-#endif
                 _comWrapperCache.AddOrUpdate(
                     GetComWrapperObjectHashCode(comWrapper), 
-                    key => (DateTime.UtcNow, new WeakReference<ISafeComWrapper>(comWrapper)),
+                    key =>
+                    {
+#if DEBUG
+                        TraceAdd(comWrapper);
+#endif
+                        return (DateTime.UtcNow, new WeakReference<ISafeComWrapper>(comWrapper));
+                    },
                     (key, value) =>
                     {
 #if DEBUG
-                        Debug.Assert(false);
+                        TraceUpdate(comWrapper);
 #endif
                         return (value.insertTime, new WeakReference<ISafeComWrapper>(comWrapper));
                     });
@@ -38,7 +40,16 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public override bool TryRemove(ISafeComWrapper comWrapper)
         {
-            return !_disposed && comWrapper != null && _comWrapperCache.TryRemove(GetComWrapperObjectHashCode(comWrapper), out _);
+            if (_disposed || comWrapper == null)
+            {
+                return false;
+            }
+
+            var result = _comWrapperCache.TryRemove(GetComWrapperObjectHashCode(comWrapper), out _);
+#if DEBUG
+            TraceRemove(comWrapper, result);
+#endif
+            return result;
         }
 
         private bool _disposed;
@@ -80,3 +91,4 @@ namespace Rubberduck.VBEditor.ComManagement
 #endif
     }
 }
+

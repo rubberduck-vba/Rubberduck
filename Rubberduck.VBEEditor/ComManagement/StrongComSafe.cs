@@ -15,16 +15,19 @@ namespace Rubberduck.VBEditor.ComManagement
         {
             if (comWrapper != null)
             {
-#if DEBUG
-                Trace = GetStackTrace(3, 3);
-#endif
                 _comWrapperCache.AddOrUpdate(
                     comWrapper, 
-                    key => 1, 
+                    key =>
+                    {
+#if DEBUG
+                        TraceAdd(comWrapper);
+#endif
+                        return 1;
+                    }, 
                     (key, value) =>
                     {
 #if DEBUG
-                        System.Diagnostics.Debug.Assert(false);
+                        TraceUpdate(comWrapper);
 #endif
                         return value;
                     });
@@ -33,7 +36,16 @@ namespace Rubberduck.VBEditor.ComManagement
 
         public override bool TryRemove(ISafeComWrapper comWrapper)
         {
-            return !_disposed && comWrapper != null && _comWrapperCache.TryRemove(comWrapper, out _);
+            if (_disposed || comWrapper == null)
+            {
+                return false;
+            }
+
+            var result = _comWrapperCache.TryRemove(comWrapper, out _);
+#if DEBUG
+            TraceRemove(comWrapper, result);
+#endif
+            return result;
         }
 
         private bool _disposed;
@@ -62,3 +74,4 @@ namespace Rubberduck.VBEditor.ComManagement
 #endif
     }
 }
+
