@@ -50,7 +50,11 @@ namespace Rubberduck.Inspections.Concrete
                     .FirstOrDefault(decl => decl.Context.Parent == procedure)?
                     .Parameters.FirstOrDefault(param => param.IdentifierName.Equals(name.GetText()));
 
-                if (parameter == null || parameter.IsOptional && parameter.AsTypeName.Equals(Tokens.Variant) && string.IsNullOrEmpty(parameter.DefaultValue))
+                if (parameter == null || 
+                    parameter.IsOptional 
+                    && parameter.AsTypeName.Equals(Tokens.Variant) 
+                    && string.IsNullOrEmpty(parameter.DefaultValue) 
+                    && !parameter.IsArray)
                 {
                     continue;                   
                 }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
@@ -129,6 +124,50 @@ End Sub
 
         [Test]
         [Category("QuickFixes")]
+        public void OptionalArray_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(Optional bar() As Variant)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(Optional bar() As Variant)
+    Debug.Print LBound(bar) > UBound(bar)
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalArray_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar() As String)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar() As String)
+    Debug.Print LBound(bar) > UBound(bar)
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
         public void OptionalStringArgumentDefaultDoubleQuotes_QuickFixWorks()
         {
             const string inputCode =
@@ -151,7 +190,7 @@ End Sub
 
         [Test]
         [Category("QuickFixes")]
-        public void ReferenceType_QuickFixWorks()
+        public void NonOptionalReferenceType_QuickFixWorks()
         {
             const string inputCode =
                 @"
@@ -164,6 +203,226 @@ End Sub
                 @"
 Public Sub Foo(bar As Collection)
     Debug.Print bar Is Nothing
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalObject_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar As Object)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar As Object)
+    Debug.Print bar Is Nothing
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalNumeric_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar As Long)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar As Long)
+    Debug.Print bar = 0
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalVariant_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar As Variant)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar As Variant)
+    Debug.Print IsEmpty(bar)
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalImplicitVariant_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar)
+    Debug.Print IsEmpty(bar)
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalString_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar As String)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar As String)
+    Debug.Print bar = vbNullString
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalDate_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar As Date)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar As Date)
+    Debug.Print bar = CDate(0)
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalBoolean_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar As Boolean)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar As Boolean)
+    Debug.Print bar = False
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalTypeHinted_QuickFixWorks()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar&)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar&)
+    Debug.Print bar = 0
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalEnumeration_QuickFixPicksMember()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar As VbVarType)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar As VbVarType)
+    Debug.Print bar = vbEmpty
+End Sub
+";
+
+            var actual = ArrangeAndApplyQuickFix(inputCode);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void NonOptionalEnumerationNoDefault_QuickFixPicksZero()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(bar As VbStrConv)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const string expected =
+                @"
+Public Sub Foo(bar As VbStrConv)
+    Debug.Print bar = 0
 End Sub
 ";
 

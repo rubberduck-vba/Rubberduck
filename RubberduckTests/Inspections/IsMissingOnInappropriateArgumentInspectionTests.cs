@@ -115,6 +115,23 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void IsMissingOnInappropriateArgument_ReportsOptionalVariantArrayArgument()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo(Optional bar() As Variant)
+    Debug.Print IsMissing(bar)
+End Sub
+";
+
+            const int expected = 1;
+            var actual = ArrangeAndGetInspectionCount(inputCode);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void IsMissingOnInappropriateArgument_ReportsOptionalVariantArgumentWithDefault()
         {
             const string inputCode =
