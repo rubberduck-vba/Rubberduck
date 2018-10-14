@@ -345,4 +345,7 @@
   <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
     <value>Inappropriate use of 'IsMissing' function</value>
   </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Assignment is not used</value>
+  </data>
 </root>

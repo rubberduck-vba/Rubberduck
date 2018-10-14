@@ -1015,104 +1015,84 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return handlers.ToList();
         }
 
-        public IEnumerable<Declaration> GetAccessibleUserDeclarations(Declaration target)
+        /// <summary>
+        /// Finds declarations that would be in conflict with the target declaration if renamed.
+        /// </summary>
+        /// <returns>Zero or more declarations that would be in conflict if the target declaration is renamed.</returns>
+        public IEnumerable<Declaration> FindNewDeclarationNameConflicts(string newName, Declaration renameTarget)
         {
-            if (target == null)
+            if (newName.Equals(renameTarget.IdentifierName))
             {
                 return Enumerable.Empty<Declaration>();
             }
 
-            return _userDeclarationsByType.AllValues()
-                .Where(callee => AccessibilityCheck.IsAccessible(
-                    Declaration.GetProjectParent(target),
-                    Declaration.GetModuleParent(target),
-                    target.ParentDeclaration,
-                    callee));
-        }
-
-        public IEnumerable<Declaration> GetDeclarationsWithIdentifiersToAvoid(Declaration target)
-        {
-            if (target == null)
+            var identifierMatches = MatchName(newName);
+            if (!identifierMatches.Any())
             {
                 return Enumerable.Empty<Declaration>();
             }
 
-            List<Declaration> declarationsToAvoid = GetNameCollisionDeclarations(target).ToList();
-
-            declarationsToAvoid.AddRange(GetNameCollisionDeclarations(target.References));
-
-            return declarationsToAvoid.Distinct();
-        }
-
-        private IEnumerable<Declaration> GetNameCollisionDeclarations(Declaration declaration)
-        {
-            if (declaration == null)
+            if (IsEnumOrUDTMemberDeclaration(renameTarget)) 
             {
-                return Enumerable.Empty<Declaration>();
-            }
-
-            //Filter accessible declarations to those that would result in name collisions or hiding
-            var declarationsToAvoid = GetAccessibleUserDeclarations(declaration).Where(candidate =>
-                                        (IsAccessibleInOtherProcedureModule(candidate,declaration)
-                                        || candidate.DeclarationType == DeclarationType.Project
-                                        || candidate.DeclarationType.HasFlag(DeclarationType.Module)
-                                        || IsDeclarationInSameProcedureScope(candidate, declaration)
-                                        )).ToHashSet();
-
-            //Add local variables when the target is a method or property
-            if(IsSubroutineOrProperty(declaration))
-            {
-                var localVariableDeclarations = _declarations.AllValues()
-                    .Where(dec => ReferenceEquals(declaration, dec.ParentDeclaration));
-                declarationsToAvoid.UnionWith(localVariableDeclarations);
-            }
-
-            return declarationsToAvoid;
-        }
-
-        private IEnumerable<Declaration> GetNameCollisionDeclarations(IEnumerable<IdentifierReference> references)
-        {
-            var declarationsToAvoid = new HashSet<Declaration>();
-            foreach (var reference in references)
-            {
-                if (!UsesScopeResolution(reference.Context.Parent))
+                var memberMatches = identifierMatches.Where(idm =>
+                    IsEnumOrUDTMemberDeclaration(idm) && idm.ParentDeclaration == renameTarget.ParentDeclaration);
+                if (memberMatches.Any())
                 {
-                    declarationsToAvoid.UnionWith(GetNameCollisionDeclarations(reference.ParentNonScoping));
+                    return memberMatches;
                 }
             }
-            return declarationsToAvoid;
+
+            identifierMatches = identifierMatches.Where(nc => !IsEnumOrUDTMemberDeclaration(nc));
+            var referenceConflicts = identifierMatches.Where(idm =>
+                renameTarget.References
+                    .Any(renameTargetRef => renameTargetRef.ParentScoping == idm.ParentDeclaration
+                        || renameTarget.ParentDeclaration.DeclarationType != DeclarationType.ClassModule
+                            && idm == renameTargetRef.ParentScoping
+                            && !UsesScopeResolution(renameTargetRef.Context.Parent)
+                        || idm.References
+                            .Any(idmRef => idmRef.ParentScoping == renameTargetRef.ParentScoping
+                                && !UsesScopeResolution(renameTargetRef.Context.Parent)))
+                || idm.DeclarationType.HasFlag(DeclarationType.Variable)
+                    && idm.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)
+                    && renameTarget.References.Any(renameTargetRef => renameTargetRef.QualifiedModuleName == idm.ParentDeclaration.QualifiedModuleName));
+
+            if (referenceConflicts.Any())
+            {
+                return referenceConflicts;
+            }
+
+            var renameTargetModule = Declaration.GetModuleParent(renameTarget);
+            var declarationConflicts = identifierMatches.Where(idm =>
+                renameTarget == idm.ParentDeclaration
+                || AccessibilityCheck.IsAccessible(
+                    Declaration.GetProjectParent(renameTarget),
+                    renameTargetModule,
+                    renameTarget.ParentDeclaration,
+                    idm)
+                    && IsConflictingMember(renameTarget, renameTargetModule, idm));
+
+            return declarationConflicts;
         }
 
-        private bool IsAccessibleInOtherProcedureModule(Declaration candidate, Declaration declaration)
+        private bool IsEnumOrUDTMemberDeclaration(Declaration candidate)
         {
-            return IsInProceduralModule(declaration)
-                       && IsInProceduralModule(candidate)
-                       && candidate.Accessibility != Accessibility.Private;
+            return candidate.DeclarationType == DeclarationType.EnumerationMember
+                       || candidate.DeclarationType == DeclarationType.UserDefinedTypeMember;
+        }
+
+        private bool IsConflictingMember(Declaration renameTarget, Declaration renameTargetModule, Declaration candidate)
+        {
+            var candidateModule = Declaration.GetModuleParent(candidate);
+            return renameTargetModule == candidateModule
+             || renameTargetModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule)
+                && candidate.Accessibility != Accessibility.Private
+                && candidateModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule);
         }
 
         private bool UsesScopeResolution(RuleContext ruleContext)
         {
             return (ruleContext is VBAParser.WithMemberAccessExprContext)
                 || (ruleContext is VBAParser.MemberAccessExprContext);
-        }
-
-        private bool IsInProceduralModule(Declaration candidateDeclaration)
-        {
-            var candidateModuleDeclaration = Declaration.GetModuleParent(candidateDeclaration);
-
-            return candidateModuleDeclaration?.DeclarationType == DeclarationType.ProceduralModule;
-        }
-
-        private bool IsDeclarationInSameProcedureScope(Declaration candidateDeclaration, Declaration scopingDeclaration)
-        {
-            return candidateDeclaration.ParentScope == scopingDeclaration.ParentScope;
-        }
-
-        private static bool IsSubroutineOrProperty(Declaration declaration)
-        {
-            return declaration.DeclarationType.HasFlag(DeclarationType.Property)
-                || declaration.DeclarationType == DeclarationType.Function
-                || declaration.DeclarationType == DeclarationType.Procedure;
         }
 
         /// <summary>

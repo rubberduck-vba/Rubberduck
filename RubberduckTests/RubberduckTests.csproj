@@ -109,6 +109,7 @@
     <Compile Include="CodeAnalysis\CodeMetrics\CyclomaticComplexityTests.cs" />
     <Compile Include="CodeAnalysis\CodeMetrics\LineCountTests.cs" />
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
+    <Compile Include="Inspections\AssignmentNotUsedInspectionTests.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspectionTests.cs" />
     <Compile Include="Inspections\IsMissingOnInappropriateArgumentInspectionTests.cs" />
     <Compile Include="Inspections\IsMissingWithNonArgumentParameterInspectionTests.cs" />

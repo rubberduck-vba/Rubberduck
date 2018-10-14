@@ -460,8 +460,10 @@ namespace Rubberduck.Properties {
             "ction Name=\"IsMissingOnInappropriateArgumentInspection\" Severity=\"Warning\" Inspe" +
             "ctionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"IsMissingWithNonArgu" +
             "mentParameterInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" /" +
-            ">\r\n  </CodeInspections>\r\n  <WhitelistedIdentifiers />\r\n  <RunInspectionsOnSucces" +
-            "sfulParse>true</RunInspectionsOnSuccessfulParse>\r\n</CodeInspectionSettings>")]
+            ">\r\n    <CodeInspection Name=\"AssignmentNotUsedInspection\" Severity=\"Suggestion\" " +
+            "InspectionType=\"CodeQualityIssues\" />\r\n  </CodeInspections>\r\n  <WhitelistedIdent" +
+            "ifiers />\r\n  <RunInspectionsOnSuccessfulParse>true</RunInspectionsOnSuccessfulPa" +
+            "rse>\r\n</CodeInspectionSettings>")]
         public global::Rubberduck.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));
