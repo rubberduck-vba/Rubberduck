@@ -87,11 +87,10 @@ namespace Rubberduck.AutoComplete.Service
                 return null;
             }
 
-            var isBalanced = original.Code.Count(c => c == pair.OpeningChar) ==
-                             original.Code.Count(c => c == pair.ClosingChar);
-            var nextIsClosingChar = original.CaretLine.Length > original.CaretCharIndex &&  original.CaretLine[original.CaretCharIndex] == pair.ClosingChar;
+            var nextIsClosingChar = original.CaretLine.Length > original.CaretCharIndex &&  
+                                    original.CaretLine[original.CaretCharIndex] == pair.ClosingChar;
 
-            if (isBalanced && nextIsClosingChar)
+            if (pair.IsSymetric && nextIsClosingChar)
             {
                 var nextPosition = original.CaretPosition.ShiftRight();
                 var newCode = original.Code;
