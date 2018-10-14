@@ -12,7 +12,6 @@
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <!-- Give a fixed version to not blow XAML generated code to smithereens -->
     <AssemblyVersion>2.2</AssemblyVersion>
-    <!--<ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>-->
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
@@ -100,11 +99,9 @@
 
   <!--BEGIN XAML WORKAROUND SECTION -->
   <ItemGroup>
-    <!--<Compile Include="$(IntermediateOutputPath)**\*.g.cs" Visible="false" />-->
     <Page Include="**\*.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-      <!-- <Generator>MSBuild:UpdateDesignTimeXaml</Generator>-->
     </Page>
     <Compile Update="**\*.xaml.cs">
       <SubType>Code</SubType>

@@ -17,8 +17,6 @@
     <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
   </PropertyGroup>
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
     <Antlr4 Include="Grammar\VBALexer.g4">
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
       <Visitor>false</Visitor>
