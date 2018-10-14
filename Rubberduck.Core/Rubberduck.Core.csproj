@@ -8,7 +8,8 @@
     <Copyright>Copyright © 2014-2018</Copyright>
     <ProjectGuid>{A1587EAC-7B54-407E-853F-4C7493D0323E}</ProjectGuid>
     <DocumentationFile>bin\Debug\Rubberduck.Core.xml</DocumentationFile>
-    <NoWarn>1591</NoWarn>
+    <!-- Disable "Missing XML documentation" warning (CS1591) -->
+    <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <!-- Give a fixed version to not blow XAML generated code to smithereens -->
     <AssemblyVersion>2.2</AssemblyVersion>

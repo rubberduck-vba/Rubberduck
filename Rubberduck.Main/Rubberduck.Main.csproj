@@ -6,7 +6,8 @@
     <Copyright>Copyright © 2014-2018</Copyright>
     <Description>Rubberduck AddIn</Description>
     <ProjectGuid>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</ProjectGuid>
-    <NoWarn>1591</NoWarn>
+    <!-- Disable "Missing XML documentation" warning (CS1591) -->
+    <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 

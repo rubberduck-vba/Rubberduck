@@ -14,15 +14,21 @@
     <RestorePackages>true</RestorePackages>
     <!-- do not unify output paths by default -->
     <UnifyOutputPath Condition=" '$(UnifyOutputPath)' == ''">false</UnifyOutputPath>
+    <!-- Ignore MSB4011 warning, rationale above -->
+    <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
+    <DisabledWarnings>$(DisabledWarnings);4011;1001</DisabledWarnings>
+    <Version Condition=" '$(Version)' == ''">2.2.0</Version>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Version)' == ''">
-    <Version>2.2.0</Version>
+  <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">
     <!--
      This assembly version specification is considered nonstandard.
-     As such builds that do not override the assembly version generate a warning.
-     -->
-    <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">2.2.*</AssemblyVersion>
+     As such builds that do not override the assembly version generate a warning, which we ignore.
+    -->
+    <AssemblyVersion>2.2.*</AssemblyVersion>
+    <!-- Ignore CSharp compiler warning for nonstandard assembly version (CS7035) -->
+    <!-- Ignore Linker warning for nonstandard assembly version (AL1053) -->
+    <DisabledWarnings>$(DisabledWarnings);7035;1053</DisabledWarnings>
     <!-- Wildcards are not deterministic, ensure build passes when setting wildcard versions -->
     <Deterministic>False</Deterministic>
   </PropertyGroup>
