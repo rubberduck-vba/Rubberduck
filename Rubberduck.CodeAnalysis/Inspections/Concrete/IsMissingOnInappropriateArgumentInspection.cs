@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections.Concrete
                     continue;                   
                 }
 
-                results.Add(new IdentifierReferenceInspectionResult(this, InspectionResults.IsMissingOnInappropriateArgumentInspection, State, reference));
+                results.Add(new IdentifierReferenceInspectionResult(this, InspectionResults.IsMissingOnInappropriateArgumentInspection, State, reference, parameter));
             }
 
             return results;
