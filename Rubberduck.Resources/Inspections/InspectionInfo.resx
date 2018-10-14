@@ -343,4 +343,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
     <value>IsMissing is only intended to be called on optional arguments, and will only return correct results if the type of the argument is 'Variant' with no explicit default value. All other uses will return 'False'.</value>
   </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>IsMissing is only intended to be called on arguments of the containing procedure, and almost all other usages will return 'False'. Passing any other expression to the function is the equivalent to 'VarType({expression}) = vbError', and in rare circumstances can cause the host application to crash.</value>
+  </data>
 </root>

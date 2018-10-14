@@ -2,16 +2,15 @@
 using System.Linq;
 using Rubberduck.Inspections.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
 
-namespace Rubberduck.Inspections.Concrete
+namespace Rubberduck.Inspections.Inspections.Concrete
 {
-    public class IsMissingOnInappropriateArgumentInspection : IsMissingInspectionBase
+    public class IsMissingWithNonArgumentParameterInspection : IsMissingInspectionBase
     {
-        public IsMissingOnInappropriateArgumentInspection(RubberduckParserState state)
+        public IsMissingWithNonArgumentParameterInspection(RubberduckParserState state)
             : base(state) { }
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
@@ -22,16 +21,12 @@ namespace Rubberduck.Inspections.Concrete
             {
                 var parameter = GetParameterForReference(reference);
 
-                if (parameter == null || 
-                    parameter.IsOptional 
-                    && parameter.AsTypeName.Equals(Tokens.Variant) 
-                    && string.IsNullOrEmpty(parameter.DefaultValue) 
-                    && !parameter.IsArray)
+                if (parameter != null)
                 {
-                    continue;                   
+                    continue;
                 }
 
-                results.Add(new IdentifierReferenceInspectionResult(this, InspectionResults.IsMissingOnInappropriateArgumentInspection, State, reference, parameter));
+                results.Add(new IdentifierReferenceInspectionResult(this, InspectionResults.IsMissingWithNonArgumentParameterInspection, State, reference));
             }
 
             return results;

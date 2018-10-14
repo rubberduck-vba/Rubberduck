@@ -342,4 +342,7 @@
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
     <value>Inappropriate use of 'IsMissing' function</value>
   </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>Inappropriate use of 'IsMissing' function</value>
+  </data>
 </root>

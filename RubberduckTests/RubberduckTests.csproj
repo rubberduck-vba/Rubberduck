@@ -111,6 +111,7 @@
     <Compile Include="CodeExplorer\CodeExplorerTests.cs" />
     <Compile Include="Inspections\ImplicitDefaultMemberAssignmentInspectionTests.cs" />
     <Compile Include="Inspections\IsMissingOnInappropriateArgumentInspectionTests.cs" />
+    <Compile Include="Inspections\IsMissingWithNonArgumentParameterInspectionTests.cs" />
     <Compile Include="Inspections\ModuleWithoutFolderInspectionTests.cs" />
     <Compile Include="Inspections\OnLocalErrorInspectionTests.cs" />
     <Compile Include="Inspections\UnreachableCase\ExpressionFilterUnitTests.cs" />

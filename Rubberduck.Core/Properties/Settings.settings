@@ -282,6 +282,7 @@
     &lt;CodeInspection Name="ModuleWithoutFolderInspection" Severity="Suggestion" InspectionType="RubberduckOpportunities" /&gt;
     &lt;CodeInspection Name="OnLocalErrorInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
     &lt;CodeInspection Name="IsMissingOnInappropriateArgumentInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="IsMissingWithNonArgumentParameterInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
   &lt;/CodeInspections&gt;
   &lt;WhitelistedIdentifiers /&gt;
   &lt;RunInspectionsOnSuccessfulParse&gt;true&lt;/RunInspectionsOnSuccessfulParse&gt;

@@ -69,6 +69,7 @@
     <Compile Include="CodeMetrics\LineCountMetric.cs" />
     <Compile Include="CodeMetrics\NestingLevelMetric.cs" />
     <Compile Include="Inspections\Abstract\InspectionBase.cs" />
+    <Compile Include="Inspections\Abstract\IsMissingInspectionBase.cs" />
     <Compile Include="Inspections\Abstract\ParseTreeInspectionBase.cs" />
     <Compile Include="Inspections\Concrete\ApplicationWorksheetFunctionInspection.cs" />
     <Compile Include="Inspections\Concrete\AssignedByValParameterInspection.cs" />
@@ -82,6 +83,7 @@
     <Compile Include="Inspections\Concrete\EmptyForLoopBlockInspection.cs" />
     <Compile Include="Inspections\Concrete\BooleanAssignedInIfElseInspection.cs" />
     <Compile Include="Inspections\Concrete\IsMissingOnInappropriateArgumentInspection.cs" />
+    <Compile Include="Inspections\Concrete\IsMissingWithNonArgumentParameterInspection.cs" />
     <Compile Include="Inspections\Concrete\OnLocalErrorInspection.cs" />
     <Compile Include="Inspections\Concrete\ModuleWithoutFolderInspection.cs" />
     <Compile Include="Inspections\Concrete\EmptyWhileWendBlockInspection.cs" />
