@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Inspections.Abstract
         private static readonly List<string> IsMissingQualifiedNames = new List<string>
         {
             "VBE7.DLL;VBA.Information.IsMissing",
-            // TODO find QN for VB6
+            "VBA6.DLL;VBA.Information.IsMissing"
         };
 
         protected IReadOnlyList<Declaration> IsMissingDeclarations 
