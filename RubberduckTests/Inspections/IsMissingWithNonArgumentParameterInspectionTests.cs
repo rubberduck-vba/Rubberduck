@@ -172,15 +172,5 @@ End Function
                 return inspectionResults.Count();
             }
         }
-
-        [Test]
-        [Category("Inspections")]
-        public void InspectionName()
-        {
-            const string inspectionName = "IsMissingWithNonArgumentParameterInspection";
-            var inspection = new IsMissingWithNonArgumentParameterInspection(null);
-
-            Assert.AreEqual(inspectionName, inspection.Name);
-        }
     }
 }

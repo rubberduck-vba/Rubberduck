@@ -219,15 +219,5 @@ End Function
                 return inspectionResults.Count();
             }
         }
-
-        [Test]
-        [Category("Inspections")]
-        public void InspectionName()
-        {
-            const string inspectionName = "IsMissingOnInappropriateArgumentInspection";
-            var inspection = new IsMissingOnInappropriateArgumentInspection(null);
-
-            Assert.AreEqual(inspectionName, inspection.Name);
-        }
     }
 }
