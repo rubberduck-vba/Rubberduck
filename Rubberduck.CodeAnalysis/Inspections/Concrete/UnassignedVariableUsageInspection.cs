@@ -39,6 +39,7 @@ namespace Rubberduck.Inspections.Concrete
             return declarations.Except(excludedDeclarations)
                 .Where(d => d.References.Any())
                 .SelectMany(d => d.References)
+                .Distinct()
                 .Where(r => !r.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(r => new IdentifierReferenceInspectionResult(this,
                     string.Format(InspectionResults.UnassignedVariableUsageInspection, r.IdentifierName),
