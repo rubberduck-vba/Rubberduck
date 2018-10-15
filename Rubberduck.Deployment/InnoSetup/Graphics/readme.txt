@@ -1,0 +1,1 @@
+All graphics are derived from the splash graphics (Splash360x320.pdn). The original graphical file can be found in the folder "Rubberduck.Resources\Graphics".

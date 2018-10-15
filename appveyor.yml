@@ -61,13 +61,13 @@ for:
       only:
         - next
     after_test:
-      - iscc /O "Rubberduck.Deployment\InnoSetup\Installer Build Script.iss" "/DConfig=Release"
+      - iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss" "/DConfig=Release"
       - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
   - branches:
       only:
         - master
     after_test:
-      - iscc /O "Rubberduck.Deployment\InnoSetup\Installer Build Script.iss" "/DConfig=Release"
+      - iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss" "/DConfig=Release"
       - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
     
 # grab the installers we produce and upload them to github :)
