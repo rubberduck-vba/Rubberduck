@@ -7,6 +7,9 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
+using Rubberduck.Resources.Inspections;
+using System.Globalization;
+using System;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Settings
@@ -29,6 +32,10 @@ namespace Rubberduck.UI.Settings
             InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("TypeLabel"));
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
+
+            SeverityFilters = new ObservableCollection<string>(
+                new[] { InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_All", CultureInfo.CurrentUICulture) }
+                    .Concat(Enum.GetNames(typeof(CodeInspectionSeverity)).Select(s => InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, CultureInfo.CurrentUICulture))));
         }
 
         public void UpdateCollection(CodeInspectionSeverity severity)
@@ -43,29 +50,45 @@ namespace Rubberduck.UI.Settings
             InspectionSettings.CommitEdit();
         }
 
-        private string _inspectionSettingsFilter;
-        public string InspectionSettingsFilter
+        private string _inspectionSettingsDescriptionFilter = string.Empty;
+        public string InspectionSettingsDescriptionFilter
         {
-            get => _inspectionSettingsFilter;
+            get => _inspectionSettingsDescriptionFilter;
             set
             {
-                if (_inspectionSettingsFilter != value)
+                if (_inspectionSettingsDescriptionFilter != value)
                 {
-                    _inspectionSettingsFilter = value;
-                    OnPropertyChanged(nameof(InspectionSettings));
-
-                    if (string.IsNullOrEmpty(value))
-                    {
-                        InspectionSettings.Filter = null;
-                    }
-                    else
-                    {
-                        InspectionSettings.Filter = item => (item as CodeInspectionSetting)?
-                            .Description.ToUpper()
-                            .Contains(value.ToUpper()) ?? true;
-                    }
+                    _inspectionSettingsDescriptionFilter = value;
+                    InspectionSettings.Filter = item => FilterResults(item);
                 }
             }
+        }
+
+        public ObservableCollection<string> SeverityFilters { get; }
+
+        static private readonly string _allResultsFilter = InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_All", CultureInfo.CurrentUICulture);
+        private string _selectedSeverityFilter = _allResultsFilter;
+        public string SelectedSeverityFilter
+        {
+            get => _selectedSeverityFilter;
+            set
+            {
+                if (!_selectedSeverityFilter.Equals(value))
+                {
+                    _selectedSeverityFilter = value.Replace(" ", string.Empty);
+                    OnPropertyChanged();
+                    InspectionSettings.Filter = item => FilterResults(item);
+                }
+            }
+        }        
+
+        private bool FilterResults(object setting)
+        {
+            OnPropertyChanged(nameof(InspectionSettings));
+            var cis = setting as CodeInspectionSetting;
+
+            return cis.Description.ToUpper().Contains(_inspectionSettingsDescriptionFilter.ToUpper())
+                && (_selectedSeverityFilter.Equals(_allResultsFilter) || cis.Severity.ToString().Equals(_selectedSeverityFilter));
         }
 
         private ListCollectionView _inspectionSettings;

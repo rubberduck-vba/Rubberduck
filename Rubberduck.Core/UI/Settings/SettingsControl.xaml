@@ -98,8 +98,8 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="175" />
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="2.5*" />
         </Grid.ColumnDefinitions>
         <Border Grid.ColumnSpan="2"
                 Height="50"

@@ -9,7 +9,7 @@
              ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300" 
+             d:DesignHeight="300" d:DesignWidth="500" 
              d:DataContext="{d:DesignInstance codeInspections:InspectionResultsViewModel}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,9 +23,7 @@
             <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
             <codeInspections:InspectionTypeConverter x:Key="InspectionTypeConverter" />
 
-            <Style x:Key="IconStyle" TargetType="Image">
-                <Setter Property="Height" Value="16" />
-                <Setter Property="Width" Value="16" />
+            <Style x:Key="IconMargin" TargetType="Image">
                 <Setter Property="Margin" Value="4" />
             </Style>
 
@@ -41,8 +39,25 @@
                 </CollectionViewSource.GroupDescriptions>
             </CollectionViewSource>
 
-
+            <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
             <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
+            <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
+            <BitmapImage x:Key="FixImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
+            <BitmapImage x:Key="GroupByImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
+            <BitmapImage x:Key="FilterByHintImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png" />
+            <BitmapImage x:Key="FilterBySuggestionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png" />
+            <BitmapImage x:Key="FilterByWarningImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
+            <BitmapImage x:Key="FilterByErrorImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
+            
+            <Style TargetType="Image">
+                <Setter Property="Height" Value="16"/>
+                <Setter Property="Width" Value="16" />
+            </Style>
+
+
+            <Style TargetType="MenuItem">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -59,7 +74,7 @@
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
 
                 <Button Command="{Binding RefreshCommand}">
-                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
+                    <Image Source="{StaticResource RefreshImage}" />
                 </Button>
 
                 <Separator />
@@ -68,7 +83,7 @@
                           Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Fix}"
                           ItemsSource="{Binding QuickFixes}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
+                            <Image Source="{StaticResource FixImage}" />
                         </MenuItem.Icon>
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="{x:Type MenuItem}">
@@ -81,11 +96,11 @@
                 </Menu>
 
                 <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalAlignment="Center">
+                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
                         <MenuItem.Icon>
-                            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
+                            <Image Source="{StaticResource GroupByImage}" />
                         </MenuItem.Icon>
-
+                        
                         <MenuItem x:Name="GroupByInspectionType"
                                   Style="{DynamicResource MenuItemStyle}"
                                   VerticalAlignment="Center" 
@@ -109,14 +124,58 @@
 
                 <Separator />
 
+                <Menu>
+                    <MenuItem x:Name="FilterInspectionByError"
+                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
+                              IsChecked="{Binding FilterInspectionsByError, UpdateSourceTrigger=PropertyChanged}"
+                              IsCheckable="True"
+                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource FilterByErrorImage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem x:Name="FilterInspectionByWarning"
+                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
+                              IsChecked="{Binding FilterInspectionsByWarning, UpdateSourceTrigger=PropertyChanged}"
+                              IsCheckable="True"
+                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource FilterByWarningImage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem x:Name="FilterInspectionBySuggestion"
+                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
+                              IsChecked="{Binding FilterInspectionsBySuggestion, UpdateSourceTrigger=PropertyChanged}"
+                              IsCheckable="True"
+                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource FilterBySuggestionImage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <MenuItem x:Name="FilterInspectionByHint"
+                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
+                              IsChecked="{Binding FilterInspectionsByHint, UpdateSourceTrigger=PropertyChanged}"
+                              IsCheckable="True"
+                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
+                        <MenuItem.Icon>
+                            <Image Source="{StaticResource FilterByHintImage}" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </Menu>
+
+                <Separator />
+
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
+                    <Image Source="{StaticResource CopyResultsImage}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenInspectionSettings}" BorderThickness="0" Background="Transparent">
-                    <Image Height="16" Source="{StaticResource SettingsImage}" />
+                    <Image Source="{StaticResource SettingsImage}" />
                 </Button>
             </ToolBar>
         </ToolBarTray>
@@ -132,7 +191,7 @@
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="{Binding}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
-                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
+                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -151,7 +210,7 @@
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
-                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" Height="16" />
+                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -175,7 +234,7 @@
                         <ColumnDefinition Width="25" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
-                    <Image Style="{StaticResource IconStyle}" VerticalAlignment="Top" Grid.Column="0"
+                    <Image Style="{StaticResource IconMargin}" VerticalAlignment="Top" Grid.Column="0"
                            Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
                     <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Inspection.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </Grid>
@@ -199,7 +258,7 @@
                     <controls:LinkButton Margin="4"
                                          Visibility="{Binding CanExecuteQuickFixInProject, Converter={StaticResource BoolToVisibility}}"
                                          Command="{Binding QuickFixInAllProjectsCommand}"
-                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_AllOpenProjects}" />
+                                         Content="{Resx ResxName=Rubberduck.Resources.Inspections.InspectionsUI, Key=QuickFix_All}" />
                     <controls:LinkButton Margin="4"
                             Visibility="{Binding CanDisableInspection, Converter={StaticResource BoolToVisibility}}"
                             Command="{Binding DisableInspectionCommand}"
