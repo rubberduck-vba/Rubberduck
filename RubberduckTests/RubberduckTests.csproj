@@ -129,7 +129,7 @@
     <Compile Include="CodeStringExtensions.cs" />
     <Compile Include="Mocks\MockVbeEvents.cs" />
     <Compile Include="Inspections\SheetAccessedUsingStringInspectionTests.cs" />
-    <Compile Include="Mocks\StaticCachingReferencedDeclarationsCollectorDecorator.cs" />
+    <Compile Include="Mocks\StaticCachingComDeserializerDecorator.cs" />
     <Compile Include="ParserState\ParserStateTests.cs" />
     <Compile Include="Parsing\Coordination\TokenStreamParserTests.cs" />
     <Compile Include="Parsing\VBACodeStringParserTests.cs" />

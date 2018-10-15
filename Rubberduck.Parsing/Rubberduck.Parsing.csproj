@@ -148,6 +148,7 @@
     <Compile Include="Common\ParsingStageTimer.cs" />
     <Compile Include="ComReflection\ComLibraryProvider.cs" />
     <Compile Include="ComReflection\IComLibraryProvider.cs" />
+    <Compile Include="ComReflection\IComProjectDeserializer.cs" />
     <Compile Include="ComReflection\IComProjectSerializationProvider.cs" />
     <Compile Include="ComReflection\LibraryReferencedDeclarationsCollector.cs" />
     <Compile Include="ComReflection\ReferencedDeclarationsCollector.cs" />
