@@ -267,7 +267,7 @@ End Sub";
         //See https://github.com/rubberduck-vba/Rubberduck/issues/4308 
         [Test]
         [Category("Inspections")]
-        //[Ignore("To be unignored in a PR fixing issue 4308.")]
+        [Ignore("To be unignored in a PR fixing issue 4308.")]
         public void MemberNotOnInterface_ProcedureArgument()
         {
             const string inputCode =
