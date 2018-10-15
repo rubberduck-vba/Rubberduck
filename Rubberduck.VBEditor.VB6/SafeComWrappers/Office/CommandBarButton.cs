@@ -21,7 +21,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
         public CommandBarButton(MSO.CommandBarButton target, IVBE vbe, bool rewrapping = false) 
             : base(target, rewrapping)
         {
-            _control = new CommandBarControl(target, vbe, rewrapping);
+            _control = new CommandBarControl(target, vbe, true);
             _vbe = vbe;
         }
         
