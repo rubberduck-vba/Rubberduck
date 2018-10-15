@@ -258,14 +258,14 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
-        public void DeleteKey_ReturnsDefault()
+        public void DeleteKey_ReturnsNull()
         {
             var pair = new SelfClosingPair('(', ')');
             var input = Keys.A;
             var original = @"MsgBox (|)".ToCodeString();
 
             var result = Run(pair, original, input);
-            Assert.AreEqual(result ,default);
+            Assert.IsNull(result);
         }
 
         [Test]

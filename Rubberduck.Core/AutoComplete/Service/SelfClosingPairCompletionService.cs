@@ -89,8 +89,7 @@ namespace Rubberduck.AutoComplete.Service
 
             var nextIsClosingChar = original.CaretLine.Length > original.CaretCharIndex &&  
                                     original.CaretLine[original.CaretCharIndex] == pair.ClosingChar;
-
-            if (pair.IsSymetric && nextIsClosingChar)
+            if (nextIsClosingChar)
             {
                 var nextPosition = original.CaretPosition.ShiftRight();
                 var newCode = original.Code;
@@ -113,6 +112,7 @@ namespace Rubberduck.AutoComplete.Service
             var line = lines[original.CaretPosition.StartLine];
             if (line.Length == 0)
             {
+                // nothing to delete at caret position... bail out.
                 return null;
             }
 
@@ -122,70 +122,125 @@ namespace Rubberduck.AutoComplete.Service
             var previousChar = line[previous];
             var nextChar = line[next];
 
-            if (original.CaretPosition.EndColumn < next && previousChar == pair.OpeningChar && nextChar == pair.ClosingChar)
+            if (original.CaretPosition.StartColumn < next && 
+                previousChar == pair.OpeningChar && 
+                nextChar == pair.ClosingChar)
             {
                 if (line.Length == 2)
                 {
-                    // entire line consists in the self-closing pair itself
+                    // entire line consists in the self-closing pair itself.
                     return new CodeString(string.Empty, default, Selection.Empty.ShiftRight());
                 }
-                else
-                {
-                    lines[original.CaretPosition.StartLine] = line.Remove(previous, 2);
-                    return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
-                }
+
+                // simple case; caret is between the opening and closing chars - remove both.
+                lines[original.CaretPosition.StartLine] = line.Remove(previous, 2);
+                return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
             }
 
             if (previous < line.Length - 1 && previousChar == pair.OpeningChar)
             {
-                Selection closingTokenPosition;
-                closingTokenPosition = line[Math.Min(line.Length - 1, next)] == pair.ClosingChar
-                    ? position
-                    : FindMatchingTokenPosition(pair, original);
-                
-                if (closingTokenPosition != default)
-                {
-                    var closingLine = lines[closingTokenPosition.EndLine].Remove(closingTokenPosition.StartColumn, 1);
-                    lines[closingTokenPosition.EndLine] = closingLine;
-
-                    if (closingLine == pair.OpeningChar.ToString())
-                    {
-                        lines[closingTokenPosition.EndLine] = string.Empty;
-                    }
-                    else
-                    {
-                        var openingLine = lines[position.StartLine].Remove(position.ShiftLeft().StartColumn, 1);
-                        lines[position.StartLine] = openingLine;
-                    }
-
-                    var finalCaretPosition = original.CaretPosition.ShiftLeft();
-                    lines = lines.Where((x, i) => i <= finalCaretPosition.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
-                    if (lines[lines.Length - 1].EndsWith(" _"))
-                    {
-                        // logical line can't end with a line continuation token...
-                        lines[lines.Length - 1] = lines[lines.Length - 1].TrimEnd(' ', '_');
-                    }
-
-                    if (position.StartLine >= 1 &&
-                        string.IsNullOrWhiteSpace(lines[position.StartLine].Trim()) &&
-                        lines[position.StartLine - 1].EndsWith(" & _") &&
-                        position.StartLine == lines.Length - 1)
-                    {
-
-                        lines[position.StartLine - 1] = lines[position.StartLine - 1]
-                            .Remove(lines[position.StartLine - 1].Length - 4);
-                        var quoteOffset = lines[position.StartLine - 1].EndsWith("\"") ? 1 : 0;
-                        finalCaretPosition = new Selection(finalCaretPosition.StartLine - 1, lines[position.StartLine - 1].Length - quoteOffset);
-                    }
-
-                    lines = lines.Where((x, i) => i <= finalCaretPosition.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
-
-                    return new CodeString(string.Join("\r\n", lines), finalCaretPosition,
-                        new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
-                }
+                return DeleteMatchingTokensMultiline(pair, original);
             }
 
             return null;
+        }
+
+        private CodeString DeleteMatchingTokensMultiline(SelfClosingPair pair, CodeString original)
+        {
+            var position = original.CaretPosition;
+            var lines = original.Lines;
+            var line = lines[original.CaretPosition.StartLine];
+            var next = Math.Min(line.Length - 1, position.StartColumn);
+
+            Selection closingTokenPosition;
+            closingTokenPosition = line[Math.Min(line.Length - 1, next)] == pair.ClosingChar
+                ? position
+                : FindMatchingTokenPosition(pair, original);
+
+            if (closingTokenPosition == default)
+            {
+                // could not locate the closing token... bail out.
+                return null;
+            }
+
+            var closingLine = lines[closingTokenPosition.EndLine].Remove(closingTokenPosition.StartColumn, 1);
+            lines[closingTokenPosition.EndLine] = closingLine;
+
+            if (closingLine == pair.OpeningChar.ToString())
+            {
+                lines[closingTokenPosition.EndLine] = string.Empty;
+            }
+            else
+            {
+                var openingLine = lines[position.StartLine].Remove(position.ShiftLeft().StartColumn, 1);
+                lines[position.StartLine] = openingLine;
+            }
+
+            var finalCaretPosition = original.CaretPosition.ShiftLeft();
+
+            var lastLine = lines[lines.Length - 1];
+            if (string.IsNullOrEmpty(lastLine.Trim()))
+            {
+                lines = lines.Where((x, i) => i <= position.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
+                lastLine = lines[lines.Length - 1];
+
+                if (lastLine.EndsWith(" _"))
+                {
+                    // we can't leave the logical line ending with a line continuation token.
+                    if (lastLine.EndsWith(" & vbNewLine & _"))
+                    {
+                        // assume " & vbNewLine & _" was added by smart-concat?
+                        lines[lines.Length - 1] = lastLine.Substring(0,
+                            lastLine.Length - " & vbNewLine & _".Length);
+                    }
+                    else
+                    {
+                        lines[lines.Length - 1] = lastLine.TrimEnd(' ', '_');
+                    }
+                }
+
+                var nonEmptyLines = lines
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .ToArray();
+                var lastNonEmptyLine = nonEmptyLines.Length > 0 ? nonEmptyLines[nonEmptyLines.Length - 1] : null;
+                if (lastNonEmptyLine != null)
+                {
+                    if (position.StartLine > nonEmptyLines.Length - 1)
+                    {
+                        // caret is on a now-empty line, shift one line up.
+                        finalCaretPosition = new Selection(position.StartLine - 1, lastNonEmptyLine.Length - 1);
+                    }
+
+                    if (lastNonEmptyLine.EndsWith(" _"))
+                    {
+                        nonEmptyLines[nonEmptyLines.Length - 1] = lastNonEmptyLine.Remove(lastNonEmptyLine.Length - 2);
+                        lastNonEmptyLine = nonEmptyLines[nonEmptyLines.Length - 1];
+
+                        if (lastNonEmptyLine.EndsWith("&"))
+                        {
+                            // we're not concatenating anything anymore; remove concat operator too.
+                            var concatOffset = lastNonEmptyLine.EndsWith(" &") ? 2 : 1;
+                            nonEmptyLines[nonEmptyLines.Length - 1] = lastNonEmptyLine.Remove(lastNonEmptyLine.Length - concatOffset);
+                            lastNonEmptyLine = nonEmptyLines[nonEmptyLines.Length - 1];
+                        }
+
+                        // we're keeping the closing quote, but let's put the caret inside:
+                        var quoteOffset = lastNonEmptyLine.EndsWith("\"") ? 1 : 0;
+                        finalCaretPosition = new Selection(
+                            finalCaretPosition.StartLine,
+                            lastNonEmptyLine.Length - quoteOffset);
+                    }
+
+                    lines = nonEmptyLines;
+                }
+            }
+
+            // remove any dangling empty lines...
+            //lines = lines.Where((x, i) => i <= position.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
+
+            return new CodeString(string.Join("\r\n", lines), finalCaretPosition,
+                new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
+
         }
 
         private Selection FindMatchingTokenPosition(SelfClosingPair pair, CodeString original)
