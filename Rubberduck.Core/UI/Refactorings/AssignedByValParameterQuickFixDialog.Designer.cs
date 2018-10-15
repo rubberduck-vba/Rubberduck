@@ -73,7 +73,7 @@
             this.InstructionsLabel.AutoSize = true;
             this.InstructionsLabel.Location = new System.Drawing.Point(9, 30);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(4);
             this.InstructionsLabel.Size = new System.Drawing.Size(174, 21);
             this.InstructionsLabel.TabIndex = 5;
             this.InstructionsLabel.Text = "Please specify new name for \'{0}\'.";
@@ -125,7 +125,7 @@
             // 
             // InvalidNameValidationIcon
             // 
-            this.InvalidNameValidationIcon.Image = global::Rubberduck.Resources.RubberduckUI.cross_circle;
+            this.InvalidNameValidationIcon.Image = ((System.Drawing.Image)(resources.GetObject("InvalidNameValidationIcon.Image")));
             this.InvalidNameValidationIcon.Location = new System.Drawing.Point(493, 70);
             this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
             this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);
@@ -173,7 +173,7 @@
             this.Controls.Add(this.NameLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "AssignedByValParameterQuickFixDialog";
