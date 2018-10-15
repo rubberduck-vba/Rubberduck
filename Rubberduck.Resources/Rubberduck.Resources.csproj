@@ -89,23 +89,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CommandBarIcons.resx</DependentUpon>
     </Compile>
-    <Compile Include="Inspections\InspectionNames.Designer.cs">
-      <DependentUpon>InspectionNames.resx</DependentUpon>
+    <Compile Include="Inspections\InspectionInfo.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionInfo.resx</DependentUpon>
     </Compile>
     <Compile Include="Inspections\InspectionNames.de.Designer.cs">
       <DependentUpon>InspectionNames.de.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Inspections\InspectionNames.fr.Designer.cs">
-      <DependentUpon>InspectionNames.fr.resx</DependentUpon>
+    <Compile Include="Inspections\InspectionNames.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionNames.resx</DependentUpon>
     </Compile>
-    <Compile Include="Inspections\InspectionResults.Designer.cs">
-      <DependentUpon>InspectionResults.resx</DependentUpon>
+    <Compile Include="Inspections\InspectionNames.fr.Designer.cs">
+      <DependentUpon>InspectionNames.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -114,13 +114,13 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Inspections\InspectionResults.fr.Designer.cs">
-      <DependentUpon>InspectionResults.fr.resx</DependentUpon>
+    <Compile Include="Inspections\InspectionResults.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
+      <DependentUpon>InspectionResults.resx</DependentUpon>
     </Compile>
-    <Compile Include="Inspections\InspectionInfo.Designer.cs">
-      <DependentUpon>InspectionInfo.resx</DependentUpon>
+    <Compile Include="Inspections\InspectionResults.fr.Designer.cs">
+      <DependentUpon>InspectionResults.fr.resx</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
@@ -387,8 +387,8 @@
     <EmbeddedResource Include="Inspections\InspectionNames.cs.resx" />
     <EmbeddedResource Include="Inspections\InspectionNames.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionNames.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -403,8 +403,8 @@
     <EmbeddedResource Include="Inspections\InspectionResults.cs.resx" />
     <EmbeddedResource Include="Inspections\InspectionResults.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionResults.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>InspectionResults.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionResults.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
@@ -418,8 +418,8 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionInfo.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>InspectionInfo.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>InspectionInfo.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Inspections\InspectionInfo.de.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
