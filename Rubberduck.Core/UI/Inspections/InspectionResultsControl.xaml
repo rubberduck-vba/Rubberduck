@@ -41,14 +41,9 @@
 
             <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
             <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
-
             <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
-
             <BitmapImage x:Key="FixImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
-
             <BitmapImage x:Key="GroupByImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
-
-            <BitmapImage x:Key="FilterByImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
             <BitmapImage x:Key="FilterByHintImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png" />
             <BitmapImage x:Key="FilterBySuggestionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png" />
             <BitmapImage x:Key="FilterByWarningImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
