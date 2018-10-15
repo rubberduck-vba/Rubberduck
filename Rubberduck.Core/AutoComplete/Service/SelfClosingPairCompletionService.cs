@@ -166,7 +166,7 @@ namespace Rubberduck.AutoComplete.Service
             var closingLine = lines[closingTokenPosition.EndLine].Remove(closingTokenPosition.StartColumn, 1);
             lines[closingTokenPosition.EndLine] = closingLine;
 
-            if (closingLine == pair.OpeningChar.ToString())
+            if (closingLine == pair.OpeningChar.ToString() || closingLine == pair.OpeningChar + " _" || closingLine == pair.OpeningChar + " & _")
             {
                 lines[closingTokenPosition.EndLine] = string.Empty;
             }
@@ -184,78 +184,94 @@ namespace Rubberduck.AutoComplete.Service
                 lines = lines.Where((x, i) => i <= position.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
                 lastLine = lines[lines.Length - 1];
 
-                if (lastLine.EndsWith(" _"))
+                if (lastLine.EndsWith(" _") && finalCaretPosition.StartLine == lines.Length - 1)
                 {
-                    // we can't leave the logical line ending with a line continuation token.
-                    if (lastLine.EndsWith(" & vbNewLine & _"))
-                    {
-                        // assume " & vbNewLine & _" was added by smart-concat?
-                        lines[lines.Length - 1] = lastLine.Substring(0,
-                            lastLine.Length - " & vbNewLine & _".Length);
-                    }
-                    else
-                    {
-                        lines[lines.Length - 1] = lastLine.TrimEnd(' ', '_');
-                    }
-                }
-
-                var nonEmptyLines = lines
-                    .Where(x => !string.IsNullOrWhiteSpace(x))
-                    .ToArray();
-                var lastNonEmptyLine = nonEmptyLines.Length > 0 ? nonEmptyLines[nonEmptyLines.Length - 1] : null;
-                if (lastNonEmptyLine != null)
-                {
-                    if (position.StartLine > nonEmptyLines.Length - 1)
-                    {
-                        // caret is on a now-empty line, shift one line up.
-                        finalCaretPosition = new Selection(position.StartLine - 1, lastNonEmptyLine.Length - 1);
-                    }
-
-                    if (lastNonEmptyLine.EndsWith(" _"))
-                    {
-                        nonEmptyLines[nonEmptyLines.Length - 1] = lastNonEmptyLine.Remove(lastNonEmptyLine.Length - 2);
-                        lastNonEmptyLine = nonEmptyLines[nonEmptyLines.Length - 1];
-
-                        if (lastNonEmptyLine.EndsWith("&"))
-                        {
-                            // we're not concatenating anything anymore; remove concat operator too.
-                            var concatOffset = lastNonEmptyLine.EndsWith(" &") ? 2 : 1;
-                            nonEmptyLines[nonEmptyLines.Length - 1] = lastNonEmptyLine.Remove(lastNonEmptyLine.Length - concatOffset);
-                            TrimLastNonEmptyLine(nonEmptyLines, "& vbNewLine");
-                            TrimLastNonEmptyLine(nonEmptyLines, "& vbCrLf");
-                            TrimLastNonEmptyLine(nonEmptyLines, "& vbCr");
-                            TrimLastNonEmptyLine(nonEmptyLines, "& vbLf");
-                        }
-
-                        // we're keeping the closing quote, but let's put the caret inside:
-                        lastNonEmptyLine = nonEmptyLines[nonEmptyLines.Length - 1];
-                        var quoteOffset = lastNonEmptyLine.EndsWith("\"") ? 1 : 0;
-                        finalCaretPosition = new Selection(
-                            finalCaretPosition.StartLine,
-                            lastNonEmptyLine.Length - quoteOffset);
-                    }
-
-                    lines = nonEmptyLines;
+                    finalCaretPosition = HandleBackspaceContinuations(lines, finalCaretPosition);
                 }
             }
 
+            var caretLine = lines[finalCaretPosition.StartLine];
+            if (caretLine.EndsWith(" _") && finalCaretPosition.StartLine == lines.Length - 1)
+            {
+                finalCaretPosition = HandleBackspaceContinuations(lines, finalCaretPosition);
+            }
+            else if (caretLine.EndsWith("& _") || caretLine.EndsWith("&  _"))
+            {
+                HandleBackspaceContinuations(lines, finalCaretPosition);
+            }
+
+            var nonEmptyLines = lines.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+            var lastNonEmptyLine = nonEmptyLines.Length > 0 ? nonEmptyLines[nonEmptyLines.Length - 1] : null;
+            if (lastNonEmptyLine != null)
+            {
+                if (position.StartLine > nonEmptyLines.Length - 1)
+                {
+                    // caret is on a now-empty line, shift one line up.
+                    finalCaretPosition = new Selection(position.StartLine - 1, lastNonEmptyLine.Length - 1);
+                }
+
+                if (lastNonEmptyLine.EndsWith(" _"))
+                {
+                    var newPosition = HandleBackspaceContinuations(nonEmptyLines, new Selection(nonEmptyLines.Length - 1, 1));
+                    if (finalCaretPosition.StartLine == nonEmptyLines.Length - 1)
+                    {
+                        finalCaretPosition = newPosition;
+                    }
+                }
+
+                lines = nonEmptyLines;
+            }
+
+
             // remove any dangling empty lines...
-            //lines = lines.Where((x, i) => i <= position.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
+            lines = lines.Where((x, i) => i <= position.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
 
             return new CodeString(string.Join("\r\n", lines), finalCaretPosition,
                 new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
-
         }
 
-        private static void TrimLastNonEmptyLine(string[] nonEmptyLines, string ending)
+        private static Selection HandleBackspaceContinuations(string[] nonEmptyLines, Selection finalCaretPosition)
         {
-            var lastNonEmptyLine = nonEmptyLines[nonEmptyLines.Length - 1];
-            if (lastNonEmptyLine.EndsWith(ending, StringComparison.OrdinalIgnoreCase))
+            var lineIndex = Math.Min(finalCaretPosition.StartLine, nonEmptyLines.Length - 1);
+            var line = nonEmptyLines[lineIndex];
+            if (line.EndsWith(" _") && lineIndex == nonEmptyLines.Length - 1)
             {
-                var offset = lastNonEmptyLine.EndsWith(" " + ending, StringComparison.OrdinalIgnoreCase)
+                nonEmptyLines[lineIndex] = line.Remove(line.Length - 2);
+                line = nonEmptyLines[lineIndex];
+            }
+
+            if (lineIndex == nonEmptyLines.Length - 1)
+            {
+                line = nonEmptyLines[lineIndex];
+            }
+
+            if (line.EndsWith("&"))
+            {
+                // we're not concatenating anything anymore; remove concat operator too.
+                var concatOffset = line.EndsWith(" &") ? 2 : 1;
+                nonEmptyLines[lineIndex] = line.Remove(line.Length - concatOffset);
+            }
+            TrimNonEmptyLine(nonEmptyLines, lineIndex, "& vbNewLine");
+            TrimNonEmptyLine(nonEmptyLines, lineIndex, "& vbCrLf");
+            TrimNonEmptyLine(nonEmptyLines, lineIndex, "& vbCr");
+            TrimNonEmptyLine(nonEmptyLines, lineIndex, "& vbLf");
+
+            // we're keeping the closing quote, but let's put the caret inside:
+            line = nonEmptyLines[lineIndex];
+            var quoteOffset = line.EndsWith("\"") ? 1 : 0;
+            finalCaretPosition = new Selection(finalCaretPosition.StartLine, line.Length - quoteOffset);
+            return finalCaretPosition;
+        }
+
+        private static void TrimNonEmptyLine(string[] nonEmptyLines, int lineIndex, string ending)
+        {
+            var line = nonEmptyLines[lineIndex];
+            if (line.EndsWith(ending, StringComparison.OrdinalIgnoreCase))
+            {
+                var offset = line.EndsWith(" " + ending, StringComparison.OrdinalIgnoreCase)
                     ? ending.Length + 1
                     : ending.Length;
-                nonEmptyLines[nonEmptyLines.Length - 1] = lastNonEmptyLine.Remove(lastNonEmptyLine.Length - offset);
+                nonEmptyLines[lineIndex] = line.Remove(line.Length - offset);
             }
         }
 

@@ -221,6 +221,31 @@ namespace RubberduckTests.AutoComplete
             Assert.AreEqual(expected, result);
         }
 
+        [Test][Ignore("todo: figure out how to make this pass without breaking something else.")]
+        public void BackspacingWorksWhenCaretIsNotOnLastNonEmptyLine_ConcatOnSameLine()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = "foo = \"\" & _\r\n      \"\" & _\r\n      \"|\" & _\r\n      \"\"".ToCodeString();
+            var expected = "foo = \"\" & _\r\n      \"|\" & _\r\n      \"\"".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        [Ignore("todo: figure out how to make this pass without breaking something else.")]
+        public void BackspacingWorksWhenCaretIsNotOnLastNonEmptyLine_ConcatOnNextLine()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = "foo = \"\" _\r\n      & \"\" _\r\n      & \"|\" _\r\n      & \"\"".ToCodeString();
+            var expected = "foo = \"\" _\r\n      & \"|\" _\r\n      & \"\"".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
         [Test]
         public void WhenBackspacingClearsLineContinuatedCaretLine_PlacesCaretInsideStringOnPreviousLine()
         {
