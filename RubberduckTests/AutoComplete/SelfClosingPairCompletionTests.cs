@@ -234,12 +234,48 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
-        public void WhenBackspacingClearsLineContinuatedCaretLine_WithConcatenatedVbNewLine_PlacesCaretRightOfVbNewLineOnPreviousLine()
+        public void WhenBackspacingClearsLineContinuatedCaretLine_WithConcatenatedVbNewLine_PlacesCaretInsideStringOnPreviousLine()
         {
             var pair = new SelfClosingPair('"', '"');
             var input = Keys.Back;
             var original = "foo = \"test\" & vbNewLine & _\r\n     \"|\"".ToCodeString();
-            var expected = "foo = \"test\" & vbNewLine|".ToCodeString();
+            var expected = "foo = \"test|\"".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void WhenBackspacingClearsLineContinuatedCaretLine_WithConcatenatedVbCrLf_PlacesCaretInsideStringOnPreviousLine()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = "foo = \"test\" & vbCrLf & _\r\n     \"|\"".ToCodeString();
+            var expected = "foo = \"test|\"".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void WhenBackspacingClearsLineContinuatedCaretLine_WithConcatenatedVbCr_PlacesCaretInsideStringOnPreviousLine()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = "foo = \"test\" & vbCr & _\r\n     \"|\"".ToCodeString();
+            var expected = "foo = \"test|\"".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public void WhenBackspacingClearsLineContinuatedCaretLine_WithConcatenatedVbLf_PlacesCaretInsideStringOnPreviousLine()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = Keys.Back;
+            var original = "foo = \"test\" & vbLf & _\r\n     \"|\"".ToCodeString();
+            var expected = "foo = \"test|\"".ToCodeString();
 
             var result = Run(pair, original, input);
             Assert.AreEqual(expected, result);

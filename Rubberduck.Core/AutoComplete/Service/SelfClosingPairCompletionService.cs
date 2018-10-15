@@ -221,10 +221,14 @@ namespace Rubberduck.AutoComplete.Service
                             // we're not concatenating anything anymore; remove concat operator too.
                             var concatOffset = lastNonEmptyLine.EndsWith(" &") ? 2 : 1;
                             nonEmptyLines[nonEmptyLines.Length - 1] = lastNonEmptyLine.Remove(lastNonEmptyLine.Length - concatOffset);
-                            lastNonEmptyLine = nonEmptyLines[nonEmptyLines.Length - 1];
+                            TrimLastNonEmptyLine(nonEmptyLines, "& vbNewLine");
+                            TrimLastNonEmptyLine(nonEmptyLines, "& vbCrLf");
+                            TrimLastNonEmptyLine(nonEmptyLines, "& vbCr");
+                            TrimLastNonEmptyLine(nonEmptyLines, "& vbLf");
                         }
 
                         // we're keeping the closing quote, but let's put the caret inside:
+                        lastNonEmptyLine = nonEmptyLines[nonEmptyLines.Length - 1];
                         var quoteOffset = lastNonEmptyLine.EndsWith("\"") ? 1 : 0;
                         finalCaretPosition = new Selection(
                             finalCaretPosition.StartLine,
@@ -241,6 +245,18 @@ namespace Rubberduck.AutoComplete.Service
             return new CodeString(string.Join("\r\n", lines), finalCaretPosition,
                 new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
 
+        }
+
+        private static void TrimLastNonEmptyLine(string[] nonEmptyLines, string ending)
+        {
+            var lastNonEmptyLine = nonEmptyLines[nonEmptyLines.Length - 1];
+            if (lastNonEmptyLine.EndsWith(ending, StringComparison.OrdinalIgnoreCase))
+            {
+                var offset = lastNonEmptyLine.EndsWith(" " + ending, StringComparison.OrdinalIgnoreCase)
+                    ? ending.Length + 1
+                    : ending.Length;
+                nonEmptyLines[nonEmptyLines.Length - 1] = lastNonEmptyLine.Remove(lastNonEmptyLine.Length - offset);
+            }
         }
 
         private Selection FindMatchingTokenPosition(SelfClosingPair pair, CodeString original)
