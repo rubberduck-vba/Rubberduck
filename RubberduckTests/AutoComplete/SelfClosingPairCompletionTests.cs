@@ -35,6 +35,18 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void PlacesCaretBetweenOpeningAndClosingChars_NestedPair()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = pair.OpeningChar;
+            var original = "MsgBox (|)".ToCodeString();
+            var expected = "MsgBox (\"|\")".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
         public void PlacesCaretBetweenOpeningAndClosingChars_PreservesPosition()
         {
             var pair = new SelfClosingPair('(', ')');
