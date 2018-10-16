@@ -6,6 +6,9 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.IO;
+using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -86,9 +89,53 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             foreach (var filename in _openFileDialog.FileNames)
             {
-                using (var components = project.VBComponents)
+                var extension = filename.Split('.').Last();
+
+                var sourceText = string.Join(Environment.NewLine, File.ReadAllLines(filename));
+
+                string updatedModuleText;
+
+                var result = VBACodeStringParser.Parse(sourceText, t => t.startRule());
+
+                var tempHelper = (CodeExplorerItemViewModel)parameter;
+                var updatedFolder = (parameter is CodeExplorerCustomFolderViewModel) ? tempHelper.Name : tempHelper.GetSelectedDeclaration().CustomFolder;
+
+                const string folderAnnotation = "'@Folder";
+                if (result.parseTree.GetChild(0).GetText().Contains(folderAnnotation))
                 {
-                    components.Import(filename);
+                    var workingTree = TreeContainingFolderAnnotation(result.parseTree, folderAnnotation);
+
+                    var originalAnnotation = workingTree.GetText();
+
+                    var originalFolder = FolderNameFromFolderAnnotation(workingTree, folderAnnotation);
+
+                    var updatedFolderAnnotation = originalAnnotation.Replace(originalFolder, updatedFolder);
+                    result.rewriter.Replace(workingTree.SourceInterval.a, workingTree.SourceInterval.b, updatedFolderAnnotation);
+
+                    updatedModuleText = result.rewriter.GetText();
+                }
+                else
+                {
+                    updatedModuleText = $"{folderAnnotation}({updatedFolder}){Environment.NewLine}" + result.rewriter.GetText();
+                }
+
+                try
+                {
+                    var tempFile = $"RubberduckTempImportFile.{extension}";
+                    var sw = File.CreateText(tempFile);
+                    sw.Write(updatedModuleText);
+                    sw.Close();
+
+                    using (var components = project.VBComponents)
+                    {
+                        components.Import(tempFile);
+                    }
+
+                    File.Delete(tempFile);
+                }
+                catch
+                {
+                    Logger.Log(LogLevel.Error, "Unable to create temporary file to import into the correct folder while expecuting " + nameof(ImportCommand));
                 }
             }
 
@@ -96,6 +143,31 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 project.Dispose();
             }
+        }
+
+        private string FolderNameFromFolderAnnotation(IParseTree parseTree, string folderAnnotation)
+        {
+            var searchAnnotation = parseTree.GetText();
+            var folderNameEnclosedInQuotes = searchAnnotation.Contains('"');
+            var enclosingCharacter = folderNameEnclosedInQuotes ? '"' : ')';
+            var startIndex = searchAnnotation.IndexOf(folderAnnotation) + 1 + folderAnnotation.Length + (folderNameEnclosedInQuotes ? 1 : 0);
+            int endIndex = searchAnnotation.IndexOf(enclosingCharacter, startIndex + 1);
+            var length = endIndex - startIndex;
+
+            return searchAnnotation.Substring(startIndex, length);
+        }
+
+        private IParseTree TreeContainingFolderAnnotation(IParseTree containingTree, string folderAnnotation)
+        {
+            for (int i=0;i< containingTree.ChildCount; i++)
+            {
+                if (containingTree.GetChild(i).GetText().Contains(folderAnnotation))
+                {
+                    return TreeContainingFolderAnnotation(containingTree.GetChild(i), folderAnnotation);
+                }
+            }
+
+            return containingTree;
         }
 
         private IVBProject GetNodeProject(CodeExplorerItemViewModel parameter)
