@@ -106,6 +106,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string CodeInspectionSeverity_All {
+            get {
+                return ResourceManager.GetString("CodeInspectionSeverity_All", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do Not Show.
         /// </summary>
         public static string CodeInspectionSeverity_DoNotShow {

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -8,9 +10,6 @@ namespace Rubberduck.SmartIndenter
     {
         public const char StringPlaceholder = '\a';
         public const char BracketPlaceholder = '\x02';
-
-        private static readonly Regex StringReplaceRegex = new Regex("\a+", RegexOptions.IgnoreCase);
-        private static readonly Regex BracketReplaceRegex = new Regex("\x02+", RegexOptions.IgnoreCase);
 
         private readonly List<string> _strings = new List<string>();
         private readonly List<string> _brackets = new List<string>();
@@ -24,16 +23,20 @@ namespace Rubberduck.SmartIndenter
 
         public string UnescapeIndented(string indented)
         {
-            var code = indented;
-            if (_strings.Any())
+
+            var code = ReplaceEscapedItems(indented, StringPlaceholder, EscapedStrings);
+            return ReplaceEscapedItems(code, BracketPlaceholder, EscapedBrackets);
+        }
+
+        private string ReplaceEscapedItems(string code, char placehoder, IEnumerable<string> replacements)
+        {
+            var output = code;
+            foreach (var item in replacements)
             {
-                code = _strings.Aggregate(code, (current, literal) => StringReplaceRegex.Replace(current, literal, 1));
+                var pos = output.IndexOf(new string(placehoder, item.Length), StringComparison.Ordinal);
+                output = output.Substring(0, pos) + item + output.Substring(pos + item.Length);
             }
-            if (_brackets.Any())
-            {
-                code = _brackets.Aggregate(code, (current, expr) => BracketReplaceRegex.Replace(current, expr, 1));
-            }
-            return code;
+            return output;
         }
 
         public StringLiteralAndBracketEscaper(string code)
@@ -56,13 +59,13 @@ namespace Rubberduck.SmartIndenter
                         quoted = true;
                         continue;
                     }
-                    if (c + 1 < chars.Length && chars[c] == '"')
+                    if (c + 1 < chars.Length && chars[c + 1] == '"')
                     {
                         c++;
                     }
                     quoted = false;
-                    _strings.Add(new string(chars.Skip(strpos).Take(c - strpos).ToArray()));
-                    for (var e = strpos; e < c; e++)
+                    _strings.Add(OriginalString.Substring(strpos, c - strpos + 1));
+                    for (var e = strpos; e <= c; e++)
                     {
                         chars[e] = StringPlaceholder;
                     }
@@ -81,7 +84,7 @@ namespace Rubberduck.SmartIndenter
                         continue;
                     }
                     bracketed = false;
-                    _brackets.Add(new string(chars.Skip(brkpos).Take(c - brkpos + 1).ToArray()));
+                    _brackets.Add(OriginalString.Substring(brkpos, c - brkpos + 1));
                     for (var e = brkpos; e <= c; e++)
                     {
                         chars[e] = BracketPlaceholder;

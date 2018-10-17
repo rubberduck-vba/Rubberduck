@@ -966,5 +966,28 @@ namespace RubberduckTests.SmartIndenter
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }
+
+        [Test]
+        [Category("Indenter")]
+        public void ReplacementPatternsInStringLiteralWorks()
+        {
+            var code = new[]
+            {
+                "Public Sub Test()",
+                "Debug.Print \"a*${test}b\"",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Public Sub Test()",
+                "    Debug.Print \"a*${test}b\"",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
     }
 }
