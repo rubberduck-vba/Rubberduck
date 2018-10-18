@@ -178,7 +178,8 @@
   &lt;IsSmartIndenterPrompted&gt;false&lt;/IsSmartIndenterPrompted&gt;
   &lt;IsAutoSaveEnabled&gt;false&lt;/IsAutoSaveEnabled&gt;
   &lt;AutoSavePeriod&gt;10&lt;/AutoSavePeriod&gt;
-  &lt;MinimumLogLevel&gt;6&lt;/MinimumLogLevel&gt;
+  &lt;UserEditedLogLevel&gt;false&lt;/UserEditedLogLevel&gt;
+  &lt;MinimumLogLevel&gt;0&lt;/MinimumLogLevel&gt;
   &lt;EnableExperimentalFeatures /&gt;
 &lt;/GeneralSettings&gt;</Value>
     </Setting>
