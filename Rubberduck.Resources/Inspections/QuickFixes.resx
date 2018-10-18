@@ -258,4 +258,7 @@
   <data name="RemoveLocalErrorQuickFix" xml:space="preserve">
     <value>Replace 'On Local Error' with 'On Error'</value>
   </data>
+  <data name="IsMissingOnInappropriateArgumentQuickFix" xml:space="preserve">
+    <value>Change 'IsMissing' call to test for default value.</value>
+  </data>
 </root>

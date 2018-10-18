@@ -37,7 +37,6 @@ namespace RubberduckTests.PreProcessing
             // Reference_Module_1 = raw, unprocessed code.
             // Reference_Module_1_Processed = result of preprocessor.
             var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            basePath = Directory.GetParent(basePath).Parent.FullName;
             var all = Directory.EnumerateFiles(Path.Combine(basePath, "Testfiles//Preprocessor")).ToList();
             var rawAndProcessed = all
                 .Where(file => !file.Contains("_Processed"))

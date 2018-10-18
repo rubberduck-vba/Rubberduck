@@ -1,111 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{D4B6A510-14E1-420A-A8D5-6A09890FD7D8}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.Refactorings</RootNamespace>
     <AssemblyName>Rubberduck.Refactorings</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <Copyright>Copyright © 2018</Copyright>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>7.1</LangVersion>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+  
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
-      <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\DeclarationExtensions.cs" />
-    <Compile Include="EncapsulateField\EncapsulateFieldModel.cs" />
-    <Compile Include="EncapsulateField\EncapsulateFieldRefactoring.cs" />
-    <Compile Include="EncapsulateField\IEncapsulateFieldDialog.cs" />
-    <Compile Include="EncapsulateField\IEncapsulateFieldPresenter.cs" />
-    <Compile Include="EncapsulateField\PropertyGenerator.cs" />
-    <Compile Include="ExtractInterface\ExtractInterfaceModel.cs" />
-    <Compile Include="ExtractInterface\ExtractInterfaceRefactoring.cs" />
-    <Compile Include="ExtractInterface\IExtractInterfacePresenter.cs" />
-    <Compile Include="ExtractInterface\InterfaceMember.cs" />
-    <Compile Include="ImplementInterface\ImplementInterfaceRefactoring.cs" />
-    <Compile Include="ImplementInterface\Parameter.cs" />
-    <Compile Include="IntroduceField\IntroduceFieldRefactoring.cs" />
-    <Compile Include="IntroduceParameter\IntroduceParameterRefactoring.cs" />
-    <Compile Include="IRefactoring.cs" />
-    <Compile Include="IRefactoringPresenterFactory.cs" />
-    <Compile Include="MoveCloserToUsage\MoveCloserToUsageRefactoring.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoveParameters\IRemoveParametersPresenter.cs" />
-    <Compile Include="RemoveParameters\Parameter.cs" />
-    <Compile Include="RemoveParameters\RemoveParametersModel.cs" />
-    <Compile Include="RemoveParameters\RemoveParametersRefactoring.cs" />
-    <Compile Include="Rename\IRenamePresenter.cs" />
-    <Compile Include="Rename\RenameModel.cs" />
-    <Compile Include="Rename\RenameRefactoring.cs" />
-    <Compile Include="ReorderParameters\IReorderParametersPresenter.cs" />
-    <Compile Include="ReorderParameters\Parameter.cs" />
-    <Compile Include="ReorderParameters\ReorderParametersModel.cs" />
-    <Compile Include="ReorderParameters\ReorderParametersRefactoring.cs" />
+    <PackageReference Include="Antlr4.Runtime">
+      <Version>4.6.4</Version>
+    </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
-      <Project>{ac54b7fb-170d-4da6-a30b-8cad182f0e6b}</Project>
-      <Name>Rubberduck.Interaction</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
-      <Name>Rubberduck.Parsing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
-      <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
-      <Name>Rubberduck.SmartIndenter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
