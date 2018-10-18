@@ -1871,9 +1871,9 @@ End Sub";
                 var model = new RenameModel(state, qualifiedSelection) { NewName = newName };
                 model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
 
-                var factory = SetupFactory(model);
+                var factory = GetFactory();
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory, msgbox.Object, state);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -2733,7 +2733,8 @@ End Property";
                         Assert.Inconclusive($"Unable to set RawSelection field for test module {inputOutput.ModuleName}");
                     }
 
-                    inputOutput.RenameSelection = tdo.RawSelection;
+                    //FIXME is this still necessary? I think not...
+                    //inputOutput.RenameSelection = tdo.RawSelection;
                 }
             }
             tdo.ModuleTestSetupDefs.Add(inputOutput);

@@ -1,245 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.VBEditor</RootNamespace>
     <AssemblyName>Rubberduck.VBEditor</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <Title>Rubberduck.VBEditor</Title>
+    <Product>Rubberduck.VBEditor</Product>
+    <Copyright>Copyright © 2015-2018</Copyright>
+    <ProjectGuid>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</ProjectGuid>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>true</UseVSHostingProcess>
-    <LangVersion>7.2</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>7.2</LangVersion>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
   <ItemGroup>
     <Reference Include="CustomMarshalers" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+      <HintPath>$(MSBuildProgramFiles32)\Common Files\microsoft shared\MSEnv\PublicAssemblies\stdole.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ComManagement\ComMessagePumper.cs" />
-    <Compile Include="ComManagement\TypeLibs\ITypeLibWrapper.cs" />
-    <Compile Include="ComManagement\TypeLibs\ITypeLibWrapperProvider.cs" />
-    <Compile Include="ComManagement\TypeLibs\IVBETypeLibsAPI.cs" />
-    <Compile Include="ComManagement\IComSafe.cs" />
-    <Compile Include="ComManagement\TypeLibs\TypeInfosCollection.cs" />
-    <Compile Include="ComManagement\TypeLibs\TypeLibWrapperProvider.cs" />
-    <Compile Include="Events\AutoCompleteEventArgs.cs" />
-    <Compile Include="Events\ComponentEventArgs.cs" />
-    <Compile Include="Events\ComponentRenamedEventArgs.cs" />
-    <Compile Include="Events\IntelliSenseEventArgs.cs" />
-    <Compile Include="Events\KeyPressEventArgs.cs" />
-    <Compile Include="Events\ProjectEventArgs.cs" />
-    <Compile Include="Events\ProjectRenamedEventArgs.cs" />
-    <Compile Include="Events\SelectionChangedEventArgs.cs" />
-    <Compile Include="Events\WindowChangedEventArgs.cs" />
-    <Compile Include="Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Factories\AddInFactory.cs" />
-    <Compile Include="Factories\ISafeComWrapperProvider.cs" />
-    <Compile Include="Factories\VBEFactory.cs" />
-    <Compile Include="HashCode.cs" />
-    <Compile Include="ReferenceInfo.cs" />
-    <Compile Include="SafeComWrappers\Abstract\IComIndexedProperty.cs" />
-    <Compile Include="SafeComWrappers\Abstract\IEventSource.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\ICommandBarButtonEvents.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\ICommandBarEvents.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IEvents.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\ProjectTypes.cs" />
-    <Compile Include="SourceCodeHandling\SourceFileHandlerSourceCodeHandlerAdapter.cs" />
-    <Compile Include="SourceCodeHandling\CodePaneSourceCodeHandler.cs" />
-    <Compile Include="SourceCodeHandling\ISourceCodeHandler.cs" />
-    <Compile Include="SourceCodeHandling\ISourceCodeProvider.cs" />
-    <Compile Include="SourceCodeHandling\ITempSourceFileHandler.cs" />
-    <Compile Include="CommandBarLocation.cs" />
-    <Compile Include="SafeComWrappers\Abstract\HostApplicationBase.cs" />
-    <Compile Include="SafeComWrappers\Abstract\ISafeComWrapper.cs" />
-    <Compile Include="CommandBarSite.cs" />
-    <Compile Include="SafeComWrappers\SafeComWrapper.cs" />
-    <Compile Include="SafeComWrappers\SafeRedirectedEventedComWrapper.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IHostApplication.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\VBEKind.cs" />
-    <Compile Include="Utility\EnumHelper.cs" />
-    <Compile Include="Utility\UiContext.cs" />
-    <Compile Include="VBERuntime\IVBERuntime.cs" />
-    <Compile Include="VBERuntime\Settings\IVBESettings.cs" />
-    <Compile Include="VBERuntime\Settings\VBESettings.cs" />
-    <Compile Include="VBERuntime\VBEDllVersion.cs" />
-    <Compile Include="VBERuntime\VBERuntime6.cs" />
-    <Compile Include="VBERuntime\VBERuntime7.cs" />
-    <Compile Include="VBERuntime\VBERuntimeAccessor.cs" />
-    <Compile Include="ComManagement\WeakComSafe.cs" />
-    <Compile Include="ComManagement\ComSafeManager.cs" />
-    <Compile Include="ComManagement\IProjectsProvider.cs" />
-    <Compile Include="ComManagement\IProjectsRepository.cs" />
-    <Compile Include="Events\IVBEEvents.cs" />
-    <Compile Include="ComManagement\ProjectsRepository.cs" />
-    <Compile Include="ComManagement\TypeLibs\TypeInfos.cs" />
-    <Compile Include="ComManagement\TypeLibs\TypeLibs.cs" />
-    <Compile Include="ComManagement\TypeLibs\TypeLibsSupport.cs" />
-    <Compile Include="ComManagement\TypeLibs\TypeLibsAPI.cs" />
-    <Compile Include="ComManagement\ReferenceEqualityComparer.cs" />
-    <Compile Include="ComManagement\StrongComSafe.cs" />
-    <Compile Include="Events\VBEEvents.cs" />
-    <Compile Include="Events\VBENativeServices.cs" />
-    <Compile Include="Extensions\VBComponentExtensions.cs" />
-    <Compile Include="Extensions\KeyValuePairExtensions.cs" />
-    <Compile Include="Extensions\MSAccessComponentTypeExtensions.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IUserForm.cs" />
-    <Compile Include="SafeComWrappers\Abstract\ISafeEventedComWrapper.cs" />
-    <Compile Include="SafeComWrappers\DispatcherEventArgs.cs" />
-    <Compile Include="SafeComWrappers\Office\CommandBarButtonClickEventArgs.cs" />
-    <Compile Include="SafeComWrappers\Office\Enums\ButtonState.cs" />
-    <Compile Include="SafeComWrappers\Office\Enums\ButtonStyle.cs" />
-    <Compile Include="SafeComWrappers\Office\Enums\ControlType.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\MSAccessComponentType.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\ICodePanes.cs" />
-    <Compile Include="SafeComWrappers\Office\Abstract\ICommandBarButton.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\ILinkedWindows.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IReference.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IReferences.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IVBComponent.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IVBComponents.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IVBProject.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IVBProjects.cs" />
-    <Compile Include="SafeComWrappers\Office\AxHostConverter.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="SafeComWrappers\Office\CommandBarControlCaptionGuard.cs" />
-    <Compile Include="SafeComWrappers\Office\Enums\CommandBarPosition.cs" />
-    <Compile Include="SafeComWrappers\Office\Enums\CommandBarType.cs" />
-    <Compile Include="SafeComWrappers\Office\Abstract\ICommandBar.cs" />
-    <Compile Include="SafeComWrappers\Office\Abstract\ICommandBarControl.cs" />
-    <Compile Include="SafeComWrappers\Office\Abstract\ICommandBarControls.cs" />
-    <Compile Include="SafeComWrappers\Office\Abstract\ICommandBarPopup.cs" />
-    <Compile Include="SafeComWrappers\Office\Abstract\ICommandBars.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\CodePaneView.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\ComponentType.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\EnvironmentMode.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IVBE.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IAddIn.cs" />
-    <Compile Include="SafeComWrappers\Abstract\IComCollection.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IAddIns.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IApplication.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IWindow.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IWindows.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\ICodeModule.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\ICodePane.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IControl.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IControls.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IProperty.cs" />
-    <Compile Include="SafeComWrappers\VB\Abstract\IProperties.cs" />
-    <Compile Include="SafeComWrappers\ReferenceEventArgs.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\ProcKind.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\ProjectProtection.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\ProjectType.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\ReferenceKind.cs" />
-    <Compile Include="SafeComWrappers\ComWrapperEnumerator.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\WindowKind.cs" />
-    <Compile Include="SafeComWrappers\VB\Enums\WindowState.cs" />
-    <Compile Include="SafeComWrappers\SafeEventedComWrapper.cs" />
-    <Compile Include="Utility\DisposalActionContainer.cs" />
-    <Compile Include="Utility\RegistryWrapper.cs" />
-    <Compile Include="WindowsApi\IFocusProvider.cs" />
-    <Compile Include="WindowsApi\SubclassManager.cs" />
-    <Compile Include="WindowsApi\VbeAttachableSubclass.cs" />
-    <Compile Include="WindowsApi\WindowLocator.cs" />
-    <Compile Include="WindowsApi\CodePaneSubclass.cs" />
-    <Compile Include="WindowsApi\DesignerWindowSubclass.cs" />
-    <Compile Include="WindowsApi\FocusSource.cs" />
-    <Compile Include="WindowsApi\IWindowEventProvider.cs" />
-    <Compile Include="WindowsApi\NativeMethods.cs" />
-    <Compile Include="QualifiedMemberName.cs" />
-    <Compile Include="QualifiedModuleName.cs" />
-    <Compile Include="QualifiedSelection.cs" />
-    <Compile Include="Selection.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="SubClassingWindowEventArgs.cs" />
-    <Compile Include="Extensions\ComponentTypeExtensions.cs" />
-    <Compile Include="VBEEditorText.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>VBEEditorText.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WindowsApi\SubclassingWindow.cs" />
-    <Compile Include="WindowsApi\User32.cs" />
-    <Compile Include="WindowsApi\WindowsHook.cs" />
-    <Compile Include="WindowsApi\WindowType.cs" />
-    <Compile Include="WindowsApi\WinEvent.cs" />
-    <Compile Include="WindowsApi\WinEventFlags.cs" />
-    <Compile Include="WindowsApi\WM.cs" />
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="VBEEditorText.cs.resx" />
-    <EmbeddedResource Include="VBEEditorText.de.resx" />
-    <EmbeddedResource Include="VBEEditorText.fr.resx" />
-    <EmbeddedResource Include="VBEEditorText.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>VBEEditorText.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
+    <PackageReference Include="NLog">
+      <Version>4.5.10</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Schema">
+      <Version>4.5.10</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.5.0</Version>
+    </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

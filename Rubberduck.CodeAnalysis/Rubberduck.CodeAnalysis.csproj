@@ -1,300 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <Product>Rubberduck.CodeAnalysis</Product>
+    <Description>Assembly Containing the Code Analysis features exposed by Rubberduck</Description>
+    <Copyright>Copyright © 2017-2018</Copyright>
+    <AssemblyName>Rubberduck.CodeAnalysis</AssemblyName>
     <RootNamespace>Rubberduck.Inspections</RootNamespace>
-    <AssemblyName>Rubberduck.Inspections</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>7.2</LangVersion>
-    <DocumentationFile>
-    </DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <LangVersion>7.2</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RunPostBuildEvent>Always</RunPostBuildEvent>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime, Version=4.6.0.0, Culture=neutral, PublicKeyToken=09abb75b9ed49849, processorArchitecture=MSIL">
-      <HintPath>..\packages\Antlr4.Runtime.4.6.4\lib\net45\Antlr4.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.4\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Collections.Immutable, Version=1.2.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Collections.Immutable.1.5.0\lib\netstandard1.3\System.Collections.Immutable.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
+    <!-- FIXME try to get rid of this! -->
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CodeMetrics\CodeMetricBase.cs" />
-    <Compile Include="CodeMetrics\CodeMetricsAnalyst.cs" />
-    <Compile Include="CodeMetrics\CyclomaticComplexityMetric.cs" />
-    <Compile Include="CodeMetrics\LineCountMetric.cs" />
-    <Compile Include="CodeMetrics\NestingLevelMetric.cs" />
-    <Compile Include="CodePathAnalysis\Extensions\NodeExtensions.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\ILoopNode.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\Implementations\AssignmentNode.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\Implementations\BlockNode.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\Implementations\DeclarationNode.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\Implementations\LoopNode.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\Implementations\GenericNode.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\Implementations\BranchNode.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\IBranchNode.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\Implementations\ReferenceNode.cs" />
-    <Compile Include="CodePathAnalysis\Nodes\INode.cs" />
-    <Compile Include="CodePathAnalysis\Walker.cs" />
-    <Compile Include="Inspections\Abstract\InspectionBase.cs" />
-    <Compile Include="Inspections\Abstract\ParseTreeInspectionBase.cs" />
-    <Compile Include="Inspections\Concrete\ApplicationWorksheetFunctionInspection.cs" />
-    <Compile Include="Inspections\Concrete\AssignedByValParameterInspection.cs" />
-    <Compile Include="Inspections\Concrete\DefTypeStatementInspection.cs" />
-    <Compile Include="Inspections\Concrete\DuplicatedAnnotationInspection.cs" />
-    <Compile Include="Inspections\Concrete\EmptyModuleInspection.cs" />
-    <Compile Include="Inspections\Concrete\EmptyBlockInspectionListenerBase.cs" />
-    <Compile Include="Inspections\Concrete\EmptyCaseBlockInspection.cs" />
-    <Compile Include="Inspections\Concrete\EmptyDoWhileBlockInspection.cs" />
-    <Compile Include="Inspections\Concrete\EmptyForEachBlockInspection.cs" />
-    <Compile Include="Inspections\Concrete\EmptyForLoopBlockInspection.cs" />
-    <Compile Include="Inspections\Concrete\BooleanAssignedInIfElseInspection.cs" />
-    <Compile Include="Inspections\Concrete\OnLocalErrorInspection.cs" />
-    <Compile Include="Inspections\Concrete\ModuleWithoutFolderInspection.cs" />
-    <Compile Include="Inspections\Concrete\EmptyWhileWendBlockInspection.cs" />
-    <Compile Include="Inspections\Concrete\ObsoleteCallingConventionInspection.cs" />
-    <Compile Include="Inspections\Concrete\ObsoleteErrorSyntaxInspection.cs" />
-    <Compile Include="Inspections\Concrete\ObsoleteMemberUsageInspection.cs" />
-    <Compile Include="Inspections\Concrete\AssignmentNotUsedInspection.cs" />
-    <Compile Include="Inspections\Concrete\SheetAccessedUsingStringInspection.cs" />
-    <Compile Include="Inspections\Concrete\StepIsNotSpecifiedInspection.cs" />
-    <Compile Include="Inspections\Concrete\StepOneIsRedundantInspection.cs" />
-    <Compile Include="Inspections\Concrete\StopKeywordInspection.cs" />
-    <Compile Include="Inspections\Concrete\LineLabelNotUsedInspection.cs" />
-    <Compile Include="Inspections\Concrete\IntegerDataTypeInspection.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ComparableDateValue.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ExpressionFilter.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ExpressionFilterBoolean.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ExpressionFilterDate.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ExpressionFilterFactory.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ExpressionFilterIntegral.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\FilterLimits.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\LetCoerce.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\OperatorTypesProvider.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ParseTreeValueFactory.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\RangeClauseExpression.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\TypeTokenPair.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\UnreachableCaseInspectionFactoryProvider.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ParseTreeExpressionEvaluator.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ParseTreeVisitorResults.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ParseTreeValueVisitor.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\UnreachableCaseInspection.cs" />
-    <Compile Include="Inspections\Concrete\ShadowedDeclarationInspection.cs" />
-    <Compile Include="Inspections\Concrete\UnhandledOnErrorResumeNextInspection.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\ParseTreeValue.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\UnreachableCaseInspector.cs" />
-    <Compile Include="Inspections\Concrete\UnreachableCaseInspection\UnreachableCaseInspectorFactory.cs" />
-    <Compile Include="Inspections\ParseTreeListeners\AttributeAnnotationListener.cs" />
-    <Compile Include="Inspections\Concrete\ConstantNotUsedInspection.cs" />
-    <Compile Include="Inspections\Concrete\DefaultProjectNameInspection.cs" />
-    <Compile Include="Inspections\Concrete\EmptyIfBlockInspection.cs" />
-    <Compile Include="Inspections\Concrete\EmptyStringLiteralInspection.cs" />
-    <Compile Include="Inspections\Concrete\EncapsulatePublicFieldInspection.cs" />
-    <Compile Include="Inspections\Concrete\FunctionReturnValueNotUsedInspection.cs" />
-    <Compile Include="Inspections\Concrete\HostSpecificExpressionInspection.cs" />
-    <Compile Include="Inspections\Concrete\HungarianNotationInspection.cs" />
-    <Compile Include="Inspections\Concrete\IllegalAnnotationInspection.cs" />
-    <Compile Include="Inspections\Concrete\ImplicitActiveSheetReferenceInspection.cs" />
-    <Compile Include="Inspections\Concrete\ImplicitActiveWorkbookReferenceInspection.cs" />
-    <Compile Include="Inspections\Concrete\ImplicitByRefModifierInspection.cs" />
-    <Compile Include="Inspections\Concrete\ImplicitDefaultMemberAssignmentInspection.cs" />
-    <Compile Include="Inspections\Concrete\ImplicitPublicMemberInspection.cs" />
-    <Compile Include="Inspections\Concrete\ImplicitVariantReturnTypeInspection.cs" />
-    <Compile Include="Inspections\Concrete\MissingAttributeInspection.cs" />
-    <Compile Include="Inspections\Abstract\InspectionResultBase.cs" />
-    <Compile Include="Inspections\Concrete\RedundantByRefModifierInspection.cs" />
-    <Compile Include="Inspections\Concrete\EmptyElseBlockInspection.cs" />
-    <Compile Include="Inspections\Inspector.cs" />
-    <Compile Include="Inspections\Concrete\MemberNotOnInterfaceInspection.cs" />
-    <Compile Include="Inspections\Concrete\MissingAnnotationArgumentInspection.cs" />
-    <Compile Include="Inspections\Concrete\ModuleScopeDimKeywordInspection.cs" />
-    <Compile Include="Inspections\Concrete\MoveFieldCloserToUsageInspection.cs" />
-    <Compile Include="Inspections\Concrete\MultilineParameterInspection.cs" />
-    <Compile Include="Inspections\Concrete\MultipleDeclarationsInspection.cs" />
-    <Compile Include="Inspections\Concrete\NonReturningFunctionInspection.cs" />
-    <Compile Include="Inspections\Concrete\ObjectVariableNotSetInspection.cs" />
-    <Compile Include="Inspections\Concrete\ObsoleteCallStatementInspection.cs" />
-    <Compile Include="Inspections\Concrete\ObsoleteCommentSyntaxInspection.cs" />
-    <Compile Include="Inspections\Concrete\ObsoleteGlobalInspection.cs" />
-    <Compile Include="Inspections\Concrete\ObsoleteLetStatementInspection.cs" />
-    <Compile Include="Inspections\Concrete\ObsoleteTypeHintInspection.cs" />
-    <Compile Include="Inspections\Concrete\OptionBaseInspection.cs" />
-    <Compile Include="Inspections\Concrete\RedundantOptionInspection.cs" />
-    <Compile Include="Inspections\Concrete\OptionExplicitInspection.cs" />
-    <Compile Include="Inspections\Concrete\ParameterCanBeByValInspection.cs" />
-    <Compile Include="Inspections\Concrete\ParameterNotUsedInspection.cs" />
-    <Compile Include="Inspections\Concrete\ProcedureCanBeWrittenAsFunctionInspection.cs" />
-    <Compile Include="Inspections\Concrete\ProcedureNotUsedInspection.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="QuickFixes\AccessSheetUsingCodeNameQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveLocalErrorQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveDuplicatedAnnotationQuickFix.cs" />
-    <Compile Include="QuickFixes\ReplaceIfElseWithConditionalStatementQuickFix.cs" />
-    <Compile Include="QuickFixes\AddIdentifierToWhiteListQuickFix.cs" />
-    <Compile Include="QuickFixes\AddStepOneQuickFix.cs" />
-    <Compile Include="QuickFixes\ApplicationWorksheetFunctionQuickFix.cs" />
-    <Compile Include="QuickFixes\AssignedByValParameterMakeLocalCopyQuickFix.cs" />
-    <Compile Include="QuickFixes\ChangeDimToPrivateQuickFix.cs" />
-    <Compile Include="QuickFixes\ChangeIntegerToLongQuickFix.cs" />
-    <Compile Include="Inspections\Abstract\QuickFixBase.cs" />
-    <Compile Include="QuickFixes\RemoveStepOneQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveStopKeywordQuickFix.cs" />
-    <Compile Include="QuickFixes\ReplaceObsoleteErrorStatementQuickFix.cs" />
-    <Compile Include="QuickFixes\RestoreErrorHandlingQuickFix.cs" />
-    <Compile Include="QuickFixes\SpecifyExplicitByRefModifierQuickFix.cs" />
-    <Compile Include="QuickFixes\ChangeProcedureToFunctionQuickFix.cs" />
-    <Compile Include="QuickFixes\ConvertToProcedureQuickFix.cs" />
-    <Compile Include="QuickFixes\DeclareAsExplicitVariantQuickFix.cs" />
-    <Compile Include="QuickFixes\EncapsulateFieldQuickFix.cs" />
-    <Compile Include="QuickFixes\IgnoreOnceQuickFix.cs" />
-    <Compile Include="QuickFixes\IntroduceLocalVariableQuickFix.cs" />
-    <Compile Include="QuickFixes\MakeSingleLineParameterQuickFix.cs" />
-    <Compile Include="QuickFixes\MoveFieldCloserToUsageQuickFix.cs" />
-    <Compile Include="QuickFixes\OptionExplicitQuickFix.cs" />
-    <Compile Include="QuickFixes\PassParameterByReferenceQuickFix.cs" />
-    <Compile Include="QuickFixes\PassParameterByValueQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveCommentQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveEmptyElseBlockQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveEmptyIfBlockQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveExplicitCallStatmentQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveExplicitLetStatementQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveOptionBaseStatementQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveExplicitByRefModifierQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveTypeHintsQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveUnassignedIdentifierQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveUnassignedVariableUsageQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveUnusedDeclarationQuickFix.cs" />
-    <Compile Include="QuickFixes\RemoveUnusedParameterQuickFix.cs" />
-    <Compile Include="QuickFixes\RenameDeclarationQuickFix.cs" />
-    <Compile Include="QuickFixes\ReplaceEmptyStringLiteralStatementQuickFix.cs" />
-    <Compile Include="QuickFixes\ReplaceGlobalModifierQuickFix.cs" />
-    <Compile Include="QuickFixes\ReplaceObsoleteCommentMarkerQuickFix.cs" />
-    <Compile Include="QuickFixes\SetExplicitVariantReturnTypeQuickFix.cs" />
-    <Compile Include="QuickFixes\SpecifyExplicitPublicModifierQuickFix.cs" />
-    <Compile Include="QuickFixes\SplitMultipleDeclarationsQuickFix.cs" />
-    <Compile Include="QuickFixes\UntypedFunctionUsageQuickFix.cs" />
-    <Compile Include="QuickFixes\UseSetKeywordForObjectAssignmentQuickFix.cs" />
-    <Compile Include="QuickFixes\WriteOnlyPropertyQuickFix.cs" />
-    <Compile Include="QuickFixes\QuickFixProvider.cs" />
-    <Compile Include="Inspections\Concrete\SelfAssignedDeclarationInspection.cs" />
-    <Compile Include="Inspections\Concrete\UnassignedVariableUsageInspection.cs" />
-    <Compile Include="Inspections\Concrete\UndeclaredVariableInspection.cs" />
-    <Compile Include="Inspections\Concrete\UntypedFunctionUsageInspection.cs" />
-    <Compile Include="Inspections\Concrete\UseMeaningfulNameInspection.cs" />
-    <Compile Include="Inspections\Concrete\VariableNotAssignedInspection.cs" />
-    <Compile Include="Inspections\Concrete\VariableNotUsedInspection.cs" />
-    <Compile Include="Inspections\Results\DeclarationInspectionResult.cs" />
-    <Compile Include="Inspections\Results\IdentifierReferenceInspectionResult.cs" />
-    <Compile Include="Inspections\Results\QualifiedContextInspectionResult.cs" />
-    <Compile Include="Inspections\Concrete\VariableRequiresSetAssignmentEvaluator.cs" />
-    <Compile Include="Inspections\Concrete\VariableTypeNotDeclaredInspection.cs" />
-    <Compile Include="Inspections\Concrete\WriteOnlyPropertyInspection.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
-      <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
-      <Name>Rubberduck.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj">
-      <Project>{AC54B7FB-170D-4DA6-A30B-8CAD182F0E6B}</Project>
-      <Name>Rubberduck.Interaction</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
-      <Name>Rubberduck.Parsing</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj">
-      <Project>{D4B6A510-14E1-420A-A8D5-6A09890FD7D8}</Project>
-      <Name>Rubberduck.Refactorings</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{1B84B387-F7C4-4876-9BDF-C644C365359A}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj" />
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
-      <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
-      <Name>Rubberduck.SettingsProvider</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
-      <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
-      <Name>Rubberduck.SmartIndenter</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
+    <PackageReference Include="Antlr4.Runtime">
+      <Version>4.6.4</Version>
+    </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.5.10</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Schema">
+      <Version>4.5.10</Version>
+    </PackageReference>
+    <PackageReference Include="System.Collections.Immutable">
+      <Version>1.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.ValueTuple">
+      <Version>4.5.0</Version>
+    </PackageReference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

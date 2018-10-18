@@ -1664,6 +1664,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter by.
+        /// </summary>
+        public static string GroupingGrid_FilterBy {
+            get {
+                return ResourceManager.GetString("GroupingGrid_FilterBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Grouping.
         /// </summary>
         public static string GroupingGrid_GroupingStyle {
@@ -2037,11 +2046,56 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter by Description:.
+        ///   Looks up a localized string similar to Error.
         /// </summary>
-        public static string InspectionSettings_FilterDescription {
+        public static string InspectionResults_FilterByError {
             get {
-                return ResourceManager.GetString("InspectionSettings_FilterDescription", resourceCulture);
+                return ResourceManager.GetString("InspectionResults_FilterByError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hint.
+        /// </summary>
+        public static string InspectionResults_FilterByHint {
+            get {
+                return ResourceManager.GetString("InspectionResults_FilterByHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestion.
+        /// </summary>
+        public static string InspectionResults_FilterBySuggestion {
+            get {
+                return ResourceManager.GetString("InspectionResults_FilterBySuggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string InspectionResults_FilterByWarning {
+            get {
+                return ResourceManager.GetString("InspectionResults_FilterByWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description:.
+        /// </summary>
+        public static string InspectionSettings_FilterByDescription {
+            get {
+                return ResourceManager.GetString("InspectionSettings_FilterByDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Severity:.
+        /// </summary>
+        public static string InspectionSettings_FilterBySeverity {
+            get {
+                return ResourceManager.GetString("InspectionSettings_FilterBySeverity", resourceCulture);
             }
         }
         
