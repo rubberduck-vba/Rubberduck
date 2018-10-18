@@ -11,6 +11,7 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.VBA.Parsing;
 
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Annotations;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -97,12 +98,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
                 string updatedModuleText;
 
-                var result = VBACodeStringParser.Parse(sourceText, t => t.startRule());
+                var result = VBACodeStringParser.Parse(sourceText, t => t.moduleDeclarations());
 
                 var tempHelper = (CodeExplorerItemViewModel)parameter;
                 var updatedFolder = (parameter is CodeExplorerCustomFolderViewModel) ? tempHelper.Name : tempHelper.GetSelectedDeclaration().CustomFolder;
 
-                const string folderAnnotation = "'@Folder";
+                var folderAnnotation = AnnotationType.Folder.ToString();
                 if (result.parseTree.GetChild(0).GetText().Contains(folderAnnotation))
                 {
                     var workingTree = TreeContainingFolderAnnotation(result.parseTree, folderAnnotation);
