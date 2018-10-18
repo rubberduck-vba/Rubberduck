@@ -187,6 +187,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change &apos;IsMissing&apos; call to test for default value..
+        /// </summary>
+        public static string IsMissingOnInappropriateArgumentQuickFix {
+            get {
+                return ResourceManager.GetString("IsMissingOnInappropriateArgumentQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Write variable on one line.
         /// </summary>
         public static string MakeSingleLineParameterQuickFix {

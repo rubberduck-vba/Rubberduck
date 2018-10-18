@@ -1,76 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Product>Rubberduck.Deployment</Product>
+    <Copyright>Copyright © 2018</Copyright>
     <ProjectGuid>{4B9BD3FE-DDC8-4842-BC3D-B8EF43011F0C}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rubberduck.Deployment</RootNamespace>
     <AssemblyName>Rubberduck.Deployment</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    
+    <!-- Installer references depend on the unified output path -->
+    <UnifyOutputPath>true</UnifyOutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="olewoo">
-      <HintPath>OleWoo\olewoo.dll</HintPath>
-    </Reference>
-    <Reference Include="olewoo_interop">
-      <HintPath>OleWoo\olewoo_interop.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="IdlGeneration\IdlGenerator.cs" />
-    <Compile Include="IdlGeneration\IdlListener.cs" />
-    <Compile Include="Structs\Bitness.cs" />
-    <Compile Include="Structs\ClassMap.cs" />
-    <Compile Include="Structs\FileMap.cs" />
-    <Compile Include="Structs\PlaceHolders.cs" />
-    <Compile Include="Structs\RecordMap.cs" />
-    <Compile Include="Structs\RegistryEntry.cs" />
-    <Compile Include="Structs\TypeLibMap.cs" />
-    <Compile Include="Writers\InnoSetupRegistryWriter.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Builders\RegistryEntryBuilder.cs" />
-    <Compile Include="Writers\IRegistryWriter.cs" />
-    <Compile Include="Writers\LocalDebugRegistryWriter.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Examples\Delete HKCU Rubberduck Registry Entries.reg.txt" />
-    <Content Include="Examples\Delete Rubberduck Registry Entries.reg.txt" />
-    <Content Include="Examples\HKCU Rubberduck Registry Entries.reg.txt" />
-    <Content Include="Examples\Original Rubberduck Registries Entries.reg.txt" />
-    <Content Include="Examples\Rubberduck.dll.xml.txt" />
-    <Content Include="Examples\Rubberduck.tlb.xml.txt" />
-    <Content Include="Examples\_readme.txt" />
-  </ItemGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <ItemGroup>
     <None Include="app.config" />
     <None Include="BuildRegistryScript.ps1" />
@@ -78,47 +19,42 @@
     <None Include="PreInnoSetupConfiguration.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj">
-      <Project>{ac1b4a57-364a-4f90-a0cd-6ee818349ce5}</Project>
-      <Name>Rubberduck.API</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
-      <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
-      <Name>Rubberduck.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
-      <Project>{e8ab5d93-2d0f-423d-bc15-5ee118673e48}</Project>
-      <Name>Rubberduck.Main</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
-      <Name>Rubberduck.Parsing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj">
-      <Project>{40cc03e3-756c-4674-af07-384115deaee2}</Project>
-      <Name>Rubberduck.RegexAssistant</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj">
-      <Project>{e85e1253-86d6-45ee-968b-f37348d44132}</Project>
-      <Name>Rubberduck.SettingsProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj">
-      <Project>{b9c0bf22-4d8a-4bf4-89f9-e789c0063deb}</Project>
-      <Name>Rubberduck.SmartIndenter</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj" />
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
+    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj" />
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
+    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj" />
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
+    <Reference Include="olewoo">
+      <HintPath>OleWoo\olewoo.dll</HintPath>
+    </Reference>
+    <Reference Include="olewoo_interop">
+      <HintPath>OleWoo\olewoo_interop.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command "&amp; '$(ProjectDir)BuildRegistryScript.ps1' -config '$(ConfigurationName)' -builderAssemblyPath '$(TargetPath)' -netToolsDir '$(FrameworkSDKDir)bin\NETFX 4.6.1 Tools\' -wixToolsDir '$(ProjectDir)WixToolset\' -sourceDir '$(TargetDir)' -targetDir '$(TargetDir)' -projectDir '$(ProjectDir)' -includeDir '$(ProjectDir)InnoSetup\Includes\' -filesToExtract 'Rubberduck.dll|Rubberduck.API.dll'"</PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command "&amp; '$(ProjectDir)PreInnoSetupConfiguration.ps1' -WorkingDir '$(ProjectDir)'"</PreBuildEvent>
-  </PropertyGroup>
+
+  <Target Name="Register" AfterTargets="PostBuildEvent">
+    <GetFrameworkSdkPath>
+      <Output TaskParameter="Path" PropertyName="SdkPath" />
+    </GetFrameworkSdkPath>
+    <CreateProperty Value="$(ProjectDir)$(OutputPath)$(TargetFileName)">
+      <Output TaskParameter="Value" PropertyName="TargetAssembly" />
+    </CreateProperty>
+    <CreateProperty Value="&amp; '$(ProjectDir)BuildRegistryScript.ps1' -config  '$(ConfigurationName)' -builderAssemblyPath  '$(TargetPath)'  -netToolsDir  '$(SdkPath)bin\NETFX 4.6.1 Tools\' -wixToolsDir  '$(ProjectDir)WixToolset\' -sourceDir  '$(TargetDir)' -targetDir  '$(TargetDir)' -projectDir  '$(ProjectDir)' -includeDir  '$(ProjectDir)InnoSetup\Includes\' -filesToExtract  'Rubberduck.dll|Rubberduck.API.dll'">
+      <Output TaskParameter="Value" PropertyName="PowershellCommand" />
+    </CreateProperty>
+    <Exec Command="%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command &quot;$(PowershellCommand)&quot;" ConsoleToMsBuild="true" />
+    <Message Text="Ran Registration script" Importance="normal" />
+  </Target>
+  <Target Name="InnoSetupConfig" BeforeTargets="PreBuildEvent">
+      <CreateProperty Value="&amp;  '$(ProjectDir)PreInnoSetupConfiguration.ps1' -WorkingDir  '$(ProjectDir)'">
+      <Output TaskParameter="Value" PropertyName="PowershellCommand" />
+    </CreateProperty>
+    <Exec Command="%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command &quot;$(PowershellCommand)&quot;" ConsoleToMsBuild="true" />
+    <Message Text="Ran InnoSetupConfig" Importance="normal" />
+  </Target>
 </Project>
