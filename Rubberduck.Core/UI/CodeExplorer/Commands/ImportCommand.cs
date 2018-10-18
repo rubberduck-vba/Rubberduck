@@ -10,6 +10,8 @@ using System.IO;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.VBA.Parsing;
 
+using Rubberduck.Parsing.Grammar;
+
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class ImportCommand : CommandBase, IDisposable
@@ -89,7 +91,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             foreach (var filename in _openFileDialog.FileNames)
             {
-                var extension = filename.Split('.').Last();
+                var extension = Path.GetExtension(filename);
 
                 var sourceText = string.Join(Environment.NewLine, File.ReadAllLines(filename));
 
