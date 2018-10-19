@@ -36,10 +36,17 @@ cache:
 
 install:
   set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
-assembly_info:
+
+# patch version specifiers in the base project
+dotnet_csproj:
   patch: true
-  file: Rubberduck.Main\Properties\AssemblyInfo.cs
+  # patch version specifier in Core that's non-wildcard to deal with XAML generated code?
+  file: 'RubberduckBaseProject.csproj' # ;*\Rubberduck.Core.csproj'
+  version: '{version}'
   assembly_version: '{version}'
+  #file_version: '{version}'
+  #informational_version: '{version}'
+
 
 before_build:
   - cinst innosetup
@@ -48,26 +55,29 @@ before_build:
   - nuget restore
 build:
   verbosity: minimal
+  project: Rubberduck.sln
 
+# TestScript depends on the build matrix to only contain Release cpu
+# Otherwise we might run tests against artifacts that do not exist
 test_script:
   # we use -returntargetcode to fail the build if tests fail
-  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\Release\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\Release\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
+  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
   # when using test_script, after_test seems to not be executed
-  - codecov -f "Rubberduck_Coverage.xml"
+  - codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
 
 for:
   - branches:
       only:
         - next
     after_test:
-      - iscc /O "Rubberduck.Deployment\InnoSetup\Installer Build Script.iss" "/DConfig=Release"
+      - iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
       - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
   - branches:
       only:
         - master
     after_test:
-      - iscc /O "Rubberduck.Deployment\InnoSetup\Installer Build Script.iss" "/DConfig=Release"
+      - iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
       - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
     
 # grab the installers we produce and upload them to github :)

@@ -1,82 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Product>Rubberduck.API</Product>
+    <Description>Rubberduck Reflection API</Description>
+    <Copyright>Copyright © 2018</Copyright>
     <ProjectGuid>{AC1B4A57-364A-4F90-A0CD-6EE818349CE5}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rubberduck.API</RootNamespace>
-    <AssemblyName>Rubberduck.API</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <!-- 
+    TODO: affix AssemblyVersion and/or FileVersion for COM-Registration?!
+    -->
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="VBA\ApiProvider.cs" />
-    <Compile Include="VBA\Accessibility.cs" />
-    <Compile Include="VBA\Declaration.cs" />
-    <Compile Include="VBA\Declarations.cs" />
-    <Compile Include="VBA\DeclarationType.cs" />
-    <Compile Include="VBA\IdentifierReference.cs" />
-    <Compile Include="VBA\IdentifierReferences.cs" />
-    <Compile Include="VBA\Parser.cs" />
-    <Compile Include="VBA\ParserState.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj">
-      <Project>{a1587eac-7b54-407e-853f-4c7493d0323e}</Project>
-      <Name>Rubberduck.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj">
-      <Project>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</Project>
-      <Name>Rubberduck.Main</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
-      <Project>{a4a618e1-cbca-435f-9c6c-5181e030adfc}</Project>
-      <Name>Rubberduck.Parsing</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj">
-      <Project>{1b84b387-f7c4-4876-9bdf-c644c365359a}</Project>
-      <Name>Rubberduck.Resources</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
-      <Project>{8ce35eb3-8852-4ba1-84dd-df3f5d2967b0}</Project>
-      <Name>Rubberduck.VBEditor</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Plugin\" />
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
+    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj" />
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\RubberduckCodeAnalysis\bin\Release\RubberduckCodeAnalysis.dll" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
