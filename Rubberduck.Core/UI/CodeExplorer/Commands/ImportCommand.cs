@@ -8,6 +8,8 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.IO;
 using Antlr4.Runtime.Tree;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -100,7 +102,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 var tempHelper = (CodeExplorerItemViewModel)parameter;
                 var updatedFolder = (parameter is CodeExplorerCustomFolderViewModel) ? tempHelper.Name : tempHelper.GetSelectedDeclaration().CustomFolder;
 
-                const string folderAnnotation = "'@Folder";
+                var folderAnnotation = "@" + AnnotationType.Folder;
                 if (result.parseTree.GetChild(0).GetText().Contains(folderAnnotation))
                 {
                     var workingTree = TreeContainingFolderAnnotation(result.parseTree, folderAnnotation);
@@ -133,9 +135,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
                     File.Delete(tempFile);
                 }
-                catch
+                catch(Exception e)
                 {
-                    Logger.Log(LogLevel.Error, "Unable to create temporary file to import into the correct folder while expecuting " + nameof(ImportCommand));
+                    Logger.Error(e); 
                 }
             }
 
@@ -151,7 +153,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var folderNameEnclosedInQuotes = searchAnnotation.Contains('"');
             var enclosingCharacter = folderNameEnclosedInQuotes ? '"' : ')';
             var startIndex = searchAnnotation.IndexOf(folderAnnotation) + 1 + folderAnnotation.Length + (folderNameEnclosedInQuotes ? 1 : 0);
-            int endIndex = searchAnnotation.IndexOf(enclosingCharacter, startIndex + 1);
+            var endIndex = searchAnnotation.IndexOf(enclosingCharacter, startIndex + 1);
             var length = endIndex - startIndex;
 
             return searchAnnotation.Substring(startIndex, length);
@@ -159,7 +161,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private IParseTree TreeContainingFolderAnnotation(IParseTree containingTree, string folderAnnotation)
         {
-            for (int i=0;i< containingTree.ChildCount; i++)
+            for (var i=0;i< containingTree.ChildCount; i++)
             {
                 if (containingTree.GetChild(i).GetText().Contains(folderAnnotation))
                 {
