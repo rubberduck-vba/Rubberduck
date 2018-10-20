@@ -57,32 +57,35 @@ namespace Rubberduck.UI.Command.Refactorings
             {
                 projectId = activeProject.ProjectId;
             }
-            var component = Vbe.SelectedVBComponent;
 
-            if (component?.HasDesigner ?? false)
+            using (var component = Vbe.SelectedVBComponent)
             {
-                DeclarationType selectedType;
-                string selectedName;
-                using (var selectedControls = component.SelectedControls)
+                if (component?.HasDesigner ?? false)
                 {
-                    var selectedCount = selectedControls.Count;
-                    if (selectedCount > 1)
+                    DeclarationType selectedType;
+                    string selectedName;
+                    using (var selectedControls = component.SelectedControls)
                     {
-                        return null;
+                        var selectedCount = selectedControls.Count;
+                        if (selectedCount > 1)
+                        {
+                            return null;
+                        }
+
+                        // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+                        (selectedType, selectedName) = selectedCount == 0
+                            ? (DeclarationType.ClassModule, component.Name)
+                            : (DeclarationType.Control, selectedControls[0].Name);
                     }
 
-                    // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                    (selectedType, selectedName) = selectedCount == 0
-                        ? (DeclarationType.ClassModule, component.Name)
-                        : (DeclarationType.Control, selectedControls[0].Name);
+                    return _state.DeclarationFinder
+                        .MatchName(selectedName)
+                        .SingleOrDefault(m => m.ProjectId == projectId
+                                              && m.DeclarationType.HasFlag(selectedType)
+                                              && m.ComponentName == component.Name);
                 }
+            }
 
-                return _state.DeclarationFinder
-                    .MatchName(selectedName)
-                    .SingleOrDefault(m => m.ProjectId == projectId
-                        && m.DeclarationType.HasFlag(selectedType)
-                        && m.ComponentName == component.Name);
-             }
             return null;
         }
 

@@ -18,7 +18,6 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 
@@ -913,11 +912,15 @@ namespace Rubberduck.Parsing.VBA
             {
                 try
                 {
-                    foreach (var component in project.VBComponents)
+                    using (var components = project.VBComponents)
                     {
-                        if (IsNewOrModified(component))
+                        foreach (var component in components)
+                        using (component)
                         {
-                            return true;
+                            if (IsNewOrModified(component))
+                            {
+                                return true;
+                            }
                         }
                     }
                 }

@@ -650,12 +650,14 @@ namespace Rubberduck.Root
 
         private void RegisterWindowsHooks(IWindsorContainer container)
         {
-            var mainWindowHwnd = (IntPtr)_vbe.MainWindow.HWnd;
-
-            container.Register(Component.For<IRubberduckHooks>()
-                .ImplementedBy<RubberduckHooks>()
-                .DependsOn(Dependency.OnValue<IntPtr>(mainWindowHwnd))
-                .LifestyleSingleton());
+            using (var mainWindow = _vbe.MainWindow)
+            {
+                var mainWindowHwnd = (IntPtr)mainWindow.HWnd;
+                container.Register(Component.For<IRubberduckHooks>()
+                    .ImplementedBy<RubberduckHooks>()
+                    .DependsOn(Dependency.OnValue<IntPtr>(mainWindowHwnd))
+                    .LifestyleSingleton());
+            }
         }
         
         private void RegisterDockableUserControls(IWindsorContainer container)
