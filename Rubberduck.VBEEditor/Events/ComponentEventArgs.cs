@@ -1,21 +1,47 @@
 using System;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
 {
     public class ComponentEventArgs : EventArgs
     {
-        public ComponentEventArgs(string projectId, IVBProject project, IVBComponent component)
+        private readonly QualifiedModuleName _qmn;
+
+        public ComponentEventArgs(QualifiedModuleName qmn)
         {
-            ProjectId = projectId;
-            Project = project;
-            Component = component;
+            _qmn = qmn;
         }
 
-        public string ProjectId { get; }
+        public string ProjectId => _qmn.ProjectId;
+        public QualifiedModuleName QualifiedModuleName => _qmn;
 
-        public IVBProject Project { get; }
+        public bool TryGetProject(IProjectsRepository repository, out IVBProject project)
+        {
+            try
+            {
+                project = repository.Project(_qmn.ProjectId);
+                return true;
+            }
+            catch
+            {
+                project = null;
+                return false;
+            }
+        }
 
-        public IVBComponent Component { get; }
+        public bool TryGetComponent(IProjectsRepository repository, out IVBComponent component)
+        {
+            try
+            {
+                component = repository.Component(_qmn);
+                return true;
+            }
+            catch
+            {
+                component = null;
+                return false;
+            }
+        }
     }
 }
