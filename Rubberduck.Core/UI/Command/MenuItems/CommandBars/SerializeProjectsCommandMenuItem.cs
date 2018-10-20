@@ -80,7 +80,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 #if DEBUG
             //This block must be inside a DEBUG block because the Serialize method 
             //called is conditionally compiled and available only for a DEBUG build.
-            var path = string.IsNullOrWhiteSpace(_serializationProvider.Target)
+            var path = !string.IsNullOrWhiteSpace(_serializationProvider.Target)
                 ? Path.GetDirectoryName(_serializationProvider.Target)
                 : Path.GetTempPath();
             var traceDirectory = Path.Combine(path, "COM Trace");
