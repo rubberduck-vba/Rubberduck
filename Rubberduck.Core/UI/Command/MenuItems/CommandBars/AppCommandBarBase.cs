@@ -224,7 +224,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             ICommandMenuItem item;
             try
             {
-                item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Control.Tag);
+                item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Tag);
             }
             catch (COMException exception)
             {
@@ -236,7 +236,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return;
             }
 
-            Logger.Debug("({0}) Executing click handler for commandbar item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
+            Logger.Debug("({0}) Executing click handler for commandbar item '{1}', hash code {2}", GetHashCode(), e.Caption, e.TargetHashCode);
             item.Command.Execute(null);
         }
     }
