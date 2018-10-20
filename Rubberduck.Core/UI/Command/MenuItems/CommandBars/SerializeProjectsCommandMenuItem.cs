@@ -66,7 +66,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                         if (!toSerialize.ContainsKey(type.Guid))
                         {
                             toSerialize.Add(type.Guid, type);
-                        }                      
+                        }
                     }
                 }
             }
@@ -78,8 +78,12 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             }
 
 #if DEBUG
-            //Dumb hack cos I'm too lazy to wire up another button...
-            var traceDirectory = Path.Combine(Path.GetDirectoryName(_serializationProvider.Target), "COM Trace");
+            //This block must be inside a DEBUG block because the Serialize method 
+            //called is conditionally compiled and available only for a DEBUG build.
+            var path = string.IsNullOrWhiteSpace(_serializationProvider.Target)
+                ? Path.GetDirectoryName(_serializationProvider.Target)
+                : Path.GetTempPath();
+            var traceDirectory = Path.Combine(path, "COM Trace");
             if (!Directory.Exists(traceDirectory))
             {
                 Directory.CreateDirectory(traceDirectory);

@@ -90,12 +90,7 @@ namespace Rubberduck.VBEditor.ComManagement
         private const int StackTrackNumberOfElementsToSkipOnAddUpdate = 8;
         private const int StackTraceDepth = 5;
 
-        /// <summary>
-        /// Provide a serialized list of the COM Safe
-        /// to make it easy to analyze what is inside
-        /// the COM Safe at the different points of
-        /// the session's lifetime.
-        /// </summary>
+        /// <inheritdoc cref="IComSafe.Serialize"/>
         public void Serialize(string targetDirectory)
         {
             lock (_streamLock)
