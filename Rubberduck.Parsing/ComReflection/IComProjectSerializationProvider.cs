@@ -1,12 +1,8 @@
-﻿using Rubberduck.VBEditor;
-
-namespace Rubberduck.Parsing.ComReflection
+﻿namespace Rubberduck.Parsing.ComReflection
 {
-    public interface IComProjectSerializationProvider
+    public interface IComProjectSerializationProvider : IComProjectDeserializer
     {
         string Target { get; }
         void SerializeProject(ComProject project);
-        ComProject DeserializeProject(ReferenceInfo reference);
-        bool SerializedVersionExists(ReferenceInfo reference);
     }
 }
