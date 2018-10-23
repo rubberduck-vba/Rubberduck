@@ -66,7 +66,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                         if (!toSerialize.ContainsKey(type.Guid))
                         {
                             toSerialize.Add(type.Guid, type);
-                        }                      
+                        }
                     }
                 }
             }
@@ -76,6 +76,20 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 Logger.Warn($"Serializing {library.Path}.");
                 _serializationProvider.SerializeProject(library);
             }
+
+#if DEBUG
+            //This block must be inside a DEBUG block because the Serialize method 
+            //called is conditionally compiled and available only for a DEBUG build.
+            var path = !string.IsNullOrWhiteSpace(_serializationProvider.Target)
+                ? Path.GetDirectoryName(_serializationProvider.Target)
+                : Path.GetTempPath();
+            var traceDirectory = Path.Combine(path, "COM Trace");
+            if (!Directory.Exists(traceDirectory))
+            {
+                Directory.CreateDirectory(traceDirectory);
+            }
+            Rubberduck.VBEditor.ComManagement.ComSafeManager.GetCurrentComSafe().Serialize(traceDirectory);
+#endif
         }
     }
 }
