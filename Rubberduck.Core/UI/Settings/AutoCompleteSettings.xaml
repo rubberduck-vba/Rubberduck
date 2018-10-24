@@ -88,11 +88,11 @@
                     </DockPanel>
                 </Label>
                 <CheckBox Margin="10,0" VerticalContentAlignment="Center" IsChecked="{Binding IsEnabled}">
-                    <Label Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=EnableAutocompleteLabel}"/>
+                    <Label Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableAutocompleteLabel}"/>
                 </CheckBox>
 
                 <Label Margin="10" 
-                       Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SelfClosingPairs}"
+                       Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=SelfClosingPairs}"
                        FontWeight="Bold" />
                 <CheckBox Margin="15,0,15,0" 
                           IsEnabled="{Binding IsEnabled}"
@@ -100,7 +100,7 @@
                           Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableSelfClosingPairs}" />
 
                 <Label Margin="10" 
-                       Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SmartConcat}"
+                       Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=SmartConcat}"
                        FontWeight="Bold" />
                 <CheckBox Margin="15,0,15,0" 
                           IsEnabled="{Binding IsEnabled}"
@@ -112,7 +112,7 @@
                           Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=ConcatVbNewline}" />
 
                 <Label Margin="10" 
-                       Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=BlockCompletion}"
+                       Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=BlockCompletion}"
                        FontWeight="Bold" />
                 <CheckBox Margin="15,0,15,0" 
                           IsEnabled="{Binding IsEnabled}"
