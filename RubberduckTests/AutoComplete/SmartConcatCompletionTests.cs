@@ -109,7 +109,9 @@ namespace RubberduckTests.AutoComplete
             }
             module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(prettified.Code);
 
-            settings = new AutoCompleteSettings(Enumerable.Empty<AutoCompleteSetting>()) { EnableSmartConcat = true };
+            settings = new AutoCompleteSettings {IsEnabled = true};
+            settings.SmartConcat.IsEnabled = true;
+            settings.SmartConcat.ConcatVbNewLineModifier = ModifierKeySetting.CtrlKey;
 
             var handler = new CodePaneSourceCodeHandler(new ProjectsRepository(vbe.Object));
             var sut = new SmartConcatenationHandler(handler);
