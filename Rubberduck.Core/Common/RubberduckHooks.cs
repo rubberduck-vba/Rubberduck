@@ -26,8 +26,11 @@ namespace Rubberduck.Common
             }
         }
 
-        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory, AutoCompleteService autoComplete)
-            : base(GetVbeMainWindowPtr(vbe), GetVbeMainWindowPtr(vbe))
+        private RubberduckHooks(IntPtr ptr) : base(ptr, ptr) { }
+
+        public RubberduckHooks(IVBE vbe, IGeneralConfigService config, HotkeyFactory hotkeyFactory,
+            AutoCompleteService autoComplete)
+            : this(GetVbeMainWindowPtr(vbe))
         {
             _config = config;
             _hotkeyFactory = hotkeyFactory;
