@@ -64,7 +64,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInProject => true;
 
         private static void RemoveAnnotationMarker(VBAParser.AnnotationListContext annotationList,
-            IAnnotation annotation, IModuleRewriter rewriter)
+            IAnnotation annotation, IExecutableModuleRewriter rewriter)
         {
             var index = Array.IndexOf(annotationList.annotation(), annotation.Context);
             rewriter.Remove(annotationList.AT(index));

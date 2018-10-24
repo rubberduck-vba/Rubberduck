@@ -28,7 +28,7 @@ namespace Rubberduck.Inspections.QuickFixes
             UpdateContext((dynamic)result.Context, rewriter);
         }
 
-        private void UpdateContext(VBAParser.IfStmtContext context, IModuleRewriter rewriter)
+        private void UpdateContext(VBAParser.IfStmtContext context, IExecutableModuleRewriter rewriter)
         {
             var elseBlock = context.elseBlock();
             var elseIfBlock = context.elseIfBlock().FirstOrDefault();
@@ -63,7 +63,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private void UpdateContext(VBAParser.IfWithEmptyThenContext context, IModuleRewriter rewriter)
+        private void UpdateContext(VBAParser.IfWithEmptyThenContext context, IExecutableModuleRewriter rewriter)
         {
             var elseClause = context.singleLineElseClause();
             if (context.singleLineElseClause().whiteSpace() != null)
@@ -79,7 +79,7 @@ namespace Rubberduck.Inspections.QuickFixes
             UpdateCondition((dynamic)context.booleanExpression().children[0], rewriter);
         }
 
-        private void UpdateContext(VBAParser.ElseIfBlockContext context, IModuleRewriter rewriter)
+        private void UpdateContext(VBAParser.ElseIfBlockContext context, IExecutableModuleRewriter rewriter)
         {
             if (BlockHasDeclaration(context.block()))
             {
@@ -89,7 +89,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(context);
         }
 
-        private void UpdateCondition(VBAParser.RelationalOpContext condition, IModuleRewriter rewriter)
+        private void UpdateCondition(VBAParser.RelationalOpContext condition, IExecutableModuleRewriter rewriter)
         {
             if (condition.EQ() != null)
             {
@@ -121,7 +121,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private void UpdateCondition(VBAParser.LogicalNotOpContext condition, IModuleRewriter rewriter)
+        private void UpdateCondition(VBAParser.LogicalNotOpContext condition, IExecutableModuleRewriter rewriter)
         {
             if (condition.whiteSpace() != null)
             {
@@ -133,17 +133,17 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private void UpdateCondition(VBAParser.LogicalAndOpContext condition, IModuleRewriter rewriter)
+        private void UpdateCondition(VBAParser.LogicalAndOpContext condition, IExecutableModuleRewriter rewriter)
         {
             rewriter.Replace(condition.AND(), "Or");
         }
 
-        private void UpdateCondition(VBAParser.LogicalOrOpContext condition, IModuleRewriter rewriter)
+        private void UpdateCondition(VBAParser.LogicalOrOpContext condition, IExecutableModuleRewriter rewriter)
         {
             rewriter.Replace(condition.OR(), "And");
         }
 
-        private void UpdateCondition(ParserRuleContext condition, IModuleRewriter rewriter)
+        private void UpdateCondition(ParserRuleContext condition, IExecutableModuleRewriter rewriter)
         {
             if (condition.GetText().Contains(' '))
             {

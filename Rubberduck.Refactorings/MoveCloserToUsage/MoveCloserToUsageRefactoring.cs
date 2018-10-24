@@ -24,7 +24,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         private readonly IMessageBox _messageBox;
         private Declaration _target;
         
-        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
+        private readonly HashSet<IExecutableModuleRewriter> _rewriters = new HashSet<IExecutableModuleRewriter>();
 
         public MoveCloserToUsageRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
         {

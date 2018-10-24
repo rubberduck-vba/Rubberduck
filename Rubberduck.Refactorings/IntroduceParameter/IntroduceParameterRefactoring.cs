@@ -19,7 +19,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         private readonly IList<Declaration> _declarations;
         private readonly IMessageBox _messageBox;
 
-        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
+        private readonly HashSet<IExecutableModuleRewriter> _rewriters = new HashSet<IExecutableModuleRewriter>();
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
         {

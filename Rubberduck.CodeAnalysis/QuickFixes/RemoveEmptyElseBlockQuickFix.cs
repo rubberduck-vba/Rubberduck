@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
             UpdateContext((dynamic)result.Context, rewriter);
         }
 
-        private void UpdateContext(VBAParser.ElseBlockContext context, IModuleRewriter rewriter)
+        private void UpdateContext(VBAParser.ElseBlockContext context, IExecutableModuleRewriter rewriter)
         {
             var elseBlock = context.block();
 

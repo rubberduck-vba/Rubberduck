@@ -20,7 +20,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
-        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
+        private readonly HashSet<IExecutableModuleRewriter> _rewriters = new HashSet<IExecutableModuleRewriter>();
         private readonly IProjectsProvider _projectsProvider;
 
         public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox, IProjectsProvider projectsProvider)

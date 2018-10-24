@@ -178,7 +178,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return Array.IndexOf(((VBAParser.ArgListContext)context.Parent).arg().ToArray(), context);
         }
 
-        private static void ReplaceTypeHint(RuleContext context, IModuleRewriter rewriter)
+        private static void ReplaceTypeHint(RuleContext context, IExecutableModuleRewriter rewriter)
         {
             var typeHintContext = ((ParserRuleContext)context).GetDescendent<VBAParser.TypeHintContext>();
             rewriter.Replace(typeHintContext, "&");

@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
-            IModuleRewriter rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            IExecutableModuleRewriter rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
             var context = result.Context;
             rewriter.Remove(context);
         }

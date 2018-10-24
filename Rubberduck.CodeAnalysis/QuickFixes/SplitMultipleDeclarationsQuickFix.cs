@@ -1,4 +1,6 @@
+using System;
 using System.Text;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
@@ -19,11 +21,22 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result)
         {
-            dynamic context = result.Context is VBAParser.ConstStmtContext
+            var context = result.Context is VBAParser.ConstStmtContext
                 ? result.Context
-                : result.Context.Parent;
+                : (ParserRuleContext)result.Context.Parent;
 
-            var declarationsText = GetDeclarationsText(context);
+            string declarationsText;
+            switch (context)
+            {
+                case VBAParser.ConstStmtContext consts:
+                    declarationsText = GetDeclarationsText(consts);
+                    break;
+                case VBAParser.VariableStmtContext variables:
+                    declarationsText = GetDeclarationsText(variables);
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
 
             var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
             rewriter.Replace(context, declarationsText);

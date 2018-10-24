@@ -16,7 +16,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
         private EncapsulateFieldModel _model;
 
-        private readonly HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
+        private readonly HashSet<IExecutableModuleRewriter> _referenceRewriters = new HashSet<IExecutableModuleRewriter>();
 
         public EncapsulateFieldRefactoring(IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory)
         {
@@ -71,7 +71,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             Refactor();
         }
 
-        private void AddProperty(IModuleRewriter rewriter)
+        private void AddProperty(IExecutableModuleRewriter rewriter)
         {
             UpdateReferences();
             SetFieldToPrivate(rewriter);
@@ -120,7 +120,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             }
         }
 
-        private void SetFieldToPrivate(IModuleRewriter rewriter)
+        private void SetFieldToPrivate(IExecutableModuleRewriter rewriter)
         {
             if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
             {

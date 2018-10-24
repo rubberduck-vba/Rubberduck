@@ -1,4 +1,4 @@
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Symbols;
@@ -8,11 +8,6 @@ namespace Rubberduck.Parsing.Rewriter
     public interface IModuleRewriter
     {
         bool IsDirty { get; }
-
-        /// <summary>
-        /// Rewrites the entire module / applies all changes.
-        /// </summary>
-        void Rewrite();
 
         /// <summary>
         /// Removes all tokens for specified <see cref="Declaration"/>. Use <see cref="Rewrite"/> method to apply changes.
@@ -38,6 +33,12 @@ namespace Rubberduck.Parsing.Rewriter
         /// <param name="target">The <see cref="ITerminalNode"/> to remove.</param>
         /// <remarks>Removes a line that would be left empty by the removal of the identifier reference token.</remarks>
         void Remove(ITerminalNode target);
+        /// <summary>
+        /// Removes all tokens for specified <see cref="IParseTree"/>. Use <see cref="Rewrite"/> method to apply changes.
+        /// </summary>
+        /// <param name="target">The <see cref="IParseTree"/> to remove.</param>
+        /// <remarks>Removes a line that would be left empty by the removal of the identifier reference token.</remarks>
+        void Remove(IParseTree target);
 
         /// <summary>
         /// Removes all tokens from the start of the first node to the end of the second node.
@@ -71,6 +72,12 @@ namespace Rubberduck.Parsing.Rewriter
         /// <param name="target">The <see cref="ITerminalNode"/> to replace.</param>
         /// <param name="content">The literal replacement for the expression.</param>
         void Replace(ITerminalNode target, string content);
+        /// <summary>
+        /// Replaces specified token with specified content. Use <see cref="Rewrite"/> method to apply changes.
+        /// </summary>
+        /// <param name="target">The <see cref="IParseTree"/> to replace.</param>
+        /// <param name="content">The literal replacement for the expression.</param>
+        void Replace(IParseTree target, string content);
 
         /// <summary>
         /// Replaces specified interval with specified content. Use <see cref="Rewrite"/> method to apply changes.

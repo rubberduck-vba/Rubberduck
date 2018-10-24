@@ -71,7 +71,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             PromoteVariable(rewriter, target);
         }
 
-        private void PromoteVariable(IModuleRewriter rewriter, Declaration target)
+        private void PromoteVariable(IExecutableModuleRewriter rewriter, Declaration target)
         {
             if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
             {
@@ -99,7 +99,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             rewriter.Rewrite();
         }
 
-        private void AddField(IModuleRewriter rewriter, Declaration target)
+        private void AddField(IExecutableModuleRewriter rewriter, Declaration target)
         {
             var content = $"{Tokens.Private} {target.IdentifierName} {Tokens.As} {target.AsTypeName}\r\n";
             var members = _state.DeclarationFinder.Members(target.QualifiedName.QualifiedModuleName)

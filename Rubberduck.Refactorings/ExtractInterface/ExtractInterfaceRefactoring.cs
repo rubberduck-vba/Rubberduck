@@ -121,7 +121,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        private void AddInterfaceMembersToClass(IModuleRewriter rewriter)
+        private void AddInterfaceMembersToClass(IExecutableModuleRewriter rewriter)
         {
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _model.State, _messageBox);
             implementInterfaceRefactoring.Refactor(_model.Members.Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);

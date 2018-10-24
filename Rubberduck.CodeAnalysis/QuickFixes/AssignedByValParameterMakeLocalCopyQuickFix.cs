@@ -103,7 +103,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 && !IsNameCollision(variableName);
         }
 
-        private void ReplaceAssignedByValParameterReferences(IModuleRewriter rewriter, Declaration target, string localIdentifier)
+        private void ReplaceAssignedByValParameterReferences(IExecutableModuleRewriter rewriter, Declaration target, string localIdentifier)
         {
             foreach (var identifierReference in target.References)
             {
@@ -111,7 +111,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private void InsertLocalVariableDeclarationAndAssignment(IModuleRewriter rewriter, Declaration target, string localIdentifier)
+        private void InsertLocalVariableDeclarationAndAssignment(IExecutableModuleRewriter rewriter, Declaration target, string localIdentifier)
         {
             var localVariableDeclaration = $"{Tokens.Dim} {localIdentifier} {Tokens.As} {target.AsTypeName}";
 

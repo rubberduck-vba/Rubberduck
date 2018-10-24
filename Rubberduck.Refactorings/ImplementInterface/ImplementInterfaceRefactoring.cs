@@ -99,12 +99,12 @@ namespace Rubberduck.Refactorings.ImplementInterface
             throw new NotSupportedException();
         }
 
-        internal void Refactor(List<Declaration> members, IModuleRewriter rewriter, string interfaceName)
+        internal void Refactor(List<Declaration> members, IExecutableModuleRewriter rewriter, string interfaceName)
         {
             AddItems(members, rewriter, interfaceName);
         }
 
-        private void ImplementMissingMembers(IModuleRewriter rewriter)
+        private void ImplementMissingMembers(IExecutableModuleRewriter rewriter)
         {
             var implemented = _targetClass.Members
                 .Where(decl => decl is ModuleBodyElementDeclaration member && ReferenceEquals(member.InterfaceImplemented, _targetInterface))
@@ -119,7 +119,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
             AddItems(nonImplementedMembers, rewriter, _targetInterface.IdentifierName);
         }
 
-        private void AddItems(IEnumerable<Declaration> missingMembers, IModuleRewriter rewriter, string interfaceName)
+        private void AddItems(IEnumerable<Declaration> missingMembers, IExecutableModuleRewriter rewriter, string interfaceName)
         {
             var missingMembersText = missingMembers.Aggregate(string.Empty,
                 (current, member) => current + Environment.NewLine + GetInterfaceMember(member, interfaceName));

@@ -11,7 +11,7 @@ using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public class ModuleRewriter : IModuleRewriter
+    public class ModuleRewriter : IExecutableModuleRewriter
     {
         private readonly QualifiedModuleName _module;
         private readonly ISourceCodeHandler _sourceCodeHandler;
@@ -73,6 +73,22 @@ namespace Rubberduck.Parsing.Rewriter
             _rewriter.Delete(target);
         }
 
+        public void Remove(IParseTree target)
+        {
+            switch (target)
+            {
+                case ITerminalNode terminalNode:
+                    Remove(terminalNode);
+                    break;
+                case ParserRuleContext context:
+                    Remove(context);
+                    break;
+                default:
+                    //It should be impossible to end up here.
+                    throw new NotSupportedException();
+            }
+        }
+
         public void RemoveRange(int start, int stop)
         {
             _rewriter.Delete(start, stop);
@@ -96,6 +112,22 @@ namespace Rubberduck.Parsing.Rewriter
         public void Replace(ITerminalNode target, string content)
         {
             _rewriter.Replace(target.Symbol.TokenIndex, content);
+        }
+
+        public void Replace(IParseTree target, string content)
+        {
+            switch (target)
+            {
+                case ITerminalNode terminalNode:
+                    Replace(terminalNode, content);
+                    break;
+                case ParserRuleContext context:
+                    Replace(context, content);
+                    break;
+                default:
+                    //It should be impossible to end up here.
+                    throw new NotSupportedException();
+            }
         }
 
         public void Replace(Interval tokenInterval, string content)

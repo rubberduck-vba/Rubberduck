@@ -16,8 +16,8 @@ namespace Rubberduck.Parsing.VBA
     {
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
-        public IModuleRewriter ModuleRewriter { get; private set; }
-        public IModuleRewriter AttributesRewriter { get; private set; }
+        public IExecutableModuleRewriter ModuleRewriter { get; private set; }
+        public IExecutableModuleRewriter AttributesRewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public IParseTree AttributesPassParseTree { get; private set; }
         public ParserState State { get; private set; }
@@ -79,7 +79,7 @@ namespace Rubberduck.Parsing.VBA
             IsNew = true;
         }
 
-        public ModuleState SetCodePaneRewriter(QualifiedModuleName module, IModuleRewriter codePaneRewriter)
+        public ModuleState SetCodePaneRewriter(QualifiedModuleName module, IExecutableModuleRewriter codePaneRewriter)
         {
             ModuleRewriter = codePaneRewriter;
             return this;
@@ -144,7 +144,7 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState SetAttributesRewriter(IModuleRewriter rewriter)
+        public ModuleState SetAttributesRewriter(IExecutableModuleRewriter rewriter)
         {
             AttributesRewriter = rewriter;
             return this;

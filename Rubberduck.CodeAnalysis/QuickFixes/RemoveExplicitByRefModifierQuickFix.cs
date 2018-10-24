@@ -69,7 +69,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return Array.IndexOf(((VBAParser.ArgListContext)context.Parent).arg().ToArray(), context);
         }
 
-        private static void RemoveByRefIdentifier(IModuleRewriter rewriter, VBAParser.ArgContext context)
+        private static void RemoveByRefIdentifier(IExecutableModuleRewriter rewriter, VBAParser.ArgContext context)
         {
             if (context.BYREF() != null)
             {

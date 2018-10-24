@@ -844,7 +844,7 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
-        public void SetCodePaneRewriter(QualifiedModuleName module, IModuleRewriter codePaneRewriter)
+        public void SetCodePaneRewriter(QualifiedModuleName module, IExecutableModuleRewriter codePaneRewriter)
         {
             _moduleStates[module].SetCodePaneRewriter(module, codePaneRewriter);
         }
@@ -929,24 +929,24 @@ namespace Rubberduck.Parsing.VBA
             return false;
         }
 
-        public IModuleRewriter GetRewriter(IVBComponent component)
+        public IExecutableModuleRewriter GetRewriter(IVBComponent component)
         {
             var qualifiedModuleName = new QualifiedModuleName(component);
             return GetRewriter(qualifiedModuleName);
         }
 
-        public IModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
+        public IExecutableModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
         {
             return _moduleStates[qualifiedModuleName].ModuleRewriter;
         }
 
-        public IModuleRewriter GetRewriter(Declaration declaration)
+        public IExecutableModuleRewriter GetRewriter(Declaration declaration)
         {
             var qualifiedModuleName = declaration.QualifiedSelection.QualifiedName;
             return GetRewriter(qualifiedModuleName);
         }
 
-        public IModuleRewriter GetAttributeRewriter(QualifiedModuleName qualifiedModuleName)
+        public IExecutableModuleRewriter GetAttributeRewriter(QualifiedModuleName qualifiedModuleName)
         {
             return _moduleStates[qualifiedModuleName].AttributesRewriter;
         }
@@ -1067,7 +1067,7 @@ namespace Rubberduck.Parsing.VBA
         }
 
 
-        public void AddAttributesRewriter(QualifiedModuleName module, IModuleRewriter attributesRewriter)
+        public void AddAttributesRewriter(QualifiedModuleName module, IExecutableModuleRewriter attributesRewriter)
         {
             var key = module;
             _moduleStates[key].SetAttributesRewriter(attributesRewriter);

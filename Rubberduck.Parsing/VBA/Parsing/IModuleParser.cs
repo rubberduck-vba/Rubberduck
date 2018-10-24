@@ -18,8 +18,8 @@ namespace Rubberduck.Parsing.VBA.Parsing
             IEnumerable<IAnnotation> annotations,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> attributes,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> membersAllowingAttributes,
-            IModuleRewriter codePaneRewriter,
-            IModuleRewriter attributesRewriter
+            IExecutableModuleRewriter codePaneRewriter,
+            IExecutableModuleRewriter attributesRewriter
         )
         {
             CodePaneParseTree = codePaneParseTree;
@@ -38,8 +38,8 @@ namespace Rubberduck.Parsing.VBA.Parsing
         public IEnumerable<IAnnotation> Annotations { get; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> Attributes { get; }
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; }
-        public IModuleRewriter CodePaneRewriter { get; }
-        public IModuleRewriter AttributesRewriter { get; }
+        public IExecutableModuleRewriter CodePaneRewriter { get; }
+        public IExecutableModuleRewriter AttributesRewriter { get; }
     }
 
     public interface IModuleParser

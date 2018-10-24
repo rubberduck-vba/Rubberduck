@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing;
@@ -19,7 +21,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
         private RemoveParametersModel _model;
-        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
+        private readonly HashSet<IExecutableModuleRewriter> _rewriters = new HashSet<IExecutableModuleRewriter>();
 
         public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
         {
@@ -182,7 +184,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     var index = i == 0 ? 0 : argList.children.IndexOf(args[i - 1]) + 1;
                     for (var j = index; j < argList.children.Count; j++)
                     {
-                        rewriter.Remove((dynamic)argList.children[j]);
+                        rewriter.Remove(argList.children[j]);
                     }
                     break;
                 }
@@ -278,7 +280,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         //Issue 4319.  If there are 3 or more arguments and the user elects to remove 2 or more of
         //the last arguments, then we need to specifically remove the trailing comma from
         //the last 'kept' argument.
-        private void RemoveTrailingComma(IModuleRewriter rewriter, VBAParser.ArgumentListContext argList = null, bool usesNamedParams = false)
+        private void RemoveTrailingComma(IExecutableModuleRewriter rewriter, VBAParser.ArgumentListContext argList = null, bool usesNamedParams = false)
         {
             var commaLocator = RetrieveTrailingCommaInfo(_model.RemoveParameters, _model.Parameters);
             if (!commaLocator.RequiresTrailingCommaRemoval)
