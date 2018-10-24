@@ -18,7 +18,7 @@ namespace Rubberduck.AutoComplete.Service
 
         public override CodeString Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings)
         {
-            if (e.Character != '\r' || (!settings?.EnableSmartConcat ?? true))
+            if (e.Character != '\r' || (!settings?.SmartConcat.IsEnabled ?? true))
             {
                 return null;
             }
@@ -35,7 +35,10 @@ namespace Rubberduck.AutoComplete.Service
                 var indent = currentContent.CaretLine.NthIndexOf('"', 1);
                 var whitespace = new string(' ', indent);
 
-                var autoCode = $"\" {(e.IsControlKeyDown ? "& vbNewLine " : string.Empty)}& _\r\n{whitespace}\"";
+                // todo: handle shift modifier?
+                var concatVbNewLine = settings.SmartConcat.ConcatVbNewLineModifier.HasFlag(ModifierKeySetting.CtrlKey) && e.IsControlKeyDown;
+
+                var autoCode = $"\" {(concatVbNewLine ? "& vbNewLine " : string.Empty)}& _\r\n{whitespace}\"";
                 var left = currentContent.CaretLine.Substring(0, currentContent.CaretPosition.StartColumn);
                 var right = currentContent.CaretLine.Substring(currentContent.CaretPosition.StartColumn);
 
