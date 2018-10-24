@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
@@ -36,8 +38,8 @@ namespace Rubberduck.Inspections.Concrete
 
             var excludedDeclarations = BuiltInDeclarations.Where(decl => IgnoredFunctions.Contains(decl.QualifiedName.ToString())).ToList();
 
-            return declarations.Except(excludedDeclarations)
-                .Where(d => d.References.Any())
+            return declarations
+                .Where(d => d.References.Any() && !excludedDeclarations.Any(excl => DeclarationReferencesContainsReference(excl, d)))
                 .SelectMany(d => d.References)
                 .Distinct()
                 .Where(r => !r.IsIgnoringInspectionResultFor(AnnotationName))
@@ -45,6 +47,23 @@ namespace Rubberduck.Inspections.Concrete
                     string.Format(InspectionResults.UnassignedVariableUsageInspection, r.IdentifierName),
                     State,
                     r)).ToList();
+        }
+
+        private static bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)
+        {
+            foreach (var targetReference in target.References)
+            {
+                foreach (var reference in parentDeclaration.References)
+                {
+                    var context = (ParserRuleContext)reference.Context.Parent;
+                    if (context.GetSelection().Contains(targetReference.Selection))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
     }
 }
