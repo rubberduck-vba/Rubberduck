@@ -13,35 +13,27 @@ using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Inspections.Rubberduck.Inspections;
-using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI;
-using Rubberduck.UI.CodeExplorer;
-using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
-using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.UI.Controls;
-using Rubberduck.UI.Inspections;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.UI.Refactorings.Rename;
-using Rubberduck.UI.ToDoItems;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Component = Castle.MicroKernel.Registration.Component;
-using Rubberduck.UI.CodeMetrics;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Parsing.Common;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
@@ -53,13 +45,11 @@ using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.ComReferenceLoading;
 using Rubberduck.Parsing.VBA.DeclarationResolving;
-using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SourceCodeHandling;
-using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 
@@ -324,13 +314,6 @@ namespace Rubberduck.Root
         {
             foreach (var assembly in assembliesToRegister)
             {
-                container.Register(Classes.FromAssembly(assembly)
-                    .IncludeNonPublicTypes()
-                    .BasedOn<IAutoComplete>()
-                    .If(type => type.NotDisabledOrExperimental(_initialSettings))
-                    .WithService.Base()
-                    .LifestyleTransient());
-
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
                     .BasedOn<AutoCompleteHandlerBase>()
