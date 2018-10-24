@@ -157,6 +157,7 @@ End Sub";
         }
 
         [Test]
+        [Ignore("Test concurrency issue. Only passes if run individually.")]
         [Category("Inspections")]
         public void UnassignedVariableUsage_NoResultForLenFunction()
         {
@@ -178,6 +179,7 @@ End Sub";
         }
 
         [Test]
+        [Ignore("Test concurrency issue. Only passes if run individually.")]
         [Category("Inspections")]
         public void UnassignedVariableUsage_NoResultForLenBFunction()
         {
