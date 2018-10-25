@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Windows.Forms;
 using NUnit.Framework;
@@ -1167,6 +1168,40 @@ End Sub";
                 @"Private Sub Foo()
     Dim bar(1, 1) As Boolean
     bar(0, 0) = True
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null);
+                refactoring.Refactor(qualifiedSelection);
+
+                var rewriter = state.GetRewriter(component);
+                Assert.AreEqual(expectedCode, rewriter.GetText());
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_SelfAssigned()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As New Collection
+Private Sub Foo()
+    bar.Add 42
+End Sub";
+            var selection = new Selection(1, 1);
+
+            //Expectation
+            const string expectedCode =
+                @"Private Sub Foo()
+    Dim bar As New Collection
+    bar.Add 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);

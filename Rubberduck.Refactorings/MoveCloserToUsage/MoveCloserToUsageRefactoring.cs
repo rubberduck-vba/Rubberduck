@@ -155,9 +155,10 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             var subscripts = _target.Context.GetDescendent<VBAParser.SubscriptsContext>()?.GetText() ?? string.Empty;
             var identifier = _target.IsArray ? $"{_target.IdentifierName}({subscripts})" : _target.IdentifierName;
+
             var newVariable = _target.AsTypeContext is null
                 ? $"{Tokens.Dim} {identifier} {Tokens.As} {Tokens.Variant}{Environment.NewLine}"
-                : $"{Tokens.Dim} {identifier} {Tokens.As} {_target.AsTypeNameWithoutArrayDesignator}{Environment.NewLine}";
+                : $"{Tokens.Dim} {identifier} {Tokens.As} {(_target.IsSelfAssigned ? Tokens.New + " " : string.Empty)}{_target.AsTypeNameWithoutArrayDesignator}{Environment.NewLine}";
 
             var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
 
