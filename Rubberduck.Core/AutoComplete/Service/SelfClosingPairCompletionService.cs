@@ -82,7 +82,7 @@ namespace Rubberduck.AutoComplete.Service
             {
                 newCode = autoCode;
             }
-            else if (original.CaretPosition.StartColumn < line.Length && line[original.CaretPosition.StartColumn] == pair.ClosingChar)
+            else if (pair.IsSymetric && original.CaretPosition.StartColumn < line.Length && line[original.CaretPosition.StartColumn] == pair.ClosingChar)
             {
                 newCode = line;
             }
