@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
@@ -140,6 +141,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         protected TApplication Application => Target;
 
         public string ApplicationName { get; }
+
+        public virtual IEnumerable<IHostDocument> GetDocuments() => null;
+
+        public virtual IHostDocument GetDocument(QualifiedModuleName moduleName) => null;
 
         public override bool Equals(ISafeComWrapper<TApplication> other)
         {

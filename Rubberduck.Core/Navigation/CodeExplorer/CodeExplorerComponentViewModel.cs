@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Resources.CodeExplorer;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -36,13 +37,15 @@ namespace Rubberduck.Navigation.CodeExplorer
         };
 
         private readonly IProjectsProvider _projectsProvider;
+        private readonly IVBE _vbe;
 
-        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider)
+        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider, IVBE vbe)
         {
             Parent = parent;
             Declaration = declaration;
             _projectsProvider = projectsProvider;
-            
+            _vbe = vbe;
+
             _icon = Icons.ContainsKey(DeclarationType) 
                 ? Icons[DeclarationType]
                 : GetImageSource(CodeExplorerUI.status_offline);
@@ -65,13 +68,13 @@ namespace Rubberduck.Navigation.CodeExplorer
                 switch (qualifiedModuleName.ComponentType)
                 {
                     case ComponentType.Document:
-                        var component = _projectsProvider.Component(qualifiedModuleName);
                         string parenthesizedName;
-                        using (var properties = component.Properties)
+                        using (var app = _vbe.HostApplication())
+                        using (var document = app.GetDocument(qualifiedModuleName))
                         {
-                            parenthesizedName = properties["Name"].Value.ToString() ?? string.Empty;
+                            parenthesizedName = document.Name ?? string.Empty;
                         }
-
+                        
                         if (ContainsBuiltinDocumentPropertiesProperty())
                         {
                             CodeExplorerItemViewModel node = this;
@@ -113,7 +116,16 @@ namespace Rubberduck.Navigation.CodeExplorer
             var component = _projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName);
             using (var properties = component.Properties)
             {
-                return properties.Any(item => item.Name == "BuiltinDocumentProperties");
+                foreach (var property in properties)
+                using(property)
+                {
+                    if (property.Name == "BuiltinDocumentProperties")
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
 
