@@ -15,9 +15,12 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToList();
+            var eventHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
+
             var names = State.DeclarationFinder.UserDeclarations(Parsing.Symbols.DeclarationType.Member)
                 .Where(w => w.ParentDeclaration.DeclarationType == Parsing.Symbols.DeclarationType.ClassModule)
-                .Where(w => !State.DeclarationFinder.FindAllInterfaceImplementingMembers().Contains(w))
+                .Where(w => !interfaceMembers.Contains(w) && !eventHandlers.Contains(w))
                 .Where(w => w.Accessibility == Parsing.Symbols.Accessibility.Public || w.Accessibility == Parsing.Symbols.Accessibility.Implicit)
                 .Where(w => w.IdentifierName.Contains('_'))
                 .ToList();
