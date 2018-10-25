@@ -141,13 +141,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 
         public string ApplicationName { get; }
 
-        public abstract void Run(dynamic declaration);
-
-        public virtual object Run(string name, params object[] args)
-        {
-            return null;
-        }
-
         public override bool Equals(ISafeComWrapper<TApplication> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
