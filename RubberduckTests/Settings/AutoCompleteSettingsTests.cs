@@ -103,7 +103,7 @@ namespace RubberduckTests.Settings
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.IsEnabled, viewModel.IsEnabled);
-                Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.BlockCompletion, viewModel.CompleteBlockOnTab);
+                Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnTab, viewModel.CompleteBlockOnTab);
                 Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnEnter, viewModel.CompleteBlockOnEnter);
                 Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.SmartConcat.IsEnabled, viewModel.EnableSmartConcat);
             });
