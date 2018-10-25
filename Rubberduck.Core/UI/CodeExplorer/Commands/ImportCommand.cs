@@ -13,6 +13,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Parsing;
 
 using Rubberduck.Parsing;
+using Antlr4.Runtime;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -100,42 +101,39 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 var newFolderName = (parameter is CodeExplorerCustomFolderViewModel) ? tempHelper.Name : tempHelper.GetSelectedDeclaration().CustomFolder;
 
                 var startRule = VBACodeStringParser.Parse(sourceText, t => t.startRule());
-                
-                if (HasModuleDeclarations((Antlr4.Runtime.ParserRuleContext)startRule.parseTree, out var moduleDeclarations))
-                {
-                    if (HasOptionExplicit((Antlr4.Runtime.ParserRuleContext)startRule.parseTree, out var optionExplicitStmt))
-                    {
-                        if (HasFolderAnnotation((Antlr4.Runtime.ParserRuleContext)startRule.parseTree, out var FolderAnnotation))
-                        {
-                            var oldFolder = FolderAnnotation.GetChild<VBAParser.AnnotationArgContext>(); //update with AnnotationArgList
-                            startRule.rewriter.Replace(oldFolder.SourceInterval.a, oldFolder.SourceInterval.b, newFolderName);
-                        }
-                        else
-                        {
-                            startRule.rewriter.InsertBefore(optionExplicitStmt.SourceInterval.a, FolderAnnotationWithFolderName(newFolderName) + Environment.NewLine);
-                        }
-                    }
-                    else
-                    {
-                        if (HasFolderAnnotation((Antlr4.Runtime.ParserRuleContext)startRule.parseTree, out var FolderAnnotation))
-                        {
-                            var oldFolder = FolderAnnotation.GetChild<VBAParser.AnnotationArgContext>();
-                            startRule.rewriter.Replace(oldFolder.SourceInterval.a, oldFolder.SourceInterval.b, newFolderName);
-                        }
-                        else
-                        {
-                            var lastNewline = moduleDeclarations.GetDescendents<VBAParser.EndOfLineContext>().Last();
-                            startRule.rewriter.InsertBefore(lastNewline.SourceInterval.a, FolderAnnotationWithFolderName(newFolderName) + Environment.NewLine);
-                        }
-                    }
-                }
-                else
-                {
-                    startRule.rewriter.InsertBefore(startRule.parseTree.GetChild(0).SourceInterval.a,
-                        FolderAnnotationWithFolderName(newFolderName) + Environment.NewLine + Environment.NewLine);
-                }
 
-                var updatedModuleText = startRule.rewriter.GetText();
+                #region Delete This Old Code
+                //if (HasModuleDeclarations(startRule.parseTree, out var moduleDeclarations))
+                //{
+                //    if (HasFolderAnnotation(startRule.parseTree, out var folderAnnotation))
+                //    {
+                //        var oldFolder = folderAnnotation.GetChild<VBAParser.AnnotationArgListContext>()
+                //            .GetChild<VBAParser.AnnotationArgContext>();
+                //        startRule.rewriter.Replace(oldFolder.SourceInterval.a, oldFolder.SourceInterval.b, newFolderName);
+                //    }
+                //    else
+                //    {
+                //        if (HasOptionExplicit(startRule.parseTree, out var optionExplicitStmt))
+                //        {
+                //            startRule.rewriter.InsertBefore(optionExplicitStmt.SourceInterval.a, FolderAnnotationWithFolderName(newFolderName) + Environment.NewLine);
+                //        }
+                //        else
+                //        {
+                //            var lastNewline = moduleDeclarations.GetDescendents<VBAParser.EndOfLineContext>().Last();
+                //            startRule.rewriter.InsertBefore(lastNewline.SourceInterval.a, FolderAnnotationWithFolderName(newFolderName) + Environment.NewLine);
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                //    startRule.rewriter.InsertBefore(startRule.parseTree.GetChild(0).SourceInterval.a,
+                //        FolderAnnotationWithFolderName(newFolderName) + Environment.NewLine + Environment.NewLine);
+                //}
+
+                //var updatedModuleText = startRule.rewriter.GetText();
+                #endregion
+
+                var updatedModuleText = RewrittenModuleText(startRule, newFolderName);
                 try
                 {
                     var tempFile = $"RubberduckTempImportFile{extension}";
@@ -162,32 +160,41 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        //private string FolderNameFromFolderAnnotation(IParseTree parseTree, string folderAnnotation)
-        //{
-        //    var searchAnnotation = parseTree.GetText();
-        //    var folderNameEnclosedInQuotes = searchAnnotation.Contains('"');
-        //    var enclosingCharacter = folderNameEnclosedInQuotes ? '"' : ')';
-        //    var startIndex = searchAnnotation.IndexOf(folderAnnotation) + 1 + folderAnnotation.Length + (folderNameEnclosedInQuotes ? 1 : 0);
-        //    var endIndex = searchAnnotation.IndexOf(enclosingCharacter, startIndex + 1);
-        //    var length = endIndex - startIndex;
-
-        //    return searchAnnotation.Substring(startIndex, length);
-        //}
-
-        //private IParseTree TreeContainingFolderAnnotation(IParseTree containingTree, string folderAnnotation)
-        //{
-        //    for (var i=0;i< containingTree.ChildCount; i++)
-        //    {
-        //        if (containingTree.GetChild(i).GetText().Contains(folderAnnotation))
-        //        {
-        //            return TreeContainingFolderAnnotation(containingTree.GetChild(i), folderAnnotation);
-        //        }
-        //    }
-
-        //    return containingTree;
-        //}
-        private bool HasModuleDeclarations(Antlr4.Runtime.ParserRuleContext startRuleContext, out VBAParser.ModuleDeclarationsContext moduleDeclarations)
+        private string RewrittenModuleText((IParseTree parseTree, TokenStreamRewriter rewriter) startRule, string updatedFolderName)
         {
+            if (HasModuleDeclarations(startRule.parseTree, out var moduleDeclarations))
+            {
+                if (HasFolderAnnotation(startRule.parseTree, out var folderAnnotation))
+                {
+                    var oldFolder = folderAnnotation.GetChild<VBAParser.AnnotationArgListContext>()
+                        .GetChild<VBAParser.AnnotationArgContext>();
+                    startRule.rewriter.Replace(oldFolder.SourceInterval.a, oldFolder.SourceInterval.b, updatedFolderName);
+                }
+                else
+                {
+                    if (HasOptionExplicit(startRule.parseTree, out var optionExplicitStmt))
+                    {
+                        startRule.rewriter.InsertBefore(optionExplicitStmt.SourceInterval.a, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
+                    }
+                    else
+                    {
+                        var lastNewline = moduleDeclarations.GetDescendents<VBAParser.EndOfLineContext>().Last();
+                        startRule.rewriter.InsertBefore(lastNewline.SourceInterval.a, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
+                    }
+                }
+            }
+            else
+            {
+                startRule.rewriter.InsertBefore(startRule.parseTree.GetChild(0).SourceInterval.a,
+                    FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine + Environment.NewLine);
+            }
+
+            return startRule.rewriter.GetText();
+        }
+
+        private bool HasModuleDeclarations(IParseTree parseTree, out VBAParser.ModuleDeclarationsContext moduleDeclarations)
+        {
+            var startRuleContext = (ParserRuleContext)parseTree;
             var moduleDescendents = startRuleContext.GetDescendents<VBAParser.ModuleDeclarationsContext>();
             if (!moduleDescendents.ElementAt(0).GetText().Equals(string.Empty))
             {
@@ -199,8 +206,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return false;
         }
 
-        private bool HasFolderAnnotation(Antlr4.Runtime.ParserRuleContext startRuleContext, out VBAParser.AnnotationContext folderAnnotation)
+        private bool HasFolderAnnotation(IParseTree parseTree, out VBAParser.AnnotationContext folderAnnotation)
         {
+            var startRuleContext = (ParserRuleContext)parseTree;
             var folderDescendents = startRuleContext.GetDescendents<VBAParser.AnnotationContext>()
                                         .Where(a => a.GetText().Contains(AnnotationType.Folder.ToString()));
             if (folderDescendents.Count() > 0)
@@ -213,8 +221,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             return false;
         }
 
-        private bool HasOptionExplicit(Antlr4.Runtime.ParserRuleContext startRuleContext, out VBAParser.OptionExplicitStmtContext optionExplicit)
+        private bool HasOptionExplicit(IParseTree parseTree, out VBAParser.OptionExplicitStmtContext optionExplicit)
         {
+            var startRuleContext = (ParserRuleContext)parseTree;
             var optionExplicitDescendents = startRuleContext.GetDescendents<VBAParser.OptionExplicitStmtContext>();
             if (optionExplicitDescendents.Count() > 0)
             {
