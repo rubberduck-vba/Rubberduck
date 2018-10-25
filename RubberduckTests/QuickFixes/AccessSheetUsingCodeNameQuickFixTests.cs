@@ -339,12 +339,13 @@ End Sub";
             const string inputCode = @"
 Sub Test()
     Set ws = Worksheets(""Sheet1"")
-    Debug.Print ws.Name
+    ws.Name = ""Foo""
 End Sub";
 
             const string expectedCode = @"
 Sub Test()
-    Sheet1.Name
+    
+    Sheet1.Name = ""Foo""
 End Sub";
 
             using (var state = ArrangeParserAndParse(inputCode, out var component))
