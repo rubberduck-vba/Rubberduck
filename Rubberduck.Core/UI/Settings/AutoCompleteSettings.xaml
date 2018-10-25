@@ -109,7 +109,7 @@
                 <CheckBox Margin="15,0,15,0" 
                           IsEnabled="{Binding EnableSmartConcat}"
                           IsChecked="{Binding ConcatVbNewLine}" 
-                          Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=ConcatVbNewline}" />
+                          Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=ConcatVbNewLine}" />
 
                 <Label Margin="10" 
                        Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=BlockCompletion}"
