@@ -134,9 +134,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 #endregion
 
                 var updatedModuleText = RewrittenModuleText(startRule, newFolderName);
+                var tempFile = $"RubberduckTempImportFile{extension}";
                 try
                 {
-                    var tempFile = $"RubberduckTempImportFile{extension}";
                     var sw = File.CreateText(tempFile);
                     sw.Write(updatedModuleText);
                     sw.Close();
@@ -146,11 +146,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         components.Import(tempFile);
                     }
 
-                    File.Delete(tempFile);
                 }
                 catch(Exception e)
                 {
                     Logger.Error(e); 
+                }
+                finally
+                {
+                    if (File.Exists(tempFile))
+                    {
+                        File.Delete(tempFile);
+                    }
                 }
             }
 
@@ -185,8 +191,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
             else
             {
-                startRule.rewriter.InsertBefore(startRule.parseTree.GetChild(0).SourceInterval.a,
-                    FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine + Environment.NewLine);
+                var moduleAttributes = ((ParserRuleContext)startRule.parseTree).GetDescendents<VBAParser.ModuleAttributesContext>().First();
+
+                startRule.rewriter.InsertAfter(moduleAttributes.SourceInterval.b, Environment.NewLine
+                    + FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine + Environment.NewLine);
             }
 
             return startRule.rewriter.GetText();
