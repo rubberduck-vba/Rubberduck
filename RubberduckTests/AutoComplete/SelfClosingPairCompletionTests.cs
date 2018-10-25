@@ -71,6 +71,18 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void WhenNextPositionIsClosingChar_Nested_ClosingCharMovesSelection()
+        {
+            var pair = new SelfClosingPair('(', ')');
+            var input = pair.ClosingChar;
+            var original = @"foo = MsgBox(""""|)".ToCodeString();
+            var expected = @"foo = MsgBox("""")|".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
         public void DeletingOpeningCharRemovesPairedClosingChar_Parens()
         {
             var pair = new SelfClosingPair('(', ')');
