@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
@@ -22,11 +21,17 @@ namespace Rubberduck.AutoComplete.Service
 
         public CodeString Execute(SelfClosingPair pair, CodeString original, char input)
         {
+            var previousCharIsClosingChar =
+                original.CaretPosition.StartColumn > 0 &&
+                original.CaretLine[original.CaretPosition.StartColumn - 1] == pair.ClosingChar;
+            var nextCharIsClosingChar =
+                original.CaretPosition.StartColumn < original.CaretLine.Length &&
+                original.CaretLine[original.CaretPosition.StartColumn] == pair.ClosingChar;
+
             if (pair.IsSymetric && input != '\b' &&
                 original.Code.Length >= 1 &&
-                original.CaretPosition.StartColumn > 0 &&
-                original.Code[original.CaretPosition.StartColumn - 1] == pair.ClosingChar
-                || original.IsComment || original.IsInsideStringLiteral)
+                previousCharIsClosingChar && !nextCharIsClosingChar
+                || original.IsComment || (original.IsInsideStringLiteral && !nextCharIsClosingChar))
             {
                 return null;
             }
@@ -71,11 +76,23 @@ namespace Rubberduck.AutoComplete.Service
             var autoCode = new string(new[] { pair.OpeningChar, pair.ClosingChar });
             var lines = original.Lines;
             var line = lines[original.CaretPosition.StartLine];
-            lines[original.CaretPosition.StartLine] = string.IsNullOrEmpty(original.Code) 
-                    ? autoCode 
-                    : original.CaretPosition.StartColumn == line.Length 
-                        ? line + autoCode 
-                        : line.Insert(original.CaretPosition.StartColumn, autoCode);
+
+            string newCode;
+            if (string.IsNullOrEmpty(original.Code))
+            {
+                newCode = autoCode;
+            }
+            else if (original.CaretPosition.StartColumn < line.Length && line[original.CaretPosition.StartColumn] == pair.ClosingChar)
+            {
+                newCode = line;
+            }
+            else
+            {
+                newCode = original.CaretPosition.StartColumn == line.Length
+                    ? line + autoCode
+                    : line.Insert(original.CaretPosition.StartColumn, autoCode);
+            }
+            lines[original.CaretPosition.StartLine] = newCode;
 
             return new CodeString(string.Join("\r\n", lines), nextPosition, new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
         }
@@ -281,6 +298,17 @@ namespace Rubberduck.AutoComplete.Service
             code = code.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}")
                 ? code.Substring(0, code.LastIndexOf(pair.ClosingChar) + 1)
                 : code;
+
+            var leftOfCaret = original.CaretLine.Substring(0, original.CaretPosition.StartColumn + 1);
+            var rightOfCaret = original.CaretLine.Substring(original.CaretPosition.StartColumn);
+
+            if (leftOfCaret.Count(c => c == pair.OpeningChar) == 1 &&
+                rightOfCaret.Count(c => c == pair.ClosingChar) == 1)
+            {
+                return new Selection(original.CaretPosition.StartLine,
+                    original.CaretLine.LastIndexOf(pair.ClosingChar));
+            }
+
             var result = VBACodeStringParser.Parse(code, p => p.startRule());
             if (((ParserRuleContext)result.parseTree).exception != null)
             {
