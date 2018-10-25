@@ -95,46 +95,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             foreach (var filename in _openFileDialog.FileNames)
             {
                 var extension = Path.GetExtension(filename);
+                var tempFile = $"RubberduckTempImportFile{extension}";
 
                 var sourceText = string.Join(Environment.NewLine, File.ReadAllLines(filename));
                 var tempHelper = (CodeExplorerItemViewModel)parameter;
                 var newFolderName = (parameter is CodeExplorerCustomFolderViewModel) ? tempHelper.Name : tempHelper.GetSelectedDeclaration().CustomFolder;
-
                 var startRule = VBACodeStringParser.Parse(sourceText, t => t.startRule());
-
-                #region Delete This Old Code
-                //if (HasModuleDeclarations(startRule.parseTree, out var moduleDeclarations))
-                //{
-                //    if (HasFolderAnnotation(startRule.parseTree, out var folderAnnotation))
-                //    {
-                //        var oldFolder = folderAnnotation.GetChild<VBAParser.AnnotationArgListContext>()
-                //            .GetChild<VBAParser.AnnotationArgContext>();
-                //        startRule.rewriter.Replace(oldFolder.SourceInterval.a, oldFolder.SourceInterval.b, newFolderName);
-                //    }
-                //    else
-                //    {
-                //        if (HasOptionExplicit(startRule.parseTree, out var optionExplicitStmt))
-                //        {
-                //            startRule.rewriter.InsertBefore(optionExplicitStmt.SourceInterval.a, FolderAnnotationWithFolderName(newFolderName) + Environment.NewLine);
-                //        }
-                //        else
-                //        {
-                //            var lastNewline = moduleDeclarations.GetDescendents<VBAParser.EndOfLineContext>().Last();
-                //            startRule.rewriter.InsertBefore(lastNewline.SourceInterval.a, FolderAnnotationWithFolderName(newFolderName) + Environment.NewLine);
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    startRule.rewriter.InsertBefore(startRule.parseTree.GetChild(0).SourceInterval.a,
-                //        FolderAnnotationWithFolderName(newFolderName) + Environment.NewLine + Environment.NewLine);
-                //}
-
-                //var updatedModuleText = startRule.rewriter.GetText();
-                #endregion
-
                 var updatedModuleText = RewrittenModuleText(startRule, newFolderName);
-                var tempFile = $"RubberduckTempImportFile{extension}";
                 try
                 {
                     var sw = File.CreateText(tempFile);
@@ -145,7 +112,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     {
                         components.Import(tempFile);
                     }
-
                 }
                 catch(Exception e)
                 {
@@ -184,8 +150,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     }
                     else
                     {
-                        var lastNewline = moduleDeclarations.GetDescendents<VBAParser.EndOfLineContext>().Last();
-                        startRule.rewriter.InsertBefore(lastNewline.SourceInterval.a, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
+                        //var lastNewline = moduleDeclarations.GetDescendents<VBAParser.EndOfLineContext>().Last();
+                        //startRule.rewriter.InsertBefore(lastNewline.SourceInterval.a, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
+                        startRule.rewriter.InsertBefore(moduleDeclarations.SourceInterval.a, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
+                        
                     }
                 }
             }
