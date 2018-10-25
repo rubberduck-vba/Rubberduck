@@ -99,7 +99,7 @@ namespace Rubberduck.UI.UnitTesting
         public INavigateSource SelectedItem => SelectedTest;
 
         private TestMethodViewModel _selectedTest;
-        internal TestMethodViewModel SelectedTest
+        public TestMethodViewModel SelectedTest
         {
             get => _selectedTest;
             set
