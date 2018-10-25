@@ -132,7 +132,7 @@ End Sub";
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-                Assert.AreEqual(0, inspectionResults.Count());
+                Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 

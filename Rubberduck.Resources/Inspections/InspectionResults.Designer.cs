@@ -700,7 +700,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Public member &apos;{0}&apos; has underscore in name..
+        ///   Looks up a localized string similar to Public member name &apos;{0}&apos; contains an underscore..
         /// </summary>
         public static string UnderscoreInPublicClassModuleMemberInspection {
             get {

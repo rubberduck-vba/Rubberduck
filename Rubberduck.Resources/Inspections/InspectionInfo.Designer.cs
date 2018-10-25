@@ -682,7 +682,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A class module with public members with underscores cannot implement interfaces that do not expose said member..
+        ///   Looks up a localized string similar to A class module that contains members with underscores cannot be implemented by other classes. The underscore is used as a separator between the interface/object name and the implemented member name: having an underscore in the member name confuses the compiler, which then refuses to compile the project. Avoid underscores in public member names by following a &apos;PascalCase&apos; naming convention..
         /// </summary>
         public static string UnderscoreInPublicClassModuleMemberInspection {
             get {
