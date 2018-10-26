@@ -969,6 +969,121 @@ namespace RubberduckTests.CodeExplorer
 
         [Category("Code Explorer")]
         [Test]
+        [TestCase("Bar",
+@"Attribute VB_Name = ""Module1""
+'@Folder(Bar)
+Dim foo As Range",
+@"Attribute VB_Name = ""Module1""
+Dim foo As Range")]
+        [TestCase("Bar",
+@"Attribute VB_Name = ""Module1""
+'@Folder(Bar)
+Dim foo As Range",
+@"Attribute VB_Name = ""Module1""
+'@Folder(Foo)
+Dim foo As Range")]
+        public void AnnotateFolder_EndsWithModuleVariableDeclaration(string updatedFolder, string expectedResult, string sourceText)
+        {
+            var startRule = Rubberduck.Parsing.VBA.Parsing.VBACodeStringParser.Parse(sourceText, t => t.startRule());
+            var actualResult = Rubberduck.UI.CodeExplorer.FolderAnnotator.AddOrUpdateFolderName(startRule, updatedFolder);
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        #region TestCases
+        [TestCase("Bar",
+@"Attribute VB_Name = ""Module1""
+'@Folder(Bar)
+Option Explicit
+
+Public Sub PrintTest()
+    Debug.Print ""Test""
+End Sub",
+@"Attribute VB_Name = ""Module1""
+'@Folder(Foo)
+Option Explicit
+
+Public Sub PrintTest()
+    Debug.Print ""Test""
+End Sub")]
+        [TestCase("Bar",
+@"Attribute VB_Name = ""Module1""
+'@Folder( Bar )
+Option Explicit
+
+Public Sub PrintTest()
+
+    '@Folder(JustAComment)
+    Debug.Print ""Test""
+End Sub",
+@"Attribute VB_Name = ""Module1""
+'@Folder( Foo )
+Option Explicit
+
+Public Sub PrintTest()
+
+    '@Folder(JustAComment)
+    Debug.Print ""Test""
+End Sub")]
+        [TestCase("Bar",
+@"Attribute VB_Name = ""Module1""
+'@Folder(Bar)
+Option Explicit
+
+Public Sub PrintTest()
+    Debug.Print ""Test""
+End Sub",
+@"Attribute VB_Name = ""Module1""
+'@Folder(""Foo"")
+Option Explicit
+
+Public Sub PrintTest()
+    Debug.Print ""Test""
+End Sub")]
+        [TestCase("Bar",
+@"Attribute VB_Name = ""Module1""
+'@Folder(Bar)
+Option Explicit
+
+Public Sub PrintTest()
+    Debug.Print ""Test""
+End Sub",
+@"Attribute VB_Name = ""Module1""
+'@Folder(""Foo.Buzz"")
+Option Explicit
+
+Public Sub PrintTest()
+    Debug.Print ""Test""
+End Sub")]
+        #endregion
+
+        public void AnnotateFolder_FolderAnnotationExisted(string updatedFolder, string expectedResult, string sourceText)
+        {
+            var startRule = Rubberduck.Parsing.VBA.Parsing.VBACodeStringParser.Parse(sourceText, t => t.startRule());
+            var actualResult = Rubberduck.UI.CodeExplorer.FolderAnnotator.AddOrUpdateFolderName(startRule, updatedFolder);
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+        [Category("Code Explorer")]
+        [Test]
+        [TestCase("Bar",
+@"Attribute VB_Name = ""Module1""
+'@Folder(Bar)
+
+Public Sub Foo()
+End Sub",
+@"Attribute VB_Name = ""Module1""
+Public Sub Foo()
+End Sub")]
+        public void AnnotateFolder_FolderAnnotationAdded(string updatedFolder, string expectedResult, string sourceText)
+        {
+            var startRule = Rubberduck.Parsing.VBA.Parsing.VBACodeStringParser.Parse(sourceText, t => t.startRule());
+            var actualResult = Rubberduck.UI.CodeExplorer.FolderAnnotator.AddOrUpdateFolderName(startRule, updatedFolder);
+            Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        [Category("Code Explorer")]
+        [Test]
         public void ExportModule_ExpectExecution()
         {
             var builder = new MockVbeBuilder();
