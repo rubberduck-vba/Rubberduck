@@ -96,12 +96,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 var extension = Path.GetExtension(filename);
                 var tempFile = $"RubberduckTempImportFile{extension}";
-
+                
                 var sourceText = string.Join(Environment.NewLine, File.ReadAllLines(filename));
                 var tempHelper = (CodeExplorerItemViewModel)parameter;
                 var newFolderName = (parameter is CodeExplorerCustomFolderViewModel) ? tempHelper.Name : tempHelper.GetSelectedDeclaration().CustomFolder;
                 var startRule = VBACodeStringParser.Parse(sourceText, t => t.startRule());
-                var updatedModuleText = RewrittenModuleText(startRule, newFolderName);
+                var updatedModuleText = FolderAnnotator.AddOrUpdateFolderName(startRule, newFolderName);
                 try
                 {
                     var sw = File.CreateText(tempFile);
@@ -131,84 +131,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 project.Dispose();
             }
         }
-
-        private string RewrittenModuleText((IParseTree parseTree, TokenStreamRewriter rewriter) startRule, string updatedFolderName)
-        {
-            if (HasModuleDeclarations(startRule.parseTree, out var moduleDeclarations))
-            {
-                if (HasFolderAnnotation(startRule.parseTree, out var folderAnnotation))
-                {
-                    var oldFolder = folderAnnotation.GetChild<VBAParser.AnnotationArgListContext>()
-                        .GetChild<VBAParser.AnnotationArgContext>();
-                    startRule.rewriter.Replace(oldFolder.SourceInterval.a, oldFolder.SourceInterval.b, updatedFolderName);
-                }
-                else
-                {
-                    var index = HasOptionExplicit(startRule.parseTree, out var optionExplicitStmt)
-                        ? optionExplicitStmt.SourceInterval.a
-                        : moduleDeclarations.SourceInterval.a;
-                    startRule.rewriter.InsertBefore(index, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
-                }
-            }
-            else
-            {
-                var moduleAttributes = ((ParserRuleContext)startRule.parseTree).GetDescendents<VBAParser.ModuleAttributesContext>().First();
-
-                startRule.rewriter.InsertAfter(moduleAttributes.SourceInterval.b, Environment.NewLine
-                    + FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine + Environment.NewLine);
-            }
-
-            return startRule.rewriter.GetText();
-        }
-
-        private bool HasModuleDeclarations(IParseTree parseTree, out VBAParser.ModuleDeclarationsContext moduleDeclarations)
-        {
-            var startRuleContext = (ParserRuleContext)parseTree;
-            var moduleDescendents = startRuleContext.GetDescendents<VBAParser.ModuleDeclarationsContext>();
-            if (!moduleDescendents.ElementAt(0).GetText().Equals(string.Empty))
-            {
-                moduleDeclarations = moduleDescendents.ElementAt(0);
-                return true;
-            }
-
-            moduleDeclarations = null;
-            return false;
-        }
-
-        private bool HasFolderAnnotation(IParseTree parseTree, out VBAParser.AnnotationContext folderAnnotation)
-        {
-            var startRuleContext = (ParserRuleContext)parseTree;
-            var folderDescendents = startRuleContext.GetDescendents<VBAParser.AnnotationContext>()
-                                        .Where(a => a.GetText().Contains(AnnotationType.Folder.ToString()));
-            if (folderDescendents.Any())
-            {
-                folderAnnotation = folderDescendents.ElementAt(0);
-                return true;
-            }
-
-            folderAnnotation = null;
-            return false;
-        }
-
-        private bool HasOptionExplicit(IParseTree parseTree, out VBAParser.OptionExplicitStmtContext optionExplicit)
-        {
-            var startRuleContext = (ParserRuleContext)parseTree;
-            var optionExplicitDescendents = startRuleContext.GetDescendents<VBAParser.OptionExplicitStmtContext>();
-            if (optionExplicitDescendents.Any())
-            {
-                optionExplicit = optionExplicitDescendents.ElementAt(0);
-                return true;
-            }
-
-            optionExplicit = null;
-            return false;
-        }
-
-        private string FolderAnnotationWithFolderName(string folderName)
-        {
-            return $"'@{AnnotationType.Folder}({folderName})";
-        }
-
 
         private IVBProject GetNodeProject(CodeExplorerItemViewModel parameter)
         {
