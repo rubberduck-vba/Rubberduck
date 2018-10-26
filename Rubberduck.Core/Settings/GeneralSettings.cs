@@ -16,6 +16,7 @@ namespace Rubberduck.Settings
         bool IsSmartIndenterPrompted { get; set; }
         bool IsAutoSaveEnabled { get; set; }
         int AutoSavePeriod { get; set; }
+        bool UserEditedLogLevel { get; set; }
         int MinimumLogLevel { get; set; }
         List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
     }
@@ -31,6 +32,8 @@ namespace Rubberduck.Settings
         public bool IsSmartIndenterPrompted { get; set; }
         public bool IsAutoSaveEnabled { get; set; }
         public int AutoSavePeriod { get; set; }
+
+        public bool UserEditedLogLevel { get; set; }
 
         private int _logLevel;
         public int MinimumLogLevel
@@ -73,6 +76,7 @@ namespace Rubberduck.Settings
                    IsSmartIndenterPrompted == other.IsSmartIndenterPrompted &&
                    IsAutoSaveEnabled == other.IsAutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&
+                   UserEditedLogLevel == other.UserEditedLogLevel &&
                    MinimumLogLevel == other.MinimumLogLevel &&
                    EnableExperimentalFeatures.All(a => other.EnableExperimentalFeatures.Contains(a)) &&
                    EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count;

@@ -27,7 +27,7 @@ namespace Rubberduck.VBEditor.WindowsApi
             {
                 case WM.CHAR:
                     args = new KeyPressEventArgs(hWnd, wParam, lParam);
-                    if (args.Character != '\r' && args.Character != '\n')
+                    if (args.Character != '\r' && args.Character != '\n' && args.Character != '\b')
                     {
                         OnKeyDown(args);
                         if (args.Handled) { return 0; }
@@ -35,9 +35,9 @@ namespace Rubberduck.VBEditor.WindowsApi
                     break;
                 case WM.KEYDOWN:
                     args = new KeyPressEventArgs(hWnd, wParam, lParam, true);
-                    // The only keydown we care about that doesn't generate a WM_CHAR is Delete, and the VBE handles Enter in WM_KEYDOWN, 
-                    // so we need to handle it first (otherwise it will already be in code when the managed event is handled).
-                    if (args.IsDelete || args.Character == '\r')
+                    // The only keydown we care about that doesn't generate a WM_CHAR is Delete, and the VBE handles Enter & backspace in WM_KEYDOWN, 
+                    // so we need to handle them first (otherwise it will already be in the code pane when the managed event is handled).
+                    if (args.IsDelete || args.Character == '\r' || args.Character == '\b')
                     {
                         OnKeyDown(args);
                         if (args.Handled) { return 0; }

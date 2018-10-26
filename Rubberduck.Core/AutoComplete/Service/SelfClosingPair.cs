@@ -1,4 +1,4 @@
-﻿namespace Rubberduck.AutoComplete.SelfClosingPairCompletion
+﻿namespace Rubberduck.AutoComplete.Service
 {
     public class SelfClosingPair
     {
@@ -10,5 +10,10 @@
 
         public char OpeningChar { get; }
         public char ClosingChar { get; }
+
+        /// <summary>
+        /// True if <see cref="OpeningChar"/> is the same as <see cref="ClosingChar"/>.
+        /// </summary>
+        public bool IsSymetric => OpeningChar == ClosingChar;
     }
 }
