@@ -144,17 +144,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
                 else
                 {
-                    if (HasOptionExplicit(startRule.parseTree, out var optionExplicitStmt))
-                    {
-                        startRule.rewriter.InsertBefore(optionExplicitStmt.SourceInterval.a, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
-                    }
-                    else
-                    {
-                        //var lastNewline = moduleDeclarations.GetDescendents<VBAParser.EndOfLineContext>().Last();
-                        //startRule.rewriter.InsertBefore(lastNewline.SourceInterval.a, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
-                        startRule.rewriter.InsertBefore(moduleDeclarations.SourceInterval.a, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
-                        
-                    }
+                    var index = HasOptionExplicit(startRule.parseTree, out var optionExplicitStmt)
+                        ? optionExplicitStmt.SourceInterval.a
+                        : moduleDeclarations.SourceInterval.a;
+                    startRule.rewriter.InsertBefore(index, FolderAnnotationWithFolderName(updatedFolderName) + Environment.NewLine);
                 }
             }
             else
@@ -187,7 +180,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             var startRuleContext = (ParserRuleContext)parseTree;
             var folderDescendents = startRuleContext.GetDescendents<VBAParser.AnnotationContext>()
                                         .Where(a => a.GetText().Contains(AnnotationType.Folder.ToString()));
-            if (folderDescendents.Count() > 0)
+            if (folderDescendents.Any())
             {
                 folderAnnotation = folderDescendents.ElementAt(0);
                 return true;
@@ -201,7 +194,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             var startRuleContext = (ParserRuleContext)parseTree;
             var optionExplicitDescendents = startRuleContext.GetDescendents<VBAParser.OptionExplicitStmtContext>();
-            if (optionExplicitDescendents.Count() > 0)
+            if (optionExplicitDescendents.Any())
             {
                 optionExplicit = optionExplicitDescendents.ElementAt(0);
                 return true;
