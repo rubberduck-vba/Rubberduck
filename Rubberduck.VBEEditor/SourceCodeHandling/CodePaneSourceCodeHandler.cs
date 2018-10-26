@@ -125,10 +125,10 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
 
             var prettifiedPosition = new Selection(
-                    original.SnippetPosition.StartLine - 1 + original.CaretPosition.StartLine,
+                    original.SnippetPosition.ToZeroBased().StartLine + original.CaretPosition.StartLine,
                     prettifiedCode[original.CaretPosition.StartLine].Trim().Length == 0
                         ? indent
-                        : Math.Min(prettifiedCode[original.CaretPosition.StartLine].Length, prettifiedCaretCharIndex + 1))
+                        : Math.Min(prettifiedCode[original.CaretPosition.StartLine].Length, original.CaretPosition.StartColumn))
                 .ToOneBased();
 
             SetSelection(module, prettifiedPosition);
