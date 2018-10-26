@@ -831,7 +831,7 @@ namespace RubberduckTests.CodeExplorer
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty);
 
             var components = project.MockVBComponents;
 
@@ -858,8 +858,10 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
-                vm.ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object)
+                {
+                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object)
+                };
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -878,7 +880,7 @@ namespace RubberduckTests.CodeExplorer
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty);
 
             var components = project.MockVBComponents;
 
@@ -905,8 +907,10 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
-                vm.ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object)
+                {
+                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object)
+                };
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
