@@ -91,15 +91,17 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             var originalCode = original.Code.Replace("\r", string.Empty).Split('\n');
             var originalPosition = original.CaretPosition.StartColumn;
             var originalNonWhitespaceCharacters = 0;
+            var isAllWhitespace = true;
             for (var i = 0; i <= Math.Min(originalPosition - 1, originalCode[original.CaretPosition.StartLine].Length - 1); i++)
             {
                 if (originalCode[original.CaretPosition.StartLine][i] != ' ')
                 {
                     originalNonWhitespaceCharacters++;
+                    isAllWhitespace = false;
                 }
             }
 
-            var indent = originalCode[original.CaretPosition.StartLine].TakeWhile(c => c == ' ').Count();
+            var indent = original.CaretLine.TakeWhile(c => c == ' ').Count();
 
             module.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount);
             module.InsertLines(original.SnippetPosition.StartLine, string.Join("\r\n", originalCode));
@@ -126,9 +128,9 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
             var prettifiedPosition = new Selection(
                     original.SnippetPosition.ToZeroBased().StartLine + original.CaretPosition.StartLine,
-                    prettifiedCode[original.CaretPosition.StartLine].Trim().Length == 0
-                        ? indent
-                        : Math.Min(prettifiedCode[original.CaretPosition.StartLine].Length, original.CaretPosition.StartColumn))
+                    prettifiedCode[original.CaretPosition.StartLine].Trim().Length == 0 || (isAllWhitespace && !string.IsNullOrEmpty(original.CaretLine.Substring(original.CaretPosition.StartColumn).Trim()))
+                        ? Math.Min(indent, original.CaretPosition.StartColumn)
+                        : Math.Min(prettifiedCode[original.CaretPosition.StartLine].Length, prettifiedCaretCharIndex + 1))
                 .ToOneBased();
 
             SetSelection(module, prettifiedPosition);
