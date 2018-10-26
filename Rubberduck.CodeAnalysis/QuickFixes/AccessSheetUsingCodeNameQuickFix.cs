@@ -27,7 +27,8 @@ namespace Rubberduck.Inspections.QuickFixes
             var rewriter = _state.GetRewriter(referenceResult.QualifiedName);
 
             var setStatement = referenceResult.Context.GetAncestor<VBAParser.SetStmtContext>();
-            if (setStatement == null)
+            var isArgument = referenceResult.Context.GetAncestor<VBAParser.ArgumentContext>() != null;
+            if (setStatement == null || isArgument)
             {
                 // Sheet accessed inline
 
@@ -49,20 +50,23 @@ namespace Rubberduck.Inspections.QuickFixes
                         return moduleBodyElement != null && moduleBodyElement == referenceResult.Context.GetAncestor<VBAParser.ModuleBodyElementContext>();
                     });
 
-                var variableListContext = (VBAParser.VariableListStmtContext)sheetDeclaration.Context.Parent;
-                if (variableListContext.variableSubStmt().Length == 1)
+                if (!sheetDeclaration.IsUndeclared)
                 {
-                    rewriter.Remove(variableListContext.Parent as ParserRuleContext);
-                }
-                else if (sheetDeclaration.Context == variableListContext.variableSubStmt().Last())
-                {
-                    rewriter.Remove(variableListContext.COMMA().Last());
-                    rewriter.Remove(sheetDeclaration);
-                }
-                else
-                {
-                    rewriter.Remove(variableListContext.COMMA().First(comma => comma.Symbol.StartIndex > sheetDeclaration.Context.Start.StartIndex));
-                    rewriter.Remove(sheetDeclaration);
+                    var variableListContext = (VBAParser.VariableListStmtContext)sheetDeclaration.Context.Parent;
+                    if (variableListContext.variableSubStmt().Length == 1)
+                    {
+                        rewriter.Remove(variableListContext.Parent as ParserRuleContext);
+                    }
+                    else if (sheetDeclaration.Context == variableListContext.variableSubStmt().Last())
+                    {
+                        rewriter.Remove(variableListContext.COMMA().Last());
+                        rewriter.Remove(sheetDeclaration);
+                    }
+                    else
+                    {
+                        rewriter.Remove(variableListContext.COMMA().First(comma => comma.Symbol.StartIndex > sheetDeclaration.Context.Start.StartIndex));
+                        rewriter.Remove(sheetDeclaration);
+                    }
                 }
 
                 foreach (var reference in sheetDeclaration.References)
