@@ -79,11 +79,25 @@ namespace RubberduckTests.AutoComplete
 
         [Test]
         [Category("AutoComplete")]
-        public void GivenMultilineLogicalLine_StillTracksCaret()
+        public void GivenMultilineLogicalLine_TracksCaret()
         {
             var original = @"
 MsgBox ""test"" & vbNewLine & _
        ""|"")".ToCodeString();
+
+            var sut = InitializeSut(original, original, out var module, out _);
+            var actual = new TestCodeString(sut.Prettify(module.Object, original));
+
+            Assert.AreEqual(original, actual);
+        }
+
+        [Test]
+        [Category("AutoComplete")]
+        public void GivenPartialMultilineInstruction_TracksCaret()
+        {
+            var original = @"
+ExecuteStoredProcedure (""AddAppointmentCountForAClinic"", False,dbconfig.SQLConString, _
+                | thisClinic.ClinicID ,".ToCodeString();
 
             var sut = InitializeSut(original, original, out var module, out _);
             var actual = new TestCodeString(sut.Prettify(module.Object, original));

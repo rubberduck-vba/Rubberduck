@@ -78,7 +78,7 @@ namespace Rubberduck.AutoComplete.Service
             var line = lines[original.CaretPosition.StartLine];
 
             string newCode;
-            if (string.IsNullOrEmpty(original.Code))
+            if (string.IsNullOrEmpty(line))
             {
                 newCode = autoCode;
             }
@@ -88,7 +88,7 @@ namespace Rubberduck.AutoComplete.Service
             }
             else
             {
-                newCode = original.CaretPosition.StartColumn == line.Length
+                newCode = original.CaretPosition.StartColumn >= line.Length
                     ? line + autoCode
                     : line.Insert(original.CaretPosition.StartColumn, autoCode);
             }

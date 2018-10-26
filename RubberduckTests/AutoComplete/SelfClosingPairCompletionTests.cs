@@ -343,6 +343,18 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void GivenEmptyIndentedLine_OpeningCharIsInsertedAtCaretPosition()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = '"';
+            var original = @"    |".ToCodeString();
+            var expected = @"    ""|""".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
         public void DeleteKey_ReturnsNull()
         {
             var pair = new SelfClosingPair('(', ')');
