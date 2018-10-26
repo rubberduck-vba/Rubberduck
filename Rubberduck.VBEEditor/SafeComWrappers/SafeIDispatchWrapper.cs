@@ -4,6 +4,14 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
 {
+    public class SafeIDispatchWrapper<TDispatch> : SafeIDispatchWrapper
+    {
+        public SafeIDispatchWrapper(TDispatch target, bool rewrapping = false) : base(target, rewrapping)
+        { }
+
+        public new TDispatch Target => (TDispatch) base.Target;
+    }
+
     public class SafeIDispatchWrapper : SafeComWrapper<dynamic>
     {
         public SafeIDispatchWrapper(object target, bool rewrapping = false) : base(target, rewrapping)

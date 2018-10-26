@@ -10,8 +10,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         { }
 
         public string ApplicationName => "(unknown)";
-        public IEnumerable<IHostDocument> GetDocuments() => null;
-        public IHostDocument GetDocument(QualifiedModuleName moduleName) => null;
+        public IEnumerable<HostDocument> GetDocuments() => null;
+        public HostDocument GetDocument(QualifiedModuleName moduleName) => null;
         public void Dispose() { }
     }
 }

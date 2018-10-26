@@ -70,8 +70,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                     case ComponentType.Document:
                         string parenthesizedName;
                         using (var app = _vbe.HostApplication())
-                        using (var document = app.GetDocument(qualifiedModuleName))
                         {
+                            var document = app.GetDocument(qualifiedModuleName);
                             parenthesizedName = document.Name ?? string.Empty;
                         }
                         

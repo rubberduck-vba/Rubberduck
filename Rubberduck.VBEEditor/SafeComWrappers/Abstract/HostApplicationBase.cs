@@ -142,9 +142,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 
         public string ApplicationName { get; }
 
-        public virtual IEnumerable<IHostDocument> GetDocuments() => null;
+        public virtual IEnumerable<HostDocument> GetDocuments() => null;
 
-        public virtual IHostDocument GetDocument(QualifiedModuleName moduleName) => null;
+        public virtual HostDocument GetDocument(QualifiedModuleName moduleName) => null;
 
         public override bool Equals(ISafeComWrapper<TApplication> other)
         {

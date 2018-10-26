@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Microsoft.Office.Interop.Access;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -11,117 +9,73 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
     {
         public AccessApp() : base("Access") { }
 
-        public override IHostDocument GetDocument(QualifiedModuleName moduleName)
+        public override HostDocument GetDocument(QualifiedModuleName moduleName)
         {
             if (moduleName.ComponentName.StartsWith("Form_"))
             {
                 var name = moduleName.ComponentName.Substring("Form_".Length);
-                _CurrentProject currentProject = null;
-                AllObjects allForms = null;
-                AccessObject accessObject = null;
-                Forms forms = null;
-                try
-                {
-                    currentProject = Application.CurrentProject;
-                    forms = Application.Forms;
-                    allForms = currentProject.AllForms;
-                    accessObject = allForms[name];
-
+                using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+                using (var allForms = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllForms))
+                using (var forms = new SafeIDispatchWrapper<Forms>(Application.Forms))
+                using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allForms.Target[name]))
+                { 
                     return LoadHostDocument("Access.Form", accessObject, forms);
-                }
-                finally
-                {
-                    if (forms != null) Marshal.ReleaseComObject(forms);
-                    if (accessObject != null) Marshal.ReleaseComObject(accessObject);
-                    if (allForms != null) Marshal.ReleaseComObject(allForms);
-                    if (currentProject != null) Marshal.ReleaseComObject(currentProject);
                 }
             }
 
             if (moduleName.ComponentName.StartsWith("Report_"))
             {
                 var name = moduleName.ComponentName.Substring("Report_".Length);
-                _CurrentProject currentProject = null;
-                AllObjects allForms = null;
-                AccessObject accessObject = null;
-                Reports reports = null;
-                try
+                using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+                using (var allReports = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllReports))
+                using (var reports = new SafeIDispatchWrapper<Reports>(Application.Reports))
+                using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allReports.Target[name]))
                 {
-                    currentProject = Application.CurrentProject;
-                    reports = Application.Reports;
-                    allForms = currentProject.AllForms;
-                    accessObject = allForms[name];
-
                     return LoadHostDocument("Access.Report", accessObject, reports);
-                }
-                finally
-                {
-                    if (reports != null) Marshal.ReleaseComObject(reports);
-                    if (accessObject != null) Marshal.ReleaseComObject(accessObject);
-                    if (allForms != null) Marshal.ReleaseComObject(allForms);
-                    if (currentProject != null) Marshal.ReleaseComObject(currentProject);
                 }
             }
 
             return null;
         }
 
-        public override IEnumerable<IHostDocument> GetDocuments()
+        public override IEnumerable<HostDocument> GetDocuments()
         {
             var result = new List<HostDocument>();
-            _CurrentProject currentProject = null;
-            AllObjects allObjects = null;
-            Forms forms = null;
-            Reports reports = null;
-
-            try
+            using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+            using (var allForms = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllForms))
+            using (var allReports = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllReports))
+            using (var forms = new SafeIDispatchWrapper<Forms>(Application.Forms))
+            using (var reports = new SafeIDispatchWrapper<Reports>(Application.Reports))
             {
-                currentProject = Application.CurrentProject;
-                allObjects = currentProject.AllForms;
-                forms = Application.Forms;
-
-                PopulateList(ref result, "Access.Form", allObjects, forms);
-
-                Marshal.ReleaseComObject(allObjects);
-
-                allObjects = currentProject.AllReports;
-                reports = Application.Reports;
-
-                PopulateList(ref result, "Access.Report", allObjects, reports);
+                PopulateList(ref result, "Access.Form", allForms, forms);
+                PopulateList(ref result, "Access.Report", allReports, reports);
             }
-            finally
-            {
-                if (allObjects != null) Marshal.ReleaseComObject(allObjects);
-                if (forms != null) Marshal.ReleaseComObject(forms);
-                if (reports != null) Marshal.ReleaseComObject(reports);
-                if (currentProject != null) Marshal.ReleaseComObject(currentProject);
-            }
-            
+
             return result;
         }
 
-        private void PopulateList(ref List<HostDocument> result, string className, AllObjects allObjects, dynamic objects)
+        private void PopulateList(ref List<HostDocument> result, string className, SafeIDispatchWrapper<AllObjects> allObjects, dynamic objects)
         {
-            foreach (AccessObject accessObject in allObjects)
+            foreach (AccessObject rawAccessObject in allObjects.Target)
+            using (var accessObject = new SafeIDispatchWrapper<AccessObject>(rawAccessObject))
             {
                 var item = LoadHostDocument(className, accessObject, objects);
                 result.Add(item);
             }
         }
 
-        private HostDocument LoadHostDocument(string className, AccessObject accessObject, dynamic objects)
+        private HostDocument LoadHostDocument(string className, SafeIDispatchWrapper<AccessObject> accessObject, dynamic objects)
         {
             var state = DocumentState.Closed;
-            if (!accessObject.IsLoaded)
+            if (!accessObject.Target.IsLoaded)
             {
-                return new HostDocument(accessObject.Name, className, null, state);
+                return new HostDocument(accessObject.Target.Name, className, state, null);
             }
 
-            object target = objects[accessObject.Name];
-            state = accessObject.CurrentView == AcCurrentView.acCurViewDesign
+            state = accessObject.Target.CurrentView == AcCurrentView.acCurViewDesign
                 ? DocumentState.DesignView
                 : DocumentState.ActiveView;
-            return new HostDocument(accessObject.Name, className, target, state);
+            return new HostDocument(accessObject.Target.Name, className, state, null);
         }
     }
 }
