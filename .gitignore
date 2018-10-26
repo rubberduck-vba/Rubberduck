@@ -180,3 +180,4 @@ Installers/
 *.xlsx
 
 CodeGraphData/
+/Rubberduck.Deployment/Properties/launchSettings.json
