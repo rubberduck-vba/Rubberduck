@@ -52,40 +52,42 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         ActiveView
     }
 
-    public interface IHostDocument : IDisposable
+    public interface IHostDocument
     {
         string Name { get; }
         string ClassName { get; }
-        WeakReference<object> Target { get; }
         DocumentState State { get; }
+        bool TryGetTarget(out SafeIDispatchWrapper iDispatch)
     }
 
     public class HostDocument : IHostDocument
     {
-        public HostDocument(string name, string className, object target, DocumentState state)
+        private readonly Func<SafeIDispatchWrapper> _getTargetFunc;
+
+        public HostDocument(string name, string className, DocumentState state, Func<SafeIDispatchWrapper> getTargetFunc)
         {
             Name = name;
             ClassName = className;
-            Target = new WeakReference<object>(target);
             State = state;
+
+            _getTargetFunc = getTargetFunc;
         }
 
         public string Name { get; }
         public string ClassName { get; }
-        public WeakReference<object> Target { get; }
         public DocumentState State { get; }
 
-        private bool _disposed;
-        public void Dispose()
+        public bool TryGetTarget(out SafeIDispatchWrapper iDispatch)
         {
-            if (!_disposed)
+            try
             {
-                _disposed = true;
-
-                if (Target.TryGetTarget(out var target))
-                {
-                    Marshal.ReleaseComObject(target);
-                }
+                iDispatch = _getTargetFunc.Invoke();
+                return true;
+            }
+            catch
+            {
+                iDispatch = null;
+                return false;
             }
         }
     }
