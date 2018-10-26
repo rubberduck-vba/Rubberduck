@@ -176,6 +176,22 @@ namespace RubberduckTests.AutoComplete
             Assert.AreEqual(expected, result);
         }
 
+        [Test] // ref. #4460
+        public void OpeningOnSecondLineDoesNotJumpToEndOfLine()
+        {
+            var pair = new SelfClosingPair('"', '"');
+            var input = '"';
+            var original = @"
+ExecuteStoredProcedure (""AddAppointmentCountForAClinic"", False,dbconfig.SQLConString, _
+                | thisClinic.ClinicID ,".ToCodeString();
+            var expected = @"
+ExecuteStoredProcedure (""AddAppointmentCountForAClinic"", False,dbconfig.SQLConString, _
+                ""|"" thisClinic.ClinicID ,".ToCodeString();
+
+            var result = Run(pair, original, input);
+            Assert.AreEqual(expected, result);
+        }
+
         [Test]
         public void DeletingOpeningCharRemovesPairedClosingChar_NestedParensMultiline()
         {
