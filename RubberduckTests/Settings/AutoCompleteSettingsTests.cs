@@ -15,29 +15,21 @@ namespace RubberduckTests.Settings
             var autoCompleteSettings = new AutoCompleteSettings
             {
                 IsEnabled = false,
-                CompleteBlockOnTab = true,
-                CompleteBlockOnEnter = true,
-                EnableSmartConcat = true,
-                AutoCompletes = new HashSet<AutoCompleteSetting>(new[]
+                BlockCompletion = new AutoCompleteSettings.BlockCompletionSettings
                 {
-                    new AutoCompleteSetting("AutoCompleteClosingBrace", true),
-                    new AutoCompleteSetting("AutoCompleteClosingBracket", true),
-                    new AutoCompleteSetting("AutoCompleteClosingParenthese", true),
-                    new AutoCompleteSetting("AutoCompleteClosingString", true),
-                    new AutoCompleteSetting("AutoCompleteDoBlock", true),
-                    new AutoCompleteSetting("AutoCompleteEnumBlock", true),
-                    new AutoCompleteSetting("AutoCompleteForBlock", true),
-                    new AutoCompleteSetting("AutoCompleteFunctionBlock", true),
-                    new AutoCompleteSetting("AutoCompleteIfBlock", true),
-                    new AutoCompleteSetting("AutoCompleteOnErrorResumeNextBlock", true),
-                    new AutoCompleteSetting("AutoCompletePrecompilerIfBlock", true),
-                    new AutoCompleteSetting("AutoCompletePropertyBlock", true),
-                    new AutoCompleteSetting("AutoCompleteSelectBlock", true),
-                    new AutoCompleteSetting("AutoCompleteSubBlock", true),
-                    new AutoCompleteSetting("AutoCompleteTypeBlock", true),
-                    new AutoCompleteSetting("AutoCompleteWhileBlock", true),
-                    new AutoCompleteSetting("AutoCompleteWithBlock", true)
-                })
+                    CompleteOnTab = true,
+                    CompleteOnEnter = true,
+                    IsEnabled = true
+                },
+                SmartConcat = new AutoCompleteSettings.SmartConcatSettings
+                {
+                    IsEnabled = true,
+                    ConcatVbNewLineModifier = ModifierKeySetting.CtrlKey
+                },
+                SelfClosingPairs = new AutoCompleteSettings.SelfClosingPairSettings
+                {
+                    IsEnabled = true
+                }
             };
 
             var userSettings = new UserSettings(null, null, autoCompleteSettings, null, null, null, null, null);
@@ -49,29 +41,22 @@ namespace RubberduckTests.Settings
             var autoCompleteSettings = new AutoCompleteSettings
             {
                 IsEnabled = true,
-                CompleteBlockOnTab = false,
-                CompleteBlockOnEnter = false,
-                EnableSmartConcat = false,
-                AutoCompletes = new HashSet<AutoCompleteSetting>(new[]
+                BlockCompletion = new AutoCompleteSettings.BlockCompletionSettings
                 {
-                    new AutoCompleteSetting("AutoCompleteClosingBrace", false),
-                    new AutoCompleteSetting("AutoCompleteClosingBracket", false),
-                    new AutoCompleteSetting("AutoCompleteClosingParenthese", false),
-                    new AutoCompleteSetting("AutoCompleteClosingString", false),
-                    new AutoCompleteSetting("AutoCompleteDoBlock", false),
-                    new AutoCompleteSetting("AutoCompleteEnumBlock", false),
-                    new AutoCompleteSetting("AutoCompleteForBlock", false),
-                    new AutoCompleteSetting("AutoCompleteFunctionBlock", false),
-                    new AutoCompleteSetting("AutoCompleteIfBlock", false),
-                    new AutoCompleteSetting("AutoCompleteOnErrorResumeNextBlock", false),
-                    new AutoCompleteSetting("AutoCompletePrecompilerIfBlock", false),
-                    new AutoCompleteSetting("AutoCompletePropertyBlock", false),
-                    new AutoCompleteSetting("AutoCompleteSelectBlock", false),
-                    new AutoCompleteSetting("AutoCompleteSubBlock", false),
-                    new AutoCompleteSetting("AutoCompleteTypeBlock", false),
-                    new AutoCompleteSetting("AutoCompleteWhileBlock", false),
-                    new AutoCompleteSetting("AutoCompleteWithBlock", false)
-                })
+                    CompleteOnTab = false,
+                    CompleteOnEnter = false,
+                    IsEnabled = false
+                },
+                SmartConcat = new AutoCompleteSettings.SmartConcatSettings
+                {
+                    IsEnabled = false,
+                    ConcatVbNewLineModifier = ModifierKeySetting.CtrlKey
+                },
+                SelfClosingPairs = new AutoCompleteSettings.SelfClosingPairSettings
+                {
+                    IsEnabled = false
+                }
+
             };
 
             var userSettings = new UserSettings(null, null, autoCompleteSettings, null, null, null, null, null);
@@ -100,10 +85,9 @@ namespace RubberduckTests.Settings
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(config.UserSettings.AutoCompleteSettings.IsEnabled, viewModel.IsEnabled);
-                Assert.AreEqual(config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab, viewModel.CompleteBlockOnTab);
-                Assert.AreEqual(config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter, viewModel.CompleteBlockOnEnter);
-                Assert.AreEqual(config.UserSettings.AutoCompleteSettings.EnableSmartConcat, viewModel.EnableSmartConcat);
-                Assert.IsTrue(config.UserSettings.AutoCompleteSettings.AutoCompletes.SequenceEqual(viewModel.Settings));
+                Assert.AreEqual(config.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnTab, viewModel.CompleteBlockOnTab);
+                Assert.AreEqual(config.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnEnter, viewModel.CompleteBlockOnEnter);
+                Assert.AreEqual(config.UserSettings.AutoCompleteSettings.SmartConcat.IsEnabled, viewModel.EnableSmartConcat);
             });
         }
 
@@ -119,10 +103,9 @@ namespace RubberduckTests.Settings
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.IsEnabled, viewModel.IsEnabled);
-                Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.CompleteBlockOnTab, viewModel.CompleteBlockOnTab);
-                Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter, viewModel.CompleteBlockOnEnter);
-                Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.EnableSmartConcat, viewModel.EnableSmartConcat);
-                Assert.IsTrue(defaultConfig.UserSettings.AutoCompleteSettings.AutoCompletes.SequenceEqual(viewModel.Settings));
+                Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnTab, viewModel.CompleteBlockOnTab);
+                Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnEnter, viewModel.CompleteBlockOnEnter);
+                Assert.AreEqual(defaultConfig.UserSettings.AutoCompleteSettings.SmartConcat.IsEnabled, viewModel.EnableSmartConcat);
             });
         }
     }

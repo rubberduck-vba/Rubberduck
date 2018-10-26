@@ -3,7 +3,7 @@ using NLog;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.AutoComplete
+namespace Rubberduck.AutoComplete.Service
 {
     public interface IShowIntelliSenseCommand
     {

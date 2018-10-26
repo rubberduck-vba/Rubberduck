@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
 
             var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&
                                                      !decl.AsTypeDeclaration.IsUserDefined &&
-                                                     decl.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule) &&
+                                                     decl.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule) &&                                                    
                                                      ((ClassModuleDeclaration)decl.AsTypeDeclaration).IsExtensible)
                                        .SelectMany(decl => decl.References).ToList();
             return unresolved
@@ -33,7 +33,8 @@ namespace Rubberduck.Inspections.Concrete
                                                                          usage.Context.Parent.Parent.Equals(access.CallingContext))
                                                                      )
                 })
-                .Where(memberAccess => memberAccess.callingContext != null)
+                .Where(memberAccess => memberAccess.callingContext != null &&
+                                       memberAccess.callingContext.Declaration.DeclarationType != DeclarationType.Control)    //TODO - remove this exception after resolving #2592)
                 .Select(memberAccess => new DeclarationInspectionResult(this,
                     string.Format(InspectionResults.MemberNotOnInterfaceInspection, memberAccess.access.IdentifierName,
                         memberAccess.callingContext.Declaration.AsTypeDeclaration.IdentifierName), memberAccess.access));
