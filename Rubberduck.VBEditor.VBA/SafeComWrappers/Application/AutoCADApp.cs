@@ -5,7 +5,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class AutoCADApp : HostApplicationBase<Autodesk.AutoCAD.Interop.AcadApplication>
     {
-        public AutoCADApp() : base("AutoCAD") { }
-
+        public AutoCADApp(IVBE vbe) : base(vbe, "AutoCAD", true) { }
     }
 }

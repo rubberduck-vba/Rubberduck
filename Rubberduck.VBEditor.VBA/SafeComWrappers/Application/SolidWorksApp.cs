@@ -5,7 +5,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class SolidWorksApp : HostApplicationBase<Interop.SldWorks.Extensibility.Application>
     {
-        public SolidWorksApp() : base("SolidWorks") { }
         public SolidWorksApp(IVBE vbe) : base(vbe, "SolidWorks") { }
     }
 }

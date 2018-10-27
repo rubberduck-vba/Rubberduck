@@ -5,8 +5,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class ExcelApp : HostApplicationBase<Microsoft.Office.Interop.Excel.Application>
     {
-        public ExcelApp() : base("Excel") { }
-        public ExcelApp(IVBE vbe) : base(vbe, "Excel") { }
-        
+        public ExcelApp(IVBE vbe) : base(vbe, "Excel", true) { }   
     }
 }

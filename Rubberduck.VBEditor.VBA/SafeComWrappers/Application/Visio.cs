@@ -5,7 +5,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class VisioApp : HostApplicationBase<Microsoft.Office.Interop.Visio.Application>
     {
-        public VisioApp() : base("Visio") { }
-        public VisioApp(IVBE vbe) : base(vbe, "Visio") { }
+        public VisioApp(IVBE vbe) : base(vbe, "Visio", true) { }
     }
 }

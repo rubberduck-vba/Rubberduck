@@ -5,7 +5,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class ProjectApp : HostApplicationBase<Microsoft.Office.Interop.MSProject.Application>
     {
-        public ProjectApp() : base("MSProject") { }
-        public ProjectApp(IVBE vbe) : base(vbe, "MSProject") { }
+        public ProjectApp(IVBE vbe) : base(vbe, "MSProject", true) { }
     }
 }

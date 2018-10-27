@@ -7,8 +7,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
     [ComVisible(false)]
     public class OutlookApp : HostApplicationBase<Microsoft.Office.Interop.Outlook.Application>
     {
-        public OutlookApp() : base("Outlook")
-        {
-        }
+        public OutlookApp(IVBE vbe) : base(vbe, "Outlook", true) { }
     }
 }

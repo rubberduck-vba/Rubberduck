@@ -5,6 +5,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class PublisherApp : HostApplicationBase<Microsoft.Office.Interop.Publisher.Application>
     {
-        public PublisherApp() : base("Publisher") { }
+        public PublisherApp(IVBE vbe) : base(vbe, "Publisher", true) { }
     }
 }

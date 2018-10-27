@@ -5,7 +5,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class WordApp : HostApplicationBase<Microsoft.Office.Interop.Word.Application>
     {
-        public WordApp() : base("Word") { }
-        public WordApp(IVBE vbe) : base(vbe, "Word") { }
+        public WordApp(IVBE vbe) : base(vbe, "Word", true) { }
     }
 }

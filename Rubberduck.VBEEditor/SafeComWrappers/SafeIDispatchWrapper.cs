@@ -38,9 +38,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 return false;
             }
 
-            var otherPtr = GetPointer(other);
-
-            return IDispatchPointer == otherPtr;
+            return IDispatchPointer == GetPointer(other);
         }
 
         public override int GetHashCode()

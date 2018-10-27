@@ -17,9 +17,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     public enum DocumentState
     {
         /// <summary>
-        /// The document is not open and its accompanying <see cref="IVBComponent"/> is not available.
+        /// The document is not accessible. It might be closed or otherwise unavailable. In this case
+        /// it should be presumed it is not safe to use the <see cref="IVBComponent"/> of that document.
         /// </summary>
-        Closed,
+        Inaccessible,
         /// <summary>
         /// The document is open in design mode.
         /// </summary>
@@ -32,7 +33,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 
     public interface IHostDocument
     {
-        string Name { get; }
+        QualifiedModuleName QualifiedName { get; }
+        string ModuleName { get; }
         string ClassName { get; }
         DocumentState State { get; }
         bool TryGetTarget(out SafeIDispatchWrapper iDispatch);
@@ -42,16 +44,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     {
         private readonly Func<SafeIDispatchWrapper> _getTargetFunc;
 
-        public HostDocument(string name, string className, DocumentState state, Func<SafeIDispatchWrapper> getTargetFunc)
+        public HostDocument(QualifiedModuleName qualifedName, string name, string className, DocumentState state, Func<SafeIDispatchWrapper> getTargetFunc)
         {
-            Name = name;
+            QualifiedName = qualifedName;
+            ModuleName = name;
             ClassName = className;
             State = state;
 
             _getTargetFunc = getTargetFunc;
         }
 
-        public string Name { get; }
+        public QualifiedModuleName QualifiedName { get; }
+        public string ModuleName { get; }
         public string ClassName { get; }
         public DocumentState State { get; }
 

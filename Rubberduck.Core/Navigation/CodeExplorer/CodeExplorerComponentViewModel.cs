@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
+using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
@@ -68,14 +69,19 @@ namespace Rubberduck.Navigation.CodeExplorer
                 switch (qualifiedModuleName.ComponentType)
                 {
                     case ComponentType.Document:
-                        string parenthesizedName;
+                        var parenthesizedName = string.Empty;
+                        var state = DocumentState.Inaccessible;
                         using (var app = _vbe.HostApplication())
                         {
-                            var document = app.GetDocument(qualifiedModuleName);
-                            parenthesizedName = document.Name ?? string.Empty;
+                            if (app != null)
+                            {
+                                var document = app.GetDocument(qualifiedModuleName);
+                                parenthesizedName = document?.ModuleName ?? string.Empty;
+                                state = document?.State ?? DocumentState.Inaccessible;
+                            }
                         }
                         
-                        if (ContainsBuiltinDocumentPropertiesProperty())
+                        if (state == DocumentState.DesignView && ContainsBuiltinDocumentPropertiesProperty())
                         {
                             CodeExplorerItemViewModel node = this;
                             while (node.Parent != null)
@@ -87,7 +93,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                         }
                         else
                         {
-                            _name += " (" + parenthesizedName + ")";
+                            if (!string.IsNullOrWhiteSpace(parenthesizedName))
+                            {
+                                _name += " (" + parenthesizedName + ")";
+                            }
                         }
                         break;
 
