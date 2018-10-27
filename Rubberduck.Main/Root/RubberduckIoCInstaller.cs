@@ -122,6 +122,10 @@ namespace Rubberduck.Root
             RegisterParsingEngine(container);
             RegisterTypeLibApi(container);
 
+            container.Register(Component.For<IRewritingManager>()
+                .ImplementedBy<RewritingManager>()
+                .LifestyleSingleton());
+
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
             container.Register(Component.For<IVBEInteraction>()
@@ -287,6 +291,9 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<PreprocessingParseErrorListenerFactory>()
                 .ImplementedBy<PreprocessingParseErrorListenerFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IRewriteSessionFactory>()
+                .ImplementedBy<RewriteSessionFactory>()
                 .LifestyleSingleton());
         }
 
