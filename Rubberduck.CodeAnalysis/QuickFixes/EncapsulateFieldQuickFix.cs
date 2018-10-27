@@ -1,6 +1,7 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
@@ -23,7 +24,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _indenter = indenter;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
             {

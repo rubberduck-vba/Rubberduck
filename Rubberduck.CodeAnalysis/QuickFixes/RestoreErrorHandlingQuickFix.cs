@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -20,7 +21,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _state = state;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             var exitStatement = "Exit ";
             VBAParser.BlockContext block;

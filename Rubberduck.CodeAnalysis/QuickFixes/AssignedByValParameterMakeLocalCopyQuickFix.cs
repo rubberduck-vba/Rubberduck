@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _parserState = state;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             Debug.Assert(result.Target.Context.Parent is VBAParser.ArgListContext);
             Debug.Assert(null != ((ParserRuleContext)result.Target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>());

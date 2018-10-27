@@ -5,6 +5,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -23,7 +24,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInModule => true;
         public override bool CanFixInProject => true;
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             var identifierContext = result.Target.Context;
             var enclosingStatmentContext = identifierContext.GetAncestor<VBAParser.BlockStmtContext>();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 
@@ -39,7 +40,7 @@ namespace Rubberduck.Inspections.Abstract
             _supportedInspections = _supportedInspections.Except(inspections).ToHashSet();
         }
 
-        public abstract void Fix(IInspectionResult result);
+        public abstract void Fix(IInspectionResult result, IRewriteSession rewriteSession = null);
         public abstract string Description(IInspectionResult result);
 
         public abstract bool CanFixInProcedure { get; }

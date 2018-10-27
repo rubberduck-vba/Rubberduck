@@ -29,7 +29,7 @@ namespace Rubberduck.Inspections.QuickFixes
             return Resources.Inspections.QuickFixes.AddStepOneQuickFix;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             IExecutableModuleRewriter rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
             ForNextStmtContext context = result.Context as ForNextStmtContext;

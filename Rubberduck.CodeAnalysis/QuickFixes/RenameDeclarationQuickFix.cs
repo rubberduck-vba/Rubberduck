@@ -3,6 +3,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _messageBox = messageBox;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             using (var view = new RenameDialog(new RenameViewModel(_state)))
             {

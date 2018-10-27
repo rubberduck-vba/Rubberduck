@@ -2,6 +2,7 @@ using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 
@@ -17,7 +18,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _settings = settings;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             var inspectionSettings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
             var whitelist = inspectionSettings.WhitelistedIdentifiers;

@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveStepOneQuickFix;
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             IExecutableModuleRewriter rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
             var context = result.Context;

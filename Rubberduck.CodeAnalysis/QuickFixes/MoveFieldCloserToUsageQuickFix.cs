@@ -2,6 +2,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.Resources.Inspections;
@@ -23,7 +24,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _messageBox = messageBox;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             var refactoring = new MoveCloserToUsageRefactoring(_vbe, _state, _messageBox);
             refactoring.Refactor(result.Target);

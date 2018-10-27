@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _state = state;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             var context = (VBAParser.ArgContext)result.Context;
 

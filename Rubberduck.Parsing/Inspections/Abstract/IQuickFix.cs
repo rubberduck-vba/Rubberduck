@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Parsing.Inspections.Abstract
 {
     public interface IQuickFix
     {
-        void Fix(IInspectionResult result);
+        void Fix(IInspectionResult result, IRewriteSession rewriteSession = null);
         string Description(IInspectionResult result);
 
         bool CanFixInProcedure { get; }

@@ -8,6 +8,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInModule => false;
         public override bool CanFixInProject => false;
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
 
