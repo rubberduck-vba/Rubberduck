@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NLog;
 using Rubberduck.VBEditor;
 
@@ -39,6 +40,11 @@ namespace Rubberduck.Parsing.Rewriter
 
         public void Rewrite()
         {
+            if (!CheckedOutModuleRewriters.Any())
+            {
+                return;
+            }
+
             lock (_invalidationLockObject)
             {
                 if (_isInvalidated)
