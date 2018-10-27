@@ -1066,12 +1066,15 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-
         public void AddAttributesRewriter(QualifiedModuleName module, IExecutableModuleRewriter attributesRewriter)
         {
             var key = module;
             _moduleStates[key].SetAttributesRewriter(attributesRewriter);
         }
+
+        //todo: Remove this again in favor of injection of the IRewritingManager into the callers.
+        public IRewritingManager RewritingManager { get; internal set; }
+
 
         private bool _isDisposed;
         public void Dispose()
