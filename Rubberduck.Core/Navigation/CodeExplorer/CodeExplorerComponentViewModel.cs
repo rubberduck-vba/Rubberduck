@@ -76,7 +76,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                             if (app != null)
                             {
                                 var document = app.GetDocument(qualifiedModuleName);
-                                parenthesizedName = document?.ModuleName ?? string.Empty;
+                                parenthesizedName = document?.DocumentName ?? string.Empty;
                                 state = document?.State ?? DocumentState.Inaccessible;
                             }
                         }

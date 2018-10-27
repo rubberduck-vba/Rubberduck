@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     public interface IHostDocument
     {
         QualifiedModuleName QualifiedName { get; }
-        string ModuleName { get; }
+        string DocumentName { get; }
         string ClassName { get; }
         DocumentState State { get; }
         bool TryGetTarget(out SafeIDispatchWrapper iDispatch);
@@ -47,7 +47,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         public HostDocument(QualifiedModuleName qualifedName, string name, string className, DocumentState state, Func<SafeIDispatchWrapper> getTargetFunc)
         {
             QualifiedName = qualifedName;
-            ModuleName = name;
+            DocumentName = name;
             ClassName = className;
             State = state;
 
@@ -55,7 +55,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         }
 
         public QualifiedModuleName QualifiedName { get; }
-        public string ModuleName { get; }
+        public string DocumentName { get; }
         public string ClassName { get; }
         public DocumentState State { get; }
 
