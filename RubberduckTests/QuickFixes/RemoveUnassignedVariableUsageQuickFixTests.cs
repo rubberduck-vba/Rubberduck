@@ -86,6 +86,7 @@ End Sub";
             const string inputCode =
                 @"Sub test()
     Dim wb As Workbook
+    Set wb = ThisWorkbook
     Dim ws As Worksheet
     With wb
         Debug.Print .Name
@@ -100,6 +101,7 @@ End Sub";
             const string expectedCode =
                 @"Sub test()
     Dim wb As Workbook
+    Set wb = ThisWorkbook
     Dim ws As Worksheet
     With wb
         Debug.Print .Name
