@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(declaration =>
                     !declaration.IsWithEvents
                     && !IsIgnoringInspectionResultFor(declaration, AnnotationName)
-                    && declaration.References.All(reference => reference.IsAssignment));
+                    && !declaration.References.Any());
 
             return declarations.Select(issue => 
                 new DeclarationInspectionResult(this,

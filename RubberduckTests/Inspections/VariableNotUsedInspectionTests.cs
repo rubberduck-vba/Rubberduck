@@ -148,12 +148,24 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void InspectionName()
+        public void VariableUsed_DoesNotReturnResultIfAssigned()
         {
-            const string inspectionName = "VariableNotUsedInspection";
-            var inspection = new VariableNotUsedInspection(null);
+            const string inputCode =
+                @"Function Foo() As Boolean
+    Dim var1 as String
+    var1 = ""test""
+End Function";
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new VariableNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
+
     }
 }
