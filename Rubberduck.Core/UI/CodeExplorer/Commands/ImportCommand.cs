@@ -7,13 +7,9 @@ using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.IO;
-using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Parsing;
-
 using Rubberduck.Parsing;
-using Antlr4.Runtime;
+using Rubberduck.Interaction.Input;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -21,11 +17,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private readonly IVBE _vbe;
         private readonly IOpenFileDialog _openFileDialog;
+        private readonly IFileHandler _fileHandler;
 
-        public ImportCommand(IVBE vbe, IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
+        public ImportCommand(IVBE vbe, IOpenFileDialog openFileDialog, IFileHandler fileHandler) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _openFileDialog = openFileDialog;
+            _fileHandler = fileHandler;
 
             _openFileDialog.AddExtension = true;
             _openFileDialog.AutoUpgradeEnabled = true;
@@ -92,25 +90,23 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
+            var uniqueFileCounter = 0;
             foreach (var filename in _openFileDialog.FileNames)
             {
-                var extension = Path.GetExtension(filename);
-                var tempFile = $"RubberduckTempImportFile{extension}";
-                
-                var sourceText = string.Join(Environment.NewLine, File.ReadAllLines(filename));
+                var sourceText = string.Join(Environment.NewLine, _fileHandler.ReadAllLines(filename));
                 var tempHelper = (CodeExplorerItemViewModel)parameter;
                 var newFolderName = (parameter is CodeExplorerCustomFolderViewModel) ? tempHelper.Name : tempHelper.GetSelectedDeclaration().CustomFolder;
                 var startRule = VBACodeStringParser.Parse(sourceText, t => t.startRule());
                 var updatedModuleText = FolderAnnotator.AddOrUpdateFolderName(startRule, newFolderName);
+                var extension = Path.GetExtension(filename);
+                var importPath = $"RubberduckTempImportFile{uniqueFileCounter++}{extension}";
                 try
                 {
-                    var sw = File.CreateText(tempFile);
-                    sw.Write(updatedModuleText);
-                    sw.Close();
+                    _fileHandler.WriteToFile(importPath, updatedModuleText);
 
                     using (var components = project.VBComponents)
                     {
-                        components.Import(tempFile);
+                        components.Import(importPath);
                     }
                 }
                 catch(Exception e)
@@ -119,9 +115,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
                 finally
                 {
-                    if (File.Exists(tempFile))
+                    if (_fileHandler.Exists(importPath))
                     {
-                        File.Delete(tempFile);
+                        _fileHandler.Delete(importPath);
                     }
                 }
             }

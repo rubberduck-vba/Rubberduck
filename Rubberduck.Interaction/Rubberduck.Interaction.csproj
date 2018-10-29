@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\IDialogView.cs" />
+    <Compile Include="Input\IFileHandler.cs" />
     <Compile Include="Input\IMessageBox.cs" />
     <Compile Include="Navigation\INavigateCommand.cs" />
     <Compile Include="Navigation\INavigateSelection.cs" />

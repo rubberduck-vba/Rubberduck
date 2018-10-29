@@ -846,12 +846,16 @@ namespace RubberduckTests.CodeExplorer
             openFileDialog.Setup(o => o.ShowHelp);
             openFileDialog.Setup(o => o.Filter);
             openFileDialog.Setup(o => o.CheckFileExists);
-            openFileDialog.Setup(o => o.FileNames).Returns(new[] { "C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas" });
+            const string standardModule = "C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas";
+            openFileDialog.Setup(o => o.FileNames).Returns(new[] { standardModule });
             openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
             var projectRepository = new ProjectsRepository(vbe.Object);
             var messageBox = new Mock<IMessageBox>();
             var saveFileDialog = new Mock<ISaveFileDialog>();
+
+            var fileHandler = new Mock<Rubberduck.Interaction.Input.IFileHandler>();
+            fileHandler.Setup(o => o.ReadAllLines(standardModule)).Returns(new[] { "Attribute VB_Name = \"Module1\"", "Public Sub Foo()", "End Sub" });
 
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
             {
@@ -860,7 +864,7 @@ namespace RubberduckTests.CodeExplorer
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object)
                 {
-                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object)
+                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object, fileHandler.Object)
                 };
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -870,7 +874,7 @@ namespace RubberduckTests.CodeExplorer
                 vm.SelectedItem = vm.Projects.First();
                 vm.ImportCommand.Execute(vm.SelectedItem);
 
-                components.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
+                components.Verify(c => c.Import("RubberduckTempImportFile0.bas"), Times.Once);
             }
         }
 
@@ -895,12 +899,19 @@ namespace RubberduckTests.CodeExplorer
             openFileDialog.Setup(o => o.ShowHelp);
             openFileDialog.Setup(o => o.Filter);
             openFileDialog.Setup(o => o.CheckFileExists);
-            openFileDialog.Setup(o => o.FileNames).Returns(new[] { "C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas", "C:\\Users\\Rubberduck\\Desktop\\ClsModule1.cls" });
+            const string standardModule = "C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas";
+            const string classModule = "C:\\Users\\Rubberduck\\Desktop\\ClsModule1.cls";
+            openFileDialog.Setup(o => o.FileNames).Returns(new[] { standardModule, classModule });
             openFileDialog.Setup(o => o.ShowDialog()).Returns(DialogResult.OK);
 
             var projectRepository = new ProjectsRepository(vbe.Object);
             var messageBox = new Mock<IMessageBox>();
             var saveFileDialog = new Mock<ISaveFileDialog>();
+
+            var fileHandler = new Mock<Rubberduck.Interaction.Input.IFileHandler>();
+            var returnedLines = new[] { "Attribute VB_Name = \"Module1\"", "Public Sub Foo()", "End Sub" };
+            fileHandler.Setup(o => o.ReadAllLines(standardModule)).Returns(returnedLines);
+            fileHandler.Setup(o => o.ReadAllLines(classModule)).Returns(returnedLines);
 
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
             {
@@ -909,7 +920,7 @@ namespace RubberduckTests.CodeExplorer
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object)
                 {
-                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object)
+                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object, fileHandler.Object)
                 };
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -919,8 +930,8 @@ namespace RubberduckTests.CodeExplorer
                 vm.SelectedItem = vm.Projects.First();
                 vm.ImportCommand.Execute(vm.SelectedItem);
 
-                components.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Once);
-                components.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\ClsModule1.cls"), Times.Once);
+                components.Verify(c => c.Import("RubberduckTempImportFile0.bas"), Times.Once);
+                components.Verify(c => c.Import("RubberduckTempImportFile1.cls"), Times.Once);
             }
         }
 
@@ -930,7 +941,7 @@ namespace RubberduckTests.CodeExplorer
         {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Module1", ComponentType.StandardModule, "");
+                .AddComponent("Module1", ComponentType.StandardModule, string.Empty);
 
             var components = project.MockVBComponents;
 
@@ -952,13 +963,17 @@ namespace RubberduckTests.CodeExplorer
             var messageBox = new Mock<IMessageBox>();
             var saveFileDialog = new Mock<ISaveFileDialog>();
 
+            var fileHandler = new Mock<Rubberduck.Interaction.Input.IFileHandler>();
+
             using (var state = new RubberduckParserState(vbe.Object, projectRepository, new DeclarationFinderFactory(), vbeEvents.Object))
             {
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
-                vm.ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object)
+                {
+                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object, fileHandler.Object)
+                };
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -967,12 +982,13 @@ namespace RubberduckTests.CodeExplorer
                 vm.SelectedItem = vm.Projects.First().Items.First().Items.First();
                 vm.ImportCommand.Execute(vm.SelectedItem);
 
-                components.Verify(c => c.Import("C:\\Users\\Rubberduck\\Desktop\\StdModule1.bas"), Times.Never);
+                components.Verify(c => c.Import("RubberduckTempImportFile0.bas"), Times.Never);
             }
         }
 
         [Category("Code Explorer")]
         [Test]
+        #region TestCases
         [TestCase("Bar",
 @"Attribute VB_Name = ""Module1""
 '@Folder(Bar)
@@ -986,6 +1002,8 @@ Dim foo As Range",
 @"Attribute VB_Name = ""Module1""
 '@Folder(Foo)
 Dim foo As Range")]
+        #endregion
+
         public void AnnotateFolder_EndsWithModuleVariableDeclaration(string updatedFolder, string expectedResult, string sourceText)
         {
             var startRule = Rubberduck.Parsing.VBA.Parsing.VBACodeStringParser.Parse(sourceText, t => t.startRule());
@@ -1070,6 +1088,7 @@ End Sub")]
         }
         [Category("Code Explorer")]
         [Test]
+        #region TestCases
         [TestCase("Bar",
 @"Attribute VB_Name = ""Module1""
 '@Folder(Bar)
@@ -1079,6 +1098,8 @@ End Sub",
 @"Attribute VB_Name = ""Module1""
 Public Sub Foo()
 End Sub")]
+        #endregion
+
         public void AnnotateFolder_FolderAnnotationAdded(string updatedFolder, string expectedResult, string sourceText)
         {
             var startRule = Rubberduck.Parsing.VBA.Parsing.VBACodeStringParser.Parse(sourceText, t => t.startRule());
