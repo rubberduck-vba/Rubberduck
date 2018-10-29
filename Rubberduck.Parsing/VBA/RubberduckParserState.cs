@@ -18,7 +18,6 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 
@@ -275,7 +274,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            Logger.Debug("Component '{0}' was added.", e.Component.Name);
+            Logger.Debug("Component '{0}' was added.", e.QualifiedModuleName.ComponentName);
             OnParseRequested(sender);
         }
 
@@ -286,7 +285,7 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            Logger.Debug("Component '{0}' was removed.", e.Component.Name);
+            Logger.Debug("Component '{0}' was removed.", e.QualifiedModuleName.ComponentName);
             OnParseRequested(sender);
         }
 
@@ -297,15 +296,14 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            Logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.Component.Name);
+            Logger.Debug("Component '{0}' was renamed to '{1}'.", e.OldName, e.QualifiedModuleName.ComponentName);
 
             //todo: Find out for which situation this drastic (and problematic) cache invalidation has been introduced.
             if (ComponentIsWorksheet(e))
             {
                 RefreshProject(e.ProjectId);
-                Logger.Debug("Project '{0}' was removed.", e.Component.Name);
+                Logger.Debug("Project '{0}' was removed.", e.QualifiedModuleName.ComponentName);
             }
-
             OnParseRequested(sender);
         }
 
@@ -913,11 +911,15 @@ namespace Rubberduck.Parsing.VBA
             {
                 try
                 {
-                    foreach (var component in project.VBComponents)
+                    using (var components = project.VBComponents)
                     {
-                        if (IsNewOrModified(component))
+                        foreach (var component in components)
+                        using (component)
                         {
-                            return true;
+                            if (IsNewOrModified(component))
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
