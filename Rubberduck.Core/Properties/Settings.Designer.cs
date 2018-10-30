@@ -465,7 +465,7 @@ namespace Rubberduck.Properties {
         public global::Rubberduck.Settings.AutoCompleteSettings AutoCompleteSettings {
             get {
                 return ((global::Rubberduck.Settings.AutoCompleteSettings)(this["AutoCompleteSettings"]));
-            }
-        }
+    }
+}
     }
 }

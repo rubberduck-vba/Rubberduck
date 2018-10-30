@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -32,17 +31,32 @@ namespace Rubberduck.UI.Command
                 return false;
             }
 
-            var projectNode = parameter as CodeExplorerProjectViewModel;
+            switch (parameter)
+            {
+                case CodeExplorerProjectViewModel projectNode:
+                    return Evaluate(projectNode.Declaration.Project);
+                case IVBProject project:
+                    return Evaluate(project);
+            }
 
-            var project = parameter as IVBProject;
-
-            return Evaluate(projectNode?.Declaration.Project ?? project ?? _vbe.ActiveVBProject);
-
+            using (var activeProject = _vbe.ActiveVBProject)
+            {
+                return Evaluate(activeProject);
+            }
         }
 
         private bool Evaluate(IVBProject project)
         {
-            return project != null && !project.IsWrappingNullReference && project.VBComponents.Count > 0;
+            if (project == null || project.IsWrappingNullReference)
+            {
+                return false;
+            }
+
+            using (var compontents = project.VBComponents)
+            {
+                return compontents.Count > 0;
+            }
+
         }
 
         protected override void OnExecute(object parameter)

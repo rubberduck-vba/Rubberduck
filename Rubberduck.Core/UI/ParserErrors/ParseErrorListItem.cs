@@ -1,4 +1,5 @@
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.ParserErrors
 {
@@ -20,9 +21,9 @@ namespace Rubberduck.UI.ParserErrors
 
         public string Value => ToString();
 
-        public void Navigate()
+        public void Navigate(IVBE vbe)
         {
-            _error.Navigate();
+            _error.Navigate(vbe);
         }
 
         public override string ToString()
