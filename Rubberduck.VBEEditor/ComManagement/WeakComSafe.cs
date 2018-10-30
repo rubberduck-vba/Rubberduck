@@ -1,42 +1,59 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
+using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+
+#if DEBUG
+using System.Linq;
+#endif
 
 namespace Rubberduck.VBEditor.ComManagement
 {
-    public class WeakComSafe : IComSafe
+    public class WeakComSafe : ComSafeBase
     {
         //We use weak references to allow the GC to reclaim RCWs earlier if possible.
-        private readonly ConcurrentDictionary<int, WeakReference<ISafeComWrapper>> _comWrapperCache = new ConcurrentDictionary<int, WeakReference<ISafeComWrapper>>();
+        private readonly ConcurrentDictionary<int, (DateTime insertTime, WeakReference<ISafeComWrapper> weakRef)> _comWrapperCache = new ConcurrentDictionary<int, (DateTime, WeakReference<ISafeComWrapper>)>();
 
-
-        public void Add(ISafeComWrapper comWrapper)
+        public override void Add(ISafeComWrapper comWrapper)
         {
             if (comWrapper != null)
             {
                 _comWrapperCache.AddOrUpdate(
                     GetComWrapperObjectHashCode(comWrapper), 
-                    key => new WeakReference<ISafeComWrapper>(comWrapper), 
-                    (key, value) => new WeakReference<ISafeComWrapper>(comWrapper));
+                    key =>
+                    {
+#if DEBUG
+                        TraceAdd(comWrapper);
+#endif
+                        return (DateTime.UtcNow, new WeakReference<ISafeComWrapper>(comWrapper));
+                    },
+                    (key, value) =>
+                    {
+#if DEBUG
+                        TraceUpdate(comWrapper);
+#endif
+                        return (value.insertTime, new WeakReference<ISafeComWrapper>(comWrapper));
+                    });
             }
 
         }
 
-        //We do not use GetHashCode because subclasses of SafeComWrapper<T> overwrite this method 
-        //and we need to distinguish between individual instances.
-        private int GetComWrapperObjectHashCode(ISafeComWrapper comWrapper)
+        public override bool TryRemove(ISafeComWrapper comWrapper)
         {
-            return RuntimeHelpers.GetHashCode(comWrapper);
-        }
+            if (_disposed || comWrapper == null)
+            {
+                return false;
+            }
 
-        public bool TryRemove(ISafeComWrapper comWrapper)
-        {
-            return !_disposed && comWrapper != null && _comWrapperCache.TryRemove(GetComWrapperObjectHashCode(comWrapper), out _);
+            var result = _comWrapperCache.TryRemove(GetComWrapperObjectHashCode(comWrapper), out _);
+#if DEBUG
+            TraceRemove(comWrapper, result);
+#endif
+            return result;
         }
 
         private bool _disposed;
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
             if (_disposed)
             {
@@ -47,7 +64,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
             foreach (var weakReference in _comWrapperCache.Values)
             {
-                if(weakReference.TryGetTarget(out var comWrapper))
+                if (weakReference.weakRef.TryGetTarget(out var comWrapper))
                 {
                     comWrapper.Dispose();
                 }
@@ -55,5 +72,23 @@ namespace Rubberduck.VBEditor.ComManagement
 
             _comWrapperCache.Clear();
         }
+
+#if DEBUG
+        protected override IDictionary<int, ISafeComWrapper> GetWrappers()
+        {
+            var dictionary = new Dictionary<int, ISafeComWrapper>();
+            foreach (var kvp in _comWrapperCache.OrderBy(kvp => kvp.Value.insertTime))
+            {
+                if (!kvp.Value.weakRef.TryGetTarget(out var target))
+                {
+                    target = null;
+                }
+                dictionary.Add(kvp.Key, target);   
+            }
+
+            return dictionary;
+        }
+#endif
     }
 }
+

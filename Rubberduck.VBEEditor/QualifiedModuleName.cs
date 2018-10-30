@@ -48,21 +48,12 @@ namespace Rubberduck.VBEditor
             _projectName = project.Name;
             ProjectPath = string.Empty;
             ProjectId = GetProjectId(project);
-            ModuleContentHashOnCreation = GetContentHash(null);
         }
 
         public QualifiedModuleName(IVBComponent component)
         {
             ComponentType = component.Type;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
-
-            //note: We set this property in order to stabelize the component.
-            //For some reason, components sometimes seem to get removed on the COM side although 
-            //an RCW is still holding a reference. For some reason, opening the CodeModule of a 
-            //component seems to prevent this. 
-            //This is a hack to open the code module on each component for which we get a QMN 
-            //in a way that does not get optimized away.
-            ModuleContentHashOnCreation = GetContentHash(component);
 
             using (var components = component.Collection)
             {
@@ -96,7 +87,6 @@ namespace Rubberduck.VBEditor
             ProjectId = "External" + $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             ComponentType = ComponentType.ComComponent;
-            ModuleContentHashOnCreation = GetContentHash(null);
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -118,7 +108,6 @@ namespace Rubberduck.VBEditor
         public string ProjectName => _projectName ?? string.Empty;
 
         public string ProjectPath { get; }
-        public int ModuleContentHashOnCreation { get; }
 
         public override string ToString()
         {
@@ -158,6 +147,46 @@ namespace Rubberduck.VBEditor
         public static bool operator !=(QualifiedModuleName a, QualifiedModuleName b)
         {
             return !a.Equals(b);
+        }
+    }
+
+    public static class QualifiedModuleNameExtensions
+    {
+
+        public static bool TryGetProject(this QualifiedModuleName moduleName, IVBE vbe, out IVBProject project)
+        {
+            using (var projects = vbe.VBProjects)
+            {
+                foreach (var item in projects)
+                {
+                    if (item.ProjectId == moduleName.ProjectId && item.Name == moduleName.ProjectName)
+                    {
+                        project = item;
+                        return true;
+                    }
+
+                    item.Dispose();
+                }
+
+                project = null;
+                return false;
+            }
+        }
+
+        public static bool TryGetComponent(this QualifiedModuleName moduleName, IVBE vbe, out IVBComponent component)
+        {
+            if (TryGetProject(moduleName, vbe, out var project))
+            {
+                using (project)
+                using (var components = project.VBComponents)
+                {
+                    component = components[moduleName.ComponentName];
+                    return true;
+                }
+            }
+
+            component = null;
+            return false;
         }
     }
 }

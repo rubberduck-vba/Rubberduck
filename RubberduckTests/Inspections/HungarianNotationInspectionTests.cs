@@ -200,12 +200,75 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void InspectionName()
+        public void HungarianNotation_DoesNotReturnResult_Ignored()
         {
-            const string inspectionName = "UseMeaningfulNameInspection";
-            var inspection = new UseMeaningfulNameInspection(null, null);
+            const string inputCode =
+                @"Sub Hungarian()
+'@Ignore HungarianNotation
+    Dim oFoo As Object
+End Sub";
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new HungarianNotationInspection(state, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void HungarianNotation_DoesNotReturnResult_LibraryFunctionParameters()
+        {
+            const string inputCode =
+                @"
+Private Declare Function GetUserName Lib ""advapi32.dll"" Alias ""GetUserNameA"" (ByVal lpBuffer As String, nSize As Long) As Long
+";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new HungarianNotationInspection(state, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void HungarianNotation_DoesNotReturnResult_LibraryFunction()
+        {
+            const string inputCode =
+                @"
+Private Declare Sub chkVoid Lib ""somelib.dll"" Alias ""chkVoidA"" (number As Long)
+";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
+                .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new HungarianNotationInspection(state, UseMeaningfulNameInspectionTests.GetInspectionSettings().Object);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
     }
 }

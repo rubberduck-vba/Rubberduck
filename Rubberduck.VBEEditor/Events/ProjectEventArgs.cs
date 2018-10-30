@@ -1,18 +1,17 @@
 using System;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
 {
     public class ProjectEventArgs : EventArgs
     {
-        public ProjectEventArgs(string projectId, IVBProject project)
+        public ProjectEventArgs(string projectId, string projectName)
         {
             ProjectId = projectId;
-            Project = project;
+            ProjectName = projectName;
         }
 
         public string ProjectId { get; }
 
-        public IVBProject Project { get; }
+        public string ProjectName { get; }
     }
 }

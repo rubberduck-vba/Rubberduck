@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
-using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -15,6 +13,7 @@ using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
+using Rubberduck.Common;
 
 namespace RubberduckTests.Refactoring
 {
@@ -389,12 +388,8 @@ End Property"
                     @"Private Sub Fo|o()
     Dim Goo As Integer
 End Sub",
-                Expected =
-                    @"Private Sub Foo()
-    Dim Goo As Integer
-End Sub"
             };
-            tdo.MsgBoxReturn = DialogResult.No;
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
@@ -1458,7 +1453,6 @@ End Property
 Private Property Let IClass1_Foo(rhs As Long)
 End Property"
             };
-            inputOutput1.Expected = inputOutput1.Input.Replace(FAUX_CURSOR, "");
 
             var inputOutput2 = new RenameTestModuleDefinition("IClass1")
             {
@@ -1466,7 +1460,7 @@ End Property"
             };
             inputOutput2.Expected = inputOutput2.Input;
 
-            tdo.MsgBoxReturn = DialogResult.No;
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
 
             tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
@@ -1748,7 +1742,6 @@ End Sub"
 Private Sub ICla|ss1_DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub"
             };
-            inputOutput1.Expected = inputOutput1.Input.Replace(FAUX_CURSOR, "");
 
             var inputOutput2 = new RenameTestModuleDefinition("IClass1")
             {
@@ -1758,7 +1751,7 @@ End Sub"
             };
             inputOutput2.Expected = inputOutput2.Input;
 
-            tdo.MsgBoxReturn = DialogResult.No;
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
 
             tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
@@ -1856,7 +1849,6 @@ End Sub"
         {
             const string newName = "RenameModule";
 
-            //Input
             const string inputCode =
                 @"Private Sub Foo(ByVal a As Integer, ByVal b As String)
 End Sub";
@@ -1877,7 +1869,6 @@ End Sub";
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
                 model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
 
-                //SetupFactory
                 var factory = SetupFactory(model);
 
                 var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
@@ -1914,7 +1905,6 @@ End Sub";
                 var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection)) { NewName = newName };
                 model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
 
-                //SetupFactory
                 var factory = SetupFactory(model);
 
                 var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
@@ -2001,6 +1991,35 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
 
             tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameEnumerationMember_WarnMemberExists()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Apple", newName: "Plum");
+            var moduleCode =
+                @"Option Explicit
+
+Public Enum FruitType
+    App|le = 1
+    Orange = 2
+    Plum = 3
+End Enum
+
+Sub DoSomething()
+    MsgBox CStr(Apple)
+End Sub";
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input = moduleCode,
+            };
+
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         #endregion
@@ -2115,9 +2134,40 @@ Private Sub DoSomething(baz As UserType)
     MsgBox CStr(baz.fooBar)
 End Sub"
             };
+
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
 
             tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameUDTMember_WarnMemberExists()
+        {
+            var tdo = new RenameTestsDataObject(selection: "bar", newName: "foo");
+            var moduleCode =
+@"Option Explicit
+
+Private Type UserType
+    foo As String
+    bar| As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub";
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input = moduleCode,
+            };
+
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         [Test]
@@ -2289,7 +2339,11 @@ Public Sub useColValue()
     Dim instance As MyClass
     Set instance = New MyClass
     instance.{oldName} = 97521
-    Debug.Print instance.{oldName};""is the value""
+    PrintValue instance.{oldName} & ""is the value""
+End Sub
+
+Private Sub PrintValue(value As String)
+    Debug.Print value
 End Sub
 ",
                 Expected = $@"Option Explicit
@@ -2298,7 +2352,11 @@ Public Sub useColValue()
     Dim instance As MyClass
     Set instance = New MyClass
     instance.{refactoredName} = 97521
-    Debug.Print instance.{refactoredName};""is the value""
+    PrintValue instance.{refactoredName} & ""is the value""
+End Sub
+
+Private Sub PrintValue(value As String)
+    Debug.Print value
 End Sub
 "
             };
@@ -2307,7 +2365,7 @@ End Sub
             var projectName = "Test";
             var vbe = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected)
                 .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, major: 4, minor: 1, isBuiltIn: true)
-                .AddComponent("MyClass", ComponentType.ClassModule, classInputOutput.Input.Replace(FAUX_CURSOR, ""))
+                .AddComponent("MyClass", ComponentType.ClassModule, classInputOutput.Input)
                 .AddComponent("Usage", ComponentType.StandardModule, usageInputOutput.Input)
                 .AddProjectToVbeBuilder()
                 .Build();
@@ -2322,6 +2380,79 @@ End Sub
             PerformExpectedVersusActualRenameTests(tdo, classInputOutput, usageInputOutput);
             tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_DoesNotWarnForUDTMember_Issue4349()
+        {
+            var tdo = new RenameTestsDataObject(selection: "VS", newName: "verySatisfiedResponses");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Private Type TMonthScoreInfo
+            verySatisfiedResponses As Long
+        End Type
+
+        Private monthScoreInfo As TMonthScoreInfo
+
+        Public Property Get V|S() As Long
+            VS = monthScoreInfo.verySatisfiedResponses
+        End Property
+        Public Property Let VS(ByVal theVal As Long)
+            monthScoreInfo.verySatisfiedResponses = theVal
+        End Property",
+                Expected =
+@"Private Type TMonthScoreInfo
+            verySatisfiedResponses As Long
+        End Type
+
+        Private monthScoreInfo As TMonthScoreInfo
+
+        Public Property Get verySatisfiedResponses() As Long
+            verySatisfiedResponses = monthScoreInfo.verySatisfiedResponses
+        End Property
+        Public Property Let verySatisfiedResponses(ByVal theVal As Long)
+            monthScoreInfo.verySatisfiedResponses = theVal
+        End Property"
+            };
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_DoesNotWarnForEnumMember_Issue4349()
+        {
+            var tdo = new RenameTestsDataObject(selection: "VerySatisfiedID", newName: "VerySatisfiedResponse");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Private Enum MonthScoreTypes
+            VerySatisfiedResponse
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get V|erySatisfiedID() As Long
+            VS = MonthScoreTypes.VerySatisfiedResponse
+        End Property",
+                Expected =
+@"Private Enum MonthScoreTypes
+            VerySatisfiedResponse
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get VerySatisfiedResponse() As Long
+            VS = MonthScoreTypes.VerySatisfiedResponse
+        End Property",
+            };
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        }
+
         #endregion
 
         #region Other Tests
@@ -2501,7 +2632,6 @@ End Sub",
         {
             const string newName = "RenamedClassModule";
 
-            //Input
             const string inputCode =
                 @"Property Get Self() As IClassModule
     Set Self = Me
@@ -2523,7 +2653,6 @@ End Property";
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
                 model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "ClassModule1");
 
-                //SetupFactory
                 var factory = SetupFactory(model);
 
                 var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
@@ -2569,12 +2698,10 @@ End Property";
                 if (io.HasValue)
                 {
                     var renameTMD = io.Value;
-                    if (renameTMD.Input.Contains(FAUX_CURSOR))
+                    if (!renameTMD.Input_WithFauxCursor.Equals(string.Empty))
                     {
                         if (cursorFound) { Assert.Inconclusive($"Found multiple selection cursors ('{FAUX_CURSOR}') in the test input"); }
                         cursorFound = true;
-                        renameTMD.Input_WithFauxCursor = renameTMD.Input;
-                        renameTMD.Input = renameTMD.Input.Replace(FAUX_CURSOR, "");
                     }
                     renameTMDs.Add(renameTMD);
                 }
@@ -2597,8 +2724,7 @@ End Property";
             }
 
             tdo.MsgBox = new Mock<IMessageBox>();
-            // FIXME this might be a bit broken now
-            tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == DialogResult.Yes);
+            tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == ConfirmationOutcome.Yes);
 
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
             tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);
@@ -2615,12 +2741,7 @@ End Property";
 
         private static void AddTestModuleDefinition(RenameTestsDataObject tdo, RenameTestModuleDefinition inputOutput)
         {
-            if (inputOutput.RenameSelection.HasValue)
-            {
-                tdo.SelectionModuleName = inputOutput.ModuleName;
-                tdo.RawSelection = inputOutput.RenameSelection;
-            }
-            else if (inputOutput.Input_WithFauxCursor.Length > 0)
+            if (inputOutput.Input_WithFauxCursor.Length > 0)
             {
                 tdo.SelectionModuleName = inputOutput.ModuleName;
                 if (inputOutput.Input_WithFauxCursor.Contains(FAUX_CURSOR))
@@ -2630,7 +2751,7 @@ End Property";
                     {
                         Assert.Inconclusive($"{numCursors} found in FauxCursor input - only a single cursor is allowed.");
                     }
-                    tdo.RawSelection = FindSelection(inputOutput.Input_WithFauxCursor, tdo.OriginalName);
+                    tdo.RawSelection = inputOutput.RenameSelection;
                     if (!tdo.RawSelection.HasValue)
                     {
                         Assert.Inconclusive($"Unable to set RawSelection field for test module {inputOutput.ModuleName}");
@@ -2638,37 +2759,6 @@ End Property";
                 }
             }
             tdo.ModuleTestSetupDefs.Add(inputOutput);
-        }
-
-        private static Selection? FindSelection(string input, string originalName)
-        {
-            var lines = input.Split(new[] { "\r\n" }, StringSplitOptions.None);
-            for (var idx = 0; idx < lines.Count(); idx++)
-            {
-                var testLine = lines[idx];
-                if (testLine.Contains(FAUX_CURSOR))
-                {
-                    var fauxCursorLine = idx + 1;
-                    var fauxCursorColumn = testLine.IndexOf(FAUX_CURSOR);
-                    if (!testLine.Replace(FAUX_CURSOR, "").Contains(originalName))
-                    {
-                        Assert.Inconclusive($"Module line with faux cursor does not contain target '{originalName}'");
-                    }
-
-                    int fauxCursorColumnOffset = 0;
-                    if (testLine.StartsWith($"{FAUX_CURSOR}") || testLine.Contains($" {FAUX_CURSOR}"))
-                    {
-                        fauxCursorColumnOffset = 1;
-                    }
-                    else if (testLine.EndsWith($"{FAUX_CURSOR}") || testLine.Contains($"{FAUX_CURSOR} "))
-                    {
-                        fauxCursorColumnOffset = -1;
-                    }
-
-                    return new Selection(fauxCursorLine, fauxCursorColumn + fauxCursorColumnOffset);
-                }
-            }
-            return null;
         }
 
         private static void RunRenameRefactorScenario(RenameTestsDataObject tdo)
@@ -2762,27 +2852,53 @@ End Property";
 
         internal struct RenameTestModuleDefinition
         {
-            public string Input_WithFauxCursor;
-            public string Input;
-            public string Expected;
+            private CodeString _codeString;
+            private string _inputWithFauxCursor;
+            private string _expected;
+
+            public string Input_WithFauxCursor => _inputWithFauxCursor;
+            public string Input
+            {
+                set
+                {
+                    _inputWithFauxCursor = value.Contains(FAUX_CURSOR) ? value : _inputWithFauxCursor;
+                    _codeString = value.ToCodeString();
+                }
+                get
+                {
+                    return _codeString.Code;
+                }
+            }
+
+            public string Expected
+            {
+                set
+                {
+                    _expected = value;
+                }
+                get
+                {
+                    return _expected.Equals(string.Empty) ? Input : _expected;
+                }
+            }
+
             public string ModuleName;
             public ComponentType ModuleType;
             public bool CheckExpectedEqualsActual;
             public List<string> ControlNames;
             public string NewName;
-            public Selection? RenameSelection;
+            public Selection? RenameSelection => _codeString.CaretPosition.ToOneBased();
 
             public RenameTestModuleDefinition(string moduleName, ComponentType moduleType = ComponentType.ClassModule)
             {
-                Input_WithFauxCursor = "";
-                Expected = "";
-                Input = "";
+                _codeString = new CodeString(string.Empty, default);
+                _inputWithFauxCursor = string.Empty;
+                _expected = string.Empty;
                 ModuleName = moduleName;
                 ModuleType = moduleType;
                 CheckExpectedEqualsActual = true;
                 ControlNames = new List<String>();
                 NewName = "";
-                RenameSelection = null;
             }
         }
 
@@ -2798,7 +2914,7 @@ End Property";
             public RenameTestsDataObject(string selection, string newName)
             {
                 ProjectName = "TestProject";
-                MsgBoxReturn = DialogResult.Yes;
+                MsgBoxReturn = ConfirmationOutcome.Yes;
                 RefactorParamType = RefactorParams.QualifiedSelection;
                 RawSelection = null;
                 NewName = newName;
@@ -2815,8 +2931,7 @@ End Property";
             public QualifiedSelection QualifiedSelection { get; set; }
             public RenameModel RenameModel { get; set; }
             public Mock<IMessageBox> MsgBox { get; set; }
-            [Obsolete] // FIXME replace with a more complete MessageBox modelling
-            public DialogResult MsgBoxReturn { get; set; }
+            public ConfirmationOutcome MsgBoxReturn { get; set; }
             public RefactorParams RefactorParamType { get; set; }
             public Selection? RawSelection { get; set; }
             public List<RenameTestModuleDefinition> ModuleTestSetupDefs { get; set; }

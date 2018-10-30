@@ -19,7 +19,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
         public CommandBarButton(MSO.CommandBarButton target, bool rewrapping = false) 
             : base(target, rewrapping)
         {
-            _control = new CommandBarControl(target, rewrapping);
+            _control = new CommandBarControl(target, true);
         }
         
         private MSO.CommandBarButton Button => Target;
@@ -314,19 +314,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         void MSO._CommandBarButtonEvents.Click(MSO.CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var button = new CommandBarButton(Ctrl);
             var handler = _click;
             if (handler == null || IsWrappingNullReference)
             {
-                button.Dispose();
                 return;
             }
 
-            System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
+            using (var button = new CommandBarButton(Ctrl))
+            {
+                System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1,
+                    "Multicast delegate is registered more than once.");
 
-            var args = new CommandBarButtonClickEventArgs(button);
-            handler.Invoke(this, args);
-            CancelDefault = args.Cancel;
+                var args = new CommandBarButtonClickEventArgs(button);
+                handler.Invoke(this, args);
+                CancelDefault = args.Cancel;
+            }
         }
 
         public event EventHandler Disposing;

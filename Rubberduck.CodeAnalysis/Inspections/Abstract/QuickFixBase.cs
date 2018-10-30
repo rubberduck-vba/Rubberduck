@@ -10,7 +10,7 @@ namespace Rubberduck.Inspections.Abstract
 {
     public abstract class QuickFixBase : IQuickFix
     {
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        protected readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private HashSet<Type> _supportedInspections;
         public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -27,7 +27,7 @@ namespace Rubberduck.Inspections.Abstract
                 throw new ArgumentException($"Parameters must implement {nameof(IInspection)}", nameof(inspections));
 #else
                 inspections.Where(s => s.GetInterfaces().All(i => i != typeof(IInspection))).ToList()
-                    .ForEach(i => _logger.Error($"Type {i.Name} does not implement {nameof(IInspection)}"));
+                    .ForEach(i => Logger.Error($"Type {i.Name} does not implement {nameof(IInspection)}"));
 #endif
             }
 

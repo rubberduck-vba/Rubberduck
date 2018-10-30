@@ -484,8 +484,9 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>New</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Renaming to '{0}' clashes with '{1}' in the same scope.
-Are you sure you want to proceed with this rename?</value>
+    <value>'{0}' conflicts with an existing name. Renaming '{1}' to '{0}' may result in uncompilable code or a change in logic.
+Do you want to proceed with this rename?</value>
+    <comment>0: NewName 1: CurrentName</comment>
   </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Please ensure that exactly 1 control is selected before renaming.</value>
@@ -1245,8 +1246,8 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand currently enabled</value>
   </data>
-  <data name="InspectionSettings_FilterDescription" xml:space="preserve">
-    <value>Filter by Description:</value>
+  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
+    <value>Description:</value>
   </data>
   <data name="ParserState_Busy" xml:space="preserve">
     <value>Busy</value>
@@ -1294,11 +1295,29 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
+  <data name="InspectionResults_FilterByError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="InspectionResults_FilterByHint" xml:space="preserve">
+    <value>Hint</value>
+  </data>
+  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
+    <value>Suggestion</value>
+  </data>
+  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="GroupingGrid_FilterBy" xml:space="preserve">
+    <value>Filter by</value>
+  </data>
   <data name="GroupingStyle_ByCategory" xml:space="preserve">
     <value>By category</value>
   </data>
   <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
     <value>Ignore empty lines when locating first comment and declaration blocks</value>
+  </data>
+  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
+    <value>Severity:</value>
   </data>
   <data name="Language_CS" xml:space="preserve">
     <value>Czech</value>

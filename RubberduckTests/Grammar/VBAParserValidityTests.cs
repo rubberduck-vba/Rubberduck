@@ -37,7 +37,6 @@ namespace RubberduckTests.Grammar
         private IEnumerable<Tuple<string, string>> GetTestFiles()
         {
             var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            basePath = Directory.GetParent(basePath).Parent.FullName;
             return Directory.EnumerateFiles(Path.Combine(basePath, "Testfiles//Grammar")).Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
         }
 

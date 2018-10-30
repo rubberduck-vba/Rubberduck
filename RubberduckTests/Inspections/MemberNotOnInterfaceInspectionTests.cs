@@ -379,13 +379,30 @@ End Sub
         }
 
         [Test]
+        [Ignore("Test concurrency issue. Only passes if run individually.")]
         [Category("Inspections")]
-        public void InspectionName()
+        public void MemberNotOnInterface_DoesNotReturnResult_ControlObject()
         {
-            const string inspectionName = "MemberNotOnInterfaceInspection";
-            var inspection = new MemberNotOnInterfaceInspection(null);
+            const string inputCode =
+                @"Sub Foo(bar as MSForms.TextBox)
+    Debug.Print bar.Left
+End Sub";
 
-            Assert.AreEqual(inspectionName, inspection.Name);
+            var vbeBuilder = new MockVbeBuilder();
+            var projectBuilder = vbeBuilder.ProjectBuilder("testproject", ProjectProtection.Unprotected);
+            projectBuilder.MockUserFormBuilder("UserForm1", inputCode).AddFormToProjectBuilder()
+                .AddReference("MSForms", MockVbeBuilder.LibraryPathMsForms, 2, 0, true);
+
+            vbeBuilder.AddProject(projectBuilder.Build());
+            var vbe = vbeBuilder.Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new MemberNotOnInterfaceInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsTrue(!inspectionResults.Any());
+            }
         }
     }
 }

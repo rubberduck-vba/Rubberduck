@@ -32,28 +32,26 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoveParametersDialog));
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.RemoveParametersViewElement = new RemoveParametersView();
+            this.RemoveParametersViewElement = new Rubberduck.UI.Refactorings.RemoveParameters.RemoveParametersView();
             this.SuspendLayout();
             // 
             // elementHost1
             // 
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Margin = new System.Windows.Forms.Padding(4);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(494, 395);
+            this.elementHost1.Size = new System.Drawing.Size(370, 321);
             this.elementHost1.TabIndex = 1;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.RemoveParametersViewElement;
             // 
             // RemoveParametersDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(494, 395);
+            this.ClientSize = new System.Drawing.Size(370, 321);
             this.Controls.Add(this.elementHost1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "RemoveParametersDialog";
             this.Text = "Rubberduck - Remove Parameters";
             this.ResumeLayout(false);
