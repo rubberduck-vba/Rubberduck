@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _messageBox = messageBox;
         }
 
-        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var refactoring = new MoveCloserToUsageRefactoring(_vbe, _state, _messageBox);
             refactoring.Refactor(result.Target);

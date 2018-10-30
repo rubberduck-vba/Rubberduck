@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections.Abstract
 
         public virtual CodeKind TargetCodeKind => CodeKind.CodePaneCode;
 
-        public abstract void Fix(IInspectionResult result, IRewriteSession rewriteSession = null);
+        public abstract void Fix(IInspectionResult result, IRewriteSession rewriteSession);
         public abstract string Description(IInspectionResult result);
 
         public abstract bool CanFixInProcedure { get; }

@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _messageBox = messageBox;
         }
 
-        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             using (var view = new RenameDialog(new RenameViewModel(_state)))
             {

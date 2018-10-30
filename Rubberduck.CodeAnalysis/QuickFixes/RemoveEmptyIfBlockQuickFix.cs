@@ -7,28 +7,36 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    internal sealed class RemoveEmptyIfBlockQuickFix : QuickFixBase
+    public sealed class RemoveEmptyIfBlockQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public RemoveEmptyIfBlockQuickFix(RubberduckParserState state)
+        public RemoveEmptyIfBlockQuickFix()
             : base(typeof(EmptyIfBlockInspection))
+        {}
+
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            _state = state;
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
+
+            switch (result.Context)
+            {
+                case VBAParser.IfStmtContext ifContext:
+                    UpdateContext(ifContext, rewriter);
+                    break;
+                case VBAParser.IfWithEmptyThenContext ifWithEmtyThenContext:
+                    UpdateContext(ifWithEmtyThenContext, rewriter);
+                    break;
+                case VBAParser.ElseIfBlockContext elseIfBlockContext:
+                    UpdateContext(elseIfBlockContext, rewriter);
+                    break;
+                default:
+                    throw new NotSupportedException(nameof(result.Context));
+            }
         }
 
-        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
-        {
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
-
-            UpdateContext((dynamic)result.Context, rewriter);
-        }
-
-        private void UpdateContext(VBAParser.IfStmtContext context, IExecutableModuleRewriter rewriter)
+        private void UpdateContext(VBAParser.IfStmtContext context, IModuleRewriter rewriter)
         {
             var elseBlock = context.elseBlock();
             var elseIfBlock = context.elseIfBlock().FirstOrDefault();
@@ -55,7 +63,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
 
                 Debug.Assert(context.booleanExpression().children.Count == 1);
-                UpdateCondition((dynamic)context.booleanExpression().children[0], rewriter);
+                UpdateConditionDependingOnType((ParserRuleContext)context.booleanExpression().children[0], rewriter);
             }
             else
             {
@@ -63,7 +71,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private void UpdateContext(VBAParser.IfWithEmptyThenContext context, IExecutableModuleRewriter rewriter)
+        private void UpdateContext(VBAParser.IfWithEmptyThenContext context, IModuleRewriter rewriter)
         {
             var elseClause = context.singleLineElseClause();
             if (context.singleLineElseClause().whiteSpace() != null)
@@ -76,10 +84,10 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             Debug.Assert(context.booleanExpression().children.Count == 1);
-            UpdateCondition((dynamic)context.booleanExpression().children[0], rewriter);
+            UpdateConditionDependingOnType((ParserRuleContext)context.booleanExpression().children[0], rewriter);
         }
 
-        private void UpdateContext(VBAParser.ElseIfBlockContext context, IExecutableModuleRewriter rewriter)
+        private void UpdateContext(VBAParser.ElseIfBlockContext context, IModuleRewriter rewriter)
         {
             if (BlockHasDeclaration(context.block()))
             {
@@ -89,7 +97,29 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.Remove(context);
         }
 
-        private void UpdateCondition(VBAParser.RelationalOpContext condition, IExecutableModuleRewriter rewriter)
+        private void UpdateConditionDependingOnType(ParserRuleContext context, IModuleRewriter rewriter)
+        {
+            switch (context)
+            {
+                case VBAParser.RelationalOpContext condition:
+                    UpdateCondition(condition, rewriter);
+                    break;
+                case VBAParser.LogicalNotOpContext condition:
+                    UpdateCondition(condition, rewriter);
+                    break;
+                case VBAParser.LogicalAndOpContext condition:
+                    UpdateCondition(condition, rewriter);
+                    break;
+                case VBAParser.LogicalOrOpContext condition:
+                    UpdateCondition(condition, rewriter);
+                    break;
+                default:
+                    UpdateCondition(context, rewriter);
+                    break;
+            }
+        }
+
+        private void UpdateCondition(VBAParser.RelationalOpContext condition, IModuleRewriter rewriter)
         {
             if (condition.EQ() != null)
             {
@@ -121,7 +151,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private void UpdateCondition(VBAParser.LogicalNotOpContext condition, IExecutableModuleRewriter rewriter)
+        private void UpdateCondition(VBAParser.LogicalNotOpContext condition, IModuleRewriter rewriter)
         {
             if (condition.whiteSpace() != null)
             {
@@ -133,17 +163,17 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private void UpdateCondition(VBAParser.LogicalAndOpContext condition, IExecutableModuleRewriter rewriter)
+        private void UpdateCondition(VBAParser.LogicalAndOpContext condition, IModuleRewriter rewriter)
         {
             rewriter.Replace(condition.AND(), "Or");
         }
 
-        private void UpdateCondition(VBAParser.LogicalOrOpContext condition, IExecutableModuleRewriter rewriter)
+        private void UpdateCondition(VBAParser.LogicalOrOpContext condition, IModuleRewriter rewriter)
         {
             rewriter.Replace(condition.OR(), "And");
         }
 
-        private void UpdateCondition(ParserRuleContext condition, IExecutableModuleRewriter rewriter)
+        private void UpdateCondition(ParserRuleContext condition, IModuleRewriter rewriter)
         {
             if (condition.GetText().Contains(' '))
             {

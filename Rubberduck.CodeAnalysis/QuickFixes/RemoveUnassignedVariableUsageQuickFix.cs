@@ -5,24 +5,18 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class RemoveUnassignedVariableUsageQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public RemoveUnassignedVariableUsageQuickFix(RubberduckParserState state)
+        public RemoveUnassignedVariableUsageQuickFix()
             : base(typeof(UnassignedVariableUsageInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
 
             var assignmentContext = result.Context.GetAncestor<VBAParser.LetStmtContext>() ??
                                                   (ParserRuleContext)result.Context.GetAncestor<VBAParser.CallStmtContext>();

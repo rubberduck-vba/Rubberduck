@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _indenter = indenter;
         }
 
-        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
             {

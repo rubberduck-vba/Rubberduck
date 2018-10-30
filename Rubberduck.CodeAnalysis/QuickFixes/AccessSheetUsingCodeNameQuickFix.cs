@@ -11,21 +11,21 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class AccessSheetUsingCodeNameQuickFix : QuickFixBase
+    public sealed class AccessSheetUsingCodeNameQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public AccessSheetUsingCodeNameQuickFix(RubberduckParserState state)
+        public AccessSheetUsingCodeNameQuickFix(IDeclarationFinderProvider declarationFinderProvider)
             : base(typeof(SheetAccessedUsingStringInspection))
         {
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var referenceResult = (IdentifierReferenceInspectionResult)result;
 
-            var rewriter = _state.GetRewriter(referenceResult.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(referenceResult.QualifiedName);
 
             var setStatement = referenceResult.Context.GetAncestor<VBAParser.SetStmtContext>();
             if (setStatement == null)
@@ -43,7 +43,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 // Sheet assigned to variable
 
                 var sheetVariableName = setStatement.lExpression().GetText();
-                var sheetDeclaration = _state.DeclarationFinder.MatchName(sheetVariableName)
+                var sheetDeclaration = _declarationFinderProvider.DeclarationFinder.MatchName(sheetVariableName)
                     .First(declaration =>
                     {
                         var moduleBodyElement = declaration.Context.GetAncestor<VBAParser.ModuleBodyElementContext>();

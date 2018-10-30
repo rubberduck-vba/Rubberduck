@@ -4,22 +4,16 @@ using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class ReplaceIfElseWithConditionalStatementQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public ReplaceIfElseWithConditionalStatementQuickFix(RubberduckParserState state)
+        public ReplaceIfElseWithConditionalStatementQuickFix()
             : base(typeof(BooleanAssignedInIfElseInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var ifContext = (VBAParser.IfStmtContext) result.Context;
             var letStmt = ifContext.block().GetDescendent<VBAParser.LetStmtContext>();
@@ -31,7 +25,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 conditional = $"Not ({conditional})";
             }
 
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
             rewriter.Replace(result.Context, $"{letStmt.lExpression().GetText()} = {conditional}");
         }
 

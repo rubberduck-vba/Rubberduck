@@ -7,7 +7,7 @@ namespace Rubberduck.Parsing.Inspections.Abstract
 {
     public interface IQuickFix
     {
-        void Fix(IInspectionResult result, IRewriteSession rewriteSession = null);
+        void Fix(IInspectionResult result, IRewriteSession rewriteSession);
         string Description(IInspectionResult result);
 
         bool CanFixInProcedure { get; }

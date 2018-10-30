@@ -3,23 +3,18 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class ChangeDimToPrivateQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public ChangeDimToPrivateQuickFix(RubberduckParserState state)
+        public ChangeDimToPrivateQuickFix()
             : base(typeof(ModuleScopeDimKeywordInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
 
             var context = (VBAParser.VariableStmtContext)result.Context.Parent.Parent;
             rewriter.Replace(context.DIM(), Tokens.Private);

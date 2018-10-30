@@ -40,7 +40,7 @@ End Sub";
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-                var fix = new RemoveExplicitCallStatmentQuickFix(state);
+                var fix = new RemoveExplicitCallStatementQuickFix(state);
                 foreach (var result in inspectionResults)
                 {
                     fix.Fix(result);

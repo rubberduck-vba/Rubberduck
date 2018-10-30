@@ -2,23 +2,18 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class SpecifyExplicitPublicModifierQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public SpecifyExplicitPublicModifierQuickFix(RubberduckParserState state)
+        public SpecifyExplicitPublicModifierQuickFix()
             : base(typeof(ImplicitPublicMemberInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var rewriter = _state.GetRewriter(result.Target);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
             rewriter.InsertBefore(result.Context.Start.TokenIndex, "Public ");
         }
 
