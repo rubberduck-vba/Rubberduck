@@ -48,7 +48,7 @@ namespace Rubberduck.VBEditor.VBERuntime
             try
             {
                 runtime = new VBERuntime7();
-                runtime.Timer();
+                runtime.GetTimer();
                 _version = DllVersion.Vbe7;
             }
             catch
@@ -56,7 +56,7 @@ namespace Rubberduck.VBEditor.VBERuntime
                 try
                 {
                     runtime = new VBERuntime6();
-                    runtime.Timer();
+                    runtime.GetTimer();
                     _version = DllVersion.Vbe6;
                 }
                 catch
@@ -69,14 +69,66 @@ namespace Rubberduck.VBEditor.VBERuntime
             return _version != DllVersion.Unknown ? runtime : null;
         }
 
-        public float Timer()
+        public string DllName => _runtime.DllName;
+
+        public float GetTimer()
         {
-            return _runtime.Timer();
+            return _runtime.GetTimer();
+        }
+
+        public void GetDateVar(out object retval)
+        {
+            _runtime.GetDateVar(out retval);
+        }
+
+        public void GetPresentDate(out object retVal)
+        {
+            _runtime.GetPresentDate(out retVal);
+        }
+
+        public double Shell(IntPtr pathname, short windowstyle)
+        {
+            return _runtime.Shell(pathname, windowstyle);
+        }
+
+        public void GetTimeVar(out object retVal)
+        {
+            _runtime.GetTimeVar(out retVal);
+        }
+
+        public void ChangeDir(IntPtr path)
+        {
+            _runtime.ChangeDir(path);
+        }
+
+        public void ChangeDrive(IntPtr driveletter)
+        {
+            _runtime.ChangeDrive(driveletter);
+        }
+
+        public void KillFiles(IntPtr pathname)
+        {
+            _runtime.KillFiles(pathname);
+        }
+
+        public void MakeDir(IntPtr path)
+        {
+            _runtime.MakeDir(path);
+        }
+
+        public void RemoveDir(IntPtr path)
+        {
+            _runtime.RemoveDir(path);
         }
 
         public int DoEvents()
         {
             return _runtime.DoEvents();
+        }
+
+        public void Beep()
+        {
+            _runtime.Beep();
         }
     }
 }
