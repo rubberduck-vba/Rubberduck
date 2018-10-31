@@ -219,8 +219,7 @@ namespace RubberduckTests.Mocks
                     {"frm", ComponentType.UserForm}
                 };
 
-                ComponentType type;
-                types.TryGetValue(parts.Last(), out type);
+                types.TryGetValue(parts.Last(), out var type);
 
                 _componentsMock.Add(CreateComponentMock(s.Split('\\').Last(), type, string.Empty, new Selection(), null, out var codeModule));
                 _codeModuleMocks.Add(codeModule);

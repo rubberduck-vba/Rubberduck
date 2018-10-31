@@ -287,7 +287,7 @@ namespace Rubberduck.UnitTesting
             }
             catch (Exception e)
             {
-                Logger.Error(e, "Unexpected exceptino while running test method.");
+                Logger.Error(e, "Unexpected exception while running test method.");
                 return new TestResult(TestOutcome.Inconclusive, AssertMessages.TestRunner_ExceptionDuringRun, duration);
             }
         }
