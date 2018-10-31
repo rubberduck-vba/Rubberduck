@@ -6,11 +6,11 @@ namespace Rubberduck.UnitTesting.Fakes
 {
     internal class Timer : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcGetTimer");
-
         public Timer()
         {
-            InjectDelegate(new TimerDelegate(TimerCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcGetTimer");
+
+            InjectDelegate(new TimerDelegate(TimerCallback), processAddress);
         }
 
         private readonly ValueTypeConverter<float> _converter = new ValueTypeConverter<float>();
@@ -19,10 +19,6 @@ namespace Rubberduck.UnitTesting.Fakes
             _converter.Value = value;
             base.Returns((float)_converter.Value, invocation);
         }
-
-        [DllImport(TargetLibrary, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.R4)]
-        private static extern float rtcGetTimer();
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.R4)]
@@ -34,7 +30,7 @@ namespace Rubberduck.UnitTesting.Fakes
 
             if (PassThrough)
             {
-                return rtcGetTimer();
+                return VbeProvider.VbeRuntime.GetTimer();
             }
             return Convert.ToSingle(ReturnValue ?? 0);
         } 

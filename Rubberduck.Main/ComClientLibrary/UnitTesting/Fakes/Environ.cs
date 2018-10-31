@@ -6,13 +6,13 @@ namespace Rubberduck.UnitTesting.Fakes
 {
     internal class Environ : FakeBase
     {
-        private static readonly IntPtr ProcessAddressString = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcEnvironBstr");
-        private static readonly IntPtr ProcessAddressVariant = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcEnvironVar");
-
         public Environ()
         {
-            InjectDelegate(new EnvironStringDelegate(EnvironStringCallback), ProcessAddressString);
-            InjectDelegate(new EnvironVariantDelegate(EnvironVariantCallback), ProcessAddressVariant);
+            var processAddressString = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcEnvironBstr");
+            var processAddressVariant = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcEnvironVar");
+
+            InjectDelegate(new EnvironStringDelegate(EnvironStringCallback), processAddressString);
+            InjectDelegate(new EnvironVariantDelegate(EnvironVariantCallback), processAddressVariant);
         }
 
         public override bool PassThrough
