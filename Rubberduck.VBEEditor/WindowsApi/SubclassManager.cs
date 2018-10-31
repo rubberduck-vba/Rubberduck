@@ -86,7 +86,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         private static void AssociateCodePane(object sender, EventArgs eventArgs)
         {
             var subclass = (CodePaneSubclass)sender;
-            subclass.VbeObject = VBENativeServices.GetCodePaneFromHwnd(subclass.Hwnd);
+            subclass.VbeObject = VbeNativeServices.GetCodePaneFromHwnd(subclass.Hwnd);
             SubclassLogger.Trace($"CodePane subclass for hWnd 0x{subclass.Hwnd.ToInt64():X8} associated itself with its VBE object.");
         }
 

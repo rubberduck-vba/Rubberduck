@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Rubberduck.VBEditor.VBERuntime
+namespace Rubberduck.VBEditor.VbeRuntime
 {
-    public interface IVBERuntime
+    public interface IVbeNativeApi
     {
         string DllName { get; }
         int DoEvents();

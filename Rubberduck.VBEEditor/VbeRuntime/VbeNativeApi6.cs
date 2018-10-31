@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace Rubberduck.VBEditor.VBERuntime
+namespace Rubberduck.VBEditor.VbeRuntime
 {
-    internal class VBERuntime7 : IVBERuntime
+    internal class VbeNativeApi6 : IVbeNativeApi
     {
-        private const string _dllName = "vbe7.dll";
+        private const string _dllName = "vbe6.dll";
 
         public string DllName => _dllName;
 

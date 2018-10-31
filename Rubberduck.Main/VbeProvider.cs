@@ -1,5 +1,5 @@
 ﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.VBERuntime;
+using Rubberduck.VBEditor.VbeRuntime;
 
 namespace Rubberduck
 {
@@ -19,7 +19,7 @@ namespace Rubberduck
         internal static void Initialize(IVBE vbe)
         {
             Vbe = vbe;
-            VbeRuntime = new VBERuntimeAccessor(vbe);
+            VbeRuntime = new VbeNativeApiAccessor(vbe);
         }
 
         internal static void Terminate()
@@ -30,6 +30,6 @@ namespace Rubberduck
         }
 
         internal static IVBE Vbe { get; private set; }
-        internal static IVBERuntime VbeRuntime { get; private set; }
+        internal static IVbeNativeApi VbeRuntime { get; private set; }
     }
 }

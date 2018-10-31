@@ -1,25 +1,25 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor.VBERuntime
+namespace Rubberduck.VBEditor.VbeRuntime
 {
-    public class VBERuntimeAccessor : IVBERuntime
+    public class VbeNativeApiAccessor : IVbeNativeApi
     {
         private static DllVersion _version;
-        private readonly IVBERuntime _runtime;
+        private readonly IVbeNativeApi _runtime;
         
-        static VBERuntimeAccessor()
+        static VbeNativeApiAccessor()
         {
             _version = DllVersion.Unknown;
         }
         
-        public VBERuntimeAccessor(IVBE vbe)
+        public VbeNativeApiAccessor(IVBE vbe)
         {
             if (_version == DllVersion.Unknown)
             {
                 try
                 {
-                    _version = VBEDllVersion.GetCurrentVersion(vbe);
+                    _version = VbeDllVersion.GetCurrentVersion(vbe);
                 }
                 catch
                 {
@@ -29,25 +29,25 @@ namespace Rubberduck.VBEditor.VBERuntime
             _runtime = InitializeRuntime();
         }
 
-        private static IVBERuntime InitializeRuntime()
+        private static IVbeNativeApi InitializeRuntime()
         {
             switch (_version)
             {
                 case DllVersion.Vbe7:
-                    return new VBERuntime7();
+                    return new VbeNativeApi7();
                 case DllVersion.Vbe6:
-                    return new VBERuntime6();
+                    return new VbeNativeApi6();
                 default:
                     return DetermineVersion();
             }
         }
 
-        private static IVBERuntime DetermineVersion()
+        private static IVbeNativeApi DetermineVersion()
         {
-            IVBERuntime runtime;
+            IVbeNativeApi runtime;
             try
             {
-                runtime = new VBERuntime7();
+                runtime = new VbeNativeApi7();
                 runtime.GetTimer();
                 _version = DllVersion.Vbe7;
             }
@@ -55,7 +55,7 @@ namespace Rubberduck.VBEditor.VBERuntime
             {
                 try
                 {
-                    runtime = new VBERuntime6();
+                    runtime = new VbeNativeApi6();
                     runtime.GetTimer();
                     _version = DllVersion.Vbe6;
                 }

@@ -60,7 +60,7 @@ namespace Rubberduck
                 _addin.Object = this;
 
                 VbeProvider.Initialize(_vbe);
-                VBENativeServices.HookEvents(_vbe);
+                VbeNativeServices.HookEvents(_vbe);
 
 #if DEBUG
                 // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
@@ -242,7 +242,7 @@ namespace Rubberduck
             {
                 _logger.Log(LogLevel.Info, "Rubberduck is shutting down.");
                 _logger.Log(LogLevel.Trace, "Unhooking VBENativeServices events...");
-                VBENativeServices.UnhookEvents();
+                VbeNativeServices.UnhookEvents();
                 VbeProvider.Terminate();
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
