@@ -59,6 +59,7 @@ namespace Rubberduck
                 _addin = RootComWrapperFactory.GetAddInWrapper(AddInInst);
                 _addin.Object = this;
 
+                VbeProvider.Initialize(_vbe);
                 VBENativeServices.HookEvents(_vbe);
 
 #if DEBUG
@@ -242,6 +243,7 @@ namespace Rubberduck
                 _logger.Log(LogLevel.Info, "Rubberduck is shutting down.");
                 _logger.Log(LogLevel.Trace, "Unhooking VBENativeServices events...");
                 VBENativeServices.UnhookEvents();
+                VbeProvider.Terminate();
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
 
