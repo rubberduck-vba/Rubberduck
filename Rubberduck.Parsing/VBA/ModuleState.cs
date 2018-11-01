@@ -8,7 +8,6 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -16,7 +15,9 @@ namespace Rubberduck.Parsing.VBA
     {
         public ConcurrentDictionary<Declaration, byte> Declarations { get; private set; }
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
-        public IExecutableModuleRewriter ModuleRewriter { get; private set; }
+        public ITokenStream CodePaneTokenStream { get; private set; }
+        public ITokenStream AttributesTokenStream { get; private set; }
+        public IExecutableModuleRewriter CodePaneRewriter { get; private set; }
         public IExecutableModuleRewriter AttributesRewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public IParseTree AttributesPassParseTree { get; private set; }
@@ -79,9 +80,15 @@ namespace Rubberduck.Parsing.VBA
             IsNew = true;
         }
 
-        public ModuleState SetCodePaneRewriter(QualifiedModuleName module, IExecutableModuleRewriter codePaneRewriter)
+        public ModuleState SetCodePaneTokenStream(ITokenStream codePaneTokenStream)
         {
-            ModuleRewriter = codePaneRewriter;
+            CodePaneTokenStream = codePaneTokenStream;
+            return this;
+        }
+
+        public ModuleState SetCodePaneRewriter(IExecutableModuleRewriter codePaneRewriter)
+        {
+            CodePaneRewriter = codePaneRewriter;
             return this;
         }
 
@@ -144,9 +151,15 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState SetAttributesRewriter(IExecutableModuleRewriter rewriter)
+        public ModuleState SetAttributesTokenStream(ITokenStream attributesTokenStream)
         {
-            AttributesRewriter = rewriter;
+            AttributesTokenStream = attributesTokenStream;
+            return this;
+        }
+
+        public ModuleState SetAttributesRewriter(IExecutableModuleRewriter attributesRewriter)
+        {
+            AttributesRewriter = attributesRewriter;
             return this;
         }
 

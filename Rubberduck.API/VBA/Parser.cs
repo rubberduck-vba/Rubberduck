@@ -94,10 +94,17 @@ namespace Rubberduck.API.VBA
             _vbeEvents = VBEEvents.Initialize(_vbe);
             var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(_vbe);
-            _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents);
-            _state.StateChanged += _state_StateChanged;
 
+            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
             var sourceFileHandler = _vbe.TempSourceFileHandler;
+            var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
+            var moduleRewriterFactory = new ModuleRewriterFactory(
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHandler);
+
+            _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents, moduleRewriterFactory);
+            _state.StateChanged += _state_StateChanged;
+        
             var vbeVersion = double.Parse(_vbe.Version, CultureInfo.InvariantCulture);
             var predefinedCompilationConstants = new VBAPredefinedCompilationConstants(vbeVersion);
             var typeLibProvider = new TypeLibWrapperProvider(projectRepository);
@@ -110,7 +117,6 @@ namespace Rubberduck.API.VBA
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var stringParser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
-            var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);
@@ -130,15 +136,11 @@ namespace Rubberduck.API.VBA
                         //new RubberduckApiDeclarations(_state)
                     }
                 );
-            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
-            var moduleRewriterFactory = new ModuleRewriterFactory(
-                codePaneSourceCodeHandler,
-                attributesSourceCodeHandler);
+            
             var moduleParser = new ModuleParser(
                 codePaneSourceCodeHandler,
                 attributesSourceCodeHandler,
-                stringParser,
-                moduleRewriterFactory);
+                stringParser);
             var parseRunner = new ParseRunner(
                 _state,
                 parserStateManager,

@@ -18,7 +18,6 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Antlr4.Runtime;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 
@@ -145,10 +144,12 @@ namespace Rubberduck.Parsing.VBA
         private readonly IVBEEvents _vbeEvents;
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
-        
+        //TODO: Remove this again in a later PR when all rewriters get acquired via IRewriteSessions.
+        private readonly IModuleRewriterFactory _moduleRewriterFactory;
+
         /// <param name="vbeEvents">Provides event handling from the VBE. Static method <see cref="VBEEvents.Initialize"/> must be already called prior to constructing the method.</param>
         [SuppressMessage("ReSharper", "JoinNullCheckWithUsage")]
-        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVBEEvents vbeEvents)
+        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVBEEvents vbeEvents, IModuleRewriterFactory moduleRewriterFactory)
         {
             if (vbe == null)
             {
@@ -170,9 +171,15 @@ namespace Rubberduck.Parsing.VBA
                 throw new ArgumentNullException(nameof(vbeEvents));
             }
 
+            if (moduleRewriterFactory == null)
+            {
+                throw new ArgumentNullException(nameof(moduleRewriterFactory));
+            }
+
             _vbe = vbe;
             _projectRepository = projectRepository;
             _declarationFinderFactory = declarationFinderFactory;
+            _moduleRewriterFactory = moduleRewriterFactory;
             _vbeEvents = vbeEvents;
             
             var values = Enum.GetValues(typeof(ParserState));
@@ -844,9 +851,12 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
-        public void SetCodePaneRewriter(QualifiedModuleName module, IExecutableModuleRewriter codePaneRewriter)
+        public void SetCodePaneTokenStream(QualifiedModuleName module, ITokenStream codePaneTokenStream)
         {
-            _moduleStates[module].SetCodePaneRewriter(module, codePaneRewriter);
+            _moduleStates[module].SetCodePaneTokenStream(codePaneTokenStream);
+
+            var rewriter = _moduleRewriterFactory.CodePaneRewriter(module, codePaneTokenStream);
+            _moduleStates[module].SetCodePaneRewriter(rewriter);
         }
 
         public void SaveContentHash(QualifiedModuleName module)
@@ -931,13 +941,12 @@ namespace Rubberduck.Parsing.VBA
 
         public IExecutableModuleRewriter GetRewriter(IVBComponent component)
         {
-            var qualifiedModuleName = new QualifiedModuleName(component);
-            return GetRewriter(qualifiedModuleName);
+            return GetRewriter(component.QualifiedModuleName);
         }
 
         public IExecutableModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
         {
-            return _moduleStates[qualifiedModuleName].ModuleRewriter;
+            return _moduleStates[qualifiedModuleName].CodePaneRewriter;
         }
 
         public IExecutableModuleRewriter GetRewriter(Declaration declaration)
@@ -949,6 +958,16 @@ namespace Rubberduck.Parsing.VBA
         public IExecutableModuleRewriter GetAttributeRewriter(QualifiedModuleName qualifiedModuleName)
         {
             return _moduleStates[qualifiedModuleName].AttributesRewriter;
+        }
+
+        public ITokenStream GetCodePaneTokenStream(QualifiedModuleName qualifiedModuleName)
+        {
+            return _moduleStates[qualifiedModuleName].CodePaneTokenStream;
+        }
+
+        public ITokenStream GetAttributesTokenStream(QualifiedModuleName qualifiedModuleName)
+        {
+            return _moduleStates[qualifiedModuleName].AttributesTokenStream;
         }
 
         /// <summary>
@@ -1058,10 +1077,12 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        public void AddAttributesRewriter(QualifiedModuleName module, IExecutableModuleRewriter attributesRewriter)
+        public void SetAttributesTokenStream(QualifiedModuleName module, ITokenStream attributesTokenStream)
         {
-            var key = module;
-            _moduleStates[key].SetAttributesRewriter(attributesRewriter);
+            _moduleStates[module].SetAttributesTokenStream(attributesTokenStream);
+
+            var rewriter = _moduleRewriterFactory.AttributesRewriter(module, attributesTokenStream);
+            _moduleStates[module].SetAttributesRewriter(rewriter);
         }
 
         //todo: Remove this again in favor of injection of the IRewritingManager into the callers.

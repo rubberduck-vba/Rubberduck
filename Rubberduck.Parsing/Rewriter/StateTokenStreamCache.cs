@@ -16,12 +16,12 @@ namespace Rubberduck.Parsing.Rewriter
 
         public ITokenStream CodePaneTokenStream(QualifiedModuleName module)
         {
-            return _state.GetRewriter(module).TokenStream;
+            return _state.GetCodePaneTokenStream(module);
         }
 
         public ITokenStream AttributesTokenStream(QualifiedModuleName module)
         {
-            return _state.GetAttributeRewriter(module).TokenStream;
+            return _state.GetAttributesTokenStream(module);
         }
     }
 }

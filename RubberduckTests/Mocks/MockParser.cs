@@ -48,7 +48,15 @@ namespace RubberduckTests.Mocks
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(new Moq.Mock<IVBE>());
             var declarationFinderFactory = new DeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(vbe);
-            var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory, vbeEvents.Object);
+
+            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+            //We use the same handler because to achieve consistency between the return values.
+            var attributesSourceCodeHandler = codePaneSourceCodeHandler;
+            var moduleRewriterFactory = new ModuleRewriterFactory(
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHandler);
+
+            var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory, vbeEvents.Object, moduleRewriterFactory);
             return CreateWithRewriteManager(vbe, state, projectRepository, serializedComProjectsPath);
         }
 
@@ -93,17 +101,14 @@ namespace RubberduckTests.Mocks
                     new SpecialFormDeclarations(state),
                     new FormEventDeclarations(state),
                     new AliasDeclarations(state),
-                }); var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+                });
+            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
             //We use the same handler because to achieve consistency between the return values.
             var attributesSourceCodeHandler = codePaneSourceCodeHandler;
-            var moduleRewriterFactory = new ModuleRewriterFactory(
-                codePaneSourceCodeHandler,
-                attributesSourceCodeHandler);
             var moduleParser = new ModuleParser(
                 codePaneSourceCodeHandler, 
                 attributesSourceCodeHandler, 
-                stringParser, 
-                moduleRewriterFactory);
+                stringParser);
             var parseRunner = new SynchronousParseRunner(
                 state,
                 parserStateManager,
@@ -132,6 +137,9 @@ namespace RubberduckTests.Mocks
                 compilationsArgumentsCache
                 );
             var tokenStreamCache = new StateTokenStreamCache(state);
+            var moduleRewriterFactory = new ModuleRewriterFactory(
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHandler);
             var rewriterProvider = new RewriterProvider(tokenStreamCache, moduleRewriterFactory);
             var rewriteSessionFactory = new RewriteSessionFactory(state, rewriterProvider);
             var rewritingManager = new RewritingManager(rewriteSessionFactory); 

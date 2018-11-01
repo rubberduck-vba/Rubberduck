@@ -9,7 +9,6 @@ using Antlr4.Runtime.Tree;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.VBEditor;
@@ -23,13 +22,11 @@ namespace Rubberduck.Parsing.VBA.Parsing
         private readonly ISourceCodeProvider _codePaneSourceCodeProvider;
         private readonly ISourceCodeProvider _attributesSourceCodeProvider;
         private readonly IStringParser _parser;
-        private readonly IModuleRewriterFactory _moduleRewriterFactory;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        public ModuleParser(ISourceCodeProvider codePaneSourceCodeProvider, ISourceCodeProvider attributesSourceCodeProvider, IStringParser parser, IModuleRewriterFactory moduleRewriterFactory)
+        public ModuleParser(ISourceCodeProvider codePaneSourceCodeProvider, ISourceCodeProvider attributesSourceCodeProvider, IStringParser parser)
         {
-            _moduleRewriterFactory = moduleRewriterFactory;
             _codePaneSourceCodeProvider = codePaneSourceCodeProvider;
             _attributesSourceCodeProvider = attributesSourceCodeProvider;
             _parser = parser;
@@ -86,7 +83,6 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
             Logger.Trace($"ParseTaskID {taskId} begins code pane pass.");
             var (codePaneParseTree, codePaneTokenStream) = CodePanePassResults(module, cancellationToken, rewriter);
-            var codePaneRewriter = _moduleRewriterFactory.CodePaneRewriter(module, codePaneTokenStream);
             Logger.Trace($"ParseTaskID {taskId} finished code pane pass.");
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -99,7 +95,6 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
             Logger.Trace($"ParseTaskID {taskId} begins attributes pass.");
             var (attributesParseTree, attributesTokenStream) = AttributesPassResults(module, cancellationToken);
-            var attributesRewriter = _moduleRewriterFactory.AttributesRewriter(module, attributesTokenStream);
             Logger.Trace($"ParseTaskID {taskId} finished attributes pass.");
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -115,8 +110,8 @@ namespace Rubberduck.Parsing.VBA.Parsing
                 annotations,
                 attributes,
                 membersAllowingAttributes,
-                codePaneRewriter,
-                attributesRewriter
+                codePaneTokenStream,
+                attributesTokenStream
             );
 
             

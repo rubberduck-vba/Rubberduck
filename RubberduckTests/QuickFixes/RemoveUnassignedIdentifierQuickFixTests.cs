@@ -60,8 +60,8 @@ End Sub";
                 @"Sub Foo()
 Dim var1 As Integer
 End Sub";
-
-            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotAssignedInspection(state));
+            Func<IInspectionResult, bool> conditionToFix = s => s.Target.IdentifierName == "var2";
+            var actualCode = ApplyQuickFixToFirstInspectionResultSatisfyingPredicate(inputCode, state => new VariableNotAssignedInspection(state), conditionToFix);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
