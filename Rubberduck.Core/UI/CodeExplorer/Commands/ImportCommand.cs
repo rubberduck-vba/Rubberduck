@@ -18,12 +18,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IVBE _vbe;
         private readonly IOpenFileDialog _openFileDialog;
         private readonly IFileHandler _fileHandler;
+        private readonly IStringParser _stringParser;
 
-        public ImportCommand(IVBE vbe, IOpenFileDialog openFileDialog, IFileHandler fileHandler) : base(LogManager.GetCurrentClassLogger())
+        public ImportCommand(IVBE vbe, IOpenFileDialog openFileDialog, IFileHandler fileHandler, IStringParser stringParser) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _openFileDialog = openFileDialog;
             _fileHandler = fileHandler;
+            _stringParser = stringParser;
 
             _openFileDialog.AddExtension = true;
             _openFileDialog.AutoUpgradeEnabled = true;
@@ -96,8 +98,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 var sourceText = string.Join(Environment.NewLine, _fileHandler.ReadAllLines(filename));
                 var tempHelper = (CodeExplorerItemViewModel)parameter;
                 var newFolderName = (parameter is CodeExplorerCustomFolderViewModel) ? tempHelper.Name : tempHelper.GetSelectedDeclaration().CustomFolder;
-                var startRule = VBACodeStringParser.Parse(sourceText, t => t.startRule());
-                var updatedModuleText = FolderAnnotator.AddOrUpdateFolderName(startRule, newFolderName);
+
+                var parseResults = _stringParser.Parse(string.Empty, string.Empty, sourceText, new System.Threading.CancellationToken());
+                
+                var updatedModuleText = FolderAnnotator.AddOrUpdateFolderName(parseResults, newFolderName);
                 var extension = Path.GetExtension(filename);
                 var importPath = $"RubberduckTempImportFile{uniqueFileCounter++}{extension}";
                 try

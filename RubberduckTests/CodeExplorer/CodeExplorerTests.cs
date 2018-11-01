@@ -864,7 +864,7 @@ namespace RubberduckTests.CodeExplorer
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object)
                 {
-                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object, fileHandler.Object)
+                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object, fileHandler.Object, MockParser.StringParser(vbe.Object, out _))
                 };
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -920,7 +920,7 @@ namespace RubberduckTests.CodeExplorer
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object)
                 {
-                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object, fileHandler.Object)
+                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object, fileHandler.Object, MockParser.StringParser(vbe.Object, out _))
                 };
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -972,7 +972,7 @@ namespace RubberduckTests.CodeExplorer
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object)
                 {
-                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object, fileHandler.Object)
+                    ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object, fileHandler.Object, MockParser.StringParser(vbe.Object, out _))
                 };
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);

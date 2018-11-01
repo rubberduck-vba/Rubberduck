@@ -28,8 +28,7 @@ namespace RubberduckTests.Mocks
     {
         public static RubberduckParserState ParseString(string inputCode, out QualifiedModuleName qualifiedModuleName)
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             qualifiedModuleName = new QualifiedModuleName(component);
             var parser = Create(vbe.Object);
 
@@ -39,6 +38,21 @@ namespace RubberduckTests.Mocks
                 Assert.Inconclusive("Parser Error: {0}");
             }
             return parser.State;
+        }
+
+        public static IStringParser StringParser(IVBE vbe, out ICompilationArgumentsCache compilationArgumentsCache)
+        {
+            var vbeVersion = double.Parse(vbe.Version, CultureInfo.InvariantCulture);
+            var compilationArgumentsProvider = MockCompilationArgumentsProvider(vbeVersion);
+            compilationArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
+            var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
+            var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
+            var preprocessor = new VBAPreprocessor(preprocessorParser, compilationArgumentsCache);
+            var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
+            var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
+            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
+
+            return new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
         }
 
         public static SynchronousParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
@@ -52,19 +66,11 @@ namespace RubberduckTests.Mocks
 
         public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
         {
-            var vbeVersion = double.Parse(vbe.Version, CultureInfo.InvariantCulture);
-            var compilationArgumentsProvider = MockCompilationArgumentsProvider(vbeVersion);
-            var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
-
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
-            var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
-            var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
-            var preprocessor = new VBAPreprocessor(preprocessorParser, compilationsArgumentsCache);
-            var mainParseErrorListenerFactory = new MainParseErrorListenerFactory();
-            var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
-            var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
-            var stringParser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
+
+            var stringParser = StringParser(vbe, out var compilationsArgumentsCache);
+
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var supertypeClearer = new SynchronousSupertypeClearer(state); 

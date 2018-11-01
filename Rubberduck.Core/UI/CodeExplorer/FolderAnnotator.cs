@@ -48,6 +48,13 @@ namespace Rubberduck.UI.CodeExplorer
             return startRule.rewriter.GetText();
         }
 
+        public static string AddOrUpdateFolderName((IParseTree parsetree, ITokenStream tokenStream) foo, string updatedFolderName)
+        {
+            var rewriter = new TokenStreamRewriter(foo.tokenStream);
+
+            return AddOrUpdateFolderName((foo.parsetree, rewriter), updatedFolderName);
+        }
+
         private static bool HasModuleDeclarations(IParseTree parseTree, out VBAParser.ModuleDeclarationsContext moduleDeclarations)
         {
             var startRuleContext = (ParserRuleContext)parseTree;
