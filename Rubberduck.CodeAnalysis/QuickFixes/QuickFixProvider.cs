@@ -13,12 +13,12 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public class QuickFixProvider : IQuickFixProvider
     {
-        private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly Dictionary<Type, HashSet<IQuickFix>> _quickFixes = new Dictionary<Type, HashSet<IQuickFix>>();
 
-        public QuickFixProvider(RubberduckParserState state, IEnumerable<IQuickFix> quickFixes)
+        public QuickFixProvider(IRewritingManager rewritingManager, IEnumerable<IQuickFix> quickFixes)
         {
-            _state = state;
+            _rewritingManager = rewritingManager;
             foreach (var quickFix in quickFixes)
             {
                 foreach (var supportedInspection in quickFix.SupportedInspections)
@@ -86,9 +86,9 @@ namespace Rubberduck.Inspections.QuickFixes
             switch (targetCodeKind)
             {
                 case CodeKind.CodePaneCode:
-                    return _state.RewritingManager.CheckOutCodePaneSession();
+                    return _rewritingManager.CheckOutCodePaneSession();
                 case CodeKind.AttributesCode:
-                    return _state.RewritingManager.CheckOutAttributesSession();
+                    return _rewritingManager.CheckOutAttributesSession();
                 default:
                     throw new NotSupportedException(nameof(targetCodeKind));
             }

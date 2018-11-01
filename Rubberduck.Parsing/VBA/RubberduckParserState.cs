@@ -951,14 +951,6 @@ namespace Rubberduck.Parsing.VBA
             return _moduleStates[qualifiedModuleName].AttributesRewriter;
         }
 
-        public void RewriteAllModules()
-        {
-            foreach (var module in _moduleStates.Where(s => ProjectsProvider.Component(s.Key) != null))
-            {
-                module.Value.ModuleRewriter.Rewrite();
-            }
-        }
-
         /// <summary>
         /// Removes the specified <see cref="declaration"/> from the collection.
         /// </summary>
