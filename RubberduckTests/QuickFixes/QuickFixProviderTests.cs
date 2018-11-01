@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -52,7 +51,7 @@ End Sub";
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-                var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix(state) });
+                var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix() });
                 Assert.AreEqual(1, quickFixProvider.QuickFixes(inspectionResults.First()).Count());
             }
         }
@@ -73,7 +72,7 @@ End Sub";
                 var inspection = new ConstantNotUsedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix(state) });
+                var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix() });
 
                 var result = inspectionResults.First();
                 result.Properties.DisableFixes = nameof(RemoveUnusedDeclarationQuickFix);

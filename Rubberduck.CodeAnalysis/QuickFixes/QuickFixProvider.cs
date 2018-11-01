@@ -79,9 +79,6 @@ namespace Rubberduck.Inspections.QuickFixes
             var rewriteSession = RewriteSession(fix.TargetCodeKind);
             fix.Fix(result, rewriteSession);
             rewriteSession.Rewrite();
-
-            _state.RewriteAllModules();
-            _state.OnParseRequested(this);
         }
 
         private IRewriteSession RewriteSession(CodeKind targetCodeKind)
@@ -116,12 +113,9 @@ namespace Rubberduck.Inspections.QuickFixes
                     continue;
                 }
 
-                fix.Fix(result);
+                fix.Fix(result, rewriteSession);
             }
             rewriteSession.Rewrite();
-
-            _state.RewriteAllModules();
-            _state.OnParseRequested(this);
         }
 
         public void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -141,12 +135,9 @@ namespace Rubberduck.Inspections.QuickFixes
                     continue;
                 }
 
-                fix.Fix(result);
+                fix.Fix(result, rewriteSession);
             }
             rewriteSession.Rewrite();
-
-            _state.RewriteAllModules();
-            _state.OnParseRequested(this);
         }
 
         public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -166,12 +157,9 @@ namespace Rubberduck.Inspections.QuickFixes
                     continue;
                 }
 
-                fix.Fix(result);
+                fix.Fix(result, rewriteSession);
             }
             rewriteSession.Rewrite();
-
-            _state.RewriteAllModules();
-            _state.OnParseRequested(this);
         }
 
         public void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -191,12 +179,9 @@ namespace Rubberduck.Inspections.QuickFixes
                     continue;
                 }
 
-                fix.Fix(result);
+                fix.Fix(result, rewriteSession);
             }
             rewriteSession.Rewrite();
-
-            _state.RewriteAllModules();
-            _state.OnParseRequested(this);
         }
 
         public bool HasQuickFixes(IInspectionResult inspectionResult)

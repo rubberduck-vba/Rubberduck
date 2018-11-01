@@ -1,14 +1,13 @@
-﻿using System.Linq;
-using System.Threading;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class RemoveUnassignedVariableUsageQuickFixTests
+    public class RemoveUnassignedVariableUsageQuickFixTests : QuickFixTestBase
     {
 
         [Test]
@@ -29,15 +28,14 @@ End Sub";
     
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnassignedVariableUsageInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UnassignedVariableUsageInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
 
-                new RemoveUnassignedVariableUsageQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new RemoveUnassignedVariableUsageQuickFix();
         }
     }
 }
