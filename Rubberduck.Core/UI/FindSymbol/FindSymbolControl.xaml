@@ -13,6 +13,10 @@
                         Executed="CommandBinding_OnExecuted"
                         CanExecute="CommandBinding_OnCanExecute"/>
     </UserControl.CommandBindings>
+
+    <UserControl.Resources>
+        <BitmapImage x:Key="ArrowImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow.png" />
+    </UserControl.Resources>
     
     <Grid>
         
@@ -43,7 +47,7 @@
         </ComboBox>
         
         <Button Grid.Column="1" Command="local:FindSymbolControl.GoCommand">
-            <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow.png" />
+            <Image Height="16" Source="{StaticResource ArrowImage}" />
         </Button>
         
     </Grid>
