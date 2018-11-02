@@ -25,6 +25,6 @@ namespace Rubberduck.Inspections.Concrete
             .Where(decl => decl.ProjectName.Equals("Excel") && ExcelMembers.Any(member => decl.QualifiedName.ToString().EndsWith(member)))
             .ToList();
 
-        public override string ResultTemplate => Description; //InspectionResults.ExcelMemberMayReturnNothingInspection;
+        public override string ResultTemplate => InspectionResults.ExcelMemberMayReturnNothingInspection;
     }
 }
