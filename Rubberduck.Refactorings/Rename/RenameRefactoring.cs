@@ -26,7 +26,7 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private RenameModel _model;
-        private Tuple<ICodePane, Selection> _initialSelection;
+        private QualifiedSelection? _initialSelection;
         private readonly List<QualifiedModuleName> _modulesToRewrite;
         private readonly Dictionary<DeclarationType, Action> _renameActions;
         private readonly List<string> _neverRenameIdentifiers;
@@ -43,8 +43,10 @@ namespace Rubberduck.Refactorings.Rename
             _messageBox = messageBox;
             _state = state;
             _model = null;
-            var activeCodePane = _vbe.ActiveCodePane;
-            _initialSelection = new Tuple<ICodePane, Selection>(activeCodePane, activeCodePane.IsWrappingNullReference ? Selection.Empty : activeCodePane.Selection);
+            using (var activeCodePane = _vbe.ActiveCodePane)
+            {
+                _initialSelection = activeCodePane.GetQualifiedSelection();
+            }
             _modulesToRewrite = new List<QualifiedModuleName>();
             _renameActions = new Dictionary<DeclarationType, Action>
             {
@@ -597,7 +599,7 @@ namespace Rubberduck.Refactorings.Rename
                 {
                     if (!codePane.IsWrappingNullReference)
                     {
-                        _initialSelection = new Tuple<ICodePane, Selection>(codePane, codePane.Selection);
+                        _initialSelection = codePane.GetQualifiedSelection();
                     }
                 }
             }
@@ -605,9 +607,22 @@ namespace Rubberduck.Refactorings.Rename
 
         private void RestoreInitialSelection()
         {
-            if (!_initialSelection.Item1.IsWrappingNullReference)
+            if (!_initialSelection.HasValue)
             {
-                _initialSelection.Item1.Selection = _initialSelection.Item2;
+                return;
+            }
+
+            var qualifiedSelection = _initialSelection.Value;
+            var component = _state.ProjectsProvider.Component(qualifiedSelection.QualifiedName);
+            using (var codeModule = component.CodeModule)
+            {
+                using (var codePane = codeModule.CodePane)
+                {
+                    if (!codePane.IsWrappingNullReference)
+                    {
+                        codePane.Selection = qualifiedSelection.Selection;
+                    }
+                }
             }
         }
 
