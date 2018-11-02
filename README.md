@@ -18,7 +18,7 @@ If you like this project and would like to thank its contributors, you are welco
 
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Percentage of issues still open")
 
-> **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/retailcoder/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
+> **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
 > devs@rubberduckvba.com  
 > Follow [@rubberduckvba](https://twitter.com/rubberduckvba) on Twitter 
 
