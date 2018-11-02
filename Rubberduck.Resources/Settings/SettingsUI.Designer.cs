@@ -70,15 +70,6 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable autocompletion. Feature isn&apos;t fully completed and may behave in unintended ways..
-        /// </summary>
-        public static string EnableAutocompleteLabel {
-            get {
-                return ResourceManager.GetString("EnableAutocompleteLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Export.
         /// </summary>
         public static string ExportPageSettingsButton {

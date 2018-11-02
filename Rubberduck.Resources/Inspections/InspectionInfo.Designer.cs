@@ -22,7 +22,7 @@ namespace Rubberduck.Resources.Inspections {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class InspectionInfo {
+    public class InspectionInfo {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Rubberduck.Resources.Inspections {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.Resources.Inspections.InspectionInfo", typeof(InspectionInfo).Assembly);
@@ -51,7 +51,7 @@ namespace Rubberduck.Resources.Inspections {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The Excel Application object does not implement the WorksheetFunction interface directly. All calls made to WorksheetFunction members are handled as late bound and errors in the called member will be returned wrapped in a Variant of VbVarType.vbError. This makes errors un-trappable with error handlers and adds a performance penalty in comparison to early bound calls. Consider calling Application.WorksheetFunction explicitly. Note: If this call generated errors in the past, those errors were ignored. If appl [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string ApplicationWorksheetFunctionInspection {
+        public static string ApplicationWorksheetFunctionInspection {
             get {
                 return ResourceManager.GetString("ApplicationWorksheetFunctionInspection", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter is passed by value, but is assigned a new value/reference. Consider making a local copy instead if the caller isn&apos;t supposed to know the new value. If the caller should see the new value, the parameter should be passed ByRef instead, and you have a bug..
         /// </summary>
-        internal static string AssignedByValParameterInspection {
+        public static string AssignedByValParameterInspection {
             get {
                 return ResourceManager.GetString("AssignedByValParameterInspection", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An assignment is immediately overridden by another assignment or is never referenced..
         /// </summary>
-        internal static string AssignmentNotUsedInspection {
+        public static string AssignmentNotUsedInspection {
             get {
                 return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A member is assigned True/False in different branches of an if statement with no other statements in the conditional. Use the condition directly to the member instead..
         /// </summary>
-        internal static string BooleanAssignedInIfElseInspection {
+        public static string BooleanAssignedInIfElseInspection {
             get {
                 return ResourceManager.GetString("BooleanAssignedInIfElseInspection", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Rubberduck could not find any reference to constant. Consider removing the unused declaration..
         /// </summary>
-        internal static string ConstantNotUsedInspection {
+        public static string ConstantNotUsedInspection {
             get {
                 return ResourceManager.GetString("ConstantNotUsedInspection", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Consider naming your VBA project..
         /// </summary>
-        internal static string DefaultProjectNameInspection {
+        public static string DefaultProjectNameInspection {
             get {
                 return ResourceManager.GetString("DefaultProjectNameInspection", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Using the &apos;Def[Type]&apos; statement leads to specifying types by using a prefix. This style of naming is heavily discouraged and should be avoided..
         /// </summary>
-        internal static string DefTypeStatementInspection {
+        public static string DefTypeStatementInspection {
             get {
                 return ResourceManager.GetString("DefTypeStatementInspection", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An annotation is specified multiple times, but is intended to be specified only once..
         /// </summary>
-        internal static string DuplicatedAnnotationInspection {
+        public static string DuplicatedAnnotationInspection {
             get {
                 return ResourceManager.GetString("DuplicatedAnnotationInspection", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An empty &apos;Case&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
-        internal static string EmptyCaseBlockInspection {
+        public static string EmptyCaseBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyCaseBlockInspection", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An empty &apos;Do...While&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
-        internal static string EmptyDoWhileBlockInspection {
+        public static string EmptyDoWhileBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyDoWhileBlockInspection", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An empty &apos;Else&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
-        internal static string EmptyElseBlockInspection {
+        public static string EmptyElseBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyElseBlockInspection", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An empty &apos;For Each...Next&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
-        internal static string EmptyForEachBlockInspection {
+        public static string EmptyForEachBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyForEachBlockInspection", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An empty &apos;For...Next&apos; loop without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
-        internal static string EmptyForLoopBlockInspection {
+        public static string EmptyForLoopBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyForLoopBlockInspection", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An empty conditional branch without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
-        internal static string EmptyIfBlockInspection {
+        public static string EmptyIfBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyIfBlockInspection", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Empty modules and classes either point to not yet implemented functionality or represent unnecessary baggage that can hurt the maintainability of a project..
         /// </summary>
-        internal static string EmptyModuleInspection {
+        public static string EmptyModuleInspection {
             get {
                 return ResourceManager.GetString("EmptyModuleInspection", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The built-in constant &apos;vbNullString&apos; is a null string pointer taking up 0 bytes of memory, that unambiguously conveys the intent of an empty string..
         /// </summary>
-        internal static string EmptyStringLiteralInspection {
+        public static string EmptyStringLiteralInspection {
             get {
                 return ResourceManager.GetString("EmptyStringLiteralInspection", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An empty &apos;Loop&apos; block without any executable statements, leaves a maintainer wondering about the intent of the code. Avoid writing code that doesn&apos;t need to be written..
         /// </summary>
-        internal static string EmptyWhileWendBlockInspection {
+        public static string EmptyWhileWendBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyWhileWendBlockInspection", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Consider exposing a property instead..
         /// </summary>
-        internal static string EncapsulatePublicFieldInspection {
+        public static string EncapsulatePublicFieldInspection {
             get {
                 return ResourceManager.GetString("EncapsulatePublicFieldInspection", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A Function or Property returning a reference type that can be &apos;Nothing&apos; should not have the return value used with a test for &apos;Is Nothing&apos;. If the member does not return a valid object, attempting to use the return value will result in a run-time error 91 - &quot;Object variable or With block variable not set&quot;..
         /// </summary>
-        internal static string ExcelMemberMayReturnNothingInspection {
+        public static string ExcelMemberMayReturnNothingInspection {
             get {
                 return ResourceManager.GetString("ExcelMemberMayReturnNothingInspection", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the &apos;Function&apos; into a &apos;Sub&apos;. If the function is recursive, none of its external callers are using the returned value..
         /// </summary>
-        internal static string FunctionReturnValueNotUsedInspection {
+        public static string FunctionReturnValueNotUsedInspection {
             get {
                 return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Bracketed expressions are evaluated by the host application at runtime, which means VBA can&apos;t validate the expression at compile-time. Consider using the host application&apos;s object model instead..
         /// </summary>
-        internal static string HostSpecificExpressionInspection {
+        public static string HostSpecificExpressionInspection {
             get {
                 return ResourceManager.GetString("HostSpecificExpressionInspection", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Hungarian notation makes code less readable, and is redundant when strongly typed variables and meaningful names are used..
         /// </summary>
-        internal static string HungarianNotationInspection {
+        public static string HungarianNotationInspection {
             get {
                 return ResourceManager.GetString("HungarianNotationInspection", resourceCulture);
             }
@@ -261,7 +261,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level..
         /// </summary>
-        internal static string IllegalAnnotationInspection {
+        public static string IllegalAnnotationInspection {
             get {
                 return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
             }
@@ -270,7 +270,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Implicit references to the active sheet make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can&apos;t resolve..
         /// </summary>
-        internal static string ImplicitActiveSheetReferenceInspection {
+        public static string ImplicitActiveSheetReferenceInspection {
             get {
                 return ResourceManager.GetString("ImplicitActiveSheetReferenceInspection", resourceCulture);
             }
@@ -279,7 +279,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Implicit references to the active workbook make the code frail and harder to debug. Consider making these references explicit when they&apos;re intended, and prefer working off object references. Ignore if the member call is referring to a type Rubberduck can&apos;t resolve..
         /// </summary>
-        internal static string ImplicitActiveWorkbookReferenceInspection {
+        public static string ImplicitActiveWorkbookReferenceInspection {
             get {
                 return ResourceManager.GetString("ImplicitActiveWorkbookReferenceInspection", resourceCulture);
             }
@@ -288,7 +288,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameters are passed by reference unless specified otherwise, which can be confusing and bug-prone. Prefer passing parameters by value, and specify ByRef explicitly when passing parameters by reference..
         /// </summary>
-        internal static string ImplicitByRefModifierInspection {
+        public static string ImplicitByRefModifierInspection {
             get {
                 return ResourceManager.GetString("ImplicitByRefModifierInspection", resourceCulture);
             }
@@ -297,7 +297,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Such assignments look like they are assigning an object variable to a value type on the surface, but they are actually assigning that object&apos;s default member, implicitly. Consider referring to the default member explicitly, for improved readability..
         /// </summary>
-        internal static string ImplicitDefaultMemberAssignmentInspection {
+        public static string ImplicitDefaultMemberAssignmentInspection {
             get {
                 return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection", resourceCulture);
             }
@@ -306,7 +306,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Module members are public by default, which can be counter-intuitive. Consider specifying explicit access modifiers to avoid ambiguity..
         /// </summary>
-        internal static string ImplicitPublicMemberInspection {
+        public static string ImplicitPublicMemberInspection {
             get {
                 return ResourceManager.GetString("ImplicitPublicMemberInspection", resourceCulture);
             }
@@ -315,7 +315,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Members with a return value implicitly return a &apos;Variant&apos; unless specified otherwise. Consider returning an explicit &apos;Variant&apos; when the return type isn&apos;t known, or specify it explicitly..
         /// </summary>
-        internal static string ImplicitVariantReturnTypeInspection {
+        public static string ImplicitVariantReturnTypeInspection {
             get {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspection", resourceCulture);
             }
@@ -324,7 +324,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The maximum value of a 16-bit signed integer is 32,767 - using a 32-bit (Long) integer data type where possible can help prevent &apos;Overflow&apos; run-time errors, and is better handled by modern CPUs..
         /// </summary>
-        internal static string IntegerDataTypeInspection {
+        public static string IntegerDataTypeInspection {
             get {
                 return ResourceManager.GetString("IntegerDataTypeInspection", resourceCulture);
             }
@@ -333,7 +333,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to IsMissing is only intended to be called on optional arguments, and will only return correct results if the type of the argument is &apos;Variant&apos; with no explicit default value. All other uses will return &apos;False&apos;..
         /// </summary>
-        internal static string IsMissingOnInappropriateArgumentInspection {
+        public static string IsMissingOnInappropriateArgumentInspection {
             get {
                 return ResourceManager.GetString("IsMissingOnInappropriateArgumentInspection", resourceCulture);
             }
@@ -342,7 +342,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to IsMissing is only intended to be called on arguments of the containing procedure, and almost all other usages will return &apos;False&apos;. Passing any other expression to the function is the equivalent to &apos;VarType({expression}) = vbError&apos;, and in rare circumstances can cause the host application to crash..
         /// </summary>
-        internal static string IsMissingWithNonArgumentParameterInspection {
+        public static string IsMissingWithNonArgumentParameterInspection {
             get {
                 return ResourceManager.GetString("IsMissingWithNonArgumentParameterInspection", resourceCulture);
             }
@@ -351,7 +351,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A line label that is never jumpted to (&apos;GoTo&apos;, &apos;Resume&apos;, ...), serves no purpose. Consider removing it..
         /// </summary>
-        internal static string LineLabelNotUsedInspection {
+        public static string LineLabelNotUsedInspection {
             get {
                 return ResourceManager.GetString("LineLabelNotUsedInspection", resourceCulture);
             }
@@ -360,7 +360,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A member access call is made against an extended interface that Rubberduck couldn&apos;t resolve, or the member couldn&apos;t be found. If VBA cannot resolve the type at run-time, error 438 will be raised. If an equivalent, non-extended interface that Rubberduck can resolve is available, consider using it instead..
         /// </summary>
-        internal static string MemberNotOnInterfaceInspection {
+        public static string MemberNotOnInterfaceInspection {
             get {
                 return ResourceManager.GetString("MemberNotOnInterfaceInspection", resourceCulture);
             }
@@ -369,7 +369,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An annotation parameter is missing or incorrectly specified. The correct syntax is : &apos;@Annotation([parameter])\nExample: &apos;@Folder(&quot;Parent.Child&quot;).
         /// </summary>
-        internal static string MissingAnnotationArgumentInspection {
+        public static string MissingAnnotationArgumentInspection {
             get {
                 return ResourceManager.GetString("MissingAnnotationArgumentInspection", resourceCulture);
             }
@@ -378,7 +378,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
         /// </summary>
-        internal static string MissingAnnotationInspection {
+        public static string MissingAnnotationInspection {
             get {
                 return ResourceManager.GetString("MissingAnnotationInspection", resourceCulture);
             }
@@ -387,7 +387,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn&apos;t present. Module attributes and annotations need to be synchronized..
         /// </summary>
-        internal static string MissingAttributeInspection {
+        public static string MissingAttributeInspection {
             get {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
@@ -396,7 +396,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Public&apos; keyword can only be used at module level; its counterpart &apos;Private&apos; can also only be used at module level. &apos;Dim&apos; however, can be used to declare both procedure and module scope variables. For consistency, it would be preferable to reserve &apos;Dim&apos; for locals, and thus to use &apos;Private&apos; instead of &apos;Dim&apos; at module level..
         /// </summary>
-        internal static string ModuleScopeDimKeywordInspection {
+        public static string ModuleScopeDimKeywordInspection {
             get {
                 return ResourceManager.GetString("ModuleScopeDimKeywordInspection", resourceCulture);
             }
@@ -405,7 +405,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Modules without the &apos;@Folder&apos; annotation cannot receive custom groupings in the Code Explorer. .
         /// </summary>
-        internal static string ModuleWithoutFolderInspection {
+        public static string ModuleWithoutFolderInspection {
             get {
                 return ResourceManager.GetString("ModuleWithoutFolderInspection", resourceCulture);
             }
@@ -414,7 +414,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A module-level variable used only in one procedure should be declared in that procedure..
         /// </summary>
-        internal static string MoveFieldCloserToUsageInspection {
+        public static string MoveFieldCloserToUsageInspection {
             get {
                 return ResourceManager.GetString("MoveFieldCloserToUsageInspection", resourceCulture);
             }
@@ -423,7 +423,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Consider continuing long signatures between parameters. Splitting a parameter declaration across multiple lines arguably hurts readability..
         /// </summary>
-        internal static string MultilineParameterInspection {
+        public static string MultilineParameterInspection {
             get {
                 return ResourceManager.GetString("MultilineParameterInspection", resourceCulture);
             }
@@ -432,7 +432,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Declaring multiple variables in the same instruction is legal, but should be used sparingly. Consider declaring variables closer to their usage, in a single instruction per declaration..
         /// </summary>
-        internal static string MultipleDeclarationsInspection {
+        public static string MultipleDeclarationsInspection {
             get {
                 return ResourceManager.GetString("MultipleDeclarationsInspection", resourceCulture);
             }
@@ -441,7 +441,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a &apos;Sub&apos; procedure instead..
         /// </summary>
-        internal static string NonReturningFunctionInspection {
+        public static string NonReturningFunctionInspection {
             get {
                 return ResourceManager.GetString("NonReturningFunctionInspection", resourceCulture);
             }
@@ -450,7 +450,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to As far as Rubberduck can tell, this variable is an object variable, assigned without the &apos;Set&apos; keyword. This causes run-time error 91 &apos;Object or With block variable not set&apos;..
         /// </summary>
-        internal static string ObjectVariableNotSetInspection {
+        public static string ObjectVariableNotSetInspection {
             get {
                 return ResourceManager.GetString("ObjectVariableNotSetInspection", resourceCulture);
             }
@@ -459,7 +459,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Windows implementations of Visual Basic only support the StdCall calling convention, and use of of the CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - &apos;Bad DLL calling convention&apos;. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled..
         /// </summary>
-        internal static string ObsoleteCallingConventionInspection {
+        public static string ObsoleteCallingConventionInspection {
             get {
                 return ResourceManager.GetString("ObsoleteCallingConventionInspection", resourceCulture);
             }
@@ -468,7 +468,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Call&apos; statement is no longer required to call procedures, and only exists in the language to support legacy code that required it; it can be safely rewritten to an implicit call..
         /// </summary>
-        internal static string ObsoleteCallStatementInspection {
+        public static string ObsoleteCallStatementInspection {
             get {
                 return ResourceManager.GetString("ObsoleteCallStatementInspection", resourceCulture);
             }
@@ -477,7 +477,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Rem&apos; statement only exists in the language to support legacy code that required it; it can be safely replaced with an apostrophe / single-quote comment..
         /// </summary>
-        internal static string ObsoleteCommentSyntaxInspection {
+        public static string ObsoleteCommentSyntaxInspection {
             get {
                 return ResourceManager.GetString("ObsoleteCommentSyntaxInspection", resourceCulture);
             }
@@ -486,7 +486,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Error&apos; statement only exists in the language to support legacy code that required it; prefer using &apos;Err.Raise&apos; instead..
         /// </summary>
-        internal static string ObsoleteErrorSyntaxInspection {
+        public static string ObsoleteErrorSyntaxInspection {
             get {
                 return ResourceManager.GetString("ObsoleteErrorSyntaxInspection", resourceCulture);
             }
@@ -495,7 +495,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Global&apos; keyword only exists in the language to support legacy code that required it; it can be safely replaced with the &apos;Public&apos; modifier..
         /// </summary>
-        internal static string ObsoleteGlobalInspection {
+        public static string ObsoleteGlobalInspection {
             get {
                 return ResourceManager.GetString("ObsoleteGlobalInspection", resourceCulture);
             }
@@ -504,7 +504,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Let&apos; statement only exists in the language to support legacy code that required it; it can be safely removed, since modern VBA does not require that keyword for value assignments..
         /// </summary>
-        internal static string ObsoleteLetStatementInspection {
+        public static string ObsoleteLetStatementInspection {
             get {
                 return ResourceManager.GetString("ObsoleteLetStatementInspection", resourceCulture);
             }
@@ -513,7 +513,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to This member is marked &apos;@Obsolete&apos;. It should no longer be used, there should be a better alternative..
         /// </summary>
-        internal static string ObsoleteMemberUsageInspection {
+        public static string ObsoleteMemberUsageInspection {
             get {
                 return ResourceManager.GetString("ObsoleteMemberUsageInspection", resourceCulture);
             }
@@ -522,7 +522,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Type hint characters only exist in the language to support legacy code that required it; they can be safely replaced in declarations with an &quot;As&quot; type clause that specifies the type explicitly, and they can be omitted in other identifier references..
         /// </summary>
-        internal static string ObsoleteTypeHintInspection {
+        public static string ObsoleteTypeHintInspection {
             get {
                 return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
             }
@@ -531,7 +531,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to On Local Error exists only for compatibility with previous versions of Visual Basic, and all Errors are treated as Local regardless of the Error statement. Use of this keyword inaccurately gives the impression that there is a distinction between types of error handling when there is not..
         /// </summary>
-        internal static string OnLocalErrorInspection {
+        public static string OnLocalErrorInspection {
             get {
                 return ResourceManager.GetString("OnLocalErrorInspection", resourceCulture);
             }
@@ -540,7 +540,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Arrays are typically zero-based. This option changes the default lower boundary for implicitly-sized arrays, which can introduce off-by-one errors if one isn&apos;t cautious..
         /// </summary>
-        internal static string OptionBaseInspection {
+        public static string OptionBaseInspection {
             get {
                 return ResourceManager.GetString("OptionBaseInspection", resourceCulture);
             }
@@ -549,7 +549,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to This is the default setting, it does not need to be specified..
         /// </summary>
-        internal static string OptionBaseZeroInspection {
+        public static string OptionBaseZeroInspection {
             get {
                 return ResourceManager.GetString("OptionBaseZeroInspection", resourceCulture);
             }
@@ -558,7 +558,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to VBA will happily compile a typo: use &apos;Option Explicit&apos; to prevent successfully compiling an erroneous program..
         /// </summary>
-        internal static string OptionExplicitInspection {
+        public static string OptionExplicitInspection {
             get {
                 return ResourceManager.GetString("OptionExplicitInspection", resourceCulture);
             }
@@ -567,7 +567,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A parameter that is passed by reference and isn&apos;t assigned a new value/reference, could be passed by value instead..
         /// </summary>
-        internal static string ParameterCanBeByValInspection {
+        public static string ParameterCanBeByValInspection {
             get {
                 return ResourceManager.GetString("ParameterCanBeByValInspection", resourceCulture);
             }
@@ -576,7 +576,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A parameter is passed into a member that does not use it. Consider removing that parameter..
         /// </summary>
-        internal static string ParameterNotUsedInspection {
+        public static string ParameterNotUsedInspection {
             get {
                 return ResourceManager.GetString("ParameterNotUsedInspection", resourceCulture);
             }
@@ -585,7 +585,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A procedure that only has one parameter passed by reference that is assigned a new value/reference before the procedure exits, is using a ByRef parameter as a return value: consider making it a function instead..
         /// </summary>
-        internal static string ProcedureCanBeWrittenAsFunctionInspection {
+        public static string ProcedureCanBeWrittenAsFunctionInspection {
             get {
                 return ResourceManager.GetString("ProcedureCanBeWrittenAsFunctionInspection", resourceCulture);
             }
@@ -594,7 +594,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Rubberduck could not find any caller for a procedure. If the procedure is hooked to a macro-button, used as a user-defined function (UDF) or handles an application event that Rubberduck didn&apos;t know of you can safely ignore this inspection result; otherwise, consider removing it..
         /// </summary>
-        internal static string ProcedureNotUsedInspection {
+        public static string ProcedureNotUsedInspection {
             get {
                 return ResourceManager.GetString("ProcedureNotUsedInspection", resourceCulture);
             }
@@ -603,7 +603,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to By default, all parameters are passed by reference, so it is not necessary to include the &apos;ByRef&apos; modifier..
         /// </summary>
-        internal static string RedundantByRefModifierInspection {
+        public static string RedundantByRefModifierInspection {
             get {
                 return ResourceManager.GetString("RedundantByRefModifierInspection", resourceCulture);
             }
@@ -612,7 +612,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Being the default/implicit setting for this option, this instruction can be safely omitted..
         /// </summary>
-        internal static string RedundantOptionInspection {
+        public static string RedundantOptionInspection {
             get {
                 return ResourceManager.GetString("RedundantOptionInspection", resourceCulture);
             }
@@ -621,7 +621,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An auto-instantiated object variable declaration at procedure scope changes how nulling the reference works, which can lead to unexpected behavior..
         /// </summary>
-        internal static string SelfAssignedDeclarationInspection {
+        public static string SelfAssignedDeclarationInspection {
             get {
                 return ResourceManager.GetString("SelfAssignedDeclarationInspection", resourceCulture);
             }
@@ -630,7 +630,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use..
         /// </summary>
-        internal static string ShadowedDeclarationInspection {
+        public static string ShadowedDeclarationInspection {
             get {
                 return ResourceManager.GetString("ShadowedDeclarationInspection", resourceCulture);
             }
@@ -639,7 +639,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Excel already defines a globally scoped object variable with this reference. Consider using the sheet&apos;s &apos;CodeName&apos; property..
         /// </summary>
-        internal static string SheetAccessedUsingStringInspection {
+        public static string SheetAccessedUsingStringInspection {
             get {
                 return ResourceManager.GetString("SheetAccessedUsingStringInspection", resourceCulture);
             }
@@ -648,7 +648,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Step of the for-next loop is not specified. This might be unintentional..
         /// </summary>
-        internal static string StepIsNotSpecifiedInspection {
+        public static string StepIsNotSpecifiedInspection {
             get {
                 return ResourceManager.GetString("StepIsNotSpecifiedInspection", resourceCulture);
             }
@@ -657,7 +657,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to 1 is the default step in a for-next loop and therefore is redundant..
         /// </summary>
-        internal static string StepOneIsRedundantInspection {
+        public static string StepOneIsRedundantInspection {
             get {
                 return ResourceManager.GetString("StepOneIsRedundantInspection", resourceCulture);
             }
@@ -666,7 +666,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Stop&apos; keyword halts execution and brings up the debugger. Avoid its use in distributed code..
         /// </summary>
-        internal static string StopKeywordInspection {
+        public static string StopKeywordInspection {
             get {
                 return ResourceManager.GetString("StopKeywordInspection", resourceCulture);
             }
@@ -675,7 +675,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. A variable is being referred to, but is never assigned..
         /// </summary>
-        internal static string UnassignedVariableUsageInspection {
+        public static string UnassignedVariableUsageInspection {
             get {
                 return ResourceManager.GetString("UnassignedVariableUsageInspection", resourceCulture);
             }
@@ -684,7 +684,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Code that uses undeclared variables does not compile when Option Explicit is specified. Undeclared variables are always Variant, a data type that incurs unnecessary overhead and storage..
         /// </summary>
-        internal static string UndeclaredVariableInspection {
+        public static string UndeclaredVariableInspection {
             get {
                 return ResourceManager.GetString("UndeclaredVariableInspection", resourceCulture);
             }
@@ -693,7 +693,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Error handling should be restored after using &apos;On Error Resume Next&apos;..
         /// </summary>
-        internal static string UnhandledOnErrorResumeNextInspection {
+        public static string UnhandledOnErrorResumeNextInspection {
             get {
                 return ResourceManager.GetString("UnhandledOnErrorResumeNextInspection", resourceCulture);
             }
@@ -702,7 +702,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Detects Case Clauses that will never execute. .
         /// </summary>
-        internal static string UnreachableCaseInspection {
+        public static string UnreachableCaseInspection {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection", resourceCulture);
             }
@@ -712,7 +712,7 @@ namespace Rubberduck.Resources.Inspections {
         ///   Looks up a localized string similar to A string-returning equivalent function exists and should preferably be used to avoid implicit type conversions. 
         ///If the parameter can be null, ignore this inspection result; passing a null value to a function expecting a string would raise a type mismatch runtime error..
         /// </summary>
-        internal static string UntypedFunctionUsageInspection {
+        public static string UntypedFunctionUsageInspection {
             get {
                 return ResourceManager.GetString("UntypedFunctionUsageInspection", resourceCulture);
             }
@@ -721,7 +721,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Identifier names should indicate what they&apos;re used for and should be readable; avoid disemvoweling, numeric suffixes, and 1-2 character names..
         /// </summary>
-        internal static string UseMeaningfulNameInspection {
+        public static string UseMeaningfulNameInspection {
             get {
                 return ResourceManager.GetString("UseMeaningfulNameInspection", resourceCulture);
             }
@@ -730,7 +730,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Variable is not assigned. If this isn&apos;t intended, there&apos;s probably a bug. Ignore this inspection result if the variable is assigned in another procedure via a ByRef parameter..
         /// </summary>
-        internal static string VariableNotAssignedInspection {
+        public static string VariableNotAssignedInspection {
             get {
                 return ResourceManager.GetString("VariableNotAssignedInspection", resourceCulture);
             }
@@ -739,7 +739,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Variable is not referred to.
         /// </summary>
-        internal static string VariableNotUsedInspection {
+        public static string VariableNotUsedInspection {
             get {
                 return ResourceManager.GetString("VariableNotUsedInspection", resourceCulture);
             }
@@ -748,7 +748,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A variable whose type isn&apos;t explicitly declared, is implicitly &apos;Variant&apos;. Consider making it an explicit &apos;Variant&apos; if that&apos;s intended, or declare a more specific type..
         /// </summary>
-        internal static string VariableTypeNotDeclaredInspection {
+        public static string VariableTypeNotDeclaredInspection {
             get {
                 return ResourceManager.GetString("VariableTypeNotDeclaredInspection", resourceCulture);
             }
@@ -757,7 +757,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A property that exposes a mutator but no accessor is a design smell and makes a confusing API. Consider exposing a getter, or converting the mutator to a method..
         /// </summary>
-        internal static string WriteOnlyPropertyInspection {
+        public static string WriteOnlyPropertyInspection {
             get {
                 return ResourceManager.GetString("WriteOnlyPropertyInspection", resourceCulture);
             }
