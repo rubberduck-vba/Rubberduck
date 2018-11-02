@@ -22,7 +22,7 @@ namespace Rubberduck.Resources.Inspections {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class InspectionResults {
+    internal class InspectionResults {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Rubberduck.Resources.Inspections {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Rubberduck.Resources.Inspections.InspectionResults", typeof(InspectionResults).Assembly);
@@ -51,7 +51,7 @@ namespace Rubberduck.Resources.Inspections {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1} results)..
         /// </summary>
-        public static string AggregateInspection {
+        internal static string AggregateInspection {
             get {
                 return ResourceManager.GetString("AggregateInspection", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Use of late bound &apos;Application.{0}&apos; member..
         /// </summary>
-        public static string ApplicationWorksheetFunctionInspection {
+        internal static string ApplicationWorksheetFunctionInspection {
             get {
                 return ResourceManager.GetString("ApplicationWorksheetFunctionInspection", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is passed &apos;ByVal&apos; and assigned a value..
         /// </summary>
-        public static string AssignedByValParameterInspection {
+        internal static string AssignedByValParameterInspection {
             get {
                 return ResourceManager.GetString("AssignedByValParameterInspection", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to An assignment is immediately overridden by another assignment or is never referenced..
         /// </summary>
-        public static string AssignmentNotUsedInspection {
+        internal static string AssignmentNotUsedInspection {
             get {
                 return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Boolean literal &apos;{0}&apos; assigned in conditional..
         /// </summary>
-        public static string BooleanAssignedInIfElseInspection {
+        internal static string BooleanAssignedInIfElseInspection {
             get {
                 return ResourceManager.GetString("BooleanAssignedInIfElseInspection", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Project &apos;{0}&apos; has default name..
         /// </summary>
-        public static string DefaultProjectNameInspection {
+        internal static string DefaultProjectNameInspection {
             get {
                 return ResourceManager.GetString("DefaultProjectNameInspection", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Consider the explicit use of &apos;As {0}&apos; instead of &apos;{1}&apos;..
         /// </summary>
-        public static string DefTypeStatementInspection {
+        internal static string DefTypeStatementInspection {
             get {
                 return ResourceManager.GetString("DefTypeStatementInspection", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Annotation &apos;{0}&apos; is duplicated..
         /// </summary>
-        public static string DuplicatedAnnotationInspection {
+        internal static string DuplicatedAnnotationInspection {
             get {
                 return ResourceManager.GetString("DuplicatedAnnotationInspection", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;Case&apos; block contains no executable statements..
         /// </summary>
-        public static string EmptyCaseBlockInspection {
+        internal static string EmptyCaseBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyCaseBlockInspection", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;Do...While&apos; loop contains no executable statements..
         /// </summary>
-        public static string EmptyDoWhileBlockInspection {
+        internal static string EmptyDoWhileBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyDoWhileBlockInspection", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;Else&apos; block contains no executable statements..
         /// </summary>
-        public static string EmptyElseBlockInspection {
+        internal static string EmptyElseBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyElseBlockInspection", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;For...Each&apos; loop contains no executable statements..
         /// </summary>
-        public static string EmptyForEachBlockInspection {
+        internal static string EmptyForEachBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyForEachBlockInspection", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;For...Next&apos; loop contains no executable statements..
         /// </summary>
-        public static string EmptyForLoopBlockInspection {
+        internal static string EmptyForLoopBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyForLoopBlockInspection", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;If&apos; block contains no executable statements..
         /// </summary>
-        public static string EmptyIfBlockInspection {
+        internal static string EmptyIfBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyIfBlockInspection", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Module/class &apos;{0}&apos; is empty..
         /// </summary>
-        public static string EmptyModuleInspection {
+        internal static string EmptyModuleInspection {
             get {
                 return ResourceManager.GetString("EmptyModuleInspection", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;vbNullString&apos; preferred to empty string literals..
         /// </summary>
-        public static string EmptyStringLiteralInspection {
+        internal static string EmptyStringLiteralInspection {
             get {
                 return ResourceManager.GetString("EmptyStringLiteralInspection", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;While...Wend&apos; loop contains no executable statements..
         /// </summary>
-        public static string EmptyWhileWendBlockInspection {
+        internal static string EmptyWhileWendBlockInspection {
             get {
                 return ResourceManager.GetString("EmptyWhileWendBlockInspection", resourceCulture);
             }
@@ -216,16 +216,25 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Public field &apos;{0}&apos; breaks encapsulation..
         /// </summary>
-        public static string EncapsulatePublicFieldInspection {
+        internal static string EncapsulatePublicFieldInspection {
             get {
                 return ResourceManager.GetString("EncapsulatePublicFieldInspection", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Result of &apos;{0}&apos; call is not tested for &apos;Nothing&apos;..
+        /// </summary>
+        internal static string ExcelMemberMayReturnNothingInspection {
+            get {
+                return ResourceManager.GetString("ExcelMemberMayReturnNothingInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; is never used..
         /// </summary>
-        public static string FunctionReturnValueNotUsedInspection {
+        internal static string FunctionReturnValueNotUsedInspection {
             get {
                 return ResourceManager.GetString("FunctionReturnValueNotUsedInspection", resourceCulture);
             }
@@ -234,7 +243,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Expression &apos;{0}&apos; cannot be validated at compile-time..
         /// </summary>
-        public static string HostSpecificExpressionInspection {
+        internal static string HostSpecificExpressionInspection {
             get {
                 return ResourceManager.GetString("HostSpecificExpressionInspection", resourceCulture);
             }
@@ -243,7 +252,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Consider renaming {0} &apos;{1}&apos;..
         /// </summary>
-        public static string IdentifierNameInspection {
+        internal static string IdentifierNameInspection {
             get {
                 return ResourceManager.GetString("IdentifierNameInspection", resourceCulture);
             }
@@ -252,7 +261,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to {0} &apos;{1}&apos; is not used..
         /// </summary>
-        public static string IdentifierNotUsedInspection {
+        internal static string IdentifierNotUsedInspection {
             get {
                 return ResourceManager.GetString("IdentifierNotUsedInspection", resourceCulture);
             }
@@ -261,7 +270,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Annotation &apos;{0}&apos; is illegal in this context..
         /// </summary>
-        public static string IllegalAnnotationInspection {
+        internal static string IllegalAnnotationInspection {
             get {
                 return ResourceManager.GetString("IllegalAnnotationInspection", resourceCulture);
             }
@@ -270,7 +279,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; implicitly references &apos;ActiveSheet&apos;..
         /// </summary>
-        public static string ImplicitActiveSheetReferenceInspection {
+        internal static string ImplicitActiveSheetReferenceInspection {
             get {
                 return ResourceManager.GetString("ImplicitActiveSheetReferenceInspection", resourceCulture);
             }
@@ -279,7 +288,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; implicitly references &apos;ActiveWorkbook&apos;..
         /// </summary>
-        public static string ImplicitActiveWorkbookReferenceInspection {
+        internal static string ImplicitActiveWorkbookReferenceInspection {
             get {
                 return ResourceManager.GetString("ImplicitActiveWorkbookReferenceInspection", resourceCulture);
             }
@@ -288,7 +297,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is implicitly passed by reference..
         /// </summary>
-        public static string ImplicitByRefModifierInspection {
+        internal static string ImplicitByRefModifierInspection {
             get {
                 return ResourceManager.GetString("ImplicitByRefModifierInspection", resourceCulture);
             }
@@ -297,7 +306,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Assignment to &apos;{0}&apos; implicitly assigns default member of class &apos;{1}&apos;..
         /// </summary>
-        public static string ImplicitDefaultMemberAssignmentInspection {
+        internal static string ImplicitDefaultMemberAssignmentInspection {
             get {
                 return ResourceManager.GetString("ImplicitDefaultMemberAssignmentInspection", resourceCulture);
             }
@@ -306,7 +315,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; is implicitly public..
         /// </summary>
-        public static string ImplicitPublicMemberInspection {
+        internal static string ImplicitPublicMemberInspection {
             get {
                 return ResourceManager.GetString("ImplicitPublicMemberInspection", resourceCulture);
             }
@@ -315,7 +324,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to {0} &apos;{1}&apos; is implicitly &apos;Variant&apos;..
         /// </summary>
-        public static string ImplicitVariantDeclarationInspection {
+        internal static string ImplicitVariantDeclarationInspection {
             get {
                 return ResourceManager.GetString("ImplicitVariantDeclarationInspection", resourceCulture);
             }
@@ -324,7 +333,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Return type of member &apos;{0}&apos; is implicitly &apos;Variant&apos;..
         /// </summary>
-        public static string ImplicitVariantReturnTypeInspection {
+        internal static string ImplicitVariantReturnTypeInspection {
             get {
                 return ResourceManager.GetString("ImplicitVariantReturnTypeInspection", resourceCulture);
             }
@@ -333,7 +342,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to {0} &apos;{1}&apos; is declared as &apos;Integer&apos;..
         /// </summary>
-        public static string IntegerDataTypeInspection {
+        internal static string IntegerDataTypeInspection {
             get {
                 return ResourceManager.GetString("IntegerDataTypeInspection", resourceCulture);
             }
@@ -342,7 +351,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;IsMissing&apos; will always return false with the passed argument..
         /// </summary>
-        public static string IsMissingOnInappropriateArgumentInspection {
+        internal static string IsMissingOnInappropriateArgumentInspection {
             get {
                 return ResourceManager.GetString("IsMissingOnInappropriateArgumentInspection", resourceCulture);
             }
@@ -351,7 +360,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;IsMissing&apos; is passed an expresssion that is not an argument to the enclosing procedure..
         /// </summary>
-        public static string IsMissingWithNonArgumentParameterInspection {
+        internal static string IsMissingWithNonArgumentParameterInspection {
             get {
                 return ResourceManager.GetString("IsMissingWithNonArgumentParameterInspection", resourceCulture);
             }
@@ -360,7 +369,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Line label &apos;{0}&apos; is not used..
         /// </summary>
-        public static string LineLabelNotUsedInspection {
+        internal static string LineLabelNotUsedInspection {
             get {
                 return ResourceManager.GetString("LineLabelNotUsedInspection", resourceCulture);
             }
@@ -369,7 +378,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Member &apos;{0}&apos; was not found on the compile-time interface for type &apos;{1}&apos;..
         /// </summary>
-        public static string MemberNotOnInterfaceInspection {
+        internal static string MemberNotOnInterfaceInspection {
             get {
                 return ResourceManager.GetString("MemberNotOnInterfaceInspection", resourceCulture);
             }
@@ -378,7 +387,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Expression &apos;{0}&apos; was expected to contain a parameter, but none was specified..
         /// </summary>
-        public static string MissingAnnotationArgumentInspection {
+        internal static string MissingAnnotationArgumentInspection {
             get {
                 return ResourceManager.GetString("MissingAnnotationArgumentInspection", resourceCulture);
             }
@@ -387,7 +396,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
         /// </summary>
-        public static string MissingAnnotationInspection {
+        internal static string MissingAnnotationInspection {
             get {
                 return ResourceManager.GetString("MissingAnnotationInspection", resourceCulture);
             }
@@ -396,7 +405,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; annotation, but no corresponding attribute..
         /// </summary>
-        public static string MissingAttributeInspection {
+        internal static string MissingAttributeInspection {
             get {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
@@ -405,7 +414,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Module-level variable &apos;{0}&apos; is declared with the &apos;Dim&apos; keyword..
         /// </summary>
-        public static string ModuleScopeDimKeywordInspection {
+        internal static string ModuleScopeDimKeywordInspection {
             get {
                 return ResourceManager.GetString("ModuleScopeDimKeywordInspection", resourceCulture);
             }
@@ -414,7 +423,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Module &apos;{0}&apos; has no &apos;@Folder&apos; annotation.
         /// </summary>
-        public static string ModuleWithoutFolderInspection {
+        internal static string ModuleWithoutFolderInspection {
             get {
                 return ResourceManager.GetString("ModuleWithoutFolderInspection", resourceCulture);
             }
@@ -423,7 +432,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Move module-level variable &apos;{0}&apos; to a smaller scope..
         /// </summary>
-        public static string MoveFieldCloserToUsageInspection {
+        internal static string MoveFieldCloserToUsageInspection {
             get {
                 return ResourceManager.GetString("MoveFieldCloserToUsageInspection", resourceCulture);
             }
@@ -432,7 +441,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is specified on multiple lines..
         /// </summary>
-        public static string MultilineParameterInspection {
+        internal static string MultilineParameterInspection {
             get {
                 return ResourceManager.GetString("MultilineParameterInspection", resourceCulture);
             }
@@ -441,7 +450,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Instruction contains multiple declarations..
         /// </summary>
-        public static string MultipleDeclarationsInspection {
+        internal static string MultipleDeclarationsInspection {
             get {
                 return ResourceManager.GetString("MultipleDeclarationsInspection", resourceCulture);
             }
@@ -450,7 +459,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Return value for member &apos;{0}&apos; is never assigned..
         /// </summary>
-        public static string NonReturningFunctionInspection {
+        internal static string NonReturningFunctionInspection {
             get {
                 return ResourceManager.GetString("NonReturningFunctionInspection", resourceCulture);
             }
@@ -459,7 +468,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Object variable &apos;{0}&apos; is assigned without the &apos;Set&apos; keyword..
         /// </summary>
-        public static string ObjectVariableNotSetInspection {
+        internal static string ObjectVariableNotSetInspection {
             get {
                 return ResourceManager.GetString("ObjectVariableNotSetInspection", resourceCulture);
             }
@@ -468,7 +477,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is declared using the obsolete &apos;CDecl&apos; calling convention..
         /// </summary>
-        public static string ObsoleteCallingConventionInspection {
+        internal static string ObsoleteCallingConventionInspection {
             get {
                 return ResourceManager.GetString("ObsoleteCallingConventionInspection", resourceCulture);
             }
@@ -477,7 +486,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Assignment uses obsolete &apos;Call&apos; modifier..
         /// </summary>
-        public static string ObsoleteCallStatementInspection {
+        internal static string ObsoleteCallStatementInspection {
             get {
                 return ResourceManager.GetString("ObsoleteCallStatementInspection", resourceCulture);
             }
@@ -486,7 +495,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Comment uses obsolete &apos;Rem&apos; marker..
         /// </summary>
-        public static string ObsoleteCommentSyntaxInspection {
+        internal static string ObsoleteCommentSyntaxInspection {
             get {
                 return ResourceManager.GetString("ObsoleteCommentSyntaxInspection", resourceCulture);
             }
@@ -495,7 +504,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to A run-time error is raised using the obsolete &apos;Error&apos; statement..
         /// </summary>
-        public static string ObsoleteErrorSyntaxInspection {
+        internal static string ObsoleteErrorSyntaxInspection {
             get {
                 return ResourceManager.GetString("ObsoleteErrorSyntaxInspection", resourceCulture);
             }
@@ -504,7 +513,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to {0} &apos;{1}&apos; uses obsolete &apos;Global&apos; access modifier..
         /// </summary>
-        public static string ObsoleteGlobalInspection {
+        internal static string ObsoleteGlobalInspection {
             get {
                 return ResourceManager.GetString("ObsoleteGlobalInspection", resourceCulture);
             }
@@ -513,7 +522,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Assignment uses obsolete &apos;Let&apos; modifier..
         /// </summary>
-        public static string ObsoleteLetStatementInspection {
+        internal static string ObsoleteLetStatementInspection {
             get {
                 return ResourceManager.GetString("ObsoleteLetStatementInspection", resourceCulture);
             }
@@ -522,7 +531,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Consider replacing the call to &apos;{0}&apos;. {1}.
         /// </summary>
-        public static string ObsoleteMemberUsageInspection {
+        internal static string ObsoleteMemberUsageInspection {
             get {
                 return ResourceManager.GetString("ObsoleteMemberUsageInspection", resourceCulture);
             }
@@ -531,7 +540,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to {0} of {1} &apos;{2}&apos; uses an obsolete type hint..
         /// </summary>
-        public static string ObsoleteTypeHintInspection {
+        internal static string ObsoleteTypeHintInspection {
             get {
                 return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
             }
@@ -540,7 +549,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;On Local Error&apos; statement detected..
         /// </summary>
-        public static string OnLocalErrorInspection {
+        internal static string OnLocalErrorInspection {
             get {
                 return ResourceManager.GetString("OnLocalErrorInspection", resourceCulture);
             }
@@ -549,7 +558,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Component &apos;{0}&apos; uses &apos;Option Base 1&apos;..
         /// </summary>
-        public static string OptionBaseInspection {
+        internal static string OptionBaseInspection {
             get {
                 return ResourceManager.GetString("OptionBaseInspection", resourceCulture);
             }
@@ -558,7 +567,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Component &apos;{0}&apos; uses &apos;Option Base 0&apos;..
         /// </summary>
-        public static string OptionBaseZeroInspection {
+        internal static string OptionBaseZeroInspection {
             get {
                 return ResourceManager.GetString("OptionBaseZeroInspection", resourceCulture);
             }
@@ -567,7 +576,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;Option Explicit&apos; is not specified in &apos;{0}&apos;..
         /// </summary>
-        public static string OptionExplicitInspection {
+        internal static string OptionExplicitInspection {
             get {
                 return ResourceManager.GetString("OptionExplicitInspection", resourceCulture);
             }
@@ -576,7 +585,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; can be passed by value..
         /// </summary>
-        public static string ParameterCanBeByValInspection {
+        internal static string ParameterCanBeByValInspection {
             get {
                 return ResourceManager.GetString("ParameterCanBeByValInspection", resourceCulture);
             }
@@ -585,7 +594,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; is never used..
         /// </summary>
-        public static string ParameterNotUsedInspection {
+        internal static string ParameterNotUsedInspection {
             get {
                 return ResourceManager.GetString("ParameterNotUsedInspection", resourceCulture);
             }
@@ -594,7 +603,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
         /// </summary>
-        public static string ProcedureCanBeWrittenAsFunctionInspection {
+        internal static string ProcedureCanBeWrittenAsFunctionInspection {
             get {
                 return ResourceManager.GetString("ProcedureCanBeWrittenAsFunctionInspection", resourceCulture);
             }
@@ -603,7 +612,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Procedure &apos;{0}&apos; can be written as a function..
         /// </summary>
-        public static string ProcedureShouldBeFunctionInspection {
+        internal static string ProcedureShouldBeFunctionInspection {
             get {
                 return ResourceManager.GetString("ProcedureShouldBeFunctionInspection", resourceCulture);
             }
@@ -612,7 +621,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Parameter &apos;{0}&apos; has a redundant &apos;ByRef&apos; modifier..
         /// </summary>
-        public static string RedundantByRefModifierInspection {
+        internal static string RedundantByRefModifierInspection {
             get {
                 return ResourceManager.GetString("RedundantByRefModifierInspection", resourceCulture);
             }
@@ -621,7 +630,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; has no effect..
         /// </summary>
-        public static string RedundantOptionInspection {
+        internal static string RedundantOptionInspection {
             get {
                 return ResourceManager.GetString("RedundantOptionInspection", resourceCulture);
             }
@@ -630,7 +639,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Object reference &apos;{0}&apos; is auto-instantiated..
         /// </summary>
-        public static string SelfAssignedDeclarationInspection {
+        internal static string SelfAssignedDeclarationInspection {
             get {
                 return ResourceManager.GetString("SelfAssignedDeclarationInspection", resourceCulture);
             }
@@ -639,7 +648,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to {0} &apos;{1}&apos; hides {2} &apos;{3}&apos;..
         /// </summary>
-        public static string ShadowedDeclarationInspection {
+        internal static string ShadowedDeclarationInspection {
             get {
                 return ResourceManager.GetString("ShadowedDeclarationInspection", resourceCulture);
             }
@@ -648,7 +657,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Statically accessible sheet can be referred to by its code name..
         /// </summary>
-        public static string SheetAccessedUsingStringInspection {
+        internal static string SheetAccessedUsingStringInspection {
             get {
                 return ResourceManager.GetString("SheetAccessedUsingStringInspection", resourceCulture);
             }
@@ -657,7 +666,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;Step&apos; not specified..
         /// </summary>
-        public static string StepIsNotSpecifiedInspection {
+        internal static string StepIsNotSpecifiedInspection {
             get {
                 return ResourceManager.GetString("StepIsNotSpecifiedInspection", resourceCulture);
             }
@@ -666,7 +675,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to 1 is the default step in a &apos;For...Next&apos; loop and therefore is redundant..
         /// </summary>
-        public static string StepOneIsRedundantInspection {
+        internal static string StepOneIsRedundantInspection {
             get {
                 return ResourceManager.GetString("StepOneIsRedundantInspection", resourceCulture);
             }
@@ -675,7 +684,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to &apos;Stop&apos; keyword halts execution..
         /// </summary>
-        public static string StopKeywordInspection {
+        internal static string StopKeywordInspection {
             get {
                 return ResourceManager.GetString("StopKeywordInspection", resourceCulture);
             }
@@ -684,7 +693,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; is used but not assigned..
         /// </summary>
-        public static string UnassignedVariableUsageInspection {
+        internal static string UnassignedVariableUsageInspection {
             get {
                 return ResourceManager.GetString("UnassignedVariableUsageInspection", resourceCulture);
             }
@@ -693,7 +702,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Local variable &apos;{0}&apos; is not declared..
         /// </summary>
-        public static string UndeclaredVariableInspection {
+        internal static string UndeclaredVariableInspection {
             get {
                 return ResourceManager.GetString("UndeclaredVariableInspection", resourceCulture);
             }
@@ -702,7 +711,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Errors are ignored but never handled again..
         /// </summary>
-        public static string UnhandledOnErrorResumeNextInspection {
+        internal static string UnhandledOnErrorResumeNextInspection {
             get {
                 return ResourceManager.GetString("UnhandledOnErrorResumeNextInspection", resourceCulture);
             }
@@ -711,7 +720,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Case clause &apos;{0}&apos; cannot be reached..
         /// </summary>
-        public static string UnreachableCaseInspection {
+        internal static string UnreachableCaseInspection {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection", resourceCulture);
             }
@@ -720,7 +729,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Unreachable Case Else: all matches exist within prior Case statement(s)..
         /// </summary>
-        public static string UnreachableCaseInspection_CaseElse {
+        internal static string UnreachableCaseInspection_CaseElse {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_CaseElse", resourceCulture);
             }
@@ -729,7 +738,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Unreachable: Case Statement contains invalid range clause(s)..
         /// </summary>
-        public static string UnreachableCaseInspection_InherentlyUnreachable {
+        internal static string UnreachableCaseInspection_InherentlyUnreachable {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_InherentlyUnreachable", resourceCulture);
             }
@@ -738,7 +747,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Unreachable: Case Statement will cause a Run-time error 6 (Overflow)..
         /// </summary>
-        public static string UnreachableCaseInspection_Overflow {
+        internal static string UnreachableCaseInspection_Overflow {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_Overflow", resourceCulture);
             }
@@ -747,7 +756,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Unreachable: Case Statement will cause a Run-time error 13 (Mismatch)..
         /// </summary>
-        public static string UnreachableCaseInspection_TypeMismatch {
+        internal static string UnreachableCaseInspection_TypeMismatch {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_TypeMismatch", resourceCulture);
             }
@@ -756,7 +765,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Unreachable: Never matches or is equivalent to a prior Case statement..
         /// </summary>
-        public static string UnreachableCaseInspection_Unreachable {
+        internal static string UnreachableCaseInspection_Unreachable {
             get {
                 return ResourceManager.GetString("UnreachableCaseInspection_Unreachable", resourceCulture);
             }
@@ -765,7 +774,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Replace function &apos;{0}&apos; with existing typed function..
         /// </summary>
-        public static string UntypedFunctionUsageInspection {
+        internal static string UntypedFunctionUsageInspection {
             get {
                 return ResourceManager.GetString("UntypedFunctionUsageInspection", resourceCulture);
             }
@@ -774,7 +783,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Variable &apos;{0}&apos; is not assigned..
         /// </summary>
-        public static string VariableNotAssignedInspection {
+        internal static string VariableNotAssignedInspection {
             get {
                 return ResourceManager.GetString("VariableNotAssignedInspection", resourceCulture);
             }
@@ -783,7 +792,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to {0} &apos;{1}&apos; is implicitly &apos;Variant&apos;..
         /// </summary>
-        public static string VariableTypeNotDeclaredInspection {
+        internal static string VariableTypeNotDeclaredInspection {
             get {
                 return ResourceManager.GetString("VariableTypeNotDeclaredInspection", resourceCulture);
             }
@@ -792,7 +801,7 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Property &apos;{0}&apos; has no getter..
         /// </summary>
-        public static string WriteOnlyPropertyInspection {
+        internal static string WriteOnlyPropertyInspection {
             get {
                 return ResourceManager.GetString("WriteOnlyPropertyInspection", resourceCulture);
             }
