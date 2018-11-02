@@ -18,6 +18,7 @@ namespace Rubberduck.Inspections.QuickFixes
             _settings = settings;
         }
 
+        //The rewriteSession is optional since it is not used in this particular quickfix.
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             var inspectionSettings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
