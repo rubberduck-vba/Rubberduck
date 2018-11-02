@@ -122,7 +122,7 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var resultToFix = inspectionResults.First();
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession(); 
-                var quickFix = new MoveFieldCloserToUsageQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object);
+                var quickFix = new MoveFieldCloserToUsageQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object, rewritingManager);
 
                 quickFix.Fix(resultToFix, rewriteSession);
 
