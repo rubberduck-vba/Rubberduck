@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
@@ -12,12 +13,14 @@ namespace Rubberduck.UI.Command.Refactorings
     public class CodePaneRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
 
-        public CodePaneRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox) 
+        public CodePaneRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager) 
             : base (vbe)
         {
             _state = state;
+            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
         }
 
@@ -68,7 +71,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
                 var factory = new RenamePresenterFactory(Vbe, view, _state);
-                var refactoring = new RenameRefactoring(Vbe, factory, _messageBox, _state);
+                var refactoring = new RenameRefactoring(Vbe, factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager);
 
                 refactoring.Refactor(target);
             }

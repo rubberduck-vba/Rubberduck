@@ -16,13 +16,15 @@ namespace Rubberduck.Inspections.QuickFixes
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
 
-        public RenameDeclarationQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public RenameDeclarationQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
             : base(typeof(HungarianNotationInspection), typeof(UseMeaningfulNameInspection), typeof(DefaultProjectNameInspection))
         {
             _vbe = vbe;
             _state = state;
+            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
         }
 
@@ -32,7 +34,7 @@ namespace Rubberduck.Inspections.QuickFixes
             using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
                 var factory = new RenamePresenterFactory(_vbe, view, _state);
-                var refactoring = new RenameRefactoring(_vbe, factory, _messageBox, _state);
+                var refactoring = new RenameRefactoring(_vbe, factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager);
                 refactoring.Refactor(result.Target);
             }
         }

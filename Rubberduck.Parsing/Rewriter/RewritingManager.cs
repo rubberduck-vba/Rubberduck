@@ -58,10 +58,10 @@ namespace Rubberduck.Parsing.Rewriter
         {
             switch (rewriteSession)
             {
+                case CodePaneRewriteSession codePaneSession:
+                    return _activeCodePaneSessions.Contains(codePaneSession);
                 case AttributesRewriteSession attributeSession:
                     return _activeAttributesSessions.Contains(attributeSession);
-                case CodePaneRewriteSession codePaneSession:
-                    return _activeAttributesSessions.Contains(codePaneSession);
                 default:
                     throw new NotSupportedException(nameof(rewriteSession));
             }
