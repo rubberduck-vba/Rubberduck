@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ReorderParameters;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -35,8 +33,7 @@ End Sub";
                 @"Private Sub Foo(ByVal arg2 As String, ByVal arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -48,7 +45,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -84,7 +81,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -128,7 +125,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -164,7 +161,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(model.TargetDeclaration);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -195,7 +192,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
 
                 try
                 {
@@ -249,7 +246,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -295,7 +292,7 @@ End Sub
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -349,7 +346,7 @@ End Function";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -403,7 +400,7 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -442,7 +439,7 @@ End Function";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -496,7 +493,7 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -540,7 +537,7 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -577,7 +574,7 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -614,7 +611,7 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -703,7 +700,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -758,7 +755,7 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -803,7 +800,7 @@ End Sub
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -873,7 +870,7 @@ End Sub
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -957,7 +954,7 @@ End Sub
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -997,7 +994,7 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -1050,7 +1047,7 @@ End Sub
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -1093,7 +1090,7 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -1136,7 +1133,7 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -1160,7 +1157,7 @@ End Sub";
 
                 var factory = new ReorderParametersPresenterFactory(vbe.Object, null, state, null);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory, null);
                 refactoring.Refactor();
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -1215,7 +1212,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1271,7 +1268,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1339,7 +1336,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1400,7 +1397,7 @@ End Sub";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1494,7 +1491,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1550,7 +1547,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1606,7 +1603,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1675,7 +1672,7 @@ End Sub";   // note: IDE removes excess spaces
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());

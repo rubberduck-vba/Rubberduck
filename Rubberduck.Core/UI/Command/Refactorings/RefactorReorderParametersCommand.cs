@@ -75,7 +75,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new ReorderParametersDialog(new ReorderParametersViewModel(_state)))
             {
                 var factory = new ReorderParametersPresenterFactory(Vbe, view, _state, _msgbox);
-                var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox, _state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(Vbe, factory, _msgbox);
                 refactoring.Refactor(selection.Value);
             }
         }

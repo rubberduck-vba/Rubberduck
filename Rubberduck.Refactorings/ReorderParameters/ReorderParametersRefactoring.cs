@@ -3,10 +3,9 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
- using Rubberduck.Resources;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 ﻿using System;
 using System.Collections.Generic;
@@ -21,14 +20,13 @@ namespace Rubberduck.Refactorings.ReorderParameters
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
         private readonly HashSet<IExecutableModuleRewriter> _rewriters = new HashSet<IExecutableModuleRewriter>();
-        private readonly IProjectsProvider _projectsProvider;
 
-        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory, IMessageBox messageBox, IProjectsProvider projectsProvider)
+        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory,
+            IMessageBox messageBox)
         {
             _vbe = vbe;
             _factory = factory;
             _messageBox = messageBox;
-            _projectsProvider = projectsProvider;
         }
 
         public void Refactor()
@@ -153,17 +151,14 @@ namespace Rubberduck.Refactorings.ReorderParameters
                     continue; 
                 }
 
-                var component = _projectsProvider.Component(reference.QualifiedModuleName);
-                using (var module = component.CodeModule)
-                {
-                    RewriteCall(argumentList, module);
-                }
+                var module = reference.QualifiedModuleName;
+                RewriteCall(argumentList, module);
             }
         }
 
-        private void RewriteCall(VBAParser.ArgumentListContext argList, ICodeModule module)
+        private void RewriteCall(VBAParser.ArgumentListContext argList, QualifiedModuleName module)
         {
-            var rewriter = _model.State.GetRewriter(module.Parent);
+            var rewriter = _model.State.GetRewriter(module);
 
             var args = argList.argument().Select((s, i) => new { Index = i, Text = s.GetText() }).ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
