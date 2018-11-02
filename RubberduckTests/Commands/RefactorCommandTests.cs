@@ -26,7 +26,7 @@ namespace RubberduckTests.Commands
             using (state)
             {
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -42,7 +42,7 @@ namespace RubberduckTests.Commands
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -62,7 +62,7 @@ End Sub";
             using (state)
             {
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -82,7 +82,7 @@ End Sub";
             using (state)
             {
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -102,7 +102,7 @@ End Sub";
             using (state)
             {
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(encapsulateFieldCommand.CanExecute(null));
             }
         }
