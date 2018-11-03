@@ -348,4 +348,7 @@
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Assignment is not used</value>
   </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Function is hidden by Excel cell reference</value>
+  </data>
 </root>

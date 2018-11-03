@@ -1,6 +1,7 @@
 using System.Globalization;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Inspections.Inspections.Concrete;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
@@ -18,7 +19,10 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IMessageBox _messageBox;
 
         public RenameDeclarationQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
-            : base(typeof(HungarianNotationInspection), typeof(UseMeaningfulNameInspection), typeof(DefaultProjectNameInspection))
+            : base(typeof(HungarianNotationInspection), 
+                   typeof(UseMeaningfulNameInspection), 
+                   typeof(DefaultProjectNameInspection), 
+                   typeof(ExcelUdfNameIsValidCellReferenceInspection))
         {
             _vbe = vbe;
             _state = state;

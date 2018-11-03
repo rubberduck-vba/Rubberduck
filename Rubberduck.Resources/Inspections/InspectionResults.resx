@@ -378,4 +378,8 @@
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>An assignment is immediately overridden by another assignment or is never referenced.</value>
   </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>'{0}' is hidden by a valid Excel cell reference.</value>
+    <comment>{0} Function name</comment>
+  </data>
 </root>
