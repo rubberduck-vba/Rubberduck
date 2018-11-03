@@ -114,11 +114,79 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void UnassignedVariableUsage_Ignored_DoesNotReturnResultMultipleIgnores()
+        {
+            const string inputCode =
+                @"Sub Foo()    
+    Dim b As Boolean
+    Dim bb As Boolean
+
+'@Ignore UnassignedVariableUsage, VariableNotAssigned
+    bb = b
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void UnassignedVariableUsage_NoResultIfNoReferences()
         {
             const string inputCode =
                 @"Sub DoSomething()
     Dim foo
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Ignore("Test concurrency issue. Only passes if run individually.")]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_NoResultForLenFunction()
+        {
+            const string inputCode =
+                @"Sub DoSomething()
+    Dim foo As LongPtr
+    Debug.Print Len(foo)
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new UnassignedVariableUsageInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Ignore("Test concurrency issue. Only passes if run individually.")]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_NoResultForLenBFunction()
+        {
+            const string inputCode =
+                @"Sub DoSomething()
+    Dim foo As LongPtr
+    Debug.Print LenB(foo)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _);

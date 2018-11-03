@@ -94,8 +94,14 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.Variable
         };
 
+        private static readonly List<DeclarationType> IgnoredProcedureTypes = new List<DeclarationType>
+        {
+            DeclarationType.LibraryFunction,
+            DeclarationType.LibraryProcedure
+        };
+
         #endregion
-        
+
         private readonly IPersistanceService<CodeInspectionSettings> _settings;
 
         public HungarianNotationInspection(RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
@@ -112,7 +118,10 @@ namespace Rubberduck.Inspections.Concrete
             var hungarians = UserDeclarations
                 .Where(declaration => !whitelistedNames.Contains(declaration.IdentifierName) &&
                                       TargetDeclarationTypes.Contains(declaration.DeclarationType) &&
-                                      HungarianIdentifierRegex.IsMatch(declaration.IdentifierName))
+                                      !IgnoredProcedureTypes.Contains(declaration.DeclarationType) && 
+                                      !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
+                                      HungarianIdentifierRegex.IsMatch(declaration.IdentifierName) &&
+                                      !IsIgnoringInspectionResultFor(declaration, AnnotationName))
                 .Select(issue => new DeclarationInspectionResult(this,
                                                       string.Format(Resources.Inspections.InspectionResults.IdentifierNameInspection,
                                                                     RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),

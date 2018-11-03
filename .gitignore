@@ -7,6 +7,7 @@
 *.sln.docstates
 *.csproj.user
 *.csproj.DotSettings
+launchSettings.json
 
 # External NuGet Packages
 [Pp]ackages/
@@ -179,3 +180,6 @@ Installers/
 *.xlsx
 
 CodeGraphData/
+/Rubberduck.Deployment/Properties/launchSettings.json
+/Rubberduck.Deployment/Rubberduck.API.idl
+/Rubberduck.Deployment/Rubberduck.idl

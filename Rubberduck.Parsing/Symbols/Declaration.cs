@@ -292,8 +292,8 @@ namespace Rubberduck.Parsing.Symbols
         public ParserRuleContext Context { get; }
         public ParserRuleContext AttributesPassContext { get; }
 
-        private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> References => _references;
+        private ConcurrentDictionary<IdentifierReference, int> _references = new ConcurrentDictionary<IdentifierReference, int>();
+        public IEnumerable<IdentifierReference> References => _references.Keys;
 
         protected IEnumerable<IAnnotation> _annotations;
         public IEnumerable<IAnnotation> Annotations => _annotations ?? new List<IAnnotation>();
@@ -371,19 +371,32 @@ namespace Rubberduck.Parsing.Symbols
             bool isSetAssigned = false
             )
         {
-            _references.Add(
-                new IdentifierReference(
-                    module,
-                    scope,
-                    parent,
-                    identifier,
-                    selection,
-                    callSiteContext,
-                    callee,
-                    isAssignmentTarget,
-                    hasExplicitLetStatement,
-                    annotations,
-                    isSetAssigned));
+            var oldReference = _references.FirstOrDefault(r =>
+                r.Key.QualifiedModuleName == module &&
+                // ReSharper disable once PossibleUnintendedReferenceComparison
+                r.Key.ParentScoping == scope &&
+                // ReSharper disable once PossibleUnintendedReferenceComparison
+                r.Key.ParentNonScoping == parent &&
+                r.Key.IdentifierName == identifier &&
+                r.Key.Selection == selection);
+            if (oldReference.Key != null)
+            {
+                _references.TryRemove(oldReference.Key, out _);
+            }
+
+            var newReference = new IdentifierReference(
+                module,
+                scope,
+                parent,
+                identifier,
+                selection,
+                callSiteContext,
+                callee,
+                isAssignmentTarget,
+                hasExplicitLetStatement,
+                annotations,
+                isSetAssigned);
+            _references.AddOrUpdate(newReference, 1, (key, value) => 1);
         }
 
         /// <summary>
@@ -601,14 +614,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public void ClearReferences()
         {
-            _references = new ConcurrentBag<IdentifierReference>();
+            _references = new ConcurrentDictionary<IdentifierReference, int>();
         }
 
         public void RemoveReferencesFrom(IReadOnlyCollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
         {
-            //This gets replaced with a new ConcurrentBag because one cannot remove specific items from a ConcurrentBag.
-            //Moreover, changing to a ConcurrentDictionary<IdentifierReference,byte> breaks all sorts of tests, for some obscure reason. 
-            _references = new ConcurrentBag<IdentifierReference>(_references.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.QualifiedModuleName)));
+            _references = new ConcurrentDictionary<IdentifierReference, int>(_references.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.Key.QualifiedModuleName)));
         }
     }
 }
+

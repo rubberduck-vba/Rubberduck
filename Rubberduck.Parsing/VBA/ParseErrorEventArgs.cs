@@ -1,5 +1,4 @@
 ﻿using System;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -8,38 +7,33 @@ namespace Rubberduck.Parsing.VBA
 {
     public class ParseErrorEventArgs : EventArgs
     {
-        public ParseErrorEventArgs(SyntaxErrorException exception, IVBComponent component)
+        private readonly QualifiedModuleName _moduleName;
+
+        public ParseErrorEventArgs(SyntaxErrorException exception, QualifiedModuleName moduleName)
         {
-            _exception = exception;
-            _component = component;
+            Exception = exception;
+            _moduleName = moduleName;
         }
 
-        private readonly SyntaxErrorException _exception;
-        public SyntaxErrorException Exception { get { return _exception; } }
+        public SyntaxErrorException Exception { get; }
 
-        private readonly IVBComponent _component;
-        public string ComponentName { get { return _component.Name; } }
-        public string ProjectName
+        public string ComponentName => _moduleName.ComponentName;
+        public string ProjectName => _moduleName.ProjectName;
+
+        public void Navigate(IVBE vbe)
         {
-            get
+            var selection = new Selection(Exception.LineNumber, Exception.Position, Exception.LineNumber, Exception.Position + Exception.OffendingSymbol.Text.Length - 1);
+            
+            if (!_moduleName.TryGetComponent(vbe, out var component))
             {
-                using (var collection = _component.Collection)
-                using (var parent = collection.Parent)
-                {
-                    return parent.Name;
-                }
+                return;
             }
-        }
 
-        public void Navigate()
-        {
-            var selection = new Selection(_exception.LineNumber, _exception.Position, _exception.LineNumber, _exception.Position + _exception.OffendingSymbol.Text.Length - 1);
-            using (var module = _component.CodeModule)
+            using (component)
+            using (var module = component.CodeModule)
+            using (var pane = module.CodePane)
             {
-                using (var pane = module.CodePane)
-                {
-                    pane.Selection = selection;
-                }
+                pane.Selection = selection;
             }
         }
     }

@@ -166,7 +166,6 @@ namespace Rubberduck.VBEditor.Events
                 {
                     using (var module = pane.CodeModule)
                     {
-                        // bug: Keys.Enter == Keys.M
                         var args = new AutoCompleteEventArgs(module, e);
                         
                         Suspend = true;

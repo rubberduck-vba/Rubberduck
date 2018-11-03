@@ -1,7 +1,5 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
-using System.Text;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
@@ -122,26 +120,47 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public void InsertLines(int line, string content)
         {
-            if (IsWrappingNullReference) return; 
-            Target.InsertLines(line, content);
+            if (IsWrappingNullReference) return;
+
+            try
+            {
+                Target.InsertLines(line, content);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
         }
 
         public void DeleteLines(int startLine, int count = 1)
         {
-            if (IsWrappingNullReference) return; 
-            Target.DeleteLines(startLine, count);
+            if (IsWrappingNullReference) return;
+
+            try
+            {
+                Target.DeleteLines(startLine, count);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
         }
 
         public void ReplaceLine(int line, string content)
         {
             if (IsWrappingNullReference) return;
-            if (Target.CountOfLines == 0)
-            {
-                Target.AddFromString(content);
-            }
-            else
+
+            try
             {
                 Target.ReplaceLine(line, content);
+                if (Target.CountOfLines == 0)
+                {
+                    Target.AddFromString(content);
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
             }
         }
 
