@@ -16,6 +16,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
 
         private readonly List<Declaration> _declarations;
@@ -24,10 +25,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
-        public ImplementInterfaceRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public ImplementInterfaceRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
         {
             _vbe = vbe;
             _state = state;
+            _rewritingManager = rewritingManager;
             _declarations = state.AllUserDeclarations.ToList();
             _messageBox = messageBox;
         }
@@ -77,7 +79,10 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
             var oldSelection = _vbe.GetActiveSelection();
 
-            ImplementMissingMembers(_state.GetRewriter(_targetClass));
+            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            var rewriter = rewriteSession.CheckOutModuleRewriter(_targetClass.QualifiedModuleName);
+            ImplementMissingMembers(rewriter);
+            rewriteSession.Rewrite();
 
             if (oldSelection.HasValue)
             {
@@ -99,12 +104,12 @@ namespace Rubberduck.Refactorings.ImplementInterface
             throw new NotSupportedException();
         }
 
-        internal void Refactor(List<Declaration> members, IExecutableModuleRewriter rewriter, string interfaceName)
+        internal void Refactor(List<Declaration> members, IModuleRewriter rewriter, string interfaceName)
         {
             AddItems(members, rewriter, interfaceName);
         }
 
-        private void ImplementMissingMembers(IExecutableModuleRewriter rewriter)
+        private void ImplementMissingMembers(IModuleRewriter rewriter)
         {
             var implemented = _targetClass.Members
                 .Where(decl => decl is ModuleBodyElementDeclaration member && ReferenceEquals(member.InterfaceImplemented, _targetInterface))
@@ -119,14 +124,12 @@ namespace Rubberduck.Refactorings.ImplementInterface
             AddItems(nonImplementedMembers, rewriter, _targetInterface.IdentifierName);
         }
 
-        private void AddItems(IEnumerable<Declaration> missingMembers, IExecutableModuleRewriter rewriter, string interfaceName)
+        private void AddItems(IEnumerable<Declaration> missingMembers, IModuleRewriter rewriter, string interfaceName)
         {
             var missingMembersText = missingMembers.Aggregate(string.Empty,
                 (current, member) => current + Environment.NewLine + GetInterfaceMember(member, interfaceName));
             
             rewriter.InsertAfter(rewriter.TokenStream.Size, Environment.NewLine + missingMembersText);
-
-            rewriter.Rewrite();
         }
 
         private string GetInterfaceMember(Declaration member, string interfaceName)

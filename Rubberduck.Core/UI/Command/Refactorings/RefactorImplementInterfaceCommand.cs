@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
@@ -12,12 +13,14 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorImplementInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _msgBox;
 
-        public RefactorImplementInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox)
+        public RefactorImplementInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager)
             : base(vbe)
         {
             _state = state;
+            _rewritingManager = rewritingManager;
             _msgBox = msgBox;
         }
 
@@ -51,7 +54,7 @@ namespace Rubberduck.UI.Command.Refactorings
                     return;
                 }
             }
-            var refactoring = new ImplementInterfaceRefactoring(Vbe, _state, _msgBox);
+            var refactoring = new ImplementInterfaceRefactoring(Vbe, _state, _msgBox, _rewritingManager);
             refactoring.Refactor();
         }
     }

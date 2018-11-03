@@ -119,7 +119,7 @@ End Sub";
             using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -136,7 +136,7 @@ End Sub";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -150,7 +150,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -169,7 +169,7 @@ End Sub";
             using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -184,7 +184,7 @@ End Sub";
             using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -219,7 +219,7 @@ End Sub
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -247,7 +247,7 @@ End Sub";
             using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -266,7 +266,7 @@ End Sub";
             using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 var canExecute = extractInterfaceCommand.CanExecute(null);
                 Assert.IsTrue(canExecute);
             }
@@ -286,7 +286,7 @@ End Function";
             using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -305,7 +305,7 @@ End Property";
             using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -324,7 +324,7 @@ End Property";
             using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -343,7 +343,7 @@ End Property";
             using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -360,7 +360,7 @@ End Property";
             using (state)
             {
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
+                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -377,7 +377,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
+                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -392,7 +392,7 @@ End Property";
             using (state)
             {
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
+                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -412,7 +412,7 @@ End Property";
             using (state)
             {
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
+                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(implementInterfaceCommand.CanExecute(null));
             }
         }
