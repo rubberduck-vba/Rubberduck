@@ -429,7 +429,7 @@ End Property";
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
+                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -447,7 +447,7 @@ End Property";
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
+                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -463,7 +463,7 @@ End Property";
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
+                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -484,7 +484,7 @@ End Property";
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
+                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsTrue(introduceFieldCommand.CanExecute(null));
             }
         }
