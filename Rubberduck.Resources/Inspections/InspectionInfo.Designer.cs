@@ -223,7 +223,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to A Function or Property returning a reference type that can be &apos;Nothing&apos; should not have the return value used with a test for &apos;Is Nothing&apos;. If the member does not return a valid object, attempting to use the return value will result in a run-time error 91 - &quot;Object variable or With block variable not set&quot;..
+        ///   Looks up a localized string similar to A procedure that returns an object may return &apos;Nothing&apos;. That will cause a runtime error 91 - &quot;Object variable or With block variable not set&quot; on subsequent member access. Perform an &apos;Is Nothing&apos; check after the &apos;Set&apos; assignment to guard against runtime errors..
         /// </summary>
         public static string ExcelMemberMayReturnNothingInspection {
             get {
