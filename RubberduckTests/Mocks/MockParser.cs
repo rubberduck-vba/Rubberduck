@@ -45,18 +45,10 @@ namespace RubberduckTests.Mocks
 
         public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, string serializedComProjectsPath = null)
         {
-            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(new Moq.Mock<IVBE>());
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(new Mock<IVBE>());
             var declarationFinderFactory = new DeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(vbe);
-
-            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
-            //We use the same handler because to achieve consistency between the return values.
-            var attributesSourceCodeHandler = codePaneSourceCodeHandler;
-            var moduleRewriterFactory = new ModuleRewriterFactory(
-                codePaneSourceCodeHandler,
-                attributesSourceCodeHandler);
-
-            var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory, vbeEvents.Object, moduleRewriterFactory);
+            var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory, vbeEvents.Object);
             return CreateWithRewriteManager(vbe, state, projectRepository, serializedComProjectsPath);
         }
 

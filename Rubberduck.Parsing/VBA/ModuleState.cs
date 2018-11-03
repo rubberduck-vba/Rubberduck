@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
@@ -17,8 +16,6 @@ namespace Rubberduck.Parsing.VBA
         public ConcurrentDictionary<UnboundMemberDeclaration, byte> UnresolvedMemberDeclarations { get; private set; }
         public ITokenStream CodePaneTokenStream { get; private set; }
         public ITokenStream AttributesTokenStream { get; private set; }
-        public IExecutableModuleRewriter CodePaneRewriter { get; private set; }
-        public IExecutableModuleRewriter AttributesRewriter { get; private set; }
         public IParseTree ParseTree { get; private set; }
         public IParseTree AttributesPassParseTree { get; private set; }
         public ParserState State { get; private set; }
@@ -86,12 +83,6 @@ namespace Rubberduck.Parsing.VBA
             return this;
         }
 
-        public ModuleState SetCodePaneRewriter(IExecutableModuleRewriter codePaneRewriter)
-        {
-            CodePaneRewriter = codePaneRewriter;
-            return this;
-        }
-
         public ModuleState SetParseTree(IParseTree parseTree, CodeKind codeKind)
         {
             switch (codeKind)
@@ -154,12 +145,6 @@ namespace Rubberduck.Parsing.VBA
         public ModuleState SetAttributesTokenStream(ITokenStream attributesTokenStream)
         {
             AttributesTokenStream = attributesTokenStream;
-            return this;
-        }
-
-        public ModuleState SetAttributesRewriter(IExecutableModuleRewriter attributesRewriter)
-        {
-            AttributesRewriter = attributesRewriter;
             return this;
         }
 

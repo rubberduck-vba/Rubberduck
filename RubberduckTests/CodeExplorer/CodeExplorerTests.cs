@@ -2877,15 +2877,7 @@ End Sub";
         private RubberduckParserState TestParserState(Mock<IVBE> vbe, IProjectsRepository projectsRepository)
         {
             var vbeEvents = MockVbeEvents.CreateMockVbeEvents(vbe);
-
-            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectsRepository);
-            //We use the same handler because to achieve consistency between the return values.
-            var attributesSourceCodeHandler = codePaneSourceCodeHandler;
-            var moduleRewriterFactory = new ModuleRewriterFactory(
-                codePaneSourceCodeHandler,
-                attributesSourceCodeHandler);
-
-            return new RubberduckParserState(vbe.Object, projectsRepository, new DeclarationFinderFactory(), vbeEvents.Object, moduleRewriterFactory);
+            return new RubberduckParserState(vbe.Object, projectsRepository, new DeclarationFinderFactory(), vbeEvents.Object);
         }
 
         private Configuration GetDefaultUnitTestConfig()

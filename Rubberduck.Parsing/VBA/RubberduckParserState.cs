@@ -144,12 +144,10 @@ namespace Rubberduck.Parsing.VBA
         private readonly IVBEEvents _vbeEvents;
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
-        //TODO: Remove this again in a later PR when all rewriters get acquired via IRewriteSessions.
-        private readonly IModuleRewriterFactory _moduleRewriterFactory;
 
         /// <param name="vbeEvents">Provides event handling from the VBE. Static method <see cref="VBEEvents.Initialize"/> must be already called prior to constructing the method.</param>
         [SuppressMessage("ReSharper", "JoinNullCheckWithUsage")]
-        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVBEEvents vbeEvents, IModuleRewriterFactory moduleRewriterFactory)
+        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVBEEvents vbeEvents)
         {
             if (vbe == null)
             {
@@ -171,15 +169,9 @@ namespace Rubberduck.Parsing.VBA
                 throw new ArgumentNullException(nameof(vbeEvents));
             }
 
-            if (moduleRewriterFactory == null)
-            {
-                throw new ArgumentNullException(nameof(moduleRewriterFactory));
-            }
-
             _vbe = vbe;
             _projectRepository = projectRepository;
             _declarationFinderFactory = declarationFinderFactory;
-            _moduleRewriterFactory = moduleRewriterFactory;
             _vbeEvents = vbeEvents;
             
             var values = Enum.GetValues(typeof(ParserState));
@@ -854,9 +846,6 @@ namespace Rubberduck.Parsing.VBA
         public void SetCodePaneTokenStream(QualifiedModuleName module, ITokenStream codePaneTokenStream)
         {
             _moduleStates[module].SetCodePaneTokenStream(codePaneTokenStream);
-
-            var rewriter = _moduleRewriterFactory.CodePaneRewriter(module, codePaneTokenStream);
-            _moduleStates[module].SetCodePaneRewriter(rewriter);
         }
 
         public void SaveContentHash(QualifiedModuleName module)
@@ -937,27 +926,6 @@ namespace Rubberduck.Parsing.VBA
             }
 
             return false;
-        }
-
-        public IExecutableModuleRewriter GetRewriter(IVBComponent component)
-        {
-            return GetRewriter(component.QualifiedModuleName);
-        }
-
-        public IExecutableModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
-        {
-            return _moduleStates[qualifiedModuleName].CodePaneRewriter;
-        }
-
-        public IExecutableModuleRewriter GetRewriter(Declaration declaration)
-        {
-            var qualifiedModuleName = declaration.QualifiedSelection.QualifiedName;
-            return GetRewriter(qualifiedModuleName);
-        }
-
-        public IExecutableModuleRewriter GetAttributeRewriter(QualifiedModuleName qualifiedModuleName)
-        {
-            return _moduleStates[qualifiedModuleName].AttributesRewriter;
         }
 
         public ITokenStream GetCodePaneTokenStream(QualifiedModuleName qualifiedModuleName)
@@ -1080,9 +1048,6 @@ namespace Rubberduck.Parsing.VBA
         public void SetAttributesTokenStream(QualifiedModuleName module, ITokenStream attributesTokenStream)
         {
             _moduleStates[module].SetAttributesTokenStream(attributesTokenStream);
-
-            var rewriter = _moduleRewriterFactory.AttributesRewriter(module, attributesTokenStream);
-            _moduleStates[module].SetAttributesRewriter(rewriter);
         }
 
         //todo: Remove this again in favor of injection of the IRewritingManager into the callers.
