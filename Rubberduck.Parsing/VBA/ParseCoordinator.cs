@@ -72,10 +72,6 @@ namespace Rubberduck.Parsing.VBA
             state.SuspendRequest += SuspendRequested;
 
             _requestorStack = new ConcurrentStack<object>();
-
-            //todo: Remove this again in favor of injection of the IRewritingManager into the callers RubberduckParserState.RewritingManager.
-            //This gets property injected here because the construction of the rewritingManager ultimately depend on the RubberduckParserState. 
-            state.RewritingManager = rewritingManager;
         }
 
         // In production, the cancellation token should be accessed inside the CancellationSyncObject

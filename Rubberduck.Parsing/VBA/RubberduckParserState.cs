@@ -1050,10 +1050,6 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[module].SetAttributesTokenStream(attributesTokenStream);
         }
 
-        //todo: Remove this again in favor of injection of the IRewritingManager into the callers.
-        public IRewritingManager RewritingManager { get; internal set; }
-
-
         private bool _isDisposed;
         public void Dispose()
         {
