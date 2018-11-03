@@ -35,6 +35,29 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void ExcelMemberMayReturnNothing_Ignored_DoesNotReturnResult()
+        {
+            const string inputCode =
+                @"Sub UnderTest()
+    Dim ws As Worksheet
+    Set ws = Sheet1
+    '@Ignore ExcelMemberMayReturnNothing
+    foo = ws.UsedRange.Find(""foo"").Row
+End Sub
+";
+
+            using (var state = ArrangeParserAndParse(inputCode))
+            {
+
+                var inspection = new ExcelMemberMayReturnNothingInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ExcelMemberMayReturnNothing_ReturnsNoResult_ResultIsNothingInAssignment()
         {
             const string inputCode =
