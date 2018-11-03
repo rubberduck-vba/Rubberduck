@@ -34,8 +34,8 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object).Fix(
-                    inspectionResults.First(), rewriteSession);
+                new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object, rewritingManager)
+                    .Fix(inspectionResults.First(), rewriteSession);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }

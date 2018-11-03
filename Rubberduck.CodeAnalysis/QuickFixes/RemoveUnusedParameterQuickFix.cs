@@ -14,13 +14,15 @@ namespace Rubberduck.Inspections.QuickFixes
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
 
-        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
             : base(typeof(ParameterNotUsedInspection))
         {
             _vbe = vbe;
             _state = state;
+            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
         }
 
@@ -29,8 +31,10 @@ namespace Rubberduck.Inspections.QuickFixes
         {
             using (var dialog = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
             {
-                var refactoring = new RemoveParametersRefactoring(_vbe,
-                    new RemoveParametersPresenterFactory(_vbe, dialog, _state, _messageBox));
+                var refactoring = new RemoveParametersRefactoring(
+                    _vbe,
+                    new RemoveParametersPresenterFactory(_vbe, dialog, _state, _messageBox),
+                    _rewritingManager);
 
                 refactoring.QuickFix(_state, result.QualifiedSelection);
             }
@@ -38,8 +42,8 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveUnusedParameterQuickFix;
 
-        public override bool CanFixInProcedure => true;
-        public override bool CanFixInModule => true;
-        public override bool CanFixInProject => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
     }
 }
