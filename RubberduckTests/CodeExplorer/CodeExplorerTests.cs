@@ -1135,7 +1135,7 @@ namespace RubberduckTests.CodeExplorer
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var vm = new CodeExplorerViewModel(new FolderHelper(state), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
-                vm.ExportAllCommand = new ExportAllCommand(null, mockFolderBrowserFactory.Object);
+                vm.ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
