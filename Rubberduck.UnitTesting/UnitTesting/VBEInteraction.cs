@@ -96,7 +96,9 @@ namespace Rubberduck.UnitTesting
 
                 if (!ReferenceWithPathExists(references, referencePath))
                 {
-                    references.AddFromFile(referencePath);
+                    // AddFromFile returns a new wrapped reference so we must 
+                    // ensure it is disposed properly.
+                    using (references.AddFromFile(referencePath)) { }
                 }
             }
         }

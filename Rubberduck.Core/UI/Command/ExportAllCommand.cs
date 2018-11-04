@@ -65,25 +65,28 @@ namespace Rubberduck.UI.Command
 
             var vbproject = parameter as IVBProject;
 
-            var project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
-            
-            var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
-
-            // If .GetDirectoryName is passed an empty string for a RootFolder, 
-            // it defaults to the Documents library (Win 7+) or equivalent.
-            var path = string.Empty;
-            if (!string.IsNullOrWhiteSpace(project.FileName))
+            using (var activeProject = _vbe.ActiveVBProject)
             {
-                path = Path.GetDirectoryName(project.FileName);
-            }
+                var project = projectNode?.Declaration.Project ?? vbproject ?? activeProject;
 
-            using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
-            {
-                var result = _folderBrowser.ShowDialog();
+                var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
 
-                if (result == DialogResult.OK)
+                // If .GetDirectoryName is passed an empty string for a RootFolder, 
+                // it defaults to the Documents library (Win 7+) or equivalent.
+                var path = string.Empty;
+                if (!string.IsNullOrWhiteSpace(project.FileName))
                 {
-                    project.ExportSourceFiles(_folderBrowser.SelectedPath);
+                    path = Path.GetDirectoryName(project.FileName);
+                }
+
+                using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
+                {
+                    var result = _folderBrowser.ShowDialog();
+
+                    if (result == DialogResult.OK)
+                    {
+                        project.ExportSourceFiles(_folderBrowser.SelectedPath);
+                    }
                 }
             }
         }

@@ -56,7 +56,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 }
                 else
                 {
-                    target = _state.FindSelectedDeclaration(Vbe.ActiveCodePane);
+                    target = _state.FindSelectedDeclaration(activePane);
                 }
             }
 
