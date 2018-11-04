@@ -73,6 +73,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
+            Item?.Dispose();
             Item =  Parent.AddPopup(_beforeIndex);                
 
             Item.Tag = _key;            

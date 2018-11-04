@@ -125,13 +125,12 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
         private IVBProject GetProject()
         {
-            var activeProject = _vbe.ActiveVBProject;
-            if (!activeProject.IsWrappingNullReference)
-            {
-                return activeProject;
+            using (var activeProject = _vbe.ActiveVBProject)
+            {    if (!activeProject.IsWrappingNullReference)
+                {
+                    return activeProject;
+                }
             }
-
-            activeProject.Dispose();
             
             using (var projects = _vbe.VBProjects)
             {
@@ -158,9 +157,11 @@ namespace Rubberduck.UI.UnitTesting.Commands
         {
             var parameterIsModuleDeclaration = parameter is ProceduralModuleDeclaration || parameter is ClassModuleDeclaration;
 
-            using (var project = parameter as IVBProject ??
-                                 (parameterIsModuleDeclaration ? ((Declaration) parameter).Project : GetProject()))
+            using (var activeProject = GetProject())
             {
+                var project = parameter as IVBProject ??
+                              (parameterIsModuleDeclaration ? ((Declaration) parameter).Project : activeProject);
+            
                 if (project == null || project.IsWrappingNullReference)
                 {
                     return;
@@ -197,7 +198,7 @@ namespace Rubberduck.UI.UnitTesting.Commands
                                 if (parameterIsModuleDeclaration)
                                 {
                                     var moduleCodeBuilder = new StringBuilder();
-                                    var declarationsToStub = GetDeclarationsToStub((Declaration) parameter);
+                                    var declarationsToStub = GetDeclarationsToStub((Declaration)parameter);
 
                                     foreach (var declaration in declarationsToStub)
                                     {

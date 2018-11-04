@@ -200,66 +200,67 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
 
             //Guessing the above will work like 99.9999% of the time for supported applications.
-            var project = ActiveVBProject;
+            using (var project = ActiveVBProject)
             {
                 if (project.IsWrappingNullReference)
                 {
                     const int ctlViewHost = 106;
 
-                    var commandBars = CommandBars;
-                    var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost);
+                    using (var commandBars = CommandBars)
                     {
-
-                        IHostApplication result;
-                        if (hostAppControl.IsWrappingNullReference)
+                        var hostAppControl = commandBars.FindControl(ControlType.Button, ctlViewHost);
                         {
-                            result = null;
-                        }
-                        else
-                        {
-                            switch (hostAppControl.Caption)
+                            IHostApplication result;
+                            if (hostAppControl.IsWrappingNullReference)
                             {
-                                case "Microsoft Excel":
-                                    result = new ExcelApp();
-                                    break;
-                                case "Microsoft Access":
-                                    result = new AccessApp();
-                                    break;
-                                case "Microsoft Word":
-                                    result = new WordApp();
-                                    break;
-                                case "Microsoft PowerPoint":
-                                    result = new PowerPointApp(this);
-                                    break;
-                                case "Microsoft Outlook":
-                                    result = new OutlookApp();
-                                    break;
-                                case "Microsoft Project":
-                                    result = new ProjectApp();
-                                    break;
-                                case "Microsoft Publisher":
-                                    result = new PublisherApp();
-                                    break;
-                                case "Microsoft Visio":
-                                    result = new VisioApp();
-                                    break;
-                                case "AutoCAD":
-                                    result = new AutoCADApp();
-                                    break;
-                                case "CorelDRAW":
-                                    result = new CorelDRAWApp();
-                                    break;
-                                case "SolidWorks":
-                                    result = new SolidWorksApp(this);
-                                    break;
-                                default:
-                                    result = null;
-                                    break;
+                                result = null;
                             }
-                        }
+                            else
+                            {
+                                switch (hostAppControl.Caption)
+                                {
+                                    case "Microsoft Excel":
+                                        result = new ExcelApp();
+                                        break;
+                                    case "Microsoft Access":
+                                        result = new AccessApp();
+                                        break;
+                                    case "Microsoft Word":
+                                        result = new WordApp();
+                                        break;
+                                    case "Microsoft PowerPoint":
+                                        result = new PowerPointApp(this);
+                                        break;
+                                    case "Microsoft Outlook":
+                                        result = new OutlookApp();
+                                        break;
+                                    case "Microsoft Project":
+                                        result = new ProjectApp();
+                                        break;
+                                    case "Microsoft Publisher":
+                                        result = new PublisherApp();
+                                        break;
+                                    case "Microsoft Visio":
+                                        result = new VisioApp();
+                                        break;
+                                    case "AutoCAD":
+                                        result = new AutoCADApp();
+                                        break;
+                                    case "CorelDRAW":
+                                        result = new CorelDRAWApp();
+                                        break;
+                                    case "SolidWorks":
+                                        result = new SolidWorksApp(this);
+                                        break;
+                                    default:
+                                        result = null;
+                                        break;
+                                }
+                            }
 
-                        _host = result;
-                        return result;
+                            _host = result;
+                            return result;
+                        }
                     }
                 }
 

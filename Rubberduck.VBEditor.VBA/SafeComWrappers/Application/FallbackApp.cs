@@ -52,8 +52,16 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public string ApplicationName => "(unknown)";
 
+        private bool _disposed;
         public void Dispose()
         {
+            if (_disposed)
+            {
+                return;
+            }
+
+            _disposed = true;
+            _runButton.Dispose();
         }
     }
 }

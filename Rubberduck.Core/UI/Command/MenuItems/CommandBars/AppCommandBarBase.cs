@@ -87,6 +87,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             try
             {
+                Item?.Dispose();
                 Item = Parent.Add(_name, _position);
                 Item.IsVisible = true;
             }

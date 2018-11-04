@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             int annotationLine;
             string codeLine;
-            var component = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName);
+            using (var component = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName))
             using (var module = component.CodeModule)
             {
                 annotationLine = result.QualifiedSelection.Selection.StartLine;

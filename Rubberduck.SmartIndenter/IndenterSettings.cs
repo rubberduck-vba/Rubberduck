@@ -134,11 +134,13 @@ namespace Rubberduck.SmartIndenter
             {
                 try
                 {
-                    var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
-                              Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false);
-                    if (reg != null)
+                    using (var reg = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\6.0\Common", false) ??
+                                     Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\VBA\7.0\Common", false))
                     {
-                        tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
+                        if (reg != null)
+                        {
+                            tabWidth = Convert.ToInt32(reg.GetValue("TabWidth") ?? tabWidth);
+                        }
                     }
                 }
                 // ReSharper disable once EmptyGeneralCatchClause
@@ -219,45 +221,52 @@ namespace Rubberduck.SmartIndenter
         {
             try
             {
-                var reg = Registry.CurrentUser.OpenSubKey(LegacySettingsSubKey, false);
-                if (reg == null) return;
-                IndentEntireProcedureBody = GetSmartIndenterBoolean(reg, "IndentProc", IndentEntireProcedureBody);
-                IndentFirstCommentBlock = GetSmartIndenterBoolean(reg, "IndentFirst", IndentFirstCommentBlock);
-                IndentFirstDeclarationBlock = GetSmartIndenterBoolean(reg, "IndentDim", IndentFirstDeclarationBlock);                
-                AlignCommentsWithCode = GetSmartIndenterBoolean(reg, "IndentCmt", AlignCommentsWithCode);
-                AlignContinuations = GetSmartIndenterBoolean(reg, "AlignContinued", AlignContinuations);
-                IgnoreOperatorsInContinuations = GetSmartIndenterBoolean(reg, "AlignIgnoreOps", IgnoreOperatorsInContinuations);
-                IndentCase = GetSmartIndenterBoolean(reg, "IndentCase", IndentCase);
-                ForceDebugStatementsInColumn1 = GetSmartIndenterBoolean(reg, "DebugCol1", ForceDebugStatementsInColumn1);
-                ForceDebugPrintInColumn1 = ForceDebugStatementsInColumn1;
-                ForceDebugAssertInColumn1 = ForceDebugStatementsInColumn1;
-                ForceStopInColumn1 = ForceDebugStatementsInColumn1;
-                ForceCompilerDirectivesInColumn1 = GetSmartIndenterBoolean(reg, "CompilerCol1", ForceCompilerDirectivesInColumn1);
-                IndentCompilerDirectives = GetSmartIndenterBoolean(reg, "IndentCompiler", IndentCompilerDirectives);
-                AlignDims = GetSmartIndenterBoolean(reg, "AlignDim", AlignDims);
-                AlignDimColumn = GetSmartIndenterNumeric(reg, "AlignDimCol", AlignDimColumn, MaximumAlignDimColumn);
-
-                var eolSytle = reg.GetValue("EOLComments") as string;
-                if (!string.IsNullOrEmpty(eolSytle))
+                using (var reg = Registry.CurrentUser.OpenSubKey(LegacySettingsSubKey, false))
                 {
-                    switch (eolSytle)
+                    if (reg == null) return;
+                    IndentEntireProcedureBody = GetSmartIndenterBoolean(reg, "IndentProc", IndentEntireProcedureBody);
+                    IndentFirstCommentBlock = GetSmartIndenterBoolean(reg, "IndentFirst", IndentFirstCommentBlock);
+                    IndentFirstDeclarationBlock =
+                        GetSmartIndenterBoolean(reg, "IndentDim", IndentFirstDeclarationBlock);
+                    AlignCommentsWithCode = GetSmartIndenterBoolean(reg, "IndentCmt", AlignCommentsWithCode);
+                    AlignContinuations = GetSmartIndenterBoolean(reg, "AlignContinued", AlignContinuations);
+                    IgnoreOperatorsInContinuations =
+                        GetSmartIndenterBoolean(reg, "AlignIgnoreOps", IgnoreOperatorsInContinuations);
+                    IndentCase = GetSmartIndenterBoolean(reg, "IndentCase", IndentCase);
+                    ForceDebugStatementsInColumn1 =
+                        GetSmartIndenterBoolean(reg, "DebugCol1", ForceDebugStatementsInColumn1);
+                    ForceDebugPrintInColumn1 = ForceDebugStatementsInColumn1;
+                    ForceDebugAssertInColumn1 = ForceDebugStatementsInColumn1;
+                    ForceStopInColumn1 = ForceDebugStatementsInColumn1;
+                    ForceCompilerDirectivesInColumn1 =
+                        GetSmartIndenterBoolean(reg, "CompilerCol1", ForceCompilerDirectivesInColumn1);
+                    IndentCompilerDirectives = GetSmartIndenterBoolean(reg, "IndentCompiler", IndentCompilerDirectives);
+                    AlignDims = GetSmartIndenterBoolean(reg, "AlignDim", AlignDims);
+                    AlignDimColumn = GetSmartIndenterNumeric(reg, "AlignDimCol", AlignDimColumn, MaximumAlignDimColumn);
+
+                    var eolSytle = reg.GetValue("EOLComments") as string;
+                    if (!string.IsNullOrEmpty(eolSytle))
                     {
-                        case "Absolute":
-                            EndOfLineCommentStyle = EndOfLineCommentStyle.Absolute;
-                            break;
-                        case "SameGap":
-                            EndOfLineCommentStyle = EndOfLineCommentStyle.SameGap;
-                            break;
-                        case "StandardGap":
-                            EndOfLineCommentStyle = EndOfLineCommentStyle.StandardGap;
-                            break;
-                        case "AlignInCol":
-                            EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
-                            break;
+                        switch (eolSytle)
+                        {
+                            case "Absolute":
+                                EndOfLineCommentStyle = EndOfLineCommentStyle.Absolute;
+                                break;
+                            case "SameGap":
+                                EndOfLineCommentStyle = EndOfLineCommentStyle.SameGap;
+                                break;
+                            case "StandardGap":
+                                EndOfLineCommentStyle = EndOfLineCommentStyle.StandardGap;
+                                break;
+                            case "AlignInCol":
+                                EndOfLineCommentStyle = EndOfLineCommentStyle.AlignInColumn;
+                                break;
+                        }
                     }
+
+                    EndOfLineCommentColumnSpaceAlignment = GetSmartIndenterNumeric(reg, "EOLAlignCol",
+                        EndOfLineCommentColumnSpaceAlignment, MaximumEndOfLineCommentColumnSpaceAlignment);
                 }
-                EndOfLineCommentColumnSpaceAlignment = GetSmartIndenterNumeric(reg, "EOLAlignCol",
-                    EndOfLineCommentColumnSpaceAlignment, MaximumEndOfLineCommentColumnSpaceAlignment);
             }
             // ReSharper disable once EmptyGeneralCatchClause
             catch { }
