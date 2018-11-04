@@ -96,23 +96,25 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         void VB._dispVBProjectsEvents.ItemRenamed([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject,
             [MarshalAs(UnmanagedType.BStr), In] string OldName)
         {
-            var project = new VBProject(VBProject);
-
-            if (!IsInDesignMode() || VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+            using (var project = new VBProject(VBProject))
             {
-                project.Dispose();
-                return;
-            }
+                if (!IsInDesignMode() || VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+                {
+                    project.Dispose();
+                    return;
+                }
 
-            var projectId = project.ProjectId;
+                var projectId = project.ProjectId;
 
-            var handler = ProjectRenamed;
-            if (handler == null || projectId == null)
-            {
-                project.Dispose();
-                return;
+                var handler = ProjectRenamed;
+                if (handler == null || projectId == null)
+                {
+                    project.Dispose();
+                    return;
+                }
+
+                handler.Invoke(this, new ProjectRenamedEventArgs(projectId, project.Name, OldName));
             }
-            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project.Name, OldName));
         }
 
         public event EventHandler<ProjectEventArgs> ProjectActivated;
