@@ -6,13 +6,13 @@ namespace Rubberduck.Parsing.Rewriter
 {
     public class CodePaneRewriteSession : RewriteSessionBase
     {
-        private readonly RubberduckParserState _state;
+        private readonly IParseManager _parseManager;
 
-        public CodePaneRewriteSession(RubberduckParserState state, IRewriterProvider rewriterProvider,
+        public CodePaneRewriteSession(IParseManager parseManager, IRewriterProvider rewriterProvider,
             Func<IRewriteSession, bool> rewritingAllowed)
             : base(rewriterProvider, rewritingAllowed)
         {
-            _state = state;
+            _parseManager = parseManager;
         }
 
 
@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.Rewriter
             {
                 rewriter.Rewrite();
             }
-            _state.OnParseRequested(this);
+            _parseManager.OnParseRequested(this);
         }
     }
 }

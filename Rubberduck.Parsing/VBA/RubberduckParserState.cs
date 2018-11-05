@@ -12,7 +12,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
@@ -120,7 +119,7 @@ namespace Rubberduck.Parsing.VBA
         public string Message { get; }
     }
 
-    public sealed class RubberduckParserState : IDisposable, IDeclarationFinderProvider, IParseTreeProvider
+    public sealed class RubberduckParserState : IDisposable, IDeclarationFinderProvider, IParseTreeProvider, IParseManager
     {
         public const int NoTimeout = -1;
 

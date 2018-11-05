@@ -93,7 +93,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<IProjectsProvider, IProjectsRepository>()
                 .ImplementedBy<ProjectsRepository>()
                 .LifestyleSingleton());
-            container.Register(Component.For<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider>()
+            container.Register(Component.For<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider, IParseManager>()
                 .ImplementedBy<RubberduckParserState>()
                 .LifestyleSingleton());
             container.Register(Component.For<ISelectionChangeService>()
