@@ -61,32 +61,44 @@ namespace Rubberduck.UI.Command
 
         protected override void OnExecute(object parameter)
         {
-            var projectNode = parameter as CodeExplorerProjectViewModel;
-
-            var vbproject = parameter as IVBProject;
-
-            using (var activeProject = _vbe.ActiveVBProject)
+            switch (parameter)
             {
-                var project = projectNode?.Declaration.Project ?? vbproject ?? activeProject;
-
-                var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
-
-                // If .GetDirectoryName is passed an empty string for a RootFolder, 
-                // it defaults to the Documents library (Win 7+) or equivalent.
-                var path = string.Empty;
-                if (!string.IsNullOrWhiteSpace(project.FileName))
+                case CodeExplorerProjectViewModel projectNode when projectNode.Declaration.Project != null:
+                    Export(projectNode.Declaration.Project);
+                    break;
+                case IVBProject vbproject:
+                    Export(vbproject);
+                    break;
+                default:
                 {
-                    path = Path.GetDirectoryName(project.FileName);
-                }
-
-                using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
-                {
-                    var result = _folderBrowser.ShowDialog();
-
-                    if (result == DialogResult.OK)
+                    using (var project = _vbe.ActiveVBProject)
                     {
-                        project.ExportSourceFiles(_folderBrowser.SelectedPath);
+                        Export(project);
                     }
+                    break;
+                }
+            }
+        }
+
+        private void Export(IVBProject project)
+        {
+            var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
+
+            // If .GetDirectoryName is passed an empty string for a RootFolder, 
+            // it defaults to the Documents library (Win 7+) or equivalent.
+            var path = string.Empty;
+            if (!string.IsNullOrWhiteSpace(project.FileName))
+            {
+                path = Path.GetDirectoryName(project.FileName);
+            }
+
+            using (var _folderBrowser = _factory.CreateFolderBrowser(desc, true, path))
+            {
+                var result = _folderBrowser.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    project.ExportSourceFiles(_folderBrowser.SelectedPath);
                 }
             }
         }

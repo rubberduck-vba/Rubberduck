@@ -96,7 +96,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             {
                 if (!IsInDesignMode())
                 {
-                    project.Dispose();
                     return;
                 }
 
@@ -105,7 +104,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 var handler = ProjectRenamed;
                 if (handler == null || projectId == null)
                 {
-                    project.Dispose();
                     return;
                 }
 

@@ -18,11 +18,9 @@ namespace Rubberduck.Common.WinAPI
 
         internal static string GetClassType(string classGuid)
         {
-            using (var classGuidKey =
-                Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Class\" + classGuid))
-            {
-                return classGuidKey != null ? (string) classGuidKey.GetValue("Class") : string.Empty;
-            }
+            var classGuidKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Class\" + classGuid);
+
+            return classGuidKey != null ? (string)classGuidKey.GetValue("Class") : string.Empty;
         }
     }
 }

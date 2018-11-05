@@ -103,10 +103,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             var names = new List<string>();
             using (var components = VBComponents)
             {
-                foreach(var component in components)
-                using (component)
+                foreach (var component in components)
                 {
-                    names.Add(component.Name);
+                    using (component)
+                    {
+                        names.Add(component.Name);
+                    }
                 }
 
                 return names.ToArray();

@@ -100,7 +100,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 if (!IsInDesignMode() || VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
                 {
-                    project.Dispose();
                     return;
                 }
 
@@ -109,7 +108,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 var handler = ProjectRenamed;
                 if (handler == null || projectId == null)
                 {
-                    project.Dispose();
                     return;
                 }
 

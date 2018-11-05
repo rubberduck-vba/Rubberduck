@@ -87,7 +87,6 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
             try
             {
-                Item?.Dispose();
                 Item = Parent.Add(_name, _position);
                 Item.IsVisible = true;
             }
@@ -170,8 +169,27 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             }
         }
 
-        public ICommandBars Parent { get; set; }
-        public ICommandBar Item { get; private set; }
+        private ICommandBars _parent;
+        public ICommandBars Parent
+        {
+            get => _parent;
+            set
+            {
+                _parent?.Dispose();
+                _parent = value;
+            }
+        }
+
+        private ICommandBar _item;
+        public ICommandBar Item
+        {
+            get => _item;
+            private set
+            {
+                _item?.Dispose();
+                _item = value;
+            }
+        }
 
         public void RemoveCommandBar()
         {
@@ -184,7 +202,6 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                     Item.Delete();
                     Item.Dispose();
                     Item = null;
-                    Parent?.Dispose();
                     Parent = null;
                 }
             }

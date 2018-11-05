@@ -239,10 +239,7 @@ namespace Rubberduck.UI.Command
                             return null;
                         }
 
-                        // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                        (selectedType, selectedName) = selectedCount == 0
-                            ? (DeclarationType.ClassModule, component.Name)
-                            : (DeclarationType.Control, selectedControls[0].Name);
+                        (selectedType, selectedName) = GetSelectedName(component, selectedControls, selectedCount);
                     }
 
                     return _state.DeclarationFinder
@@ -253,6 +250,20 @@ namespace Rubberduck.UI.Command
                 }
 
                 return null;
+            }
+        }
+
+        private static (DeclarationType, string Name) GetSelectedName(IVBComponent component, IControls selectedControls, int selectedCount)
+        {
+            // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+            if (selectedCount == 0)
+            {
+                return (DeclarationType.ClassModule, component.Name);
+            }
+
+            using (var firstSelectedControl = selectedControls[0])
+            {
+                return (DeclarationType.Control, firstSelectedControl.Name);
             }
         }
 
