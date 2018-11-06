@@ -71,19 +71,35 @@ test_script:
   # when using test_script, after_test seems to not be executed
   - cmd: codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
 
+# Define the installer-name depending on what branch we're building on
+environment:
+  installer_dir: Rubberduck.Deployment\InnoSetup\Installers\
 for:
-  - branches:
-      only:
-        - next
-    after_test:
-      - iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
-      - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
-  - branches:
-      only:
-        - master
-    after_test:
-      - iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
-      - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
+- 
+  branches:
+    only:
+    - next
+  environment:
+    installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
+- 
+  branches:
+    only:
+    - master
+  environment:
+    installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
+- 
+  branches:
+    except:
+      - master
+      - next
+  environment:
+    # fall back to calling the installer after the branch we're on
+    installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-%APPVEYOR_REPO_BRANCH%.exe
+
+# Create Installers for 
+after_test:
+  - cmd: iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
+  - cmd: move %INSTALLER_DIR%\Rubberduck.Setup.exe %INSTALLER_DIR%\%INSTALLER_NAME$
     
 # grab the installers we produce and upload them to github :)
 artifacts:
@@ -96,7 +112,7 @@ deploy:
     description: AppVeyor build on [master] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version).exe
+    artifact: $(installer_dir)\$(installer_name)
     draft: true
     prerelease: false
     on:
@@ -107,7 +123,7 @@ deploy:
     description: AppVeyor build on [next] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
+    artifact: $(installer_dir)\$(installer_name)
     draft: false
     prerelease: true
     on:
