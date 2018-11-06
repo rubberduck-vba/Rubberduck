@@ -1,6 +1,6 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+using Microsoft.Office.Interop.Access;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -8,38 +8,157 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
     public class AccessApp : HostApplicationBase<Microsoft.Office.Interop.Access.Application>
     {
-        public AccessApp() : base("Access") { }
+        private const string FormNamePrefix = "Form_";
+        private const string FormClassName = "Access.Form";
+        private const string ReportNamePrefix = "Report_";
+        private const string ReportClassName = "Access.Report";
 
-        public override void Run(dynamic declaration)
-        {
-            var qualifiedMemberName = declaration.QualifiedName;
-            var call = GenerateMethodCall(qualifiedMemberName);
-            Application.Run(call);
-        }
+        private readonly Lazy<IVBProject> _dbcProject;
 
-        public List<string> FormDeclarations(QualifiedModuleName qualifiedModuleName)
+        public AccessApp(IVBE vbe) : base(vbe, "Access", true)
         {
-            //TODO: Drop in the optimized version that uses line indentations
-            return new List<string>();
-        }
-
-        private string ExportPath
-        {
-            get
+            _dbcProject = new Lazy<IVBProject>(() =>
             {
-                var assemblyLocation = Assembly.GetAssembly(typeof(AccessApp)).Location;
-                return Path.GetDirectoryName(assemblyLocation);
-            }
+                using (var wizHook = new SafeIDispatchWrapper<WizHook>(Application.WizHook))
+                {
+                    wizHook.Target.Key = 51488399;
+                    return new VBProject(wizHook.Target.DbcVbProject);
+                }
+            });
         }
 
-        private string GenerateMethodCall(QualifiedMemberName qualifiedMemberName)
+        public override HostDocument GetDocument(QualifiedModuleName moduleName)
         {
-            //Access only supports Project.Procedure syntax. Error occurs if there are naming conflicts.
-            // http://msdn.microsoft.com/en-us/library/office/ff193559(v=office.15).aspx
-            // https://github.com/retailcoder/Rubberduck/issues/109
+            if (moduleName.ComponentName.StartsWith(FormNamePrefix))
+            {
+                var name = moduleName.ComponentName.Substring(FormNamePrefix.Length);
+                using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+                using (var allForms = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllForms))
+                using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allForms.Target[name]))
+                { 
+                    return LoadHostDocument(moduleName, FormClassName, accessObject);
+                }
+            }
 
-            var projectName = qualifiedMemberName.QualifiedModuleName.ProjectName;
-            return $"{projectName}.{qualifiedMemberName.MemberName}";
+            if (moduleName.ComponentName.StartsWith(ReportNamePrefix))
+            {
+                var name = moduleName.ComponentName.Substring(ReportNamePrefix.Length);
+                using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+                using (var allReports = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllReports))
+                using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allReports.Target[name]))
+                {
+                    return LoadHostDocument(moduleName, name, accessObject);
+                }
+            }
+
+            return null;
+        }
+
+        public override IEnumerable<HostDocument> GetDocuments()
+        {
+            var list = new List<HostDocument>();
+
+            foreach (var document in DocumentComponents())
+            {
+                var moduleName = new QualifiedModuleName(document);
+                var name = string.Empty;
+                var className = string.Empty;
+                if (document.Name.StartsWith(FormNamePrefix))
+                {
+                    className = FormClassName;
+                    name = document.Name.Substring(FormNamePrefix.Length);
+                }
+                else if(document.Name.StartsWith(ReportNamePrefix))
+                {
+                    className = ReportClassName;
+                    name = document.Name.Substring(ReportNamePrefix.Length);
+                }
+
+                using (var project = document.ParentProject)
+                {
+                    var state = GetDocumentState(project, name, className);
+                    list.Add(new HostDocument(moduleName, name, className, state, null));
+                }
+            }
+
+            return list;
+        }
+
+        private DocumentState GetDocumentState(IVBProject project, string name, string className)
+        {
+            if (!project.Equals(_dbcProject.Value))
+            {
+                return DocumentState.Inaccessible;
+            }
+
+            using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+            {
+                switch (className)
+                {
+                    case FormClassName:
+                        using (var allForms = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllForms))
+                        using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allForms.Target[name]))
+                        {
+                            if (accessObject.Target.IsLoaded)
+                            {
+                                return DetermineDocumentState(accessObject.Target.CurrentView);
+                            }
+                        }
+
+                        break;
+                    case ReportClassName:
+                        using (var allReports = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllReports))
+                        using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allReports.Target[name]))
+                        {
+                            if (accessObject.Target.IsLoaded)
+                            {
+                                return DetermineDocumentState(accessObject.Target.CurrentView);
+                            }
+                        }
+
+                        break;
+                }
+            }
+
+            return DocumentState.Inaccessible;
+        }
+
+        private HostDocument LoadHostDocument(QualifiedModuleName moduleName, string className, SafeIDispatchWrapper<AccessObject> accessObject)
+        {
+            var state = DocumentState.Inaccessible;
+            if (!accessObject.Target.IsLoaded)
+            {
+                return new HostDocument(moduleName, accessObject.Target.Name, className, state, null);
+            }
+
+            if (moduleName.ProjectName == _dbcProject.Value.Name && moduleName.ProjectId == _dbcProject.Value.HelpFile)
+            {
+                state = DetermineDocumentState(accessObject.Target.CurrentView);
+            }
+
+            return new HostDocument(moduleName, accessObject.Target.Name, className, state, null);
+        }
+
+        private static DocumentState DetermineDocumentState(AcCurrentView CurrentView)
+        {
+            return CurrentView == AcCurrentView.acCurViewDesign
+                ? DocumentState.DesignView
+                : DocumentState.ActiveView;
+        }
+
+        private bool _disposed;
+        protected override void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                _disposed = true;
+                if (_dbcProject.IsValueCreated)
+                {
+                    _dbcProject.Value.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
         }
     }
 }
