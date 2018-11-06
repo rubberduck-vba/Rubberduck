@@ -12,18 +12,25 @@ namespace Rubberduck.AutoComplete.Service
 {
     public class SelfClosingPairCompletionService
     {
+        /*
+         // note: this works... but the VBE makes an annoying DING! when the command isn't available.
+         // todo: implement our own intellisense, then uncomment this code.
         private readonly IShowIntelliSenseCommand _showIntelliSense;
 
         public SelfClosingPairCompletionService(IShowIntelliSenseCommand showIntelliSense)
         {
             _showIntelliSense = showIntelliSense;
         }
+        */
 
-        public CodeString Execute(SelfClosingPair pair, CodeString original, char input)
+        public bool Execute(SelfClosingPair pair, CodeString original, char input, out CodeString result)
         {
+            result = null;
+
             var previousCharIsClosingChar =
                 original.CaretPosition.StartColumn > 0 &&
                 original.CaretLine[original.CaretPosition.StartColumn - 1] == pair.ClosingChar;
+
             var nextCharIsClosingChar =
                 original.CaretPosition.StartColumn < original.CaretLine.Length &&
                 original.CaretLine[original.CaretPosition.StartColumn] == pair.ClosingChar;
@@ -33,49 +40,51 @@ namespace Rubberduck.AutoComplete.Service
                 previousCharIsClosingChar && !nextCharIsClosingChar
                 || original.IsComment || (original.IsInsideStringLiteral && !nextCharIsClosingChar))
             {
-                return null;
+                return false;
             }
 
             if (input == pair.OpeningChar)
             {
-                var result = HandleOpeningChar(pair, original);
-                return result;
+                return HandleOpeningChar(pair, original, out result);
             }
-
+            
             if (input == pair.ClosingChar)
             {
-                return HandleClosingChar(pair, original);
+                return HandleClosingChar(pair, original, out result);
             }
 
             if (input == '\b')
             {
-                return Execute(pair, original, Keys.Back);
+                return Execute(pair, original, Keys.Back, out result);
             }
 
-            return null;
+            return false;
         }
 
-        public CodeString Execute(SelfClosingPair pair, CodeString original, Keys input)
+        public bool Execute(SelfClosingPair pair, CodeString original, Keys input, out CodeString result)
         {
+            result = null;
             if (original.IsComment)
             {
-                return null;
+                // not handling backspace in comments
+                return false;
             }
 
             if (input == Keys.Back)
             {
-                return HandleBackspace(pair, original);
+                result = HandleBackspace(pair, original);
+                return true;
             }
 
-            return null;
+            return false;
         }
 
-        private CodeString HandleOpeningChar(SelfClosingPair pair, CodeString original)
+        private bool HandleOpeningChar(SelfClosingPair pair, CodeString original, out CodeString result)
         {
             var nextPosition = original.CaretPosition.ShiftRight();
             var autoCode = new string(new[] { pair.OpeningChar, pair.ClosingChar });
             var lines = original.Lines;
-            var line = lines[original.CaretPosition.StartLine];
+            var line = original.CaretLine;
 
             string newCode;
             if (string.IsNullOrEmpty(line))
@@ -94,14 +103,17 @@ namespace Rubberduck.AutoComplete.Service
             }
             lines[original.CaretPosition.StartLine] = newCode;
 
-            return new CodeString(string.Join("\r\n", lines), nextPosition, new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
+            result = new CodeString(string.Join("\r\n", lines), nextPosition, new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
+            return true;
         }
 
-        private CodeString HandleClosingChar(SelfClosingPair pair, CodeString original)
+        private bool HandleClosingChar(SelfClosingPair pair, CodeString original, out CodeString result)
         {
+            result = null;
             if (pair.IsSymetric)
             {
-                return null;
+                // a symetric pair would have already been handled with the opening character.
+                return false;
             }
 
             var nextIsClosingChar = original.CaretLine.Length > original.CaretCharIndex &&  
@@ -111,17 +123,14 @@ namespace Rubberduck.AutoComplete.Service
                 var nextPosition = original.CaretPosition.ShiftRight();
                 var newCode = original.Code;
 
-                return new CodeString(newCode, nextPosition, new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
+                result = new CodeString(newCode, nextPosition, new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
+                return true;
             }
-            return null;
+
+            return false;
         }
 
         private CodeString HandleBackspace(SelfClosingPair pair, CodeString original)
-        {
-            return DeleteMatchingTokens(pair, original);
-        }
-
-        private CodeString DeleteMatchingTokens(SelfClosingPair pair, CodeString original)
         {
             var position = original.CaretPosition;
             var lines = original.Lines;
