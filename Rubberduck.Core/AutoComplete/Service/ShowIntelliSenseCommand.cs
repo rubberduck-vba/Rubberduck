@@ -3,10 +3,13 @@ using NLog;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.AutoComplete
+namespace Rubberduck.AutoComplete.Service
 {
     public interface IShowIntelliSenseCommand
     {
+        /// <summary>
+        /// WARNING! Makes an utterly annoying DING! in the VBE if the "QuickInfo" command is unavailable.
+        /// </summary>
         void Execute();
     }
 

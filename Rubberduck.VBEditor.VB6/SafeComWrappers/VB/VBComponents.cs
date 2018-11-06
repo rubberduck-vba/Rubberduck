@@ -116,20 +116,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
         void VB._dispVBComponentsEvents.ItemRenamed(VB.VBComponent VBComponent, string OldName)
         {
-            var component = new VBComponent(VBComponent);
-            var handler = ComponentRenamed;
-            if (handler == null)
+            using (var component = new VBComponent(VBComponent))
             {
-                component.Dispose();
-                return;
-            }
+                var handler = ComponentRenamed;
+                if (handler == null)
+                {
+                    return;
+                }
 
-            IVBProject project;
-            using (var components = component.Collection)
-            {
-                project = components.Parent;
+                var qmn = new QualifiedModuleName(component);
+                handler.Invoke(component,
+                    new ComponentRenamedEventArgs(qmn, OldName));
             }
-            handler.Invoke(component, new ComponentRenamedEventArgs(project.ProjectId, project, component, OldName));
         }
 
         public event EventHandler<ComponentEventArgs> ComponentSelected;
@@ -152,23 +150,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         private static void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent vbComponent)
         {
-            var component = new VBComponent(vbComponent);
-            var handler = dispatched;
-            if (handler == null)
+            using (var component = new VBComponent(vbComponent))
             {
-                component.Dispose();
-                return;
+                var handler = dispatched;
+                if (handler == null)
+                {
+                    component.Dispose();
+                    return;
+                }
+
+                var qmn = new QualifiedModuleName(component);
+                var eventArgs = new ComponentEventArgs(qmn);
+                handler.Invoke(component, eventArgs);
             }
-
-            IVBProject project;
-            using (var components = component.Collection)
-            {
-                project = components.Parent;
-            }
-
-
-            var eventArgs = new ComponentEventArgs(project.ProjectId, project, component);
-            handler.Invoke(component, eventArgs);
         }
 
         #endregion

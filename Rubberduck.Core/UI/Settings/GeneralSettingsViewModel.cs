@@ -8,7 +8,7 @@ using Rubberduck.Interaction;
 using NLog;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.VBERuntime.Settings;
+using Rubberduck.VBEditor.VbeRuntime.Settings;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Settings
@@ -23,12 +23,12 @@ namespace Rubberduck.UI.Settings
     {
         private readonly IOperatingSystem _operatingSystem;
         private readonly IMessageBox _messageBox;
-        private readonly IVBESettings _vbeSettings;
+        private readonly IVbeSettings _vbeSettings;
 
         private bool _indenterPrompted;
         private readonly ReadOnlyCollection<Type> _experimentalFeatureTypes;
 
-        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem, IMessageBox messageBox, IVBESettings vbeSettings, IEnumerable<Type> experimentalFeatureTypes)
+        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem, IMessageBox messageBox, IVbeSettings vbeSettings, IEnumerable<Type> experimentalFeatureTypes)
         {
             _operatingSystem = operatingSystem;
             _messageBox = messageBox;
@@ -200,6 +200,7 @@ namespace Rubberduck.UI.Settings
 
         public ObservableCollection<MinimumLogLevel> LogLevels { get; set; }
         private MinimumLogLevel _selectedLogLevel;
+        private bool _userEditedLogLevel;
 
         public MinimumLogLevel SelectedLogLevel
         {
@@ -208,6 +209,7 @@ namespace Rubberduck.UI.Settings
             {
                 if (!Equals(_selectedLogLevel, value))
                 {
+                    _userEditedLogLevel = true;
                     _selectedLogLevel = value;
                     OnPropertyChanged();
                 }
@@ -243,7 +245,8 @@ namespace Rubberduck.UI.Settings
                 IsSmartIndenterPrompted = _indenterPrompted,
                 IsAutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
-                MinimumLogLevel = SelectedLogLevel.Ordinal,
+                UserEditedLogLevel = _userEditedLogLevel,
+                MinimumLogLevel = _selectedLogLevel.Ordinal,
                 EnableExperimentalFeatures = ExperimentalFeatures
             };
         }
@@ -258,7 +261,8 @@ namespace Rubberduck.UI.Settings
             _indenterPrompted = general.IsSmartIndenterPrompted;
             AutoSaveEnabled = general.IsAutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
-            SelectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
+            _userEditedLogLevel = general.UserEditedLogLevel;
+            _selectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
 
             ExperimentalFeatures = _experimentalFeatureTypes
                 .SelectMany(s => s.CustomAttributes.Where(a => a.ConstructorArguments.Any()).Select(a => (string)a.ConstructorArguments.First().Value))

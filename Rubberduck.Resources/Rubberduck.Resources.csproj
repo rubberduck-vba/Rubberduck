@@ -12,12 +12,20 @@
     <Resource Include="**\*.png" />
     <Resource Include="**\*.bmp" />
     <Resource Include="**\*.txt" />
-    <Resource Update="**\*.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>$([System.String]::Copy('%(FileName)')).Designer.cs</LastGenOutput>
-    </Resource>
+  </ItemGroup>
+  
+  <ItemGroup>
     <Compile Update="**\*.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).resx</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="**\*.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>$([System.String]::Copy('%(FileName)')).Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Command.Refactorings
             Declaration target;
             using (var activePane = Vbe.ActiveCodePane)
             {
-                if (Vbe.ActiveCodePane == null || activePane.IsWrappingNullReference)
+                if (activePane == null || activePane.IsWrappingNullReference)
                 {
                     return false;
                 }

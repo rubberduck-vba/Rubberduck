@@ -23,7 +23,11 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return !_vbe.ActiveVBProject.IsWrappingNullReference && _vbe.ActiveVBProject.Protection != ProjectProtection.Locked;
+            using (var vbProject = _vbe.ActiveVBProject)
+            {
+                return !vbProject.IsWrappingNullReference &&
+                       vbProject.Protection != ProjectProtection.Locked;
+            }
         }
 
         protected override void OnExecute(object parameter)

@@ -1,21 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
-using Rubberduck.Parsing.Symbols;
+﻿using Antlr4.Runtime.Tree;
 
 namespace Rubberduck.Inspections.CodePathAnalysis.Nodes
 {
-    public class GenericNode : INode
+    public class GenericNode : NodeBase
     {
-        public GenericNode()
-        {
-            Children = new List<INode>().ToImmutableList();
-        }
-
-        public int SortOrder { get; set; }
-        public ImmutableList<INode> Children { get; set; }
-        public INode Parent { get; set; }
-
-        public Declaration Declaration { get; set; }
-        public IdentifierReference Reference { get; set; }
+        public GenericNode(IParseTree tree) : base(tree) { }
     }
 }

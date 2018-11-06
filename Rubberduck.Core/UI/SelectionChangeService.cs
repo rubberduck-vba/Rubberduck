@@ -30,8 +30,8 @@ namespace Rubberduck.UI
         {
             _parser = parser;
             _vbe = vbe;
-            VBENativeServices.SelectionChanged += OnVbeSelectionChanged;
-            VBENativeServices.WindowFocusChange += OnVbeFocusChanged;
+            VbeNativeServices.SelectionChanged += OnVbeSelectionChanged;
+            VbeNativeServices.WindowFocusChange += OnVbeFocusChanged;
         }
         
         private void OnVbeSelectionChanged(object sender, EventArgs e)
@@ -69,7 +69,7 @@ namespace Rubberduck.UI
                         //Caret changed in a code pane.
                         Task.Run(() =>
                         {
-                            using (var pane = VBENativeServices.GetCodePaneFromHwnd(e.Hwnd))
+                            using (var pane = VbeNativeServices.GetCodePaneFromHwnd(e.Hwnd))
                             {
                                 DispatchSelectedDeclaration(
                                     new DeclarationChangedEventArgs(_vbe, _parser.State.FindSelectedDeclaration(pane)));
@@ -186,8 +186,8 @@ namespace Rubberduck.UI
 
         public void Dispose()
         {
-            VBENativeServices.SelectionChanged -= OnVbeSelectionChanged;
-            VBENativeServices.WindowFocusChange -= OnVbeFocusChanged;
+            VbeNativeServices.SelectionChanged -= OnVbeSelectionChanged;
+            VbeNativeServices.WindowFocusChange -= OnVbeFocusChanged;
         }
     }
 

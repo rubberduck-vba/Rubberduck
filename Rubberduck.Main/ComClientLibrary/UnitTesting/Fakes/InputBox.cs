@@ -6,11 +6,11 @@ namespace Rubberduck.UnitTesting.Fakes
 {
     internal class InputBox : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcInputBox");
-
         public InputBox()
         {
-            InjectDelegate(new InputBoxDelegate(InputBoxCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcInputBox");
+
+            InjectDelegate(new InputBoxDelegate(InputBoxCallback), processAddress);
         }
 
         public override bool PassThrough

@@ -192,24 +192,24 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
-            bool findDesigner;
             using (var activePane = _vbe.ActiveCodePane)
             {
+                bool findDesigner;
                 using (var selectedComponent = _vbe.SelectedVBComponent)
                 {
-                    findDesigner = activePane != null && !activePane.IsWrappingNullReference 
-                                    && (selectedComponent?.HasDesigner ?? false);
+                    findDesigner = activePane != null && !activePane.IsWrappingNullReference
+                                                      && (selectedComponent?.HasDesigner ?? false);
                 }
-            }
 
-            return findDesigner
-                ? FindFormDesignerTarget()
-                : FindCodePaneTarget();
+                return findDesigner
+                    ? FindFormDesignerTarget()
+                    : FindCodePaneTarget(activePane);
+            }
         }
 
-        private Declaration FindCodePaneTarget()
+        private Declaration FindCodePaneTarget(ICodePane codePane)
         {
-            return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
+            return _state.FindSelectedDeclaration(codePane);
         }
 
         private Declaration FindFormDesignerTarget(QualifiedModuleName? qualifiedModuleName = null)

@@ -28,7 +28,10 @@ namespace Rubberduck.VBEditor.ComManagement
         public void Dispose()
         {
             Dispose(true);
+        }
 
+        protected virtual void Dispose(bool disposing)
+        {
 #if DEBUG
             if (_disposed)
             {
@@ -66,8 +69,6 @@ namespace Rubberduck.VBEditor.ComManagement
             }
 #endif
         }
-
-        protected abstract void Dispose(bool disposing);
 
 #if DEBUG
         private struct TraceData

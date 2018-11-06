@@ -7,10 +7,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers
     {
         public CommandBarButtonClickEventArgs(ICommandBarButton control)
         {
-            Control = control;
+            Tag = control.Tag;
+            Caption = control.Caption;
+            TargetHashCode = control.Target.GetHashCode();
         }
 
-        public ICommandBarButton Control { get; }
+        public string Tag { get; }
+        public string Caption { get; }
+        public int TargetHashCode { get; }
 
         public bool Cancel { get; set; }
         public bool Handled { get; set; } // Only used in VB6

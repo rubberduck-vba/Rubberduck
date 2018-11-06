@@ -120,9 +120,6 @@
   <data name="ConfirmResetSettings" xml:space="preserve">
     <value>Reset settings to default configuration?</value>
   </data>
-  <data name="EnableAutocompleteLabel" xml:space="preserve">
-    <value>Enable autocompletion. Feature isn't fully completed and may behave in unintended ways.</value>
-  </data>
   <data name="ExportPageSettingsButton" xml:space="preserve">
     <value>Export</value>
   </data>
