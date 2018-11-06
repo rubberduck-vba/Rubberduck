@@ -70,13 +70,7 @@ namespace Rubberduck.AutoComplete.Service
                 return false;
             }
 
-            if (input == Keys.Back)
-            {
-                result = HandleBackspace(pair, original);
-                return true;
-            }
-
-            return false;
+            return input == Keys.Back && HandleBackspace(pair, original, out result);
         }
 
         private bool HandleOpeningChar(SelfClosingPair pair, CodeString original, out CodeString result)
@@ -130,8 +124,9 @@ namespace Rubberduck.AutoComplete.Service
             return false;
         }
 
-        private CodeString HandleBackspace(SelfClosingPair pair, CodeString original)
+        private bool HandleBackspace(SelfClosingPair pair, CodeString original, out CodeString result)
         {
+            result = null;
             var position = original.CaretPosition;
             var lines = original.Lines;
 
@@ -139,7 +134,7 @@ namespace Rubberduck.AutoComplete.Service
             if (line.Length == 0)
             {
                 // nothing to delete at caret position... bail out.
-                return null;
+                return false;
             }
 
             var previous = Math.Max(0, position.StartColumn - 1);
@@ -155,24 +150,25 @@ namespace Rubberduck.AutoComplete.Service
                 if (line.Length == 2)
                 {
                     // entire line consists in the self-closing pair itself.
-                    return new CodeString(string.Empty, default, Selection.Empty.ShiftRight());
+                    result = new CodeString(string.Empty, default, Selection.Empty.ShiftRight());
                 }
 
                 // simple case; caret is between the opening and closing chars - remove both.
                 lines[original.CaretPosition.StartLine] = line.Remove(previous, 2);
-                return new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
+                result = new CodeString(string.Join("\r\n", lines), original.CaretPosition.ShiftLeft(), original.SnippetPosition);
             }
 
             if (previous < line.Length - 1 && previousChar == pair.OpeningChar)
             {
-                return DeleteMatchingTokensMultiline(pair, original);
+                return DeleteMatchingTokensMultiline(pair, original, out result);
             }
 
-            return null;
+            return result != null;
         }
 
-        private CodeString DeleteMatchingTokensMultiline(SelfClosingPair pair, CodeString original)
+        private bool DeleteMatchingTokensMultiline(SelfClosingPair pair, CodeString original, out CodeString result)
         {
+            result = null;
             var position = original.CaretPosition;
             var lines = original.Lines;
             var line = lines[original.CaretPosition.StartLine];
@@ -186,7 +182,7 @@ namespace Rubberduck.AutoComplete.Service
             if (closingTokenPosition == default)
             {
                 // could not locate the closing token... bail out.
-                return null;
+                return false;
             }
 
             var closingLine = lines[closingTokenPosition.EndLine].Remove(closingTokenPosition.StartColumn, 1);
@@ -252,8 +248,9 @@ namespace Rubberduck.AutoComplete.Service
             // remove any dangling empty lines...
             lines = lines.Where((x, i) => i <= position.StartLine || !string.IsNullOrWhiteSpace(x)).ToArray();
 
-            return new CodeString(string.Join("\r\n", lines), finalCaretPosition,
+            result = new CodeString(string.Join("\r\n", lines), finalCaretPosition,
                 new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1));
+            return true;
         }
 
         private static Selection HandleBackspaceContinuations(string[] nonEmptyLines, Selection finalCaretPosition)

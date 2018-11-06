@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
@@ -9,22 +10,23 @@ namespace Rubberduck.AutoComplete.Service
 {
     public class SelfClosingPairHandler : AutoCompleteHandlerBase
     {
-        private readonly IDictionary<char, SelfClosingPair> _selfClosingPairs;
+        private readonly IReadOnlyList<SelfClosingPair> _selfClosingPairs;
+        private readonly IDictionary<char, SelfClosingPair> _scpInputLookup;
         private readonly SelfClosingPairCompletionService _scpService;
 
         public SelfClosingPairHandler(ICodePaneHandler pane, SelfClosingPairCompletionService scpService)
             : base(pane)
         {
-            var pairs = new[]
+            _selfClosingPairs = new[]
             {
                 new SelfClosingPair('(', ')'),
                 new SelfClosingPair('"', '"'),
                 new SelfClosingPair('[', ']'),
                 new SelfClosingPair('{', '}'),
             };
-            _selfClosingPairs = pairs
+            _scpInputLookup = _selfClosingPairs
                 .Select(p => new {Key = p.OpeningChar, Pair = p})
-                .Union(pairs.Where(p => !p.IsSymetric).Select(p => new {Key = p.ClosingChar, Pair = p}))
+                .Union(_selfClosingPairs.Where(p => !p.IsSymetric).Select(p => new {Key = p.ClosingChar, Pair = p}))
                 .ToDictionary(p => p.Key, p => p.Pair);
 
             _scpService = scpService;
@@ -33,15 +35,34 @@ namespace Rubberduck.AutoComplete.Service
         public override bool Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings, out CodeString result)
         {
             result = null;
-            if (!_selfClosingPairs.TryGetValue(e.Character, out var pair) && e.Character != '\b')
+            if (!_scpInputLookup.TryGetValue(e.Character, out var pair) && e.Character != '\b')
             {
                 return false;
             }
 
             var original = CodePaneHandler.GetCurrentLogicalLine(e.Module);
-            if (!HandleInternal(e, original, pair, out result))
+
+            if (pair != null)
             {
-                return false;
+                if (!HandleInternal(e, original, pair, out result))
+                {
+                    return false;
+                }
+            }
+            else if (e.Character == '\b')
+            {
+                foreach (var scp in _selfClosingPairs)
+                {
+                    if (HandleInternal(e, original, scp, out result))
+                    {
+                        break;
+                    }
+                }
+
+                if (result == null)
+                {
+                    return false;
+                }
             }
 
             var snippetPosition = new Selection(result.SnippetPosition.StartLine, 1, result.SnippetPosition.EndLine, 1);
@@ -87,7 +108,8 @@ namespace Rubberduck.AutoComplete.Service
                 e.Character == pair.OpeningChar &&
                 !result.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}"))
             {
-                // VBE eats it. just bail out.
+                // VBE eats it. bail out but still swallow the keypress, since we've already re-prettified.
+                e.Handled = true;
                 result = null;
                 return false;
             }
