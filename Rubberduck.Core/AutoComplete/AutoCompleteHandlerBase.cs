@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using Rubberduck.Parsing.VBA.Extensions;
-using Rubberduck.Settings;
+﻿using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SourceCodeHandling;
@@ -17,6 +14,6 @@ namespace Rubberduck.AutoComplete
 
         protected ICodePaneHandler CodePaneHandler { get; }
 
-        public abstract CodeString Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings);
+        public abstract bool Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings, out CodeString result);
     }
 }

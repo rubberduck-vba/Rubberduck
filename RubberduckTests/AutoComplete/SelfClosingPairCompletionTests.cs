@@ -5,21 +5,34 @@ using Rubberduck.VBEditor;
 
 namespace RubberduckTests.AutoComplete
 {
+
     [TestFixture]
     public class SelfClosingPairCompletionTests
     {
-        private TestCodeString Run(SelfClosingPair pair, CodeString original, char input)
+        private bool Run(SelfClosingPair pair, CodeString original, char input, out TestCodeString testResult)
         {
-            var sut = new SelfClosingPairCompletionService(null);
-            var result = sut.Execute(pair, original, input);
-            return result != null ? new TestCodeString(result) : null;
+            var sut = new SelfClosingPairCompletionService();
+            if (sut.Execute(pair, original, input, out var result))
+            {
+                testResult = new TestCodeString(result);
+                return true;
+            }
+
+            testResult = null;
+            return false;
         }
 
-        private TestCodeString Run(SelfClosingPair pair, CodeString original, Keys input)
+        private bool Run(SelfClosingPair pair, CodeString original, Keys input, out TestCodeString testResult)
         {
-            var sut = new SelfClosingPairCompletionService(null);
-            var result = sut.Execute(pair, original, input);
-            return result != null ? new TestCodeString(result) : null;
+            var sut = new SelfClosingPairCompletionService();
+            if (sut.Execute(pair, original, input, out var result))
+            {
+                testResult = new TestCodeString(result);
+                return true;
+            }
+
+            testResult = null;
+            return false;
         }
 
         [Test]
@@ -30,7 +43,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = MsgBox |".ToCodeString();
             var expected = "foo = MsgBox \"|\"".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -42,7 +55,7 @@ namespace RubberduckTests.AutoComplete
             var original = "MsgBox (|)".ToCodeString();
             var expected = "MsgBox (\"|\")".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -54,7 +67,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = |".ToCodeString();
             var expected = "foo = (|)".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -66,7 +79,7 @@ namespace RubberduckTests.AutoComplete
             var original = @"foo = MsgBox(|)".ToCodeString();
             var expected = @"foo = MsgBox()|".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -78,7 +91,7 @@ namespace RubberduckTests.AutoComplete
             var original = @"foo = MsgBox(""""|)".ToCodeString();
             var expected = @"foo = MsgBox("""")|".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -90,7 +103,7 @@ namespace RubberduckTests.AutoComplete
             var original = @"foo = (|2 + 2)".ToCodeString();
             var expected = @"foo = |2 + 2".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -102,7 +115,7 @@ namespace RubberduckTests.AutoComplete
             var original = @"foo = ""|2 + 2""".ToCodeString();
             var expected = @"foo = |2 + 2".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -114,8 +127,8 @@ namespace RubberduckTests.AutoComplete
             var original = $"{pair.OpeningChar}|{pair.ClosingChar}".ToCodeString();
             var expected = string.Empty;
 
-            var result = Run(pair, original, input);
-            Assert.AreEqual(expected, result?.Code);
+            Assert.IsTrue(Run(pair, original, input, out var result));
+            Assert.AreEqual(expected, result.Code);
         }
 
         [Test]
@@ -125,7 +138,7 @@ namespace RubberduckTests.AutoComplete
             var input = Keys.Back;
             var original = "' _\r\n    (|)".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsFalse(Run(pair, original, input, out var result));
             Assert.IsNull(result);
         }
 
@@ -136,7 +149,7 @@ namespace RubberduckTests.AutoComplete
             var input = pair.ClosingChar;
             var original = "foo = |".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsFalse(Run(pair, original, input, out var result));
             Assert.IsNull(result);
         }
 
@@ -148,7 +161,7 @@ namespace RubberduckTests.AutoComplete
             var original = @"foo = ((|2 + 2) + 42)".ToCodeString();
             var expected = @"foo = (|2 + 2 + 42)".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -160,7 +173,7 @@ namespace RubberduckTests.AutoComplete
             var original = "Call xy(|z)".ToCodeString();
             var expected = "Call xy|z".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -172,7 +185,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = CInt(|z)".ToCodeString();
             var expected = "foo = CInt|z".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -187,7 +200,7 @@ namespace RubberduckTests.AutoComplete
             var expected = @"foo = | _
     (2 + 2) + 42".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -201,7 +214,7 @@ namespace RubberduckTests.AutoComplete
             var expected = @"foo = ""abc"" & _
       | & ""a""".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -217,7 +230,7 @@ namespace RubberduckTests.AutoComplete
             var expected = @"foo = | _
     (2 + 2) + 42".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -229,7 +242,7 @@ namespace RubberduckTests.AutoComplete
             var original = @"foo = MsgBox(|)".ToCodeString();
             var expected = @"foo = MsgBox((|))".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -241,7 +254,7 @@ namespace RubberduckTests.AutoComplete
             var original = @"foo = MsgBox(|)".ToCodeString();
             var expected = @"foo = MsgBox|".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -253,7 +266,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = \"\" & _\r\n      \"\" & _\r\n      \"|\" & _\r\n      \"\"".ToCodeString();
             var expected = "foo = \"\" & _\r\n      \"|\" & _\r\n      \"\"".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -266,7 +279,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = \"\" _\r\n      & \"\" _\r\n      & \"|\" _\r\n      & \"\"".ToCodeString();
             var expected = "foo = \"\" _\r\n      & \"|\" _\r\n      & \"\"".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -278,7 +291,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = \"test\" & _\r\n     \"|\"".ToCodeString();
             var expected = "foo = \"test|\"".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -290,7 +303,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = \"test\" & vbNewLine & _\r\n     \"|\"".ToCodeString();
             var expected = "foo = \"test|\"".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -302,7 +315,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = \"test\" & vbCrLf & _\r\n     \"|\"".ToCodeString();
             var expected = "foo = \"test|\"".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -314,7 +327,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = \"test\" & vbCr & _\r\n     \"|\"".ToCodeString();
             var expected = "foo = \"test|\"".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -326,7 +339,7 @@ namespace RubberduckTests.AutoComplete
             var original = "foo = \"test\" & vbLf & _\r\n     \"|\"".ToCodeString();
             var expected = "foo = \"test|\"".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -338,7 +351,7 @@ namespace RubberduckTests.AutoComplete
             var original = @"    foo = ""|""".ToCodeString();
             var expected = @"    foo = |".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -350,7 +363,7 @@ namespace RubberduckTests.AutoComplete
             var original = @"    |".ToCodeString();
             var expected = @"    ""|""".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsTrue(Run(pair, original, input, out var result));
             Assert.AreEqual(expected, result);
         }
 
@@ -361,7 +374,7 @@ namespace RubberduckTests.AutoComplete
             var input = Keys.A;
             var original = @"MsgBox (|)".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsFalse(Run(pair, original, input, out var result));
             Assert.IsNull(result);
         }
 
@@ -372,8 +385,8 @@ namespace RubberduckTests.AutoComplete
             var input = Keys.A;
             var original = @"MsgBox |".ToCodeString();
 
-            var result = Run(pair, original, input);
-            Assert.AreEqual(result, default);
+            Assert.IsFalse(Run(pair, original, input, out var result));
+            Assert.IsNull(result);
         }
 
         [Test]
@@ -388,7 +401,7 @@ namespace RubberduckTests.AutoComplete
             var input = pair.ClosingChar;
             var original = "MsgBox (|".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsFalse(Run(pair, original, input, out var result));
             Assert.IsNull(result);
         }
 
@@ -404,7 +417,7 @@ namespace RubberduckTests.AutoComplete
             var input = pair.ClosingChar;
             var original = "MsgBox \"|".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsFalse(Run(pair, original, input, out var result));
             Assert.IsNull(result);
         }
 
@@ -420,7 +433,7 @@ namespace RubberduckTests.AutoComplete
             var input = pair.ClosingChar;
             var original = "MsgBox \"foo|".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsFalse(Run(pair, original, input, out var result));
             Assert.IsNull(result);
         }
 
@@ -436,7 +449,7 @@ namespace RubberduckTests.AutoComplete
             var input = pair.OpeningChar;
             var original = "MsgBox \"foo|\"".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsFalse(Run(pair, original, input, out var result));
             Assert.IsNull(result);
         }
 
@@ -452,7 +465,7 @@ namespace RubberduckTests.AutoComplete
             var input = pair.OpeningChar;
             var original = "MsgBox \"foo|".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsFalse(Run(pair, original, input, out var result));
             Assert.IsNull(result);
         }
 
@@ -468,8 +481,20 @@ namespace RubberduckTests.AutoComplete
             var input = pair.ClosingChar;
             var original = "\"|".ToCodeString();
 
-            var result = Run(pair, original, input);
+            Assert.IsFalse(Run(pair, original, input, out var result));
             Assert.IsNull(result);
+        }
+
+        [Test]
+        public void GivenOpeningCharInsidePair_ReturnsNestedPair()
+        {
+            var pair = new SelfClosingPair('(',')');
+            var input = pair.OpeningChar;
+            var original = "(|)".ToCodeString();
+            var expected = "((|))".ToCodeString();
+
+            Assert.IsTrue(Run(pair, original, input, out var result));
+            Assert.AreEqual(expected, result);
         }
     }
 }
