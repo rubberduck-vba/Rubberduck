@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.WindowsApi;
 namespace Rubberduck.VBEditor.Events
 {
     // ReSharper disable once InconsistentNaming
-    public static class VBENativeServices
+    public static class VbeNativeServices
     {
         private static User32.WinEventProc _eventProc;
         private static IntPtr _eventHandle;

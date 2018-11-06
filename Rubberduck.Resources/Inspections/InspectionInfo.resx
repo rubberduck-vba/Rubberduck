@@ -349,4 +349,10 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>An assignment is immediately overridden by another assignment or is never referenced.</value>
   </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>A class module that contains members with underscores cannot be implemented by other classes. The underscore is used as a separator between the interface/object name and the implemented member name: having an underscore in the member name confuses the compiler, which then refuses to compile the project. Avoid underscores in public member names by following a 'PascalCase' naming convention.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>A procedure that returns an object may return 'Nothing'. That will cause a runtime error 91 - "Object variable or With block variable not set" on subsequent member access. Perform an 'Is Nothing' check after the 'Set' assignment to guard against runtime errors.</value>
+  </data>
 </root>

@@ -5,15 +5,12 @@ namespace Rubberduck.UnitTesting.Fakes
 {
     internal class Date : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcGetDateVar");
-
         public Date()
         {
-            InjectDelegate(new DateDelegate(DateCallback), ProcessAddress);
-        }
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcGetDateVar");
 
-        [DllImport(TargetLibrary, SetLastError = true)]
-        private static extern void rtcGetDateVar(out object retVal);
+            InjectDelegate(new DateDelegate(DateCallback), processAddress);
+        }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         private delegate void DateDelegate(IntPtr retVal);
@@ -28,7 +25,7 @@ namespace Rubberduck.UnitTesting.Fakes
             if (PassThrough)
             {
                 object result;
-                rtcGetDateVar(out result);
+                VbeProvider.VbeRuntime.GetDateVar(out result);
                 Marshal.GetNativeVariantForObject(result, retVal);
                 return;
             }

@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IMessageBox _messageBox;
 
         public RenameDeclarationQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
-            : base(typeof(HungarianNotationInspection), typeof(UseMeaningfulNameInspection), typeof(DefaultProjectNameInspection))
+            : base(typeof(HungarianNotationInspection), typeof(UseMeaningfulNameInspection), typeof(DefaultProjectNameInspection), typeof(UnderscoreInPublicClassModuleMemberInspection))
         {
             _vbe = vbe;
             _state = state;
