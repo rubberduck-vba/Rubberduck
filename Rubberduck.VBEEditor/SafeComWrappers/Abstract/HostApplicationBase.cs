@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
@@ -7,15 +8,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     public abstract class HostApplicationBase<TApplication> : SafeComWrapper<TApplication>, IHostApplication
         where TApplication : class
     {
-        protected HostApplicationBase(string applicationName)
-        :base(ApplicationFromComReflection(applicationName))
-        {
-            ApplicationName = applicationName;
-        }
+        protected readonly IVBE Vbe;
 
-        protected HostApplicationBase(IVBE vbe, string applicationName)
-        :base(ApplicationFromVbe(vbe, applicationName))
+        protected HostApplicationBase(IVBE vbe, string applicationName, bool useComReflection = false)
+            : base(useComReflection
+                ? ApplicationFromComReflection(applicationName)
+                : ApplicationFromVbe(vbe, applicationName))
         {
+            Vbe = vbe;
             ApplicationName = applicationName;
         }
 
@@ -29,20 +29,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             catch (COMException exception)
             {
                 _logger.Error(exception, $"Unexpected COM exception while acquiring the host application object for application {applicationName} via COM reflection.");
-                application = null; // We currently really only use the name anyway.
+                application = null; 
             }
             catch (InvalidCastException exception)
             {
                 //TODO: Find out why this ever happens.
                 _logger.Error(exception, $"Unable to cast the host application object for application {applicationName} acquired via COM reflection to its PIA type.");
-                application = null; //We currently really only use the name anyway.
+                application = null; 
             }
             catch (Exception exception)
             {
                 //note: We catch all exceptions because we currently really do not need application object and there can be exceptions for unexpected system setups.
                 _logger.Error(exception, $"Unexpected exception while acquiring the host application object for application {applicationName} from a document module.");
-                application = null; //We currently really only use the name anyway.
+                application = null; 
             }
+
             return application;
         }
 
@@ -67,18 +68,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             catch (COMException exception)
             {
                 _logger.Error(exception, $"Unexpected COM exception while acquiring the host application object for application {applicationName} from a document module.");
-                application = null; // We currently really only use the name anyway.
+                application = null;
             }
             catch (InvalidCastException exception)
             {
                 _logger.Error(exception, $"Unable to cast the host application object for application {applicationName} acquiered from a document module to its PIA type.");
-                application = null; //We currently really only use the name anyway.
+                application = null;
             }
             catch (Exception exception)
             {
                 //note: We catch all exceptions because we currently really do not need application object and there can be exceptions for unexpected system setups.
                 _logger.Error(exception, $"Unexpected exception while acquiring the host application object for application {applicationName} from a document module.");
-                application = null; //We currently really only use the name anyway.
+                application = null;
             }
             return application;
         }
@@ -88,49 +89,40 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             using (var projects = vbe.VBProjects)
             {
                 foreach (var project in projects)
+                using (project)
                 {
-                    try
+                    if (project.Protection == ProjectProtection.Locked)
                     {
-                        if (project.Protection == ProjectProtection.Locked)
+                        continue;
+                    }
+
+                    using (var components = project.VBComponents)
+                    {
+                        foreach (var component in components)
+                        using (component)
                         {
-                            continue;
-                        }
-                        using (var components = project.VBComponents)
-                        {
-                            foreach (var component in components)
+                            if (component.Type != ComponentType.Document)
                             {
-                                try
+                                continue;
+                            }
+
+                            using (var properties = component.Properties)
+                            {
+                                if (properties.Count <= 1)
                                 {
-                                    if (component.Type != ComponentType.Document)
-                                    {
-                                        continue;
-                                    }
-                                    using (var properties = component.Properties)
-                                    {
-                                        if (properties.Count <= 1)
-                                        {
-                                            continue;
-                                        }
-                                        foreach (var property in properties)
-                                        {
-                                            if (property.Name == "Application")
-                                            {
-                                                return property;
-                                            }
-                                            property.Dispose();
-                                        }
-                                    }
+                                    continue;
                                 }
-                                finally
+
+                                foreach (var property in properties)
+                                using(property)
                                 {
-                                    component.Dispose();
+                                    if (property.Name == "Application")
+                                    {
+                                        return property;
+                                    }
                                 }
                             }
                         }
-                    }
-                    finally
-                    {
-                        project?.Dispose();
                     }
                 }
                 return null;
@@ -141,11 +133,88 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 
         public string ApplicationName { get; }
 
-        public abstract void Run(dynamic declaration);
+        private const string ComponentName = "VBIDE.VBComponent";
 
-        public virtual object Run(string name, params object[] args)
+        public virtual IEnumerable<HostDocument> GetDocuments()
         {
+            var result = new List<HostDocument>();
+
+            foreach (var document in DocumentComponents())
+            {
+                var moduleName = new QualifiedModuleName(document);
+                var name = GetName(document);
+                
+                result.Add(new HostDocument(moduleName, name, ComponentName, DocumentState.DesignView, null));
+            }
+            return result;
+        }
+
+        public virtual HostDocument GetDocument(QualifiedModuleName moduleName)
+        {
+            using (var projects = Vbe.VBProjects)
+            {
+                foreach (var project in projects)
+                using(project)
+                {
+                    if (moduleName.ProjectName != project.Name || moduleName.ProjectId != project.HelpFile)
+                    {
+                        continue;
+                    }
+
+                    using (var components = project.VBComponents)
+                    using (var component = components[moduleName.ComponentName])
+                    {
+                        var name = GetName(component);
+                        return new HostDocument(moduleName, name, ComponentName, DocumentState.DesignView, null);
+                    }
+                }
+            }
+
             return null;
+        }
+
+        private static string GetName(IVBComponent component)
+        {
+            var name = string.Empty;
+            try
+            {
+                using (var properties = component.Properties)
+                using (var nameProperty = properties["Name"])
+                {
+                    name = nameProperty?.Value.ToString() ?? string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Trace(ex, "Handled an expection with accessing VBComponent.Properties.");
+            }
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                name = component.Name;
+            }
+
+            return name;
+        }
+
+        protected IEnumerable<IVBComponent> DocumentComponents()
+        {
+            using (var projects = Vbe.VBProjects)
+            {
+                foreach (var project in projects)
+                using (project)
+                using (var components = project.VBComponents)
+                {
+                    foreach (var component in components)
+                    using (component)
+                    {
+                        if (component.Type == ComponentType.Document)
+                        {
+                            yield return component;
+                        }
+                    }
+                }
+            }
         }
 
         public override bool Equals(ISafeComWrapper<TApplication> other)

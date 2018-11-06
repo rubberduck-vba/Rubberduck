@@ -1,29 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
     public interface IHostApplication : IDisposable
     {
-        /// <summary>
-        /// Runs VBA procedure specified by name. WARNING: The parameter is declared as dynamic to prevent circular referencing.
-        /// This should ONLY be passed a Declaration object.
-        /// </summary>
-        /// <param name="declaration">The Declaration object for the method to be executed.</param>
-        [Obsolete("Use ExecuteCode in TypeLibAPI instead", true)]
-        void Run(dynamic declaration);
-
-        /// <summary>
-        /// Executes a VBA function by name, with specified parameters, and returns a result.
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        /// <remarks>
-        /// May not be available in all host applications.
-        /// </remarks>
-        [Obsolete("Use ExecuteCode in TypeLibAPI instead", true)]
-        object Run(string name, params object[] args);
-
         /// <summary>
         /// Gets the name of the application.
         /// </summary>
@@ -32,5 +13,24 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         /// cannot be used outside assembly boundaries because the type is generic.
         /// </remarks>
         string ApplicationName { get; }
+
+        /// <summary>
+        /// Gets data for the host-specific documents not otherwise exposed via VBIDE API
+        /// </summary>
+        /// <remarks>
+        /// Not all properties are available via VBIDE API. While some properties may be
+        /// accessed via the <see cref="IVBComponent.Properties"/>, there are problems
+        /// with using those properties when the document is not in a design mode. For
+        /// that reason, it's better to get the data using host's object model instead.
+        /// </remarks>
+        IEnumerable<HostDocument> GetDocuments();
+
+        /// <summary>
+        /// Gets data for a host-specific document not otherwise exposed via VBIDE API
+        /// </summary>
+        /// <param name="moduleName"><see cref="QualifiedModuleName"/> representing a VBComponent object</param>
+        /// <returns><see cref="HostDocument"/> data</returns>
+        /// <inheritdoc cref="GetDocuments"/>
+        HostDocument GetDocument(QualifiedModuleName moduleName);
     }
 }
