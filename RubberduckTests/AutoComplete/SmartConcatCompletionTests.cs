@@ -79,8 +79,12 @@ namespace RubberduckTests.AutoComplete
             var sut = InitializeSut(original, out var module, out var settings);
             var args = new AutoCompleteEventArgs(module.Object, input, isCtrlDown, isDeleteKey);
 
-            var result = sut.Handle(args, settings);
-            return result == null ? null : new TestCodeString(result);
+            if (sut.Handle(args, settings, out var result))
+            {
+                return new TestCodeString(result);
+            }
+
+            return null;
         }
 
         private static SmartConcatenationHandler InitializeSut(TestCodeString code, out Mock<ICodeModule> module, out AutoCompleteSettings settings)

@@ -1,44 +1,10 @@
 ﻿using NUnit.Framework;
 using System.Windows.Forms;
-using Moq;
 using Rubberduck.AutoComplete.Service;
-using Rubberduck.Settings;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SourceCodeHandling;
-using Rubberduck.VBEditor.Events;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.AutoComplete
 {
-    [TestFixture]
-    public class SelfClosingPairHandlerTests
-    {
-        private bool Run(CodeString original, CodeString prettified, CodeString rePrettified, out CodeString testResult, char input, bool isControlKeyDown = false, bool isDeleteKey = false)
-        {
-            var module = new Mock<ICodeModule>();
-            var handler = new Mock<ICodePaneHandler>();
-            handler.Setup(e => e.GetCurrentLogicalLine(module.Object)).Returns(original);
-            handler.SetupSequence(e => e.Prettify(module.Object, original))
-                .Returns(prettified)
-                .Returns(rePrettified);
-
-            var service = new Mock<SelfClosingPairCompletionService>(new Mock<IShowIntelliSenseCommand>().Object);
-            var settings = AutoCompleteSettings.AllEnabled;
-
-            var args = new AutoCompleteEventArgs(module.Object, input, isControlKeyDown, isDeleteKey);
-            var sut = new SelfClosingPairHandler(handler.Object, service.Object);
-
-            var result = sut.Handle(args, settings);
-            if (result != null)
-            {
-                testResult = new TestCodeString(result);
-                return true;
-            }
-
-            testResult = null;
-            return false;
-        }
-    }
 
     [TestFixture]
     public class SelfClosingPairCompletionTests

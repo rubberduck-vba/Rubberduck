@@ -135,11 +135,13 @@ namespace Rubberduck.AutoComplete.Service
 
             foreach (var handler in _handlers)
             {
-                var result = handler.Handle(e, _settings);
-                if (result != null && e.Handled)
+                if (!handler.Handle(e, _settings, out _))
                 {
-                    return;
+                    continue;
                 }
+
+                e.Handled = true;
+                return;
             }
         }
 

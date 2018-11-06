@@ -30,31 +30,32 @@ namespace Rubberduck.AutoComplete.Service
             _scpService = scpService;
         }
 
-        public override CodeString Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings)
+        public override bool Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings, out CodeString result)
         {
+            result = null;
             if (!_selfClosingPairs.TryGetValue(e.Character, out var pair) && e.Character != '\b')
             {
-                return null;
+                return false;
             }
 
             var original = CodePaneHandler.GetCurrentLogicalLine(e.Module);
-            if (!HandleInternal(e, original, pair, out var result))
+            if (!HandleInternal(e, original, pair, out result))
             {
-                return null;
+                return false;
             }
 
             var snippetPosition = new Selection(result.SnippetPosition.StartLine, 1, result.SnippetPosition.EndLine, 1);
             result = new CodeString(result.Code, result.CaretPosition, snippetPosition);
 
             e.Handled = true;
-            return result;
+            return true;
         }
 
         private bool HandleInternal(AutoCompleteEventArgs e, CodeString original, SelfClosingPair pair, out CodeString result)
         {
             var isPresent = original.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}");
 
-            if (!ExecuteSelfClosingPair(e, original, pair, out result))
+            if (!_scpService.Execute(pair, original, e.Character, out result))
             {
                 return false;
             }
@@ -67,7 +68,7 @@ namespace Rubberduck.AutoComplete.Service
                 prettified = original; // pretend this didn't happen. note: probably breaks if original has extra whitespace.
             }
 
-            if (!ExecuteSelfClosingPair(e, prettified, pair, out result))
+            if (!_scpService.Execute(pair, prettified, e.Character, out result))
             {
                 return false;
             }
@@ -90,11 +91,6 @@ namespace Rubberduck.AutoComplete.Service
             }
 
             return true;
-        }
-
-        private bool ExecuteSelfClosingPair(AutoCompleteEventArgs e, CodeString original, SelfClosingPair pair, out CodeString result)
-        {
-            return _scpService.Execute(pair, original, e.Character, out result);
         }
     }
 }
