@@ -7,8 +7,15 @@ hosts:
 # enforce crlf fixing
 init:
   git config --global core.autocrlf true
-# we don't need history
-shallow_clone: true
+
+# history limited to 15 commits, since we ran into trouble with a limit of 3
+# the limit can be rather 
+clone_depth: 15
+# explicitly do not shallow-clone. 
+# Line-Endings are wrong on github, because of CRLF fixing
+# shallow-clone would download a zip, which doesn't fix the line-endings for unit-tests
+shallow_clone: false
+
 # ignore a certain subset of files when evaluating build-changes
 skip_commits:
   files:
