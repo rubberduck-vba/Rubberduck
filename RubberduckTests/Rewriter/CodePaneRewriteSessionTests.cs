@@ -82,15 +82,10 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriter")]
-        public void ChecksOutCodePaneRewriters()
+        public void TargetsCodePaneCode()
         {
-            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider);
-            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
-
-            rewriteSession.CheckOutModuleRewriter(module);
-
-            var (qmn, codeKind, mockRewriter) = mockRewriterProvider.RequestedRewriters().Single();
-            Assert.AreEqual(CodeKind.CodePaneCode, codeKind);
+            var rewriteSession = RewriteSession(session => true, out _);
+            Assert.AreEqual(CodeKind.CodePaneCode, rewriteSession.TargetCodeKind);
         }
 
         protected override IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider)

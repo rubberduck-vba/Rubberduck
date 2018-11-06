@@ -168,6 +168,20 @@ namespace RubberduckTests.Rewriter
             mockRewriter.Verify(m => m.Rewrite(), Times.Once);
         }
 
+        [Test]
+        [Category("Rewriter")]
+        public void ChecksOutRewritersForTheTargetCodeKind()
+        {
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+
+            var expectedCodeKind = rewriteSession.TargetCodeKind;
+            var (qmn, actualCodeKind, mockRewriter) = mockRewriterProvider.RequestedRewriters().Single();
+            Assert.AreEqual(expectedCodeKind, actualCodeKind);
+        }
+
         protected IRewriteSession RewriteSession(Func<IRewriteSession, bool> rewritingAllowed,
             out MockRewriterProvider mockProvider)
         {

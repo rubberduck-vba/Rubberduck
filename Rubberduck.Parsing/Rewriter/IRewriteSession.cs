@@ -1,4 +1,5 @@
-﻿using Rubberduck.VBEditor;
+﻿using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Rewriter
 {
@@ -8,5 +9,6 @@ namespace Rubberduck.Parsing.Rewriter
         void Rewrite();
         bool IsInvalidated { get; }
         void Invalidate();
+        CodeKind TargetCodeKind { get; }
     }
 }

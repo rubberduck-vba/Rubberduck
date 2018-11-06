@@ -1,5 +1,6 @@
 ﻿using System;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Rewriter
@@ -14,6 +15,8 @@ namespace Rubberduck.Parsing.Rewriter
         {
             _parseManager = parseManager;
         }
+
+        public override CodeKind TargetCodeKind => CodeKind.AttributesCode;
 
         protected override IExecutableModuleRewriter ModuleRewriter(QualifiedModuleName module)
         {

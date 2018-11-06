@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Rewriter
@@ -16,6 +17,7 @@ namespace Rubberduck.Parsing.Rewriter
         protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
         private readonly object _invalidationLockObject = new object();
 
+        public abstract CodeKind TargetCodeKind { get; }
 
         protected RewriteSessionBase(IRewriterProvider rewriterProvider, Func<IRewriteSession, bool> rewritingAllowed)
         {

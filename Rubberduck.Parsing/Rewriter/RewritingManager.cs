@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.Rewriter
 {
@@ -56,12 +57,12 @@ namespace Rubberduck.Parsing.Rewriter
 
         private bool IsCurrentlyActive(IRewriteSession rewriteSession)
         {
-            switch (rewriteSession)
+            switch (rewriteSession.TargetCodeKind)
             {
-                case CodePaneRewriteSession codePaneSession:
-                    return _activeCodePaneSessions.Contains(codePaneSession);
-                case AttributesRewriteSession attributeSession:
-                    return _activeAttributesSessions.Contains(attributeSession);
+                case CodeKind.CodePaneCode:
+                    return _activeCodePaneSessions.Contains(rewriteSession);
+                case CodeKind.AttributesCode:
+                    return _activeAttributesSessions.Contains(rewriteSession);
                 default:
                     throw new NotSupportedException(nameof(rewriteSession));
             }
