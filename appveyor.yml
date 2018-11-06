@@ -7,21 +7,18 @@ hosts:
 # enforce crlf fixing
 init:
   git config --global core.autocrlf true
-# restrict how much history we try to grab
-clone_depth: 3
+# we don't need history
+shallow_clone: true
 # ignore a certain subset of files when evaluating build-changes
 skip_commits:
   files:
   - docs/*
   - '**/*.md'
-  # intermediately enable yml changes to trigger builds, because codecov changes only changes the codecov yml ...
-#  - '**/*.yml'
   - license
   - License.rtf
 branches:
   only:
   - master
-  - staging
   - next
 skip_tags: true
 
@@ -44,6 +41,7 @@ dotnet_csproj:
   file: 'RubberduckBaseProject.csproj' # ;*\Rubberduck.Core.csproj'
   version: '{version}'
   assembly_version: '{version}'
+  # patching fails if we try to patch properties we didn't define
   #file_version: '{version}'
   #informational_version: '{version}'
 
@@ -61,10 +59,10 @@ build:
 # Otherwise we might run tests against artifacts that do not exist
 test_script:
   # we use -returntargetcode to fail the build if tests fail
-  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
+  - cmd: OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+  - cmd: OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
   # when using test_script, after_test seems to not be executed
-  - codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
+  - cmd: codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
 
 for:
   - branches:
