@@ -261,6 +261,7 @@
     &lt;CodeInspection Name="IsMissingOnInappropriateArgumentInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="IsMissingWithNonArgumentParameterInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="AssignmentNotUsedInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="UnderscoreInPublicClassModuleMemberInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
   &lt;/CodeInspections&gt;
   &lt;WhitelistedIdentifiers /&gt;
   &lt;RunInspectionsOnSuccessfulParse&gt;true&lt;/RunInspectionsOnSuccessfulParse&gt;
