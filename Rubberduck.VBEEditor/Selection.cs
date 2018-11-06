@@ -33,6 +33,9 @@ namespace Rubberduck.VBEditor
         public Selection ShiftLeft(int positions = 1) =>
             new Selection(StartLine, Math.Max(1, StartColumn - positions), EndLine, Math.Max(1, StartColumn - positions));
 
+        public Selection Collapse() =>
+            new Selection(EndLine, EndColumn, EndLine, EndColumn);
+
         public bool IsEmpty()
         {
             return Equals(Empty);

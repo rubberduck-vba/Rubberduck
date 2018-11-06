@@ -7,7 +7,6 @@ namespace Rubberduck.UnitTesting
 {
     internal class StubBase : IStub, IDisposable
     {
-        internal const string TargetLibrary = "vbe7.dll";
         private readonly List<LocalHook> _hooks = new List<LocalHook>();
 
         #region Internal

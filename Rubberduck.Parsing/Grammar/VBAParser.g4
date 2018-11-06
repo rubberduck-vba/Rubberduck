@@ -681,8 +681,7 @@ builtInType :
 ;
 
 // 5.6.13.1 Argument Lists
-argumentList :
-    whiteSpace? (argument? (whiteSpace? COMMA whiteSpace? argument)*)??
+argumentList : whiteSpace? (argument? (whiteSpace? COMMA whiteSpace? argument)*)?? whiteSpace?
 ;
 
 requiredArgument : argument;

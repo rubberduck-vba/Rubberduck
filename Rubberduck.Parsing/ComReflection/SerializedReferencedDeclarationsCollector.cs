@@ -6,16 +6,16 @@ namespace Rubberduck.Parsing.ComReflection
 {
     public class SerializedReferencedDeclarationsCollector : ReferencedDeclarationsCollectorBase
     {
-        private readonly IComProjectSerializationProvider _serializer;
+        private readonly IComProjectDeserializer _deserializer;
 
-        public SerializedReferencedDeclarationsCollector(string serializedDeclarationsPath = null)
+        public SerializedReferencedDeclarationsCollector(IComProjectDeserializer deserializer)
         {
-            _serializer = new XmlComProjectSerializer(serializedDeclarationsPath);
+            _deserializer = deserializer;
         }
 
         public override IReadOnlyCollection<Declaration> CollectedDeclarations(ReferenceInfo reference)
         {
-            if (!_serializer.SerializedVersionExists(reference))
+            if (!_deserializer.SerializedVersionExists(reference))
             {
                 return new List<Declaration>();
             }
@@ -25,7 +25,7 @@ namespace Rubberduck.Parsing.ComReflection
 
         private IReadOnlyCollection<Declaration> LoadDeclarationsFromProvider(ReferenceInfo reference)
         {
-            var type = _serializer.DeserializeProject(reference);
+            var type = _deserializer.DeserializeProject(reference);
             return LoadDeclarationsFromComProject(type); 
         }
     }

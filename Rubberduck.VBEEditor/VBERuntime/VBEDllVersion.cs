@@ -1,6 +1,6 @@
 ﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.VBEditor.VBERuntime
+namespace Rubberduck.VBEditor.VbeRuntime
 {
     public enum DllVersion
     {
@@ -9,7 +9,7 @@ namespace Rubberduck.VBEditor.VBERuntime
         Vbe7
     }
 
-    public static class VBEDllVersion
+    public static class VbeDllVersion
     {
         public static DllVersion GetCurrentVersion(IVBE vbe)
         {

@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Antlr4.Runtime;
 
 namespace Rubberduck.Inspections.CodePathAnalysis
 {
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 case VBAParser.ForEachStmtContext _:
                 case VBAParser.WhileWendStmtContext _:
                 case VBAParser.DoLoopStmtContext _:
-                    node = new LoopNode();
+                    node = new LoopNode(tree);
                     break;
                 case VBAParser.IfStmtContext _:
                 case VBAParser.ElseBlockContext _:
@@ -28,16 +29,16 @@ namespace Rubberduck.Inspections.CodePathAnalysis
                 case VBAParser.SingleLineElseClauseContext _:
                 case VBAParser.CaseClauseContext _:
                 case VBAParser.CaseElseClauseContext _:
-                    node = new BranchNode();
+                    node = new BranchNode(tree);
                     break;
                 case VBAParser.BlockContext _:
-                    node = new BlockNode();
+                    node = new BlockNode(tree);
                     break;
             }
 
             if (declaration.Context == tree)
             {
-                node = new DeclarationNode
+                node = new DeclarationNode(tree)
                 {
                     Declaration = declaration
                 };
@@ -48,14 +49,14 @@ namespace Rubberduck.Inspections.CodePathAnalysis
             {
                 if (reference.IsAssignment)
                 {
-                    node = new AssignmentNode
+                    node = new AssignmentNode(tree)
                     {
                         Reference = reference
                     };
                 }
                 else
                 {
-                    node = new ReferenceNode
+                    node = new ReferenceNode(tree)
                     {
                         Reference = reference
                     };
@@ -64,7 +65,7 @@ namespace Rubberduck.Inspections.CodePathAnalysis
 
             if (node == null)
             {
-                node = new GenericNode();
+                node = new GenericNode(tree);
             }
 
             var children = new List<INode>();

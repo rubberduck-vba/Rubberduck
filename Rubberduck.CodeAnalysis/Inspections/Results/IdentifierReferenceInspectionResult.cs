@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Results
         private static QualifiedMemberName? GetQualifiedMemberName(RubberduckParserState state, IdentifierReference reference)
         {
             var members = state.DeclarationFinder.Members(reference.QualifiedModuleName);
-            return members.SingleOrDefault(m => m.Selection.Contains(reference.Selection))?.QualifiedName;
+            return members.SingleOrDefault(m => reference.Context.IsDescendentOf(m.Context))?.QualifiedName;
         }
     }
 }

@@ -61,182 +61,74 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Close curly braces &apos;{&apos;.
+        ///   Looks up a localized string similar to Block Completion.
         /// </summary>
-        public static string AutoCompleteClosingBraceDescription {
+        public static string BlockCompletion {
             get {
-                return ResourceManager.GetString("AutoCompleteClosingBraceDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close square brackets &apos;[&apos;.
-        /// </summary>
-        public static string AutoCompleteClosingBracketDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteClosingBracketDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close parentheses &apos;(&apos;.
-        /// </summary>
-        public static string AutoCompleteClosingParentheseDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteClosingParentheseDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close string literals &apos;&quot;&apos;.
-        /// </summary>
-        public static string AutoCompleteClosingStringDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteClosingStringDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close &apos;Do [Until|While]...Loop&apos; loop blocks.
-        /// </summary>
-        public static string AutoCompleteDoBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteDoBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close &apos;Enum&apos; blocks.
-        /// </summary>
-        public static string AutoCompleteEnumBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteEnumBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close &apos;For [Each]...Next&apos; loop blocks.
-        /// </summary>
-        public static string AutoCompleteForBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteForBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Override &apos;Function&apos; member block completion.
-        /// </summary>
-        public static string AutoCompleteFunctionBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteFunctionBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close &apos;If&apos; blocks.
-        /// </summary>
-        public static string AutoCompleteIfBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteIfBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Treat &apos;On Error Resume Next...GoTo 0&apos; as a block.
-        /// </summary>
-        public static string AutoCompleteOnErrorResumeNextBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteOnErrorResumeNextBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close precompiler &apos;#If&apos; blocks.
-        /// </summary>
-        public static string AutoCompletePrecompilerIfBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompletePrecompilerIfBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Override &apos;Property&apos; member block completion.
-        /// </summary>
-        public static string AutoCompletePropertyBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompletePropertyBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close &apos;Select&apos; blocks.
-        /// </summary>
-        public static string AutoCompleteSelectBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteSelectBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Override &apos;Sub&apos; member block completion.
-        /// </summary>
-        public static string AutoCompleteSubBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteSubBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close &apos;Type&apos; blocks.
-        /// </summary>
-        public static string AutoCompleteTypeBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteTypeBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close &apos;While...Wend&apos; loop blocks.
-        /// </summary>
-        public static string AutoCompleteWhileBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteWhileBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Close &apos;With&apos; blocks.
-        /// </summary>
-        public static string AutoCompleteWithBlockDescription {
-            get {
-                return ResourceManager.GetString("AutoCompleteWithBlockDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable smart concatenation.
-        /// </summary>
-        public static string EnableSmartConcat {
-            get {
-                return ResourceManager.GetString("EnableSmartConcat", resourceCulture);
+                return ResourceManager.GetString("BlockCompletion", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Autocomplete blocks on ENTER.
         /// </summary>
-        public static string HandleEnterKey {
+        public static string CompleteBlockOnEnter {
             get {
-                return ResourceManager.GetString("HandleEnterKey", resourceCulture);
+                return ResourceManager.GetString("CompleteBlockOnEnter", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Autocomplete blocks on TAB.
         /// </summary>
-        public static string HandleTabKey {
+        public static string CompleteBlockOnTab {
             get {
-                return ResourceManager.GetString("HandleTabKey", resourceCulture);
+                return ResourceManager.GetString("CompleteBlockOnTab", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Concatenate &apos;vbNewLine&apos; on Ctrl+Enter.
+        /// </summary>
+        public static string ConcatVbNewLine {
+            get {
+                return ResourceManager.GetString("ConcatVbNewLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable autocompletion features.
+        /// </summary>
+        public static string EnableAutocompleteLabel {
+            get {
+                return ResourceManager.GetString("EnableAutocompleteLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable block completion.
+        /// </summary>
+        public static string EnableBlockCompletion {
+            get {
+                return ResourceManager.GetString("EnableBlockCompletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable self-closing pairs.
+        /// </summary>
+        public static string EnableSelfClosingPairs {
+            get {
+                return ResourceManager.GetString("EnableSelfClosingPairs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable smart-concatenation.
+        /// </summary>
+        public static string EnableSmartConcat {
+            get {
+                return ResourceManager.GetString("EnableSmartConcat", resourceCulture);
             }
         }
         
@@ -255,6 +147,24 @@ namespace Rubberduck.Resources.Settings {
         public static string PageInstructions {
             get {
                 return ResourceManager.GetString("PageInstructions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Self-Closing Pairs.
+        /// </summary>
+        public static string SelfClosingPairs {
+            get {
+                return ResourceManager.GetString("SelfClosingPairs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smart-Concatenation.
+        /// </summary>
+        public static string SmartConcat {
+            get {
+                return ResourceManager.GetString("SmartConcat", resourceCulture);
             }
         }
     }
