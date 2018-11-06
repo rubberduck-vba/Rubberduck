@@ -200,7 +200,6 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                     Logger.Debug("Removing commandbar.");
                     RemoveChildren();
                     Item.Delete();
-                    Item.Dispose();
                     Item = null;
                     Parent = null;
                 }
