@@ -3,9 +3,9 @@ using Microsoft.Win32;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
-namespace Rubberduck.VBEditor.VBERuntime.Settings
+namespace Rubberduck.VBEditor.VbeRuntime.Settings
 {
-    public class VBESettings : IVBESettings
+    public class VbeSettings : IVbeSettings
     {
         private const string Vbe7SettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\VBA\7.0\Common";
         private const string Vbe6SettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\VBA\6.0\Common";
@@ -14,11 +14,11 @@ namespace Rubberduck.VBEditor.VBERuntime.Settings
         private readonly string _activeRegistryRootPath;
         private readonly string[] _registryRootPaths = { Vbe7SettingPath, Vbe6SettingPath };
 
-        public VBESettings(IVBE vbe, IRegistryWrapper registry)
+        public VbeSettings(IVBE vbe, IRegistryWrapper registry)
         {
             try
             {
-                switch (VBEDllVersion.GetCurrentVersion(vbe))
+                switch (VbeDllVersion.GetCurrentVersion(vbe))
                 {
                     case DllVersion.Vbe6:
                         Version = DllVersion.Vbe6;

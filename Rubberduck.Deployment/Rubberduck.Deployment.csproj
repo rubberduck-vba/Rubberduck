@@ -17,6 +17,7 @@
     <None Include="BuildRegistryScript.ps1" />
     <None Include="Licenses\License.rtf" />
     <None Include="PreInnoSetupConfiguration.ps1" />
+    <Content Include="..\packages\EasyHook.2.7.6684\content\net40\**" CopyToPublishDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj" />
@@ -36,7 +37,19 @@
       <HintPath>OleWoo\olewoo_interop.dll</HintPath>
     </Reference>
   </ItemGroup>
-
+  <Target Name="CopyLinkedContentFiles" BeforeTargets="Build">
+    <Copy SourceFiles="%(Content.Identity)"
+          DestinationFiles="$(OutputPath)\%(Content.Link)"
+          SkipUnchangedFiles="true"
+          OverwriteReadOnlyFiles="true" />
+  </Target>
+  <Target Name="InnoSetupConfig" BeforeTargets="PreBuildEvent">
+      <CreateProperty Value="&amp;  '$(ProjectDir)PreInnoSetupConfiguration.ps1' -WorkingDir  '$(ProjectDir)'">
+      <Output TaskParameter="Value" PropertyName="PowershellCommand" />
+    </CreateProperty>
+    <Exec Command="%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command &quot;$(PowershellCommand)&quot;" ConsoleToMsBuild="true" />
+    <Message Text="Ran InnoSetupConfig" Importance="normal" />
+  </Target>
   <Target Name="Register" AfterTargets="PostBuildEvent">
     <GetFrameworkSdkPath>
       <Output TaskParameter="Path" PropertyName="SdkPath" />
@@ -49,12 +62,5 @@
     </CreateProperty>
     <Exec Command="%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command &quot;$(PowershellCommand)&quot;" ConsoleToMsBuild="true" />
     <Message Text="Ran Registration script" Importance="normal" />
-  </Target>
-  <Target Name="InnoSetupConfig" BeforeTargets="PreBuildEvent">
-      <CreateProperty Value="&amp;  '$(ProjectDir)PreInnoSetupConfiguration.ps1' -WorkingDir  '$(ProjectDir)'">
-      <Output TaskParameter="Value" PropertyName="PowershellCommand" />
-    </CreateProperty>
-    <Exec Command="%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command &quot;$(PowershellCommand)&quot;" ConsoleToMsBuild="true" />
-    <Message Text="Ran InnoSetupConfig" Importance="normal" />
   </Target>
 </Project>

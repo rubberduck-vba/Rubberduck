@@ -5,15 +5,12 @@ namespace Rubberduck.UnitTesting.Fakes
 {
     internal class Time : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcGetTimeVar");
-
         public Time()
         {
-            InjectDelegate(new TimeDelegate(TimeCallback), ProcessAddress);
-        }
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcGetTimeVar");
 
-        [DllImport(TargetLibrary, SetLastError = true)]
-        private static extern void rtcGetTimeVar(out object retVal);
+            InjectDelegate(new TimeDelegate(TimeCallback), processAddress);
+        }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         private delegate void TimeDelegate(IntPtr retVal);
@@ -28,7 +25,7 @@ namespace Rubberduck.UnitTesting.Fakes
             if (PassThrough)
             {
                 object result;
-                rtcGetTimeVar(out result);
+                VbeProvider.VbeRuntime.GetTimeVar(out result);
                 Marshal.GetNativeVariantForObject(result, retVal);
                 return;
             }

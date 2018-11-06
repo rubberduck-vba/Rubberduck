@@ -6,18 +6,15 @@ namespace Rubberduck.UnitTesting
 {
     internal class ChDir : StubBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcChangeDir");
-
         public ChDir()
         {
-            InjectDelegate(new ChDirDelegate(ChDirCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcChangeDir");
+
+            InjectDelegate(new ChDirDelegate(ChDirCallback), processAddress);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         private delegate void ChDirDelegate(IntPtr path);
-
-        [DllImport(TargetLibrary, SetLastError = true)]
-        private static extern void rtcChangeDir(IntPtr path);
 
         public void ChDirCallback(IntPtr path)
         {
@@ -28,7 +25,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("path", pathArg, Tokens.String);
             if (PassThrough)
             {
-                rtcChangeDir(path);
+                VbeProvider.VbeRuntime.ChangeDir(path);
             }
         }
     }

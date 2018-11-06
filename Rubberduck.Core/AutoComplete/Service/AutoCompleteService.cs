@@ -57,8 +57,8 @@ namespace Rubberduck.AutoComplete.Service
 
             if (!_enabled)
             {
-                VBENativeServices.KeyDown += HandleKeyDown;
-                VBENativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
+                VbeNativeServices.KeyDown += HandleKeyDown;
+                VbeNativeServices.IntelliSenseChanged += HandleIntelliSenseChanged;
                 _enabled = true;
             }
         }
@@ -67,8 +67,8 @@ namespace Rubberduck.AutoComplete.Service
         {
             if (_enabled && _initialized)
             {
-                VBENativeServices.KeyDown -= HandleKeyDown;
-                VBENativeServices.IntelliSenseChanged -= HandleIntelliSenseChanged;
+                VbeNativeServices.KeyDown -= HandleKeyDown;
+                VbeNativeServices.IntelliSenseChanged -= HandleIntelliSenseChanged;
                 _enabled = false;
                 _popupShown = false;
             }
