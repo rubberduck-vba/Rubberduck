@@ -349,4 +349,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>An assignment is immediately overridden by another assignment or is never referenced.</value>
   </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>A procedure that returns an object may return 'Nothing'. That will cause a runtime error 91 - "Object variable or With block variable not set" on subsequent member access. Perform an 'Is Nothing' check after the 'Set' assignment to guard against runtime errors.</value>
+  </data>
 </root>
