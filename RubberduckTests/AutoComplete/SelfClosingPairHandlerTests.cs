@@ -62,5 +62,16 @@ namespace RubberduckTests.AutoComplete
             Assert.IsTrue(Run(original, original, input, rePrettified, out var result));
             Assert.IsNotNull(result);
         }
+
+        [Test]
+        public void GivenOpeningParenthesisOnOtherwiseNonEmptyLine_ReturnsFalse()
+        {
+            var input = '(';
+            var original = "foo = DateSerial(Year|)".ToCodeString();
+            var rePrettified = "foo = DateSerial(Year(|))".ToCodeString();
+
+            Assert.IsFalse(Run(original, original, input, rePrettified, out var result));
+            Assert.IsNull(result);
+        }
     }
 }
