@@ -82,7 +82,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
             var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(_targetClass.QualifiedModuleName);
             ImplementMissingMembers(rewriter);
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             if (oldSelection.HasValue)
             {

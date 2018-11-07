@@ -78,7 +78,7 @@ namespace RubberduckTests.PostProcessing
 
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var rewriter = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName);
-                rewriteSession.Rewrite();
+                rewriteSession.TryRewrite();
 
                 Assert.AreEqual(content, rewriter.GetText());
             }

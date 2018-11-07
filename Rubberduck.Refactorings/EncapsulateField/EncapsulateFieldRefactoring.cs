@@ -41,7 +41,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
             AddProperty(rewriteSession);
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
         }
 
         public void Refactor(QualifiedSelection target)

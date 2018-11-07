@@ -112,7 +112,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 InsertNewDeclaration(rewriteSession);
                 RemoveOldDeclaration(rewriteSession);
                 UpdateOtherModules(rewriteSession);
-                rewriteSession.Rewrite();
+                rewriteSession.TryRewrite();
 
                 if (oldSelection.HasValue && !pane.IsWrappingNullReference)
                 {

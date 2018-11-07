@@ -23,14 +23,17 @@ namespace Rubberduck.Parsing.Rewriter
             return RewriterProvider.AttributesModuleRewriter(module);
         }
 
-        protected override void RewriteInternal()
+        protected override bool TryRewriteInternal()
         {
             //The suspension ensures that only one parse gets executed instead of two for each rewritten module.
             var result = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, ExecuteAllRewriters);
             if(result != SuspensionResult.Completed)
             {
                 Logger.Warn($"Rewriting attribute modules did not succeed. suspension result = {result}");
+                return false;
             }
+
+            return true;
         }
 
         private void ExecuteAllRewriters()

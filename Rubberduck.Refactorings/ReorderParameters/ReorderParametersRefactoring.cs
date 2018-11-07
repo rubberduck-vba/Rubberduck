@@ -56,7 +56,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
                 AdjustReferences(_model.TargetDeclaration.References, rewriteSession);
                 AdjustSignatures(rewriteSession);
-                rewriteSession.Rewrite();
+                rewriteSession.TryRewrite();
 
                 if (oldSelection.HasValue && !pane.IsWrappingNullReference)
                 {

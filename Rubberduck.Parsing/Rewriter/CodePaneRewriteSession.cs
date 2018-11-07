@@ -23,13 +23,15 @@ namespace Rubberduck.Parsing.Rewriter
             return RewriterProvider.CodePaneModuleRewriter(module);
         }
 
-        protected override void RewriteInternal()
+        protected override bool TryRewriteInternal()
         {
             foreach (var rewriter in CheckedOutModuleRewriters.Values)
             {
                 rewriter.Rewrite();
             }
             _parseManager.OnParseRequested(this);
+
+            return true;
         }
     }
 }

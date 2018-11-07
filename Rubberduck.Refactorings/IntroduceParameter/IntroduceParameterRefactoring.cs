@@ -104,7 +104,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 UpdateSignature(target, rewriteSession);
                 rewriter.Remove(target);
 
-                rewriteSession.Rewrite();
+                rewriteSession.TryRewrite();
 
                 if (oldSelection.HasValue && !pane.IsWrappingNullReference)
                 {

@@ -86,7 +86,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             rewriter.Remove(target);
             AddField(rewriter, target);
 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             if (oldSelection.HasValue)
             {

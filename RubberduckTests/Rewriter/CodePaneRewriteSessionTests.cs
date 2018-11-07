@@ -25,7 +25,7 @@ namespace RubberduckTests.Rewriter
             rewriteSession.CheckOutModuleRewriter(module);
             rewriteSession.CheckOutModuleRewriter(otherModule);
 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             mockParseManager.Verify(m => m.OnParseRequested(It.IsAny<object>()), Times.Once);
         }
@@ -44,7 +44,7 @@ namespace RubberduckTests.Rewriter
             rewriteSession.Invalidate();
             rewriteSession.CheckOutModuleRewriter(otherModule);
 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             mockParseManager.Verify(m => m.OnParseRequested(It.IsAny<object>()), Times.Never);
         }
@@ -62,7 +62,7 @@ namespace RubberduckTests.Rewriter
             rewriteSession.CheckOutModuleRewriter(module);
             rewriteSession.CheckOutModuleRewriter(otherModule);
 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             mockParseManager.Verify(m => m.OnParseRequested(It.IsAny<object>()), Times.Never);
         }
@@ -75,9 +75,20 @@ namespace RubberduckTests.Rewriter
             mockParseManager.Setup(m => m.OnParseRequested(It.IsAny<object>()));
             var rewriteSession = RewriteSession(mockParseManager.Object, session => true, out _);
 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             mockParseManager.Verify(m => m.OnParseRequested(It.IsAny<object>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void TryRewriteReturnsTrueIfNotInvalidatedAndParsingAllowed()
+        {
+            var rewriteSession = RewriteSession(session => true, out _);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+            rewriteSession.CheckOutModuleRewriter(module);
+            var actual = rewriteSession.TryRewrite();
+            Assert.IsTrue(actual);
         }
 
         [Test]

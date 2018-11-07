@@ -40,11 +40,11 @@ namespace Rubberduck.Parsing.Rewriter
 
         protected abstract IExecutableModuleRewriter ModuleRewriter(QualifiedModuleName module);
 
-        public void Rewrite()
+        public bool TryRewrite()
         {
             if (!CheckedOutModuleRewriters.Any())
             {
-                return;
+                return false;
             }
 
             lock (_invalidationLockObject)
@@ -52,20 +52,20 @@ namespace Rubberduck.Parsing.Rewriter
                 if (_isInvalidated)
                 {
                     Logger.Warn("Tried to execute Rewrite on a RewriteSession that was already invalidated.");
-                    return;
+                    return false;
                 }
             }
 
             if (!_rewritingAllowed(this))
             {
-                Logger.Warn("Tried to execute Rewrite on a RewriteSession when rewriting was no longer allowed.");
-                return;
+                Logger.Debug("Tried to execute Rewrite on a RewriteSession when rewriting was no longer allowed.");
+                return false;
             }
 
-            RewriteInternal();
+            return TryRewriteInternal();
         }
 
-        protected abstract void RewriteInternal();
+        protected abstract bool TryRewriteInternal();
 
         private bool _isInvalidated = false;
         public bool IsInvalidated

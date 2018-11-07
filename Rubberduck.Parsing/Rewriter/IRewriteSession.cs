@@ -6,7 +6,7 @@ namespace Rubberduck.Parsing.Rewriter
     public interface IRewriteSession
     {
         IModuleRewriter CheckOutModuleRewriter(QualifiedModuleName module);
-        void Rewrite();
+        bool TryRewrite();
         bool IsInvalidated { get; }
         void Invalidate();
         CodeKind TargetCodeKind { get; }

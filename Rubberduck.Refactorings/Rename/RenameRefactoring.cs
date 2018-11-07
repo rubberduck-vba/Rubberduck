@@ -103,7 +103,7 @@ namespace Rubberduck.Refactorings.Rename
                 {
                     var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
                     Rename(rewriteSession);
-                    rewriteSession.Rewrite();
+                    rewriteSession.TryRewrite();
                 }
             }
             catch (RuntimeBinderException rbEx)

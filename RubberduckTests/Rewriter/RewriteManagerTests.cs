@@ -59,7 +59,7 @@ namespace RubberduckTests.Rewriter
             rewritingManager.CheckOutCodePaneSession();
             rewritingManager.CheckOutAttributesSession();
 
-            codePaneSession.Rewrite();
+            codePaneSession.TryRewrite();
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions().Concat(mockFactory.RequestedAttributesSessions()))
             {
@@ -77,7 +77,7 @@ namespace RubberduckTests.Rewriter
             rewritingManager.CheckOutCodePaneSession();
             rewritingManager.CheckOutAttributesSession();
 
-            attributesSession.Rewrite();
+            attributesSession.TryRewrite();
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions().Concat(mockFactory.RequestedAttributesSessions()))
             {
@@ -98,7 +98,7 @@ namespace RubberduckTests.Rewriter
             rewritingManager.CheckOutCodePaneSession();
             rewritingManager.CheckOutAttributesSession();
 
-            codePaneSession.Rewrite();
+            codePaneSession.TryRewrite();
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions()
                 .Concat(mockFactory.RequestedAttributesSessions())
@@ -121,7 +121,7 @@ namespace RubberduckTests.Rewriter
             rewritingManager.CheckOutCodePaneSession();
             rewritingManager.CheckOutAttributesSession();
 
-            codePaneSession.Rewrite();
+            codePaneSession.TryRewrite();
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions()
                 .Concat(mockFactory.RequestedAttributesSessions())
@@ -139,12 +139,12 @@ namespace RubberduckTests.Rewriter
             var codePaneSession = rewritingManager.CheckOutCodePaneSession();
             var attributesSession = rewritingManager.CheckOutAttributesSession();
 
-            attributesSession.Rewrite();
+            attributesSession.TryRewrite();
 
             rewritingManager.CheckOutCodePaneSession();
             rewritingManager.CheckOutAttributesSession();
 
-            codePaneSession.Rewrite();
+            codePaneSession.TryRewrite();
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions()
                 .Concat(mockFactory.RequestedAttributesSessions())
@@ -162,12 +162,12 @@ namespace RubberduckTests.Rewriter
             var codePaneSession = rewritingManager.CheckOutCodePaneSession();
             var attributesSession = rewritingManager.CheckOutAttributesSession();
 
-            codePaneSession.Rewrite();
+            codePaneSession.TryRewrite();
 
             rewritingManager.CheckOutCodePaneSession();
             rewritingManager.CheckOutAttributesSession();
 
-            attributesSession.Rewrite();
+            attributesSession.TryRewrite();
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions()
                 .Concat(mockFactory.RequestedAttributesSessions())
@@ -209,7 +209,7 @@ namespace RubberduckTests.Rewriter
         private Mock<IRewriteSession> MockSession(Func<IRewriteSession, bool> rewritingAllowed, CodeKind targetCodeKind)
         {
             var mockSession = new Mock<IRewriteSession>();
-            mockSession.Setup(m => m.Rewrite()).Callback(() => rewritingAllowed.Invoke(mockSession.Object));
+            mockSession.Setup(m => m.TryRewrite()).Callback(() => rewritingAllowed.Invoke(mockSession.Object));
             var isInvalidated = false;
             mockSession.Setup(m => m.IsInvalidated).Returns(() => isInvalidated);
             mockSession.Setup(m => m.Invalidate()).Callback(() => isInvalidated = true);

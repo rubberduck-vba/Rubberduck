@@ -32,6 +32,29 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriter")]
+        public void DoesNotCallRewritingAllowedOnRewriteIfNoRewritersHaveBeenCheckedOut()
+        {
+            var isCalled = false;
+            var rewriteSession = RewriteSession(session =>
+            {
+                isCalled = true;
+                return true;
+            }, out _);
+            rewriteSession.TryRewrite();
+            Assert.IsFalse(isCalled);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void TryRewriteReturnsFalseIfNoRewritersHaveBeenCheckedOut()
+        {
+            var rewriteSession = RewriteSession(session => true, out _);
+            var actual = rewriteSession.TryRewrite();
+            Assert.IsFalse(actual);
+        }
+
+        [Test]
+        [Category("Rewriter")]
         public void CallsRewritingAllowedOnRewriteIfNotInvalidatedAndRewritersHaveBeenCheckedOut()
         {
             var isCalled = false; 
@@ -42,22 +65,8 @@ namespace RubberduckTests.Rewriter
                 }, out _);
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
             rewriteSession.CheckOutModuleRewriter(module);
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
             Assert.IsTrue(isCalled);
-        }
-
-        [Test]
-        [Category("Rewriter")]
-        public void DoesNotCallRewritingAllowedOnRewriteIfNoRewritersHaveBeenCheckedOut()
-        {
-            var isCalled = false;
-            var rewriteSession = RewriteSession(session =>
-            {
-                isCalled = true;
-                return true;
-            }, out _);
-            rewriteSession.Rewrite();
-            Assert.IsFalse(isCalled);
         }
 
         [Test]
@@ -76,7 +85,7 @@ namespace RubberduckTests.Rewriter
             rewriteSession.Invalidate();
             rewriteSession.CheckOutModuleRewriter(otherModule);
 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
             Assert.IsFalse(isCalled);
         }
 
@@ -92,12 +101,24 @@ namespace RubberduckTests.Rewriter
 
             var requestedRewriters = mockRewriterProvider.RequestedRewriters();
 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             foreach (var (qmn, codeKind, mockRewriter) in requestedRewriters)
             {
                 mockRewriter.Verify(m => m.Rewrite(), Times.Once);
             }
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void TryRewriteReturnsFalseIfInvalidated()
+        {
+            var rewriteSession = RewriteSession(session => true, out _);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.Invalidate();
+            var actual = rewriteSession.TryRewrite();
+            Assert.IsFalse(actual);
         }
 
         [Test]
@@ -113,12 +134,23 @@ namespace RubberduckTests.Rewriter
 
             var requestedRewriters = mockRewriterProvider.RequestedRewriters();
 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             foreach (var (qmn, codeKind, mockRewriter) in requestedRewriters)
             {
                 mockRewriter.Verify(m => m.Rewrite(), Times.Never);
             }
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void TryRewriteReturnsFalseIfNotParsingAllowed()
+        {
+            var rewriteSession = RewriteSession(session => false, out _);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+            rewriteSession.CheckOutModuleRewriter(module);
+            var actual = rewriteSession.TryRewrite();
+            Assert.IsFalse(actual);
         }
 
         [Test]
@@ -133,7 +165,7 @@ namespace RubberduckTests.Rewriter
 
             var requestedRewriters = mockRewriterProvider.RequestedRewriters();
 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             foreach (var (qmn, codeKind, mockRewriter) in requestedRewriters)
             {
@@ -163,7 +195,7 @@ namespace RubberduckTests.Rewriter
             rewriteSession.CheckOutModuleRewriter(module);
             var (qmn, codeKind, mockRewriter) = mockRewriterProvider.RequestedRewriters().Single();
             
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
 
             mockRewriter.Verify(m => m.Rewrite(), Times.Once);
         }

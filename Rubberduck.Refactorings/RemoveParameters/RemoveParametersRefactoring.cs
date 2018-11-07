@@ -115,7 +115,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration, rewritingSession);
             AdjustSignatures(rewritingSession);
 
-            rewritingSession.Rewrite();
+            rewritingSession.TryRewrite();
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method, IRewriteSession rewriteSession)

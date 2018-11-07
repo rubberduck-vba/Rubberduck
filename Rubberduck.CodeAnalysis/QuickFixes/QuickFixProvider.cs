@@ -78,7 +78,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
             var rewriteSession = RewriteSession(fix.TargetCodeKind);
             fix.Fix(result, rewriteSession);
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
         }
 
         private IRewriteSession RewriteSession(CodeKind targetCodeKind)
@@ -115,7 +115,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 fix.Fix(result, rewriteSession);
             }
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
         }
 
         public void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -137,7 +137,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 fix.Fix(result, rewriteSession);
             }
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
         }
 
         public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -159,7 +159,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 fix.Fix(result, rewriteSession);
             }
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
         }
 
         public void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -181,7 +181,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 fix.Fix(result, rewriteSession);
             }
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
         }
 
         public bool HasQuickFixes(IInspectionResult inspectionResult)

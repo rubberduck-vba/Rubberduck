@@ -123,7 +123,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             AddInterfaceMembersToClass(rewriter);
 
             //We have to reparse here already, because 
-            rewriteSession.Rewrite();
+            rewriteSession.TryRewrite();
         }
 
         private void AddInterfaceClass(Declaration implementingClass, string interfaceName, string interfaceBody)
