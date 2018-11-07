@@ -305,7 +305,8 @@ namespace Rubberduck.Properties {
   <IsSmartIndenterPrompted>false</IsSmartIndenterPrompted>
   <IsAutoSaveEnabled>false</IsAutoSaveEnabled>
   <AutoSavePeriod>10</AutoSavePeriod>
-  <MinimumLogLevel>6</MinimumLogLevel>
+  <UserEditedLogLevel>false</UserEditedLogLevel>
+  <MinimumLogLevel>0</MinimumLogLevel>
   <EnableExperimentalFeatures />
 </GeneralSettings>")]
         public global::Rubberduck.Settings.GeneralSettings GeneralSettings {
@@ -464,7 +465,7 @@ namespace Rubberduck.Properties {
         public global::Rubberduck.Settings.AutoCompleteSettings AutoCompleteSettings {
             get {
                 return ((global::Rubberduck.Settings.AutoCompleteSettings)(this["AutoCompleteSettings"]));
-    }
-}
+            }
+        }
     }
 }

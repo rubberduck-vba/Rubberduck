@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
   <PropertyGroup>
     <RootNamespace>Rubberduck</RootNamespace>
     <AssemblyName>Rubberduck.Core</AssemblyName>
@@ -81,55 +81,4 @@
       <Version>2.0.20525</Version>
     </PackageReference>
   </ItemGroup>
-  
-  <!-- BEGIN WINDOWS FORMS WORKAROUND SECTION -->
-  <ItemGroup>
-    <Compile Update="**\*Window.cs" SubType="Form" />
-    <Compile Update="**\*Dialog.cs" SubType="Form" />
-    <Compile Update="**\SettingsForm.cs" SubType="Form" />
-    <Compile Update="**\SimpleListControl.cs" SubType="Form" />
-    <Compile Update="**\Splash.cs" SubType="Form" />
-    <Compile Update="**\*.Designer.cs">
-      <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).cs</DependentUpon>
-    </Compile>
-    <EmbeddedResource Update="UI\**\*.resx">
-      <DependentUpon>%(Filename).cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <!-- END WINDOWS FORMS WORKAROUND SECTION -->
-
-  <!--BEGIN XAML WORKAROUND SECTION -->
-  <ItemGroup>
-    <Page Include="**\*.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Compile Update="**\*.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <!-- Resources -->
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-      <AutoGen>true</AutoGen>
-      <DesignTime>true</DesignTime>
-    </Compile>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <!-- Settings -->
-    <Compile Update="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <!-- END XAML WORKAROUND SECTION -->
-
 </Project>
