@@ -99,7 +99,7 @@ for:
 # Create Installers for 
 after_test:
   - cmd: iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
-  - cmd: move %INSTALLER_DIR%\Rubberduck.Setup.exe %INSTALLER_DIR%\%INSTALLER_NAME$
+  - cmd: move %INSTALLER_DIR%\Rubberduck.Setup.exe %INSTALLER_DIR%\%INSTALLER_NAME%
     
 # grab the installers we produce and upload them to github :)
 artifacts:
