@@ -27,6 +27,18 @@ namespace Rubberduck.Settings
     [XmlType(AnonymousType = true)]
     public class AutoCompleteSettings : IAutoCompleteSettings, IEquatable<AutoCompleteSettings>
     {
+        public static AutoCompleteSettings AllEnabled =>
+            new AutoCompleteSettings
+            {
+                IsEnabled = true,
+                BlockCompletion =
+                    new BlockCompletionSettings {IsEnabled = true, CompleteOnEnter = true, CompleteOnTab = true},
+                SmartConcat =
+                    new SmartConcatSettings {IsEnabled = true, ConcatVbNewLineModifier = ModifierKeySetting.CtrlKey},
+                SelfClosingPairs = 
+                    new SelfClosingPairSettings {IsEnabled = true}
+            };
+
         public AutoCompleteSettings()
         {
             SmartConcat = new SmartConcatSettings();

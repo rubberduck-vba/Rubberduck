@@ -6,7 +6,7 @@ It's an add-in for the VBA IDE, the glorious *Visual Basic Editor* (VBE) - which
 
 Rubberduck wants to help its users write better, cleaner, maintainable code. The many **code inspections** and **refactoring tools** help harmlessly making changes to the code, and **unit testing** helps writing a *safety net* that makes it easy to know exactly what broke when you made that *small little harmless modification*.
 
-Rubberduck wants to bring VBA into the 21st century, and wants to see more open-source VBA repositories on [GitHub](https://github.com/) - VBA code and **source control** don't traditionally exactly work hand in hand; unless you've automated it, exporting each module one by one to your local repository, fetching the remote changes, re-importing every module one by one back into the project, ...is *a little bit* tedious. Rubberduck reduces this tedium by allowing you to export all modules from your probject to wherever you have your source control set up.
+Rubberduck wants to bring VBA into the 21st century, and wants to see more open-source VBA repositories on [GitHub](https://github.com/) - VBA code and **source control** don't traditionally exactly work hand in hand; unless you've automated it, exporting each module one by one to your local repository, fetching the remote changes, re-importing every module one by one back into the project, ...is *a little bit* tedious. Rubberduck reduces this tedium by allowing you to export all modules from your project to wherever you have your source control set up.
 
 ---
 
