@@ -7,7 +7,6 @@
     <ProjectGuid>{1B84B387-F7C4-4876-9BDF-C644C365359A}</ProjectGuid>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
-
   <ItemGroup>
     <Resource Include="**\*.png" />
     <Resource Include="**\*.bmp" />
