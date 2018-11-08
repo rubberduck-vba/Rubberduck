@@ -112,7 +112,7 @@ deploy:
     description: AppVeyor build on [master] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: $(installer_dir)\$(installer_name)
+    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version).exe
     draft: true
     prerelease: false
     on:
@@ -123,7 +123,7 @@ deploy:
     description: AppVeyor build on [next] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: $(installer_dir)\$(installer_name)
+    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
     draft: false
     prerelease: true
     on:
