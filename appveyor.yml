@@ -78,12 +78,14 @@ for:
     - next
   environment:
     installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
+    release_name: Rubberduck v%APPVEYOR_BUILD_VERSION%-pre
 - 
   branches:
     only:
     - master
   environment:
     installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
+    release_name: Rubberduck v%APPVEYOR_BUILD_VERSION%
 - 
   branches:
     except:
@@ -92,6 +94,7 @@ for:
   environment:
     # fall back to calling the installer after the branch we're on
     installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-%APPVEYOR_REPO_BRANCH%.exe
+    release_name: Rubberduck v%APPVEYOR_BUILD_VERSION%-%APPVEYOR_REPO_BRANCH%
 
 # Create Installers to store at appveyor and upload to github
 after_test:
@@ -105,26 +108,30 @@ artifacts:
 deploy:
   - provider: GitHub
     tag: Rubberduck v$(appveyor_build_version)
-    release: Rubberduck v$(appveyor_build_version)
-    description: AppVeyor build on [master] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
+    release: $(release_name)
+    draft: true
+    prerelease: false
+    description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
     artifact: Rubberduck
-    draft: true
-    prerelease: false
-    on:
+    on: 
       branch: master
   - provider: GitHub
     tag: Rubberduck v$(appveyor_build_version)
-    release: Rubberduck v$(appveyor_build_version)-pre
-    description: AppVeyor build on [next] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
+    release: $(release_name)
+    draft: true
+    prerelease: false
+    description: >-
+      AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
+
+      Merges \#$(appveyor_pull_request_number) - $(appveyor_pull_request_title)
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
     artifact: Rubberduck
-    draft: false
-    prerelease: true
-    on:
+    on: 
       branch: next
+
 # This is Duga posting stuff to the war room
 notifications:
   - provider: Webhook
