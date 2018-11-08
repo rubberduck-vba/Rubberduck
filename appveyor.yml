@@ -92,8 +92,8 @@ for:
       - master
       - next
   environment:
-    # fall back to calling the installer after the branch we're on
-    installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-%APPVEYOR_REPO_BRANCH%.exe
+    # fall back to naming the installer something that shows we're in an unexpected state
+    installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-unexpected.exe
     release_name: Rubberduck v%APPVEYOR_BUILD_VERSION%-%APPVEYOR_REPO_BRANCH%
 
 # Create Installers to store at appveyor and upload to github
