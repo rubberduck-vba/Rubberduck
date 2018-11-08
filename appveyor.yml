@@ -96,11 +96,11 @@ for:
     # fall back to calling the installer after the branch we're on
     installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-%APPVEYOR_REPO_BRANCH%.exe
 
-# Create Installers for 
+# Create Installers to store at appveyor and upload to github
 after_test:
   - cmd: iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
   - cmd: move %INSTALLER_DIR%\Rubberduck.Setup.exe %INSTALLER_DIR%\%INSTALLER_NAME%
-    
+
 # grab the installers we produce and upload them to github :)
 artifacts:
   - path: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.*.exe
@@ -112,7 +112,7 @@ deploy:
     description: AppVeyor build on [master] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version).exe
+    artifact: Rubberduck
     draft: true
     prerelease: false
     on:
@@ -123,11 +123,12 @@ deploy:
     description: AppVeyor build on [next] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
+    artifact: Rubberduck
     draft: false
     prerelease: true
     on:
       branch: next
+# This is Duga posting stuff to the war room
 notifications:
   - provider: Webhook
     url: http://stats.zomis.net/GithubHookSEChatService/hooks/github/payload?roomId=14929
