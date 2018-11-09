@@ -29,7 +29,7 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.AutoCompleteSettings.SmartConcat.IsEnabled = EnableSmartConcat;
             config.UserSettings.AutoCompleteSettings.SmartConcat.ConcatVbNewLineModifier =
                 ConcatVbNewLine ? ModifierKeySetting.CtrlKey : ModifierKeySetting.None;
-
+            config.UserSettings.AutoCompleteSettings.SmartConcat.MaxLogicalLineLineCount = ConcatMaxLines;
             config.UserSettings.AutoCompleteSettings.BlockCompletion.IsEnabled = EnableBlockCompletion;
             config.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnTab = CompleteBlockOnTab;
             config.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnEnter = CompleteBlockOnEnter;
@@ -43,6 +43,7 @@ namespace Rubberduck.UI.Settings
 
             EnableSmartConcat = toLoad.SmartConcat.IsEnabled;
             ConcatVbNewLine = toLoad.SmartConcat.ConcatVbNewLineModifier == ModifierKeySetting.CtrlKey;
+            ConcatMaxLines = toLoad.SmartConcat.MaxLogicalLineLineCount;
 
             EnableBlockCompletion = toLoad.BlockCompletion.IsEnabled;
             CompleteBlockOnTab = toLoad.BlockCompletion.CompleteOnTab;
@@ -103,6 +104,20 @@ namespace Rubberduck.UI.Settings
                 if (_concatVbNewLine != value)
                 {
                     _concatVbNewLine = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _concatMaxLines;
+        public int ConcatMaxLines
+        {
+            get { return _concatMaxLines; }
+            set
+            {
+                if (_concatMaxLines != value)
+                {
+                    _concatMaxLines = value;
                     OnPropertyChanged();
                 }
             }

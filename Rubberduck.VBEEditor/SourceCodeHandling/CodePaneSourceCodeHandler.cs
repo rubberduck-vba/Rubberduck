@@ -4,6 +4,7 @@ using System.Linq;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
 {
@@ -54,8 +55,15 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
         public void SubstituteCode(ICodeModule module, CodeString newCode)
         {
-            module.DeleteLines(newCode.SnippetPosition);
-            module.InsertLines(newCode.SnippetPosition.StartLine, newCode.Code);
+            try
+            {
+                module.DeleteLines(newCode.SnippetPosition);
+                module.InsertLines(newCode.SnippetPosition.StartLine, newCode.Code);
+            }
+            catch
+            {
+                Debug.Assert(false, "too many line continuations. we shouldn't even be here.");
+            }
         }
 
         public void SubstituteCode(QualifiedModuleName module, CodeString newCode)
@@ -197,7 +205,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             var pEndLine = lines[lines.Count - 1].pLine;
             var snippetPosition = new Selection(pStartLine, 1, pEndLine, 1);
 
-            if (lines[0].pLine < pSelection.StartLine || lines.Last().pLine > pSelection.EndLine)
+            if (pStartLine > pSelection.StartLine || pEndLine > pSelection.EndLine)
             {
                 // selection spans more than a single logical line
                 return null;

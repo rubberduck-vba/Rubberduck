@@ -111,6 +111,9 @@
                           IsChecked="{Binding ConcatVbNewLine}" 
                           Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=ConcatVbNewLine}" />
 
+                <Label Margin="15,0,15,0" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=ConcatMaxLines}" />
+                <controls:NumberPicker Margin="15,0,15,0" NumValue="{Binding ConcatMaxLines}" />
+
                 <Label Margin="10" 
                        Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=BlockCompletion}"
                        FontWeight="Bold" />

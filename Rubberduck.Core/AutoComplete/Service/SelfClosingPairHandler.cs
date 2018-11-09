@@ -10,6 +10,8 @@ namespace Rubberduck.AutoComplete.Service
 {
     public class SelfClosingPairHandler : AutoCompleteHandlerBase
     {
+        private const int MaximumLines = 25;
+
         private readonly IReadOnlyList<SelfClosingPair> _selfClosingPairs;
         private readonly IDictionary<char, SelfClosingPair> _scpInputLookup;
         private readonly SelfClosingPairCompletionService _scpService;
@@ -41,9 +43,10 @@ namespace Rubberduck.AutoComplete.Service
             }
 
             var original = CodePaneHandler.GetCurrentLogicalLine(e.Module);
-            if (original == null)
+            if (original == null || original.Lines.Length == MaximumLines)
             {
-                // selection spans more than a single logical line
+                // selection spans more than a single logical line, or
+                // logical line somehow spans more than the maximum number of physical lines in a logical line of code (25).
                 return false;
             }
 
