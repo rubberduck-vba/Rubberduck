@@ -25,8 +25,9 @@ namespace Rubberduck.AutoComplete.Service
             }
 
             var currentContent = CodePaneHandler.GetCurrentLogicalLine(e.Module);
-            if (!currentContent.IsInsideStringLiteral)
+            if (!currentContent?.IsInsideStringLiteral ?? true)
             {
+                // selection spans more than a single logical line
                 return false;
             }
 

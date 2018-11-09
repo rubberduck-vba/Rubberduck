@@ -41,6 +41,11 @@ namespace Rubberduck.AutoComplete.Service
             }
 
             var original = CodePaneHandler.GetCurrentLogicalLine(e.Module);
+            if (original == null)
+            {
+                // selection spans more than a single logical line
+                return false;
+            }
 
             if (pair != null)
             {
@@ -74,6 +79,13 @@ namespace Rubberduck.AutoComplete.Service
 
         private bool HandleInternal(AutoCompleteEventArgs e, CodeString original, SelfClosingPair pair, out CodeString result)
         {
+            if (!original.CaretPosition.IsSingleCharacter)
+            {
+                // todo: WrapSelection?
+                result = null;
+                return false;
+            }
+
             var isPresent = original.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}");
 
             if (!_scpService.Execute(pair, original, e.Character, out result))
