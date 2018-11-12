@@ -120,12 +120,9 @@ deploy:
   - provider: GitHub
     tag: Rubberduck v$(appveyor_build_version)
     release: $(release_name)
-    draft: true
-    prerelease: false
-    description: >-
-      AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
-
-      Merges \#$(appveyor_pull_request_number) - $(appveyor_pull_request_title)
+    draft: false
+    prerelease: true
+    description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)<br/><br/>Merges #$(appveyor_pull_request_number) - $(appveyor_pull_request_title)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
     artifact: Rubberduck
