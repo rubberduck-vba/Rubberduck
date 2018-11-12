@@ -269,26 +269,13 @@
     </Setting>
     <Setting Name="AutoCompleteSettings" Type="Rubberduck.Settings.AutoCompleteSettings" Scope="Application">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
-&lt;AutoCompleteSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" IsEnabled="false" CompleteBlockOnTab="true" CompleteBlockOnEnter="true" EnableSmartConcat="true"&gt;
-  &lt;AutoCompletes&gt;
-    &lt;AutoComplete Key="AutoCompleteClosingBrace" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteClosingBracket" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteClosingParenthese" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteClosingString" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteDoBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteEnumBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteForBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteFunctionBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteIfBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteOnErrorResumeNextBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompletePrecompilerIfBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompletePropertyBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteSelectBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteSubBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteTypeBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteWhileBlock" IsEnabled="true" /&gt;
-    &lt;AutoComplete Key="AutoCompleteWithBlock" IsEnabled="true" /&gt;
-  &lt;/AutoCompletes&gt;
+&lt;AutoCompleteSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" IsEnabled="false"&gt;
+  &lt;SmartConcat&gt;
+    &lt;IsEnabled&gt;false&lt;/IsEnabled&gt;
+    &lt;ConcatVbNewLineModifier&gt;None&lt;/ConcatVbNewLineModifier&gt;
+  &lt;/SmartConcat&gt;
+  &lt;SelfClosingPairs IsEnabled="false" /&gt;
+  &lt;BlockCompletion IsEnabled="false" CompleteOnEnter="false" CompleteOnTab="false" /&gt;
 &lt;/AutoCompleteSettings&gt;</Value>
     </Setting>
   </Settings>

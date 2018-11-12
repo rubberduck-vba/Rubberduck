@@ -177,4 +177,43 @@
   <data name="EnableAutocompleteLabel" xml:space="preserve">
     <value>Activer cette fonctionnalité, malgré qu'elle est incomplète et peut se comporter étrangement.</value>
   </data>
+  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
+    <value>Charger les paramètres généraux</value>
+  </data>
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
+    <value>Charger les paramètres d'indentation</value>
+  </data>
+  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
+    <value>Charger les paramètres d'inspections</value>
+  </data>
+  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
+    <value>Charger les paramètres "TODO"</value>
+  </data>
+  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
+    <value>Charger les paramètres des tests unitaires</value>
+  </data>
+  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
+    <value>Charger les paramètres des fenêtres</value>
+  </data>
+  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres généraux</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres d'indentation</value>
+  </data>
+  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres d'inspections</value>
+  </data>
+  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres "TODO"</value>
+  </data>
+  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres des tests unitaires</value>
+  </data>
+  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres des fenêtres</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
+    <value>Fichiers XML (.xml)|*.xml|Configuration de Rubberduck|*.config</value>
+  </data>
 </root>
