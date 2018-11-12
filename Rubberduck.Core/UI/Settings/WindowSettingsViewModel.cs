@@ -2,7 +2,7 @@
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
-using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -104,8 +104,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new OpenFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_LoadWindowSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_LoadWindowSettings
             })
             {
                 dialog.ShowDialog();
@@ -120,8 +120,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new SaveFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_SaveWindowSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_SaveWindowSettings
             })
             {
                 dialog.ShowDialog();

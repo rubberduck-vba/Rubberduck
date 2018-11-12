@@ -6,6 +6,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
 using Rubberduck.UI.Command;
 using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -497,8 +498,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new OpenFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_LoadIndenterSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_LoadIndenterSettings
             })
             {
                 dialog.ShowDialog();
@@ -513,8 +514,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new SaveFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_SaveIndenterSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_SaveIndenterSettings
             })
             {
                 dialog.ShowDialog();
