@@ -123,6 +123,9 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        public int ConcatMaxLinesMinValue => Rubberduck.Settings.AutoCompleteSettings.ConcatMaxLinesMinValue;
+        public int ConcatMaxLinesMaxValue => Rubberduck.Settings.AutoCompleteSettings.ConcatMaxLinesMaxValue;
+
         private bool _enableBlockCompletion;
 
         public bool EnableBlockCompletion

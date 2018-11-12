@@ -1,8 +1,5 @@
-﻿using Rubberduck.AutoComplete;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Configuration;
-using System.Linq;
 using System.Xml.Serialization;
 
 namespace Rubberduck.Settings
@@ -27,6 +24,15 @@ namespace Rubberduck.Settings
     [XmlType(AnonymousType = true)]
     public class AutoCompleteSettings : IAutoCompleteSettings, IEquatable<AutoCompleteSettings>
     {
+        /// <summary>
+        /// Less than that would be useless (wouldn't concat).
+        /// </summary>
+        public static readonly int ConcatMaxLinesMinValue = 2;
+        /// <summary>
+        /// /More than that would be illegal (wouldn't compile).
+        /// </summary>
+        public static readonly int ConcatMaxLinesMaxValue = 25;
+
         public static AutoCompleteSettings AllEnabled =>
             new AutoCompleteSettings
             {
@@ -58,7 +64,6 @@ namespace Rubberduck.Settings
         public class SmartConcatSettings : IEquatable<SmartConcatSettings>
         {
             private int _maxLogicalLineLineCount;
-            private const int MaximumLines = 25; // more than that wouldn't compile
 
             [XmlAttribute]
             public bool IsEnabled { get; set; }
@@ -69,15 +74,15 @@ namespace Rubberduck.Settings
                 get => _maxLogicalLineLineCount;
                 set
                 {
-                    if (value > MaximumLines)
+                    if (value > ConcatMaxLinesMaxValue)
                     {
-                        value = MaximumLines;
+                        value = ConcatMaxLinesMaxValue;
+                    }
+                    else if (value < ConcatMaxLinesMinValue)
+                    {
+                        value = ConcatMaxLinesMinValue;
                     }
 
-                    if (value < 5)
-                    {
-                        value = 5; // completely arbitrary magical value. 
-                    }
                     _maxLogicalLineLineCount = value;
                 }
             }
