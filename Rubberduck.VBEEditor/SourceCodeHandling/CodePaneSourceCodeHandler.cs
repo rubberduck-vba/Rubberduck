@@ -184,7 +184,8 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                 pSelection = pane.Selection;
             }
 
-            var selectedLines = module.GetLines(pSelection.StartLine, pSelection.LineCount).Replace("\r", string.Empty).Split('\n');
+            var selectedContent = module.GetLines(pSelection.StartLine, pSelection.LineCount);
+            var selectedLines = selectedContent.Replace("\r", string.Empty).Split('\n');
             var currentLine = selectedLines[0];
 
             var caretStartLine = (pSelection.StartLine, currentLine);
