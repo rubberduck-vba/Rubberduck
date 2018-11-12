@@ -26,7 +26,7 @@ namespace Rubberduck.AutoComplete.Service
 
             var currentContent = CodePaneHandler.GetCurrentLogicalLine(e.Module);
             if ((!currentContent?.IsInsideStringLiteral ?? true) 
-                || currentContent.Lines.Length >= settings.SmartConcat.MaxLogicalLineLineCount)
+                || currentContent.Lines.Length >= settings.SmartConcat.ConcatMaxLines)
             {
                 // selection spans more than a single logical line, or spans too many lines to be legal;
                 // too many line continuations throws COMException if we attempt to modify.

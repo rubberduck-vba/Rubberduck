@@ -63,15 +63,15 @@ namespace Rubberduck.Settings
 
         public class SmartConcatSettings : IEquatable<SmartConcatSettings>
         {
-            private int _maxLogicalLineLineCount;
+            private int _concatMaxLines;
 
             [XmlAttribute]
             public bool IsEnabled { get; set; }
             public ModifierKeySetting ConcatVbNewLineModifier { get; set; }
 
-            public int MaxLogicalLineLineCount
+            public int ConcatMaxLines
             {
-                get => _maxLogicalLineLineCount;
+                get => _concatMaxLines;
                 set
                 {
                     if (value > ConcatMaxLinesMaxValue)
@@ -83,7 +83,7 @@ namespace Rubberduck.Settings
                         value = ConcatMaxLinesMinValue;
                     }
 
-                    _maxLogicalLineLineCount = value;
+                    _concatMaxLines = value;
                 }
             }
 
@@ -91,7 +91,7 @@ namespace Rubberduck.Settings
                 => other != null &&
                    other.IsEnabled == IsEnabled &&
                    other.ConcatVbNewLineModifier == ConcatVbNewLineModifier &&
-                   other.MaxLogicalLineLineCount == MaxLogicalLineLineCount;
+                   other.ConcatMaxLines == ConcatMaxLines;
         }
 
         public class SelfClosingPairSettings : IEquatable<SelfClosingPairSettings>

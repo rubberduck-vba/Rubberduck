@@ -116,6 +116,7 @@ namespace RubberduckTests.AutoComplete
             settings = new AutoCompleteSettings {IsEnabled = true};
             settings.SmartConcat.IsEnabled = true;
             settings.SmartConcat.ConcatVbNewLineModifier = ModifierKeySetting.CtrlKey;
+            settings.SmartConcat.ConcatMaxLines = AutoCompleteSettings.ConcatMaxLinesMaxValue;
 
             var handler = new CodePaneSourceCodeHandler(new ProjectsRepository(vbe.Object));
             var sut = new SmartConcatenationHandler(handler);
