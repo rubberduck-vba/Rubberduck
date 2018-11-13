@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -14,8 +15,12 @@ namespace Rubberduck.VBEditor.ComManagement
         private readonly IDictionary<string, IVBProject> _projects = new Dictionary<string, IVBProject>();
         private readonly IDictionary<string, IVBComponents> _componentsCollections = new Dictionary<string, IVBComponents>();
         private readonly IDictionary<QualifiedModuleName, IVBComponent> _components = new Dictionary<QualifiedModuleName, IVBComponent>();
+        private readonly IDictionary<string, IVBProject> _lockedProjects = new Dictionary<string, IVBProject>();
 
         private readonly ReaderWriterLockSlim _refreshProtectionLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
+
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
 
         public ProjectsRepository(IVBE vbe)
         {
@@ -35,13 +40,37 @@ namespace Rubberduck.VBEditor.ComManagement
             {
                 if (project.Protection == ProjectProtection.Locked)
                 {
-                    project.Dispose();
-                    continue;
+                    if (!TryStoreLockedProject(project))
+                    {
+                        project.Dispose();
+                    }
                 }
-
-                EnsureValidProjectId(project);
-                _projects.Add(project.ProjectId, project);
+                else
+                {
+                    EnsureValidProjectId(project);
+                    _projects.Add(project.ProjectId, project);
+                }
             }
+        }
+
+        private bool TryStoreLockedProject(IVBProject project)
+        {
+            string path;
+            try
+            {
+                path = project.FileName;
+            }
+            catch (Exception exception)
+            {
+                _logger.Warn(exception, "Path of locked project could not be read.");
+                return false;
+            }
+
+            var projectName = project.Name;
+            var projectId = QualifiedModuleName.GetProjectId(projectName, path);
+
+            _lockedProjects.Add(projectId, project);
+            return true;
         }
 
         private void EnsureValidProjectId(IVBProject project)
@@ -112,6 +141,7 @@ namespace Rubberduck.VBEditor.ComManagement
             var projects = ClearComWrapperDictionary(_projects);
             var componentCollections = ClearComWrapperDictionary(_componentsCollections);
             var components = ClearComWrapperDictionary(_components);
+            var lockedProjects = ClearComWrapperDictionary(_lockedProjects);
 
             try
             {
@@ -122,6 +152,7 @@ namespace Rubberduck.VBEditor.ComManagement
                 DisposeWrapperEnumerable(projects);
                 DisposeWrapperEnumerable(componentCollections);
                 DisposeWrapperEnumerable(components);
+                DisposeWrapperEnumerable(lockedProjects);
             }
         }
 
@@ -143,8 +174,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
         private void RefreshCollections(string projectId)
         {
-            IVBProject project;
-            if (!_projects.TryGetValue(projectId, out project))
+            if (!_projects.TryGetValue(projectId, out var project))
             {
                 return;
             }
@@ -182,6 +212,11 @@ namespace Rubberduck.VBEditor.ComManagement
         public IEnumerable<(string ProjectId, IVBProject Project)> Projects()
         {
             return EvaluateWithinReadLock(() => _projects.Select(kvp => (kvp.Key, kvp.Value)).ToList()) ?? new List<(string, IVBProject)>();
+        }
+
+        public IEnumerable<(string ProjectId, IVBProject Project)> LockedProjects()
+        {
+            return EvaluateWithinReadLock(() => _lockedProjects.Select(kvp => (kvp.Key, kvp.Value)).ToList()) ?? new List<(string, IVBProject)>();
         }
 
         private T EvaluateWithinReadLock<T>(Func<T> function) where T: class
@@ -274,10 +309,12 @@ namespace Rubberduck.VBEditor.ComManagement
             var projects = ClearComWrapperDictionary(_projects);
             var componentCollections = ClearComWrapperDictionary(_componentsCollections);
             var components = ClearComWrapperDictionary(_components);
+            var lockedProjects = ClearComWrapperDictionary(_lockedProjects);
 
             DisposeWrapperEnumerable(projects);
             DisposeWrapperEnumerable(componentCollections);
             DisposeWrapperEnumerable(components);
+            DisposeWrapperEnumerable(lockedProjects);
         }
     }
 }
