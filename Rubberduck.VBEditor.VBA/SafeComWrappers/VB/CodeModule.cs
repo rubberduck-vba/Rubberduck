@@ -130,6 +130,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 // "too many line continuations" is one possible cause for a COMException here.
                 _logger.Error(e);
+                throw;
             }
         }
 
@@ -148,6 +149,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 {
                     // "too many line continuations" is one possible cause for a COMException here.
                     _logger.Error(e);
+                    throw;
                 }
             }
         }
@@ -175,6 +177,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             {
                 // "too many line continuations" is one possible cause for a COMException here.
                 _logger.Error(e);
+                throw;
             }
         }
 

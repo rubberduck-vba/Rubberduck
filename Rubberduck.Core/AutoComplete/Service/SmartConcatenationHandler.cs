@@ -16,17 +16,21 @@ namespace Rubberduck.AutoComplete.Service
         {
         }
 
-        public override CodeString Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings)
+        public override bool Handle(AutoCompleteEventArgs e, AutoCompleteSettings settings, out CodeString result)
         {
+            result = null;
             if (e.Character != '\r' || (!settings?.SmartConcat.IsEnabled ?? true))
             {
-                return null;
+                return false;
             }
 
             var currentContent = CodePaneHandler.GetCurrentLogicalLine(e.Module);
-            if (!currentContent.IsInsideStringLiteral)
+            if ((!currentContent?.IsInsideStringLiteral ?? true) 
+                || currentContent.Lines.Length >= settings.SmartConcat.ConcatMaxLines)
             {
-                return null;
+                // selection spans more than a single logical line, or spans too many lines to be legal;
+                // too many line continuations throws COMException if we attempt to modify.
+                return false;
             }
 
             var lastIndexLeftOfCaret = currentContent.CaretLine.Length > 2 ? currentContent.CaretLine.Substring(0, currentContent.CaretPosition.StartColumn).LastIndexOf('"') : 0;
@@ -51,16 +55,16 @@ namespace Rubberduck.AutoComplete.Service
                 var newPosition = new Selection(newContent.CaretPosition.StartLine + 1, indent + 1);
 
                 e.Handled = true;
-                var result = new CodeString(newContent.Code, newPosition, 
+                result = new CodeString(newContent.Code, newPosition, 
                     new Selection(newContent.SnippetPosition.StartLine, 1, newContent.SnippetPosition.EndLine, 1));
 
                 CodePaneHandler.SubstituteCode(e.Module, result);
                 var finalSelection = new Selection(result.SnippetPosition.StartLine, 1).Offset(result.CaretPosition);
                 CodePaneHandler.SetSelection(e.Module, finalSelection);
-                return result;
+                return true;
             }
 
-            return null;
+            return false;
         }
     }
 }

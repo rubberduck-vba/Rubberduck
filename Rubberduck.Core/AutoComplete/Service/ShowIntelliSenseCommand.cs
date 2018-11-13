@@ -7,6 +7,9 @@ namespace Rubberduck.AutoComplete.Service
 {
     public interface IShowIntelliSenseCommand
     {
+        /// <summary>
+        /// WARNING! Makes an utterly annoying DING! in the VBE if the "QuickInfo" command is unavailable.
+        /// </summary>
         void Execute();
     }
 
