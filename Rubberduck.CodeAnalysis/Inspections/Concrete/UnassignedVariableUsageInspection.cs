@@ -5,6 +5,7 @@ using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
@@ -30,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(declaration =>
+                .Where(declaration => !declaration.IsArray &&
                     State.DeclarationFinder.MatchName(declaration.AsTypeName)
                         .All(d => d.DeclarationType != DeclarationType.UserDefinedType)
                     && !declaration.IsSelfAssigned
@@ -43,10 +44,20 @@ namespace Rubberduck.Inspections.Concrete
                 .SelectMany(d => d.References)
                 .Distinct()
                 .Where(r => !r.IsIgnoringInspectionResultFor(AnnotationName))
+                .Where(r => !r.Context.TryGetAncestor<VBAParser.RedimStmtContext>(out _) && !IsArraySubscriptAssignment(r))
                 .Select(r => new IdentifierReferenceInspectionResult(this,
                     string.Format(InspectionResults.UnassignedVariableUsageInspection, r.IdentifierName),
                     State,
                     r)).ToList();
+        }
+
+        private static bool IsArraySubscriptAssignment(IdentifierReference reference)
+        {
+            var isLetAssignment = reference.Context.TryGetAncestor<VBAParser.LetStmtContext>(out var letStmt);
+            var isSetAssignment = reference.Context.TryGetAncestor<VBAParser.SetStmtContext>(out var setStmt);
+
+            return isLetAssignment && letStmt.lExpression() is VBAParser.IndexExprContext ||
+                   isSetAssignment && setStmt.lExpression() is VBAParser.IndexExprContext;
         }
 
         private static bool DeclarationReferencesContainsReference(Declaration parentDeclaration, Declaration target)
