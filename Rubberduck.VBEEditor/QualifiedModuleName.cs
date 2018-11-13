@@ -36,6 +36,15 @@ namespace Rubberduck.VBEditor
             return new QualifiedModuleName(reference).ProjectId;
         }
 
+        /// <summary>
+        /// Gets the standard projectId for a locked user projects.
+        /// Do not use this overload for unlocked user projects.
+        /// </summary>
+        public static string GetProjectId(string projectName, string projectPath)
+        {
+            return new QualifiedModuleName(projectName, projectPath, projectName).ProjectId;
+        }
+
         public static int GetContentHash(IVBComponent component)
         {
             return component?.ContentHash() ?? 0;
