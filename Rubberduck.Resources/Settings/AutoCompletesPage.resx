@@ -153,4 +153,7 @@
   <data name="SmartConcat" xml:space="preserve">
     <value>Smart-Concatenation</value>
   </data>
+  <data name="MaxConcatLines" xml:space="preserve">
+    <value>Maximum Lines</value>
+  </data>
 </root>

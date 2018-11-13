@@ -76,6 +76,7 @@ namespace RubberduckTests.AutoComplete
 
         private static TestCodeString Run(TestCodeString original, char input, bool isCtrlDown = false, bool isDeleteKey = false)
         {
+
             var sut = InitializeSut(original, out var module, out var settings);
             var args = new AutoCompleteEventArgs(module.Object, input, isCtrlDown, isDeleteKey);
 
@@ -102,7 +103,9 @@ namespace RubberduckTests.AutoComplete
             module = new Mock<ICodeModule>();
             pane = new Mock<ICodePane>();
             pane.SetupProperty(m => m.Selection);
-            pane.Object.Selection = new Selection(original.SnippetPosition.StartLine, 1, original.SnippetPosition.EndLine, 1).Offset(original.CaretPosition);
+            var paneSelection = new Selection(original.SnippetPosition.StartLine + original.CaretPosition.StartLine, original.CaretPosition.StartColumn + 1);
+            pane.Object.Selection = paneSelection;
+
             module.Setup(m => m.DeleteLines(original.SnippetPosition.StartLine, original.SnippetPosition.LineCount));
             module.Setup(m => m.InsertLines(original.SnippetPosition.StartLine, original.Code));
             module.Setup(m => m.CodePane).Returns(pane.Object);
@@ -112,10 +115,12 @@ namespace RubberduckTests.AutoComplete
                 module.Setup(m => m.GetLines(index + 1, 1)).Returns(original.Lines[index]);
             }
             module.Setup(m => m.GetLines(original.SnippetPosition)).Returns(prettified.Code);
+            module.Setup(m => m.GetLines(paneSelection.StartLine, paneSelection.LineCount)).Returns(prettified.CaretLine);
 
             settings = new AutoCompleteSettings {IsEnabled = true};
             settings.SmartConcat.IsEnabled = true;
             settings.SmartConcat.ConcatVbNewLineModifier = ModifierKeySetting.CtrlKey;
+            settings.SmartConcat.ConcatMaxLines = AutoCompleteSettings.ConcatMaxLinesMaxValue;
 
             var handler = new CodePaneSourceCodeHandler(new ProjectsRepository(vbe.Object));
             var sut = new SmartConcatenationHandler(handler);
