@@ -27,14 +27,13 @@ namespace Rubberduck.UI.Controls
             }
         }
 
-
         public int MinNumber
         {
             get => (int)GetValue(MinNumberProperty);
             set
             {
                 SetValue(MinNumberProperty, value);
-                OnPropertyChanged(new DependencyPropertyChangedEventArgs(MinNumberProperty, NumValue - 1, NumValue));
+                OnPropertyChanged(new DependencyPropertyChangedEventArgs(MinNumberProperty, GetValue(MinNumberProperty), value));              
             }
         }
 
@@ -44,7 +43,7 @@ namespace Rubberduck.UI.Controls
             set
             {
                 SetValue(MaxNumberProperty, value);
-                OnPropertyChanged(new DependencyPropertyChangedEventArgs(MaxNumberProperty, NumValue - 1, NumValue));
+                OnPropertyChanged(new DependencyPropertyChangedEventArgs(MaxNumberProperty, GetValue(MaxNumberProperty), value));
             }
         }
 
