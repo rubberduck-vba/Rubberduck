@@ -73,7 +73,6 @@ namespace Rubberduck.VBEditor.Events
                 if (item.ProjectId == projectId && item.Name == projectName)
                 {
                     project = item;
-                    item.Dispose();
                     break;
                 }
 

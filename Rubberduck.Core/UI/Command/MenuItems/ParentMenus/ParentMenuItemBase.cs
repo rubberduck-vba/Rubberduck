@@ -110,6 +110,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             Logger.Debug($"Removing menu {_key}.");
             RemoveChildren();
             Item?.Delete();
+
+            //This will also dispose the Item as well
             Item = null;
         }
 

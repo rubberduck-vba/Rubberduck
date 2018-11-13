@@ -115,7 +115,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine(
+                    _logger.Debug(
                         "CodePane.ForceFocus() failed to get a handle on the MainWindow.");
                 }
             }

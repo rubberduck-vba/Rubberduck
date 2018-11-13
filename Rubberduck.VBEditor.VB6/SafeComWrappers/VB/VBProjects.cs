@@ -101,13 +101,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
                 var projectId = project.ProjectId;
 
-                var handler = ProjectRenamed;
-                if (handler == null || projectId == null)
+                if (projectId == null)
                 {
                     return;
                 }
 
-                handler.Invoke(this, new ProjectRenamedEventArgs(projectId, project.Name, OldName));
+                var handler = ProjectRenamed;
+                handler?.Invoke(this, new ProjectRenamedEventArgs(projectId, project.Name, OldName));
             }
         }
 
