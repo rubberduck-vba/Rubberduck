@@ -1,8 +1,5 @@
-﻿using Rubberduck.AutoComplete;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Configuration;
-using System.Linq;
 using System.Xml.Serialization;
 
 namespace Rubberduck.Settings
@@ -27,6 +24,15 @@ namespace Rubberduck.Settings
     [XmlType(AnonymousType = true)]
     public class AutoCompleteSettings : IAutoCompleteSettings, IEquatable<AutoCompleteSettings>
     {
+        /// <summary>
+        /// Less than that would be useless (wouldn't concat).
+        /// </summary>
+        public static readonly int ConcatMaxLinesMinValue = 2;
+        /// <summary>
+        /// /More than that would be illegal (wouldn't compile).
+        /// </summary>
+        public static readonly int ConcatMaxLinesMaxValue = 25;
+
         public static AutoCompleteSettings AllEnabled =>
             new AutoCompleteSettings
             {
@@ -57,13 +63,35 @@ namespace Rubberduck.Settings
 
         public class SmartConcatSettings : IEquatable<SmartConcatSettings>
         {
+            private int _concatMaxLines;
+
+            [XmlAttribute]
             public bool IsEnabled { get; set; }
             public ModifierKeySetting ConcatVbNewLineModifier { get; set; }
+
+            public int ConcatMaxLines
+            {
+                get => _concatMaxLines;
+                set
+                {
+                    if (value > ConcatMaxLinesMaxValue)
+                    {
+                        value = ConcatMaxLinesMaxValue;
+                    }
+                    else if (value < ConcatMaxLinesMinValue)
+                    {
+                        value = ConcatMaxLinesMinValue;
+                    }
+
+                    _concatMaxLines = value;
+                }
+            }
 
             public bool Equals(SmartConcatSettings other)
                 => other != null &&
                    other.IsEnabled == IsEnabled &&
-                   other.ConcatVbNewLineModifier == ConcatVbNewLineModifier;
+                   other.ConcatVbNewLineModifier == ConcatVbNewLineModifier &&
+                   other.ConcatMaxLines == ConcatMaxLines;
         }
 
         public class SelfClosingPairSettings : IEquatable<SelfClosingPairSettings>

@@ -5,14 +5,6 @@ namespace Rubberduck.AutoComplete.Service
 {
     public class SelfClosingPair : IEquatable<SelfClosingPair>
     {
-        [Flags]
-        public enum MatchType
-        {
-            NoMatch = 0,
-            OpeningCharacterMatch = 1,
-            ClosingCharacterMatch = 2,
-        }
-
         public SelfClosingPair(char opening, char closing)
         {
             OpeningChar = opening;
