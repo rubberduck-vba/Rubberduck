@@ -23,7 +23,12 @@ namespace RubberduckTests.QuickFixes
     Else
         Foo = False
     End If
-End Function";
+End Function
+
+Public Sub Test()
+    Foo ""test""
+End Sub
+";
 
             const string expectedCode =
                 @"Public Sub Foo(ByVal bar As String)
@@ -32,7 +37,12 @@ End Function";
     Else
         
     End If
-End Sub";
+End Sub
+
+Public Sub Test()
+    Foo ""test""
+End Sub
+";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -59,7 +69,12 @@ label1:
 End Function
 
 Sub goo()
-End Sub";
+End Sub
+
+Public Sub Test()
+    foo ""test""
+End Sub
+";
 
             const string expectedCode =
                 @"Sub foo(ByRef fizz As Boolean)
@@ -70,7 +85,12 @@ label1:
 End Sub
 
 Sub goo()
-End Sub";
+End Sub
+
+Public Sub Test()
+    foo ""test""
+End Sub
+";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
