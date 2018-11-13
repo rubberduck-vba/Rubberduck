@@ -36,7 +36,6 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             return nodes
-                //.Where(n => !n.Context.TryGetChildContext<VBAParser.LExpressionContext>(out var lhs) || !lhs.TryGetChildContext<VBAParser.IndexExprContext>(out _))
                 .Select(issue => new IdentifierReferenceInspectionResult(this, Description, State, issue))
                 .ToList();
         }
