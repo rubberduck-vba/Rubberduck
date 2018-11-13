@@ -1,6 +1,9 @@
-﻿namespace Rubberduck.AutoComplete.Service
+﻿using Rubberduck.VBEditor;
+using System;
+
+namespace Rubberduck.AutoComplete.Service
 {
-    public class SelfClosingPair
+    public class SelfClosingPair : IEquatable<SelfClosingPair>
     {
         public SelfClosingPair(char opening, char closing)
         {
@@ -15,5 +18,15 @@
         /// True if <see cref="OpeningChar"/> is the same as <see cref="ClosingChar"/>.
         /// </summary>
         public bool IsSymetric => OpeningChar == ClosingChar;
+
+        public bool Equals(SelfClosingPair other) => other?.OpeningChar == OpeningChar &&
+                                                     other.ClosingChar == ClosingChar;
+
+        public override bool Equals(object obj)
+        {
+            return obj is SelfClosingPair scp && Equals(scp);
+        }
+
+        public override int GetHashCode() => HashCode.Compute(OpeningChar, ClosingChar);
     }
 }

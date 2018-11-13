@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Threading;
 using Rubberduck.VBEditor.Utility;
-using Rubberduck.VBEditor.VBERuntime;
+using Rubberduck.VBEditor.VbeRuntime;
 
 namespace Rubberduck.VBEditor.ComManagement
 {
@@ -12,10 +11,10 @@ namespace Rubberduck.VBEditor.ComManagement
 
     public class ComMessagePumper : IComMessagePumper
     {
-        private readonly IVBERuntime _runtime;
+        private readonly IVbeNativeApi _runtime;
         private readonly IUiContextProvider _uiContext;
 
-        public ComMessagePumper(IUiContextProvider uiContext, IVBERuntime runtime)
+        public ComMessagePumper(IUiContextProvider uiContext, IVbeNativeApi runtime)
         {
             _uiContext = uiContext;
             _runtime = runtime;

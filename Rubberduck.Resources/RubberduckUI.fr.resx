@@ -1100,39 +1100,6 @@ End Sub</value>
   <data name="ContextReferences" xml:space="preserve">
     <value>références</value>
   </data>
-  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
-    <value>Enregistrer les paramètres d'inspections</value>
-  </data>
-  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
-    <value>Enregistrer les paramètres "TODO"</value>
-  </data>
-  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
-    <value>Fichiers XML (.xml)|*.xml|Configuration de Rubberduck|*.config</value>
-  </data>
-  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
-    <value>Enregistrer les paramètres généraux</value>
-  </data>
-  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
-    <value>Charger les paramètres "TODO"</value>
-  </data>
-  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
-    <value>Enregistrer les paramètres des tests unitaires</value>
-  </data>
-  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
-    <value>Charger les paramètres des tests unitaires</value>
-  </data>
-  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
-    <value>Charger les paramètres d'inspections</value>
-  </data>
-  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
-    <value>Enregistrer les paramètres d'indentation</value>
-  </data>
-  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
-    <value>Charger les paramètres d'indentation</value>
-  </data>
-  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
-    <value>Charger les paramètres généraux</value>
-  </data>
   <data name="GeneralSettings_CheckVersion" xml:space="preserve">
     <value>Vérifier si une nouvelle version est diponible au démarrage</value>
   </data>
@@ -1153,9 +1120,6 @@ End Sub</value>
   </data>
   <data name="AssignedByValDialog_ReservedKeywordFormat" xml:space="preserve">
     <value>'{0}' est un mot-clé réservé.</value>
-  </data>
-  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
-    <value>Charger les paramètres des fenêtres</value>
   </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Veuillez sélectionner 1 seul contrôle à renommer.</value>
@@ -1180,9 +1144,6 @@ End Sub</value>
   </data>
   <data name="AssignedByValDialog_QuestionableEntryFormat" xml:space="preserve">
     <value>L'identifiant '{0}' produira un résultat lors de l'inspection des noms. Considérez utiliser un nom plus descriptif.</value>
-  </data>
-  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
-    <value>Enregistrer les paramètres des fenêtres</value>
   </data>
   <data name="ConfirmRemoveAssignmentWithUnusedDeclaration" xml:space="preserve">
     <value>La varaible '{0}' est assignée. Supprimer l'/les assignation(s)?</value>

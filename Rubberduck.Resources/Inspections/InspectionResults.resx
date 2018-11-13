@@ -378,4 +378,11 @@
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>An assignment is immediately overridden by another assignment or is never referenced.</value>
   </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Public member name '{0}' contains an underscore.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Result of '{0}' call is not tested for 'Nothing'.</value>
+    <comment>{0} Member identifier</comment>
+  </data>
 </root>

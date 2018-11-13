@@ -61,6 +61,7 @@ namespace Rubberduck.VBEditor.ComManagement
             }
 
             _disposed = true;
+            base.Dispose(disposing);
 
             foreach (var weakReference in _comWrapperCache.Values)
             {

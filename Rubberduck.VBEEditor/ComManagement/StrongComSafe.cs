@@ -57,6 +57,7 @@ namespace Rubberduck.VBEditor.ComManagement
             }
 
             _disposed = true;
+            base.Dispose(disposing);
 
             foreach (var comWrapper in _comWrapperCache.Keys)
             {

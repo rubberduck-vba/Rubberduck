@@ -9,11 +9,10 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Resources;
-using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.VBERuntime.Settings;
+using Rubberduck.VBEditor.VbeRuntime.Settings;
 
 namespace Rubberduck.UI.Command
 {
@@ -22,12 +21,12 @@ namespace Rubberduck.UI.Command
     {
         private readonly IVBE _vbe;
         private readonly IVBETypeLibsAPI _typeLibApi;
-        private readonly IVBESettings _vbeSettings;
+        private readonly IVbeSettings _vbeSettings;
         private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
         private readonly GeneralSettings _settings;
 
-        public ReparseCommand(IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVBESettings vbeSettings, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public ReparseCommand(IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _vbeSettings = vbeSettings;

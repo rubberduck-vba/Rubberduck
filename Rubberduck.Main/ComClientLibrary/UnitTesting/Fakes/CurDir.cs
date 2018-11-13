@@ -6,13 +6,13 @@ namespace Rubberduck.UnitTesting.Fakes
 {
     internal class CurDir : FakeBase
     {
-        private static readonly IntPtr ProcessAddressVariant = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcCurrentDir");
-        private static readonly IntPtr ProcessAddressString = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcCurrentDirBstr");
-
         public CurDir()
         {
-            InjectDelegate(new CurDirStringDelegate(CurDirStringCallback), ProcessAddressString);
-            InjectDelegate(new CurDirVariantDelegate(CurDirVariantCallback), ProcessAddressVariant);
+            var processAddressVariant = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcCurrentDir");
+            var processAddressString = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcCurrentDirBstr");
+
+            InjectDelegate(new CurDirStringDelegate(CurDirStringCallback), processAddressString);
+            InjectDelegate(new CurDirVariantDelegate(CurDirVariantCallback), processAddressVariant);
         }
 
         public override bool PassThrough

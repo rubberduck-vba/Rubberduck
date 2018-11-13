@@ -1017,45 +1017,6 @@ End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck
 
 End Sub</value>
   </data>
-  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
-    <value>Load Indenter Settings</value>
-  </data>
-  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
-    <value>Save Indenter Settings</value>
-  </data>
-  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
-    <value>XML file (.xml)|*.xml|Rubberduck config file|*.config</value>
-  </data>
-  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
-    <value>Load General Settings</value>
-  </data>
-  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
-    <value>Load Inspection Settings</value>
-  </data>
-  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
-    <value>Load Todo List Settings</value>
-  </data>
-  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
-    <value>Load Unit Test Settings</value>
-  </data>
-  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
-    <value>Load Window Settings</value>
-  </data>
-  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
-    <value>Save General Settings</value>
-  </data>
-  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
-    <value>Save Inspection Settings</value>
-  </data>
-  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
-    <value>Save Todo List Settings</value>
-  </data>
-  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
-    <value>Save Unit Test Settings</value>
-  </data>
-  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
-    <value>Save Window Settings</value>
-  </data>
   <data name="ContextReferences" xml:space="preserve">
     <value>references</value>
     <comment>Used to display number of references in commandbar's context selection</comment>
