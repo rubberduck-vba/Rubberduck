@@ -25,7 +25,12 @@ namespace RubberduckTests.QuickFixes
     Else
         Foo = False
     End If
-End Function";
+End Function
+
+Public Sub Test()
+    Foo ""test""
+End Sub
+";
 
             const string expectedCode =
                 @"Public Sub Foo(ByVal bar As String)
@@ -34,7 +39,12 @@ End Function";
     Else
         
     End If
-End Sub";
+End Sub
+
+Public Sub Test()
+    Foo ""test""
+End Sub
+";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueNotUsedInspection(state));
             Assert.AreEqual(expectedCode, actualCode);
@@ -53,7 +63,12 @@ label1:
 End Function
 
 Sub goo()
-End Sub";
+End Sub
+
+Public Sub Test()
+    foo ""test""
+End Sub
+";
 
             const string expectedCode =
                 @"Sub foo(ByRef fizz As Boolean)
@@ -64,7 +79,12 @@ label1:
 End Sub
 
 Sub goo()
-End Sub";
+End Sub
+
+Public Sub Test()
+    foo ""test""
+End Sub
+";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueNotUsedInspection(state));
             Assert.AreEqual(expectedCode, actualCode);
