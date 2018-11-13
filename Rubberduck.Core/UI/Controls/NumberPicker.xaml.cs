@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 
 // credit to http://stackoverflow.com/a/2752538
@@ -46,9 +47,6 @@ namespace Rubberduck.UI.Controls
                 OnPropertyChanged(new DependencyPropertyChangedEventArgs(MaxNumberProperty, NumValue - 1, NumValue));
             }
         }
-        //public int MinNumber { get; set; } = int.MinValue;
-
-        //public int MaxNumber { get; set; } = int.MaxValue;
 
         public NumberPicker()
         {
