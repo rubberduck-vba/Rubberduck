@@ -45,6 +45,7 @@ End Sub
             const string code = @"
 Sub Foo()
     Dim bar As Variant
+    ReDim bar(1 To 10)
     bar(1) = ""Z""
 End Sub
 ";
