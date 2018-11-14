@@ -19,7 +19,7 @@ namespace Rubberduck.VBEditor.VbeRuntime
                 switch (int.Parse(vbe.Version.Split('.')[0]))
                 {
                     case 6:
-                        return vbe.GetType().Namespace?.EndsWith("VB6") ?? false ? DllVersion.Vb98 : DllVersion.Vbe6;
+                        return vbe.Kind == VBEKind.Standalone ? DllVersion.Vb98 : DllVersion.Vbe6;
                     case 7:
                         return DllVersion.Vbe7;
                     default:
