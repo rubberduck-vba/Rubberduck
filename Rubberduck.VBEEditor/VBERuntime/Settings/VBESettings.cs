@@ -26,7 +26,7 @@ namespace Rubberduck.VBEditor.VbeRuntime.Settings
                 {
                     case DllVersion.Vbe7:
                     case DllVersion.Vbe6:
-                        _activeRegistryRootPath = string.Format(VbeSettingPathTemplate, vbe.Version);
+                        _activeRegistryRootPath = string.Format(VbeSettingPathTemplate, vbe.Version.Substring(0, 3));
                         break;
                     case DllVersion.Vb98:
                         _activeRegistryRootPath = Vb6SettingPath;
