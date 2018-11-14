@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47" ToolsVersion="15.0">
   <PropertyGroup>
     <Title>Rubberduck.Resources</Title>
     <Product>Rubberduck.Resources</Product>
@@ -7,49 +7,9 @@
     <ProjectGuid>{1B84B387-F7C4-4876-9BDF-C644C365359A}</ProjectGuid>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
-
   <ItemGroup>
     <Resource Include="**\*.png" />
     <Resource Include="**\*.bmp" />
     <Resource Include="**\*.txt" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Compile Update="**\*.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="**\*.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>$([System.String]::Copy('%(FileName)')).Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="RubberduckUI.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Settings\SettingsUI.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>SettingsUI.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="RubberduckUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Settings\SettingsUI.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>SettingsUI.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>
