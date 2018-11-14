@@ -60,8 +60,8 @@ namespace Rubberduck.VBEditor.VbeRuntime
                     // ignored
                 }
             }
-            // we shouldn't be here.... Rubberduck is a VBA add-in, so how the heck could it have loaded without a VBE dll?!?
-            throw new InvalidOperationException("Cannot execute DoEvents; the VBE dll could not be located.");
+            // we shouldn't be here.... Rubberduck is a VBE add-in, so how the heck could it have loaded without a runtime dll?!?
+            throw new InvalidOperationException("Cannot execute library function; the VBE dll could not be located.");
         }
 
         public string DllName => _runtime.DllName;
