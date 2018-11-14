@@ -5,6 +5,7 @@ namespace Rubberduck.VBEditor.VbeRuntime
     public enum DllVersion
     {
         Unknown,
+        Vb98,
         Vbe6,
         Vbe7
     }
@@ -18,7 +19,7 @@ namespace Rubberduck.VBEditor.VbeRuntime
                 switch (int.Parse(vbe.Version.Split('.')[0]))
                 {
                     case 6:
-                        return DllVersion.Vbe6;
+                        return vbe.GetType().Namespace?.EndsWith("VB6") ?? false ? DllVersion.Vb98 : DllVersion.Vbe6;
                     case 7:
                         return DllVersion.Vbe7;
                     default:

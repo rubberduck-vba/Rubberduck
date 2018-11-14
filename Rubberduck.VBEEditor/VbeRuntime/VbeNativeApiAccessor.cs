@@ -1,5 +1,6 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.VBERuntime;
 
 namespace Rubberduck.VBEditor.VbeRuntime
 {
@@ -37,6 +38,8 @@ namespace Rubberduck.VBEditor.VbeRuntime
                     return new VbeNativeApi7();
                 case DllVersion.Vbe6:
                     return new VbeNativeApi6();
+                case DllVersion.Vb98:
+                    return new Vb6NativeApi();
                 default:
                     return DetermineVersion();
             }
@@ -61,8 +64,17 @@ namespace Rubberduck.VBEditor.VbeRuntime
                 }
                 catch
                 {
-                    // we shouldn't be here.... Rubberduck is a VBA add-in, so how the heck could it have loaded without a VBE dll?!?
-                    throw new InvalidOperationException("Cannot execute DoEvents; the VBE dll could not be located.");
+                    try
+                    {
+                        runtime = new Vb6NativeApi();
+                        runtime.GetTimer();
+                        _version = DllVersion.Vb98;
+                    }
+                    catch
+                    {
+                        // we shouldn't be here.... Rubberduck is a VBA add-in, so how the heck could it have loaded without a VBE dll?!?
+                        throw new InvalidOperationException("Cannot execute DoEvents; the VBE dll could not be located.");
+                    }
                 }
             }
 
