@@ -32,7 +32,7 @@ namespace Rubberduck.Inspections.QuickFixes
                     UpdateContext(elseIfBlockContext, rewriter);
                     break;
                 default:
-                    throw new NotSupportedException(nameof(result.Context));
+                    throw new NotSupportedException(result.Context.GetType().ToString());
             }
         }
 

@@ -47,14 +47,12 @@ namespace Rubberduck.Parsing.Rewriter
                 return false;
             }
 
-            lock (_invalidationLockObject)
+            //This is thread-safe because, once invalidated, there is no way back.
+            if (IsInvalidated)
             {
-                if (_isInvalidated)
-                {
-                    Logger.Warn("Tried to execute Rewrite on a RewriteSession that was already invalidated.");
-                    return false;
-                }
-            }
+                Logger.Warn("Tried to execute Rewrite on a RewriteSession that was already invalidated.");
+                return false;
+            }            
 
             if (!_rewritingAllowed(this))
             {

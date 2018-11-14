@@ -94,7 +94,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private void AddInterface()
         {
-            //We need to suspend here since addin the interface and rewriting will both trigger a reparse.
+            //We need to suspend here since adding the interface and rewriting will both trigger a reparse.
             var suspendResult = _model.State.OnSuspendParser(this, new[] {ParserState.Ready}, AddInterfaceInternal);
             if (suspendResult != SuspensionResult.Completed)
             {
@@ -122,7 +122,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             AddInterfaceMembersToClass(rewriter);
 
-            //We have to reparse here already, because 
             rewriteSession.TryRewrite();
         }
 
