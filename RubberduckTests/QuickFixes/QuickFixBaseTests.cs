@@ -16,7 +16,7 @@ namespace RubberduckTests.QuickFixes
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var quickFix = new RemoveCommentQuickFix(state);
+                var quickFix = new RemoveCommentQuickFix();
                 quickFix.RegisterInspections(typeof(EmptyStringLiteralInspection));
 
                 Assert.IsTrue(quickFix.SupportedInspections.Contains(typeof(EmptyStringLiteralInspection)));
@@ -30,7 +30,7 @@ namespace RubberduckTests.QuickFixes
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var quickFix = new RemoveCommentQuickFix(state);
+                var quickFix = new RemoveCommentQuickFix();
                 quickFix.RemoveInspections(quickFix.SupportedInspections.ToArray());
 
                 Assert.IsFalse(quickFix.SupportedInspections.Any());

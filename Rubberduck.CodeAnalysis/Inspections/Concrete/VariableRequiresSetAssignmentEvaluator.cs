@@ -13,8 +13,8 @@ namespace Rubberduck.Inspections
         /// Determines whether the 'Set' keyword is required (whether it's present or not) for the specified identifier reference.
         /// </summary>
         /// <param name="reference">The identifier reference to analyze</param>
-        /// <param name="state">The parser state</param>
-        public static bool RequiresSetAssignment(IdentifierReference reference, RubberduckParserState state)
+        /// <param name="declarationFinderProvider">The parser state</param>
+        public static bool RequiresSetAssignment(IdentifierReference reference, IDeclarationFinderProvider declarationFinderProvider)
         {
             if (!reference.IsAssignment)
             {
@@ -89,7 +89,7 @@ namespace Rubberduck.Inspections
 
             // todo resolve expression return type
 
-            var memberRefs = state.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName);
+            var memberRefs = declarationFinderProvider.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName);
             var lastRef = memberRefs.LastOrDefault(r => !Equals(r, reference) && r.Context.GetAncestor<VBAParser.LetStmtContext>() == letStmtContext);
             if (lastRef?.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
             {
@@ -104,7 +104,7 @@ namespace Rubberduck.Inspections
             // is the reference referring to something else in scope that's a object?
             var project = Declaration.GetProjectParent(reference.ParentScoping);
             var module = Declaration.GetModuleParent(reference.ParentScoping);
-            return state.DeclarationFinder.MatchName(expression.GetText().ToLowerInvariant())
+            return declarationFinderProvider.DeclarationFinder.MatchName(expression.GetText().ToLowerInvariant())
                 .Any(decl => (decl.DeclarationType.HasFlag(DeclarationType.ClassModule) || Tokens.Object.Equals(decl.AsTypeName))
                 && AccessibilityCheck.IsAccessible(project, module, reference.ParentScoping, decl));
         }

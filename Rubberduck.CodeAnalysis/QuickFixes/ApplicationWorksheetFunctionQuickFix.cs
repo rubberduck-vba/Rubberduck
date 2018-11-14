@@ -1,23 +1,19 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class ApplicationWorksheetFunctionQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public ApplicationWorksheetFunctionQuickFix(RubberduckParserState state)
+        public ApplicationWorksheetFunctionQuickFix()
             : base(typeof(ApplicationWorksheetFunctionInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
             rewriter.InsertBefore(result.Context.Start.TokenIndex, "WorksheetFunction.");
         }
 

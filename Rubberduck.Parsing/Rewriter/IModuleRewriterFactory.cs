@@ -5,7 +5,7 @@ namespace Rubberduck.Parsing.Rewriter
 {
     public interface IModuleRewriterFactory
     {
-        IModuleRewriter CodePaneRewriter(QualifiedModuleName module, ITokenStream tokenStream);
-        IModuleRewriter AttributesRewriter(QualifiedModuleName module, ITokenStream tokenStream);
+        IExecutableModuleRewriter CodePaneRewriter(QualifiedModuleName module, ITokenStream tokenStream);
+        IExecutableModuleRewriter AttributesRewriter(QualifiedModuleName module, ITokenStream tokenStream);
     }
 }
