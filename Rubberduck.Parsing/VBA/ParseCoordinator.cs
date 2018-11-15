@@ -223,6 +223,10 @@ namespace Rubberduck.Parsing.VBA
             _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.LoadingReference, token);
             token.ThrowIfCancellationRequested();
 
+            var newOrModifiedProjects = toParse.Select(module => module.ProjectId).Concat(newProjectIds).ToHashSet();
+            _parsingCacheService.RefreshUserComProjects(newOrModifiedProjects);
+            token.ThrowIfCancellationRequested();
+
             _parsingStageService.SyncComReferences(token);
             if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedInLastSync.Any())
             {

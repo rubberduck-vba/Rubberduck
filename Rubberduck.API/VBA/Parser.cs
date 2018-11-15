@@ -105,6 +105,7 @@ namespace Rubberduck.API.VBA
             var typeLibProvider = new TypeLibWrapperProvider(projectRepository);
             var compilationArgumentsProvider = new CompilationArgumentsProvider(typeLibProvider, _dispatcher, predefinedCompilationConstants);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
+            var userProjectsRepository = new UserProjectRepository(typeLibProvider, _dispatcher, projectRepository);
             var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
             var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
             var preprocessor = new VBAPreprocessor(preprocessorParser, compilationsArgumentsCache);
@@ -166,7 +167,8 @@ namespace Rubberduck.API.VBA
                 moduleToModuleReferenceManager,
                 referenceRemover,
                 supertypeClearer,
-                compilationsArgumentsCache
+                compilationsArgumentsCache,
+                userProjectsRepository
                 );
 
             _parser = new SynchronousParseCoordinator(

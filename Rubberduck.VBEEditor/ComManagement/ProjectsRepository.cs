@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -55,21 +57,37 @@ namespace Rubberduck.VBEditor.ComManagement
 
         private bool TryStoreLockedProject(IVBProject project)
         {
-            string path;
-            try
+            if (!TryGetFullPath(project, out var path))
             {
-                path = project.FileName;
-            }
-            catch (Exception exception)
-            {
-                _logger.Warn(exception, "Path of locked project could not be read.");
-                return false;
+                _logger.Warn("Path of locked project could not be read.");
             }
 
             var projectName = project.Name;
             var projectId = QualifiedModuleName.GetProjectId(projectName, path);
 
             _lockedProjects.Add(projectId, project);
+            return true;
+        }
+
+        private bool TryGetFullPath(IVBProject project, out string fullPath)
+        {
+            try
+            {
+                fullPath = project.FileName;
+            }
+            catch (IOException)
+            {
+                // Filename throws exception if unsaved.
+                fullPath = null;
+                return false;
+            }
+            catch (COMException e)
+            {
+                _logger.Warn(e);
+                fullPath = null;
+                return false;
+            }
+
             return true;
         }
 
