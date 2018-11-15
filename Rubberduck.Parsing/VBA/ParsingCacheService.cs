@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
@@ -15,13 +16,15 @@ namespace Rubberduck.Parsing.VBA
         private readonly IReferenceRemover _referenceRemover;
         private readonly ISupertypeClearer _supertypeClearer;
         private readonly ICompilationArgumentsCache _compilationArgumentsCache;
+        private readonly IUserComProjectRepository _userComProjectRepository;
 
         public ParsingCacheService(
             IDeclarationFinderProvider declarationFinderProvider,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IReferenceRemover referenceRemover,
             ISupertypeClearer supertypeClearer,
-            ICompilationArgumentsCache compilationArgumentsCache)
+            ICompilationArgumentsCache compilationArgumentsCache,
+            IUserComProjectRepository userComProjectRepository)
         {
             if(declarationFinderProvider == null)
             {
@@ -43,11 +46,16 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(compilationArgumentsCache));
             }
+            if (userComProjectRepository == null)
+            {
+                throw new ArgumentNullException(nameof(userComProjectRepository));
+            }
             _declarationFinderProvider = declarationFinderProvider;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _referenceRemover = referenceRemover;
             _supertypeClearer = supertypeClearer;
             _compilationArgumentsCache = compilationArgumentsCache;
+            _userComProjectRepository = userComProjectRepository;
         }
 
         public DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;
@@ -163,6 +171,21 @@ namespace Rubberduck.Parsing.VBA
         public void RemoveCompilationArgumentsFromCache(IEnumerable<string> projectIds)
         {
             _compilationArgumentsCache.RemoveCompilationArgumentsFromCache(projectIds);
+        }
+
+        public ComProject UserProject(string projectId)
+        {
+            return _userComProjectRepository.UserProject(projectId);
+        }
+
+        public IEnumerable<(string projectId, ComProject comProject)> UserProjects()
+        {
+            return _userComProjectRepository.UserProjects();
+        }
+
+        public void RefreshUserComProjects(IReadOnlyCollection<string> projectIdsToReload)
+        {
+            _userComProjectRepository.RefreshUserComProjects(projectIdsToReload);
         }
     }
 }

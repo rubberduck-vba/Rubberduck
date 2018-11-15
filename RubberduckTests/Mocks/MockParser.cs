@@ -63,6 +63,7 @@ namespace RubberduckTests.Mocks
             var vbeVersion = double.Parse(vbe.Version, CultureInfo.InvariantCulture);
             var compilationArgumentsProvider = MockCompilationArgumentsProvider(vbeVersion);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
+            var userComProjectsRepository = MockUserComProjectRepository();
 
             var path = serializedComProjectsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "Testfiles", "Resolver");
@@ -128,7 +129,8 @@ namespace RubberduckTests.Mocks
                 moduleToModuleReferenceManager,
                 referenceRemover,
                 supertypeClearer,
-                compilationsArgumentsCache
+                compilationsArgumentsCache,
+                userComProjectsRepository
                 );
             var tokenStreamCache = new StateTokenStreamCache(state);
             var moduleRewriterFactory = new ModuleRewriterFactory(
@@ -155,6 +157,14 @@ namespace RubberduckTests.Mocks
         public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedComProjectsPath = null)
         {
             return CreateWithRewriteManager(vbe, state, projectRepository, serializedComProjectsPath).parser;
+        }
+
+        private static IUserComProjectRepository MockUserComProjectRepository()
+        {
+            var userComProjectsRepository = new Mock<IUserComProjectRepository>();
+            userComProjectsRepository.Setup(m => m.UserProject(It.IsAny<string>())).Returns((string projectId) => null);
+            userComProjectsRepository.Setup(m => m.UserProjects()).Returns(() => null);
+            return userComProjectsRepository.Object;
         }
 
         private static ICompilationArgumentsProvider MockCompilationArgumentsProvider(double vbeVersion)
