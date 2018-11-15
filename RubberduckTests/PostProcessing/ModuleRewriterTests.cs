@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Antlr4.Runtime;
 using NUnit.Framework;
 using Moq;
@@ -68,18 +67,18 @@ namespace RubberduckTests.PostProcessing
         public void RewriterInsertsRewriterOutputAtLine1()
         {
             const string content = @"Option Explicit";
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out component).Object;
-
-            using (var state = MockParser.CreateAndParse(vbe))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out var component).Object;
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
             {
                 if (state.Status != ParserState.Ready)
                 {
                     Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
                 }
 
-                var rewriter = state.GetRewriter(component);
-                rewriter.Rewrite();
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+                var rewriter = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName);
+                rewriteSession.TryRewrite();
 
                 Assert.AreEqual(content, rewriter.GetText());
             }
@@ -94,26 +93,9 @@ namespace RubberduckTests.PostProcessing
             const string content = @"
 Private foo As String
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Variable);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No variable was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Variable, target => true);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -125,26 +107,9 @@ Private foo As String
             const string content = @"
 Private Const foo As String = ""Something""
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No constant was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Constant, target => true);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -160,26 +125,9 @@ Sub DoSomething()
 Dim foo As String
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Variable);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No variable was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Variable, target => true);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -195,27 +143,9 @@ Sub DoSomething()
 Const foo As String = ""Something""
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No constant was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                var rewrittenCode = rewriter.GetText();
-                Assert.AreEqual(expected, rewrittenCode);
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Constant, target => true);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -230,26 +160,9 @@ End Sub
 Sub DoSomething(ByVal foo As Long)
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No parameter was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Parameter, target => true);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -262,26 +175,9 @@ Public Event SomeEvent()
             const string content = @"
 Public Event SomeEvent(ByVal foo As Long)
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No parameter was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Parameter, target => true);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -294,26 +190,9 @@ Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" () As Long
             const string content = @"
 Declare PtrSafe Function Foo Lib ""Z"" Alias ""Y"" (ByVal bar As Long) As Long
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Parameter);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No parameter was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Parameter, target => true);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -330,26 +209,9 @@ Sub DoSomething()
 Dim foo As String, bar As Integer
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Variable);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No 'foo' variable was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Variable, target => target.IdentifierName == "foo");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -366,26 +228,9 @@ Sub DoSomething()
 Const foo As String = ""Something"", bar As Integer = 42
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Constant);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No 'foo' constant was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Constant, target => target.IdentifierName == "foo");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -400,26 +245,9 @@ End Sub
 Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Parameter);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No 'foo' parameter was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Parameter, target => target.IdentifierName == "foo");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -436,26 +264,9 @@ Sub DoSomething()
 Dim foo As String, bar As Integer
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No variable was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Variable, target => target.IdentifierName == "bar");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -470,26 +281,9 @@ End Sub
 Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Parameter);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No parameter was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Parameter, target => target.IdentifierName == "bar");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -506,26 +300,9 @@ Sub DoSomething()
 Const foo As String = ""Something"", bar As Integer = 42
 End Sub
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No 'bar' constant was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Constant, target => target.IdentifierName == "bar");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -539,26 +316,9 @@ Private foo _
   As _
     String
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Variable);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No variable was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Variable, target => true);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -572,26 +332,9 @@ Private Const foo _
   As String = _
   ""Something""
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.DeclarationType == DeclarationType.Constant);
-                if (target == null)
-                {
-                    Assert.Inconclusive("No constant was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Constant, target => true);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -604,26 +347,9 @@ Private foo As String, bar As Long
             const string expected = @"
 Private bar As Long
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Variable);
-                if (target == null)
-                {
-                    Assert.Inconclusive("Target variable was not found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Variable, target => target.IdentifierName == "foo");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -636,26 +362,9 @@ Private Const foo As String = ""Something"", bar As Long = 42
             const string expected = @"
 Private Const bar As Long = 42
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "foo" && d.DeclarationType == DeclarationType.Constant);
-                if (target == null)
-                {
-                    Assert.Inconclusive("Target constant was not found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Constant, target => target.IdentifierName == "foo");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -668,26 +377,9 @@ Private foo As String, bar As Long
             const string expected = @"
 Private foo As String
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
-                if (target == null)
-                {
-                    Assert.Inconclusive("Target variable was not found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Variable, target => target.IdentifierName == "bar");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -700,26 +392,9 @@ Private Const foo As String = ""Something"", bar As Long = 42
             const string expected = @"
 Private Const foo As String = ""Something""
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
-                if (target == null)
-                {
-                    Assert.Inconclusive("Target constant was not found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Constant, target => target.IdentifierName == "bar");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -732,26 +407,9 @@ Private foo As String, bar As Long, buzz As Integer
             const string expected = @"
 Private foo As String, buzz As Integer
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
-                if (target == null)
-                {
-                    Assert.Inconclusive("Target variable was not found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Variable, target => target.IdentifierName == "bar");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -764,26 +422,9 @@ Private Const foo As String = ""Something"", bar As Long = 42, buzz As Integer =
             const string expected = @"
 Private Const foo As String = ""Something"", buzz As Integer = 12
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
-                if (target == null)
-                {
-                    Assert.Inconclusive("Target constant was not found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Constant, target => target.IdentifierName == "bar");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -799,26 +440,9 @@ Private foo As String, _
 Private foo As String, _
         buzz As Integer
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Variable);
-                if (target == null)
-                {
-                    Assert.Inconclusive("Target variable was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Variable, target => target.IdentifierName == "bar");
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -837,29 +461,12 @@ Private Const foo _
           As String = ""Something"", _
         buzz As Integer = 12
 ";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(content, out _).Object;
-            using (var state = MockParser.CreateAndParse(vbe))
-            {
-                if (state.Status != ParserState.Ready)
-                {
-                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
-                }
 
-                var declarations = state.AllUserDeclarations;
-                var target = declarations.SingleOrDefault(d => d.IdentifierName == "bar" && d.DeclarationType == DeclarationType.Constant);
-                if (target == null)
-                {
-                    Assert.Inconclusive("Target constant was found in test code.");
-                }
-
-                var rewriter = state.GetRewriter(target);
-                rewriter.Remove(target);
-
-                Assert.AreEqual(expected, rewriter.GetText());
-            }
+            var actual = RewrittenForTargetRemovalCode(content, DeclarationType.Constant, target => target.IdentifierName == "bar");
+            Assert.AreEqual(expected, actual);
         }
 
-        private IProjectsProvider TestProvider(QualifiedModuleName module, ICodeModule testModule)
+        private static IProjectsProvider TestProvider(QualifiedModuleName module, ICodeModule testModule)
         {
             var component = new Mock<IVBComponent>();
             component.Setup(c => c.CodeModule).Returns(testModule);
@@ -867,6 +474,32 @@ Private Const foo _
             provider.Setup(p => p.Component(It.IsAny<QualifiedModuleName>()))
                 .Returns<QualifiedModuleName>(qmn => qmn.Equals(module) ? component.Object : null);
             return provider.Object;
+        }
+
+        private string RewrittenForTargetRemovalCode(string inputCode, DeclarationType targetType, Func<Declaration, bool> targetCondition)
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _).Object;
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                if (state.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser isn't ready. Test cannot proceed.");
+                }
+
+                var target = state.DeclarationFinder.UserDeclarations(targetType).SingleOrDefault(targetCondition);
+                if (target == null)
+                {
+                    Assert.Inconclusive("No target was found in test code.");
+                }
+
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+                var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
+
+                rewriter.Remove(target);
+
+                return rewriter.GetText();
+            }
         }
     }
 }

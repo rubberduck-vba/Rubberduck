@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Common;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceField;
@@ -10,12 +11,14 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorIntroduceFieldCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
 
-        public RefactorIntroduceFieldCommand (IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public RefactorIntroduceFieldCommand (IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
             :base(vbe)
         {
             _state = state;
+            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
         }
 
@@ -49,7 +52,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var refactoring = new IntroduceFieldRefactoring(Vbe, _state, _messageBox);
+            var refactoring = new IntroduceFieldRefactoring(Vbe, _state, _messageBox, _rewritingManager);
             refactoring.Refactor(selection.Value);
         }
     }

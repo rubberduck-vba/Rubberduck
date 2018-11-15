@@ -43,22 +43,27 @@ namespace RubberduckTests.Mocks
             return parser.State;
         }
 
-        public static SynchronousParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
+        public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, string serializedComProjectsPath = null)
         {
-            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(new Moq.Mock<IVBE>());
+            var vbeEvents = MockVbeEvents.CreateMockVbeEvents(new Mock<IVBE>());
             var declarationFinderFactory = new DeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(vbe);
             var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory, vbeEvents.Object);
-            return Create(vbe, state, projectRepository, serializedDeclarationsPath);
+            return CreateWithRewriteManager(vbe, state, projectRepository, serializedComProjectsPath);
         }
 
-        public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedDeclarationsPath = null)
+        public static SynchronousParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null)
+        {
+            return CreateWithRewriteManager(vbe, serializedDeclarationsPath).parser;
+        }
+
+        public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedComProjectsPath = null)
         {
             var vbeVersion = double.Parse(vbe.Version, CultureInfo.InvariantCulture);
             var compilationArgumentsProvider = MockCompilationArgumentsProvider(vbeVersion);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
 
-            var path = serializedDeclarationsPath ??
+            var path = serializedComProjectsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
             var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
             var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
@@ -88,17 +93,14 @@ namespace RubberduckTests.Mocks
                     new SpecialFormDeclarations(state),
                     new FormEventDeclarations(state),
                     new AliasDeclarations(state),
-                }); var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+                });
+            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
             //We use the same handler because to achieve consistency between the return values.
             var attributesSourceCodeHandler = codePaneSourceCodeHandler;
-            var moduleRewriterFactory = new ModuleRewriterFactory(
-                codePaneSourceCodeHandler,
-                attributesSourceCodeHandler);
             var moduleParser = new ModuleParser(
                 codePaneSourceCodeHandler, 
                 attributesSourceCodeHandler, 
-                stringParser, 
-                moduleRewriterFactory);
+                stringParser);
             var parseRunner = new SynchronousParseRunner(
                 state,
                 parserStateManager,
@@ -126,13 +128,28 @@ namespace RubberduckTests.Mocks
                 supertypeClearer,
                 compilationsArgumentsCache
                 );
+            var tokenStreamCache = new StateTokenStreamCache(state);
+            var moduleRewriterFactory = new ModuleRewriterFactory(
+                codePaneSourceCodeHandler,
+                attributesSourceCodeHandler);
+            var rewriterProvider = new RewriterProvider(tokenStreamCache, moduleRewriterFactory);
+            var rewriteSessionFactory = new RewriteSessionFactory(state, rewriterProvider);
+            var rewritingManager = new RewritingManager(rewriteSessionFactory); 
 
-            return new SynchronousParseCoordinator(
+            var parser = new SynchronousParseCoordinator(
                 state,
                 parsingStageService,
                 parsingCacheService,
                 projectManager,
-                parserStateManager);
+                parserStateManager,
+                rewritingManager);
+
+            return (parser, rewritingManager);
+        }
+
+        public static SynchronousParseCoordinator Create(IVBE vbe, RubberduckParserState state, IProjectsRepository projectRepository, string serializedComProjectsPath = null)
+        {
+            return CreateWithRewriteManager(vbe, state, projectRepository, serializedComProjectsPath).parser;
         }
 
         private static ICompilationArgumentsProvider MockCompilationArgumentsProvider(double vbeVersion)
@@ -147,13 +164,21 @@ namespace RubberduckTests.Mocks
             return compilationArgumentsProvider;
         }
 
-        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedDeclarationsPath = null)
+        public static (RubberduckParserState state, IRewritingManager rewritingManager) CreateAndParseWithRewritingManager(IVBE vbe, string serializedComProjectsPath = null)
         {
-            var parser = Create(vbe, serializedDeclarationsPath);
+            var (parser, rewritingManager) = CreateWithRewriteManager(vbe, serializedComProjectsPath);
             parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
 
-            return parser.State;
+            return (parser.State, rewritingManager);
+        }
+
+        public static RubberduckParserState CreateAndParse(IVBE vbe, string serializedComProjectsPath = null)
+        {
+            return CreateAndParseWithRewritingManager(vbe, serializedComProjectsPath).state;
         }
 
         private static readonly HashSet<DeclarationType> ProceduralTypes =

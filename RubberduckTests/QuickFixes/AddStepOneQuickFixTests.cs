@@ -1,15 +1,13 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections;
-using RubberduckTests.Inspections;
-using RubberduckTests.Mocks;
-using System.Threading;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class AddStepOneQuickFixTests
+    public class AddStepOneQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
@@ -27,7 +25,8 @@ End Sub";
     Next
 End Sub";
 
-            this.TestAddStepOneQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new StepIsNotSpecifiedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -50,7 +49,8 @@ End Sub";
     Next
 End Sub";
 
-            this.TestAddStepOneQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new StepIsNotSpecifiedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -69,24 +69,14 @@ End Sub";
     Next
 End Sub";
 
-            this.TestAddStepOneQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new StepIsNotSpecifiedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        private void TestAddStepOneQuickFix(string expectedCode, string inputCode)
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new StepIsNotSpecifiedInspection(state) { Severity = CodeInspectionSeverity.Warning };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            foreach (var inspectionResult in inspectionResults)
-            {
-                new AddStepOneQuickFix(state).Fix(inspectionResult);
-            }
-
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            return new AddStepOneQuickFix();
         }
     }
 }

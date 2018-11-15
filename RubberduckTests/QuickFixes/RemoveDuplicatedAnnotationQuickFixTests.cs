@@ -1,15 +1,15 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Annotations;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class RemoveDuplicatedAnnotationQuickFixTests
+    public class RemoveDuplicatedAnnotationQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
@@ -26,15 +26,8 @@ End Sub";
 Public Sub Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                new RemoveDuplicatedAnnotationQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new DuplicatedAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -53,15 +46,8 @@ End Sub";
 Public Sub Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                new RemoveDuplicatedAnnotationQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new DuplicatedAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -80,15 +66,8 @@ End Sub";
 Public Sub Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                new RemoveDuplicatedAnnotationQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new DuplicatedAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -105,15 +84,8 @@ End Sub";
 Public Sub Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                new RemoveDuplicatedAnnotationQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new DuplicatedAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -130,15 +102,8 @@ End Sub";
 Public Sub Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                new RemoveDuplicatedAnnotationQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new DuplicatedAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -157,15 +122,8 @@ End Sub";
 Public Sub Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                new RemoveDuplicatedAnnotationQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new DuplicatedAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -184,15 +142,8 @@ End Sub";
 Public Sub Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                new RemoveDuplicatedAnnotationQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new DuplicatedAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -209,15 +160,8 @@ End Sub";
 Public Sub Foo
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                new RemoveDuplicatedAnnotationQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new DuplicatedAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -238,16 +182,15 @@ End Sub";
 '@TestMethod
 Public Sub Foo
 End Sub";
+            Func<IInspectionResult, bool> conditionToFix = result => result.Properties.AnnotationType == AnnotationType.Obsolete;
+            var actualCode = ApplyQuickFixToFirstInspectionResultSatisfyingPredicate(inputCode, state => new DuplicatedAnnotationInspection(state), conditionToFix);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new DuplicatedAnnotationInspection(state);
-                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                new RemoveDuplicatedAnnotationQuickFix(state).Fix(inspectionResults.First(result => result.Properties.AnnotationType == AnnotationType.Obsolete));
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new RemoveDuplicatedAnnotationQuickFix();
         }
     }
 }

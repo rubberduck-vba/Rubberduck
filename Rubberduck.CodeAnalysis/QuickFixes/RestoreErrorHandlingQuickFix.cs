@@ -5,22 +5,19 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RestoreErrorHandlingQuickFix : QuickFixBase
+    public sealed class RestoreErrorHandlingQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
         private const string LabelPrefix = "ErrorHandler";
 
-        public RestoreErrorHandlingQuickFix(RubberduckParserState state)
+        public RestoreErrorHandlingQuickFix()
             : base(typeof(UnhandledOnErrorResumeNextInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var exitStatement = "Exit ";
             VBAParser.BlockContext block;
@@ -52,7 +49,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 block = bodyElementContext.subStmt().block();
             }
 
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
             var context = (VBAParser.OnErrorStmtContext)result.Context;
             var labels = bodyElementContext.GetDescendents<VBAParser.IdentifierStatementLabelContext>().ToArray();
             var maximumExistingLabelIndex = GetMaximumExistingLabelIndex(labels);

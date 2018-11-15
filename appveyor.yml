@@ -107,7 +107,7 @@ artifacts:
     name: Rubberduck
 deploy:
   - provider: GitHub
-    tag: Rubberduck v$(appveyor_build_version)
+    tag: Rubberduck Stable v$(appveyor_build_version)
     release: $(release_name)
     draft: true
     prerelease: false

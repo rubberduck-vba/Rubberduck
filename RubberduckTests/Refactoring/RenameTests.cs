@@ -14,6 +14,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Rewriter;
 
 namespace RubberduckTests.Refactoring
 {
@@ -1857,7 +1858,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, "Class1", ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1871,7 +1873,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -1895,7 +1897,8 @@ End Sub";
                 .AddProjectToVbeBuilder()
                 .Build();
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var msgbox = new Mock<IMessageBox>();
@@ -1907,7 +1910,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreEqual(newName, vbe.Object.VBProjects[0].Name);
@@ -2526,7 +2529,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var codePaneMock = new Mock<ICodePane>();
@@ -2537,11 +2541,11 @@ End Sub";
                 var vbeWrapper = vbe.Object;
                 var factory = new RenamePresenterFactory(vbeWrapper, null, state);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory, null, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory, null, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor();
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(inputCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(inputCode, actualCode);
             }
         }
 
@@ -2673,7 +2677,8 @@ End Property";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, "ClassModule1", ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -2687,7 +2692,7 @@ End Property";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -2759,7 +2764,7 @@ End Property";
             tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == ConfirmationOutcome.Yes);
 
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
-            tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);
+            (tdo.ParserState, tdo.RewritingManager) = MockParser.CreateAndParseWithRewritingManager(tdo.VBE);
 
             CreateQualifiedSelectionForTestCase(tdo);
             tdo.RenameModel = new RenameModel(tdo.VBE, tdo.ParserState, tdo.QualifiedSelection) { NewName = tdo.NewName };
@@ -2768,7 +2773,7 @@ End Property";
 
             var factory = SetupFactory(tdo.RenameModel);
 
-            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState);
+            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState, tdo.ParserState.ProjectsProvider, tdo.RewritingManager);
         }
 
         private static void AddTestModuleDefinition(RenameTestsDataObject tdo, RenameTestModuleDefinition inputOutput)
@@ -2815,9 +2820,9 @@ End Property";
             {
                 if (inputOutput.CheckExpectedEqualsActual)
                 {
-                    var rewriter = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, inputOutput.ModuleName).CodeModule.Parent);
+                    var codeModule = RetrieveComponent(tdo, inputOutput.ModuleName).CodeModule;
                     var expected = inputOutput.Expected;
-                    var actual = rewriter.GetText();
+                    var actual = codeModule.Content();
                     Assert.AreEqual(expected, actual);
                 }
             }
@@ -2957,6 +2962,7 @@ End Property";
 
             public IVBE VBE { get; set; }
             public RubberduckParserState ParserState { get; set; }
+            public IRewritingManager RewritingManager { get; set; }
             public string ProjectName { get; set; }
             public string NewName { get; set; }
             public string SelectionModuleName { get; set; }
