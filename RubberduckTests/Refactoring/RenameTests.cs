@@ -2384,10 +2384,11 @@ End Sub
             tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_DoesNotWarnForUDTMember_Issue4349()
+        public void RenameRefactoring_DoesNotWarnForUDTMember()
         {
             var tdo = new RenameTestsDataObject(selection: "VS", newName: "VerySatisfiedResponses");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
@@ -2424,10 +2425,11 @@ End Sub
             tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
         }
 
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_DoesNotWarnForEnumMember_Issue4349()
+        public void RenameRefactoring_DoesNotWarnForEnumMember()
         {
             var tdo = new RenameTestsDataObject(selection: "VerySatisfiedID", newName: "VerySatisfiedResponse");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
@@ -2456,10 +2458,11 @@ End Sub
             tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
         }
 
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_DoesNotWarnForMember_Issue4349()
+        public void RenameRefactoring_DoesNotWarnForMember()
         {
             var tdo = new RenameTestsDataObject(selection: "VerySatisfiedResponse", newName: "VerySatisfiedID");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
