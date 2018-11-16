@@ -121,8 +121,6 @@ namespace Rubberduck.Root
                 .ImplementedBy<VBEInteraction>()
                 .LifestyleSingleton());
 
-            RegisterRefactoringDialogs(container);
-
             container.Register(Component.For<ISearchResultsWindowViewModel>()
                 .ImplementedBy<SearchResultsWindowViewModel>()
                 .LifestyleSingleton());
@@ -596,12 +594,6 @@ namespace Rubberduck.Root
             };
             
             return items.ToArray();
-        }
-
-        private void RegisterRefactoringDialogs(IWindsorContainer container)
-        {
-            //container.Register(Component.For<IRefactoringPresenterFactory>().AsFactory());
-            //container.Register(Component.For<IRefactoringDialogFactory>().AsFactory());
         }
 
         private void RegisterCommandMenuItems(IWindsorContainer container)

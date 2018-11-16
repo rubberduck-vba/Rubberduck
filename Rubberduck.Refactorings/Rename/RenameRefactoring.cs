@@ -102,7 +102,7 @@ namespace Rubberduck.Refactorings.Rename
             using (var container = DisposalActionContainer.Create(_factory.Create<IRenamePresenter, RenameModel>(_model), p => _factory.Release(p)))
             {
                 var presenter = container.Value;
-                
+
                 RefactorImpl(target, presenter);
                 RestoreInitialSelection();
             }
@@ -137,7 +137,7 @@ namespace Rubberduck.Refactorings.Rename
                 PresentRenameErrorMessage($"{BuildDefaultErrorMessage(_model.Target)}: {unhandledEx.Message}");
             }
         }
-        
+
         private bool TrySetRenameTargetFromInputTarget(Declaration inputTarget)
         {
             if (!IsValidTarget(inputTarget)) { return false; }
@@ -190,7 +190,7 @@ namespace Rubberduck.Refactorings.Rename
         private bool UserConfirmsRenameOfResolvedTarget(string message)
         {
             return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_TitleText) ?? false;
-            
+
         }
 
         private Declaration ResolveRenameTargetIfEventHandlerSelected(Declaration selectedTarget)
@@ -357,12 +357,12 @@ namespace Rubberduck.Refactorings.Rename
                 return;
             }
 
-                var implementations = _state.DeclarationFinder.FindAllInterfaceImplementingMembers()
-                .Where(impl => ReferenceEquals(_model.Target.ParentDeclaration, impl.InterfaceImplemented)
-                               && impl.InterfaceMemberImplemented.IdentifierName.Equals(_model.Target.IdentifierName));
+            var implementations = _state.DeclarationFinder.FindAllInterfaceImplementingMembers()
+            .Where(impl => ReferenceEquals(_model.Target.ParentDeclaration, impl.InterfaceImplemented)
+                           && impl.InterfaceMemberImplemented.IdentifierName.Equals(_model.Target.IdentifierName));
 
             RenameDefinedFormatMembers(implementations.ToList(), PrependUnderscoreFormat);
-            }
+        }
 
         private void RenameParameter()
         {
@@ -456,44 +456,44 @@ namespace Rubberduck.Refactorings.Rename
             {
                 case ComponentType.Document:
                     {
-                var properties = component.Properties;
-                var property = properties["_CodeName"];
-                {
-                    property.Value = _model.NewName;
-                }
+                        var properties = component.Properties;
+                        var property = properties["_CodeName"];
+                        {
+                            property.Value = _model.NewName;
+                        }
                         break;
-            }
+                    }
                 case ComponentType.UserForm:
                 case ComponentType.VBForm:
                 case ComponentType.MDIForm:
-            {
-                var properties = component.Properties;
-                var property = properties["Caption"];
-                {
-                    if ((string)property.Value == _model.Target.IdentifierName)
                     {
-                        property.Value = _model.NewName;
-                    }
-                    component.Name = _model.NewName;
-                }
+                        var properties = component.Properties;
+                        var property = properties["Caption"];
+                        {
+                            if ((string)property.Value == _model.Target.IdentifierName)
+                            {
+                                property.Value = _model.NewName;
+                            }
+                            component.Name = _model.NewName;
+                        }
                         break;
-            }
+                    }
                 default:
-            {
+                    {
                         if (_vbe.Kind == VBEKind.Hosted)
                         {
                             // VBA - rename code module
-                using (var codeModule = component.CodeModule)
-                {
-                    Debug.Assert(!codeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
-                    codeModule.Name = _model.NewName;
-                }
-            }
+                            using (var codeModule = component.CodeModule)
+                            {
+                                Debug.Assert(!codeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
+                                codeModule.Name = _model.NewName;
+                            }
+                        }
                         else
                         {
                             // VB6 - rename component
                             component.Name = _model.NewName;
-        }
+                        }
                         break;
                     }
             }

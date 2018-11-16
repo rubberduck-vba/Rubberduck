@@ -10,7 +10,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class RenameCommand : CommandBase, IDisposable
+    public sealed class RenameCommand : CommandBase
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -35,11 +35,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             var refactoring = new RenameRefactoring(_vbe, _factory, _msgBox, _state);
             refactoring.Refactor(((ICodeExplorerDeclarationViewModel)parameter).Declaration);
-        }
-
-        public void Dispose()
-        {
-            //TODO: I used to have something to dispose now I don't.... FML.
         }
     }
 }
