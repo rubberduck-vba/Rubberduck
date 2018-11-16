@@ -1,16 +1,13 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections;
-using RubberduckTests.Inspections;
-using RubberduckTests.Mocks;
-using System.Linq;
-using System.Threading;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class IntroduceLocalVariableQuickFixTests
+    public class IntroduceLocalVariableQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
@@ -33,7 +30,8 @@ End Sub";
     Next
 End Sub";
 
-            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UndeclaredVariableInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -61,7 +59,8 @@ End Sub";
     End With
 End Sub";
 
-            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UndeclaredVariableInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -93,7 +92,8 @@ End Sub";
     Next
 End Sub";
 
-            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UndeclaredVariableInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -117,7 +117,8 @@ End Sub";
     Next
 End Sub";
 
-            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UndeclaredVariableInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -141,7 +142,8 @@ l:  For Each fooBar In Foo
     Next
 End Sub";
 
-            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UndeclaredVariableInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -158,21 +160,14 @@ End Sub";
     Dim bar As Collection : Dim fooBar As Variant : For Each fooBar In Foo : fooBar.Whatever : Next
 End Sub";
 
-            TestInsertLocalVariableQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UndeclaredVariableInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        private void TestInsertLocalVariableQuickFix(string expectedCode, string inputCode)
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new UndeclaredVariableInspection(state) { Severity = CodeInspectionSeverity.Warning };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            new IntroduceLocalVariableQuickFix(state).Fix(inspectionResults.First());
-            var actualCode = state.GetRewriter(component).GetText();
-            Assert.AreEqual(expectedCode, actualCode);
+            return new IntroduceLocalVariableQuickFix();
         }
     }
 }

@@ -38,7 +38,7 @@ End Sub";
             var vbe = builder.AddProject(project).Build();
 
             var component = project.Object.VBComponents[0];
-            var parser = MockParser.Create(vbe.Object);
+            var (parser, rewriteManager) = MockParser.CreateWithRewriteManager(vbe.Object);
             using (var state = parser.State)
             {
                 // FIXME reinstate and unignore tests
@@ -54,11 +54,13 @@ End Sub";
                 var inspection = new UntypedFunctionUsageInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                new UntypedFunctionUsageQuickFix(state).Fix(inspectionResults.First());
+                var rewriteSession = rewriteManager.CheckOutCodePaneSession();
 
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+                new UntypedFunctionUsageQuickFix().Fix(inspectionResults.First(), rewriteSession);
+
+                var actualCode = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
-
     }
 }

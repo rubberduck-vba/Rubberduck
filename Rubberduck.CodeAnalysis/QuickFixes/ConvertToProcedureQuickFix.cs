@@ -6,38 +6,34 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class ConvertToProcedureQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public ConvertToProcedureQuickFix(RubberduckParserState state)
+        public ConvertToProcedureQuickFix()
             : base(typeof(NonReturningFunctionInspection), typeof(FunctionReturnValueNotUsedInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
+
             switch (result.Context)
             {
                 case VBAParser.FunctionStmtContext functionContext:
-                    ConvertFunction(result, functionContext);
+                    ConvertFunction(result, functionContext, rewriter);
                     break;
                 case VBAParser.PropertyGetStmtContext propertyGetContext:
-                    ConvertPropertyGet(result, propertyGetContext);
+                    ConvertPropertyGet(result, propertyGetContext, rewriter);
                     break;
             }
         }
 
-        private void ConvertFunction(IInspectionResult result, VBAParser.FunctionStmtContext functionContext)
+        private void ConvertFunction(IInspectionResult result, VBAParser.FunctionStmtContext functionContext, IModuleRewriter rewriter)
         {
-            var rewriter = _state.GetRewriter(result.Target);
-
             var asTypeContext = functionContext.GetChild<VBAParser.AsTypeClauseContext>();
             if (asTypeContext != null)
             {
@@ -59,10 +55,8 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private void ConvertPropertyGet(IInspectionResult result, VBAParser.PropertyGetStmtContext propertyGetContext)
+        private void ConvertPropertyGet(IInspectionResult result, VBAParser.PropertyGetStmtContext propertyGetContext, IModuleRewriter rewriter)
         {
-            var rewriter = _state.GetRewriter(result.Target);
-
             var asTypeContext = propertyGetContext.GetChild<VBAParser.AsTypeClauseContext>();
             if (asTypeContext != null)
             {

@@ -1054,39 +1054,6 @@ End Sub</value>
   <data name="ContextReferences" xml:space="preserve">
     <value>Referenzen</value>
   </data>
-  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
-    <value>Einstellungen für Inspektionen speichern</value>
-  </data>
-  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
-    <value>Einstellungen für Todo-Liste speichern</value>
-  </data>
-  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
-    <value>XML Datei (.xml)|*.xml|Rubberduck config file|*.config</value>
-  </data>
-  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
-    <value>Allgemeine Einstellungen speichern</value>
-  </data>
-  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
-    <value>Einstellungen für Todo-Liste Laden</value>
-  </data>
-  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
-    <value>Einstellungen für Unit-Tests speichern</value>
-  </data>
-  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
-    <value>Einstellungen für Unit-Tests laden</value>
-  </data>
-  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
-    <value>Einstellungen für Inspektionen laden</value>
-  </data>
-  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
-    <value>Einstellungen für Einrückung speichern</value>
-  </data>
-  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
-    <value>Einstellungen für Einrückung laden</value>
-  </data>
-  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
-    <value>Allgemeine Einstellungen Laden</value>
-  </data>
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Einstellungen für Smart Indenter wurden in der Registry gefunden.
 Möchten sie die Einstellungen in Rubberduck importieren?</value>
@@ -1100,9 +1067,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="IndenterSettings_CodeSampleHeader" xml:space="preserve">
     <value>Eingerücktes Codebeispiel</value>
   </data>
-  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
-    <value>Fenstereinstellungen laden</value>
-  </data>
   <data name="AssignedByValParamQFixDialog_InstructionsLabelText" xml:space="preserve">
     <value>Bitte geben Sie einen Namen für die lokale Kopie von ByVal {0} '{1}'</value>
   </data>
@@ -1111,9 +1075,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   </data>
   <data name="IndenterSettings_VerticalSpacingLabel" xml:space="preserve">
     <value>Vertikalen Abstand</value>
-  </data>
-  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
-    <value>Fenstereinstellungen speichern</value>
   </data>
   <data name="DeclarationType_BracketedExpression" xml:space="preserve">
     <value>Laufzeitausdruck</value>

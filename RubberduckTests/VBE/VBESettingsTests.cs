@@ -2,14 +2,14 @@
 using Moq;
 using NUnit.Framework;
 using Rubberduck.VBEditor.Utility;
-using Rubberduck.VBEditor.VBERuntime;
-using Rubberduck.VBEditor.VBERuntime.Settings;
+using Rubberduck.VBEditor.VbeRuntime;
+using Rubberduck.VBEditor.VbeRuntime.Settings;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.VBE
 {
     [TestFixture]
-    public class VBESettingsTests
+    public class VbeSettingsTests
     {
         private const string Vbe7SettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\VBA\7.0\Common";
         private const string Vbe6SettingPath = @"HKEY_CURRENT_USER\Software\Microsoft\VBA\6.0\Common";
@@ -29,7 +29,7 @@ namespace RubberduckTests.VBE
             var registry = GetRegistryMock();
 
             vbe.SetupGet(s => s.Version).Returns("6.00");
-            var settings = new VBESettings(vbe.Object, registry.Object);
+            var settings = new VbeSettings(vbe.Object, registry.Object);
 
             Assert.AreEqual(DllVersion.Vbe6, settings.Version);
         }
@@ -42,7 +42,7 @@ namespace RubberduckTests.VBE
             var registry = GetRegistryMock();
 
             vbe.SetupGet(s => s.Version).Returns("7.00");
-            var settings = new VBESettings(vbe.Object, registry.Object);
+            var settings = new VbeSettings(vbe.Object, registry.Object);
 
             Assert.AreEqual(DllVersion.Vbe7, settings.Version);
         }
@@ -55,7 +55,7 @@ namespace RubberduckTests.VBE
             var registry = GetRegistryMock();
 
             vbe.SetupGet(s => s.Version).Returns("foo");
-            var settings = new VBESettings(vbe.Object, registry.Object);
+            var settings = new VbeSettings(vbe.Object, registry.Object);
 
             Assert.AreEqual(DllVersion.Unknown, settings.Version);
         }
@@ -68,7 +68,7 @@ namespace RubberduckTests.VBE
             var registry = GetRegistryMock();
 
             vbe.SetupGet(s => s.Version).Returns((string)null);
-            var settings = new VBESettings(vbe.Object, registry.Object);
+            var settings = new VbeSettings(vbe.Object, registry.Object);
 
             Assert.IsTrue(settings.Version == DllVersion.Unknown);
         }
@@ -84,7 +84,7 @@ namespace RubberduckTests.VBE
             registry.Setup(s => s.SetValue(Vbe7SettingPath, "CompileOnDemand", true, RegistryValueKind.DWord));
             registry.Setup(s => s.GetValue(Vbe7SettingPath, "CompileOnDemand", DWordFalseValue)).Returns(DWordTrueValue);
 
-            var settings = new VBESettings(vbe.Object, registry.Object);
+            var settings = new VbeSettings(vbe.Object, registry.Object);
 
             settings.CompileOnDemand = true;
             Assert.IsTrue(settings.CompileOnDemand);
@@ -101,7 +101,7 @@ namespace RubberduckTests.VBE
             registry.Setup(s => s.SetValue(Vbe7SettingPath, "BackGroundCompile", false, RegistryValueKind.DWord));
             registry.Setup(s => s.GetValue(Vbe7SettingPath, "BackGroundCompile", DWordFalseValue)).Returns(DWordFalseValue);
 
-            var settings = new VBESettings(vbe.Object, registry.Object);
+            var settings = new VbeSettings(vbe.Object, registry.Object);
             
             settings.BackGroundCompile = false;
             Assert.IsTrue(settings.BackGroundCompile == false);

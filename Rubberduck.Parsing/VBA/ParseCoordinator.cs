@@ -8,6 +8,7 @@ using Rubberduck.VBEditor;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -27,6 +28,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IProjectManager _projectManager;
         private readonly IParsingCacheService _parsingCacheService;
         private readonly IParserStateManager _parserStateManager;
+        private readonly IRewritingManager _rewritingManager;
         private readonly ConcurrentStack<object> _requestorStack;
         private bool _isSuspended;
 
@@ -35,7 +37,8 @@ namespace Rubberduck.Parsing.VBA
             IParsingStageService parsingStageService,
             IParsingCacheService parsingCacheService,
             IProjectManager projectManager,
-            IParserStateManager parserStateManager)
+            IParserStateManager parserStateManager,
+            IRewritingManager rewritingManager = null)
         {
             if (state == null)
             {
@@ -63,6 +66,7 @@ namespace Rubberduck.Parsing.VBA
             _projectManager = projectManager;
             _parsingCacheService = parsingCacheService;
             _parserStateManager = parserStateManager;
+            _rewritingManager = rewritingManager;
 
             state.ParseRequest += ReparseRequested;
             state.SuspendRequest += SuspendRequested;
@@ -431,6 +435,9 @@ namespace Rubberduck.Parsing.VBA
             token.ThrowIfCancellationRequested();
 
             _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.Started, token);
+            token.ThrowIfCancellationRequested();
+
+            _rewritingManager?.InvalidateAllSessions();
             token.ThrowIfCancellationRequested();
 
             _projectManager.RefreshProjects();

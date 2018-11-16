@@ -1034,12 +1034,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
             if (IsEnumOrUDTMemberDeclaration(renameTarget)) 
             {
-                var memberMatches = identifierMatches.Where(idm =>
+                return identifierMatches.Where(idm =>
                     IsEnumOrUDTMemberDeclaration(idm) && idm.ParentDeclaration == renameTarget.ParentDeclaration);
-                if (memberMatches.Any())
-                {
-                    return memberMatches;
-                }
             }
 
             identifierMatches = identifierMatches.Where(nc => !IsEnumOrUDTMemberDeclaration(nc));

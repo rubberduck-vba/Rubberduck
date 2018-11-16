@@ -1,15 +1,13 @@
-﻿using System.Linq;
-using System.Threading;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Mocks;
-using RubberduckTests.Inspections;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class ReplaceObsoleteErrorStatementQuickFixTests
+    public class ReplaceObsoleteErrorStatementQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
@@ -25,17 +23,8 @@ End Sub";
     Err.Raise 91
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteErrorSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ObsoleteErrorSyntaxInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
         [Test]
         [Category("QuickFixes")]
@@ -57,17 +46,8 @@ Sub Foo()
     Err.Raise 91
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteErrorSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ObsoleteErrorSyntaxInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -86,17 +66,8 @@ End Sub";
     91
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ObsoleteErrorSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ObsoleteErrorSyntaxInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
 
@@ -114,17 +85,14 @@ End Sub";
     Dim foo: Err.Raise 91
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ObsoleteErrorSyntaxInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
 
-                var inspection = new ObsoleteErrorSyntaxInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-                new ReplaceObsoleteErrorStatementQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new ReplaceObsoleteErrorStatementQuickFix();
         }
     }
 }

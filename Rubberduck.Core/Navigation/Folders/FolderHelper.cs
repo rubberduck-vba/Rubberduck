@@ -2,12 +2,14 @@
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.Folders
 {
     public class FolderHelper
     {
         private readonly RubberduckParserState _state;
+        private readonly IVBE _vbe;
 
         private static readonly DeclarationType[] ComponentTypes =
         {
@@ -17,13 +19,17 @@ namespace Rubberduck.Navigation.Folders
             DeclarationType.UserForm, 
         };
 
-        public FolderHelper(RubberduckParserState state) => _state = state;
+        public FolderHelper(RubberduckParserState state, IVBE vbe)
+        {
+            _state = state;
+            _vbe = vbe;
+        }
 
         public CodeExplorerCustomFolderViewModel GetFolderTree(Declaration declaration = null)
         {
             var delimiter = GetDelimiter();
 
-            var root = new CodeExplorerCustomFolderViewModel(null, string.Empty, string.Empty, _state.ProjectsProvider);
+            var root = new CodeExplorerCustomFolderViewModel(null, string.Empty, string.Empty, _state.ProjectsProvider, _vbe);
 
             var items = declaration == null
                 ? _state.AllUserDeclarations.ToList()
@@ -46,7 +52,7 @@ namespace Rubberduck.Navigation.Folders
                     var node = currentNode.Items.FirstOrDefault(i => i.Name == section);
                     if (node == null)
                     {
-                        node = new CodeExplorerCustomFolderViewModel(currentNode, section, fullPath, _state.ProjectsProvider);
+                        node = new CodeExplorerCustomFolderViewModel(currentNode, section, fullPath, _state.ProjectsProvider, _vbe);
                         currentNode.AddChild(node);
                     }
 

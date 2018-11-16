@@ -37,36 +37,65 @@ namespace Rubberduck.VBEditor.WindowsApi
                 return null;
             }
 
-            if (_subclasses.TryGetValue(hwnd, out var existing))
-            {
-                return existing;
-            }
+            lock (ThreadLock)
+            { 
+                if (_subclasses.TryGetValue(hwnd, out var existing))
+                {
+                    return existing;
+                }
 
-            // Any additional cases also need to be added to IsSubclassable above.
-            switch (windowType)
-            {
-                case WindowType.CodePane:
-                    lock (ThreadLock)
-                    {
-                        var codePane = new CodePaneSubclass(hwnd, null);
-                        _subclasses.TryAdd(hwnd, codePane);
-                        codePane.ReleasingHandle += SubclassRemoved;
-                        codePane.CaptionChanged += AssociateCodePane;
-                        SubclassLogger.Trace($"Subclassed hWnd 0x{hwnd.ToInt64():X8} as CodePane.");
-                        return codePane;
-                    }
-                case WindowType.DesignerWindow:
-                    lock (ThreadLock)
-                    {
-                        var designer = new DesignerWindowSubclass(hwnd);
-                        _subclasses.TryAdd(hwnd, designer);
-                        designer.ReleasingHandle += SubclassRemoved;
-                        SubclassLogger.Trace($"Subclassed hWnd 0x{hwnd.ToInt64():X8} as DesignerWindow.");
-                        return designer;
-                    }
-                default:
-                    return null;
+                // Any additional cases also need to be added to IsSubclassable above.
+                switch (windowType)
+                {
+                    case WindowType.CodePane:
+                        return TrackNewCodePane(hwnd);
+                    case WindowType.DesignerWindow:
+                        return TrackNewDesigner(hwnd);
+                    default:
+                        return null;
+                }
             }
+        }
+
+        private CodePaneSubclass TrackNewCodePane(IntPtr hwnd)
+        {
+            var codePane = new CodePaneSubclass(hwnd, null);
+            try
+            {
+                if (_subclasses.TryAdd(hwnd, codePane))
+                {
+                    codePane.ReleasingHandle += SubclassRemoved;
+                    codePane.CaptionChanged += AssociateCodePane;
+                    SubclassLogger.Trace($"Subclassed hWnd 0x{hwnd.ToInt64():X8} as CodePane.");
+                    return codePane;
+                }
+            }
+            catch (Exception ex)
+            {
+                SubclassLogger.Error(ex);
+            }
+            codePane.Dispose();
+            return null;
+        }
+
+        private DesignerWindowSubclass TrackNewDesigner(IntPtr hwnd)
+        {
+            var designer = new DesignerWindowSubclass(hwnd);
+            try
+            {
+                if (_subclasses.TryAdd(hwnd, designer))
+                {
+                    designer.ReleasingHandle += SubclassRemoved;
+                    SubclassLogger.Trace($"Subclassed hWnd 0x{hwnd.ToInt64():X8} as DesignerWindow.");
+                    return designer;
+                }                
+            }
+            catch (Exception ex)
+            {
+                SubclassLogger.Error(ex);
+            }
+            designer.Dispose();
+            return null;
         }
 
         private void SubclassRemoved(object sender, EventArgs eventArgs)
@@ -86,7 +115,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         private static void AssociateCodePane(object sender, EventArgs eventArgs)
         {
             var subclass = (CodePaneSubclass)sender;
-            subclass.VbeObject = VBENativeServices.GetCodePaneFromHwnd(subclass.Hwnd);
+            subclass.VbeObject = VbeNativeServices.GetCodePaneFromHwnd(subclass.Hwnd);
             SubclassLogger.Trace($"CodePane subclass for hWnd 0x{subclass.Hwnd.ToInt64():X8} associated itself with its VBE object.");
         }
 

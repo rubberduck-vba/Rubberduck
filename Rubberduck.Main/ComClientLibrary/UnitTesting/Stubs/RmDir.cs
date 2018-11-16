@@ -6,18 +6,15 @@ namespace Rubberduck.UnitTesting
 {
     internal class RmDir : StubBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcRemoveDir");
-
         public RmDir()
         {
-            InjectDelegate(new RmDirDelegate(RmDirCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcRemoveDir");
+
+            InjectDelegate(new RmDirDelegate(RmDirCallback), processAddress);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         private delegate void RmDirDelegate(IntPtr path);
-
-        [DllImport(TargetLibrary, SetLastError = true)]
-        private static extern void rtcRemoveDir(IntPtr path);
 
         public void RmDirCallback(IntPtr path)
         {
@@ -28,7 +25,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("path", pathArg, Tokens.String);
             if (PassThrough)
             {
-                rtcRemoveDir(path);
+                VbeProvider.VbeRuntime.RemoveDir(path);
             }
         }
     }

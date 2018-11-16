@@ -6,18 +6,15 @@ namespace Rubberduck.UnitTesting
 {
     internal class ChDrive : StubBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcChangeDrive");
-
         public ChDrive()
         {
-            InjectDelegate(new ChDriveDelegate(ChDriveCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcChangeDrive");
+
+            InjectDelegate(new ChDriveDelegate(ChDriveCallback), processAddress);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         private delegate void ChDriveDelegate(IntPtr driveletter);
-
-        [DllImport(TargetLibrary, SetLastError = true)]
-        private static extern void rtcChangeDrive(IntPtr driveletter);
 
         public void ChDriveCallback(IntPtr driveletter)
         {
@@ -28,7 +25,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("driveletter", driveletterArg, Tokens.String);
             if (PassThrough)
             {
-                rtcChangeDrive(driveletter);
+                VbeProvider.VbeRuntime.ChangeDrive(driveletter);
             }
         }
     }

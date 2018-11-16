@@ -7,21 +7,25 @@ hosts:
 # enforce crlf fixing
 init:
   git config --global core.autocrlf true
-# restrict how much history we try to grab
-clone_depth: 3
+
+# history limited to 15 commits, since we ran into trouble with a limit of 3
+# the limit can be rather generous
+clone_depth: 15
+# explicitly do not shallow-clone. 
+# Line-Endings are wrong on github, because of CRLF fixing
+# shallow-clone would download a zip, which doesn't fix the line-endings for unit-tests
+shallow_clone: false
+
 # ignore a certain subset of files when evaluating build-changes
 skip_commits:
   files:
   - docs/*
   - '**/*.md'
-  # intermediately enable yml changes to trigger builds, because codecov changes only changes the codecov yml ...
-#  - '**/*.yml'
   - license
   - License.rtf
 branches:
   only:
   - master
-  - staging
   - next
 skip_tags: true
 
@@ -44,8 +48,6 @@ dotnet_csproj:
   file: 'RubberduckBaseProject.csproj' # ;*\Rubberduck.Core.csproj'
   version: '{version}'
   assembly_version: '{version}'
-  #file_version: '{version}'
-  #informational_version: '{version}'
 
 
 before_build:
@@ -61,52 +63,73 @@ build:
 # Otherwise we might run tests against artifacts that do not exist
 test_script:
   # we use -returntargetcode to fail the build if tests fail
-  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
-  - OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
+  - cmd: OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTests\bin\RubberduckTests.dll" -output:".\Rubberduck_Coverage.xml"
+  - cmd: OpenCover.Console.exe -register:user -returntargetcode -target:"nunit3-console.exe" -targetargs:".\RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll" -output:".\RubberduckCodeAnalysis_Coverage.xml"
   # when using test_script, after_test seems to not be executed
-  - codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
+  - cmd: codecov -f "Rubberduck_Coverage.xml RubberduckCodeAnalysis_Coverage.xml"
 
+# Define the installer-name depending on what branch we're building on
+environment:
+  installer_dir: Rubberduck.Deployment\InnoSetup\Installers\
 for:
-  - branches:
-      only:
-        - next
-    after_test:
-      - iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
-      - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
-  - branches:
-      only:
-        - master
-    after_test:
-      - iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
-      - move Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.exe Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
-    
+- 
+  branches:
+    only:
+    - next
+  environment:
+    installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-pre.exe
+    release_name: Rubberduck v%APPVEYOR_BUILD_VERSION%-pre
+- 
+  branches:
+    only:
+    - master
+  environment:
+    installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%.exe
+    release_name: Rubberduck v%APPVEYOR_BUILD_VERSION%
+- 
+  branches:
+    except:
+      - master
+      - next
+  environment:
+    # fall back to naming the installer something that shows we're in an unexpected state
+    installer_name: Rubberduck.Setup.%APPVEYOR_BUILD_VERSION%-unexpected.exe
+    release_name: Rubberduck v%APPVEYOR_BUILD_VERSION%-%APPVEYOR_REPO_BRANCH%
+
+# Create Installers to store at appveyor and upload to github
+after_test:
+  - cmd: iscc /O "Rubberduck.Deployment\InnoSetup\Rubberduck.Installer.Build.iss"
+  - cmd: move %INSTALLER_DIR%\Rubberduck.Setup.exe %INSTALLER_DIR%\%INSTALLER_NAME%
+
 # grab the installers we produce and upload them to github :)
 artifacts:
   - path: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.*.exe
     name: Rubberduck
 deploy:
   - provider: GitHub
-    tag: Rubberduck v$(appveyor_build_version)
-    release: Rubberduck v$(appveyor_build_version)
-    description: AppVeyor build on [master] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
-    auth_token:
-      secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version).exe
+    tag: RETAGMEWITHAMESSAGE
+    release: $(release_name)
     draft: true
     prerelease: false
-    on:
-      branch: master
-  - provider: GitHub
-    tag: Rubberduck v$(appveyor_build_version)
-    release: Rubberduck v$(appveyor_build_version)-pre
-    description: AppVeyor build on [next] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)
+    description: "Built with :heart: by AppVeyor CI on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
-    artifact: Rubberduck.Deployment\InnoSetup\Installers\Rubberduck.Setup.$(appveyor_build_version)-pre.exe
+    artifact: Rubberduck
+    on: 
+      branch: master
+  - provider: GitHub
+    tag: Prerelease-v$(appveyor_build_version)
+    release: $(release_name)
     draft: false
     prerelease: true
-    on:
+    description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
+    auth_token:
+      secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
+    artifact: Rubberduck
+    on: 
       branch: next
+
+# This is Duga posting stuff to the war room
 notifications:
   - provider: Webhook
     url: http://stats.zomis.net/GithubHookSEChatService/hooks/github/payload?roomId=14929

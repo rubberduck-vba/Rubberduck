@@ -223,6 +223,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A procedure that returns an object may return &apos;Nothing&apos;. That will cause a runtime error 91 - &quot;Object variable or With block variable not set&quot; on subsequent member access. Perform an &apos;Is Nothing&apos; check after the &apos;Set&apos; assignment to guard against runtime errors..
+        /// </summary>
+        public static string ExcelMemberMayReturnNothingInspection {
+            get {
+                return ResourceManager.GetString("ExcelMemberMayReturnNothingInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the &apos;Function&apos; into a &apos;Sub&apos;. If the function is recursive, none of its external callers are using the returned value..
         /// </summary>
         public static string FunctionReturnValueNotUsedInspection {
@@ -678,6 +687,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UndeclaredVariableInspection {
             get {
                 return ResourceManager.GetString("UndeclaredVariableInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A class module that contains members with underscores cannot be implemented by other classes. The underscore is used as a separator between the interface/object name and the implemented member name: having an underscore in the member name confuses the compiler, which then refuses to compile the project. Avoid underscores in public member names by following a &apos;PascalCase&apos; naming convention..
+        /// </summary>
+        public static string UnderscoreInPublicClassModuleMemberInspection {
+            get {
+                return ResourceManager.GetString("UnderscoreInPublicClassModuleMemberInspection", resourceCulture);
             }
         }
         

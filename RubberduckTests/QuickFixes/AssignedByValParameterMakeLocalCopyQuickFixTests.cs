@@ -355,11 +355,12 @@ End Sub"
 
         private string ApplyLocalVariableQuickFixToCodeFragment(string inputCode, string userEnteredName = "")
         {
-            var vbe = BuildMockVBE(inputCode);
+            var vbe = BuildMockVBE(inputCode, out var component);
 
             var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 var inspection = new AssignedByValParameterInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
@@ -369,14 +370,17 @@ End Sub"
                     Assert.Inconclusive("Inspection yielded no results.");
                 }
 
-                new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result);
-                return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+
+                new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result, rewriteSession);
+
+                return rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
             }
         }
 
-        private Mock<IVBE> BuildMockVBE(string inputCode)
+        private Mock<IVBE> BuildMockVBE(string inputCode, out IVBComponent component)
         {
-            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
         }
 
         private Mock<IAssignedByValParameterQuickFixDialogFactory> BuildMockDialogFactory(string userEnteredName)

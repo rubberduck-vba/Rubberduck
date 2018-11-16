@@ -382,13 +382,13 @@ namespace Rubberduck.Navigation.CodeExplorer
                 {
                     if (folderNode == null)
                     {
-                        folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName, _state.ProjectsProvider);
+                        folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName, _state.ProjectsProvider, _vbe);
                         projectNode.AddChild(folderNode);
                     }
 
                     var declaration = CreateDeclaration(e.Module);
                     var newNode =
-                        new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>(), _state.ProjectsProvider)
+                        new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>(), _state.ProjectsProvider, _vbe)
                         {
                             IsErrorState = true
                         };

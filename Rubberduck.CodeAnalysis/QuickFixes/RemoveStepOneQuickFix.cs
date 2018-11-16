@@ -2,19 +2,14 @@
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveStepOneQuickFix : QuickFixBase
+    public sealed class RemoveStepOneQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public RemoveStepOneQuickFix(RubberduckParserState state)
+        public RemoveStepOneQuickFix()
             : base(typeof(StepOneIsRedundantInspection))
-        {
-            _state = state;
-        }
+        {}
 
         public override bool CanFixInProcedure => true;
 
@@ -24,9 +19,9 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveStepOneQuickFix;
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            IModuleRewriter rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
             var context = result.Context;
             rewriter.Remove(context);
         }

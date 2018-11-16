@@ -108,19 +108,25 @@ End Sub";
         private void TestEnclosedCode(string inputCode, string enclosingModuleBodyElementName, int argumentPosition, string expectedEnclosedCode)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var enclosingModuleBodyElementDeclarationContext = state.DeclarationFinder
+                    .MatchName(enclosingModuleBodyElementName).First().Context;
+                var enclosingModuleBodyElementContext = enclosingModuleBodyElementDeclarationContext
+                    .GetAncestor<VBAParser.ModuleBodyElementContext>();
+                var enclosingModuleBodyElementBodyContext =
+                    enclosingModuleBodyElementContext.GetDescendent<VBAParser.BlockContext>();
+                var argumentListContext =
+                    enclosingModuleBodyElementBodyContext.GetDescendent<VBAParser.ArgumentListContext>();
+                var argumentContext = argumentListContext.argument(argumentPosition - 1);
 
-            var enclosingModuleBodyElementDeclarationContext = state.DeclarationFinder.MatchName(enclosingModuleBodyElementName).First().Context;
-            var enclosingModuleBodyElementContext = enclosingModuleBodyElementDeclarationContext.GetAncestor<VBAParser.ModuleBodyElementContext>();
-            var enclosingModuleBodyElementBodyContext = enclosingModuleBodyElementContext.GetDescendent<VBAParser.BlockContext>();
-            var argumentListContext = enclosingModuleBodyElementBodyContext.GetDescendent<VBAParser.ArgumentListContext>();
-            var argumentContext = argumentListContext.argument(argumentPosition-1);
+                var infoFinder = new ArgumentRewriterInfoFinder();
+                var info = infoFinder.GetRewriterInfo(argumentContext);
 
-            var infoFinder = new ArgumentRewriterInfoFinder();
-            var info = infoFinder.GetRewriterInfo(argumentContext);
-
-            var actualEnclosedCode = state.GetRewriter(component).TokenStream.GetText(info.StartTokenIndex, info.StopTokenIndex);
-            Assert.AreEqual(expectedEnclosedCode, actualEnclosedCode);
+                var actualEnclosedCode = state.GetCodePaneTokenStream(component.QualifiedModuleName)
+                    .GetText(info.StartTokenIndex, info.StopTokenIndex);
+                Assert.AreEqual(expectedEnclosedCode, actualEnclosedCode);
+            }
         }
     }
 }
