@@ -2384,39 +2384,40 @@ End Sub
             tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_DoesNotWarnForUDTMember_Issue4349()
+        public void RenameRefactoring_DoesNotWarnForUDTMember()
         {
-            var tdo = new RenameTestsDataObject(selection: "VS", newName: "verySatisfiedResponses");
+            var tdo = new RenameTestsDataObject(selection: "VS", newName: "VerySatisfiedResponses");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
 @"Private Type TMonthScoreInfo
-            verySatisfiedResponses As Long
+            VerySatisfiedResponses As Long
         End Type
 
         Private monthScoreInfo As TMonthScoreInfo
 
         Public Property Get V|S() As Long
-            VS = monthScoreInfo.verySatisfiedResponses
+            VS = monthScoreInfo.VerySatisfiedResponses
         End Property
         Public Property Let VS(ByVal theVal As Long)
-            monthScoreInfo.verySatisfiedResponses = theVal
+            monthScoreInfo.VerySatisfiedResponses = theVal
         End Property",
                 Expected =
 @"Private Type TMonthScoreInfo
-            verySatisfiedResponses As Long
+            VerySatisfiedResponses As Long
         End Type
 
         Private monthScoreInfo As TMonthScoreInfo
 
-        Public Property Get verySatisfiedResponses() As Long
-            verySatisfiedResponses = monthScoreInfo.verySatisfiedResponses
+        Public Property Get VerySatisfiedResponses() As Long
+            VerySatisfiedResponses = monthScoreInfo.VerySatisfiedResponses
         End Property
-        Public Property Let verySatisfiedResponses(ByVal theVal As Long)
-            monthScoreInfo.verySatisfiedResponses = theVal
+        Public Property Let VerySatisfiedResponses(ByVal theVal As Long)
+            monthScoreInfo.VerySatisfiedResponses = theVal
         End Property"
             };
 
@@ -2424,10 +2425,11 @@ End Sub
             tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
         }
 
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_DoesNotWarnForEnumMember_Issue4349()
+        public void RenameRefactoring_DoesNotWarnForEnumMember()
         {
             var tdo = new RenameTestsDataObject(selection: "VerySatisfiedID", newName: "VerySatisfiedResponse");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
@@ -2439,7 +2441,7 @@ End Sub
         End Enum
 
         Public Property Get V|erySatisfiedID() As Long
-            VS = MonthScoreTypes.VerySatisfiedResponse
+            VerySatisfiedID = MonthScoreTypes.VerySatisfiedResponse
         End Property",
                 Expected =
 @"Private Enum MonthScoreTypes
@@ -2448,7 +2450,40 @@ End Sub
         End Enum
 
         Public Property Get VerySatisfiedResponse() As Long
-            VS = MonthScoreTypes.VerySatisfiedResponse
+            VerySatisfiedResponse = MonthScoreTypes.VerySatisfiedResponse
+        End Property",
+            };
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        }
+
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_DoesNotWarnForMember()
+        {
+            var tdo = new RenameTestsDataObject(selection: "VerySatisfiedResponse", newName: "VerySatisfiedID");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Private Enum MonthScoreTypes
+            VerySa|tisfiedResponse
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get VerySatisfiedID() As Long
+            VerySatisfiedID = MonthScoreTypes.VerySatisfiedResponse
+        End Property",
+                Expected =
+@"Private Enum MonthScoreTypes
+            VerySatisfiedID
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get VerySatisfiedID() As Long
+            VerySatisfiedID = MonthScoreTypes.VerySatisfiedID
         End Property",
             };
 
