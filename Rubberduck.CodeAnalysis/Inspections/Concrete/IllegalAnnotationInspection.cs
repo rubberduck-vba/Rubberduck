@@ -1,197 +1,113 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    public sealed class IllegalAnnotationInspection : ParseTreeInspectionBase
+    public sealed class IllegalAnnotationInspection : InspectionBase
     {
         public IllegalAnnotationInspection(RubberduckParserState state)
             : base(state)
-        {
-            Listener = new IllegalAttributeAnnotationsListener(state);
-        }
-        
-        public override IInspectionListener Listener { get; }
+        {}
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return Listener.Contexts.Select(context => 
-                new QualifiedContextInspectionResult(this, 
-                string.Format(InspectionResults.IllegalAnnotationInspection, ((VBAParser.AnnotationContext)context.Context).annotationName().GetText()), context));
+            var illegalAnnotations = new List<IAnnotation>();
+
+            var userDeclarations = State.DeclarationFinder.AllUserDeclarations.ToList();
+            var identifierReferences = State.DeclarationFinder.AllIdentifierReferences().ToList();
+            var annotations = State.AllAnnotations;
+
+            illegalAnnotations.AddRange(UnboundAnnotations(annotations, userDeclarations, identifierReferences));
+            illegalAnnotations.AddRange(NonIdentifierAnnotationsOnIdentifiers(identifierReferences));
+            illegalAnnotations.AddRange(NonModuleAnnotationsOnModules(userDeclarations));
+            illegalAnnotations.AddRange(NonMemberAnnotationsOnMembers(userDeclarations));
+            illegalAnnotations.AddRange(NonVariableAnnotationsOnVariables(userDeclarations));
+            illegalAnnotations.AddRange(NonGeneralAnnotationsWhereOnlyGeneralAnnotationsBelong(userDeclarations));
+
+            return illegalAnnotations.Select(annotation => 
+                new QualifiedContextInspectionResult(
+                    this, 
+                    string.Format(InspectionResults.IllegalAnnotationInspection, annotation.Context.annotationName().GetText()), 
+                    new QualifiedContext(annotation.QualifiedSelection.QualifiedName, annotation.Context)));
         }
 
-        public class IllegalAttributeAnnotationsListener : VBAParserBaseListener, IInspectionListener
+        private static ICollection<IAnnotation> UnboundAnnotations(IEnumerable<IAnnotation> annotations, IEnumerable<Declaration> userDeclarations, IEnumerable<IdentifierReference> identifierReferences)
         {
-            private static readonly AnnotationType[] AnnotationTypes = Enum.GetValues(typeof(AnnotationType)).Cast<AnnotationType>().ToArray();
+            var boundAnnotationsSelections = userDeclarations
+                .SelectMany(declaration => declaration.Annotations)
+                .Concat(identifierReferences.SelectMany(reference => reference.Annotations))
+                .Select(annotation => annotation.QualifiedSelection)
+                .ToHashSet();
+            
+            return annotations.Where(annotation => !boundAnnotationsSelections.Contains(annotation.QualifiedSelection)).ToList();
+        }
 
-            private IDictionary<Tuple<QualifiedModuleName, AnnotationType>, int> _annotationCounts = 
-                new Dictionary<Tuple<QualifiedModuleName, AnnotationType>, int>();
+        private static ICollection<IAnnotation> NonIdentifierAnnotationsOnIdentifiers(IEnumerable<IdentifierReference> identifierReferences)
+        {
+            return identifierReferences
+                .SelectMany(reference => reference.Annotations)
+                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.IdentifierAnnotation))
+                .ToList();
+        }
 
-            private readonly RubberduckParserState _state;
+        private static ICollection<IAnnotation> NonModuleAnnotationsOnModules(IEnumerable<Declaration> userDeclarations)
+        {
+            return userDeclarations
+                .Where(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module))
+                .SelectMany(moduleDeclaration => moduleDeclaration.Annotations)
+                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.ModuleAnnotation))
+                .ToList();
+        }
 
-            private Lazy<Declaration> _module;
-            private Lazy<IDictionary<string, Declaration>> _members;
+        private static ICollection<IAnnotation> NonMemberAnnotationsOnMembers(IEnumerable<Declaration> userDeclarations)
+        {
+            return userDeclarations
+                .Where(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Member))
+                .SelectMany(member => member.Annotations)
+                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.MemberAnnotation))
+                .ToList();
+        }
 
-            public IllegalAttributeAnnotationsListener(RubberduckParserState state)
-            {
-                _state = state;
-            }
+        private static ICollection<IAnnotation> NonVariableAnnotationsOnVariables(IEnumerable<Declaration> userDeclarations)
+        {
+            return userDeclarations
+                .Where(declaration => VariableAnnotationDeclarationTypes.Contains(declaration.DeclarationType))
+                .SelectMany(declaration => declaration.Annotations)
+                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.VariableAnnotation))
+                .ToList();
+        }
 
-            private readonly List<QualifiedContext<ParserRuleContext>> _contexts =
-                new List<QualifiedContext<ParserRuleContext>>();
+        private static readonly HashSet<DeclarationType> VariableAnnotationDeclarationTypes = new HashSet<DeclarationType>()
+        {
+            DeclarationType.Variable,
+            DeclarationType.Control,
+            DeclarationType.Constant,
+            DeclarationType.Enumeration,
+            DeclarationType.EnumerationMember,
+            DeclarationType.UserDefinedType,
+            DeclarationType.UserDefinedType,
+            DeclarationType.UserDefinedTypeMember
+        };
 
-            public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
-
-            public QualifiedModuleName CurrentModuleName
-            {
-                get => _currentModuleName;
-                set
-                {
-                    _currentModuleName = value;
-                    foreach (var type in AnnotationTypes)
-                    {
-                        _annotationCounts.Add(Tuple.Create(value, type), 0);
-                    }
-                }
-            }
-
-            private bool _isFirstMemberProcessed;
-
-            public void ClearContexts()
-            {
-                _annotationCounts = new Dictionary<Tuple<QualifiedModuleName, AnnotationType>, int>();
-                _contexts.Clear();
-                _isFirstMemberProcessed = false;
-            }
-
-            #region scoping
-            private Declaration _currentScopeDeclaration;
-            private bool _hasMembers;
-            private QualifiedModuleName _currentModuleName;
-
-            private void SetCurrentScope(string memberName = null)
-            {
-                _hasMembers = !string.IsNullOrEmpty(memberName);
-                // this is a one-time toggle until contexts are reset
-                _isFirstMemberProcessed |= _hasMembers; 
-                _currentScopeDeclaration = _hasMembers ? _members.Value[memberName] : _module.Value;
-            }
-
-            public override void EnterModuleBody(VBAParser.ModuleBodyContext context)
-            {
-                _currentScopeDeclaration = _state.DeclarationFinder
-                    .UserDeclarations(DeclarationType.Procedure)
-                    .Where(declaration => declaration.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName))
-                    .OrderBy(declaration => declaration.Selection)
-                    .FirstOrDefault();
-            }
-
-            public override void EnterModule(VBAParser.ModuleContext context)
-            {
-                _module = new Lazy<Declaration>(() => _state.DeclarationFinder
-                    .UserDeclarations(DeclarationType.Module)
-                    .SingleOrDefault(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName)));
-
-                _members = new Lazy<IDictionary<string, Declaration>>(() => _state.DeclarationFinder
-                    .Members(CurrentModuleName)
-                    .GroupBy(m => m.IdentifierName)
-                    .ToDictionary(m => m.Key, m => m.First()));
-
-                // we did not process the first member of the module we just entered, so reset here
-                _isFirstMemberProcessed = false; 
-            }
-
-            public override void ExitModule(VBAParser.ModuleContext context)
-            {
-                _currentScopeDeclaration = null;
-            }
-
-            public override void EnterModuleAttributes(VBAParser.ModuleAttributesContext context)
-            {
-                // note: using ModuleAttributesContext for module-scope
-
-                if(_currentScopeDeclaration == null)
-                {
-                    // we're at the top of the module.
-                    // everything we pick up between here and the module body, is module-scoped:
-                    _currentScopeDeclaration = _state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
-                        .SingleOrDefault(d => d.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
-                }
-                else
-                {
-                    // DO NOT re-assign _currentScope here.
-                    // we're at the end of the module and that attribute is actually scoped to the last procedure.
-                    Debug.Assert(_currentScopeDeclaration != null); // deliberate no-op
-                }
-            }
-
-            public override void EnterSubStmt(VBAParser.SubStmtContext context)
-            {
-                SetCurrentScope(Identifier.GetName(context.subroutineName()));
-            }
-
-            public override void EnterFunctionStmt(VBAParser.FunctionStmtContext context)
-            {
-                SetCurrentScope(Identifier.GetName(context.functionName()));
-            }
-
-            public override void EnterPropertyGetStmt(VBAParser.PropertyGetStmtContext context)
-            {
-                SetCurrentScope(Identifier.GetName(context.functionName()));
-            }
-
-            public override void EnterPropertyLetStmt(VBAParser.PropertyLetStmtContext context)
-            {
-                SetCurrentScope(Identifier.GetName(context.subroutineName()));
-            }
-
-            public override void EnterPropertySetStmt(VBAParser.PropertySetStmtContext context)
-            {
-                SetCurrentScope(Identifier.GetName(context.subroutineName()));
-            }
-            #endregion
-
-            public override void ExitAnnotation(VBAParser.AnnotationContext context)
-            {
-                var name = Identifier.GetName(context.annotationName().unrestrictedIdentifier());
-                var annotationType = (AnnotationType) Enum.Parse(typeof (AnnotationType), name, true);
-                var key = Tuple.Create(_currentModuleName, annotationType);
-                _annotationCounts[key]++;
-
-                var moduleHasMembers = _members.Value.Any();
-
-                var isMemberAnnotation = annotationType.HasFlag(AnnotationType.MemberAnnotation);
-                var isModuleAnnotation = annotationType.HasFlag(AnnotationType.ModuleAnnotation);
-
-                var isModuleAnnotatedForMemberAnnotation = isMemberAnnotation
-                    && (_currentScopeDeclaration?.DeclarationType.HasFlag(DeclarationType.Module) ?? false);
-
-                var isMemberAnnotatedForModuleAnnotation = isModuleAnnotation 
-                    && (_currentScopeDeclaration?.DeclarationType.HasFlag(DeclarationType.Member) ?? false);
-
-                var isIllegal = !(isMemberAnnotation && moduleHasMembers && !_isFirstMemberProcessed) &&
-                                (isModuleAnnotation && _annotationCounts[key] > 1
-                                 || isMemberAnnotatedForModuleAnnotation
-                                 || isModuleAnnotatedForMemberAnnotation);
-
-                if (isIllegal)
-                {
-                    _contexts.Add(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-                }
-            }
+        private static ICollection<IAnnotation> NonGeneralAnnotationsWhereOnlyGeneralAnnotationsBelong(IEnumerable<Declaration> userDeclarations)
+        {
+            return userDeclarations
+                .Where(declaration => !declaration.DeclarationType.HasFlag(DeclarationType.Module) 
+                                      && !declaration.DeclarationType.HasFlag(DeclarationType.Member) 
+                                      && !VariableAnnotationDeclarationTypes.Contains(declaration.DeclarationType) 
+                                      && declaration.DeclarationType != DeclarationType.Project)
+                .SelectMany(member => member.Annotations)
+                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.GeneralAnnotation))
+                .ToList();
         }
     }
 }

@@ -2,11 +2,9 @@ using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
-using System.IO;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class AddPredeclaredClassModuleCommand : CommandBase
     {
         private readonly AddComponentCommand _addComponentCommand;
@@ -18,7 +16,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel);
+            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel, new []{ProjectType.HostProject, ProjectType.StandAlone, ProjectType.StandardExe});
         }
 
         protected override void OnExecute(object parameter)

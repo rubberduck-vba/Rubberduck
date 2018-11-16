@@ -2,16 +2,17 @@
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Resources.UnitTesting;
+using Rubberduck.UnitTesting.ComClientHelpers;
 
 namespace Rubberduck.UnitTesting.Fakes
 {
     internal class MsgBox : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcMsgBox");
-
         public MsgBox()
         {
-            InjectDelegate(new MessageBoxDelegate(MsgBoxCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcMsgBox");
+
+            InjectDelegate(new MessageBoxDelegate(MsgBoxCallback), processAddress);
         }
 
         public override bool PassThrough

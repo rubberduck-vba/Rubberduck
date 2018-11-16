@@ -1,12 +1,9 @@
 ﻿using NLog;
 using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System;
 
 namespace Rubberduck.UI.Settings
 {
@@ -14,27 +11,9 @@ namespace Rubberduck.UI.Settings
     {
         public AutoCompleteSettingsViewModel(Configuration config)
         {
-            Settings = new ObservableCollection<AutoCompleteSetting>(config.UserSettings.AutoCompleteSettings.AutoCompletes);
-            CompleteBlockOnEnter = config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter;
-            CompleteBlockOnTab = config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab;
-            EnableSmartConcat = config.UserSettings.AutoCompleteSettings.EnableSmartConcat;
-
+            TransferSettingsToView(config.UserSettings.AutoCompleteSettings);
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
-        }
-
-        private ObservableCollection<AutoCompleteSetting> _settings;
-        public ObservableCollection<AutoCompleteSetting> Settings
-        {
-            get { return _settings; }
-            set
-            {
-                if (_settings != value)
-                {
-                    _settings = value;
-                    OnPropertyChanged();
-                }
-            }
         }
 
         public void SetToDefaults(Configuration config)
@@ -44,35 +23,60 @@ namespace Rubberduck.UI.Settings
 
         public void UpdateConfig(Configuration config)
         {
-            config.UserSettings.AutoCompleteSettings.CompleteBlockOnTab = CompleteBlockOnTab;
-            config.UserSettings.AutoCompleteSettings.CompleteBlockOnEnter = CompleteBlockOnEnter;
-            config.UserSettings.AutoCompleteSettings.EnableSmartConcat = EnableSmartConcat;
-            config.UserSettings.AutoCompleteSettings.AutoCompletes = new HashSet<AutoCompleteSetting>(_settings);
+            config.UserSettings.AutoCompleteSettings.IsEnabled = IsEnabled;
+
+            config.UserSettings.AutoCompleteSettings.SelfClosingPairs.IsEnabled = EnableSelfClosingPairs;
+
+            config.UserSettings.AutoCompleteSettings.SmartConcat.IsEnabled = EnableSmartConcat;
+            config.UserSettings.AutoCompleteSettings.SmartConcat.ConcatVbNewLineModifier =
+                ConcatVbNewLine ? ModifierKeySetting.CtrlKey : ModifierKeySetting.None;
+            config.UserSettings.AutoCompleteSettings.SmartConcat.ConcatMaxLines = ConcatMaxLines;
+            config.UserSettings.AutoCompleteSettings.BlockCompletion.IsEnabled = EnableBlockCompletion;
+            config.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnTab = CompleteBlockOnTab;
+            config.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnEnter = CompleteBlockOnEnter;
         }
 
         private void TransferSettingsToView(Rubberduck.Settings.AutoCompleteSettings toLoad)
         {
-            CompleteBlockOnTab = toLoad.CompleteBlockOnTab;
-            CompleteBlockOnEnter = toLoad.CompleteBlockOnEnter;
-            EnableSmartConcat = toLoad.EnableSmartConcat;
-            Settings = new ObservableCollection<AutoCompleteSetting>(toLoad.AutoCompletes);
+            IsEnabled = toLoad.IsEnabled;
+
+            EnableSelfClosingPairs = toLoad.SelfClosingPairs.IsEnabled;
+
+            EnableSmartConcat = toLoad.SmartConcat.IsEnabled;
+            ConcatVbNewLine = toLoad.SmartConcat.ConcatVbNewLineModifier == ModifierKeySetting.CtrlKey;
+            ConcatMaxLines = toLoad.SmartConcat.ConcatMaxLines;
+
+            EnableBlockCompletion = toLoad.BlockCompletion.IsEnabled;
+            CompleteBlockOnTab = toLoad.BlockCompletion.CompleteOnTab;
+            CompleteBlockOnEnter = toLoad.BlockCompletion.CompleteOnEnter;
         }
 
-        private bool _completeBlockOnTab;
-        public bool CompleteBlockOnTab
+        private bool _isEnabled;
+
+        public bool IsEnabled
         {
-            get { return _completeBlockOnTab; }
+            get { return _isEnabled; }
             set
             {
-                if (_completeBlockOnTab != value)
+                if (_isEnabled != value)
                 {
-                    _completeBlockOnTab = value;
+                    _isEnabled = value;
                     OnPropertyChanged();
-                    if (!_completeBlockOnTab && !_completeBlockOnEnter)
-                    {
-                        // one must be enabled...
-                        CompleteBlockOnEnter = true;
-                    }
+                }
+            }
+        }
+
+        private bool _enableSelfClosingPairs;
+
+        public bool EnableSelfClosingPairs
+        {
+            get { return _enableSelfClosingPairs; }
+            set
+            {
+                if (_enableSelfClosingPairs != value)
+                {
+                    _enableSelfClosingPairs = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -86,6 +90,53 @@ namespace Rubberduck.UI.Settings
                 if (_enableSmartConcat != value)
                 {
                     _enableSmartConcat = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private bool _concatVbNewLine;
+
+        public bool ConcatVbNewLine
+        {
+            get { return _concatVbNewLine; }
+            set
+            {
+                if (_concatVbNewLine != value)
+                {
+                    _concatVbNewLine = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _concatMaxLines;
+        public int ConcatMaxLines
+        {
+            get { return _concatMaxLines; }
+            set
+            {
+                if (_concatMaxLines != value)
+                {
+                    _concatMaxLines = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int ConcatMaxLinesMinValue => Rubberduck.Settings.AutoCompleteSettings.ConcatMaxLinesMinValue;
+        public int ConcatMaxLinesMaxValue => Rubberduck.Settings.AutoCompleteSettings.ConcatMaxLinesMaxValue;
+
+        private bool _enableBlockCompletion;
+
+        public bool EnableBlockCompletion
+        {
+            get { return _enableBlockCompletion; }
+            set
+            {
+                if (_enableBlockCompletion != value)
+                {
+                    _enableBlockCompletion = value;
                     OnPropertyChanged();
                 }
             }
@@ -110,26 +161,21 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool? _selectAll;
-        public bool? SelectAll
+        private bool _completeBlockOnTab;
+        public bool CompleteBlockOnTab
         {
-            get
-            {
-                return _selectAll;
-            }
+            get { return _completeBlockOnTab; }
             set
             {
-                if (_selectAll != value)
+                if (_completeBlockOnTab != value)
                 {
-                    _selectAll = value;
-                    foreach (var setting in Settings)
-                    {
-                        if (setting.IsEnabled != (value ?? false))
-                        {
-                            setting.IsEnabled = value ?? false;
-                        }
-                    }
+                    _completeBlockOnTab = value;
                     OnPropertyChanged();
+                    if (!_completeBlockOnTab && !_completeBlockOnEnter)
+                    {
+                        // one must be enabled...
+                        CompleteBlockOnEnter = true;
+                    }
                 }
             }
         }
@@ -138,8 +184,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new OpenFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_LoadInspectionSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_LoadInspectionSettings
             })
             {
                 dialog.ShowDialog();
@@ -154,8 +200,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new SaveFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_SaveInspectionSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_SaveAutocompletionSettings
             })
             {
                 dialog.ShowDialog();
@@ -163,8 +209,23 @@ namespace Rubberduck.UI.Settings
                 var service = new XmlPersistanceService<Rubberduck.Settings.AutoCompleteSettings> { FilePath = dialog.FileName };
                 service.Save(new Rubberduck.Settings.AutoCompleteSettings
                 {
-                    CompleteBlockOnTab = this.CompleteBlockOnTab,
-                    AutoCompletes = new HashSet<AutoCompleteSetting>(Settings),
+                    IsEnabled = IsEnabled,
+                    BlockCompletion = new Rubberduck.Settings.AutoCompleteSettings.BlockCompletionSettings
+                    {
+                        CompleteOnEnter = CompleteBlockOnEnter,
+                        CompleteOnTab = CompleteBlockOnTab,
+                        IsEnabled = EnableBlockCompletion
+                    },
+                    SelfClosingPairs = new Rubberduck.Settings.AutoCompleteSettings.SelfClosingPairSettings
+                    {
+                        IsEnabled = EnableSelfClosingPairs
+                    },
+                    SmartConcat = new Rubberduck.Settings.AutoCompleteSettings.SmartConcatSettings
+                    {
+                        ConcatVbNewLineModifier =
+                            ConcatVbNewLine ? ModifierKeySetting.CtrlKey : ModifierKeySetting.None,
+                        IsEnabled = EnableSmartConcat
+                    }
                 });
             }
         }

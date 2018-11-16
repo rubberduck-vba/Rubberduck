@@ -38,6 +38,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public IVBProject Open(string path) => new VBProject(IsWrappingNullReference? null : Target.AddFromFile(path).Item(1));
 
+        public IVBProject StartProject
+        {
+            get => new VBProject(IsWrappingNullReference ? null : Target.StartProject);
+            set => Target.StartProject = (VB.VBProject)value.Target;
+        }
+
         public IVBProject this[object index] => new VBProject(IsWrappingNullReference ? null : Target.Item(index));
 
         IEnumerator<IVBProject> IEnumerable<IVBProject>.GetEnumerator()
@@ -102,7 +108,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 project.Dispose();
                 return;
             }
-            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project, OldName));
+            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project.Name, OldName));
         }
 
         public event EventHandler<ProjectEventArgs> ProjectActivated;
@@ -113,26 +119,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
         {
-            var project = new VBProject(vbProject);
-            var handler = dispatched;
-            if (handler == null || !IsInDesignMode())
+            using (var project = new VBProject(vbProject))
             {
-                project.Dispose();
-                return;
-            }
+                var handler = dispatched;
+                if (handler == null || !IsInDesignMode())
+                {
+                    project.Dispose();
+                    return;
+                }
 
-            if (assignId)
-            {
-                project.AssignProjectId();
-            }
-            var projectId = project.ProjectId;
+                if (assignId)
+                {
+                    project.AssignProjectId();
+                }
 
-            if (projectId == null)
-            {
-                project.Dispose();
-                return;
+                var projectId = project.ProjectId;
+
+                if (projectId == null)
+                {
+                    return;
+                }
+
+                handler.Invoke(project, new ProjectEventArgs(projectId, project.Name));
             }
-            handler.Invoke(project, new ProjectEventArgs(projectId, project));
         }
 
         private bool IsInDesignMode()

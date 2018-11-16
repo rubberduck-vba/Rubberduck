@@ -10,11 +10,11 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.ToDoItems;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.ToDoExplorer;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -150,7 +150,8 @@ namespace Rubberduck.UI.ToDoItems
                         return;
                     }
 
-                    using (var module = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName).CodeModule)
+                    var component = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName);
+                    using (var module = component.CodeModule)
                     {
                         var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
                         var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);

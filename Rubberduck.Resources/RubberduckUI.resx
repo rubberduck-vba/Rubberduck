@@ -484,8 +484,9 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
     <value>New</value>
   </data>
   <data name="RenameDialog_ConflictingNames" xml:space="preserve">
-    <value>Renaming to '{0}' clashes with '{1}' in the same scope.
-Are you sure you want to proceed with this rename?</value>
+    <value>'{0}' conflicts with an existing name. Renaming '{1}' to '{0}' may result in uncompilable code or a change in logic.
+Do you want to proceed with this rename?</value>
+    <comment>0: NewName 1: CurrentName</comment>
   </data>
   <data name="RenameDialog_AmbiguousSelection" xml:space="preserve">
     <value>Please ensure that exactly 1 control is selected before renaming.</value>
@@ -1016,45 +1017,6 @@ End If      'More Tools? Suggestions http://github.com/rubberduck-vba/Rubberduck
 
 End Sub</value>
   </data>
-  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
-    <value>Load Indenter Settings</value>
-  </data>
-  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
-    <value>Save Indenter Settings</value>
-  </data>
-  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
-    <value>XML file (.xml)|*.xml|Rubberduck config file|*.config</value>
-  </data>
-  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
-    <value>Load General Settings</value>
-  </data>
-  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
-    <value>Load Inspection Settings</value>
-  </data>
-  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
-    <value>Load Todo List Settings</value>
-  </data>
-  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
-    <value>Load Unit Test Settings</value>
-  </data>
-  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
-    <value>Load Window Settings</value>
-  </data>
-  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
-    <value>Save General Settings</value>
-  </data>
-  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
-    <value>Save Inspection Settings</value>
-  </data>
-  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
-    <value>Save Todo List Settings</value>
-  </data>
-  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
-    <value>Save Unit Test Settings</value>
-  </data>
-  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
-    <value>Save Window Settings</value>
-  </data>
   <data name="ContextReferences" xml:space="preserve">
     <value>references</value>
     <comment>Used to display number of references in commandbar's context selection</comment>
@@ -1245,8 +1207,11 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Compile On Demand currently enabled</value>
   </data>
-  <data name="InspectionSettings_FilterDescription" xml:space="preserve">
-    <value>Filter by Description:</value>
+  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="ParserState_Busy" xml:space="preserve">
+    <value>Busy</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="AddClass" type="System.Resources.ResXFileRef, System.Windows.Forms">
@@ -1290,5 +1255,44 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
+  </data>
+  <data name="InspectionResults_FilterByError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="InspectionResults_FilterByHint" xml:space="preserve">
+    <value>Hint</value>
+  </data>
+  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
+    <value>Suggestion</value>
+  </data>
+  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="GroupingGrid_FilterBy" xml:space="preserve">
+    <value>Filter by</value>
+  </data>
+  <data name="GroupingStyle_ByCategory" xml:space="preserve">
+    <value>By category</value>
+  </data>
+  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
+    <value>Ignore empty lines when locating first comment and declaration blocks</value>
+  </data>
+  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
+    <value>Severity:</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Czech</value>
+  </data>
+  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
+    <value>Ignore</value>
+  </data>
+  <data name="EmptyLineHandling_Indent" xml:space="preserve">
+    <value>Indent</value>
+  </data>
+  <data name="EmptyLineHandling_Remove" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
+    <value>Empty line handling:</value>
   </data>
 </root>

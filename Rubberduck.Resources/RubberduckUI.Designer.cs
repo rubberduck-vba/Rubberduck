@@ -932,128 +932,38 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load General Settings.
-        /// </summary>
-        public static string DialogCaption_LoadGeneralSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_LoadGeneralSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Load Indenter Settings.
-        /// </summary>
-        public static string DialogCaption_LoadIndenterSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_LoadIndenterSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Load Inspection Settings.
-        /// </summary>
-        public static string DialogCaption_LoadInspectionSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_LoadInspectionSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Load Todo List Settings.
-        /// </summary>
-        public static string DialogCaption_LoadToDoSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_LoadToDoSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Load Unit Test Settings.
-        /// </summary>
-        public static string DialogCaption_LoadUnitTestSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_LoadUnitTestSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Load Window Settings.
-        /// </summary>
-        public static string DialogCaption_LoadWindowSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_LoadWindowSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save General Settings.
-        /// </summary>
-        public static string DialogCaption_SaveGeneralSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_SaveGeneralSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save Indenter Settings.
-        /// </summary>
-        public static string DialogCaption_SaveIndenterSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_SaveIndenterSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save Inspection Settings.
-        /// </summary>
-        public static string DialogCaption_SaveInspectionSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_SaveInspectionSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save Todo List Settings.
-        /// </summary>
-        public static string DialogCaption_SaveToDoSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_SaveToDoSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save Unit Test Settings.
-        /// </summary>
-        public static string DialogCaption_SaveUnitTestSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_SaveUnitTestSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Save Window Settings.
-        /// </summary>
-        public static string DialogCaption_SaveWindowSettings {
-            get {
-                return ResourceManager.GetString("DialogCaption_SaveWindowSettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to XML file (.xml)|*.xml|Rubberduck config file|*.config.
-        /// </summary>
-        public static string DialogMask_XmlFilesOnly {
-            get {
-                return ResourceManager.GetString("DialogMask_XmlFilesOnly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to You&apos;ve earned the &quot;Continuator&quot; badge!.
         /// </summary>
         public static string EasterEgg_Continuator {
             get {
                 return ResourceManager.GetString("EasterEgg_Continuator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore.
+        /// </summary>
+        public static string EmptyLineHandling_Ignore {
+            get {
+                return ResourceManager.GetString("EmptyLineHandling_Ignore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Indent.
+        /// </summary>
+        public static string EmptyLineHandling_Indent {
+            get {
+                return ResourceManager.GetString("EmptyLineHandling_Indent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string EmptyLineHandling_Remove {
+            get {
+                return ResourceManager.GetString("EmptyLineHandling_Remove", resourceCulture);
             }
         }
         
@@ -1637,11 +1547,29 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter by.
+        /// </summary>
+        public static string GroupingGrid_FilterBy {
+            get {
+                return ResourceManager.GetString("GroupingGrid_FilterBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Grouping.
         /// </summary>
         public static string GroupingGrid_GroupingStyle {
             get {
                 return ResourceManager.GetString("GroupingGrid_GroupingStyle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By category.
+        /// </summary>
+        public static string GroupingStyle_ByCategory {
+            get {
+                return ResourceManager.GetString("GroupingStyle_ByCategory", resourceCulture);
             }
         }
         
@@ -1790,6 +1718,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Empty line handling:.
+        /// </summary>
+        public static string IndenterSettings_EmptyLineHeading {
+            get {
+                return ResourceManager.GetString("IndenterSettings_EmptyLineHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable Options.
         /// </summary>
         public static string IndenterSettings_EnableOptionsLabel {
@@ -1831,6 +1768,15 @@ namespace Rubberduck.Resources {
         public static string IndenterSettings_ForceDebugDirectivesToColumn1 {
             get {
                 return ResourceManager.GetString("IndenterSettings_ForceDebugDirectivesToColumn1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignore empty lines when locating first comment and declaration blocks.
+        /// </summary>
+        public static string IndenterSettings_IgnoreEmptyLinesInFirstBlocks {
+            get {
+                return ResourceManager.GetString("IndenterSettings_IgnoreEmptyLinesInFirstBlocks", resourceCulture);
             }
         }
         
@@ -1983,11 +1929,56 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter by Description:.
+        ///   Looks up a localized string similar to Error.
         /// </summary>
-        public static string InspectionSettings_FilterDescription {
+        public static string InspectionResults_FilterByError {
             get {
-                return ResourceManager.GetString("InspectionSettings_FilterDescription", resourceCulture);
+                return ResourceManager.GetString("InspectionResults_FilterByError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hint.
+        /// </summary>
+        public static string InspectionResults_FilterByHint {
+            get {
+                return ResourceManager.GetString("InspectionResults_FilterByHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Suggestion.
+        /// </summary>
+        public static string InspectionResults_FilterBySuggestion {
+            get {
+                return ResourceManager.GetString("InspectionResults_FilterBySuggestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string InspectionResults_FilterByWarning {
+            get {
+                return ResourceManager.GetString("InspectionResults_FilterByWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description:.
+        /// </summary>
+        public static string InspectionSettings_FilterByDescription {
+            get {
+                return ResourceManager.GetString("InspectionSettings_FilterByDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Severity:.
+        /// </summary>
+        public static string InspectionSettings_FilterBySeverity {
+            get {
+                return ResourceManager.GetString("InspectionSettings_FilterBySeverity", resourceCulture);
             }
         }
         
@@ -2024,6 +2015,15 @@ namespace Rubberduck.Resources {
         public static string Issue {
             get {
                 return ResourceManager.GetString("Issue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Czech.
+        /// </summary>
+        public static string Language_CS {
+            get {
+                return ResourceManager.GetString("Language_CS", resourceCulture);
             }
         }
         
@@ -2305,6 +2305,15 @@ namespace Rubberduck.Resources {
         public static string ParserProgress_ShowDetails {
             get {
                 return ResourceManager.GetString("ParserProgress_ShowDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Busy.
+        /// </summary>
+        public static string ParserState_Busy {
+            get {
+                return ResourceManager.GetString("ParserState_Busy", resourceCulture);
             }
         }
         
@@ -2830,8 +2839,8 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Renaming to &apos;{0}&apos; clashes with &apos;{1}&apos; in the same scope.
-        ///Are you sure you want to proceed with this rename?.
+        ///   Looks up a localized string similar to &apos;{0}&apos; conflicts with an existing name. Renaming &apos;{1}&apos; to &apos;{0}&apos; may result in uncompilable code or a change in logic.
+        ///Do you want to proceed with this rename?.
         /// </summary>
         public static string RenameDialog_ConflictingNames {
             get {

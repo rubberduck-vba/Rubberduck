@@ -69,9 +69,14 @@
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="ScrollViewer">
+            <Style.Setters>
+                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
+            </Style.Setters>
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer>
+        <ScrollViewer x:Name="ScrollViewer">
             <Grid>
                 <StackPanel Grid.Row="0" Margin="5,5,5,0">
                     <Label Background="DarkGray"
@@ -113,11 +118,11 @@
                     </Label>
                     <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_LanguageLabel}" FontWeight="SemiBold" />
                     <ComboBox Width="210"
-                      HorizontalAlignment="Left"
-                      Margin="5"
-                      SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
-                      ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}"
-                      DisplayMemberPath="Name" />
+                              HorizontalAlignment="Left"
+                              Margin="5"
+                              SelectedItem="{Binding SelectedLanguage, Mode=TwoWay}"
+                              ItemsSource="{Binding Languages, UpdateSourceTrigger=PropertyChanged}"
+                              DisplayMemberPath="Name" />
 
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_ShowSplash}"
                               IsChecked="{Binding ShowSplashAtStartup}" />
@@ -131,11 +136,11 @@
                     <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_MinimumLogLevelLabel}" FontWeight="SemiBold" />
                     <StackPanel Orientation="Horizontal">
                         <ComboBox Width="210"
-                      HorizontalAlignment="Left"
-                      Margin="5"
-                      SelectedItem="{Binding SelectedLogLevel, Mode=TwoWay}"
-                      ItemsSource="{Binding LogLevels, UpdateSourceTrigger=PropertyChanged}"
-                      DisplayMemberPath="Name"/>
+                                  HorizontalAlignment="Left"
+                                  Margin="5"
+                                  SelectedItem="{Binding SelectedLogLevel, Mode=TwoWay}"
+                                  ItemsSource="{Binding LogLevels, UpdateSourceTrigger=PropertyChanged}"
+                                  DisplayMemberPath="Name"/>
                         <Button 
                             Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_ShowLogFolder}"
                             Padding="5"
@@ -151,22 +156,22 @@
                     </DockPanel>
 
                     <DataGrid ItemsSource="{Binding Hotkeys}"
-                      HorizontalAlignment="Stretch"
-                      AutoGenerateColumns="False"
-                      CanUserDeleteRows="False"
-                      CanUserReorderColumns="False"
-                      CanUserResizeColumns="True"
-                      IsReadOnly="False"
-                      SelectionMode="Single"
-                      CanUserAddRows="False"
-                      HorizontalGridLinesBrush="Transparent"
-                      VerticalGridLinesBrush="Transparent"
-                      HeadersVisibility="Column"
-                      VerticalScrollBarVisibility="Auto"
-                      HorizontalScrollBarVisibility="Hidden"
-                      ItemContainerStyle="{StaticResource PrettifyRow}"
-                      ColumnHeaderHeight="22"
-                      BorderThickness="0">
+                              HorizontalAlignment="Stretch"
+                              AutoGenerateColumns="False"
+                              CanUserDeleteRows="False"
+                              CanUserReorderColumns="False"
+                              CanUserResizeColumns="True"
+                              IsReadOnly="False"
+                              SelectionMode="Single"
+                              CanUserAddRows="False"
+                              HorizontalGridLinesBrush="Transparent"
+                              VerticalGridLinesBrush="Transparent"
+                              HeadersVisibility="Column"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Hidden"
+                              ItemContainerStyle="{StaticResource PrettifyRow}"
+                              ColumnHeaderHeight="22"
+                              BorderThickness="0">
                         <DataGrid.CellStyle>
                             <Style TargetType="{x:Type DataGridCell}">
                                 <Setter Property="BorderThickness" Value="0" />

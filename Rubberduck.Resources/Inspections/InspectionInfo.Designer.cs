@@ -79,6 +79,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to An assignment is immediately overridden by another assignment or is never referenced..
+        /// </summary>
+        public static string AssignmentNotUsedInspection {
+            get {
+                return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A member is assigned True/False in different branches of an if statement with no other statements in the conditional. Use the condition directly to the member instead..
         /// </summary>
         public static string BooleanAssignedInIfElseInspection {
@@ -111,6 +120,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string DefTypeStatementInspection {
             get {
                 return ResourceManager.GetString("DefTypeStatementInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An annotation is specified multiple times, but is intended to be specified only once..
+        /// </summary>
+        public static string DuplicatedAnnotationInspection {
+            get {
+                return ResourceManager.GetString("DuplicatedAnnotationInspection", resourceCulture);
             }
         }
         
@@ -205,6 +223,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A procedure that returns an object may return &apos;Nothing&apos;. That will cause a runtime error 91 - &quot;Object variable or With block variable not set&quot; on subsequent member access. Perform an &apos;Is Nothing&apos; check after the &apos;Set&apos; assignment to guard against runtime errors..
+        /// </summary>
+        public static string ExcelMemberMayReturnNothingInspection {
+            get {
+                return ResourceManager.GetString("ExcelMemberMayReturnNothingInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the &apos;Function&apos; into a &apos;Sub&apos;. If the function is recursive, none of its external callers are using the returned value..
         /// </summary>
         public static string FunctionReturnValueNotUsedInspection {
@@ -232,7 +259,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level; module and member annotations should only be specified once..
+        ///   Looks up a localized string similar to An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level..
         /// </summary>
         public static string IllegalAnnotationInspection {
             get {
@@ -304,6 +331,24 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to IsMissing is only intended to be called on optional arguments, and will only return correct results if the type of the argument is &apos;Variant&apos; with no explicit default value. All other uses will return &apos;False&apos;..
+        /// </summary>
+        public static string IsMissingOnInappropriateArgumentInspection {
+            get {
+                return ResourceManager.GetString("IsMissingOnInappropriateArgumentInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IsMissing is only intended to be called on arguments of the containing procedure, and almost all other usages will return &apos;False&apos;. Passing any other expression to the function is the equivalent to &apos;VarType({expression}) = vbError&apos;, and in rare circumstances can cause the host application to crash..
+        /// </summary>
+        public static string IsMissingWithNonArgumentParameterInspection {
+            get {
+                return ResourceManager.GetString("IsMissingWithNonArgumentParameterInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A line label that is never jumpted to (&apos;GoTo&apos;, &apos;Resume&apos;, ...), serves no purpose. Consider removing it..
         /// </summary>
         public static string LineLabelNotUsedInspection {
@@ -358,6 +403,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Modules without the &apos;@Folder&apos; annotation cannot receive custom groupings in the Code Explorer. .
+        /// </summary>
+        public static string ModuleWithoutFolderInspection {
+            get {
+                return ResourceManager.GetString("ModuleWithoutFolderInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A module-level variable used only in one procedure should be declared in that procedure..
         /// </summary>
         public static string MoveFieldCloserToUsageInspection {
@@ -385,15 +439,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rubberduck only uses the first &apos;@Folder&apos; annotation in a code module; consider removing extraneous ones..
-        /// </summary>
-        public static string MultipleFolderAnnotationsInspection {
-            get {
-                return ResourceManager.GetString("MultipleFolderAnnotationsInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a &apos;Sub&apos; procedure instead..
         /// </summary>
         public static string NonReturningFunctionInspection {
@@ -408,6 +453,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ObjectVariableNotSetInspection {
             get {
                 return ResourceManager.GetString("ObjectVariableNotSetInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows implementations of Visual Basic only support the StdCall calling convention, and use of of the CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - &apos;Bad DLL calling convention&apos;. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled..
+        /// </summary>
+        public static string ObsoleteCallingConventionInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteCallingConventionInspection", resourceCulture);
             }
         }
         
@@ -457,11 +511,29 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This member is marked &apos;@Obsolete&apos;. It should no longer be used, there should be a better alternative..
+        /// </summary>
+        public static string ObsoleteMemberUsageInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteMemberUsageInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type hint characters only exist in the language to support legacy code that required it; they can be safely replaced in declarations with an &quot;As&quot; type clause that specifies the type explicitly, and they can be omitted in other identifier references..
         /// </summary>
         public static string ObsoleteTypeHintInspection {
             get {
                 return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On Local Error exists only for compatibility with previous versions of Visual Basic, and all Errors are treated as Local regardless of the Error statement. Use of this keyword inaccurately gives the impression that there is a distinction between types of error handling when there is not..
+        /// </summary>
+        public static string OnLocalErrorInspection {
+            get {
+                return ResourceManager.GetString("OnLocalErrorInspection", resourceCulture);
             }
         }
         
@@ -615,6 +687,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UndeclaredVariableInspection {
             get {
                 return ResourceManager.GetString("UndeclaredVariableInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A class module that contains members with underscores cannot be implemented by other classes. The underscore is used as a separator between the interface/object name and the implemented member name: having an underscore in the member name confuses the compiler, which then refuses to compile the project. Avoid underscores in public member names by following a &apos;PascalCase&apos; naming convention..
+        /// </summary>
+        public static string UnderscoreInPublicClassModuleMemberInspection {
+            get {
+                return ResourceManager.GetString("UnderscoreInPublicClassModuleMemberInspection", resourceCulture);
             }
         }
         

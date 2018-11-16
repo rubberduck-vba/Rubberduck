@@ -1,10 +1,11 @@
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.UnitTesting.Commands;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class AddTestModuleCommandMenuItem : CommandMenuItemBase
     {
-        public AddTestModuleCommandMenuItem(CommandBase command)
+        public AddTestModuleCommandMenuItem(AddTestModuleCommand command)
             : base(command)
         {
         }

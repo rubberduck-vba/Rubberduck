@@ -1,7 +1,5 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
-using System.Text;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
@@ -100,25 +98,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
-        private string _previousContentHash;
-        public string ContentHash()
-        {
-            using (var hash = new SHA256Managed())
-            using (var stream = Content().ToStream())
-            {
-                return _previousContentHash = new string(Encoding.Unicode.GetChars(hash.ComputeHash(stream)));
-            }
-        }
-
-        public int SimpleContentHash()
+        public int ContentHash()
         {
             var code = Content();
             return string.IsNullOrEmpty(code)
                 ? 0
                 : code.GetHashCode();
         }
-
-        public bool IsDirty => _previousContentHash.Equals(ContentHash());
 
         public void AddFromString(string content)
         {
@@ -134,30 +120,64 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public void InsertLines(int line, string content)
         {
-            if (IsWrappingNullReference) return; 
-            Target.InsertLines(line, content);
+            if (IsWrappingNullReference) return;
+            try
+            {
+                Target.InsertLines(line, content);
+
+            }
+            catch (Exception e)
+            {
+                // "too many line continuations" is one possible cause for a COMException here.
+                _logger.Error(e);
+                throw;
+            }
         }
 
         public void DeleteLines(int startLine, int count = 1)
         {
-            if (IsWrappingNullReference) return; 
-            Target.DeleteLines(startLine, count);
+            if (IsWrappingNullReference) return;
+            if (Target.CountOfLines > 0)
+            {
+
+                try
+                {
+                    Target.DeleteLines(startLine, count);
+
+                }
+                catch (Exception e)
+                {
+                    // "too many line continuations" is one possible cause for a COMException here.
+                    _logger.Error(e);
+                    throw;
+                }
+            }
         }
 
         public void ReplaceLine(int line, string content)
         {
             if (IsWrappingNullReference) return;
-            if (Target.CountOfLines == 0)
+            try
             {
-                Target.AddFromString(content);
-            }
-            else
-            {
-                try
+                if (Target.CountOfLines == 0)
                 {
-                    Target.ReplaceLine(line, content);
+                    Target.AddFromString(content);
                 }
-                catch { /* "too many line continuations" is one possible cause */ }
+                else
+                {
+                    using (var pane = CodePane)
+                    {
+                        var selection = pane.Selection;
+                        Target.ReplaceLine(line, content);
+                        pane.Selection = selection;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                // "too many line continuations" is one possible cause for a COMException here.
+                _logger.Error(e);
+                throw;
             }
         }
 

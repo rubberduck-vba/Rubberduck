@@ -27,6 +27,7 @@ namespace Rubberduck.Parsing.Symbols
                   Accessibility.Implicit,
                   DeclarationType.Project,
                   null,
+                  null,
                   Selection.Home,
                   false,
                   null,

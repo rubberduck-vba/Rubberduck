@@ -255,30 +255,52 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key="HeaderBackground" TargetType="Label">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Background" Value="DarkGray"/>
+        </Style>
+        <Style x:Key="HeaderText" TargetType="Label">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="BorderHeader" TargetType="Border">
+            <Setter Property="Background" Value="DarkGray"/>
+            <Setter Property="CornerRadius" Value="5"/>
+        </Style>
+        <BitmapImage x:Key="FilterIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
+        <Style TargetType="ScrollViewer">
+            <Style.Setters>
+                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
+            </Style.Setters>
+        </Style>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer>
+        <ScrollViewer x:Name="ScrollViewer">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
-                <Label Background="DarkGray"
-                       HorizontalContentAlignment="Stretch"
+                <Border Style="{StaticResource BorderHeader}"
                        Margin="0,5,0,5">
-                    <Label.Style>
-                        <Style>
-                            <Style.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="5"/>
-                                </Style>
-                            </Style.Resources>
-                        </Style>
-                    </Label.Style>
-                    <DockPanel Background="DarkGray" FlowDirection="LeftToRight">
+                    <DockPanel FlowDirection="LeftToRight">
                         <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                            <Label Foreground="White"
-                                FontWeight="SemiBold" 
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}">
-                            </Label>
+                            <Label Style="{StaticResource HeaderText}"
+                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}" />
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <Label Content="-"/>
+                                <Image Source="{StaticResource FilterIcon}" />
+                                <Label Style="{StaticResource HeaderText}"
+                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionSettings_FilterByDescription}" />
+                                <TextBox MinWidth="125"
+                                         Text="{Binding InspectionSettingsDescriptionFilter, UpdateSourceTrigger=PropertyChanged}"
+                                         HorizontalAlignment="Stretch" />
+                                <Border Width="10" />
+                                <Label Style="{StaticResource HeaderText}"
+                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionSettings_FilterBySeverity}" />
+                                <ComboBox Width="100"
+                                          ItemsSource="{Binding SeverityFilters, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedItem="{Binding SelectedSeverityFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Left"
+                                    Margin="10,0,0,0">
                             <controls:LinkButton
                                 Margin="2"
                                 Command="{Binding ImportButtonCommand}"
@@ -288,16 +310,8 @@
                                 Command="{Binding ExportButtonCommand}"
                                 Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=ExportPageSettingsButton}"/>
                         </StackPanel>
-                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Stretch">
-                            <Label Foreground="White"
-                                FontWeight="SemiBold"
-                                Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionSettings_FilterDescription}" />
-                            <TextBox MinWidth="125"
-                                     Text="{Binding InspectionSettingsFilter, UpdateSourceTrigger=PropertyChanged}"
-                                     HorizontalAlignment="Stretch" />
-                        </StackPanel>
                     </DockPanel>
-                    </Label>  
+                </Border>
                 <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
                     <controls:GroupingGrid ItemsSource="{Binding InspectionSettings}"
                                            AutoGenerateColumns="False"
@@ -344,41 +358,25 @@
                         </controls:GroupingGrid.Columns>
                     </controls:GroupingGrid>
                 </Border>
-                <Label Background="DarkGray"
-                       Foreground="White"
-                       FontWeight="SemiBold"
-                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc}"
-                       Margin="0,15,0,5">
-                    <Label.Style>
-                        <Style>
-                            <Style.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="5"/>
-                                </Style>
-                            </Style.Resources>
-                        </Style>
-                    </Label.Style>
-                </Label>
+
+                <Border Style="{StaticResource BorderHeader}"
+                        Margin="0,15,0,5">
+                    <Label Style="{StaticResource HeaderText}"
+                           Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc}">
+                    </Label>
+                </Border>
+
                 <StackPanel>
                     <CheckBox IsChecked="{Binding RunInspectionsOnSuccessfulParse}" 
                               Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_Misc_RunInspectionsOnSuccessfulParse}" />
                 </StackPanel>
 
-                <Label Background="DarkGray"
-                       Foreground="White"
-                       FontWeight="SemiBold"
-                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersLabel}"
-                       Margin="0,15,0,5">
-                    <Label.Style>
-                        <Style>
-                            <Style.Resources>
-                                <Style TargetType="{x:Type Border}">
-                                    <Setter Property="CornerRadius" Value="5"/>
-                                </Style>
-                            </Style.Resources>
-                        </Style>
-                    </Label.Style>
-                </Label>
+                <Border Style="{StaticResource BorderHeader}"
+                        Margin="0,15,0,5">
+                    <Label Style="{StaticResource HeaderText}"
+                           Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersLabel}" />
+                </Border>
+
                 <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_WhitelistedIdentifiersDescription}" />
                 <ToolBarTray IsLocked="True"
                              Background="Transparent">

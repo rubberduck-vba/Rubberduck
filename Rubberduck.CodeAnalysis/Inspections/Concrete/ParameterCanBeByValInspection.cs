@@ -22,8 +22,8 @@ namespace Rubberduck.Inspections.Concrete
             var declarations = UserDeclarations.ToArray();
             var issues = new List<IInspectionResult>();
 
-            var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToArray();
-            var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
+            var interfaceDeclarationMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToArray();
+            var interfaceScopes = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
 
             issues.AddRange(GetResults(declarations, interfaceDeclarationMembers));
 
@@ -80,7 +80,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 var members = declarationMembers.Any(a => a.DeclarationType == DeclarationType.Event)
                     ? declarations.FindHandlersForEvent(declaration).Select(s => s.Item2).ToList()
-                    : declarations.FindInterfaceImplementationMembers(declaration).ToList();
+                    : State.DeclarationFinder.FindInterfaceImplementationMembers(declaration).Cast<Declaration>().ToList();
 
                 foreach (var member in members)
                 {
@@ -90,11 +90,11 @@ namespace Rubberduck.Inspections.Concrete
                         .ThenBy(t => t.Selection.StartColumn)
                         .ToList();
 
+                    //If you hit this assert, reopen https://github.com/rubberduck-vba/Rubberduck/issues/3906
+                    Debug.Assert(parametersAreByRef.Count == parameters.Count);
+
                     for (var i = 0; i < parameters.Count; i++)
                     {
-                        //If you hit this assert, congratulations! you've found a test case for https://github.com/rubberduck-vba/Rubberduck/issues/3906
-                        //Please examine the code, and if possible, either fix the indexing on this or upload your failing code to the GitHub issue.
-                        Debug.Assert(parametersAreByRef.Count == parameters.Count);
                         parametersAreByRef[i] = parametersAreByRef[i] &&
                                                 !IsUsedAsByRefParam(declarations, parameters[i]) &&
                                                 ((VBAParser.ArgContext) parameters[i].Context).BYVAL() == null &&

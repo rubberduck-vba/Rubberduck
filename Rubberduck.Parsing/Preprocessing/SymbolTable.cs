@@ -12,7 +12,7 @@ namespace Rubberduck.Parsing.PreProcessing
             _table = new Dictionary<TKey, TValue>();
         }
 
-        public void Add(TKey name, TValue value)
+        public void AddOrUpdate(TKey name, TValue value)
         {
             _table[name] = value;
         }

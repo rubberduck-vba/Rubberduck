@@ -1,6 +1,6 @@
-namespace Rubberduck.VBEditor.VBERuntime.Settings
+namespace Rubberduck.VBEditor.VbeRuntime.Settings
 {
-    public interface IVBESettings
+    public interface IVbeSettings
     {
         DllVersion Version { get; }
         bool CompileOnDemand { get; set; }

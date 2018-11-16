@@ -156,9 +156,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Multiple declarations in single instruction</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Module has more than one folder annotation.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Non-returning function or property getter</value>
   </data>
@@ -326,5 +323,35 @@
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Statically accessible sheet accessed using string</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Member marked as '@Obsolete' is used</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Use of obsolete 'CDecl' calling convention</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Annotation is duplicated</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Module without '@Folder' annotation</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>On Local Error statement</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>Inappropriate use of 'IsMissing' function</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>Inappropriate use of 'IsMissing' function</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Assignment is not used</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Underscore in public class module member</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Member access may return 'Nothing'</value>
   </data>
 </root>

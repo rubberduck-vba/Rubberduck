@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.VBEditor.Utility;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using TYPEKIND = System.Runtime.InteropServices.ComTypes.TYPEKIND;
@@ -12,53 +13,61 @@ using TYPELIBATTR = System.Runtime.InteropServices.ComTypes.TYPELIBATTR;
 
 namespace Rubberduck.Parsing.ComReflection
 {
-    [DebuggerDisplay("{Name}")]
+    [DataContract]
+    [KnownType(typeof(ComBase))]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public class ComProject : ComBase
     {
         public static readonly ConcurrentDictionary<Guid, ComType> KnownTypes = new ConcurrentDictionary<Guid, ComType>();
-        public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>(); 
+        public static readonly ConcurrentDictionary<Guid, ComEnumeration> KnownEnumerations = new ConcurrentDictionary<Guid, ComEnumeration>();
+        public static readonly ConcurrentDictionary<Guid, ComAlias> KnownAliases = new ConcurrentDictionary<Guid, ComAlias>();
 
-        public string Path { get; }
-        public long MajorVersion { get; }
-        public long MinorVersion { get; }
+        [DataMember(IsRequired = true)]
+        public string Path { get; set; }
+
+        [DataMember(IsRequired = true)]
+        public long MajorVersion { get; set; }
+
+        [DataMember(IsRequired = true)]
+        public long MinorVersion { get; set; }
 
         // YGNI...
         // ReSharper disable once NotAccessedField.Local
-        private TypeLibTypeFlags _flags;
+        private readonly TypeLibTypeFlags _flags;
 
-        private readonly List<ComAlias> _aliases = new List<ComAlias>();
+        [DataMember(IsRequired = true)]
+        private List<ComAlias> _aliases = new List<ComAlias>();
         public IEnumerable<ComAlias> Aliases => _aliases;
 
-        private readonly List<ComInterface> _interfaces = new List<ComInterface>();
+        [DataMember(IsRequired = true)]
+        private List<ComInterface> _interfaces = new List<ComInterface>();
         public IEnumerable<ComInterface> Interfaces => _interfaces;
 
-        private readonly List<ComEnumeration> _enumerations = new List<ComEnumeration>();
+        [DataMember(IsRequired = true)]
+        private List<ComEnumeration> _enumerations = new List<ComEnumeration>();
         public IEnumerable<ComEnumeration> Enumerations => _enumerations;
 
-        private readonly List<ComCoClass> _classes = new List<ComCoClass>();
+        [DataMember(IsRequired = true)]
+        private List<ComCoClass> _classes = new List<ComCoClass>();
         public IEnumerable<ComCoClass> CoClasses => _classes;
 
-        private readonly List<ComModule> _modules = new List<ComModule>();
+        [DataMember(IsRequired = true)]
+        private List<ComModule> _modules = new List<ComModule>();
         public IEnumerable<ComModule> Modules => _modules;
 
-        private readonly List<ComStruct> _structs = new List<ComStruct>();
+        [DataMember(IsRequired = true)]
+        private List<ComStruct> _structs = new List<ComStruct>();
         public IEnumerable<ComStruct> Structs => _structs;
 
-        public IEnumerable<IComType> Members
-        {
-            get
-            {
-                //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)
-                //instance where the TypeLib defines a module named "Enums" or "Types".
-                return _modules.Cast<IComType>()
-                    .Union(_interfaces)
-                    .Union(_classes)
-                    .Union(_enumerations)
-                    .Union(_structs);
-            }
-        } 
+        //Note - Enums and Types should enumerate *last*. That will prevent a duplicate module in the unlikely(?)
+        //instance where the TypeLib defines a module named "Enums" or "Types".
+        public IEnumerable<IComType> Members => _modules.Cast<IComType>()
+            .Union(_interfaces)
+            .Union(_classes)
+            .Union(_enumerations)
+            .Union(_structs);
 
-        public ComProject(ITypeLib typeLibrary, string path) : base(typeLibrary, -1)
+        public ComProject(ITypeLib typeLibrary, string path) : base(null, typeLibrary, -1)
         {
             Path = path;
             try
@@ -82,7 +91,7 @@ namespace Rubberduck.Parsing.ComReflection
         {
             var typeCount = typeLibrary.GetTypeInfoCount();
             for (var index = 0; index < typeCount; index++)
-            {                
+            {
                 try
                 {
                     typeLibrary.GetTypeInfo(index, out ITypeInfo info);
@@ -95,7 +104,7 @@ namespace Rubberduck.Parsing.ComReflection
                         switch (typeAttributes.typekind)
                         {
                             case TYPEKIND.TKIND_ENUM:
-                                var enumeration = type ?? new ComEnumeration(typeLibrary, info, typeAttributes, index);
+                                var enumeration = type ?? new ComEnumeration(this, typeLibrary, info, typeAttributes, index);
                                 Debug.Assert(enumeration is ComEnumeration);
                                 _enumerations.Add(enumeration as ComEnumeration);
                                 if (type == null && !enumeration.Guid.Equals(Guid.Empty))
@@ -104,7 +113,7 @@ namespace Rubberduck.Parsing.ComReflection
                                 }
                                 break;
                             case TYPEKIND.TKIND_COCLASS:
-                                var coclass = type ?? new ComCoClass(typeLibrary, info, typeAttributes, index);
+                                var coclass = type ?? new ComCoClass(this, typeLibrary, info, typeAttributes, index);
                                 Debug.Assert(coclass is ComCoClass && !coclass.Guid.Equals(Guid.Empty));
                                 _classes.Add(coclass as ComCoClass);
                                 if (type == null)
@@ -114,7 +123,7 @@ namespace Rubberduck.Parsing.ComReflection
                                 break;
                             case TYPEKIND.TKIND_DISPATCH:
                             case TYPEKIND.TKIND_INTERFACE:
-                                var intface = type ?? new ComInterface(typeLibrary, info, typeAttributes, index);
+                                var intface = type ?? new ComInterface(this, typeLibrary, info, typeAttributes, index);
                                 Debug.Assert(intface is ComInterface && !intface.Guid.Equals(Guid.Empty));
                                 _interfaces.Add(intface as ComInterface);
                                 if (type == null)
@@ -123,11 +132,11 @@ namespace Rubberduck.Parsing.ComReflection
                                 }
                                 break;
                             case TYPEKIND.TKIND_RECORD:
-                                var structure = new ComStruct(typeLibrary, info, typeAttributes, index);
+                                var structure = new ComStruct(this, typeLibrary, info, typeAttributes, index);
                                 _structs.Add(structure);
                                 break;
                             case TYPEKIND.TKIND_MODULE:
-                                var module = type ?? new ComModule(typeLibrary, info, typeAttributes, index);
+                                var module = type ?? new ComModule(this, typeLibrary, info, typeAttributes, index);
                                 Debug.Assert(module is ComModule);
                                 _modules.Add(module as ComModule);
                                 if (type == null && !module.Guid.Equals(Guid.Empty))
@@ -136,14 +145,18 @@ namespace Rubberduck.Parsing.ComReflection
                                 }
                                 break;
                             case TYPEKIND.TKIND_ALIAS:
-                                var alias = new ComAlias(typeLibrary, info, index, typeAttributes);
+                                var alias = new ComAlias(this, typeLibrary, info, index, typeAttributes);
                                 _aliases.Add(alias);
+                                if (alias.Guid != Guid.Empty)
+                                {
+                                    KnownAliases.TryAdd(alias.Guid, alias);
+                                }
                                 break;
                             case TYPEKIND.TKIND_UNION:
                                 //TKIND_UNION is not a supported member type in VBA.
                                 break;
                             default:
-                                throw new NotImplementedException(string.Format("Didn't expect a TYPEATTR with multiple typekind flags set in {0}.", Path));
+                                throw new NotImplementedException($"Didn't expect a TYPEATTR with multiple typekind flags set in {Path}.");
                         }
                     }
                 }

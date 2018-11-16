@@ -195,29 +195,26 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public event EventHandler<ComponentRenamedEventArgs> ComponentRenamed;
         void VB._dispVBComponentsEvents.ItemRenamed(VB.VBComponent VBComponent, string OldName)
         {
-            var component = new VBComponent(VBComponent);
-            var handler = ComponentRenamed;
-            if (handler == null)
+            using (var component = new VBComponent(VBComponent))
             {
-                component.Dispose();
-                return;
+                var handler = ComponentRenamed;
+                if (handler == null)
+                {
+                    return;
+                }
+
+                using (var components = component.Collection)
+                using (var project = components.Parent)
+                {
+                    if (project.Protection == ProjectProtection.Locked)
+                    {
+                        return;
+                    }
+                }
+
+                var qmn = new QualifiedModuleName(component);
+                handler.Invoke(component, new ComponentRenamedEventArgs(qmn, OldName));
             }
-
-            IVBProject project;
-            using (var components = component.Collection)
-            {
-                project = components.Parent;
-            }
-
-
-            if (project.Protection == ProjectProtection.Locked)
-            {
-                project.Dispose();
-                component.Dispose();
-                return;
-            }
-
-            handler.Invoke(component, new ComponentRenamedEventArgs(project.ProjectId, project, component, OldName));
         }
 
         public event EventHandler<ComponentEventArgs> ComponentSelected;
@@ -240,30 +237,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private static void OnDispatch(EventHandler<ComponentEventArgs> dispatched, VB.VBComponent vbComponent)
         {
-            var component = new VBComponent(vbComponent);
-            var handler = dispatched;
-            if (handler == null)
+            using (var component = new VBComponent(vbComponent))
             {
-                component.Dispose();
-                return;
+                var handler = dispatched;
+                if (handler == null)
+                {
+                    return;
+                }
+
+                using (var components = component.Collection)
+                using (var project = components.Parent)
+                {
+                    if (project.Protection == ProjectProtection.Locked)
+                    {
+                        return;
+                    }
+
+                    var qmn = new QualifiedModuleName(component);
+                    var eventArgs = new ComponentEventArgs(qmn);
+                    handler.Invoke(component, eventArgs);
+                }
             }
-
-            IVBProject project;
-            using (var components = component.Collection)
-            {
-                project = components.Parent;
-            }
-
-
-            if (project.Protection == ProjectProtection.Locked)
-            {
-                project.Dispose();
-                component.Dispose();
-                return;
-            }
-
-            var eventArgs = new ComponentEventArgs(project.ProjectId, project, component);
-            handler.Invoke(component, eventArgs);
         }
 
         #endregion

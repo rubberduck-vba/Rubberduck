@@ -2,7 +2,7 @@
 using Rubberduck.Settings;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
-using Rubberduck.VBEditor.VBERuntime.Settings;
+using Rubberduck.VBEditor.VbeRuntime.Settings;
 using System.Collections.Generic;
 using System;
 
@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public SettingsForm(IGeneralConfigService configService, IOperatingSystem operatingSystem, IMessageBox messageBox, IVBESettings vbeSettings, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
+        public SettingsForm(IGeneralConfigService configService, IOperatingSystem operatingSystem, IMessageBox messageBox, IVbeSettings vbeSettings, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
         {
             var config = configService.LoadConfiguration();
 

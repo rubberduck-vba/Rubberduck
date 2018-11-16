@@ -7,16 +7,16 @@ namespace Rubberduck.UnitTesting
 {
     internal class SendKeys : StubBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcSendKeys");
-
         public SendKeys()
         {
-            InjectDelegate(new SendKeysDelegate(SendKeysCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcSendKeys");
+
+            InjectDelegate(new SendKeysDelegate(SendKeysCallback), processAddress);
         }
 
         public override bool PassThrough
         {
-            get { return false; }
+            get => false;
             // ReSharper disable once ValueParameterNotUsed
             set
             {

@@ -11,7 +11,6 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class ExportCommand : CommandBase, IDisposable
     {
         private readonly ISaveFileDialog _saveFileDialog;

@@ -1,28 +1,22 @@
 ﻿using System;
-using System.Windows.Forms;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
 {
     public class AutoCompleteEventArgs : EventArgs
     {
-        public AutoCompleteEventArgs(ICodeModule module, WindowsApi.KeyPressEventArgs e)
+        public AutoCompleteEventArgs(ICodeModule module, KeyPressEventArgs e)
+            : this(module, e.Character, e.ControlDown, e.IsDelete) { }
+
+        public AutoCompleteEventArgs(ICodeModule module, char character, bool isControlKeyDown, bool isDeleteKey)
         {
-            if (e.Key == Keys.Delete ||
-                e.Key == Keys.Back ||
-                e.Key == Keys.Enter ||
-                e.Key == Keys.Tab)
-            {
-                Keys = e.Key;
-            }
-            else
-            {
-                Character = e.Character;
-            }
-            CodeModule = module;
-            CurrentSelection = module.GetQualifiedSelection().Value.Selection;
-            CurrentLine = module.GetLines(CurrentSelection);
+            Module = module;
+            IsControlKeyDown = isControlKeyDown;
+            Character = character;
+            IsDeleteKey = isDeleteKey;
         }
+
+        public ICodeModule Module { get; }
 
         /// <summary>
         /// <c>true</c> if the character has been handled, i.e. written to the code pane.
@@ -31,34 +25,18 @@ namespace Rubberduck.VBEditor.Events
         public bool Handled { get; set; }
 
         /// <summary>
-        /// The CodeModule wrapper for the module being edited.
-        /// </summary>
-        public ICodeModule CodeModule { get; }
-
-        /// <summary>
-        /// <c>true</c> if the event is originating from a <c>WM_CHAR</c> message.
-        /// <c>false</c> if the event is originating from a <c>WM_KEYDOWN</c> message.
-        /// </summary>
-        /// <remarks>
-        /// Inline completion is handled on WM_CHAR; deletions and block completion on WM_KEYDOWN.
-        /// </remarks>
-        public bool IsCharacter => Keys == default;
-        /// <summary>
-        /// The character whose key was pressed. Undefined value if <see cref="Keys"/> isn't `<see cref="Keys.None"/>.
+        /// The character whose key was pressed (Enter is always '\r'). Default value if Delete was pressed.
         /// </summary>
         public char Character { get; }
-        /// <summary>
-        /// The actionnable key that was pressed. Value is <see cref="Keys.None"/> when <see cref="IsCharacter"/> is <c>true</c>.
-        /// </summary>
-        public Keys Keys { get; }
 
         /// <summary>
-        /// The current location of the caret.
+        /// <c>true</c> if the left control key was down on the keypress.
         /// </summary>
-        public Selection CurrentSelection { get; }
+        public bool IsControlKeyDown { get; }
+
         /// <summary>
-        /// The contents of the current line of code.
+        /// <c>true</c> if the Delete key generated the event.
         /// </summary>
-        public string CurrentLine { get; }
+        public bool IsDeleteKey { get; }
     }
 }

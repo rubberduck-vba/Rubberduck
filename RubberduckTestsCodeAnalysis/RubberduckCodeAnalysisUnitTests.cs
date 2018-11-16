@@ -704,6 +704,129 @@ namespace Foo
         }
     }
 
+    public interface IFoo
+    {
+        FooImp Execute();
+    }
+
+    public abstract class Foo : IFoo
+    {
+        public virtual FooImp Execute() { return new FooImp(); }
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Execute() { return base.Execute(); }
+    }
+
+    [TestFixture]
+    public class ChainedWrapperUnitTests : ChainedWrapperAnalyzer
+    {
+        [Test]
+        [Category("ChainedWrappers")]
+        public void InterfaceContainsInterfaceType()
+        {
+            var test = @"namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
+{
+    public interface ISafeComWrapper
+    {
+        FooImp Execute();
+    }
+
+    public abstract class Foo : ISafeComWrapper
+    {
+        public virtual FooImp Execute() { return new FooImp(); }
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Execute() { return base.Execute(); }
+    }
+
+    public class D
+    {
+        public void B()
+        {
+            var v = new FooImp();
+            v.Execute().Execute();
+        }
+    }
+}";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.AreEqual("ChainedWrapper", diagnostics.Single().Descriptor.Id);
+        }
+        [Test]
+        [Category("ChainedWrappers")]
+        public void InterfaceContainsInterfaceType_Property()
+        {
+            var test = @"namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
+{
+    public interface ISafeComWrapper
+    {
+        FooImp Value { get; }
+    }
+
+    public abstract class Foo : ISafeComWrapper
+    {
+        public virtual FooImp Value => new FooImp();
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Value => base.Value;
+    }
+
+    public class D
+    {
+        public void B()
+        {
+            var v = new FooImp();
+            var x = v.Value.Value;
+        }
+    }
+}";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.AreEqual("ChainedWrapper", diagnostics.Single().Descriptor.Id);
+        }
+        [Test]
+        [Category("ChainedWrappers")]
+        public void InterfaceContainsInterfaceType_Property_ReverseAssignment()
+        {
+            var test = @"namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
+{
+    public interface ISafeComWrapper
+    {
+        FooImp Value { get; set; }
+    }
+
+    public abstract class Foo : ISafeComWrapper
+    {
+        public virtual FooImp Value
+        {
+            get => new FooImp();
+            set => new FooImp().Value = value;
+        }
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Value => base.Value;
+    }
+
+    public class D
+    {
+        public void B()
+        {
+            var v = new FooImp();
+            v.Value.Value = new FooImp();
+        }
+    }
+}";
+            var diagnostics = GetSortedDiagnostics(new[] { test }, LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer());
+            Assert.AreEqual("ChainedWrapper", diagnostics.Single().Descriptor.Id);
+        }
+    }
+
     public class ComManagementAnalyzer : CodeFixVerifier
     {
         protected override CodeFixProvider GetCSharpCodeFixProvider()
@@ -715,6 +838,51 @@ namespace Foo
         {
             return new ComVisibleTypeAnalyzer();
 
+        }
+    }
+
+    public class ChainedWrapperAnalyzer : CodeFixVerifier
+    {
+        protected override CodeFixProvider GetCSharpCodeFixProvider()
+        {
+            return null;
+        }
+
+        protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
+        {
+            return new RubberduckCodeAnalysis.ChainedWrapperAnalyzer();
+
+        }
+    }
+}
+
+namespace Rubberduck.VBEditor.SafeComWrappers.Abstract1
+{
+    public interface ISafeComWrapper
+    {
+        FooImp Value { get; set; }
+    }
+
+    public abstract class Foo : ISafeComWrapper
+    {
+        public virtual FooImp Value
+        {
+            get => new FooImp();
+            set => new FooImp().Value = value;
+        }
+    }
+
+    public class FooImp : Foo
+    {
+        public override FooImp Value => base.Value;
+    }
+
+    public class D
+    {
+        public void B()
+        {
+            var v = new FooImp();
+            v.Value.Value = new FooImp();
         }
     }
 }

@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.UnitTesting.ComClientHelpers;
 
 namespace Rubberduck.UnitTesting.Fakes
 {
     internal class Shell : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcShell");
-
         public Shell()
         {
-            InjectDelegate(new ShellDelegate(ShellCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcShell");
+
+            InjectDelegate(new ShellDelegate(ShellCallback), processAddress);
         }
 
         private readonly ValueTypeConverter<double> _converter = new ValueTypeConverter<double>();
@@ -20,9 +21,6 @@ namespace Rubberduck.UnitTesting.Fakes
             base.Returns((double)_converter.Value, invocation);
         }
 
-        [DllImport(TargetLibrary, SetLastError = true)]
-        private static extern double rtcShell(IntPtr pathname, short windowstyle);
-        
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.R8)]
         private delegate double ShellDelegate(IntPtr pathname, short windowstyle);
@@ -38,7 +36,7 @@ namespace Rubberduck.UnitTesting.Fakes
 
             if (PassThrough)
             {
-                return Convert.ToDouble(rtcShell(pathname, windowstyle));
+                return Convert.ToDouble(VbeProvider.VbeRuntime.Shell(pathname, windowstyle));
             }
             return Convert.ToDouble(ReturnValue ?? 0);
         }

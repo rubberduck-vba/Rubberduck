@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Rubberduck.Inspections.QuickFixes;
@@ -9,6 +8,7 @@ using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings;
 using System.Windows.Forms;
 using Rubberduck.Inspections.Concrete;
+using System;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -355,11 +355,12 @@ End Sub"
 
         private string ApplyLocalVariableQuickFixToCodeFragment(string inputCode, string userEnteredName = "")
         {
-            var vbe = BuildMockVBE(inputCode);
+            var vbe = BuildMockVBE(inputCode, out var component);
 
             var mockDialogFactory = BuildMockDialogFactory(userEnteredName);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 var inspection = new AssignedByValParameterInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
@@ -369,14 +370,17 @@ End Sub"
                     Assert.Inconclusive("Inspection yielded no results.");
                 }
 
-                new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result);
-                return state.GetRewriter(vbe.Object.ActiveVBProject.VBComponents[0]).GetText();
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+
+                new AssignedByValParameterMakeLocalCopyQuickFix(state, mockDialogFactory.Object).Fix(result, rewriteSession);
+
+                return rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
             }
         }
 
-        private Mock<IVBE> BuildMockVBE(string inputCode)
+        private Mock<IVBE> BuildMockVBE(string inputCode, out IVBComponent component)
         {
-            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            return MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
         }
 
         private Mock<IAssignedByValParameterQuickFixDialogFactory> BuildMockDialogFactory(string userEnteredName)
@@ -392,7 +396,7 @@ End Sub"
             mockDialog.SetupGet(m => m.DialogResult).Returns(() => DialogResult.OK);
 
             var mockDialogFactory = new Mock<IAssignedByValParameterQuickFixDialogFactory>();
-            mockDialogFactory.Setup(f => f.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<IEnumerable<string>>())).Returns(mockDialog.Object);
+            mockDialogFactory.Setup(f => f.Create(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Func<string,bool>>())).Returns(mockDialog.Object);
 
             return mockDialogFactory;
         }

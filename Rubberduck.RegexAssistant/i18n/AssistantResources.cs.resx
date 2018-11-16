@@ -142,22 +142,22 @@
     <value>^ zajišťuje, že se nacházíme na začátku řetězce, který bude kontrolován</value>
   </data>
   <data name="PatternDescription_AnchorEnd_GlobalEnabled" xml:space="preserve">
-    <value>$ zajišťuje, že řádek skončil, nebo že všechny vstupní znaky byly použity</value>
+    <value>$ zajišťuje, že skončil řádek, nebo že byly použity všechny vstupní znaky</value>
   </data>
   <data name="PatternDescription_AnchorEnd" xml:space="preserve">
-    <value>$ zajišťuje, že všechny znaky řetězce byly použity</value>
+    <value>$ zajišťuje, že byly použity všechny znaky řetězce</value>
   </data>
   <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
-    <value>'{0}' nešlo parsovat jako písmeno. Ověřte svůj vstup.</value>
+    <value>Nebylo možno parsovat '{0}' jako písmeno. Ověřte svůj vstup, prosím</value>
   </data>
   <data name="ExpressionDescription_ConcatenatedExpression" xml:space="preserve">
-    <value>Rozpozná sekvenci písmen</value>
+    <value>Odpovídá sekvenci písmen</value>
   </data>
   <data name="ExpressionDescription_AlternativesExpression" xml:space="preserve">
     <value>Rozpozná jednu z {0} alternativ</value>
   </data>
   <data name="AtomDescription_WordCharacter" xml:space="preserve">
-    <value>Rozpozná jakýkoli "slovní znak". Ekvivalentní k "[a-zA-Z_0-9]"</value>
+    <value>Odpovídá jakémukoli "slovnímu znaku". Ekvivalentní k "[a-zA-Z_0-9]"</value>
   </data>
   <data name="AtomDescription_CarriageReturn" xml:space="preserve">
     <value>Odpovídá ASCII znaku CR</value>
@@ -187,7 +187,7 @@
     <value>Odpovídá písmenu '{0}'</value>
   </data>
   <data name="AtomDescription_Literal_EscapedLiteral" xml:space="preserve">
-    <value>Odpovídá escape písmenu {0}</value>
+    <value>Odpovídá únikovému písmenu {0}</value>
   </data>
   <data name="AtomDescription_Literal_HexCodepoint" xml:space="preserve">
     <value>Odpovídá Hexadecimální ASCII hodnotě {0}</value>

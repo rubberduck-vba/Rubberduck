@@ -187,6 +187,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change &apos;IsMissing&apos; call to test for default value..
+        /// </summary>
+        public static string IsMissingOnInappropriateArgumentQuickFix {
+            get {
+                return ResourceManager.GetString("IsMissingOnInappropriateArgumentQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Write variable on one line.
         /// </summary>
         public static string MakeSingleLineParameterQuickFix {
@@ -259,6 +268,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove duplicated annotation.
+        /// </summary>
+        public static string RemoveDuplicatedAnnotationQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveDuplicatedAnnotationQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remove empty &apos;Else&apos; block.
         /// </summary>
         public static string RemoveEmptyElseBlockQuickFix {
@@ -273,6 +291,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string RemoveEmptyIfBlockQuickFix {
             get {
                 return ResourceManager.GetString("RemoveEmptyIfBlockQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;On Local Error&apos; with &apos;On Error&apos;.
+        /// </summary>
+        public static string RemoveLocalErrorQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveLocalErrorQuickFix", resourceCulture);
             }
         }
         

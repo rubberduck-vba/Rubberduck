@@ -1,5 +1,8 @@
 ﻿using System;
 using Rubberduck.VBEditor.Events;
+#if DEBUG
+    using System.Diagnostics;
+#endif
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
@@ -16,8 +19,7 @@ namespace Rubberduck.VBEditor.WindowsApi
             {
                 DispatchFocusEvent(FocusType.GotFocus);
             }
-            //This is an output window firehose, leave this here, but comment it out when done.
-            //Debug.WriteLine("WM: {0:X4}, wParam {1}, lParam {2}", msg, wParam, lParam);
+
             return base.SubClassProc(hWnd, msg, wParam, lParam, uIdSubclass, dwRefData);
         }
     }

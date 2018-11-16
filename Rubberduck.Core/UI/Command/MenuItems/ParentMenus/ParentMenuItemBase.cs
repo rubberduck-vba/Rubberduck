@@ -75,7 +75,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
             Item =  Parent.AddPopup(_beforeIndex);                
 
-            Item.Tag = _key;
+            Item.Tag = _key;            
 
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
             {
@@ -181,13 +181,13 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         private void child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
-            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Control.Tag.EndsWith(menu.GetType().Name)) as ICommandMenuItem;
+            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Tag.EndsWith(menu.GetType().Name)) as ICommandMenuItem;
             if (item == null)
             {
                 return;
             }
 
-            Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
+            Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Caption, e.TargetHashCode);
             item.Command.Execute(null);
         }
     }

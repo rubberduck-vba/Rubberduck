@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
@@ -25,11 +24,12 @@ namespace Rubberduck.Inspections.Concrete
         {
             // Note: This inspection does not find dictionary calls (e.g. foo!bar) since we do not know what the
             // default member is of a class.
-            var interfaceMembers = UserDeclarations.FindInterfaceMembers().ToList();
-            var interfaceImplementationMembers = UserDeclarations.FindInterfaceImplementationMembers();
+            var interfaceMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToList();
+            var interfaceImplementationMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers();
             var functions = State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Function)
-                .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName))
+                .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName) &&
+                               item.References.Any(r => !IsReturnStatement(item, r) && !r.IsAssignment))
                 .ToList();
             var interfaceMemberIssues = GetInterfaceMemberIssues(interfaceMembers);
             var nonInterfaceFunctions = functions.Except(interfaceMembers.Union(interfaceImplementationMembers));
@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return from interfaceMember in interfaceMembers
                 let implementationMembers =
-                    UserDeclarations.FindInterfaceImplementationMembers(interfaceMember.IdentifierName).ToList()
+                    State.DeclarationFinder.FindInterfaceImplementationMembers(interfaceMember).ToList()
                 where interfaceMember.DeclarationType == DeclarationType.Function &&
                       !IsReturnValueUsed(interfaceMember) &&
                       implementationMembers.All(member => !IsReturnValueUsed(member))

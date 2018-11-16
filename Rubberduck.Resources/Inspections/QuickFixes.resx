@@ -252,4 +252,13 @@
   <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
     <value>Refer to statically accessible sheet by its code name</value>
   </data>
+  <data name="RemoveDuplicatedAnnotationQuickFix" xml:space="preserve">
+    <value>Remove duplicated annotation</value>
+  </data>
+  <data name="RemoveLocalErrorQuickFix" xml:space="preserve">
+    <value>Replace 'On Local Error' with 'On Error'</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentQuickFix" xml:space="preserve">
+    <value>Change 'IsMissing' call to test for default value.</value>
+  </data>
 </root>

@@ -10,6 +10,7 @@ using Rubberduck.UI.Controls;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.Command
 {
@@ -177,7 +178,8 @@ namespace Rubberduck.UI.Command
 
         private string GetModuleLine(QualifiedModuleName module, int line)
         {
-            using (var codeModule = _state.ProjectsProvider.Component(module).CodeModule)
+            var component = _state.ProjectsProvider.Component(module);
+            using (var codeModule = component.CodeModule)
             {
                 return codeModule.GetLines(line, 1).Trim();
             }
@@ -190,24 +192,24 @@ namespace Rubberduck.UI.Command
                 return declaration;
             }
 
-            bool findDesigner;
             using (var activePane = _vbe.ActiveCodePane)
             {
+                bool findDesigner;
                 using (var selectedComponent = _vbe.SelectedVBComponent)
                 {
-                    findDesigner = activePane != null && !activePane.IsWrappingNullReference 
-                                    && (selectedComponent?.HasDesigner ?? false);
+                    findDesigner = activePane != null && !activePane.IsWrappingNullReference
+                                                      && (selectedComponent?.HasDesigner ?? false);
                 }
-            }
 
-            return findDesigner
-                ? FindFormDesignerTarget()
-                : FindCodePaneTarget();
+                return findDesigner
+                    ? FindFormDesignerTarget()
+                    : FindCodePaneTarget(activePane);
+            }
         }
 
-        private Declaration FindCodePaneTarget()
+        private Declaration FindCodePaneTarget(ICodePane codePane)
         {
-            return _state.FindSelectedDeclaration(_vbe.ActiveCodePane);
+            return _state.FindSelectedDeclaration(codePane);
         }
 
         private Declaration FindFormDesignerTarget(QualifiedModuleName? qualifiedModuleName = null)

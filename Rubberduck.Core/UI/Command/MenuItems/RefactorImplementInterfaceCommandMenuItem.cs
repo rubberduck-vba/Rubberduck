@@ -1,13 +1,13 @@
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class RefactorImplementInterfaceCommandMenuItem : CommandMenuItemBase
     {
-        public RefactorImplementInterfaceCommandMenuItem(CommandBase command) 
+        public RefactorImplementInterfaceCommandMenuItem(RefactorImplementInterfaceCommand command) 
             : base(command)
         {
         }

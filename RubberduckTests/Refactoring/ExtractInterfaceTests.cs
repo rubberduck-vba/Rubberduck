@@ -50,7 +50,8 @@ End Sub
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -61,11 +62,12 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
+                var actualCode = component.CodeModule.Content();
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
-                Assert.AreEqual(expectedCode, component.CodeModule.Content());
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -155,7 +157,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -166,7 +169,7 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -239,7 +242,8 @@ End Function
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -251,7 +255,7 @@ End Function
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -272,7 +276,8 @@ End Function
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -296,7 +301,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -308,7 +314,7 @@ End Sub";
                 var factory = SetupFactory(model);
                 factory.Setup(f => f.Create()).Returns(value: null);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor();
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -329,7 +335,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -344,7 +351,7 @@ End Sub";
                 var factory = SetupFactory(model);
                 factory.Setup(f => f.Create()).Returns(presenter.Object);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor();
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -385,7 +392,8 @@ End Sub
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -397,7 +405,7 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor(state.AllUserDeclarations.Single(s => s.DeclarationType == DeclarationType.ClassModule));
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -500,7 +508,7 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            using(var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);

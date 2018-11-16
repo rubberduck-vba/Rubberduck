@@ -12,8 +12,8 @@ namespace Rubberduck.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
-    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
         
@@ -305,7 +305,8 @@ namespace Rubberduck.Properties {
   <IsSmartIndenterPrompted>false</IsSmartIndenterPrompted>
   <IsAutoSaveEnabled>false</IsAutoSaveEnabled>
   <AutoSavePeriod>10</AutoSavePeriod>
-  <MinimumLogLevel>6</MinimumLogLevel>
+  <UserEditedLogLevel>false</UserEditedLogLevel>
+  <MinimumLogLevel>0</MinimumLogLevel>
   <EnableExperimentalFeatures />
 </GeneralSettings>")]
         public global::Rubberduck.Settings.GeneralSettings GeneralSettings {
@@ -419,9 +420,22 @@ namespace Rubberduck.Properties {
             "ities\" />\r\n    <CodeInspection Name=\"StepOneIsRedundantInspection\" Severity=\"Hin" +
             "t\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"SheetAcc" +
             "essedUsingStringInspection\" Severity=\"Suggestion\" InspectionType=\"LanguageOpport" +
-            "unities\" />\r\n  </CodeInspections>\r\n  <WhitelistedIdentifiers />\r\n  <RunInspectio" +
-            "nsOnSuccessfulParse>true</RunInspectionsOnSuccessfulParse>\r\n</CodeInspectionSett" +
-            "ings>")]
+            "unities\" />\r\n    <CodeInspection Name=\"ObsoleteMemberUsageInspection\" Severity=\"" +
+            "Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspe" +
+            "ction Name=\"ObsoleteCallingConventionInspection\" Severity=\"Warning\" InspectionTy" +
+            "pe=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"DuplicatedAnnotationInspect" +
+            "ion\" Severity=\"Error\" InspectionType=\"RubberduckOpportunities\" />\r\n    <CodeInsp" +
+            "ection Name=\"ModuleWithoutFolderInspection\" Severity=\"Suggestion\" InspectionType" +
+            "=\"RubberduckOpportunities\" />\r\n    <CodeInspection Name=\"OnLocalErrorInspection\"" +
+            " Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspe" +
+            "ction Name=\"IsMissingOnInappropriateArgumentInspection\" Severity=\"Warning\" Inspe" +
+            "ctionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"UnderscoreInPublicClassModuleMem" +
+            "berInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"IsMissingWithNonArgu" +
+            "mentParameterInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" /" +
+            ">\r\n    <CodeInspection Name=\"AssignmentNotUsedInspection\" Severity=\"Suggestion\" " +
+            "InspectionType=\"CodeQualityIssues\" />\r\n  </CodeInspections>\r\n  <WhitelistedIdent" +
+            "ifiers />\r\n  <RunInspectionsOnSuccessfulParse>true</RunInspectionsOnSuccessfulPa" +
+            "rse>\r\n</CodeInspectionSettings>")]
         public global::Rubberduck.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));
@@ -430,28 +444,25 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
-<AutoCompleteSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" CompleteBlockOnTab=""true"" CompleteBlockOnEnter=""true"" EnableSmartConcat=""true"">
-  <AutoCompletes>
-    <AutoComplete Key=""AutoCompleteClosingBrace"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteClosingBracket"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteClosingParenthese"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteClosingString"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteDoBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteEnumBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteForBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteFunctionBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteIfBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteOnErrorResumeNextBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompletePrecompilerIfBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompletePropertyBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteSelectBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteSubBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteTypeBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteWhileBlock"" IsEnabled=""true"" />
-    <AutoComplete Key=""AutoCompleteWithBlock"" IsEnabled=""true"" />
-  </AutoCompletes>
-</AutoCompleteSettings>")]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<AutoCompleteSettings xmlns:xsi=\"http://" +
+            "www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"" +
+            " IsEnabled=\"false\" CompleteBlockOnTab=\"true\" CompleteBlockOnEnter=\"true\" EnableS" +
+            "martConcat=\"true\">\r\n  <AutoCompletes>\r\n    <AutoComplete Key=\"AutoCompleteClosin" +
+            "gBrace\" IsEnabled=\"true\" />\r\n    <AutoComplete Key=\"AutoCompleteClosingBracket\" " +
+            "IsEnabled=\"true\" />\r\n    <AutoComplete Key=\"AutoCompleteClosingParenthese\" IsEna" +
+            "bled=\"true\" />\r\n    <AutoComplete Key=\"AutoCompleteClosingString\" IsEnabled=\"tru" +
+            "e\" />\r\n    <AutoComplete Key=\"AutoCompleteDoBlock\" IsEnabled=\"true\" />\r\n    <Aut" +
+            "oComplete Key=\"AutoCompleteEnumBlock\" IsEnabled=\"true\" />\r\n    <AutoComplete Key" +
+            "=\"AutoCompleteForBlock\" IsEnabled=\"true\" />\r\n    <AutoComplete Key=\"AutoComplete" +
+            "FunctionBlock\" IsEnabled=\"true\" />\r\n    <AutoComplete Key=\"AutoCompleteIfBlock\" " +
+            "IsEnabled=\"true\" />\r\n    <AutoComplete Key=\"AutoCompleteOnErrorResumeNextBlock\" " +
+            "IsEnabled=\"true\" />\r\n    <AutoComplete Key=\"AutoCompletePrecompilerIfBlock\" IsEn" +
+            "abled=\"true\" />\r\n    <AutoComplete Key=\"AutoCompletePropertyBlock\" IsEnabled=\"tr" +
+            "ue\" />\r\n    <AutoComplete Key=\"AutoCompleteSelectBlock\" IsEnabled=\"true\" />\r\n   " +
+            " <AutoComplete Key=\"AutoCompleteSubBlock\" IsEnabled=\"true\" />\r\n    <AutoComplete" +
+            " Key=\"AutoCompleteTypeBlock\" IsEnabled=\"true\" />\r\n    <AutoComplete Key=\"AutoCom" +
+            "pleteWhileBlock\" IsEnabled=\"true\" />\r\n    <AutoComplete Key=\"AutoCompleteWithBlo" +
+            "ck\" IsEnabled=\"true\" />\r\n  </AutoCompletes>\r\n</AutoCompleteSettings>")]
         public global::Rubberduck.Settings.AutoCompleteSettings AutoCompleteSettings {
             get {
                 return ((global::Rubberduck.Settings.AutoCompleteSettings)(this["AutoCompleteSettings"]));

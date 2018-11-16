@@ -4,8 +4,8 @@ namespace Rubberduck.VBEditor.Events
 {
     public class ComponentRenamedEventArgs : ComponentEventArgs
     {
-        public ComponentRenamedEventArgs(string projectId, IVBProject project, IVBComponent component, string oldName)
-            : base(projectId, project, component)
+        public ComponentRenamedEventArgs(QualifiedModuleName qmn, string oldName)
+            : base(qmn)
         {
             OldName = oldName;
         }

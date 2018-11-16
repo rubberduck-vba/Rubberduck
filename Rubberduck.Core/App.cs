@@ -105,6 +105,24 @@ namespace Rubberduck
             LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
         }
 
+        /// <summary>
+        /// Ensure that log level is changed to "none" after a successful
+        /// run of Rubberduck for first time. By default, we ship with 
+        /// log level set to Trace (0) but once it's installed and has
+        /// ran without problem, it should be set to None (6)
+        /// </summary>
+        private void UpdateLoggingLevelOnShutdown()
+        {
+            if (_config.UserSettings.GeneralSettings.UserEditedLogLevel ||
+                _config.UserSettings.GeneralSettings.MinimumLogLevel != LogLevel.Trace.Ordinal)
+            {
+                return;
+            }
+
+            _config.UserSettings.GeneralSettings.MinimumLogLevel = LogLevel.Off.Ordinal;
+            _configService.SaveConfiguration(_config);
+        }
+
         public void Startup()
         {
             EnsureLogFolderPathExists();
@@ -116,13 +134,13 @@ namespace Rubberduck
             
             CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
-            _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
+            _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts            
             _appMenus.Localize();
 
             if (_config.UserSettings.GeneralSettings.CanCheckVersion)
             {
                 _checkVersionCommand.Execute(null);
-            }
+            }            
         }
 
         public void Shutdown()
@@ -131,6 +149,8 @@ namespace Rubberduck
             {
                 Debug.WriteLine("App calling Hooks.Detach.");
                 _hooks.Detach();
+
+                UpdateLoggingLevelOnShutdown();
             }
             catch
             {

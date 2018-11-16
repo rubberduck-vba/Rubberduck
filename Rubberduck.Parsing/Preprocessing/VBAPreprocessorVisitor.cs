@@ -4,6 +4,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.PreProcessing
 {
@@ -46,19 +47,17 @@ namespace Rubberduck.Parsing.PreProcessing
 
         private void AddPredefinedConstantsToSymbolTable(VBAPredefinedCompilationConstants predefinedConstants)
         {
-            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA6_NAME, new DecimalValue(predefinedConstants.VBA6 ? 1 : 0));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.VBA7_NAME, new DecimalValue(predefinedConstants.VBA7 ? 1 : 0));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN64_NAME, new DecimalValue(predefinedConstants.Win64 ? 1 : 0));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN32_NAME, new DecimalValue(predefinedConstants.Win32 ? 1 : 0));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.WIN16_NAME, new DecimalValue(predefinedConstants.Win16 ? 1 : 0));
-            _symbolTable.Add(VBAPredefinedCompilationConstants.MAC_NAME, new DecimalValue(predefinedConstants.Mac ? 1 : 0));
+            foreach (var constant in predefinedConstants.AllPredefinedConstants)
+            {
+                _symbolTable.AddOrUpdate(constant.Key, new DecimalValue(constant.Value));
+            }
         }
 
         private void AddUserDefinedConstantsToSymbolTable(Dictionary<string, short> userDefinedConstants)
         {
             foreach (var constant in userDefinedConstants)
             {
-                _symbolTable.Add(constant.Key, new DecimalValue(constant.Value));
+                _symbolTable.AddOrUpdate(constant.Key, new DecimalValue(constant.Value));
             }
         }
 

@@ -1,33 +1,33 @@
 ﻿using System;
 using Rubberduck.Parsing.Grammar;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class RemoveExplicitByRefModifierQuickFix : QuickFixBase
+    public sealed class RemoveExplicitByRefModifierQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public RemoveExplicitByRefModifierQuickFix(RubberduckParserState state)
+        public RemoveExplicitByRefModifierQuickFix(IDeclarationFinderProvider declarationFinderProvider)
             : base(typeof(RedundantByRefModifierInspection))
         {
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var context = (VBAParser.ArgContext) result.Context;
 
-            RemoveByRefIdentifier(_state.GetRewriter(result.QualifiedSelection.QualifiedName), context);
+            RemoveByRefIdentifier(rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName), context);
 
-            var interfaceMembers = _state.DeclarationFinder.FindAllInterfaceMembers().ToArray();
+            var interfaceMembers = _declarationFinderProvider.DeclarationFinder.FindAllInterfaceMembers().ToArray();
 
             var matchingInterfaceMemberContext = interfaceMembers.Select(member => member.Context).FirstOrDefault(c => c == context.Parent.Parent);
 
@@ -36,11 +36,11 @@ namespace Rubberduck.Inspections.QuickFixes
                 var interfaceParameterIndex = GetParameterIndex(context);
 
                 var implementationMembers =
-                    _state.AllUserDeclarations.FindInterfaceImplementationMembers(interfaceMembers.First(
+                    _declarationFinderProvider.DeclarationFinder.FindInterfaceImplementationMembers(interfaceMembers.First(
                         member => member.Context == matchingInterfaceMemberContext)).ToHashSet();
 
                 var parameters =
-                    _state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
+                    _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
                         .Where(p => implementationMembers.Contains(p.ParentDeclaration))
                         .Cast<ParameterDeclaration>()
                         .ToArray();
@@ -52,7 +52,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                     if (parameterIndex == interfaceParameterIndex)
                     {
-                        RemoveByRefIdentifier(_state.GetRewriter(parameter), parameterContext);
+                        RemoveByRefIdentifier(rewriteSession.CheckOutModuleRewriter(parameter.QualifiedModuleName), parameterContext);
                     }
                 }
             }

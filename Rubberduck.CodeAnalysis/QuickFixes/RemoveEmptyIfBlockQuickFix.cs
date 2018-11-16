@@ -7,25 +7,33 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    internal sealed class RemoveEmptyIfBlockQuickFix : QuickFixBase
+    public sealed class RemoveEmptyIfBlockQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public RemoveEmptyIfBlockQuickFix(RubberduckParserState state)
+        public RemoveEmptyIfBlockQuickFix()
             : base(typeof(EmptyIfBlockInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
 
-            UpdateContext((dynamic)result.Context, rewriter);
+            switch (result.Context)
+            {
+                case VBAParser.IfStmtContext ifContext:
+                    UpdateContext(ifContext, rewriter);
+                    break;
+                case VBAParser.IfWithEmptyThenContext ifWithEmtyThenContext:
+                    UpdateContext(ifWithEmtyThenContext, rewriter);
+                    break;
+                case VBAParser.ElseIfBlockContext elseIfBlockContext:
+                    UpdateContext(elseIfBlockContext, rewriter);
+                    break;
+                default:
+                    throw new NotSupportedException(result.Context.GetType().ToString());
+            }
         }
 
         private void UpdateContext(VBAParser.IfStmtContext context, IModuleRewriter rewriter)
@@ -55,7 +63,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 }
 
                 Debug.Assert(context.booleanExpression().children.Count == 1);
-                UpdateCondition((dynamic)context.booleanExpression().children[0], rewriter);
+                UpdateConditionDependingOnType((ParserRuleContext)context.booleanExpression().children[0], rewriter);
             }
             else
             {
@@ -76,7 +84,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             Debug.Assert(context.booleanExpression().children.Count == 1);
-            UpdateCondition((dynamic)context.booleanExpression().children[0], rewriter);
+            UpdateConditionDependingOnType((ParserRuleContext)context.booleanExpression().children[0], rewriter);
         }
 
         private void UpdateContext(VBAParser.ElseIfBlockContext context, IModuleRewriter rewriter)
@@ -87,6 +95,28 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             rewriter.Remove(context);
+        }
+
+        private void UpdateConditionDependingOnType(ParserRuleContext context, IModuleRewriter rewriter)
+        {
+            switch (context)
+            {
+                case VBAParser.RelationalOpContext condition:
+                    UpdateCondition(condition, rewriter);
+                    break;
+                case VBAParser.LogicalNotOpContext condition:
+                    UpdateCondition(condition, rewriter);
+                    break;
+                case VBAParser.LogicalAndOpContext condition:
+                    UpdateCondition(condition, rewriter);
+                    break;
+                case VBAParser.LogicalOrOpContext condition:
+                    UpdateCondition(condition, rewriter);
+                    break;
+                default:
+                    UpdateCondition(context, rewriter);
+                    break;
+            }
         }
 
         private void UpdateCondition(VBAParser.RelationalOpContext condition, IModuleRewriter rewriter)

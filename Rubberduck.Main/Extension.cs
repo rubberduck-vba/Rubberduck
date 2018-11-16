@@ -59,7 +59,8 @@ namespace Rubberduck
                 _addin = RootComWrapperFactory.GetAddInWrapper(AddInInst);
                 _addin.Object = this;
 
-                VBENativeServices.HookEvents(_vbe);
+                VbeProvider.Initialize(_vbe);
+                VbeNativeServices.HookEvents(_vbe);
 
 #if DEBUG
                 // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
@@ -98,7 +99,7 @@ namespace Rubberduck
 
         public void OnStartupComplete(ref Array custom)
         {
-            InitializeAddIn();
+            InitializeAddIn();            
         }
 
         public void OnBeginShutdown(ref Array custom)
@@ -198,8 +199,8 @@ namespace Rubberduck
                     RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
-            {
-                splash?.Dispose();
+            {                
+                splash?.Dispose();                
             }
         }
 
@@ -241,7 +242,8 @@ namespace Rubberduck
             {
                 _logger.Log(LogLevel.Info, "Rubberduck is shutting down.");
                 _logger.Log(LogLevel.Trace, "Unhooking VBENativeServices events...");
-                VBENativeServices.UnhookEvents();
+                VbeNativeServices.UnhookEvents();
+                VbeProvider.Terminate();
 
                 _logger.Log(LogLevel.Trace, "Releasing dockable hosts...");
 

@@ -9,7 +9,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -19,12 +18,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
     {
         private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IRemoveParametersPresenter> _factory;
+        private readonly IRewritingManager _rewritingManager;
         private RemoveParametersModel _model;
-        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
 
-        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory)
+        public RemoveParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRemoveParametersPresenter> factory, IRewritingManager rewritingManager)
         {
             _vbe = vbe;
+            _rewritingManager = rewritingManager;
             _factory = factory;
         }
 
@@ -53,8 +53,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     pane.Selection = oldSelection.Value.Selection;
                 }
             }
-
-            _model.State.OnParseRequested(this);
         }
 
         public void Refactor(QualifiedSelection target)
@@ -91,10 +89,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
         {
             _model = new RemoveParametersModel(state, selection, new MessageBox());
-            
+
             var target = _model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
             Debug.Assert(target != null, "Target was not found");
-            
+
             if (target != null)
             {
                 _model.RemoveParameters.Add(target);
@@ -112,16 +110,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new NullReferenceException("Parameter is null");
             }
 
-            AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
-            AdjustSignatures();
+            var rewritingSession = _rewritingManager.CheckOutCodePaneSession();
 
-            foreach (var rewriter in _rewriters)
-            {
-                rewriter.Rewrite();
-            }
+            AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration, rewritingSession);
+            AdjustSignatures(rewritingSession);
+
+            rewritingSession.TryRewrite();
         }
 
-        private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method)
+        private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method, IRewriteSession rewriteSession)
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
@@ -157,15 +154,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     continue;
                 }
 
-                RemoveCallArguments(argumentList, reference.QualifiedModuleName);
+                RemoveCallArguments(argumentList, reference.QualifiedModuleName, rewriteSession);
             }
         }
 
-        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, QualifiedModuleName module)
+        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, QualifiedModuleName module, IRewriteSession rewriteSession)
         {
-            var rewriter = _model.State.GetRewriter(module);
-            _rewriters.Add(rewriter);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
 
+            var usesNamedArguments = false;
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
             for (var i = 0; i < _model.Parameters.Count; i++)
             {
@@ -174,7 +171,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 {
                     continue;
                 }
-                
+
                 if (_model.Parameters[i].IsParamArray)
                 {
                     //The following code works because it is neither allowed to use both named arguments
@@ -182,7 +179,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     var index = i == 0 ? 0 : argList.children.IndexOf(args[i - 1]) + 1;
                     for (var j = index; j < argList.children.Count; j++)
                     {
-                        rewriter.Remove((dynamic)argList.children[j]);
+                        rewriter.Remove(argList.children[j]);
                     }
                     break;
                 }
@@ -193,6 +190,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 }
                 else
                 {
+                    usesNamedArguments = true;
                     var arg = args.Where(a => a.namedArgument() != null)
                                   .SingleOrDefault(a =>
                                         a.namedArgument().unrestrictedIdentifier().GetText() ==
@@ -204,9 +202,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     }
                 }
             }
+
+            RemoveTrailingComma(rewriter, argList, usesNamedArguments);
         }
 
-        private void AdjustSignatures()
+        private void AdjustSignatures(IRewriteSession rewriteSession)
         {
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
             if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
@@ -214,19 +214,19 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 var setter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertySet);
                 if (setter != null)
                 {
-                    RemoveSignatureParameters(setter);
-                    AdjustReferences(setter.References, setter);
+                    RemoveSignatureParameters(setter, rewriteSession);
+                    AdjustReferences(setter.References, setter, rewriteSession);
                 }
 
                 var letter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
-                    RemoveSignatureParameters(letter);
-                    AdjustReferences(letter.References, letter);
+                    RemoveSignatureParameters(letter, rewriteSession);
+                    AdjustReferences(letter.References, letter, rewriteSession);
                 }
             }
 
-            RemoveSignatureParameters(_model.TargetDeclaration);
+            RemoveSignatureParameters(_model.TargetDeclaration, rewriteSession);
 
             var eventImplementations = _model.Declarations
                 .Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
@@ -234,41 +234,144 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             foreach (var eventImplementation in eventImplementations)
             {
-                AdjustReferences(eventImplementation.References, eventImplementation);
-                RemoveSignatureParameters(eventImplementation);
+                AdjustReferences(eventImplementation.References, eventImplementation, rewriteSession);
+                RemoveSignatureParameters(eventImplementation, rewriteSession);
             }
 
-            var interfaceImplementations = _model.Declarations.FindInterfaceImplementationMembers().Where(item =>
+            var interfaceImplementations = _model.State.DeclarationFinder.FindAllInterfaceImplementingMembers().Where(item =>
                 item.ProjectId == _model.TargetDeclaration.ProjectId
                 &&
                 item.IdentifierName == $"{_model.TargetDeclaration.ComponentName}_{_model.TargetDeclaration.IdentifierName}");
 
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustReferences(interfaceImplentation.References, interfaceImplentation);
-                RemoveSignatureParameters(interfaceImplentation);
+                AdjustReferences(interfaceImplentation.References, interfaceImplentation, rewriteSession);
+                RemoveSignatureParameters(interfaceImplentation, rewriteSession);
             }
         }
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return _model.Declarations.FirstOrDefault(item => item.Scope == declaration.Scope 
-                && item.IdentifierName == declaration.IdentifierName 
+            return _model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName)
+                && item.IdentifierName == declaration.IdentifierName
                 && item.DeclarationType == declarationType);
         }
 
-        private void RemoveSignatureParameters(Declaration target)
+        private void RemoveSignatureParameters(Declaration target, IRewriteSession rewriteSession)
         {
-            var rewriter = _model.State.GetRewriter(target);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
-            var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
-            
+            var parameters = ((IParameterizedDeclaration)target).Parameters.OrderBy(o => o.Selection).ToList();
+
             foreach (var index in _model.RemoveParameters.Select(rem => _model.Parameters.IndexOf(rem)))
             {
                 rewriter.Remove(parameters[index]);
             }
 
-            _rewriters.Add(rewriter);
+            RemoveTrailingComma(rewriter);
+        }
+
+        //Issue 4319.  If there are 3 or more arguments and the user elects to remove 2 or more of
+        //the last arguments, then we need to specifically remove the trailing comma from
+        //the last 'kept' argument.
+        private void RemoveTrailingComma(IModuleRewriter rewriter, VBAParser.ArgumentListContext argList = null, bool usesNamedParams = false)
+        {
+            var commaLocator = RetrieveTrailingCommaInfo(_model.RemoveParameters, _model.Parameters);
+            if (!commaLocator.RequiresTrailingCommaRemoval)
+            {
+                return;
+            }
+
+            var tokenStart = 0;
+            var tokenStop = 0;
+
+            if (argList is null)
+            {
+                //Handle Signatures only
+                tokenStart = commaLocator.LastRetainedArg.Param.Declaration.Context.Stop.TokenIndex + 1;
+                tokenStop = commaLocator.FirstOfRemovedArgSeries.Param.Declaration.Context.Start.TokenIndex - 1;
+                rewriter.RemoveRange(tokenStart, tokenStop);
+                return;
+            }
+
+
+            //Handles References
+            var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
+
+            if (usesNamedParams)
+            {
+                var lastKeptArg = args.Where(a => a.namedArgument() != null)
+                    .SingleOrDefault(a => a.namedArgument().unrestrictedIdentifier().GetText() ==
+                                            commaLocator.LastRetainedArg.Identifier);
+
+                var firstOfRemovedArgSeries = args.Where(a => a.namedArgument() != null)
+                    .SingleOrDefault(a => a.namedArgument().unrestrictedIdentifier().GetText() ==
+                                            commaLocator.FirstOfRemovedArgSeries.Identifier);
+
+                tokenStart = lastKeptArg.Stop.TokenIndex + 1;
+                tokenStop = firstOfRemovedArgSeries.Start.TokenIndex - 1;
+                rewriter.RemoveRange(tokenStart, tokenStop);
+                return;
+            }
+            tokenStart = args[commaLocator.LastRetainedArg.Index].Stop.TokenIndex + 1;
+            tokenStop = args[commaLocator.FirstOfRemovedArgSeries.Index].Start.TokenIndex - 1;
+            rewriter.RemoveRange(tokenStart, tokenStop);
+        }
+
+        private CommaLocator RetrieveTrailingCommaInfo(List<Parameter> toRemove, List<Parameter> allParams)
+        {
+            if (toRemove.Count == allParams.Count || allParams.Count < 3)
+            {
+                return new CommaLocator();
+            }
+
+            var reversedAllParams = allParams.OrderByDescending(tr => tr.Declaration.Selection);
+            var rangeRemoval = new List<Parameter>();
+            for (var idx = 0; idx < reversedAllParams.Count(); idx++)
+            {
+                if (toRemove.Contains(reversedAllParams.ElementAt(idx)))
+                {
+                    rangeRemoval.Add(reversedAllParams.ElementAt(idx));
+                    continue;
+                }
+
+                if (rangeRemoval.Count >= 2)
+                {
+                    var startIndex = allParams.FindIndex(par => par == reversedAllParams.ElementAt(idx));
+                    var stopIndex = allParams.FindIndex(par => par == rangeRemoval.First());
+
+                    return new CommaLocator()
+                    {
+                        RequiresTrailingCommaRemoval = true,
+                        LastRetainedArg = new CommaBoundary()
+                        {
+                            Param = reversedAllParams.ElementAt(idx),
+                            Index = startIndex,
+                        },
+                        FirstOfRemovedArgSeries = new CommaBoundary()
+                        {
+                            Param = rangeRemoval.First(),
+                            Index = stopIndex,
+                        }
+                    };
+                }
+                break;
+            }
+            return new CommaLocator();
+        }
+
+        private struct CommaLocator
+        {
+            public bool RequiresTrailingCommaRemoval;
+            public CommaBoundary LastRetainedArg;
+            public CommaBoundary FirstOfRemovedArgSeries;
+        }
+
+        private struct CommaBoundary
+        {
+            public Parameter Param;
+            public int Index;
+            public string Identifier => Param.Declaration.IdentifierName;
         }
     }
 }

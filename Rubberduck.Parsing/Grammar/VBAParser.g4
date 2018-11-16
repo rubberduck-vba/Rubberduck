@@ -56,7 +56,7 @@ moduleConfig :
 ;
 
 moduleConfigProperty :
-    BEGINPROPERTY whiteSpace unrestrictedIdentifier (whiteSpace GUIDLITERAL)? endOfStatement
+    BEGINPROPERTY whiteSpace unrestrictedIdentifier (LPAREN numberLiteral RPAREN)? (whiteSpace GUIDLITERAL)? endOfStatement
         (moduleConfigProperty | moduleConfigElement)+
     ENDPROPERTY endOfStatement
 ;
@@ -97,14 +97,19 @@ moduleDeclarationsElement :
     | eventStmt
     | constStmt
     | implementsStmt
-    | variableStmt
+    | moduleVariableStmt
     | moduleOption
     | udtDeclaration)
 ;
 
+moduleVariableStmt :
+	variableStmt
+	(endOfLine attributeStmt)*
+;
+
 moduleBody : 
     whiteSpace?
-    (moduleBodyElement endOfStatement)*;
+    ((moduleBodyElement | attributeStmt) endOfStatement)*;
 
 moduleBodyElement : 
     functionStmt 
@@ -297,7 +302,7 @@ variable : expression;
 constStmt : (visibility whiteSpace)? CONST whiteSpace constSubStmt (whiteSpace? COMMA whiteSpace? constSubStmt)*;
 constSubStmt : identifier (whiteSpace asTypeClause)? whiteSpace? EQ whiteSpace? expression;
 
-declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? (FUNCTION | SUB) whiteSpace identifier whiteSpace LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
+declareStmt : (visibility whiteSpace)? DECLARE whiteSpace (PTRSAFE whiteSpace)? (FUNCTION | SUB) whiteSpace identifier whiteSpace (CDECL whiteSpace)? LIB whiteSpace STRINGLITERAL (whiteSpace ALIAS whiteSpace STRINGLITERAL)? (whiteSpace? argList)? (whiteSpace asTypeClause)?;
 
 argList : LPAREN (whiteSpace? arg (whiteSpace? COMMA whiteSpace? arg)*)? whiteSpace? RPAREN;
 
@@ -676,8 +681,7 @@ builtInType :
 ;
 
 // 5.6.13.1 Argument Lists
-argumentList :
-    whiteSpace? (argument? (whiteSpace? COMMA whiteSpace? argument)*)??
+argumentList : whiteSpace? (argument? (whiteSpace? COMMA whiteSpace? argument)*)?? whiteSpace?
 ;
 
 requiredArgument : argument;
@@ -828,6 +832,7 @@ markerKeyword : AS;
 statementKeyword :
     CALL
     | CASE
+    | CIRCLE
     | CONST
     | DECLARE
     | DEFBOOL
@@ -873,12 +878,14 @@ statementKeyword :
     | ON
     | OPTION
     | PRIVATE
+    | PSET
     | PUBLIC
     | RAISEEVENT
     | REDIM
     | RESUME
     | RETURN
     | RSET
+    | SCALE
     | SELECT
     | SET
     | STATIC
@@ -895,10 +902,16 @@ endOfLine :
     | whiteSpace? commentOrAnnotation
 ;
 
-// we expect endOfStatement to consume all trailing whitespace
+// We expect endOfStatement to consume all trailing whitespace blank statements.
+// We have to special case the end of file since infiniftly mant EOF tokens can be consumed at the end of file.
 endOfStatement :
-    (endOfLine whiteSpace? | (whiteSpace? COLON whiteSpace?))+
-    | whiteSpace? EOF
+    individualNonEOFEndOfStatement+ | whiteSpace? EOF
+;
+
+// we expect endOfStatement to consume all trailing whitespace
+individualNonEOFEndOfStatement :
+	  endOfLine whiteSpace? 
+	| whiteSpace? COLON whiteSpace?
 ;
 
 // Annotations must come before comments because of precedence. ANTLR4 matches as much as possible then chooses the one that comes first.
@@ -912,8 +925,8 @@ commentOrAnnotation :
 remComment : REM whiteSpace? commentBody;
 comment : SINGLEQUOTE commentBody;
 commentBody : (~NEWLINE)*;
-annotationList : SINGLEQUOTE (AT annotation whiteSpace?)+ (COLON commentBody)?;
-annotation : annotationName annotationArgList?;
+annotationList : SINGLEQUOTE (AT annotation)+ (COLON commentBody)?;
+annotation : annotationName annotationArgList? whiteSpace?;
 annotationName : unrestrictedIdentifier;
 annotationArgList : 
     whiteSpace annotationArg

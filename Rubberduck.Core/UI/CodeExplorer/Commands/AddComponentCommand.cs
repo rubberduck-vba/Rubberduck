@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.IO;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
@@ -17,11 +19,23 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _vbe = vbe;
         }
 
-        public bool CanAddComponent(CodeExplorerItemViewModel parameter)
+        public bool CanAddComponent(CodeExplorerItemViewModel parameter, IEnumerable<ProjectType> allowableProjectTypes)
         {
             try
             {
-                return GetDeclaration(parameter) != null || _vbe.ProjectsCount == 1;
+                var project = GetDeclaration(parameter)?.Project;
+
+                if (project == null && _vbe.ProjectsCount == 1)
+                {
+                    using (var vbProjects = _vbe.VBProjects)
+                    using (project = vbProjects[1])
+                    {                        
+                        return project != null && allowableProjectTypes.Contains(project.Type);                        
+                    }
+                }
+
+                return project != null && allowableProjectTypes.Contains(project.Type);
+
             }
             catch (COMException)
             {

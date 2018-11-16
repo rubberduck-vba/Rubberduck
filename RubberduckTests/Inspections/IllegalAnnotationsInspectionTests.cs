@@ -166,51 +166,6 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void SingleFolderAnnotation_NoResult()
-        {
-            const string inputCode =
-                @"'@Folder ""Foo""
-Public Sub Foo()
-    Const const1 As Integer = 9
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IllegalAnnotationInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.IsFalse(inspectionResults.Any());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void MultipleFolderAnnotations_ReturnsResult()
-        {
-            const string inputCode =
-                @"Option Explicit
-'@Folder ""Foo.Bar""
-'@Folder ""Biz.Buz""
-Public Sub Foo()
-End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new IllegalAnnotationInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                Assert.AreEqual(1, inspectionResults.Count());
-            }
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void CorrectTestModuleAnnotation_NoResult()
         {
             const string inputCode = @"
@@ -267,13 +222,13 @@ End Sub
 
         [Test]
         [Category("Inspections")]
-        public void ModuleAnnotationOnTopMostMember_NoResult()
+        public void NonExistentModuleAnnotation_OneResult()
         {
             const string inputCode = @"
+'@ThisDoesNotExist
 Option Explicit
 Option Private Module
 
-'@TestModule
 Public Sub Test1()
 End Sub
 
@@ -284,6 +239,454 @@ End Sub
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void NonExistentMemberAnnotation_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public Sub Test1()
+End Sub
+
+'@ThisDoesNotExist
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ModuleAnnotationInMemberAnnotationSectionOfFirstMember_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@TestModule _
+
+'@TestMethod
+Public Sub Test1()
+End Sub
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ModuleAnnotationAboveMemberAnnotationSectionOfFirstMember_NoResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@TestModule _
+
+'
+'@TestMethod
+Public Sub Test1()
+End Sub
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAnnotationOnTopMostMember_NoResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@TestMethod _
+
+Public Sub Test1()
+End Sub
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAnnotationOnLaterMember_NoResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public Sub Test1()
+End Sub
+
+'@TestMethod _
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAnnotationAboveTopMostMember_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@TestMethod 
+'
+Public Sub Test1()
+End Sub
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableAnnotationOnVariable_NoResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@Obsolete
+Public foo As Long
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableAnnotationOnModule_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@Obsolete 
+
+Public Sub Test1()
+End Sub
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAnnotationOnVariable_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+'@TestMethod 
+Public foo As Long
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAnnotationOnIdentifier_OneResultPerReference()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public foo As Long
+
+Public Sub Test2()
+    Dim a As Long
+    '@TestMethod 
+    a = foo
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ModuleAnnotationOnIdentifier_OneResultPerReference()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public foo As Long
+
+Public Sub Test2()
+    Dim a As Long
+    '@TestModule
+    a = foo
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(2, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void IdentifierAnnotationOnIdentifier_NoResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public foo As Long
+
+Public Sub Test2()
+    Dim a As Long
+    '@Ignore 
+    a = foo
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAnnotationOnLabel_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public foo As Long
+
+Public Sub Test2()
+    Dim a As Long
+    '@TestMethod 
+label: 
+    a =15
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ModuleAnnotationOnLabel_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public foo As Long
+
+Public Sub Test2()
+    Dim a As Long
+    '@TestModule
+label: 
+    a =15
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void VariableAnnotationOnLabel_OneResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public foo As Long
+
+Public Sub Test2()
+    Dim a As Long
+    '@Obsolete 
+label: 
+    a =15
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void GeneralAnnotationOnLabel_NoResult()
+        {
+            const string inputCode = @"
+Option Explicit
+Option Private Module
+
+Public foo As Long
+
+Public Sub Test2()
+    Dim a As Long
+    '@Ignore 
+label: 
+    a =15
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
                 var inspection = new IllegalAnnotationInspection(state);
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
@@ -308,6 +711,7 @@ End Sub
         {
             const string inputCode =
                 @"'@folder ""Foo""
+
 Public Sub Foo()
     Const const1 As Integer = 9
 End Sub";
