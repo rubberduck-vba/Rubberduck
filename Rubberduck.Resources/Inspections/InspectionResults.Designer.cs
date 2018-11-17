@@ -232,6 +232,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is hidden by a valid Excel cell reference..
+        /// </summary>
+        public static string ExcelUdfNameIsValidCellReferenceInspection {
+            get {
+                return ResourceManager.GetString("ExcelUdfNameIsValidCellReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Return value of function &apos;{0}&apos; is never used..
         /// </summary>
         public static string FunctionReturnValueNotUsedInspection {

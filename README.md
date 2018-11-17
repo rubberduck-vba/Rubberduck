@@ -1,4 +1,4 @@
-<img src="https://user-images.githubusercontent.com/5751684/46327997-aeb98d00-c5d2-11e8-9de5-ba6f9cd1eea3.png" />
+<img alt="yellow ducky" src="https://user-images.githubusercontent.com/5751684/48655863-2d378600-e9eb-11e8-9018-cc1454ba97f6.png" />
 
 <!-- campaign is no longer accepting donations
 ### Donate!
