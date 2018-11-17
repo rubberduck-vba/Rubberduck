@@ -434,7 +434,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         /// Windows API call used for memory range validation
         /// </summary>
         [DllImport("kernel32.dll")]
-        public static extern int VirtualQuery(IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, int dwLength);
+        public static extern IntPtr VirtualQuery(IntPtr lpAddress, out MEMORY_BASIC_INFORMATION lpBuffer, IntPtr dwLength);
 
         /// <summary>
         /// Do our best to validate that the input memory address is actually a COM object
@@ -479,10 +479,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
             if (memOffset == IntPtr.Zero) return false;
 
             var memInfo = new MEMORY_BASIC_INFORMATION();
-            var sizeOfMemInfo = Marshal.SizeOf(memInfo);
+            var sizeOfMemInfo = new IntPtr(Marshal.SizeOf(memInfo));
 
             // most of the time, a bad pointer will fail here
-            if (VirtualQuery(memOffset, out memInfo, sizeOfMemInfo) != sizeOfMemInfo) return false;
+            if (VirtualQuery(memOffset, out memInfo, sizeOfMemInfo) != sizeOfMemInfo)
+            {
+                return false;
+            }
 
             // check the memory area is not a guard page, or otherwise inaccessible
             if ((memInfo.Protect.HasFlag(ALLOCATION_PROTECTION.PAGE_NOACCESS)) ||
