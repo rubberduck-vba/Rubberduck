@@ -223,6 +223,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Member access may return &apos;Nothing&apos;.
+        /// </summary>
+        public static string ExcelMemberMayReturnNothingInspection {
+            get {
+                return ResourceManager.GetString("ExcelMemberMayReturnNothingInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function is hidden by Excel cell reference.
         /// </summary>
         public static string ExcelUdfNameIsValidCellReferenceInspection {
@@ -687,6 +696,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UndeclaredVariableInspection {
             get {
                 return ResourceManager.GetString("UndeclaredVariableInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Underscore in public class module member.
+        /// </summary>
+        public static string UnderscoreInPublicClassModuleMemberInspection {
+            get {
+                return ResourceManager.GetString("UnderscoreInPublicClassModuleMemberInspection", resourceCulture);
             }
         }
         

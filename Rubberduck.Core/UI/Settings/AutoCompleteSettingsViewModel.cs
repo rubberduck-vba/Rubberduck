@@ -1,5 +1,6 @@
 ﻿using NLog;
 using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
@@ -29,7 +30,7 @@ namespace Rubberduck.UI.Settings
             config.UserSettings.AutoCompleteSettings.SmartConcat.IsEnabled = EnableSmartConcat;
             config.UserSettings.AutoCompleteSettings.SmartConcat.ConcatVbNewLineModifier =
                 ConcatVbNewLine ? ModifierKeySetting.CtrlKey : ModifierKeySetting.None;
-
+            config.UserSettings.AutoCompleteSettings.SmartConcat.ConcatMaxLines = ConcatMaxLines;
             config.UserSettings.AutoCompleteSettings.BlockCompletion.IsEnabled = EnableBlockCompletion;
             config.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnTab = CompleteBlockOnTab;
             config.UserSettings.AutoCompleteSettings.BlockCompletion.CompleteOnEnter = CompleteBlockOnEnter;
@@ -43,6 +44,7 @@ namespace Rubberduck.UI.Settings
 
             EnableSmartConcat = toLoad.SmartConcat.IsEnabled;
             ConcatVbNewLine = toLoad.SmartConcat.ConcatVbNewLineModifier == ModifierKeySetting.CtrlKey;
+            ConcatMaxLines = toLoad.SmartConcat.ConcatMaxLines;
 
             EnableBlockCompletion = toLoad.BlockCompletion.IsEnabled;
             CompleteBlockOnTab = toLoad.BlockCompletion.CompleteOnTab;
@@ -108,6 +110,23 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private int _concatMaxLines;
+        public int ConcatMaxLines
+        {
+            get { return _concatMaxLines; }
+            set
+            {
+                if (_concatMaxLines != value)
+                {
+                    _concatMaxLines = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int ConcatMaxLinesMinValue => Rubberduck.Settings.AutoCompleteSettings.ConcatMaxLinesMinValue;
+        public int ConcatMaxLinesMaxValue => Rubberduck.Settings.AutoCompleteSettings.ConcatMaxLinesMaxValue;
+
         private bool _enableBlockCompletion;
 
         public bool EnableBlockCompletion
@@ -165,8 +184,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new OpenFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_LoadInspectionSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_LoadInspectionSettings
             })
             {
                 dialog.ShowDialog();
@@ -181,8 +200,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new SaveFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_SaveInspectionSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_SaveAutocompletionSettings
             })
             {
                 dialog.ShowDialog();

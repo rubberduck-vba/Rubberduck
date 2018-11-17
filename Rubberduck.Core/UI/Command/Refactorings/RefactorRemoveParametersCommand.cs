@@ -2,6 +2,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
@@ -16,12 +17,14 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly IMessageBox _msgbox;
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
 
-        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox) 
+        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox, IRewritingManager rewritingManager) 
             : base (vbe)
         {
             _msgbox = msgbox;
             _state = state;
+            _rewritingManager = rewritingManager;
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
@@ -75,7 +78,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
             {
                 var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, _msgbox);
-                var refactoring = new RemoveParametersRefactoring(Vbe, factory);
+                var refactoring = new RemoveParametersRefactoring(Vbe, factory, _rewritingManager);
                 refactoring.Refactor(selection.Value);
             }
         }

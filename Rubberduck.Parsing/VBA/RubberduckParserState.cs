@@ -12,7 +12,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
 using NLog;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
@@ -120,7 +119,7 @@ namespace Rubberduck.Parsing.VBA
         public string Message { get; }
     }
 
-    public sealed class RubberduckParserState : IDisposable, IDeclarationFinderProvider, IParseTreeProvider
+    public sealed class RubberduckParserState : IDisposable, IDeclarationFinderProvider, IParseTreeProvider, IParseManager
     {
         public const int NoTimeout = -1;
 
@@ -144,7 +143,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly IVBEEvents _vbeEvents;
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
-        
+
         /// <param name="vbeEvents">Provides event handling from the VBE. Static method <see cref="VBEEvents.Initialize"/> must be already called prior to constructing the method.</param>
         [SuppressMessage("ReSharper", "JoinNullCheckWithUsage")]
         public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVBEEvents vbeEvents)
@@ -842,9 +841,9 @@ namespace Rubberduck.Parsing.VBA
             return success;
         }
 
-        public void SetCodePaneRewriter(QualifiedModuleName module, IModuleRewriter codePaneRewriter)
+        public void SetCodePaneTokenStream(QualifiedModuleName module, ITokenStream codePaneTokenStream)
         {
-            _moduleStates[module].SetCodePaneRewriter(module, codePaneRewriter);
+            _moduleStates[module].SetCodePaneTokenStream(codePaneTokenStream);
         }
 
         public void SaveContentHash(QualifiedModuleName module)
@@ -931,34 +930,14 @@ namespace Rubberduck.Parsing.VBA
             return false;
         }
 
-        public IModuleRewriter GetRewriter(IVBComponent component)
+        public ITokenStream GetCodePaneTokenStream(QualifiedModuleName qualifiedModuleName)
         {
-            var qualifiedModuleName = new QualifiedModuleName(component);
-            return GetRewriter(qualifiedModuleName);
+            return _moduleStates[qualifiedModuleName].CodePaneTokenStream;
         }
 
-        public IModuleRewriter GetRewriter(QualifiedModuleName qualifiedModuleName)
+        public ITokenStream GetAttributesTokenStream(QualifiedModuleName qualifiedModuleName)
         {
-            return _moduleStates[qualifiedModuleName].ModuleRewriter;
-        }
-
-        public IModuleRewriter GetRewriter(Declaration declaration)
-        {
-            var qualifiedModuleName = declaration.QualifiedSelection.QualifiedName;
-            return GetRewriter(qualifiedModuleName);
-        }
-
-        public IModuleRewriter GetAttributeRewriter(QualifiedModuleName qualifiedModuleName)
-        {
-            return _moduleStates[qualifiedModuleName].AttributesRewriter;
-        }
-
-        public void RewriteAllModules()
-        {
-            foreach (var module in _moduleStates.Where(s => ProjectsProvider.Component(s.Key) != null))
-            {
-                module.Value.ModuleRewriter.Rewrite();
-            }
+            return _moduleStates[qualifiedModuleName].AttributesTokenStream;
         }
 
         /// <summary>
@@ -1068,11 +1047,9 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-
-        public void AddAttributesRewriter(QualifiedModuleName module, IModuleRewriter attributesRewriter)
+        public void SetAttributesTokenStream(QualifiedModuleName module, ITokenStream attributesTokenStream)
         {
-            var key = module;
-            _moduleStates[key].SetAttributesRewriter(attributesRewriter);
+            _moduleStates[module].SetAttributesTokenStream(attributesTokenStream);
         }
 
         private bool _isDisposed;

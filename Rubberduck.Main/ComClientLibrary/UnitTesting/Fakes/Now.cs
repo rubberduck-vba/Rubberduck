@@ -5,15 +5,12 @@ namespace Rubberduck.UnitTesting.Fakes
 {
     internal class Now : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcGetPresentDate");
-
         public Now()
         {
-            InjectDelegate(new NowDelegate(NowCallback), ProcessAddress);
-        }
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcGetPresentDate");
 
-        [DllImport(TargetLibrary, SetLastError = true)]
-        private static extern void rtcGetPresentDate(out object retVal);
+            InjectDelegate(new NowDelegate(NowCallback), processAddress);
+        }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         private delegate void NowDelegate(IntPtr retVal);
@@ -28,7 +25,7 @@ namespace Rubberduck.UnitTesting.Fakes
             if (PassThrough)
             {
                 object result;
-                rtcGetPresentDate(out result);
+                VbeProvider.VbeRuntime.GetPresentDate(out result);
                 Marshal.GetNativeVariantForObject(result, retVal);
                 return;
             }

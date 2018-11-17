@@ -202,7 +202,8 @@
         </Value>
     </Setting>
     <Setting Name="CodeInspectionSettings" Type="Rubberduck.Settings.CodeInspectionSettings" Scope="Application">
-      <Value Profile="(Default)">          &lt;CodeInspectionSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+      <Value Profile="(Default)">
+          &lt;CodeInspectionSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
             &lt;CodeInspections&gt;
               &lt;CodeInspection Name="BooleanAssignedInIfElseInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
               &lt;CodeInspection Name="ObsoleteErrorSyntaxInspection" Severity="Suggestion" InspectionType="LanguageOpportunities" /&gt;
@@ -278,18 +279,20 @@
               &lt;CodeInspection Name="IsMissingOnInappropriateArgumentInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
               &lt;CodeInspection Name="IsMissingWithNonArgumentParameterInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
               &lt;CodeInspection Name="AssignmentNotUsedInspection" Severity="Suggestion" InspectionType="CodeQualityIssues" /&gt;
+              &lt;CodeInspection Name="UnderscoreInPublicClassModuleMemberInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
               &lt;CodeInspection Name="ExcelUdfNameIsValidCellReferenceInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
             &lt;/CodeInspections&gt;
             &lt;WhitelistedIdentifiers /&gt;
             &lt;RunInspectionsOnSuccessfulParse&gt;true&lt;/RunInspectionsOnSuccessfulParse&gt;
-          &lt;/CodeInspectionSettings&gt;</Value>
+          &lt;/CodeInspectionSettings&gt;
+        </Value>
     </Setting>
     <Setting Name="AutoCompleteSettings" Type="Rubberduck.Settings.AutoCompleteSettings" Scope="Application">
       <Value Profile="(Default)">
           &lt;AutoCompleteSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" IsEnabled="false"&gt;
-            &lt;SmartConcat&gt;
-              &lt;IsEnabled&gt;false&lt;/IsEnabled&gt;
+            &lt;SmartConcat IsEnabled="false"&gt;
               &lt;ConcatVbNewLineModifier&gt;None&lt;/ConcatVbNewLineModifier&gt;
+              &lt;ConcatMaxLines&gt;25&lt;/ConcatMaxLines&gt;
             &lt;/SmartConcat&gt;
             &lt;SelfClosingPairs IsEnabled="false" /&gt;
             &lt;BlockCompletion IsEnabled="false" CompleteOnEnter="false" CompleteOnTab="false" /&gt;

@@ -6,22 +6,23 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class IsMissingOnInappropriateArgumentQuickFix : QuickFixBase
+    public sealed class IsMissingOnInappropriateArgumentQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public IsMissingOnInappropriateArgumentQuickFix(RubberduckParserState state)
+        public IsMissingOnInappropriateArgumentQuickFix(IDeclarationFinderProvider declarationFinderProvider)
             : base(typeof(IsMissingOnInappropriateArgumentInspection))
         {
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             if (!(result.Properties is ParameterDeclaration parameter))
             {
@@ -30,7 +31,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 return;
             }
 
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
             if (!result.Context.TryGetAncestor<VBAParser.LExprContext>(out var context))
             {
                 Logger.Trace("IsMissingOnInappropriateArgumentQuickFix could not locate containing LExprContext for replacement.");
@@ -108,7 +109,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 case DeclarationType.ClassModule:
                     return $"{parameter.IdentifierName} Is {Tokens.Nothing}";
                 case DeclarationType.Enumeration:
-                    var members = _state.DeclarationFinder.AllDeclarations.OfType<ValuedDeclaration>()
+                    var members = _declarationFinderProvider.DeclarationFinder.AllDeclarations.OfType<ValuedDeclaration>()
                         .FirstOrDefault(decl =>
                             ReferenceEquals(decl.ParentDeclaration, parameter.AsTypeDeclaration) &&
                             decl.Expression.Equals("0"));

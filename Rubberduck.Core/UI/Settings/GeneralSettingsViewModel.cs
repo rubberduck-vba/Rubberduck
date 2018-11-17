@@ -8,8 +8,9 @@ using Rubberduck.Interaction;
 using NLog;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.VBERuntime.Settings;
+using Rubberduck.VBEditor.VbeRuntime.Settings;
 using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -23,12 +24,12 @@ namespace Rubberduck.UI.Settings
     {
         private readonly IOperatingSystem _operatingSystem;
         private readonly IMessageBox _messageBox;
-        private readonly IVBESettings _vbeSettings;
+        private readonly IVbeSettings _vbeSettings;
 
         private bool _indenterPrompted;
         private readonly ReadOnlyCollection<Type> _experimentalFeatureTypes;
 
-        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem, IMessageBox messageBox, IVBESettings vbeSettings, IEnumerable<Type> experimentalFeatureTypes)
+        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem, IMessageBox messageBox, IVbeSettings vbeSettings, IEnumerable<Type> experimentalFeatureTypes)
         {
             _operatingSystem = operatingSystem;
             _messageBox = messageBox;
@@ -275,8 +276,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new OpenFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_LoadGeneralSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_LoadGeneralSettings
             })
             {
                 dialog.ShowDialog();
@@ -295,8 +296,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new SaveFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_SaveGeneralSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_SaveGeneralSettings
             })
             {
                 dialog.ShowDialog();
