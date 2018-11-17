@@ -13,7 +13,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
     {
         private readonly CommandBarControl _control;
         private readonly IVBE _vbe;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public const bool AddCommandBarControlsTemporarily = false;        
 
         // Command bar click event is sourced from VBE.Events.CommandBarEvents[index]
