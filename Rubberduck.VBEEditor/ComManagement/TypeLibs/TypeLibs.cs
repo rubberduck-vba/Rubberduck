@@ -252,7 +252,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             if (!HasVBEExtensions)
             {
-                throw new ArgumentException("This TypeLib does not represent a VBE project, so we cannot compile it");
+                throw new InvalidOperationException("This TypeLib does not represent a VBE project, so we cannot compile it");
             }
 
             try
@@ -266,7 +266,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (e.HResult != (int)KnownComHResults.E_VBA_COMPILEERROR)
                 {
                     // this is for debug purposes, to see if the compiler ever returns other errors on failure
-                    throw new ArgumentException("Unrecognised VBE compiler error: \n" + e.ToString());
+                    throw new InvalidOperationException("Unrecognised VBE compiler error: \n" + e.ToString());
                 }
 #endif
                 return false;
@@ -283,7 +283,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (!HasVBEExtensions)
                 {
-                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                    throw new InvalidOperationException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
                 }
 
                 return target_IVBEProject.GetConditionalCompilationArgs();
@@ -293,7 +293,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (!HasVBEExtensions)
                 {
-                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                    throw new InvalidOperationException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
                 }
 
                 target_IVBEProject.SetConditionalCompilationArgs(value);
@@ -310,7 +310,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (!HasVBEExtensions)
                 {
-                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                    throw new InvalidOperationException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
                 }
 
                 string args = target_IVBEProject.GetConditionalCompilationArgs();
@@ -330,7 +330,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (!HasVBEExtensions)
                 {
-                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                    throw new InvalidOperationException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
                 }
 
                 var rawArgsString = string.Join(" : ", value.Select(x => x.Key + " = " + x.Value));
