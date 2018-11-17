@@ -354,4 +354,7 @@
   <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
     <value>Member access may return 'Nothing'</value>
   </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Function is hidden by Excel cell reference</value>
+  </data>
 </root>
