@@ -1,18 +1,5 @@
-<div>
- <table>
-  <tr>
-   <td>
-    <img alt="yellow ducky" src="https://user-images.githubusercontent.com/5751684/48655863-2d378600-e9eb-11e8-9018-cc1454ba97f6.png" />
-   </td>
-   <td>
-     <h1><strong>Rubberduck</strong></h1>
-     <p><h3>Open-Source VBE Add-In</h3></p>
-   <p>VBA6 | VBA7 x86/x64 | VB6</p>
-   </td>
-  </tr>
- </table>
-</div>
-
+<img alt="Rubberduck Open-Source VBE Add-In - VBA6 | VBA7 x86/x64 | VB6" src="https://user-images.githubusercontent.com/5751684/48656196-a507af80-e9ef-11e8-9c09-1ce3c619c019.png" />
+    
 <!-- campaign is no longer accepting donations
 ### Donate!
 
