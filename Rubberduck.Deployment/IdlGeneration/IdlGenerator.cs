@@ -39,6 +39,9 @@ namespace Rubberduck.Deployment.IdlGeneration
             var owLib = new OWTypeLib(lib);
             owLib.Listeners.Add(new IdlListener());
 
+            formatter.AddString("midl_pragma warning( disable: 2400 2401 ) ");
+            formatter.NewLine();
+
             owLib.BuildIDLInto(formatter);
             return formatter.ToString();
         }
