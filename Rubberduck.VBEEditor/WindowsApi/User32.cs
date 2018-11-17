@@ -72,7 +72,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <param name="lpClassName">Buffer for returning the class name.</param>
         /// <param name="nMaxCount">Buffer size in characters, including the null terminator.</param>
         /// <returns>The length of the returned class name (without the null terminator), zero on error.</returns>
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
         /// <summary>   Gets the parent window of this item. </summary>
