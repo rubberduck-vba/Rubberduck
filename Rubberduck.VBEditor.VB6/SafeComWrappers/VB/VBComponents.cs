@@ -157,7 +157,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 var handler = dispatched;
                 if (handler == null)
                 {
-                    component.Dispose();
                     return;
                 }
 
