@@ -71,7 +71,8 @@ namespace Rubberduck.Common.Hotkeys
 
             if (!User32.UnregisterHotKey(_hWndVbe, HotkeyInfo.HookId))
             {
-                Logger.Warn($"Error calling UnregisterHotKey on hokey with id {HotkeyInfo.HookId} for command of type {Command.GetType()}; the error was {Marshal.GetLastWin32Error()}; going to delete the atom anyway... The memory may leak.");
+                var error = Marshal.GetLastWin32Error();
+                Logger.Warn($"Error calling UnregisterHotKey on hokey with id {HotkeyInfo.HookId} for command of type {Command.GetType()}; the error was {error}; going to delete the atom anyway... The memory may leak.");
             }
             Kernel32.SetLastError(Kernel32.ERROR_SUCCESS);
             Kernel32.GlobalDeleteAtom(HotkeyInfo.HookId);
@@ -93,9 +94,10 @@ namespace Rubberduck.Common.Hotkeys
             }
 
             var hookId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
+            var error = Marshal.GetLastWin32Error();
             if (hookId == IntPtr.Zero)
-            {
-                Logger.Warn($"Error calling GlobalAddAtom; the error was {Marshal.GetLastWin32Error()}; aborting the HookKey operation...");    
+            {               
+                Logger.Warn($"Error calling GlobalAddAtom; the error was {error}; aborting the HookKey operation...");    
                 return;
             }
 
