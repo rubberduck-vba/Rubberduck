@@ -7,7 +7,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -19,9 +18,10 @@ namespace Rubberduck.Refactorings.IntroduceField
         private readonly IList<Declaration> _declarations;
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceFieldRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public IntroduceFieldRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
         {
             _declarations = state.AllUserDeclarations
                 .Where(i => i.DeclarationType == DeclarationType.Variable)
@@ -29,6 +29,7 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             _vbe = vbe;
             _state = state;
+            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
         }
 
@@ -55,8 +56,7 @@ namespace Rubberduck.Refactorings.IntroduceField
                 return;
             }
 
-            var rewriter = _state.GetRewriter(target);
-            PromoteVariable(rewriter, target);
+            PromoteVariable(target);
         }
 
         public void Refactor(Declaration target)
@@ -67,11 +67,10 @@ namespace Rubberduck.Refactorings.IntroduceField
                 throw new ArgumentException(@"Invalid declaration type", nameof(target));
             }
 
-            var rewriter = _state.GetRewriter(target);
-            PromoteVariable(rewriter, target);
+            PromoteVariable(target);
         }
 
-        private void PromoteVariable(IModuleRewriter rewriter, Declaration target)
+        private void PromoteVariable(Declaration target)
         {
             if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
             {
@@ -81,8 +80,13 @@ namespace Rubberduck.Refactorings.IntroduceField
 
             var oldSelection = _vbe.GetActiveSelection();
 
+            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
+
             rewriter.Remove(target);
             AddField(rewriter, target);
+
+            rewriteSession.TryRewrite();
 
             if (oldSelection.HasValue)
             {
@@ -95,8 +99,6 @@ namespace Rubberduck.Refactorings.IntroduceField
                     }
                 }
             }
-
-            rewriter.Rewrite();
         }
 
         private void AddField(IModuleRewriter rewriter, Declaration target)

@@ -385,4 +385,8 @@
     <value>Result of '{0}' call is not tested for 'Nothing'.</value>
     <comment>{0} Member identifier</comment>
   </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>'{0}' is hidden by a valid Excel cell reference.</value>
+    <comment>{0} Function name</comment>
+  </data>
 </root>

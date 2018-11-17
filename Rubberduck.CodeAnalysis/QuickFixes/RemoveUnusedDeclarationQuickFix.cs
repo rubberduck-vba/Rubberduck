@@ -1,7 +1,7 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Rewriter;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -10,17 +10,13 @@ namespace Rubberduck.Inspections.QuickFixes
     /// </summary>
     public sealed class RemoveUnusedDeclarationQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public RemoveUnusedDeclarationQuickFix(RubberduckParserState state)
+        public RemoveUnusedDeclarationQuickFix()
             : base(typeof(ConstantNotUsedInspection), typeof(ProcedureNotUsedInspection), typeof(VariableNotUsedInspection), typeof(LineLabelNotUsedInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var rewriter = _state.GetRewriter(result.Target);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
             rewriter.Remove(result.Target);
         }
 

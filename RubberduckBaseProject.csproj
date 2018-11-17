@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
   <!-- We're specifying the Sdk here to make appveyor happy, but this generates warning MSB4011 -->
   <PropertyGroup>
     <OutputType>Library</OutputType>

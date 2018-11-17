@@ -19,17 +19,17 @@ namespace Rubberduck.Inspections.QuickFixes
     public sealed class AssignedByValParameterMakeLocalCopyQuickFix : QuickFixBase
     {
         private readonly IAssignedByValParameterQuickFixDialogFactory _dialogFactory;
-        private readonly RubberduckParserState _parserState;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private Declaration _quickFixTarget;
 
-        public AssignedByValParameterMakeLocalCopyQuickFix(RubberduckParserState state, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
+        public AssignedByValParameterMakeLocalCopyQuickFix(IDeclarationFinderProvider declarationFinderProvider, IAssignedByValParameterQuickFixDialogFactory dialogFactory)
             : base(typeof(AssignedByValParameterInspection))
         {
             _dialogFactory = dialogFactory;
-            _parserState = state;
+            _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             Debug.Assert(result.Target.Context.Parent is VBAParser.ArgListContext);
             Debug.Assert(null != ((ParserRuleContext)result.Target.Context.Parent.Parent).GetChild<VBAParser.EndOfStatementContext>());
@@ -42,7 +42,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 return;
             }
 
-            var rewriter = _parserState.GetRewriter(result.Target);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
             ReplaceAssignedByValParameterReferences(rewriter, result.Target, localIdentifier);
             InsertLocalVariableDeclarationAndAssignment(rewriter, result.Target, localIdentifier);
         }
@@ -76,7 +76,7 @@ namespace Rubberduck.Inspections.QuickFixes
         }
 
         private bool IsNameCollision(string newName)
-            => _parserState.DeclarationFinder.FindNewDeclarationNameConflicts(newName, _quickFixTarget).Any();
+            => _declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(newName, _quickFixTarget).Any();
 
         private string GetDefaultLocalIdentifier(Declaration target)
         {
@@ -116,7 +116,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var localVariableDeclaration = $"{Tokens.Dim} {localIdentifier} {Tokens.As} {target.AsTypeName}";
 
             var requiresAssignmentUsingSet =
-                target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _parserState));
+                target.References.Any(refItem => VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(refItem, _declarationFinderProvider));
 
             var localVariableAssignment =
                 $"{(requiresAssignmentUsingSet ? $"{Tokens.Set} " : string.Empty)}{localIdentifier} = {target.IdentifierName}";

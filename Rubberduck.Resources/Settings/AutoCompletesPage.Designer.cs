@@ -133,6 +133,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Maximum Lines.
+        /// </summary>
+        public static string MaxConcatLines {
+            get {
+                return ResourceManager.GetString("MaxConcatLines", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Autocompletion Settings.
         /// </summary>
         public static string PageHeader {

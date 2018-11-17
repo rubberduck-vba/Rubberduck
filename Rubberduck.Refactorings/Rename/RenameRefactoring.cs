@@ -12,6 +12,8 @@ using Microsoft.CSharp.RuntimeBinder;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Refactorings.Rename
@@ -24,29 +26,32 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
         private readonly IMessageBox _messageBox;
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly IProjectsProvider _projectsProvider;
+        private readonly IRewritingManager _rewritingManager;
         private RenameModel _model;
-        private Tuple<ICodePane, Selection> _initialSelection;
-        private readonly List<QualifiedModuleName> _modulesToRewrite;
-        private readonly Dictionary<DeclarationType, Action> _renameActions;
+        private QualifiedSelection? _initialSelection;
+        private readonly IDictionary<DeclarationType, Action<IRewriteSession>> _renameActions;
         private readonly List<string> _neverRenameIdentifiers;
 
         private bool IsInterfaceMemberRename { set; get; }
         private bool IsControlEventHandlerRename { set; get; }
         private bool IsUserEventHandlerRename { set; get; }
-        private bool RequestParseAfterRename { set; get; }
 
-        public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, RubberduckParserState state)
+        public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager)
         {
             _vbe = vbe;
             _factory = factory;
             _messageBox = messageBox;
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
+            _projectsProvider = projectsProvider;
+            _rewritingManager = rewritingManager;
             _model = null;
-            var activeCodePane = _vbe.ActiveCodePane;
-            _initialSelection = new Tuple<ICodePane, Selection>(activeCodePane, activeCodePane.IsWrappingNullReference ? Selection.Empty : activeCodePane.Selection);
-            _modulesToRewrite = new List<QualifiedModuleName>();
-            _renameActions = new Dictionary<DeclarationType, Action>
+            using (var activeCodePane = _vbe.ActiveCodePane)
+            {
+                _initialSelection = activeCodePane.GetQualifiedSelection();
+            }
+            _renameActions = new Dictionary<DeclarationType, Action<IRewriteSession>>
             {
                 {DeclarationType.Member, RenameMember},
                 {DeclarationType.Parameter, RenameParameter},
@@ -56,7 +61,6 @@ namespace Rubberduck.Refactorings.Rename
                 {DeclarationType.Project, RenameProject}
             };
             IsInterfaceMemberRename = false;
-            RequestParseAfterRename = true;
             _neverRenameIdentifiers = NeverRenameList();
         }
 
@@ -97,9 +101,9 @@ namespace Rubberduck.Refactorings.Rename
 
                 if (TrySetNewName(presenter))
                 {
-                    Rename();
-                    Rewrite();
-                    Reparse();
+                    var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+                    Rename(rewriteSession);
+                    rewriteSession.TryRewrite();
                 }
             }
             catch (RuntimeBinderException rbEx)
@@ -212,7 +216,7 @@ namespace Rubberduck.Refactorings.Rename
 
             if (target.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                var component = _state.ProjectsProvider.Component(target.QualifiedName.QualifiedModuleName);
+                var component = _projectsProvider.Component(target.QualifiedName.QualifiedModuleName);
                 using (var controls = component.Controls)
                 {
                     using (var control = controls.FirstOrDefault(item => item.Name == target.IdentifierName))
@@ -227,7 +231,7 @@ namespace Rubberduck.Refactorings.Rename
             }
             else if (target.DeclarationType.HasFlag(DeclarationType.Module))
             {
-                var component = _state.ProjectsProvider.Component(target.QualifiedName.QualifiedModuleName);
+                var component = _projectsProvider.Component(target.QualifiedName.QualifiedModuleName);
                 using (var module = component.CodeModule)
                 {
                     if (module.IsWrappingNullReference)
@@ -245,7 +249,7 @@ namespace Rubberduck.Refactorings.Rename
             var result = presenter.Show(_model.Target);
             if (result == null) { return false; }
 
-            var conflicts = _state.DeclarationFinder.FindNewDeclarationNameConflicts(_model.NewName, _model.Target);
+            var conflicts = _declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(_model.NewName, _model.Target);
 
             if (conflicts.Any())
             {
@@ -259,7 +263,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private Declaration ResolveEventHandlerToControl(Declaration userTarget)
         {
-            var control = _state.DeclarationFinder.UserDeclarations(DeclarationType.Control)
+            var control = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Control)
                 .FirstOrDefault(ctrl => userTarget.Scope.StartsWith($"{ctrl.ParentScope}.{ctrl.IdentifierName}_"));
 
             IsControlEventHandlerRename = control != null;
@@ -269,7 +273,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private Declaration ResolveEventHandlerToUserEvent(Declaration userTarget)
         {
-            var withEventsDeclarations = _state.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+            var withEventsDeclarations = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(varDec => varDec.IsWithEvents).ToList();
 
             if (!withEventsDeclarations.Any()) { return null; }
@@ -278,11 +282,11 @@ namespace Rubberduck.Refactorings.Rename
             {
                 if (userTarget.IdentifierName.StartsWith($"{withEvent.IdentifierName}_"))
                 {
-                    if (_state.DeclarationFinder.FindHandlersForWithEventsField(withEvent).Contains(userTarget))
+                    if (_declarationFinderProvider.DeclarationFinder.FindHandlersForWithEventsField(withEvent).Contains(userTarget))
                     {
                         var eventName = userTarget.IdentifierName.Remove(0, $"{withEvent.IdentifierName}_".Length);
 
-                        var eventDeclaration = _state.DeclarationFinder.UserDeclarations(DeclarationType.Event).FirstOrDefault(ev => ev.IdentifierName.Equals(eventName)
+                        var eventDeclaration = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Event).FirstOrDefault(ev => ev.IdentifierName.Equals(eventName)
                                 && withEvent.AsTypeName.Equals(ev.ParentDeclaration.IdentifierName));
 
                         IsUserEventHandlerRename = eventDeclaration != null;
@@ -304,7 +308,7 @@ namespace Rubberduck.Refactorings.Rename
             return interfaceMember;
         }
 
-        private void Rename()
+        private void Rename(IRewriteSession rewriteSession)
         {
             Debug.Assert(!_model.NewName.Equals(_model.Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase),
                             $"input validation fail: New Name equals Original Name ({_model.Target.IdentifierName})");
@@ -313,31 +317,31 @@ namespace Rubberduck.Refactorings.Rename
             if (actionKeys.Any())
             {
                 Debug.Assert(actionKeys.Count == 1, $"{actionKeys.Count} Rename Actions have flag '{_model.Target.DeclarationType.ToString()}'");
-                _renameActions[actionKeys.FirstOrDefault()]();
+                _renameActions[actionKeys.FirstOrDefault()](rewriteSession);
             }
             else
             {
-                RenameStandardElements(_model.Target, _model.NewName);
+                RenameStandardElements(_model.Target, _model.NewName, rewriteSession);
             }
         }
 
-        private void RenameMember()
+        private void RenameMember(IRewriteSession rewriteSession)
         {
             if (_model.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                var members = _state.DeclarationFinder.MatchName(_model.Target.IdentifierName)
+                var members = _declarationFinderProvider.DeclarationFinder.MatchName(_model.Target.IdentifierName)
                     .Where(item => item.ProjectId == _model.Target.ProjectId
                         && item.ComponentName == _model.Target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
 
                 foreach (var member in members)
                 {
-                    RenameStandardElements(member, _model.NewName);
+                    RenameStandardElements(member, _model.NewName, rewriteSession);
                 }
             }
             else
             {
-                RenameStandardElements(_model.Target, _model.NewName);
+                RenameStandardElements(_model.Target, _model.NewName, rewriteSession);
             }
 
             if (!IsInterfaceMemberRename)
@@ -345,18 +349,18 @@ namespace Rubberduck.Refactorings.Rename
                 return;
             }
 
-            var implementations = _state.DeclarationFinder.FindAllInterfaceImplementingMembers()
+            var implementations = _declarationFinderProvider.DeclarationFinder.FindAllInterfaceImplementingMembers()
                 .Where(impl => ReferenceEquals(_model.Target.ParentDeclaration, impl.InterfaceImplemented)
                                && impl.InterfaceMemberImplemented.IdentifierName.Equals(_model.Target.IdentifierName));
 
-            RenameDefinedFormatMembers(implementations.ToList(), PrependUnderscoreFormat);
+            RenameDefinedFormatMembers(implementations.ToList(), PrependUnderscoreFormat, rewriteSession);
         }
 
-        private void RenameParameter()
+        private void RenameParameter(IRewriteSession rewriteSession)
         {
             if (_model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                var parameters = _state.DeclarationFinder.MatchName(_model.Target.IdentifierName).Where(param =>
+                var parameters = _declarationFinderProvider.DeclarationFinder.MatchName(_model.Target.IdentifierName).Where(param =>
                    param.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property)
                    && param.DeclarationType == DeclarationType.Parameter
                     && param.ParentDeclaration.IdentifierName.Equals(_model.Target.ParentDeclaration.IdentifierName)
@@ -364,38 +368,38 @@ namespace Rubberduck.Refactorings.Rename
 
                 foreach (var param in parameters)
                 {
-                    RenameStandardElements(param, _model.NewName);
+                    RenameStandardElements(param, _model.NewName, rewriteSession);
                 }
             }
             else
             {
-                RenameStandardElements(_model.Target, _model.NewName);
+                RenameStandardElements(_model.Target, _model.NewName, rewriteSession);
             }
         }
 
-        private void RenameEvent()
+        private void RenameEvent(IRewriteSession rewriteSession)
         {
-            RenameStandardElements(_model.Target, _model.NewName);
+            RenameStandardElements(_model.Target, _model.NewName, rewriteSession);
 
-            var withEventsDeclarations = _state.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
+            var withEventsDeclarations = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(varDec => varDec.IsWithEvents && varDec.AsTypeName.Equals(_model.Target.ParentDeclaration.IdentifierName));
 
-            var eventHandlers = withEventsDeclarations.SelectMany(we => _state.DeclarationFinder.FindHandlersForWithEventsField(we));
-            RenameDefinedFormatMembers(eventHandlers.ToList(), PrependUnderscoreFormat);
+            var eventHandlers = withEventsDeclarations.SelectMany(we => _declarationFinderProvider.DeclarationFinder.FindHandlersForWithEventsField(we));
+            RenameDefinedFormatMembers(eventHandlers.ToList(), PrependUnderscoreFormat, rewriteSession);
         }
 
-        private void RenameVariable()
+        private void RenameVariable(IRewriteSession rewriteSession)
         {
             if ((_model.Target.Accessibility == Accessibility.Public ||
                  _model.Target.Accessibility == Accessibility.Implicit)
                 && _model.Target.ParentDeclaration is ClassModuleDeclaration classDeclaration
                 && classDeclaration.Subtypes.Any())
             {
-                RenameMember();
+                RenameMember(rewriteSession);
             }
             else if (_model.Target.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                var component = _state.ProjectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
+                var component = _projectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
                 using (var controls = component.Controls)
                 {
                     using (var control = controls.SingleOrDefault(item => item.Name == _model.Target.IdentifierName))
@@ -406,26 +410,24 @@ namespace Rubberduck.Refactorings.Rename
                         control.Name = _model.NewName;
                     }
                 }
-                RenameReferences(_model.Target, _model.NewName);
+                RenameReferences(_model.Target, _model.NewName, rewriteSession);
                 var controlEventHandlers = FindEventHandlersForControl(_model.Target);
-                RenameDefinedFormatMembers(controlEventHandlers.ToList(), AppendUnderscoreFormat);
+                RenameDefinedFormatMembers(controlEventHandlers.ToList(), AppendUnderscoreFormat, rewriteSession);
             }
             else
             {
-                RenameStandardElements(_model.Target, _model.NewName);
+                RenameStandardElements(_model.Target, _model.NewName, rewriteSession);
                 if (_model.Target.IsWithEvents)
                 {
-                    var eventHandlers = _state.DeclarationFinder.FindHandlersForWithEventsField(_model.Target);
-                    RenameDefinedFormatMembers(eventHandlers.ToList(), AppendUnderscoreFormat);
+                    var eventHandlers = _declarationFinderProvider.DeclarationFinder.FindHandlersForWithEventsField(_model.Target);
+                    RenameDefinedFormatMembers(eventHandlers.ToList(), AppendUnderscoreFormat, rewriteSession);
                 }
             }
         }
 
-        private void RenameModule()
+        private void RenameModule(IRewriteSession rewriteSession)
         {
-            RequestParseAfterRename = false;
-
-            RenameReferences(_model.Target, _model.NewName);
+            RenameReferences(_model.Target, _model.NewName, rewriteSession);
 
             if (_model.Target.DeclarationType.HasFlag(DeclarationType.ClassModule))
             {
@@ -434,12 +436,12 @@ namespace Rubberduck.Refactorings.Rename
                     var ctxt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
                     if (ctxt != null)
                     {
-                        RenameDefinedFormatMembers(_state.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt).ToList(), AppendUnderscoreFormat);
+                        RenameDefinedFormatMembers(_declarationFinderProvider.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt).ToList(), AppendUnderscoreFormat, rewriteSession);
                     }
                 }
             }
 
-            var component = _state.ProjectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
+            var component = _projectsProvider.Component(_model.Target.QualifiedName.QualifiedModuleName);
             switch (component.Type)
             {
                 case ComponentType.Document:
@@ -487,9 +489,9 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        private void RenameProject()
+        //The parameter is not used, but it is required for the _renameActions dictionary.
+        private void RenameProject(IRewriteSession rewriteSession)
         {
-            RequestParseAfterRename = false;
             var project = ProjectById(_vbe, _model.Target.ProjectId);
 
             if (project != null)
@@ -515,7 +517,7 @@ namespace Rubberduck.Refactorings.Rename
             return null;
         }
 
-        private void RenameDefinedFormatMembers(IReadOnlyCollection<Declaration> members, string underscoreFormat)
+        private void RenameDefinedFormatMembers(IReadOnlyCollection<Declaration> members, string underscoreFormat, IRewriteSession rewriteSession)
         {
             if (!members.Any()) { return; }
 
@@ -524,17 +526,17 @@ namespace Rubberduck.Refactorings.Rename
             foreach (var member in members)
             {
                 var newMemberName = member.IdentifierName.Replace(targetFragment, replacementFragment);
-                RenameStandardElements(member, newMemberName);
+                RenameStandardElements(member, newMemberName, rewriteSession);
             }
         }
 
-        private void RenameStandardElements(Declaration target, string newName)
+        private void RenameStandardElements(Declaration target, string newName, IRewriteSession rewriteSession)
         {
-            RenameReferences(target, newName);
-            RenameDeclaration(target, newName);
+            RenameReferences(target, newName, rewriteSession);
+            RenameDeclaration(target, newName, rewriteSession);
         }
 
-        private void RenameReferences(Declaration target, string newName)
+        private void RenameReferences(Declaration target, string newName, IRewriteSession rewriteSession)
         {
             var modules = target.References
                 .Where(reference =>
@@ -542,8 +544,7 @@ namespace Rubberduck.Refactorings.Rename
 
             foreach (var grouping in modules)
             {
-                _modulesToRewrite.Add(grouping.Key);
-                var rewriter = _state.GetRewriter(grouping.Key);
+                var rewriter = rewriteSession.CheckOutModuleRewriter(grouping.Key);
                 foreach (var reference in grouping)
                 {
                     rewriter.Replace(reference.Context, newName);
@@ -551,10 +552,9 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        private void RenameDeclaration(Declaration target, string newName)
+        private void RenameDeclaration(Declaration target, string newName, IRewriteSession rewriteSession)
         {
-            _modulesToRewrite.Add(target.QualifiedName.QualifiedModuleName);
-            var rewriter = _state.GetRewriter(target.QualifiedName.QualifiedModuleName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedName.QualifiedModuleName);
 
             if (target.Context is IIdentifierContext context)
             {
@@ -562,27 +562,11 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        private void Rewrite()
-        {
-            foreach (var module in _modulesToRewrite.Distinct())
-            {
-                _state.GetRewriter(module).Rewrite();
-            }
-        }
-
-        private void Reparse()
-        {
-            if (RequestParseAfterRename)
-            {
-                _state.OnParseRequested(this);
-            }
-        }
-
         private IEnumerable<Declaration> FindEventHandlersForControl(Declaration control)
         {
             if (control != null && control.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                return _state.DeclarationFinder.FindEventHandlers()
+                return _declarationFinderProvider.DeclarationFinder.FindEventHandlers()
                     .Where(ev => ev.Scope.StartsWith($"{control.ParentScope}.{control.IdentifierName}_"));
             }
             return Enumerable.Empty<Declaration>();
@@ -590,14 +574,14 @@ namespace Rubberduck.Refactorings.Rename
 
         private void CacheInitialSelection(QualifiedSelection qSelection)
         {
-            var component = _state.ProjectsProvider.Component(qSelection.QualifiedName);
+            var component = _projectsProvider.Component(qSelection.QualifiedName);
             using (var codeModule = component.CodeModule)
             {
                 using (var codePane = codeModule.CodePane)
                 {
                     if (!codePane.IsWrappingNullReference)
                     {
-                        _initialSelection = new Tuple<ICodePane, Selection>(codePane, codePane.Selection);
+                        _initialSelection = codePane.GetQualifiedSelection();
                     }
                 }
             }
@@ -605,9 +589,22 @@ namespace Rubberduck.Refactorings.Rename
 
         private void RestoreInitialSelection()
         {
-            if (!_initialSelection.Item1.IsWrappingNullReference)
+            if (!_initialSelection.HasValue)
             {
-                _initialSelection.Item1.Selection = _initialSelection.Item2;
+                return;
+            }
+
+            var qualifiedSelection = _initialSelection.Value;
+            var component = _projectsProvider.Component(qualifiedSelection.QualifiedName);
+            using (var codeModule = component.CodeModule)
+            {
+                using (var codePane = codeModule.CodePane)
+                {
+                    if (!codePane.IsWrappingNullReference)
+                    {
+                        codePane.Selection = qualifiedSelection.Selection;
+                    }
+                }
             }
         }
 
@@ -624,7 +621,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private List<string> NeverRenameList()
         {
-            return _state.DeclarationFinder.FindEventHandlers()
+            return _declarationFinderProvider.DeclarationFinder.FindEventHandlers()
                     .Where(ev => ev.IdentifierName.StartsWith("Class_")
                             || ev.IdentifierName.StartsWith("UserForm_")
                             || ev.IdentifierName.StartsWith("auto_"))

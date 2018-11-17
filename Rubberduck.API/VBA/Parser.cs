@@ -96,8 +96,6 @@ namespace Rubberduck.API.VBA
             var projectRepository = new ProjectsRepository(_vbe);
             _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents);
             _state.StateChanged += _state_StateChanged;
-
-            var sourceFileHandler = _vbe.TempSourceFileHandler;
             var vbeVersion = double.Parse(_vbe.Version, CultureInfo.InvariantCulture);
             var predefinedCompilationConstants = new VBAPredefinedCompilationConstants(vbeVersion);
             var typeLibProvider = new TypeLibWrapperProvider(projectRepository);
@@ -110,7 +108,6 @@ namespace Rubberduck.API.VBA
             var mainTokenStreamParser = new VBATokenStreamParser(mainParseErrorListenerFactory, mainParseErrorListenerFactory);
             var tokenStreamProvider = new SimpleVBAModuleTokenStreamProvider();
             var stringParser = new TokenStreamParserStringParserAdapterWithPreprocessing(tokenStreamProvider, mainTokenStreamParser, preprocessor);
-            var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
             var projectManager = new RepositoryProjectManager(projectRepository);
             var moduleToModuleReferenceManager = new ModuleToModuleReferenceManager();
             var parserStateManager = new ParserStateManager(_state);
@@ -131,14 +128,12 @@ namespace Rubberduck.API.VBA
                     }
                 );
             var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
-            var moduleRewriterFactory = new ModuleRewriterFactory(
-                codePaneSourceCodeHandler,
-                attributesSourceCodeHandler);
+            var sourceFileHandler = _vbe.TempSourceFileHandler;
+            var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
             var moduleParser = new ModuleParser(
                 codePaneSourceCodeHandler,
                 attributesSourceCodeHandler,
-                stringParser,
-                moduleRewriterFactory);
+                stringParser);
             var parseRunner = new ParseRunner(
                 _state,
                 parserStateManager,

@@ -169,9 +169,17 @@ namespace Rubberduck.UI.Command
                     reference.ParentNonScoping,
                     new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection),
                     GetModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine)));
-            
+
+            var accessor = declaration.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
+                         : declaration.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"
+                         : declaration.DeclarationType.HasFlag(DeclarationType.PropertySet) ? "(set)"
+                         : string.Empty;
+
+            var tabCaption = $"{declaration.IdentifierName} {accessor}".Trim();
+
+
             var viewModel = new SearchResultsViewModel(_navigateCommand,
-                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);
+                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, tabCaption), declaration, results);
 
             return viewModel;
         }

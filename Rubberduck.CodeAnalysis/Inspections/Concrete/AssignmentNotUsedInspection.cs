@@ -7,6 +7,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -21,7 +23,9 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var variables = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable);
+            var variables = State.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Variable)
+                    .Where(d => !d.IsArray);
 
             var nodes = new List<IdentifierReference>();
             foreach (var variable in variables)
