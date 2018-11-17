@@ -147,6 +147,19 @@ namespace Rubberduck.AutoComplete.Service
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+            _isDisposed = true;
+
             Disable();
             if (_configService != null)
             {

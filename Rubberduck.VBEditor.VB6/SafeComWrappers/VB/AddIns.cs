@@ -53,5 +53,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             return new ComWrapperEnumerator<IAddIn>(Target, comObject => new AddIn((VB.AddIn) comObject));
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

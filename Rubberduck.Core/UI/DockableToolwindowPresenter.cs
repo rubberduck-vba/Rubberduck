@@ -108,11 +108,16 @@ namespace Rubberduck.UI
         public virtual void Show() => _window.IsVisible = true;
         public virtual void Hide() => _window.IsVisible = false;
 
-
-        private bool _isDisposed;
         public void Dispose()
         {
-            if (_isDisposed)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
             {
                 return;
             }
@@ -120,15 +125,17 @@ namespace Rubberduck.UI
             Logger.Trace($"Disposing DockableWindowPresenter of type {this.GetType()}.");
 
             _window.Dispose();
-
+           
             _isDisposed = true;
         }
 
 #if DEBUG
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1063")] // only logging here.
         ~DockableToolwindowPresenter()
         {
             // destructor for tracking purposes only - do not suppress unless 
             Debug.WriteLine($"DockableToolwindowPresenter of type {this.GetType()} finalized.");
+            Dispose(false);
         }
 #endif
     }

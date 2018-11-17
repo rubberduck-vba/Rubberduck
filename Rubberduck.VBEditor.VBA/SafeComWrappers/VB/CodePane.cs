@@ -112,7 +112,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine("CodePane.ForceFocus() failed to get a handle on the MainWindow.");
+                _logger.Warn("CodePane.ForceFocus() failed to get a handle on the MainWindow.");
             }
         }
 
@@ -136,5 +136,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

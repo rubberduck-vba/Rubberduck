@@ -207,8 +207,22 @@ namespace Rubberduck.UI.CustomComWrappers
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+
             _outerObject = null;
             _supportedTypes = null;
+
+            _isDisposed = true;
         }
     }
 
@@ -239,13 +253,27 @@ namespace Rubberduck.UI.CustomComWrappers
             return _aggregatedObjectPtr;
         }
 
-        public virtual void Dispose()
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+
             if (_aggregatedObjectPtr != IntPtr.Zero)
             {
                 Marshal.Release(_aggregatedObjectPtr);
                 _aggregatedObjectPtr = IntPtr.Zero;
             }
+
+            _isDisposed = true;
         }
     }
 
@@ -272,15 +300,18 @@ namespace Rubberduck.UI.CustomComWrappers
             return Marshal.GetObjectForIUnknown(_hostObjectPtr);
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (_hostObjectPtr != IntPtr.Zero)
+            if (disposing)
             {
-                Marshal.Release(_hostObjectPtr);
-                _hostObjectPtr = IntPtr.Zero;
+                if (_hostObjectPtr != IntPtr.Zero)
+                {
+                    Marshal.Release(_hostObjectPtr);
+                    _hostObjectPtr = IntPtr.Zero;
+                }
             }
 
-            base.Dispose();
+            base.Dispose(disposing);
         }
     }
 
@@ -298,14 +329,18 @@ namespace Rubberduck.UI.CustomComWrappers
             }
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (_IOleInPlaceFrame != null)
+            if (disposing)
             {
-                Marshal.ReleaseComObject(_IOleInPlaceFrame);
-                _IOleInPlaceFrame = null;
+                if (_IOleInPlaceFrame != null)
+                {
+                    Marshal.ReleaseComObject(_IOleInPlaceFrame);
+                    _IOleInPlaceFrame = null;
+                }
             }
-            base.Dispose();
+
+            base.Dispose(disposing);
         }
 
         // --------------------------------------------------------------------
@@ -402,24 +437,27 @@ namespace Rubberduck.UI.CustomComWrappers
             }
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            _cachedFrame?.Dispose();
-            _cachedFrame = null;
-
-            if (_IOleClientSite != null)
+            if (disposing)
             {
-                Marshal.ReleaseComObject(_IOleClientSite);
-                _IOleClientSite = null;
+                _cachedFrame?.Dispose();
+                _cachedFrame = null;
+
+                if (_IOleClientSite != null)
+                {
+                    Marshal.ReleaseComObject(_IOleClientSite);
+                    _IOleClientSite = null;
+                }
+
+                if (_IOleInPlaceSite != null)
+                {
+                    Marshal.ReleaseComObject(_IOleInPlaceSite);
+                    _IOleInPlaceSite = null;
+                }
             }
 
-            if (_IOleInPlaceSite != null)
-            {
-                Marshal.ReleaseComObject(_IOleInPlaceSite);
-                _IOleInPlaceSite = null;
-            }
-
-            base.Dispose();
+            base.Dispose(disposing);
         }
 
         // --------------------------------------------------------------------

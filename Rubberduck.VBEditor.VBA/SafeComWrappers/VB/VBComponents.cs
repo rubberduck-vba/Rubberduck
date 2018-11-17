@@ -178,6 +178,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
         }
 
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
+
         #region Events
 
         public event EventHandler<ComponentEventArgs> ComponentAdded;

@@ -611,14 +611,30 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
 
         public T WrappedObject { get; }
 
-        private bool _isDisposed;
         public void Dispose()
         {
-            if (_isDisposed) return;
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
             _isDisposed = true;
 
-            if (WrappedObject != null) Marshal.ReleaseComObject(WrappedObject);
-            if (_outerObject != IntPtr.Zero) Marshal.Release(_outerObject);
+            if (WrappedObject != null)
+            {
+                Marshal.ReleaseComObject(WrappedObject);
+            }
+
+            if (_outerObject != IntPtr.Zero)
+            {
+                Marshal.Release(_outerObject);
+            }
         }
 
         public CustomQueryInterfaceResult GetInterface(ref Guid iid, out IntPtr ppv)
@@ -648,12 +664,19 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
     {
         private readonly IList<T> _list = new List<T>();
 
-        public void Dispose() => ((IDisposable)this).Dispose();
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         private bool _isDisposed;
-        void IDisposable.Dispose()
+        protected virtual void Dispose(bool disposing)
         {
-            if (_isDisposed) return;
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
             _isDisposed = true;
 
             foreach (var element in _list)

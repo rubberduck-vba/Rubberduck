@@ -78,6 +78,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 : HashCode.Compute(Target);
         }
 
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
+
         #region Events
 
         public event EventHandler<ProjectEventArgs> ProjectAdded;

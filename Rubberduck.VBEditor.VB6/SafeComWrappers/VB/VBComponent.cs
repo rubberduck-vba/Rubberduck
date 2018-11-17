@@ -195,5 +195,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
             return HashCode.Compute(hashes);
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }
