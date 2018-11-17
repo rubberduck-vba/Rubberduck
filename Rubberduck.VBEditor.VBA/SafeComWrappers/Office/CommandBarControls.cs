@@ -6,7 +6,7 @@ using MSO = Microsoft.Office.Core;
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 {
-    public class CommandBarControls : SafeComWrapper<MSO.CommandBarControls>, ICommandBarControls
+    public sealed class CommandBarControls : SafeComWrapper<MSO.CommandBarControls>, ICommandBarControls
     {
         public CommandBarControls(MSO.CommandBarControls target, bool rewrapping = false) 
             : base(target, rewrapping)

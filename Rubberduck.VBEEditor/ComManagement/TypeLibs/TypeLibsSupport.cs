@@ -702,7 +702,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
     /// </summary>
     /// <typeparam name="TCollection">the IIndexedCollectionBase type</typeparam>
     /// <typeparam name="TItem">the collection element type</typeparam>
-    public class IIndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>
+    public sealed class IIndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>
         where TCollection : IIndexedCollectionBase<TItem>
         where TItem : class
     {

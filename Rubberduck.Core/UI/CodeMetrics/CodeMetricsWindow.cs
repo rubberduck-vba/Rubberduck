@@ -6,7 +6,7 @@ using Rubberduck.CodeAnalysis.CodeMetrics;
 namespace Rubberduck.UI.CodeMetrics
 {
     [ExcludeFromCodeCoverage]
-    public partial class CodeMetricsWindow : UserControl, IDockableUserControl
+    public sealed partial class CodeMetricsWindow : UserControl, IDockableUserControl
     {
         private const string ClassId = "C5318B5A-172F-417C-88E3-B377CDA2D809";
         string IDockableUserControl.ClassId => ClassId;

@@ -6,7 +6,7 @@ using VB = Microsoft.Vbe.Interop.VB6;
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
-    public class Properties : SafeComWrapper<VB.Properties>, IProperties
+    public sealed class Properties : SafeComWrapper<VB.Properties>, IProperties
     {
         public Properties(VB.Properties target, bool rewrapping = false) 
             : base(target, rewrapping)

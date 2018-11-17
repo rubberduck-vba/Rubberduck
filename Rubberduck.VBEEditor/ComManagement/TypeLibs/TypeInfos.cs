@@ -258,7 +258,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     ///
     /// This class can also be cast to ComTypes.ITypeInfo for raw access to the underlying type information
     /// </remarks>
-    public class TypeInfoWrapper : ComTypes.ITypeInfo, IDisposable
+    public sealed class TypeInfoWrapper : ComTypes.ITypeInfo, IDisposable
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private TypeLibWrapper _containerTypeLib;

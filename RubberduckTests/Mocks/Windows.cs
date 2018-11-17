@@ -7,7 +7,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
-    public class Windows : SafeComWrapper<object>, IWindows, ICollection<IWindow>
+    public sealed class Windows : SafeComWrapper<object>, IWindows, ICollection<IWindow>
     {
         private readonly IList<IWindow> _windows = new List<IWindow>();
         
