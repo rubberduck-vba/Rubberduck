@@ -45,7 +45,15 @@
                         AND '$(AssemblyName)' != 'RubberduckTestsCodeAnalysis'">
         <Analyzer Include="$(SolutionDir)\RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll" />
   </ItemGroup>
-
+  <!-- Commented out due to large number of false positives. Hopefully the package
+	   will get annotations, which would enable us to exclude those false positives.
+	   Ref: https://github.com/DotNetAnalyzers/IDisposableAnalyzers/issues/126
+  <ItemGroup>
+    <PackageReference Include="IDisposableAnalyzers">
+	  <Version>2.0.5</Version>
+	</PackageReference>
+  </ItemGroup>
+  -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>

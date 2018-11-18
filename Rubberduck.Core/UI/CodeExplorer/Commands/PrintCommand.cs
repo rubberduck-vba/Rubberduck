@@ -87,19 +87,23 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 {
                     while (index < text.Count)
                     {
-                        var font = new Font(new FontFamily("Consolas"), 10, FontStyle.Regular);
-                        printPageArgs.Graphics.DrawString(text[index++], font, Brushes.Black, 0, offsetY, new StringFormat());
-
-                        offsetY += font.Height;
-
-                        if (offsetY >= pageHeight)
+                        using (var font = new Font(new FontFamily("Consolas"), 10, FontStyle.Regular))
+                        using (var stringFormat = new StringFormat())
                         {
-                            printPageArgs.HasMorePages = true;
-                            offsetY = 0;
-                            return;
-                        }
+                            printPageArgs.Graphics.DrawString(text[index++], font, Brushes.Black, 0, offsetY,
+                                stringFormat);
 
-                        printPageArgs.HasMorePages = false;
+                            offsetY += font.Height;
+
+                            if (offsetY >= pageHeight)
+                            {
+                                printPageArgs.HasMorePages = true;
+                                offsetY = 0;
+                                return;
+                            }
+
+                            printPageArgs.HasMorePages = false;
+                        }
                     }
                 };
 

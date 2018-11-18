@@ -11,7 +11,8 @@ namespace Rubberduck.Common
             {
                 Directory.CreateDirectory(folderPath);
             }
-            Process.Start(folderPath);
+
+            using (Process.Start(folderPath)) { }
         }
     }
 }
