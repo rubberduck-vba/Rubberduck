@@ -153,9 +153,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Die Deklaration von mehren Variablen in der gleichen Codezeile ist erlaubt, sollte aber sparsam eingesetzt werden. Erwäge die Variablendeklartion in der Nähe der Nutzung als separate Anweisung pro Deklaration.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Rubberduck nutzt nur die erste '@Folder'-Annotation innerhalb eines Code-Moduls. Entferne die Überzähligen.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Hier könnte ein Fehler vorliegen. Der Rückgabewert einer Funktion oder Eigenschaft wird nicht zugewiesen. Dies kann zu unvorhersehbaren Verhalten des Codes führen. Wenn die Funktion keinen sinnvollen Rückgabewert hat, sollte sie in eine 'Sub'-Routine umgeschrieben werden.</value>
   </data>

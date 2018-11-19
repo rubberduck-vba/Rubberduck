@@ -153,9 +153,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Anweisung enthält Mehrfachdeklarationen</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Das Modul hat mehr als eine Ordner Annotation.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Funktion oder Eigenschaft ohne Rückgabewert</value>
   </data>

@@ -1342,4 +1342,43 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="Add" xml:space="preserve">
     <value>Ajouter</value>
   </data>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value>Indenter le projet entier</value>
+  </data>
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
+    <value>Exporter le projet actif</value>
+  </data>
+  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="ParserState_Busy" xml:space="preserve">
+    <value>Occupé</value>
+  </data>
+  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
+    <value>Sévérité:</value>
+  </data>
+  <data name="GroupingGrid_FilterBy" xml:space="preserve">
+    <value>Filtrer par</value>
+  </data>
+  <data name="GroupingStyle_ByCategory" xml:space="preserve">
+    <value>Par catégorie</value>
+  </data>
+  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
+    <value>Ignorer les lignes vides lors de la recherche du premier bloc de commentaire ou de déclarations</value>
+  </data>
+  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
+    <value>Ignorer</value>
+  </data>
+  <data name="EmptyLineHandling_Indent" xml:space="preserve">
+    <value>Indenter</value>
+  </data>
+  <data name="EmptyLineHandling_Remove" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
+    <value>Traitement des lignes vides:</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Tchèque</value>
+  </data>
 </root>

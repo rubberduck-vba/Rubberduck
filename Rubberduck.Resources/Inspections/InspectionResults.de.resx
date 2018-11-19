@@ -123,9 +123,6 @@
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
     <value>Veringere die den Geltungsbereich der Modulvariable '{0}'.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>'{0}' hat mehr als eine '@Folder'-Annotation</value>
-  </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
     <value>Prozedur '{0}' kann als Funktion geschrieben werden.</value>
     <comment>{0} Procedure name</comment>

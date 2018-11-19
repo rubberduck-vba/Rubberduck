@@ -246,4 +246,19 @@
   <data name="AddStepOneQuickFix" xml:space="preserve">
     <value>Ajouter une clause 'Step' explicite</value>
   </data>
+  <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
+    <value>Utiliser le nom de code pour référer à une feuille statiquement accessible.</value>
+  </data>
+  <data name="InvalidContextTypeInspectionFix" xml:space="preserve">
+    <value>Le contexte '{0}' est invalide pour '{1}'.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentQuickFix" xml:space="preserve">
+    <value>Modifier l'appel à la fonction 'IsMissing' pour tester la valeur par défaut.</value>
+  </data>
+  <data name="RemoveDuplicatedAnnotationQuickFix" xml:space="preserve">
+    <value>Supprimer l'annotation dupliquée</value>
+  </data>
+  <data name="RemoveLocalErrorQuickFix" xml:space="preserve">
+    <value>Remplacer 'On Local Error' par 'On Error'</value>
+  </data>
 </root>

@@ -617,9 +617,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
     <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder</value>
   </data>
-  <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>Ein&amp;rücken</value>
-  </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Die Auswahl ist keine Variable</value>
   </data>
@@ -1295,5 +1292,14 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="Add" xml:space="preserve">
     <value>Hinzufügen</value>
+  </data>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG</value>
+  </data>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO</value>
   </data>
 </root>

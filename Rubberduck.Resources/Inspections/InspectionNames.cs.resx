@@ -156,9 +156,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Vícenásobná deklarace v jediné instrukci</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Modul má více jak jednu anotaci složky</value>
-  </data>
   <data name="ObsoleteCallStatementInspection" xml:space="preserve">
     <value>Použití zastaralého 'Call' výrazu</value>
   </data>

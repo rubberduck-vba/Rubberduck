@@ -329,7 +329,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>This member is marked '@Obsolete'. It should no longer be used, there should be a better alternative.</value>
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
-    <value>Windows implementations of Visual Basic only support the StdCall calling convention, and use of of the CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - 'Bad DLL calling convention'. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled.</value>
+    <value>Windows implementations of Visual Basic only support the StdCall calling convention. The CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - 'Bad DLL calling convention'. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled.</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>An annotation is specified multiple times, but is intended to be specified only once.</value>
@@ -338,7 +338,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>Modules without the '@Folder' annotation cannot receive custom groupings in the Code Explorer. </value>
   </data>
   <data name="OnLocalErrorInspection" xml:space="preserve">
-    <value>On Local Error exists only for compatibility with previous versions of Visual Basic, and all Errors are treated as Local regardless of the Error statement. Use of this keyword inaccurately gives the impression that there is a distinction between types of error handling when there is not.</value>
+    <value>On Local Error exists only for compatibility with previous versions of Visual Basic, and all Errors are treated as Local regardless of the On Local Error statement. Use of this keyword inaccurately gives the impression that there is a distinction between types of error handling when there is not.</value>
   </data>
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
     <value>IsMissing is only intended to be called on optional arguments, and will only return correct results if the type of the argument is 'Variant' with no explicit default value. All other uses will return 'False'.</value>
@@ -356,6 +356,6 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>A procedure that returns an object may return 'Nothing'. That will cause a runtime error 91 - "Object variable or With block variable not set" on subsequent member access. Perform an 'Is Nothing' check after the 'Set' assignment to guard against runtime errors.</value>
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
-    <value>Functions that are visible to Excel as User-Defined Functions will return a '#REF' error when used on a Worksheet if they match the name of a valid cell reference. If the function is intended to be used as a UDF, it must be renamed. If the function is not intended to be used as a UDF, it should be scoped as 'Private' or moved out of a standard Module.</value>
+    <value>Functions that are visible to Excel as User-Defined Functions will return a '#REF!' error when used on a Worksheet if they match the name of a valid cell reference. If the function is intended to be used as a UDF, it must be renamed. If the function is not intended to be used as a UDF, it should be scoped as 'Private' or moved out of a standard Module.</value>
   </data>
 </root>

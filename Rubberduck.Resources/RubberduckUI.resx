@@ -1295,4 +1295,13 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Empty line handling:</value>
   </data>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG</value>
+  </data>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
 </root>

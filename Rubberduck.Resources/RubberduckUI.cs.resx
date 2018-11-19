@@ -558,9 +558,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="CodeExplorer_Commit" xml:space="preserve">
-    <value>Commit...</value>
-  </data>
   <data name="CodeExplorer_Indent" xml:space="preserve">
     <value>Odsazení</value>
   </data>

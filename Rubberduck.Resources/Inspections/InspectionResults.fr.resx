@@ -123,9 +123,6 @@
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
     <value>Restreindre la portée du champ '{0}'</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Le module '{0}' compre plus d'une annotation '@Folder'</value>
-  </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
     <value>La procédure '{0}' pourrait être une fonction</value>
     <comment>{0} Procedure name</comment>
@@ -338,5 +335,44 @@
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Une feuille Excel </value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Une assignation est écrasée par une assignation subséquente, ou la valeur assignée n'est jamais utilisée.</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>L'annotation '{0}' est dupliquée.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Le résultat de l'appel à '{0}' n'est pas testé pour 'Nothing'.</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>'{0}' est cachée par une référence à une cellule valide.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>'IsMissing' sera toujours 'False' avec ce paramètre.</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>'IsMissing' reçoit une expression qui n'est pas l'un des paramètres de la procédure.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Le module '{0}' n'a pas d'annotation '@Folder'</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>'{0}' est déclarée avec la convention d'appel 'CDecl'.</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Considérez remplacer l'appel par '{0}'.{1}</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>Instruction 'On Local Error' détectée.</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Le nom du membre public '{0}' contient un caractère de soulignement.</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Bloc inatteignable: l'expression 'Case' contient une clause invalide.</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>Bloc inatteignable: l'expression 'Case' causera une erreur d'exécution 6 : Overflow.</value>
   </data>
 </root>
