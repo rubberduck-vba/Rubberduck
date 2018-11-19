@@ -32,6 +32,9 @@ namespace Rubberduck.Parsing.VBA
         private readonly ConcurrentStack<object> _requestorStack;
         private bool _isSuspended;
 
+        private readonly HashSet<string> _projectsWithChangedCompilationArguments = new HashSet<string>();
+        private readonly object _changeCacheLockObject = new object();
+
         public ParseCoordinator(
             RubberduckParserState state,
             IParsingStageService parsingStageService,
@@ -373,7 +376,7 @@ namespace Rubberduck.Parsing.VBA
         private void PerformPreParseCleanup(IReadOnlyCollection<QualifiedModuleName> toResolveReferences, CancellationToken token)
         {
             _parsingCacheService.ClearSupertypes(toResolveReferences);
-            //This is purely a security measure. In the success path, the reference remover removes the referernces.
+            //This is purely a security measure. In the success path, the reference remover removes the references.
             _parsingCacheService.RemoveReferencesBy(toResolveReferences, token);
 
         }
@@ -472,10 +475,11 @@ namespace Rubberduck.Parsing.VBA
             _parsingCacheService.ReloadCompilationArguments(projectIds);
             token.ThrowIfCancellationRequested();
 
-            var projectsWithChangedCompilationArguments = _parsingCacheService.ProjectWhoseCompilationArgumentsChanged();
-            token.ThrowIfCancellationRequested();
-
-            toParse.UnionWith(ModulesInProjects(projectsWithChangedCompilationArguments));
+            lock (_changeCacheLockObject)
+            {
+                _projectsWithChangedCompilationArguments.UnionWith(_parsingCacheService.ProjectWhoseCompilationArgumentsChanged());
+                toParse.UnionWith(ModulesInProjects(_projectsWithChangedCompilationArguments));
+            }          
             token.ThrowIfCancellationRequested();
 
             toParse = toParse.Where(module => module.IsParsable).ToHashSet();
@@ -512,6 +516,11 @@ namespace Rubberduck.Parsing.VBA
             var newProjects = NewProjects(projectIds);
 
             ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, newProjects, token);
+
+            lock (_changeCacheLockObject)
+            {
+                _projectsWithChangedCompilationArguments.Clear();
+            }
         }
 
         private IReadOnlyCollection<string> NewProjects(IReadOnlyCollection<string> projectIds)
