@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.ModelBuilder.Inspectors;
 using Castle.MicroKernel.Registration;
@@ -31,36 +32,15 @@ namespace RubberduckTests.Refactoring.MockIoC
 {
     internal class RefactoringContainerInstaller : IWindsorInstaller
     {
-        static RefactoringContainerInstaller()
-        {
-            _mockedTypes = new List<Type>();
-        }
-
-        private static IWindsorContainer _container = null;
+        /// <summary>
+        /// ThreadLocal to enable separate resolution and disjoint object graphs for separate threads.
+        /// This should avoid concurrency issues when running tests in parallel.
+        /// </summary>
+        private static ThreadLocal<IWindsorContainer> _container = new ThreadLocal<IWindsorContainer>(() => new WindsorContainer().Install(new RefactoringContainerInstaller()));
         internal static IWindsorContainer GetContainer()
         {
-            return _container ?? (_container = new WindsorContainer().Install(new RefactoringContainerInstaller()));
+            return _container.Value;
         }
-
-        private static readonly List<Type> _mockedTypes;
-        internal static ReadOnlyCollection<Type> MockedTypes => _mockedTypes.AsReadOnly();
-
-        internal static void MockIt(Type type)
-        {
-            if (_mockedTypes.All(x => x != type))
-            {
-                _mockedTypes.Add(type);
-            }
-        }
-
-        internal static void StopMockingIt(Type type)
-        {
-            if (_mockedTypes.Any(x => x == type))
-            {
-                _mockedTypes.Remove(type);
-            }
-        }
-
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             SetUpCollectionResolver(container);
@@ -129,8 +109,6 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .Unless(t => t.IsAbstract)
                 .WithService.DefaultInterfaces()
                 .LifestyleSingleton());
-
-            _container = container;
         }
 
         private void SetUpCollectionResolver(IWindsorContainer container)

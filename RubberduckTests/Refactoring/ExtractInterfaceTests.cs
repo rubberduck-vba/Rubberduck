@@ -61,7 +61,7 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object);
                 refactoring.Refactor(qualifiedSelection);
                 var actualCode = component.CodeModule.Content();
 
@@ -167,7 +167,7 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -252,7 +252,7 @@ End Function
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -306,10 +306,10 @@ End Sub";
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
 
                 //SetupFactory
-                var factory = SetupFactory(model);
-                factory.Setup(f => f.Create()).Returns(value: null);
+                var factory = new Mock<IRefactoringPresenterFactory>();
+                factory.Setup(f => f.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(It.IsAny<ExtractInterfaceModel>())).Returns(value: null);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object);
                 refactoring.Refactor();
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -343,9 +343,8 @@ End Sub";
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-                factory.Setup(f => f.Create()).Returns(presenter.Object);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object);
                 refactoring.Refactor();
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -398,7 +397,7 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object);
                 refactoring.Refactor(state.AllUserDeclarations.Single(s => s.DeclarationType == DeclarationType.ClassModule));
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -406,120 +405,15 @@ End Sub
             }
         }
 
-        [Test]
-        [Category("Refactorings")]
-        [Category("Extract Interface")]
-        public void Presenter_Reject_ReturnsNull()
-        {
-            //Input
-            const string inputCode =
-                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                model.Members = new[] { model.Members.ElementAt(0) }.ToList();
-
-                var view = new Mock<IRefactoringDialog<ExtractInterfaceViewModel>>();
-                view.Setup(v => v.ViewModel).Returns(new ExtractInterfaceViewModel());
-                view.Setup(v => v.DialogResult).Returns(DialogResult.Cancel);
-
-                var factory = new ExtractInterfacePresenterFactory(vbe.Object, state, view.Object);
-
-                var presenter = factory.Create();
-
-                Assert.AreEqual(null, presenter.Show());
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Extract Interface")]
-        public void Presenter_NullTarget_ReturnsNull()
-        {
-            //Input
-            const string inputCode =
-                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
-
-                var view = new Mock<IRefactoringDialog<ExtractInterfaceViewModel>>();
-                view.SetupGet(v => v.ViewModel).Returns(new ExtractInterfaceViewModel());
-                var presenter = new ExtractInterfacePresenter(view.Object, model);
-
-                Assert.AreEqual(null, presenter.Show());
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Extract Interface")]
-        public void Factory_NoMembersInTarget_ReturnsNull()
-        {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var factory = new ExtractInterfacePresenterFactory(vbe.Object, state, null);
-
-                Assert.AreEqual(null, factory.Create());
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Extract Interface")]
-        public void Factory_NullSelectionNullReturnsNullPresenter()
-        {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-
-                var factory = new ExtractInterfacePresenterFactory(vbe.Object, state, null);
-
-                Assert.AreEqual(null, factory.Create());
-            }
-        }
-
         #region setup
-        private static Mock<IRefactoringPresenterFactory<IExtractInterfacePresenter>> SetupFactory(ExtractInterfaceModel model)
+        private static Mock<IRefactoringPresenterFactory> SetupFactory(ExtractInterfaceModel model)
         {
             var presenter = new Mock<IExtractInterfacePresenter>();
-            presenter.Setup(p => p.Show()).Returns(model);
 
-            var factory = new Mock<IRefactoringPresenterFactory<IExtractInterfacePresenter>>();
-            factory.Setup(f => f.Create()).Returns(presenter.Object);
+            var factory = new Mock<IRefactoringPresenterFactory>();
+            factory.Setup(f => f.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(It.IsAny<ExtractInterfaceModel>()))
+                .Callback(() => presenter.Setup(p => p.Show()).Returns(model))
+                .Returns(presenter.Object);
             return factory;
         }
 

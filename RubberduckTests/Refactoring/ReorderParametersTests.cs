@@ -43,12 +43,12 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -79,12 +79,12 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -123,12 +123,12 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -159,12 +159,12 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(model.TargetDeclaration);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -190,12 +190,12 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
 
                 try
                 {
@@ -237,7 +237,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 var reorderedParams = new List<Parameter>()
                 {
                     model.Parameters[1],
@@ -249,7 +249,7 @@ End Sub";
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -290,12 +290,12 @@ End Sub
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -344,12 +344,12 @@ End Function";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -390,7 +390,7 @@ End Sub
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 var reorderedParams = new List<Parameter>()
                 {
                     model.Parameters[0],
@@ -403,7 +403,7 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -436,13 +436,13 @@ End Function";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -483,7 +483,7 @@ End Sub
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 var reorderedParams = new List<Parameter>()
                 {
                     model.Parameters[1],
@@ -496,7 +496,7 @@ End Sub
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -527,7 +527,7 @@ End Property";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 var reorderedParams = new List<Parameter>()
                 {
                     model.Parameters[1],
@@ -540,7 +540,7 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -571,13 +571,13 @@ End Property";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -608,13 +608,13 @@ End Property";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -639,7 +639,7 @@ End Property";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
 
                 Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
             }
@@ -663,7 +663,7 @@ End Property";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
 
                 Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
             }
@@ -697,13 +697,13 @@ End Sub";   // note: IDE removes excess spaces
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -752,13 +752,13 @@ End Sub
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -795,7 +795,7 @@ End Sub
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
@@ -803,7 +803,7 @@ End Sub
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -858,7 +858,7 @@ End Sub
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 var reorderedParams = new List<Parameter>
                 {
                     model.Parameters[1],
@@ -873,7 +873,7 @@ End Sub
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -942,7 +942,7 @@ End Sub
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 var reorderedParams = new List<Parameter>()
                 {
                     model.Parameters[1],
@@ -957,7 +957,7 @@ End Sub
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -983,7 +983,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 var reorderedParams = new List<Parameter>()
                 {
                     model.Parameters[1],
@@ -997,7 +997,7 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -1038,7 +1038,7 @@ End Sub
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 var reorderedParams = new List<Parameter>()
                 {
                     model.Parameters[1],
@@ -1050,7 +1050,7 @@ End Sub
 
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -1087,13 +1087,13 @@ End Property";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Param(s) to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -1130,13 +1130,13 @@ End Property";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -1158,9 +1158,11 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var factory = new ReorderParametersPresenterFactory(vbe.Object, null, state, null);
+                var factory = new Mock<IRefactoringPresenterFactory>();
+                factory.Setup(f => f.Create<IReorderParametersPresenter, ReorderParametersModel>(It.IsAny<ReorderParametersModel>()))
+                    .Returns(() => null); // resolves ambiguous method resolution
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor();
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -1209,13 +1211,13 @@ End Sub";   // note: IDE removes excess spaces
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1265,13 +1267,13 @@ End Sub";   // note: IDE removes excess spaces
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1333,13 +1335,13 @@ End Sub";   // note: IDE removes excess spaces
                 var module3 = project.Object.VBComponents[2].CodeModule;
 
                 //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1394,13 +1396,13 @@ End Sub";
                 messageBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection, messageBox.Object);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, messageBox.Object, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1441,7 +1443,7 @@ End Sub";
                 messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ConfirmationOutcome>())).Returns(ConfirmationOutcome.No);
 
                 //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection, messageBox.Object);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 Assert.IsNull(model.TargetDeclaration);
             }
         }
@@ -1488,13 +1490,13 @@ End Sub";   // note: IDE removes excess spaces
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1544,13 +1546,13 @@ End Sub";   // note: IDE removes excess spaces
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1600,13 +1602,13 @@ End Sub";   // note: IDE removes excess spaces
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1669,13 +1671,13 @@ End Sub";   // note: IDE removes excess spaces
                 var module3 = project.Object.VBComponents[2].CodeModule;
 
                 //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection, null);
+                var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ReorderParametersRefactoring(vbe.Object, factory.Object, null, state.ProjectsProvider);
+                var refactoring = new ReorderParametersRefactoring(state, vbe.Object, factory.Object, null, state.ProjectsProvider);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1684,120 +1686,15 @@ End Sub";   // note: IDE removes excess spaces
             }
         }
 
-        [Test]
-        [Category("Refactorings")]
-        [Category("Reorder Parameters")]
-        public void Presenter_ParameterlessMemberCreatesNullModel()
-        {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var messageBox = new Mock<IMessageBox>();
-
-                var factory = new ReorderParametersPresenterFactory(vbe.Object, null, state, messageBox.Object);
-                var presenter = factory.Create();
-
-                var result = presenter.Show();
-
-                Assert.IsNull(result);
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Reorder Parameters")]
-        public void Presenter_SingleParameterMemberCreatesNullModel()
-        {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo(ByVal arg1 As Integer)
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var messageBox = new Mock<IMessageBox>();
-
-                var factory = new ReorderParametersPresenterFactory(vbe.Object, null, state, messageBox.Object);
-                var presenter = factory.Create();
-
-                var result = presenter.Show();
-
-                Assert.IsNull(result);
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Reorder Parameters")]
-        public void Presenter_NullTargetCreatesNullModel()
-        {
-            //Input
-            const string inputCode =
-                @"
-Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 1, 1, 1);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var factory = new ReorderParametersPresenterFactory(vbe.Object, null, state, null);
-
-                var presenter = factory.Create();
-
-                var result = presenter.Show();
-
-                Assert.IsNull(result);
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Reorder Parameters")]
-        public void Factory_NullSelectionCreatesNullPresenter()
-        {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-
-                var factory = new ReorderParametersPresenterFactory(vbe.Object, null, state, null);
-
-                var result = factory.Create();
-
-                Assert.IsNull(result);
-            }
-        }
-
         #region setup
-        private static Mock<IRefactoringPresenterFactory<IReorderParametersPresenter>> SetupFactory(ReorderParametersModel model)
+        private static Mock<IRefactoringPresenterFactory> SetupFactory(ReorderParametersModel model)
         {
             var presenter = new Mock<IReorderParametersPresenter>();
-            presenter.Setup(p => p.Show()).Returns(model);
 
-            var factory = new Mock<IRefactoringPresenterFactory<IReorderParametersPresenter>>();
-            factory.Setup(f => f.Create()).Returns(presenter.Object);
+            var factory = new Mock<IRefactoringPresenterFactory>();
+            factory.Setup(f => f.Create<IReorderParametersPresenter, ReorderParametersModel>(It.IsAny<ReorderParametersModel>()))
+                .Callback(() => presenter.Setup(p => p.Show()).Returns(model))
+                .Returns(presenter.Object);
             return factory;
         }
 

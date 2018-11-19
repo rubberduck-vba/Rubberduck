@@ -49,18 +49,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <!-- 
-      TODO Restore the excluded tests; they are currently exlcuded 
-        to avoid build errors and focus on fixing tests one by one
-  -->
-  <ItemGroup>
-    <Compile Remove="Commands\RefactorCommandTests.cs" />
-    <Compile Remove="Refactoring\EncapsulateFieldTests.cs" />
-    <Compile Remove="Refactoring\ExtractInterfaceTests.cs" />
-    <Compile Remove="Refactoring\RemoveParametersTests.cs" />
-    <Compile Remove="Refactoring\ReorderParametersTests.cs" />
-  </ItemGroup>
-  <!-- END OF excluded tests -->
 
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj" />
