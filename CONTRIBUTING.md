@@ -61,15 +61,15 @@ Our Ducky has come quite the long way and is intimidatingly large for a first-ti
 To make it easier to find something you can do, all issues with that label are additionally labelled with a difficulty.
 That difficulty level is a best-guess by the dev-team how complex or evil an issue will be.
 
-If you're new to C#, we recommend you start with \[difficulty-01-duckling\]. The next step \[difficulty-02-ducky\] requires some knowledge about C#, but not so much about how Rubberduck works
+If you're new to C#, we recommend you start with \[difficulty-01-duckling\]. The next step \[difficulty-02-ducky\] requires some knowledge about C#, but not so much about how Rubberduck works - 02/ducky issues usually make a good introduction to using Rubberduck's internal API.
 
-Then there's \[difficulty-03-duck\] which requires a good handle on C# and at least an idea of how the components of Rubberduck play toghether.
+Then there's \[difficulty-03-duck\] which requires a good handle on C# and how the components of Rubberduck play toghether.
 And finally there's \[difficulty-04-quackhead\] for when you really want to bang your head against the wall.
-They require both good knowledge of C# and a deep understanding of how Rubberduck works.
+They require both good knowledge of C# and a deep understanding of how not only Rubberduck, but also COM and well, the VBE, works.
 
 In addition to this, a few people have put together some helpful resources about how Rubberduck works internally and help contributors tell left from right in the ~250k Lines of Code.
 
-You can find their work in the [github wiki](https://github.com/rubberduck-vba/Rubberduck/wiki). If something in there doesn't quite seem to match, it's probably because nobody got around to updating it yet. You're very welcome to **improve** the wiki by adding and correcting information. (see right above)
+You can find their work in the [GitHub wiki](https://github.com/rubberduck-vba/Rubberduck/wiki). If something in there doesn't quite seem to match, it's probably because nobody got around to updating it yet. You're very welcome to **improve** the wiki by adding and correcting information. (see right above)
 
 In case this doesn't quite help you or the information you need hasn't been added to the wiki, you can **always** ask questions.
 Please do so in the ["War room"](https://chat.stackexchange.com/rooms/14929).
@@ -79,21 +79,21 @@ Other than that, you can also open an issue with the label \[support\], but it m
 In that room the core team talks about the duck and whatever else comes up.
 N.B.: The rules of the Stack Exchange Network apply to everything you say in that room. But basically those are the same rules as those in the [CoC](#Code_of_Conduct).
 
-Whether you create an issue or a pull request, please avoid using `[` square brackets `]` in the title, and try to be as descriptive (but succinct) as possible. Square brackets in titles confuse our chat-bot, and end up rendering in weird broken ways in SE chat. Avoid riddles, bad puns and other would-be funny (or NSFW) titles that don't really describe the issue or PR.
+Whether you create an issue or a pull request, please avoid using `[` square brackets `]` in the title, and try to be as descriptive (but succinct) as possible. Square brackets in titles confuse our chat-bot, and end up rendering in weird broken ways in SE chat. Avoid riddles, bad puns and other would-be funny (or NSFW) titles that don't really *describe the issue or PR*.
 
 ### Translations
 
-Rubberduck is Localized in multiple languages.
+Rubberduck is localized in multiple languages.
 All these translations have been provided by volunteers.
 We welcome both new translations as well as improvements to current translations very much.
 
-The resource files are RESX/XML files easily editable in any text editor, but comparing resource keys across languages/translations is much easier done with @Vogel612's [Translation Helper](https://github.com/Vogel612/TranslationHelper) tool, which automatically adds missing keys and highlights entries that need a new translation.
+The resource files are RESX/XML files easily editable in any text editor, but our recommendation goes to the [ResXManager](https://marketplace.visualstudio.com/items?itemName=TomEnglert.ResXManager) Visual Studio plug-in:
 
-If you contribute a translation for a brand new previously unsupported language, keep in touch with the dev team so that new resource keys can be translated when a new release is coming up; abandoned languages/translations will end up getting dropped.
+![ResXManager in Visual Studio](https://user-images.githubusercontent.com/5751684/48683625-1a07f000-eb7c-11e8-914a-10ed80e85e29.png)
+
+If you contribute a translation for a brand new previously unsupported language, please keep in touch with the dev team so that new resource keys can be translated when a new release is coming up; abandoned languages/translations will end up getting dropped.
 
 ## What comes out of it for me?
 
-Well ... the eternal gratitude of all Rubberduck users for one :wink:
+Well... the eternal gratitude of all Rubberduck users for one :wink:
 Aside from that, all contributors are explicitly listed by name (or alias) in the "About Rubberduck" window.
-
-We ran a [fundraiser](https://gofundme.com/rubberduckvba) last summer, and had t-sihrts, mugs, pens, and stickers made - the goods are now unfortunately depleted; we'll probably run another campaign next year!
