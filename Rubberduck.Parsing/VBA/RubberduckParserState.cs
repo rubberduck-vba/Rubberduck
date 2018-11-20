@@ -1026,6 +1026,11 @@ namespace Rubberduck.Parsing.VBA
 
         public bool IsNewOrModified(QualifiedModuleName key)
         {
+            if (key.ComponentType == ComponentType.ComComponent)
+            {
+                return false;
+            }
+
             if (_moduleStates.TryGetValue(key, out var moduleState))
             {
                 // existing/modified
