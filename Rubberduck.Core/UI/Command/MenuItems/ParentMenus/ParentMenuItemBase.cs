@@ -24,8 +24,27 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
         }
 
-        public ICommandBarControls Parent { get; set; }
-        public ICommandBarPopup Item { get; private set; }
+        private ICommandBarControls _parent;
+        public ICommandBarControls Parent
+        {
+            get => _parent;
+            set
+            {
+                _parent?.Dispose();
+                _parent = value;
+            }
+        }
+
+        private ICommandBarPopup _item;
+        public ICommandBarPopup Item
+        {
+            get => _item;
+            private set
+            {
+                _item?.Dispose();
+                _item = value;
+            }
+        }
 
         public string Key => Item?.Tag;
 
@@ -91,7 +110,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             Logger.Debug($"Removing menu {_key}.");
             RemoveChildren();
             Item?.Delete();
-            Item?.Dispose();
+
+            //This will also dispose the Item as well
             Item = null;
         }
 

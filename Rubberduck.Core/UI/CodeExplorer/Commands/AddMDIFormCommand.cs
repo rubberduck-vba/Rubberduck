@@ -45,14 +45,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            foreach (var component in project.VBComponents)
+            using (var components = project.VBComponents)
             {
-                using (component)
+                foreach (var component in components)
                 {
-                    if (component.Type == ComponentType.MDIForm)
+                    using (component)
                     {
-                        // Only one MDI Form allowed per project
-                        return false;
+                        if (component.Type == ComponentType.MDIForm)
+                        {
+                            // Only one MDI Form allowed per project
+                            return false;
+                        }
                     }
                 }
             }

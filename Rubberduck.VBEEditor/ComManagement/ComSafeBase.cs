@@ -89,7 +89,7 @@ namespace Rubberduck.VBEditor.ComManagement
         /// </summary>
         private const int StackTraceNumberOfElementsToSkipOnRemoval = 6;
         private const int StackTrackNumberOfElementsToSkipOnAddUpdate = 8;
-        private const int StackTraceDepth = 5;
+        private const int StackTraceDepth = 10;
 
         /// <inheritdoc cref="IComSafe.Serialize"/>
         public void Serialize(string targetDirectory)

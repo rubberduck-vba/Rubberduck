@@ -218,10 +218,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public TypeInfoWrapper GetSafeTypeInfoByIndex(int index)
         {
-            IntPtr typeInfoPtr = IntPtr.Zero;
             // We cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
-            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfo(index, out typeInfoPtr);
+            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfo(index, out var typeInfoPtr);
             var outVal = new TypeInfoWrapper(typeInfoPtr);
+            _typeInfosWrapped?.Dispose();
             _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
             _typeInfosWrapped.Add(outVal);
             return outVal;
@@ -382,13 +382,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         // so we cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
         void ComTypes.ITypeLib.GetTypeInfoOfGuid(ref Guid guid, out ComTypes.ITypeInfo ppTInfo)
         {
-            IntPtr typeInfoPtr = IntPtr.Zero;
-            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfoOfGuid(guid, out typeInfoPtr);
-            var outVal = new TypeInfoWrapper(typeInfoPtr);  // takes ownership of the COM reference
-            ppTInfo = outVal;
+            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfoOfGuid(guid, out var typeInfoPtr);
+            using (var outVal = new TypeInfoWrapper(typeInfoPtr)) // takes ownership of the COM reference
+            {
+                ppTInfo = outVal;
 
-            _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
-            _typeInfosWrapped.Add(outVal);
+                _typeInfosWrapped?.Dispose();
+                _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
+                _typeInfosWrapped.Add(outVal);
+            }
         }
         void ComTypes.ITypeLib.GetTypeInfo(int index, out ComTypes.ITypeInfo ppTI)
             => ppTI = GetSafeTypeInfoByIndex(index);   // We have to wrap the ITypeInfo returned by GetTypeInfo

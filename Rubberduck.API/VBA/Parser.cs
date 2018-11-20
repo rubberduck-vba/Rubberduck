@@ -67,10 +67,10 @@ namespace Rubberduck.API.VBA
     ]
     public sealed class Parser : IParser, IDisposable
     {
-        private RubberduckParserState _state;
-        private SynchronousParseCoordinator _parser;
-        private IVBE _vbe;
-        private IVBEEvents _vbeEvents;
+        private readonly RubberduckParserState _state;
+        private readonly SynchronousParseCoordinator _parser;
+        private readonly IVBE _vbe;
+        private readonly IVBEEvents _vbeEvents;
         private readonly IUiDispatcher _dispatcher;
         private readonly CancellationTokenSource _tokenSource;
 
@@ -228,6 +228,9 @@ namespace Rubberduck.API.VBA
             }
             
             _disposed = true;
+            _parser?.Dispose();
+            _vbe?.Dispose();
+            _tokenSource.Dispose();
         }
     }
 }
