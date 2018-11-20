@@ -113,10 +113,11 @@
 
                 <Label Margin="15,0,15,0" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=MaxConcatLines}" />
                 <controls:NumberPicker Margin="15,0,15,0" 
-                                       NumValue="{Binding ConcatMaxLines}"
+                                       NumValue="{Binding ConcatMaxLines, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
                                        MinNumber="{Binding ConcatMaxLinesMinValue}"
-                                       MaxNumber="{Binding ConcatMaxLinesMaxValue}"/>
-
+                                       MaxNumber="{Binding ConcatMaxLinesMaxValue}">
+                    
+                </controls:NumberPicker>
                 <Label Margin="10" 
                        Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=BlockCompletion}"
                        FontWeight="Bold" />

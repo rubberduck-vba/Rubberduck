@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using Rubberduck.Settings;
 
 // credit to http://stackoverflow.com/a/2752538
 namespace Rubberduck.UI.Controls
@@ -11,19 +12,40 @@ namespace Rubberduck.UI.Controls
     public partial class NumberPicker : IDataErrorInfo
     {
         public static readonly DependencyProperty NumValueProperty =
-            DependencyProperty.Register("NumValue", typeof(int), typeof(NumberPicker), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(NumValue), typeof(int), typeof(NumberPicker), new UIPropertyMetadata(default(int), PropertyChangedCallback));
         public static readonly DependencyProperty MinNumberProperty =
-            DependencyProperty.Register("MinNumber", typeof(int), typeof(NumberPicker), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(MinNumber), typeof(int), typeof(NumberPicker), new UIPropertyMetadata(default(int), PropertyChangedCallback));
         public static readonly DependencyProperty MaxNumberProperty =
-            DependencyProperty.Register("MaxNumber", typeof(int), typeof(NumberPicker), new UIPropertyMetadata(null));
+            DependencyProperty.Register(nameof(MaxNumber), typeof(int), typeof(NumberPicker), new UIPropertyMetadata(default(int), PropertyChangedCallback));
+
+        private static void PropertyChangedCallback(DependencyObject source, DependencyPropertyChangedEventArgs args)
+        {
+            if (source is NumberPicker control)
+            {
+                var newValue = (int) args.NewValue;
+                switch (args.Property.Name)
+                {
+                    case "NumValue":
+                        control.NumValue = newValue;
+                        break;
+                    case "MinNumber":
+                        control.MinNumber = newValue;
+                        break;
+                    case "MaxNumber":
+                        control.MaxNumber = newValue;
+                        break;
+                }
+            }
+        }
 
         public int NumValue
         {
             get => (int)GetValue(NumValueProperty);
             set
             {
+                var old = GetValue(MinNumberProperty);
                 SetValue(NumValueProperty, value);
-                OnPropertyChanged(new DependencyPropertyChangedEventArgs(NumValueProperty, NumValue - 1, NumValue));
+                OnPropertyChanged(new DependencyPropertyChangedEventArgs(NumValueProperty, old, value));
             }
         }
 
