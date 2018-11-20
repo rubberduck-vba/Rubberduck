@@ -58,6 +58,7 @@ namespace RubberduckTests.Mocks
             var compilationArgumentsProvider = MockCompilationArgumentsProvider(vbeVersion);
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
             var userComProjectsRepository = MockUserComProjectRepository();
+            var projectsToBeLoadedFromComSelector = new ProjectsToResolveFromComProjectsSelector(projectRepository);
 
             var path = serializedDeclarationsPath ??
                        Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
@@ -126,7 +127,8 @@ namespace RubberduckTests.Mocks
                 referenceRemover,
                 supertypeClearer,
                 compilationsArgumentsCache,
-                userComProjectsRepository
+                userComProjectsRepository,
+                projectsToBeLoadedFromComSelector
                 );
 
             return new SynchronousParseCoordinator(

@@ -443,10 +443,13 @@ namespace Rubberduck.Parsing.VBA
             _projectManager.RefreshProjects();
             token.ThrowIfCancellationRequested();
 
-            var modules = _projectManager.AllModules();
+            _parsingCacheService.RefreshProjectsToResolveFromComProjectSelector();
             token.ThrowIfCancellationRequested();
 
-            var projects = _projectManager.Projects;
+            var modules = _projectManager.AllModules().Where(module => !_parsingCacheService.ToBeResolvedFromComProject(module.ProjectId)).ToList();
+            token.ThrowIfCancellationRequested();
+
+            var projects = _projectManager.Projects.Where(tpl => !_parsingCacheService.ToBeResolvedFromComProject(tpl.ProjectId)).ToList();
             var projectIds = projects.Select(tpl => tpl.ProjectId).ToList().AsReadOnly();
             token.ThrowIfCancellationRequested();
 
@@ -577,8 +580,8 @@ namespace Rubberduck.Parsing.VBA
 
         private IReadOnlyCollection<string> RemovedProjects(IReadOnlyCollection<IVBProject> projects)
         {
-            var projectsWithProjectDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Project).Select(declaration => new Tuple<string,string>(declaration.ProjectId, declaration.ProjectName));
-            var currentlyExistingProjects = projects.Select(project => new Tuple<string, string>(project.ProjectId, project.Name)).ToHashSet();
+            var projectsWithProjectDeclarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Project).Select(declaration => (declaration.ProjectId, declaration.ProjectName));
+            var currentlyExistingProjects = projects.Select(project => (project.ProjectId, project.Name)).ToHashSet();
             var removedProjects = projectsWithProjectDeclarations.Where(project => !currentlyExistingProjects.Contains(project));
             return removedProjects.Select(tuple => tuple.Item1).ToHashSet().AsReadOnly();
         }

@@ -96,6 +96,7 @@ namespace Rubberduck.API.VBA
             _vbeEvents = VBEEvents.Initialize(_vbe);
             var declarationFinderFactory = new ConcurrentlyConstructedDeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(_vbe);
+            var projectsToBeLoadedFromComSelector = new ProjectsToResolveFromComProjectsSelector(projectRepository);
             _state = new RubberduckParserState(_vbe, projectRepository, declarationFinderFactory, _vbeEvents);
             _state.StateChanged += _state_StateChanged;
 
@@ -168,7 +169,8 @@ namespace Rubberduck.API.VBA
                 referenceRemover,
                 supertypeClearer,
                 compilationsArgumentsCache,
-                userProjectsRepository
+                userProjectsRepository,
+                projectsToBeLoadedFromComSelector
                 );
 
             _parser = new SynchronousParseCoordinator(
