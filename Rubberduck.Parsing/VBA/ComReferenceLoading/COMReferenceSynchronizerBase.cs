@@ -241,7 +241,8 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
             _projectIdsByFilePathAndProjectName.Clear();
 
             var projects = _projectsProvider.Projects();
-            foreach (var (projectId, project) in projects)
+            var lockedProjects = _projectsProvider.LockedProjects();
+            foreach (var (projectId, project) in projects.Concat(lockedProjects))
             {
                 if (TryGetFullPath(project, out var fullPath))
                 {
