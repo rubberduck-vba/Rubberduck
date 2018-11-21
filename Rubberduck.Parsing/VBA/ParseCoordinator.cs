@@ -243,6 +243,21 @@ namespace Rubberduck.Parsing.VBA
             _parsingCacheService.RefreshUserComProjects(newOrModifiedProjects);
             token.ThrowIfCancellationRequested();
 
+            _parsingStageService.SyncUserComProjects();
+            if (_parsingStageService.LastSyncOfUserComProjectsLoadedDeclarations || _parsingStageService.UserProjectIdsUnloaded.Any())
+            {
+                var unloadedProjectIds = _parsingStageService.UserProjectIdsUnloaded.ToHashSet();
+                var unloadedModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => unloadedProjectIds.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
+                ClearModuleToModuleReferences(unloadedModules);
+                RefreshDeclarationFinder();
+            }
+
             _parsingStageService.SyncComReferences(token);
             if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedInLastSync.Any())
             {
