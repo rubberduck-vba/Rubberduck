@@ -82,6 +82,7 @@ namespace Rubberduck.UI
     //Nothing breaks because we declare a ProgId
     // ReSharper disable once InconsistentNaming
     //Underscores make classes invisible to VB6 object explorer
+    [SuppressMessage("Microsoft.Design", "CA1049")]
     [SuppressMessage("Microsoft.Design", "CA1001")] //This should *never* have Dispose called on it. See comment block above.
     public class _DockableWindowHost : COM_IOleObject, COM_IOleInPlaceObject, COM_IOleWindow, IDockableWindowHost
     {
