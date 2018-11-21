@@ -116,7 +116,8 @@ namespace Rubberduck.API.VBA
             var referenceRemover = new ReferenceRemover(_state, moduleToModuleReferenceManager);
             var supertypeClearer = new SupertypeClearer(_state);
             var comLibraryProvider = new ComLibraryProvider();
-            var referencedDeclarationsCollector = new LibraryReferencedDeclarationsCollector(comLibraryProvider);
+            var declarationsFromComProjectLoader = new DeclarationsFromComProjectLoader();
+            var referencedDeclarationsCollector = new LibraryReferencedDeclarationsCollector(declarationsFromComProjectLoader, comLibraryProvider);
             var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager, projectRepository, referencedDeclarationsCollector);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 _state,
