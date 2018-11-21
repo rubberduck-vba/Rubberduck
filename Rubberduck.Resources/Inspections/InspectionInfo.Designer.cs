@@ -232,6 +232,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Functions that are visible to Excel as User-Defined Functions will return a &apos;#REF&apos; error when used on a Worksheet if they match the name of a valid cell reference. If the function is intended to be used as a UDF, it must be renamed. If the function is not intended to be used as a UDF, it should be scoped as &apos;Private&apos; or moved out of a standard Module..
+        /// </summary>
+        public static string ExcelUdfNameIsValidCellReferenceInspection {
+            get {
+                return ResourceManager.GetString("ExcelUdfNameIsValidCellReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the &apos;Function&apos; into a &apos;Sub&apos;. If the function is recursive, none of its external callers are using the returned value..
         /// </summary>
         public static string FunctionReturnValueNotUsedInspection {

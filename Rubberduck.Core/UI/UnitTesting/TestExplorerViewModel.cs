@@ -236,15 +236,17 @@ namespace Rubberduck.UI.UnitTesting
             var htmlResults = ExportFormatter.HtmlClipboardFragment(aResults, title, columnInfos);
             var rtfResults = ExportFormatter.RTF(aResults, title);
 
-            var strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, columnInfos);
-            //Add the formats from richest formatting to least formatting
-            _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
-            _clipboard.AppendString(DataFormats.Rtf, rtfResults);
-            _clipboard.AppendString(DataFormats.Html, htmlResults);
-            _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-            //_clipboard.AppendString(DataFormats.UnicodeText, textResults);
+            using (var strm1 = ExportFormatter.XmlSpreadsheetNew(aResults, title, columnInfos))
+            {
+                //Add the formats from richest formatting to least formatting
+                _clipboard.AppendStream(DataFormats.GetDataFormat(XML_SPREADSHEET_DATA_FORMAT).Name, strm1);
+                _clipboard.AppendString(DataFormats.Rtf, rtfResults);
+                _clipboard.AppendString(DataFormats.Html, htmlResults);
+                _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
+                //_clipboard.AppendString(DataFormats.UnicodeText, textResults);
 
-            _clipboard.Flush();
+                _clipboard.Flush();
+            }
         }
 
         private void ExecuteRunSelectedCategoryTestsCommand(object obj)

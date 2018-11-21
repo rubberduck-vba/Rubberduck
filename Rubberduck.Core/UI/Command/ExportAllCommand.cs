@@ -61,12 +61,27 @@ namespace Rubberduck.UI.Command
 
         protected override void OnExecute(object parameter)
         {
-            var projectNode = parameter as CodeExplorerProjectViewModel;
+            switch (parameter)
+            {
+                case CodeExplorerProjectViewModel projectNode when projectNode.Declaration.Project != null:
+                    Export(projectNode.Declaration.Project);
+                    break;
+                case IVBProject vbproject:
+                    Export(vbproject);
+                    break;
+                default:
+                {
+                    using (var project = _vbe.ActiveVBProject)
+                    {
+                        Export(project);
+                    }
+                    break;
+                }
+            }
+        }
 
-            var vbproject = parameter as IVBProject;
-
-            var project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
-            
+        private void Export(IVBProject project)
+        {
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
 
             // If .GetDirectoryName is passed an empty string for a RootFolder, 
