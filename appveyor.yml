@@ -107,7 +107,7 @@ artifacts:
     name: Rubberduck
 deploy:
   - provider: GitHub
-    tag: Rubberduck v$(appveyor_build_version)
+    tag: RETAGMEWITHAMESSAGE
     release: $(release_name)
     draft: true
     prerelease: false
@@ -118,11 +118,11 @@ deploy:
     on: 
       branch: master
   - provider: GitHub
-    tag: Rubberduck v$(appveyor_build_version)
+    tag: Prerelease-v$(appveyor_build_version)
     release: $(release_name)
     draft: false
     prerelease: true
-    description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)<br/><br/>Merges #$(appveyor_pull_request_number) - $(appveyor_pull_request_title)"
+    description: "AppVeyor build on [$(appveyor_repo_branch)] - https://ci.appveyor.com/project/rubberduck-vba/rubberduck/build/$(appveyor_build_version)"
     auth_token:
       secure: NVAZgFRSk566SP5QDge5gYRWCaLi4NJJPTNk3QengH15wL9iVldfrFOllbzKXExq
     artifact: Rubberduck

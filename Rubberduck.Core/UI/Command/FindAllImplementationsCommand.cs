@@ -180,8 +180,15 @@ namespace Rubberduck.UI.Command
                     new NavigateCodeEventArgs(declaration.QualifiedName.QualifiedModuleName, declaration.Selection),
                     GetModuleLine(declaration.QualifiedName.QualifiedModuleName, declaration.Selection.StartLine)));
 
+            var accessor = target.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
+                         : target.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"
+                         : target.DeclarationType.HasFlag(DeclarationType.PropertySet) ? "(set)"
+                         : string.Empty;
+
+            var tabCaption = $"{target.IdentifierName} {accessor}".Trim();
+
             var viewModel = new SearchResultsViewModel(_navigateCommand,
-                string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, target.IdentifierName), target, results);
+                string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, tabCaption), target, results);
 
             return viewModel;
         }

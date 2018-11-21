@@ -8,6 +8,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -26,13 +27,13 @@ namespace Rubberduck.Inspections.QuickFixes
         public override bool CanFixInModule => false;
         public override bool CanFixInProject => false;
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
 
             int annotationLine;
-            string codeLine;
-            var component = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName);
+            //TODO: Make this use the parse tree instead of the code module.
+            using (var component = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName))
             using (var module = component.CodeModule)
             {
                 annotationLine = result.QualifiedSelection.Selection.StartLine;
@@ -53,7 +54,7 @@ namespace Rubberduck.Inspections.QuickFixes
             var commentContext = listener.Contexts.LastOrDefault(i => i.Stop.TokenIndex <= result.Context.Start.TokenIndex);
             var commented = commentContext?.Stop.Line + 1 == annotationLine;
 
-            var rewriter = _state.GetRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
 
             if (commented)
             {

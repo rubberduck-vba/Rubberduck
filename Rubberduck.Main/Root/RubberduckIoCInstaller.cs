@@ -93,7 +93,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<IProjectsProvider, IProjectsRepository>()
                 .ImplementedBy<ProjectsRepository>()
                 .LifestyleSingleton());
-            container.Register(Component.For<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider>()
+            container.Register(Component.For<RubberduckParserState, IParseTreeProvider, IDeclarationFinderProvider, IParseManager>()
                 .ImplementedBy<RubberduckParserState>()
                 .LifestyleSingleton());
             container.Register(Component.For<ISelectionChangeService>()
@@ -112,6 +112,10 @@ namespace Rubberduck.Root
             RegisterSmartIndenter(container);
             RegisterParsingEngine(container);
             RegisterTypeLibApi(container);
+
+            container.Register(Component.For<IRewritingManager>()
+                .ImplementedBy<RewritingManager>()
+                .LifestyleSingleton());
 
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
@@ -281,6 +285,9 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<PreprocessingParseErrorListenerFactory>()
                 .ImplementedBy<PreprocessingParseErrorListenerFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IRewriteSessionFactory>()
+                .ImplementedBy<RewriteSessionFactory>()
                 .LifestyleSingleton());
         }
 

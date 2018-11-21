@@ -1,15 +1,13 @@
-﻿using System.Linq;
-using NUnit.Framework;
-using RubberduckTests.Mocks;
-using System.Threading;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Inspections;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class ReplaceEmptyStringLiteralStatementQuickFixTests
+    public class ReplaceEmptyStringLiteralStatementQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("Inspections")]
@@ -25,18 +23,13 @@ End Sub";
     arg1 = vbNullString
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new EmptyStringLiteralInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ReplaceEmptyStringLiteralStatementQuickFix(state).Fix(inspectionResults.First());
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new EmptyStringLiteralInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new ReplaceEmptyStringLiteralStatementQuickFix();
+        }
     }
 }

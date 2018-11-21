@@ -409,15 +409,17 @@ End Sub";
         private void TestEnclosedCode(string inputCode, string constantName, string expectedEnclosedCode)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var constantSubStmtContext = state.DeclarationFinder.MatchName(constantName).First().Context;
 
-            var constantSubStmtContext = state.DeclarationFinder.MatchName(constantName).First().Context;
+                var infoFinder = new ConstantRewriterInfoFinder();
+                var info = infoFinder.GetRewriterInfo(constantSubStmtContext);
 
-            var infoFinder = new ConstantRewriterInfoFinder();
-            var info = infoFinder.GetRewriterInfo(constantSubStmtContext);
-
-            var actualEnclosedCode = state.GetRewriter(component).TokenStream.GetText(info.StartTokenIndex, info.StopTokenIndex);
-            Assert.AreEqual(expectedEnclosedCode, actualEnclosedCode);
+                var actualEnclosedCode = state.GetCodePaneTokenStream(component.QualifiedModuleName)
+                    .GetText(info.StartTokenIndex, info.StopTokenIndex);
+                Assert.AreEqual(expectedEnclosedCode, actualEnclosedCode);
+            }
         }
     }
 }

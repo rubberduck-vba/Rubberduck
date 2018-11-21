@@ -1,5 +1,5 @@
-<img src="https://user-images.githubusercontent.com/5751684/46327997-aeb98d00-c5d2-11e8-9de5-ba6f9cd1eea3.png" />
-
+<img alt="Rubberduck Open-Source VBE Add-In - VBA6 | VBA7 x86/x64 | VB6" src="https://user-images.githubusercontent.com/5751684/48656196-a507af80-e9ef-11e8-9c09-1ce3c619c019.png" />
+    
 <!-- campaign is no longer accepting donations
 ### Donate!
 
