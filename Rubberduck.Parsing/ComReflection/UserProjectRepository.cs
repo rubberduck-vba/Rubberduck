@@ -44,14 +44,14 @@ namespace Rubberduck.Parsing.ComReflection
 
         public void RefreshUserComProjects(IReadOnlyCollection<string> projectIdsToReload)
         {
-            //RemoveNoLongerExistingProjects();
-            //RemoveProjects(projectIdsToReload);
-            //var loadTask = _uiDispatcher.StartTask(() =>
-            //{
-            //    AddUnprotectedUserProjects(projectIdsToReload);
-            //    AddLockedProjects();
-            //});
-            //loadTask.Wait();
+            RemoveNoLongerExistingProjects();
+            RemoveProjects(projectIdsToReload);
+            var loadTask = _uiDispatcher.StartTask(() =>
+            {
+                AddUnprotectedUserProjects(projectIdsToReload);
+                AddLockedProjects();
+            });
+            loadTask.Wait();
         }
 
         private void RemoveNoLongerExistingProjects()
