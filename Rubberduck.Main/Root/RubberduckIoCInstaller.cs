@@ -780,6 +780,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<IUserComProjectRepository, IUserComProjectProvider>()
                 .ImplementedBy<UserProjectRepository>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IDeclarationsFromComProjectLoader>()
+                .ImplementedBy<DeclarationsFromComProjectLoader>()
+                .LifestyleSingleton());
         }
 
         private void RegisterTypeLibApi(IWindsorContainer container)
