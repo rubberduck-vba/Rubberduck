@@ -124,6 +124,7 @@ namespace Rubberduck.API.VBA
             var declarationsFromComProjectLoader = new DeclarationsFromComProjectLoader();
             var referencedDeclarationsCollector = new LibraryReferencedDeclarationsCollector(declarationsFromComProjectLoader, comLibraryProvider);
             var comSynchronizer = new COMReferenceSynchronizer(_state, parserStateManager, projectRepository, referencedDeclarationsCollector);
+            var userComProjectSynchronizer = new UserComProjectSynchronizer(_state, declarationsFromComProjectLoader, userProjectsRepository, projectsToBeLoadedFromComSelector);
             var builtInDeclarationLoader = new BuiltInDeclarationLoader(
                 _state,
                 new List<ICustomDeclarationLoader>
@@ -162,7 +163,8 @@ namespace Rubberduck.API.VBA
                 builtInDeclarationLoader,
                 parseRunner,
                 declarationResolveRunner,
-                referenceResolveRunner  
+                referenceResolveRunner,
+                userComProjectSynchronizer
                 );
             var parsingCacheService = new ParsingCacheService(
                 _state,

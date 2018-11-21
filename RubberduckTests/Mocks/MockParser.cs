@@ -78,6 +78,7 @@ namespace RubberduckTests.Mocks
             var comDeserializer = new StaticCachingComDeserializerDecorator(baseComDeserializer);
             var declarationsFromComProjectLoader = new DeclarationsFromComProjectLoader();
             var referencedDeclarationsCollector = new SerializedReferencedDeclarationsCollector(declarationsFromComProjectLoader, comDeserializer);
+            var userComProjectSynchronizer = new UserComProjectSynchronizer(state, declarationsFromComProjectLoader, userComProjectsRepository, projectsToBeLoadedFromComSelector);
             var comSynchronizer = new SynchronousCOMReferenceSynchronizer(
                 state, 
                 parserStateManager,
@@ -120,7 +121,8 @@ namespace RubberduckTests.Mocks
                 builtInDeclarationLoader,
                 parseRunner,
                 declarationResolveRunner,
-                referenceResolveRunner
+                referenceResolveRunner,
+                userComProjectSynchronizer
                 );
             var parsingCacheService = new ParsingCacheService(
                 state,
