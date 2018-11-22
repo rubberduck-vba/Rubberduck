@@ -36,6 +36,7 @@
             <BitmapImage x:Key="AddUserFormImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/AddForm.png" />
             <BitmapImage x:Key="SearchImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/magnifier-medium.png" />
             <BitmapImage x:Key="OpenDesignerImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ProjectForm.png" />
+            <BitmapImage x:Key="AddModuleImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
             <BitmapImage x:Key="FindImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/magnifier--arrow.png" />
             <BitmapImage x:Key="RemoveImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/minus-circle.png" />
             <BitmapImage x:Key="SortImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/edit-list-order.png" />
@@ -295,7 +296,7 @@
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddModule}"
                                       ItemsSource="{StaticResource AddModuleCommands}">
                                 <MenuItem.Icon>
-                                    <Image Source="{StaticResource AddStdModuleImage}" />
+                                    <Image Source="{StaticResource AddModuleImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Find}">
@@ -488,7 +489,7 @@
                               ItemsSource="{StaticResource AddModuleCommands}"
                               VerticalContentAlignment="Center">
                         <MenuItem.Icon>
-                            <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource AddStdModuleImage}" />
+                            <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource AddModuleImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                 </Menu>
