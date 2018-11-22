@@ -182,6 +182,8 @@ namespace Rubberduck
 
         private static void LocalizeResources(CultureInfo culture)
         {
+            //TODO: this method needs something better - maybe use reflection to discover all resourcees
+            //      to set culture for all resources files?
             Resources.RubberduckUI.Culture = culture;
             Resources.About.AboutUI.Culture = culture;
             Resources.Inspections.InspectionInfo.Culture = culture;
@@ -197,6 +199,7 @@ namespace Rubberduck
             Resources.ToDoExplorer.ToDoExplorerUI.Culture = culture;
             Resources.UnitTesting.AssertMessages.Culture = culture;
             Resources.UnitTesting.TestExplorer.Culture = culture;
+            Resources.Templates.Culture = culture;
         }
 
         private void CheckForLegacyIndenterSettings()

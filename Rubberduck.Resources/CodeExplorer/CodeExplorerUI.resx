@@ -376,4 +376,7 @@
   <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
     <value>Set as start up</value>
   </data>
+  <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
+    <value>Templates</value>
+  </data>
 </root>
