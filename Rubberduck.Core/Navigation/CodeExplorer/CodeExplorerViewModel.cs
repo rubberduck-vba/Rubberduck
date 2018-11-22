@@ -19,6 +19,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.Templates;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -36,7 +37,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly WindowSettings _windowSettings;
         private readonly IUiDispatcher _uiDispatcher;
         private readonly IVBE _vbe;
-
+        private readonly ITemplateProvider _templateProvider;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public CodeExplorerViewModel(
@@ -46,7 +47,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             IConfigProvider<GeneralSettings> generalSettingsProvider, 
             IConfigProvider<WindowSettings> windowSettingsProvider, 
             IUiDispatcher uiDispatcher,
-            IVBE vbe)
+            IVBE vbe,
+            ITemplateProvider templateProvider)
         {
             _folderHelper = folderHelper;
             _state = state;
@@ -55,6 +57,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             _windowSettingsProvider = windowSettingsProvider;
             _uiDispatcher = uiDispatcher;
             _vbe = vbe;
+            _templateProvider = templateProvider;
 
             if (generalSettingsProvider != null)
             {
@@ -92,6 +95,14 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
             }, param => !SortByCodeOrder);
         }
+
+        public ObservableCollection<Template> BuiltInTemplates =>
+            new ObservableCollection<Template>(_templateProvider.GetTemplates().Where(t => !t.IsUserDefined)
+                .OrderBy(t => t.Name));
+
+        public ObservableCollection<Template> UserDefinedTemplates =>
+            new ObservableCollection<Template>(_templateProvider.GetTemplates().Where(t => t.IsUserDefined)
+                .OrderBy(t => t.Name));
 
         private CodeExplorerItemViewModel _selectedItem;
         public CodeExplorerItemViewModel SelectedItem
@@ -533,7 +544,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public AddUserDocumentCommand AddUserDocumentCommand { get; set; }
         public AddTestModuleCommand AddTestModuleCommand { get; set; }
         public AddTestModuleWithStubsCommand AddTestModuleWithStubsCommand { get; set; }
-		public CommandBase AddPredeclaredClassModuleCommand { get; set; }
+		//public CommandBase AddPredeclaredClassModuleCommand { get; set; }
+        public AddTemplateCommand AddTemplateCommand { get; set; }
         public CommandBase OpenDesignerCommand { get; set; }
         public CommandBase OpenProjectPropertiesCommand { get; set; }
         public SetAsStartupProjectCommand SetAsStartupProjectCommand { get; set; }
