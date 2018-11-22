@@ -78,7 +78,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             string optionCompare = string.Empty;
             using (IHostApplication hostApp = _vbe.HostApplication())
             {
-                optionCompare = hostApp.ApplicationName == "Access" ? "Option Compare Database" :
+                optionCompare = hostApp?.ApplicationName == "Access" ? "Option Compare Database" :
                     string.Empty;
             }
 
