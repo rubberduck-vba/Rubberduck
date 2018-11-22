@@ -78,6 +78,8 @@ namespace Rubberduck.Resources {
         ///Attribute VB_Creatable = False
         ///Attribute VB_PredeclaredId = True
         ///Attribute VB_Exposed = False
+        ///Attribute VB_Ext_KEY = &quot;Rubberduck&quot;, &quot;Predeclared Class Module&quot;
+        ///
         ///Option Explicit.
         /// </summary>
         public static string PredeclaredClassModule_Code {
