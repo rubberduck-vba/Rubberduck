@@ -10,6 +10,19 @@
   <ItemGroup>
     <Resource Include="**\*.png" />
     <Resource Include="**\*.bmp" />
-    <Resource Include="**\*.txt" />
+    <Resource Include="**\*.txt" Exclude="$(IntermediateOutputPath)\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Templates.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Templates.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Templates.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Templates.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
