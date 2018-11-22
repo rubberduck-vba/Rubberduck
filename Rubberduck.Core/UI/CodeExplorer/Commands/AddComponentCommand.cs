@@ -25,16 +25,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 var project = GetDeclaration(parameter)?.Project;
 
-                if (project == null && _vbe.ProjectsCount == 1)
+                if (project != null || _vbe.ProjectsCount != 1)
                 {
-                    using (var vbProjects = _vbe.VBProjects)
-                    using (project = vbProjects[1])
-                    {                        
-                        return project != null && allowableProjectTypes.Contains(project.Type);                        
-                    }
+                    return project != null && allowableProjectTypes.Contains(project.Type);
                 }
 
-                return project != null && allowableProjectTypes.Contains(project.Type);
+                using (var vbProjects = _vbe.VBProjects)
+                using (project = vbProjects[1])
+                {                        
+                    return project != null && allowableProjectTypes.Contains(project.Type);                        
+                }
 
             }
             catch (COMException)
@@ -75,8 +75,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return; //The project is not available.
             }
 
-            string optionCompare = string.Empty;
-            using (IHostApplication hostApp = _vbe.HostApplication())
+            string optionCompare;
+            using (var hostApp = _vbe.HostApplication())
             {
                 optionCompare = hostApp?.ApplicationName == "Access" ? "Option Compare Database" :
                     string.Empty;
@@ -87,13 +87,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 : ComponentsCollectionFromActiveProject())
             {
                 var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
-                string fileName = createTempTextFile(moduleText);
+                var fileName = CreateTempTextFile(moduleText);
 
                 using (var newComponent = components.Import(fileName))
                 {
                     using (var codeModule = newComponent.CodeModule)
                     {
-                        var delarationLines = string.Concat(folderAnnotation,  optionCompare);
                         if (optionCompare.Length > 0)
                         {
                             codeModule.InsertLines(1, optionCompare);
@@ -109,14 +108,14 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        private string createTempTextFile(string moduleText)
+        private static string CreateTempTextFile(string moduleText)
         {
-            string tempFolder = ApplicationConstants.RUBBERDUCK_TEMP_PATH;
+            var tempFolder = ApplicationConstants.RUBBERDUCK_TEMP_PATH;
             if (!Directory.Exists(tempFolder))
             {
                 Directory.CreateDirectory(tempFolder);
             }
-            string filePath = Path.Combine(tempFolder, Path.GetRandomFileName());
+            var filePath = Path.Combine(tempFolder, Path.GetRandomFileName());
             File.WriteAllText(filePath, moduleText);
             return filePath;
         }

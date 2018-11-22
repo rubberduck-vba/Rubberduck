@@ -376,7 +376,4 @@
   <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
     <value>Set as start up</value>
   </data>
-  <data name="CodeExplorer_AddPredeclaredClassModuleText" xml:space="preserve">
-    <value>Predeclared Class module (.cls)</value>
-  </data>
 </root>

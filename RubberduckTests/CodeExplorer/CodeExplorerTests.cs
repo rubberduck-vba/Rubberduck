@@ -68,7 +68,7 @@ namespace RubberduckTests.CodeExplorer
                 var messageBox = new Mock<IMessageBox>();
                 var saveFileDialog = new Mock<ISaveFileDialog>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddStdModuleCommand = new AddStdModuleCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -105,7 +105,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddStdModuleCommand = new AddStdModuleCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -138,7 +138,7 @@ namespace RubberduckTests.CodeExplorer
             using (var state = TestParserState(vbe, projectRepository))
             {
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddClassModuleCommand = new AddClassModuleCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -175,7 +175,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddClassModuleCommand = new AddClassModuleCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -208,7 +208,7 @@ namespace RubberduckTests.CodeExplorer
             using (var state = TestParserState(vbe, projectRepository))
             {
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddUserFormCommand = new AddUserFormCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -244,7 +244,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {                
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddUserFormCommand = new AddUserFormCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -274,7 +274,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddVBFormCommand = new AddVBFormCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -311,7 +311,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddVBFormCommand = new AddVBFormCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -342,7 +342,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddMDIFormCommand = new AddMDIFormCommand(vbe.Object, new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -379,7 +379,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddMDIFormCommand = new AddMDIFormCommand(vbe.Object, new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -409,7 +409,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddMDIFormCommand = new AddMDIFormCommand(vbe.Object, new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -440,7 +440,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddUserControlCommand = new AddUserControlCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -477,7 +477,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddUserControlCommand = new AddUserControlCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -508,7 +508,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddPropertyPageCommand = new AddPropertyPageCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -544,7 +544,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddPropertyPageCommand = new AddPropertyPageCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -575,7 +575,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddUserDocumentCommand = new AddUserDocumentCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -611,7 +611,7 @@ namespace RubberduckTests.CodeExplorer
 
             using (var state = TestParserState(vbe, projectRepository))
             {
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, null, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddUserDocumentCommand = new AddUserDocumentCommand(new AddComponentCommand(vbe.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -650,7 +650,7 @@ namespace RubberduckTests.CodeExplorer
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var interaction = new Mock<IVBEInteraction>();
                 
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddTestModuleCommand = new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -691,7 +691,7 @@ namespace RubberduckTests.CodeExplorer
                 var interaction = new Mock<IVBEInteraction>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
                 
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -730,7 +730,7 @@ namespace RubberduckTests.CodeExplorer
                 var interaction = new Mock<IVBEInteraction>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
                 
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -768,7 +768,7 @@ namespace RubberduckTests.CodeExplorer
                 var interaction = new Mock<IVBEInteraction>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -806,7 +806,7 @@ namespace RubberduckTests.CodeExplorer
                 var interaction = new Mock<IVBEInteraction>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(vbeWrapper, new AddTestModuleCommand(vbeWrapper, state, configLoader.Object, messageBox.Object, interaction.Object));
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -852,7 +852,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -899,7 +899,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -947,7 +947,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.ImportCommand = new ImportCommand(vbe.Object, openFileDialog.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -987,7 +987,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.ExportCommand = new ExportCommand(saveFileDialog.Object, state.ProjectsProvider);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1027,7 +1027,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.ExportCommand = new ExportCommand(saveFileDialog.Object, state.ProjectsProvider);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1070,7 +1070,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1128,7 +1128,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.ExportAllCommand = new ExportAllCommand(null, mockFolderBrowserFactory.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1186,7 +1186,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.ExportAllCommand = new ExportAllCommand(null, mockFolderBrowserFactory.Object);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1222,7 +1222,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.OpenDesignerCommand = new OpenDesignerCommand(state.ProjectsProvider);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1268,7 +1268,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -1312,7 +1312,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -1352,7 +1352,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -1396,7 +1396,7 @@ namespace RubberduckTests.CodeExplorer
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -1439,7 +1439,7 @@ End Sub
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.IndenterCommand = new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1478,7 +1478,7 @@ End Sub";
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.IndenterCommand = new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1531,7 +1531,7 @@ End Sub
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.IndenterCommand = new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1594,7 +1594,7 @@ End Sub
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.IndenterCommand = new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1639,7 +1639,7 @@ End Sub";
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.IndenterCommand = new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1697,7 +1697,7 @@ End Sub
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.IndenterCommand = new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1765,7 +1765,7 @@ End Sub
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.IndenterCommand = new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1811,7 +1811,7 @@ End Sub";
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
                 vm.IndenterCommand = new IndentCommand(state, new Indenter(vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
@@ -1843,7 +1843,7 @@ End Sub";
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -1879,7 +1879,7 @@ End Sub";
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -1915,7 +1915,7 @@ End Sub";
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -1951,7 +1951,7 @@ End Sub";
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -1998,7 +1998,7 @@ End Sub";
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2043,7 +2043,7 @@ End Sub";
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2088,7 +2088,7 @@ End Sub";
 
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2134,7 +2134,7 @@ End Sub";
                 _windowSettingsProvider.Setup(s => s.Create()).Returns(windowSettings);
 
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2179,7 +2179,7 @@ End Sub";
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2224,7 +2224,7 @@ End Sub";
 
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
                 var uiDispatcher = new Mock<IUiDispatcher>();
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2269,7 +2269,7 @@ End Sub";
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2314,7 +2314,7 @@ End Sub";
 
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2386,7 +2386,7 @@ Public Const Bar = 0";
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2418,7 +2418,7 @@ Public Bar As Boolean";
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2453,7 +2453,7 @@ End Property
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2489,7 +2489,7 @@ End Property
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2525,7 +2525,7 @@ End Property
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2561,7 +2561,7 @@ End Property
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2597,7 +2597,7 @@ End Property
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2633,7 +2633,7 @@ End Function
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2669,7 +2669,7 @@ End Sub
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2705,7 +2705,7 @@ End Sub
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2738,7 +2738,7 @@ End Sub
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2778,7 +2778,7 @@ End Sub";
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2814,7 +2814,7 @@ End Sub";
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
@@ -2850,7 +2850,7 @@ End Sub";
             {
                 var uiDispatcher = new Mock<IUiDispatcher>();
                 var removeCommand = new RemoveCommand(saveFileDialog.Object, messageBox.Object, state.ProjectsProvider);
-                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object);
+                var vm = new CodeExplorerViewModel(new FolderHelper(state, vbe.Object), state, removeCommand, _generalSettingsProvider.Object, _windowSettingsProvider.Object, uiDispatcher.Object, vbe.Object, null);
 
                 var parser = MockParser.Create(vbe.Object, state, projectRepository);
                 parser.Parse(new CancellationTokenSource());
