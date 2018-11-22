@@ -645,9 +645,8 @@
                                  Grid.Column="1" />
                     </Grid>
 
-                    <TextBox IsReadOnly="True" Margin="4" Text="{Binding Description, Mode=OneWay}"
-                             BorderThickness="0" Background="WhiteSmoke" Foreground="Black"
-                             FontSize="10" TextWrapping="WrapWithOverflow" />
+                    <TextBox Style="{StaticResource footerStyle}"
+                             Text="{Binding Description, Mode=OneWay}" />
 
                     <WrapPanel>
                         <controls:LinkButton Margin="4"
@@ -656,7 +655,8 @@
                                              CommandParameter="{Binding SelectedItem}"
                                              Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Indent}"
                                              FontSize="{Binding ElementName=ChosenFontSize, Path=SelectedItem, Mode=OneWay}" />
-                        <controls:LinkButton Margin="4"                                             Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
+                        <controls:LinkButton Margin="4"
+                                             Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
                                              Command="{Binding RenameCommand}"
                                              CommandParameter="{Binding SelectedItem}"
                                              Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Rename}"
