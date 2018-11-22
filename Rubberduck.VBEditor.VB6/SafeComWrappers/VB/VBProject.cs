@@ -129,7 +129,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public IReadOnlyList<string> ComponentNames()
         {
-            return VBComponents.Select(component => component.Name).ToArray();
+            var names = new List<string>();
+            using (var components = VBComponents)
+            {
+                foreach (var component in components)
+                {
+                    using (component)
+                    {
+                        names.Add(component.Name);
+                    }
+                }
+
+                return names.ToArray();
+            }
         }
 
         public void AssignProjectId()

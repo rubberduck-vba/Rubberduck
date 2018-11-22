@@ -113,7 +113,31 @@ try
 		if(!$result)
 		{
 			Write-Warning "VSSetup not installed; extracting...";
-			Expand-Archive "$projectDir\OleWoo\VSSetup.zip" "$([Environment]::GetFolderPath("MyDocuments"))\WindowsPowerShell\Modules\VSSetup" -Force
+			$moduleDirPath = "$([Environment]::GetFolderPath("MyDocuments"))\WindowsPowerShell";
+			if(!(Test-Path -Path $moduleDirPath -PathType Container))
+			{
+				Write-Warning "WindowsPowerShell directory not found in user's documents. Creating.";
+				New-Item -Path $moduleDirPath -ItemType Directory;
+			}
+			$moduleDirPath += "\Modules";
+			if(!(Test-Path -Path $moduleDirPath -PathType Container))
+			{
+				Write-Warning "WindowsPowerShell\Modules directory not found in user's documents. Creating.";
+				New-Item -Path $moduleDirPath -ItemType Directory;
+			}
+			$moduleDirPath += "\VSSetup";
+			if(!(Test-Path -Path $moduleDirPath -PathType Container))
+			{
+				Write-Warning "WindowsPowerShell\Modules\VSSetup directory not found in user's documents. Creating.";
+				New-Item -Path $moduleDirPath -ItemType Directory;
+			}
+			# Sanity check
+			if(!(Test-Path -Path $moduleDirPath -PathType Container))
+			{
+				Write-Error "WindowsPowerShell\Modules\VSSetup directory still not found in user's documents after attempt to create it. Cannot continue";
+				throw [System.IO.DirectoryNotFoundException] "Cannot create or locate the directory at path '$moduleDirPath'";
+			}
+			Expand-Archive "$projectDir\OleWoo\VSSetup.zip" $moduleDirPath -Force;
 		}
 
 		try {
