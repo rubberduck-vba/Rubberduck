@@ -1,5 +1,7 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 
@@ -14,7 +16,16 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
-            rewriter.InsertBefore(result.Context.Start.TokenIndex, "Set ");
+            var letStmt = result.Context.GetAncestor<VBAParser.LetStmtContext>();
+            var letToken = letStmt.LET();
+            if (letToken != null)
+            {
+                rewriter.Replace(letToken, "Set");
+            }
+            else
+            {
+                rewriter.InsertBefore(letStmt.Start.TokenIndex, "Set ");
+            }
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.SetObjectVariableQuickFix;
