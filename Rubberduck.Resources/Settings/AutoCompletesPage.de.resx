@@ -168,12 +168,6 @@
   <data name="AutoCompletePropertyBlockDescription" xml:space="preserve">
     <value>Überschreibe 'Property' Vervollständigung der VBE</value>
   </data>
-  <data name="HandleTabKey" xml:space="preserve">
-    <value>Vervollständige Blöcke mit TAB</value>
-  </data>
-  <data name="HandleEnterKey" xml:space="preserve">
-    <value>Vervollständige Blöcke mit ENTER</value>
-  </data>
   <data name="PageHeader" xml:space="preserve">
     <value>Einstellungen der automatischen Vervollständigung</value>
   </data>

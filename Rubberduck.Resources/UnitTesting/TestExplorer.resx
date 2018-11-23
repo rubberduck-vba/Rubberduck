@@ -232,7 +232,7 @@
     <value>Selected Category</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
-    <value>Category Name</value>
+    <value>Category</value>
   </data>
   <data name="TestExplorer_Uncategorized" xml:space="preserve">
     <value>Uncategorized</value>

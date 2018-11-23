@@ -192,4 +192,22 @@
   <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
     <value>Attendu: Stack overflow?; Réel: Clause de garde. Oui oui!</value>
   </data>
+  <data name="Prerequisite_EarlyBindingReferenceMissing" xml:space="preserve">
+    <value>La référence à la libraire de Rubberduck requise pour l'exécution à liaison hâtive (early-binding) des tests, n'a pu être résolue. La librairie est peut-être corrompue.</value>
+  </data>
+  <data name="TestRunner_ComException" xml:space="preserve">
+    <value>Une exception COM inattendue s'est produite lors de l'exécution des tests.</value>
+  </data>
+  <data name="TestRunner_ExceptionDuringRun" xml:space="preserve">
+    <value>L'exécution d'un test a échouée avec une exception.</value>
+  </data>
+  <data name="TestRunner_GenericException" xml:space="preserve">
+    <value>Exception inattendue lors de l'exécution des tests.</value>
+  </data>
+  <data name="TestRunner_ModuleInitializeFailure" xml:space="preserve">
+    <value>Une erreur s'est produite durant l'exécution de @ModuleInitialize. Le module est ignoré.</value>
+  </data>
+  <data name="TestRunner_TestInitializeFailure" xml:space="preserve">
+    <value>Une erreur s'est produite durant l'exécution de @TestInitialize. Le test sera ignoré.</value>
+  </data>
 </root>

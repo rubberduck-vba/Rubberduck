@@ -168,19 +168,43 @@
   <data name="AutoCompletePropertyBlockDescription" xml:space="preserve">
     <value>Prendre en charge la fermeture des blocs 'Property'</value>
   </data>
-  <data name="HandleTabKey" xml:space="preserve">
-    <value>Autocompléter les blocs avec TAB</value>
-  </data>
-  <data name="HandleEnterKey" xml:space="preserve">
-    <value>Autocompléter les blocs avec ENTER</value>
-  </data>
   <data name="PageHeader" xml:space="preserve">
-    <value>Autocompletion Settings</value>
+    <value>Paramètres d'autocomplétion</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
     <value>Configure which Rubberduck autocompletions are enabled.</value>
   </data>
   <data name="EnableSmartConcat" xml:space="preserve">
     <value>Activer la concaténation intelligente</value>
+  </data>
+  <data name="BlockCompletion" xml:space="preserve">
+    <value>Fermeture des blocs</value>
+  </data>
+  <data name="CompleteBlockOnEnter" xml:space="preserve">
+    <value>Compléter les blocs avec ENTREE</value>
+  </data>
+  <data name="CompleteBlockOnTab" xml:space="preserve">
+    <value>Compléter les blocs avec TAB</value>
+  </data>
+  <data name="ConcatVbNewLine" xml:space="preserve">
+    <value>Concaténer 'vbNewLine' avec Ctrl+Entrée</value>
+  </data>
+  <data name="EnableAutocompleteLabel" xml:space="preserve">
+    <value>Activer l'autocomplétion</value>
+  </data>
+  <data name="EnableBlockCompletion" xml:space="preserve">
+    <value>Fermer automatiquement les blocs</value>
+  </data>
+  <data name="EnableSelfClosingPairs" xml:space="preserve">
+    <value>Fermer automatiquement les paires</value>
+  </data>
+  <data name="MaxConcatLines" xml:space="preserve">
+    <value>Lignes</value>
+  </data>
+  <data name="SelfClosingPairs" xml:space="preserve">
+    <value>Paires automatiques</value>
+  </data>
+  <data name="SmartConcat" xml:space="preserve">
+    <value>Concaténation intelligente</value>
   </data>
 </root>

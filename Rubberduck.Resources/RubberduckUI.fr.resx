@@ -273,9 +273,6 @@
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Aucune implémentation trouvée pour '{0}'.</value>
   </data>
-  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
-    <value>{0} (analyse...)</value>
-  </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Inspections Rubberduck - {0}
 {1} problèmes trouvés.
@@ -383,33 +380,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Change" xml:space="preserve">
     <value>Modifier</value>
   </data>
-  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Module &amp;standard (.bas)</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Module de &amp;tests</value>
-  </data>
-  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Afficher les &amp;noms</value>
-  </data>
-  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>Afficher les &amp;signatures complètes</value>
-  </data>
-  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Trouver toutes les implémentations...</value>
-  </data>
-  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Trouver toutes les références...</value>
-  </data>
-  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Exécuter tous les tests</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Ouvrir le mode création</value>
-  </data>
-  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Activer/désactiver les dossiers</value>
-  </data>
   <data name="CodeInspections" xml:space="preserve">
     <value>Inspections</value>
   </data>
@@ -430,9 +400,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="Navigate" xml:space="preserve">
     <value>Naviguer</value>
-  </data>
-  <data name="Outcome" xml:space="preserve">
-    <value>Résultat</value>
   </data>
   <data name="Previous" xml:space="preserve">
     <value>Précédent</value>
@@ -469,9 +436,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="TodoExplorer_LineNumber" xml:space="preserve">
     <value>Ligne</value>
-  </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>Marqueurs "TODO"</value>
   </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Texte:</value>
@@ -527,18 +491,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Renommer {0}</value>
   </data>
-  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
-    <value>Explorateur</value>
-  </data>
-  <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>Na&amp;viguer</value>
-  </data>
-  <data name="CodeExplorer_New" xml:space="preserve">
-    <value>&amp;Nouveau</value>
-  </data>
-  <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>R&amp;afraîchir</value>
-  </data>
   <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} problèmes)</value>
     <comment>{0}=status; {1}=number</comment>
@@ -551,12 +503,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} problèmes</value>
     <comment>{0}=number</comment>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Texte:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Texte</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>Allemand</value>
@@ -648,17 +594,11 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ExtractInterface_MembersGroupBox" xml:space="preserve">
     <value>Membres</value>
   </data>
-  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value>Affichage</value>
-  </data>
   <data name="RegexSearchReplace_ReplaceButtonLabel" xml:space="preserve">
     <value>Remplacer</value>
   </data>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
     <value>Veuillez spécifier le nom, l'accessibilité des paramètres, et le type de mutateur pour la nouvelle propriété.</value>
-  </data>
-  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
-    <value>Ajouter un module au projet actif</value>
   </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Rechercher un symbole</value>
@@ -702,12 +642,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="HotkeyDescription_CodeExplorer" xml:space="preserve">
-    <value>Explorateur</value>
-  </data>
-  <data name="HotkeyDescription_RefactorRename" xml:space="preserve">
-    <value>Refactorer / renommer</value>
-  </data>
   <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
     <value>Maj</value>
   </data>
@@ -719,9 +653,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="EndOfLineCommentStyle_AlignInColumn" xml:space="preserve">
     <value>Aligner dans la colonne</value>
-  </data>
-  <data name="HotkeyDescription_InspectionResults" xml:space="preserve">
-    <value>Inspections</value>
   </data>
   <data name="CodeInspectionResults_GroupByType" xml:space="preserve">
     <value>Par type d'inspection</value>
@@ -762,9 +693,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="Settings" xml:space="preserve">
     <value>Paramètres</value>
   </data>
-  <data name="HotkeyDescription_RefactorMoveCloserToUsage" xml:space="preserve">
-    <value>Déplacer la déclaration</value>
-  </data>
   <data name="IndenterSettings_ForceCompilerDirectivesToColumn1" xml:space="preserve">
     <value>Forcer les directives du préprocesseur à la colonne 1</value>
   </data>
@@ -773,9 +701,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="SearchResults_Caption" xml:space="preserve">
     <value>Résultats de recherche</value>
-  </data>
-  <data name="HotkeyDescription_IndentModule" xml:space="preserve">
-    <value>Indenter le module</value>
   </data>
   <data name="RubberduckCommandbarRefreshButtonTooltip" xml:space="preserve">
     <value>Analyser tous les projets ouverts</value>
@@ -795,9 +720,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_IndentCompilerDirectives" xml:space="preserve">
     <value>Indenter les directives du préprocesseur</value>
   </data>
-  <data name="HotkeyDescription_IndentProcedure" xml:space="preserve">
-    <value>Indenter la procédure</value>
-  </data>
   <data name="SearchResults_Context" xml:space="preserve">
     <value>Contexte</value>
   </data>
@@ -806,9 +728,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="IndenterSettings_AlignDims" xml:space="preserve">
     <value>Aligner les déclarations (Dim)</value>
-  </data>
-  <data name="HotkeyDescription_RefactorExtractMethod" xml:space="preserve">
-    <value>Refactorer / extraire une méthode</value>
   </data>
   <data name="GeneralSettings_HotkeyDescription" xml:space="preserve">
     <value>Description</value>
@@ -849,9 +768,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="IndenterSettings_IndentEntireProcedureBody" xml:space="preserve">
     <value>Indenter le contenu entier de la procédure</value>
   </data>
-  <data name="HotkeyDescription_ParseAll" xml:space="preserve">
-    <value>Rafraîchir l'analyseur</value>
-  </data>
   <data name="GroupingStyle_ByMarker" xml:space="preserve">
     <value>Par marqueur</value>
   </data>
@@ -869,9 +785,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   </data>
   <data name="CodeInspectionResults_Type" xml:space="preserve">
     <value>Type</value>
-  </data>
-  <data name="HotkeyDescription_TestExplorer" xml:space="preserve">
-    <value>Tests Unitaires</value>
   </data>
   <data name="IndenterSettings_AlignContinuations" xml:space="preserve">
     <value>Aligner les continuations</value>
@@ -903,26 +816,14 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="SearchResults_ModuleName" xml:space="preserve">
     <value>Module</value>
   </data>
-  <data name="HotkeyDescription_FindSymbol" xml:space="preserve">
-    <value>Rechercher un symbole</value>
-  </data>
   <data name="GeneralSettings_LanguageLabel" xml:space="preserve">
     <value>Langue d'affichage:</value>
   </data>
   <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
     <value>Point (.)</value>
   </data>
-  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
-    <value>Module de classe (.cls)</value>
-  </data>
-  <data name="CodeExplorer_Import" xml:space="preserve">
-    <value>Importer...</value>
-  </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Erreurs d'analyse</value>
-  </data>
-  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>Copier au presse-papier</value>
   </data>
   <data name="GeneralSettings_WarnLogLevel" xml:space="preserve">
     <value>Avertissement</value>
@@ -930,14 +831,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Afficher dans le dossier</value>
   </data>
-  <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Exporter...</value>
-  </data>
   <data name="GeneralSettings_ErrorLogLevel" xml:space="preserve">
     <value>Erreur</value>
-  </data>
-  <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Imprimer...</value>
   </data>
   <data name="Find" xml:space="preserve">
     <value>Chercher</value>
@@ -954,9 +849,6 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="GeneralSettings_DebugLogLevel" xml:space="preserve">
     <value>Debug</value>
   </data>
-  <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Supprimer...</value>
-  </data>
   <data name="GeneralSettings_FolderDelimiterLabel" xml:space="preserve">
     <value>Délimiteur de dossiers:</value>
   </data>
@@ -966,14 +858,8 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="GeneralSettings_OffLogLevel" xml:space="preserve">
     <value>Désactivé</value>
   </data>
-  <data name="CodeExplorer_Sort" xml:space="preserve">
-    <value>Trier</value>
-  </data>
   <data name="GeneralSettings_InfoLogLevel" xml:space="preserve">
     <value>Info</value>
-  </data>
-  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Activer/désactiver les signatures</value>
   </data>
   <data name="CodeInspectionSettings_Misc" xml:space="preserve">
     <value>Autres options</value>
@@ -1037,20 +923,11 @@ End Sub</value>
   <data name="RubberduckReloadFailure_Title" xml:space="preserve">
     <value>Rubberduck ne redémarre pas.</value>
   </data>
-  <data name="HotkeyDescription_RefactorEncapsulateField" xml:space="preserve">
-    <value>Refactorer / Encapsuler le champ</value>
-  </data>
   <data name="RegexAssistant_GlobalFlag" xml:space="preserve">
     <value>Global</value>
   </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Réduire l'arborescence</value>
-  </data>
   <data name="RegexAssistant_Caption" xml:space="preserve">
     <value>Rubberduck - Analyseur Regex</value>
-  </data>
-  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Propriétés du projet</value>
   </data>
   <data name="RegexAssistant_Title" xml:space="preserve">
     <value>Analyseur d'expressions Regex</value>
@@ -1060,9 +937,6 @@ End Sub</value>
   </data>
   <data name="RegexAssistant_Instructions" xml:space="preserve">
     <value>Entrer une expression Regex à analyser dans l'espace ci-dessous.</value>
-  </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Développer l'arborescence</value>
   </data>
   <data name="RegexAssistant_IgnoreCaseFlag" xml:space="preserve">
     <value>Ignorer la casse</value>
@@ -1081,9 +955,6 @@ End Sub</value>
   </data>
   <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
     <value>Description</value>
-  </data>
-  <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Indenter</value>
   </data>
   <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
     <value>Expression</value>
@@ -1160,18 +1031,12 @@ End Sub</value>
   <data name="AssignedByValDialog_DoesNotStartWithLetter" xml:space="preserve">
     <value>Le nom d'une variable doit débuter par une lettre.</value>
   </data>
-  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Ouvrir le designer</value>
-  </data>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Impossible de renommer le membre '{0}' de l'interface.</value>
   </data>
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>pour analyser et traiter
 les projets dans le VBE.</value>
-  </data>
-  <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Exporter le projet...</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>Fichiers VB</value>
@@ -1185,20 +1050,11 @@ les projets dans le VBE.</value>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Tous les fichiers</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
-    <value>Regrouper par type</value>
-  </data>
   <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
     <value>L'identifiant {0} ne peut être renommé.</value>
   </data>
-  <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Ajouter un module</value>
-  </data>
   <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
     <value>Impossible de détecter la cible à renommer</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>Par nom</value>
   </data>
   <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Importer fichiers source</value>
@@ -1209,32 +1065,17 @@ les projets dans le VBE.</value>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Ces fonctionnalités sont présentement en phase de tests et/ou diagnostics. Activer ces fonctionnalités peut produire des erreurs inattendues qui peuvent résulter en pertes de données.</value>
   </data>
-  <data name="HotkeyDescription_ExportActiveProject" xml:space="preserve">
-    <value>Exporter le projet actif</value>
-  </data>
-  <data name="CodeExplorer_Open" xml:space="preserve">
-    <value>Ouvrir</value>
-  </data>
   <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
     <value>La méthode '{0}' répond à l'événement '{1}.{2}'. Renommer l'événement '{2}'?</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Veuillez sélectionner un dossier où exporter les fichier source de {0}:</value>
   </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>Formulaire (.frm)</value>
-  </data>
   <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
     <value>Fonctionnalités expérimentales:</value>
   </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
-    <value>Module de tests avec modèles</value>
-  </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Impossible de renommer {0}.</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>Tel que dans le module</value>
   </data>
   <data name="Preview" xml:space="preserve">
     <value>Aperçu</value>
@@ -1336,10 +1177,46 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>'Compile on demand' est activé</value>
   </data>
-  <data name="InspectionSettings_FilterDescription" xml:space="preserve">
-    <value>Filtrer par description :</value>
-  </data>
   <data name="Add" xml:space="preserve">
     <value>Ajouter</value>
+  </data>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value>Indenter le projet entier</value>
+  </data>
+  <data name="CommandDescription_ExportAllCommand" xml:space="preserve">
+    <value>Exporter le projet actif</value>
+  </data>
+  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
+    <value>Description:</value>
+  </data>
+  <data name="ParserState_Busy" xml:space="preserve">
+    <value>Occupé</value>
+  </data>
+  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
+    <value>Sévérité:</value>
+  </data>
+  <data name="GroupingGrid_FilterBy" xml:space="preserve">
+    <value>Filtrer par</value>
+  </data>
+  <data name="GroupingStyle_ByCategory" xml:space="preserve">
+    <value>Par catégorie</value>
+  </data>
+  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
+    <value>Ignorer les lignes vides lors de la recherche du premier bloc de commentaire ou de déclarations</value>
+  </data>
+  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
+    <value>Ignorer</value>
+  </data>
+  <data name="EmptyLineHandling_Indent" xml:space="preserve">
+    <value>Indenter</value>
+  </data>
+  <data name="EmptyLineHandling_Remove" xml:space="preserve">
+    <value>Supprimer</value>
+  </data>
+  <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
+    <value>Traitement des lignes vides:</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Tchèque</value>
   </data>
 </root>

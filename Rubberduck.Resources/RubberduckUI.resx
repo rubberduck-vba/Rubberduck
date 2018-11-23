@@ -465,9 +465,6 @@ Warning: All customized settings will be lost.  Your old file will be saved in '
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
   </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
-  </data>
   <data name="CodeInspections_NumberOfIssuesFound_Plural" xml:space="preserve">
     <value>Rubberduck Code Inspections - {0}
 {1} issues found.</value>
@@ -506,12 +503,6 @@ Do you want to proceed with this rename?</value>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} issues</value>
     <comment>{0}=number</comment>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>German</value>
@@ -1294,5 +1285,14 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Empty line handling:</value>
+  </data>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG</value>
+  </data>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO</value>
   </data>
 </root>

@@ -153,9 +153,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>L'instruction comporte plus d'une déclaration</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Le module compte plus d'une annotation '@Folder'</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Fonction ou accesseur de propriété sans valeur de retour</value>
   </data>
@@ -326,5 +323,38 @@
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Une feuille Excel accessible statiquement est référencée par une chaîne de caractères</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Assignation non utilisée</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Annotation dupliquée</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Accès à un membre pouvant renvoyer 'Nothing'</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Une fonction est cachée par une référence de cellule valide</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>Utilisation inappropriée ou incorrecte de la fonction 'IsMissing'</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>Utilisation inappropriée ou incorrecte de la fonction 'IsMissing'</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Module sans annotation '@Folder'</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Utilisation de la convention d'appel 'CDecl' sous Windows</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Utilisation d'un membre marqué '@Obsolete'</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>Instruction 'On Local Error'</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Caractère de soulignement dans le nom d'un membre d'un module de classe</value>
   </data>
 </root>

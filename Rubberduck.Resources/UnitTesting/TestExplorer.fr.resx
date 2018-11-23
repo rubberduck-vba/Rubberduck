@@ -228,4 +228,13 @@
   <data name="UnitTest_TotalDuration" xml:space="preserve">
     <value>Durée totale</value>
   </data>
+  <data name="TestExplorer_CategoryName" xml:space="preserve">
+    <value>Catégorie</value>
+  </data>
+  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
+    <value>Catégorie sélectionnée</value>
+  </data>
+  <data name="TestExplorer_Uncategorized" xml:space="preserve">
+    <value>Non-catégorisés</value>
+  </data>
 </root>
