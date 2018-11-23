@@ -93,23 +93,17 @@ namespace Rubberduck.Inspections
             }
 
             // todo resolve expression return type
-
-
-            //var memberRefs = declarationFinderProvider.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName);
-            //var lastRef = memberRefs.LastOrDefault(r => r.IsAssignment && !Equals(r, reference) && r.Context.GetAncestor<VBAParser.LetStmtContext>() == letStmtContext);
-            //if (lastRef?.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
-            //{
-            //    // the last reference in the expression is referring to an object type
-            //    return true;
-            //}
-            //if (lastRef?.Declaration.AsTypeName == Tokens.Object)
-            //{
-            //    return true;
-            //}
-
-            // is the reference referring to something else in scope that's a object?
             var project = Declaration.GetProjectParent(reference.ParentScoping);
             var module = Declaration.GetModuleParent(reference.ParentScoping);
+
+            var simpleName = expression.GetDescendent<VBAParser.SimpleNameExprContext>();
+            if (simpleName != null)
+            {
+                return declarationFinderProvider.DeclarationFinder.MatchName(simpleName.identifier().GetText())
+                    .Any(d => AccessibilityCheck.IsAccessible(project, module, reference.ParentScoping, d) && d.IsObject);
+            }
+
+            // is the reference referring to something else in scope that's a object?
             return declarationFinderProvider.DeclarationFinder.MatchName(expression.GetText())
                 .Any(decl => (decl.DeclarationType.HasFlag(DeclarationType.ClassModule) || Tokens.Object.Equals(decl.AsTypeName))
                 && AccessibilityCheck.IsAccessible(project, module, reference.ParentScoping, decl));
