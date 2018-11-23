@@ -94,4 +94,21 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+
+  <!-- BEGIN WINDOWS FORMS WORKAROUND SECTION -->
+  <ItemGroup>
+    <Compile Update="**\*Window.cs" SubType="Form" />
+    <Compile Update="**\*Dialog.cs" SubType="Form" />
+    <Compile Update="**\SettingsForm.cs" SubType="Form" />
+    <Compile Update="**\SimpleListControl.cs" SubType="Form" />
+    <Compile Update="**\Splash.cs" SubType="Form" />
+    <Compile Update="**\*.Designer.cs">
+      <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="UI\**\*.resx">
+      <DependentUpon>%(Filename).cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <!-- END WINDOWS FORMS WORKAROUND SECTION -->
+
 </Project>
