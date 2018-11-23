@@ -126,9 +126,6 @@
   <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
     <value>[attendu] est une référence, mais [réel] est une valeur.</value>
   </data>
-  <data name="Assert_GenericException" xml:space="preserve">
-    <value>Une exception s'est produite lors de l'exécution des tests.</value>
-  </data>
   <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
     <value>Dimension {0}: valeur UBound attendue {1}; valeur UBound réelle {2}. {3}</value>
   </data>
@@ -140,9 +137,6 @@
   </data>
   <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
     <value>[attendu] et [réel] sont des valeurs. Considérez utiliser {0}.</value>
-  </data>
-  <data name="Assert_ComException" xml:space="preserve">
-    <value>Une erreur COM inattendue s'est produite lors de l'exécution des tests.</value>
   </data>
   <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
     <value>[attendu] et [réel] sont des références. Considérez utiliser {0}.</value>
