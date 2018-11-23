@@ -126,9 +126,6 @@
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Seznam tokenu:</value>
   </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Text:</value>
   </data>

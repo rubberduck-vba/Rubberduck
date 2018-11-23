@@ -168,12 +168,6 @@
   <data name="AutoCompletePropertyBlockDescription" xml:space="preserve">
     <value>Override 'Property' member block completion</value>
   </data>
-  <data name="HandleTabKey" xml:space="preserve">
-    <value>Autocomplete blocks on TAB</value>
-  </data>
-  <data name="HandleEnterKey" xml:space="preserve">
-    <value>Autocomplete blocks on ENTER</value>
-  </data>
   <data name="PageHeader" xml:space="preserve">
     <value>Autocompletion Settings</value>
   </data>
