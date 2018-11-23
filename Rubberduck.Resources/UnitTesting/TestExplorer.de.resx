@@ -228,4 +228,13 @@
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Konnte Testmodul nicht erzeugen. Die Hostanwendung könnte die Erzeugung nicht unterstützen oder das Projekt könnte versiegelt sein. Bitte prüfen Sie die Logdatei für weitere Informationen.</value>
   </data>
+  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
+    <value>Gewählte Kategorie</value>
+  </data>
+  <data name="TestExplorer_CategoryName" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="TestExplorer_Uncategorized" xml:space="preserve">
+    <value>Ohne Kategorie</value>
+  </data>
 </root>

@@ -117,4 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="PageHeader" xml:space="preserve">
+    <value>Einstellungen der automatischen Vervollständigung</value>
+  </data>
+  <data name="PageInstructions" xml:space="preserve">
+    <value>Konfigurieren Sie, welche Rubberduck-Autokomplettierungen aktiviert sind.</value>
+  </data>
+  <data name="EnableSmartConcat" xml:space="preserve">
+    <value>Aktiviere intelligente Verkettung</value>
+  </data>
+  <data name="CompleteBlockOnTab" xml:space="preserve">
+    <value>Blöcke mit TAB automatisch vervollständigen</value>
+  </data>
+  <data name="CompleteBlockOnEnter" xml:space="preserve">
+    <value>Blöcke mit RETURN automatisch vervollständigen</value>
+  </data>
+  <data name="BlockCompletion" xml:space="preserve">
+    <value>Blockvervollständigung</value>
+  </data>
+  <data name="ConcatVbNewLine" xml:space="preserve">
+    <value>Durch Ctrl+RETURN mit 'vbNewLine' konkatenieren.</value>
+  </data>
+  <data name="EnableAutocompleteLabel" xml:space="preserve">
+    <value>Autovervollständigung aktivieren</value>
+  </data>
+  <data name="EnableBlockCompletion" xml:space="preserve">
+    <value>Blockvervollständigung aktivieren</value>
+  </data>
+  <data name="EnableSelfClosingPairs" xml:space="preserve">
+    <value>Selbstschließende Paare aktivieren</value>
+  </data>
+  <data name="SelfClosingPairs" xml:space="preserve">
+    <value>Selbstschließende Paare</value>
+  </data>
+  <data name="SmartConcat" xml:space="preserve">
+    <value>Intelligentes Konkatenieren</value>
+  </data>
+  <data name="MaxConcatLines" xml:space="preserve">
+    <value>Maximale Zeilenanzahl</value>
+  </data>
 </root>

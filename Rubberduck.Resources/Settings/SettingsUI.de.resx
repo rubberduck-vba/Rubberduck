@@ -216,4 +216,10 @@
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Einstellungen</value>
   </data>
+  <data name="DialogCaption_LoadAutocompletionSettings" xml:space="preserve">
+    <value>Einstellungen der automatischen Vervollständigung laden</value>
+  </data>
+  <data name="DialogCaption_SaveAutocompletionSettings" xml:space="preserve">
+    <value>Einstellungen der automatischen Vervollständigung speichern</value>
+  </data>
 </root>
