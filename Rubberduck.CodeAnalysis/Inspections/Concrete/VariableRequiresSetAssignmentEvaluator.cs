@@ -72,6 +72,7 @@ namespace Rubberduck.Inspections
             if (expression == null)
             {
                 Debug.Assert(false, "RHS expression is empty? What's going on here?");
+                return false;
             }
 
             if (expression is VBAParser.NewExprContext)
@@ -86,25 +87,30 @@ namespace Rubberduck.Inspections
                 // RHS is a 'Nothing' token - LHS needs a 'Set' keyword:
                 return true;
             }
+            if (literalExpression != null)
+            {
+                return false; // any other literal expression definitely isn't an object.
+            }
 
             // todo resolve expression return type
 
-            var memberRefs = declarationFinderProvider.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName);
-            var lastRef = memberRefs.LastOrDefault(r => !Equals(r, reference) && r.Context.GetAncestor<VBAParser.LetStmtContext>() == letStmtContext);
-            if (lastRef?.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
-            {
-                // the last reference in the expression is referring to an object type
-                return true;
-            }
-            if (lastRef?.Declaration.AsTypeName == Tokens.Object)
-            {
-                return true;
-            }
+
+            //var memberRefs = declarationFinderProvider.DeclarationFinder.IdentifierReferences(reference.ParentScoping.QualifiedName);
+            //var lastRef = memberRefs.LastOrDefault(r => r.IsAssignment && !Equals(r, reference) && r.Context.GetAncestor<VBAParser.LetStmtContext>() == letStmtContext);
+            //if (lastRef?.Declaration.AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false)
+            //{
+            //    // the last reference in the expression is referring to an object type
+            //    return true;
+            //}
+            //if (lastRef?.Declaration.AsTypeName == Tokens.Object)
+            //{
+            //    return true;
+            //}
 
             // is the reference referring to something else in scope that's a object?
             var project = Declaration.GetProjectParent(reference.ParentScoping);
             var module = Declaration.GetModuleParent(reference.ParentScoping);
-            return declarationFinderProvider.DeclarationFinder.MatchName(expression.GetText().ToLowerInvariant())
+            return declarationFinderProvider.DeclarationFinder.MatchName(expression.GetText())
                 .Any(decl => (decl.DeclarationType.HasFlag(DeclarationType.ClassModule) || Tokens.Object.Equals(decl.AsTypeName))
                 && AccessibilityCheck.IsAccessible(project, module, reference.ParentScoping, decl));
         }
