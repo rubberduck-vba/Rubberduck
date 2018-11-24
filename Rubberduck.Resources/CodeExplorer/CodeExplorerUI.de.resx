@@ -256,7 +256,7 @@
     <value>Als Startprojekt festlegen</value>
   </data>
   <data name="CodeExplorer_AddUserControlText" xml:space="preserve">
-    <value>Benutzerdefiniertes Kontrollelelement (.ctl)</value>
+    <value>Benutzerdefiniertes Kontrollelement (.ctl)</value>
   </data>
   <data name="CodeExplorer_AddUserDocumentText" xml:space="preserve">
     <value>Benutzerdefiniertes Dokument (.dob)</value>

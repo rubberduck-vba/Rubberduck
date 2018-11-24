@@ -187,7 +187,7 @@
     <value>Erwartet: Stacküberlauf?; Tatsächlich: Schutzbedingung.</value>
   </data>
   <data name="TestRunner_ComException" xml:space="preserve">
-    <value>Unerwarteter Fehler in der COM Schnittstelle bei der Ausführung der Tests.</value>
+    <value>Unerwarteter Fehler in der COM-Schnittstelle bei der Ausführung der Tests.</value>
   </data>
   <data name="TestRunner_GenericException" xml:space="preserve">
     <value>Unerwarteter Fehler beim Ausführen der Tests.</value>
@@ -196,7 +196,7 @@
     <value>Die für frühes Binden benötigte Referenz auf Rubberduck wurde nicht gefunden. Die Referenz könnte korrupt sein.</value>
   </data>
   <data name="TestRunner_ExceptionDuringRun" xml:space="preserve">
-    <value>Das Aufrufen einer Testmethode schlug fehl.</value>
+    <value>Das Aufrufen einer Testmethode ist fehlgeschlagen.</value>
   </data>
   <data name="TestRunner_ModuleInitializeFailure" xml:space="preserve">
     <value>Etwas ist beim Aufruf von @ModuleInitialize schiefgelaufen. Das Modul wurde übersprungen.</value>

@@ -331,7 +331,7 @@
     <value>Verwendung der 'CDecl' Aufrufkonvention unter Windows </value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
-    <value>Annotation ist Dupliziert</value>
+    <value>Annotation ist dupliziert</value>
   </data>
   <data name="ModuleWithoutFolderInspection" xml:space="preserve">
     <value>Modul ohne '@Folder'-Annotation</value>
@@ -355,6 +355,6 @@
     <value>Memberaufruf kann 'Nothing' zurückgeben</value>
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
-    <value>Funktion wird von EXCEL-Zellreferenz überschattet</value>
+    <value>Funktion wird von EXCEL-Zellreferenz verdeckt</value>
   </data>
 </root>

@@ -250,7 +250,7 @@
     <value>'{0}' zu '{1}' ändern</value>
   </data>
   <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
-    <value>Das statisch erreichbare Blatt mit Codenamen referenzieren</value>
+    <value>Das statisch erreichbare Tabellenblatt mit Codenamen referenzieren</value>
   </data>
   <data name="RemoveDuplicatedAnnotationQuickFix" xml:space="preserve">
     <value>Duplizierte Annotation entfernen</value>
