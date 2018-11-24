@@ -115,6 +115,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Predeclared Class module (.cls).
+        /// </summary>
+        public static string CodeExplorer_AddPredeclaredClassModuleText {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddPredeclaredClassModuleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Standard module (.bas).
         /// </summary>
         public static string CodeExplorer_AddStdModuleText {
