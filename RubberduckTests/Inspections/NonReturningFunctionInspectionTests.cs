@@ -219,6 +219,35 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void NonReturningFunction_NoResult_GivenClassMemberCall()
+        {
+            const string code = @"
+Public Function Foo() As Boolean
+    With New Class1
+        .ByRefAssign Foo
+    End With
+End Function
+";
+            const string classCode = @"
+Public Sub ByRefAssign(ByRef b As Boolean)
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, code)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode);
+            var vbe = builder.Build();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new NonReturningFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_NoResult_GivenByRefAssignment_WithNamedArgument()
         {
             const string inputCode = @"

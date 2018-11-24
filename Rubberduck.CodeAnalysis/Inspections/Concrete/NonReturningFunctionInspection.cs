@@ -70,6 +70,12 @@ namespace Rubberduck.Inspections.Concrete
             var procedure = State.DeclarationFinder.MatchName(procedureName)
                 .Where(p => AccessibilityCheck.IsAccessible(enclosingProcedure, p))
                 .SingleOrDefault(p => !p.DeclarationType.HasFlag(DeclarationType.Property) || p.DeclarationType.HasFlag(DeclarationType.PropertyGet));
+            if (procedure?.ParentScopeDeclaration is ClassModuleDeclaration)
+            {
+                // we can't know that the member is on the class' default interface
+                return false;
+            }
+
             var parameters = State.DeclarationFinder.Parameters(procedure);
 
             ParameterDeclaration parameter;
