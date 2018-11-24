@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
@@ -34,7 +35,8 @@ namespace Rubberduck.Inspections.Concrete
             var unassigned = (from function in functions
                              let isUdt = IsReturningUserDefinedType(function)
                              let inScopeRefs = function.References.Where(r => r.ParentScoping.Equals(function))
-                             where (!isUdt && (!inScopeRefs.Any(r => r.IsAssignment)))
+                             where (!isUdt && (!inScopeRefs.Any(r => r.IsAssignment) && 
+                                               !inScopeRefs.Any(reference => IsAssignedByRefArgument(function, reference))))
                                 || (isUdt && !IsUserDefinedTypeAssigned(function))
                              select function)
                              .ToList();
@@ -44,6 +46,61 @@ namespace Rubberduck.Inspections.Concrete
                     new DeclarationInspectionResult(this,
                                          string.Format(InspectionResults.NonReturningFunctionInspection, issue.IdentifierName),
                                          issue));
+        }
+
+        private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference)
+        {
+            var argExpression = reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>();
+            if (argExpression?.GetDescendent<VBAParser.ParenthesizedExprContext>() != null || argExpression?.BYVAL() != null)
+            {
+                // not an argument, or argument is parenthesized and thus passed ByVal
+                return false;
+            }
+
+            var callStmt = argExpression?.GetAncestor<VBAParser.CallStmtContext>();
+            var procedureName = callStmt?.GetDescendent<VBAParser.LExpressionContext>()
+                                         .GetDescendents<VBAParser.IdentifierContext>()
+                                         .LastOrDefault()?.GetText();
+            if (procedureName == null)
+            {
+                // if we don't know what we're calling, we can't dig any further
+                return false;
+            }
+
+            var procedure = State.DeclarationFinder.MatchName(procedureName)
+                .Where(p => AccessibilityCheck.IsAccessible(enclosingProcedure, p))
+                .SingleOrDefault(p => !p.DeclarationType.HasFlag(DeclarationType.Property) || p.DeclarationType.HasFlag(DeclarationType.PropertyGet));
+            var parameters = State.DeclarationFinder.Parameters(procedure);
+
+            ParameterDeclaration parameter;
+            var namedArg = argExpression.GetAncestor<VBAParser.NamedArgumentContext>();
+            if (namedArg != null)
+            {
+                // argument is named: we're lucky
+                var parameterName = namedArg.unrestrictedIdentifier().GetText();
+                parameter = parameters.SingleOrDefault(p => p.IdentifierName == parameterName);
+            }
+            else
+            {
+                // argument is positional: work out its index
+                var argList = callStmt.GetDescendent<VBAParser.ArgumentListContext>();
+                var args = argList.GetDescendents<VBAParser.PositionalArgumentContext>().ToArray();
+                var parameterIndex = args.Select((a, i) =>
+                        a.GetDescendent<VBAParser.ArgumentExpressionContext>() == argExpression ? (a, i) : (null, -1))
+                    .SingleOrDefault(item => item.a != null).i;
+                parameter = parameters.OrderBy(p => p.Selection).Select((p, i) => (p, i))
+                    .SingleOrDefault(item => item.i == parameterIndex).p;
+            }
+
+            if (parameter == null)
+            {
+                // couldn't locate parameter
+                return false;
+            }
+
+            // note: not recursive, by design.
+            return (parameter.IsImplicitByRef || parameter.IsByRef)
+                && parameter.References.Any(r => r.IsAssignment);
         }
 
         private bool IsReturningUserDefinedType(Declaration member)
