@@ -99,14 +99,19 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
         {
             var originalCode = original.Code.Replace("\r", string.Empty).Split('\n');
             var originalPosition = original.CaretPosition.StartColumn;
+            var isAtLastCharacter = originalPosition == original.CaretLine.Length;
+
             var originalNonWhitespaceCharacters = 0;
-            var isAllWhitespace = true;
-            for (var i = 0; i <= Math.Min(originalPosition - 1, originalCode[original.CaretPosition.StartLine].Length - 1); i++)
+            var isAllWhitespace = !isAtLastCharacter;
+            if (!isAtLastCharacter)
             {
-                if (originalCode[original.CaretPosition.StartLine][i] != ' ')
+                for (var i = 0; i <= Math.Min(originalPosition - 1, original.CaretLine.Length - 1); i++)
                 {
-                    originalNonWhitespaceCharacters++;
-                    isAllWhitespace = false;
+                    if (originalCode[original.CaretPosition.StartLine][i] != ' ')
+                    {
+                        originalNonWhitespaceCharacters++;
+                        isAllWhitespace = false;
+                    }
                 }
             }
 
@@ -121,18 +126,25 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
             var prettifiedNonWhitespaceCharacters = 0;
             var prettifiedCaretCharIndex = 0;
-            for (var i = 0; i < prettifiedCode[original.CaretPosition.StartLine].Length; i++)
+            if (!isAtLastCharacter)
             {
-                if (prettifiedCode[original.CaretPosition.StartLine][i] != ' ')
+                for (var i = 0; i < prettifiedCode[original.CaretPosition.StartLine].Length; i++)
                 {
-                    prettifiedNonWhitespaceCharacters++;
-                    if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters 
-                        || i == prettifiedCode[original.CaretPosition.StartLine].Length - 1)
+                    if (prettifiedCode[original.CaretPosition.StartLine][i] != ' ')
                     {
-                        prettifiedCaretCharIndex = i;
-                        break;
+                        prettifiedNonWhitespaceCharacters++;
+                        if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters
+                            || i == prettifiedCode[original.CaretPosition.StartLine].Length - 1)
+                        {
+                            prettifiedCaretCharIndex = i;
+                            break;
+                        }
                     }
                 }
+            }
+            else
+            {
+                prettifiedCaretCharIndex = prettifiedCode[original.CaretPosition.StartLine].Length;
             }
 
             var prettifiedPosition = new Selection(
