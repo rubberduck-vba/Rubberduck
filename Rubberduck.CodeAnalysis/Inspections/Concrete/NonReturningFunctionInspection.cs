@@ -54,8 +54,9 @@ namespace Rubberduck.Inspections.Concrete
             var parameter = State.DeclarationFinder.FindParameterFromArgument(argExpression, enclosingProcedure);
 
             // note: not recursive, by design.
-            return (parameter.IsImplicitByRef || parameter.IsByRef)
-                && parameter.References.Any(r => r.IsAssignment);
+            return parameter != null
+                   && (parameter.IsImplicitByRef || parameter.IsByRef)
+                   && parameter.References.Any(r => r.IsAssignment);
         }
 
         private bool IsReturningUserDefinedType(Declaration member)
