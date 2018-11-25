@@ -304,6 +304,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             var userDeclarations = _state.DeclarationFinder.AllUserDeclarations
                 .GroupBy(declaration => declaration.ProjectId)
+                .Where(grouping => grouping.Any(declaration => declaration.DeclarationType == DeclarationType.Project))
                 .ToList();
 
             if (userDeclarations.Any(
