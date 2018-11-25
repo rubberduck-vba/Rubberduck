@@ -575,11 +575,15 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 // argument is positional: work out its index
                 var argList = callStmt.GetDescendent<VBAParser.ArgumentListContext>();
                 var args = argList.GetDescendents<VBAParser.PositionalArgumentContext>().ToArray();
-                var parameterIndex = args.Select((a, i) =>
-                        a.GetDescendent<VBAParser.ArgumentExpressionContext>() == argExpression ? (a, i) : (null, -1))
-                    .SingleOrDefault(item => item.a != null).i;
-                parameter = parameters.OrderBy(p => p.Selection).Select((p, i) => (p, i))
-                    .SingleOrDefault(item => item.i == parameterIndex).p;
+
+                var parameterIndex = args
+                    .Select((param, index) => param.GetDescendent<VBAParser.ArgumentExpressionContext>() == argExpression ? (param, index) : (null, -1))
+                    .SingleOrDefault(item => item.param != null).index;
+
+                parameter = parameters
+                    .OrderBy(p => p.Selection)
+                    .Select((param, index) => (param, index))
+                    .SingleOrDefault(item => item.index == parameterIndex).param;
             }
 
             return parameter;
