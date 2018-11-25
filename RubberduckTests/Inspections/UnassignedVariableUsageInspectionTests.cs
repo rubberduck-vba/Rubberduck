@@ -12,9 +12,9 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class UnassignedVariableUsageInspectionTests
     {
-        private IEnumerable<IInspectionResult> GetInspectionResults(string code)
+        private IEnumerable<IInspectionResult> GetInspectionResults(string code, ComponentType componentType = ComponentType.ClassModule)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleModule(code, ComponentType.ClassModule, out _);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(code, componentType, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -129,6 +129,26 @@ Sub Foo()
 End Sub
 ";
             var results = GetInspectionResults(code);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        [Ignore("Test is green if executed manually, red otherwise. Possible concurrency issue?")]
+        [Category("Inspections")]
+        public void UnassignedVariableUsage_NoResultForAssignedByRefReference()
+        {
+            const string code = @"
+Sub DoSomething()
+    Dim foo
+    AssignThing foo
+    Debug.Print foo
+End Sub
+
+Sub AssignThing(ByRef thing As Variant)
+    thing = 42
+End Sub
+";
+            var results = GetInspectionResults(code, ComponentType.StandardModule);
             Assert.AreEqual(0, results.Count());
         }
 

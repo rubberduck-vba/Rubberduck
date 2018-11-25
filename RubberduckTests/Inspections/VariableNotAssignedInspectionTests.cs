@@ -96,6 +96,31 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void VariableNotAssigned_GivenByRefAssignment_DoesNotReturnResult()
+        {
+            const string inputCode = @"
+Sub Foo()
+    Dim var1 As String
+    Bar var1
+End Sub
+
+Sub Bar(ByRef value As String)
+    value = ""test""
+End Sub
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new VariableNotAssignedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+        [Test]
+        [Category("Inspections")]
         public void VariableNotAssigned_Ignored_DoesNotReturnResult()
         {
             const string inputCode =

@@ -531,6 +531,64 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : Enumerable.Empty<Declaration>();
         }
 
+        public ParameterDeclaration FindParameterFromArgument(VBAParser.ArgumentExpressionContext argExpression, Declaration enclosingProcedure)
+        {
+            if (argExpression  == null || 
+                argExpression.GetDescendent<VBAParser.ParenthesizedExprContext>() != null || 
+                argExpression.BYVAL() != null)
+            {
+                // not an argument, or argument is parenthesized and thus passed ByVal
+                return null;
+            }
+
+            var callStmt = argExpression?.GetAncestor<VBAParser.CallStmtContext>();
+            var procedureName = callStmt?.GetDescendent<VBAParser.LExpressionContext>()
+                                         .GetDescendents<VBAParser.IdentifierContext>()
+                                         .LastOrDefault()?.GetText();
+            if (procedureName == null)
+            {
+                // if we don't know what we're calling, we can't dig any further
+                return null;
+            }
+
+            var procedure = MatchName(procedureName)
+                .Where(p => AccessibilityCheck.IsAccessible(enclosingProcedure, p))
+                .SingleOrDefault(p => !p.DeclarationType.HasFlag(DeclarationType.Property) || p.DeclarationType.HasFlag(DeclarationType.PropertyGet));
+            if (procedure?.ParentScopeDeclaration is ClassModuleDeclaration)
+            {
+                // we can't know that the member is on the class' default interface
+                return null;
+            }
+
+            var parameters = Parameters(procedure);
+
+            ParameterDeclaration parameter;
+            var namedArg = argExpression.GetAncestor<VBAParser.NamedArgumentContext>();
+            if (namedArg != null)
+            {
+                // argument is named: we're lucky
+                var parameterName = namedArg.unrestrictedIdentifier().GetText();
+                parameter = parameters.SingleOrDefault(p => p.IdentifierName == parameterName);
+            }
+            else
+            {
+                // argument is positional: work out its index
+                var argList = callStmt.GetDescendent<VBAParser.ArgumentListContext>();
+                var args = argList.GetDescendents<VBAParser.PositionalArgumentContext>().ToArray();
+
+                var parameterIndex = args
+                    .Select((param, index) => param.GetDescendent<VBAParser.ArgumentExpressionContext>() == argExpression ? (param, index) : (null, -1))
+                    .SingleOrDefault(item => item.param != null).index;
+
+                parameter = parameters
+                    .OrderBy(p => p.Selection)
+                    .Select((param, index) => (param, index))
+                    .SingleOrDefault(item => item.index == parameterIndex).param;
+            }
+
+            return parameter;
+        }
+
         private string ToNormalizedName(string name)
         {
             var lower = name.ToLowerInvariant();

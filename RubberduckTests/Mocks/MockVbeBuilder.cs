@@ -127,22 +127,22 @@ namespace RubberduckTests.Mocks
         /// <param name="selection">Specifies user selection in the editor.</param>
         /// <param name="referenceStdLibs">Specifies whether standard libraries are referenced.</param>
         /// <returns></returns>
-        public static Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
+        public static Mock<IVBE> BuildFromSingleStandardModule(string content, out IVBComponent component, Selection selection = default, bool referenceStdLibs = false)
         {
             return BuildFromSingleModule(content, TestModuleName, ComponentType.StandardModule, out component, selection, referenceStdLibs);
         }
 
-        public static Mock<IVBE> BuildFromSingleStandardModule(string content, string name, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
+        public static Mock<IVBE> BuildFromSingleStandardModule(string content, string name, out IVBComponent component, Selection selection = default, bool referenceStdLibs = false)
         {
             return BuildFromSingleModule(content, name, ComponentType.StandardModule, out component, selection, referenceStdLibs);
         }
 
-        public static Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
+        public static Mock<IVBE> BuildFromSingleModule(string content, ComponentType type, out IVBComponent component, Selection selection = default, bool referenceStdLibs = false)
         {
             return BuildFromSingleModule(content, TestModuleName, type, out component, selection, referenceStdLibs);
         }
 
-        public static Mock<IVBE> BuildFromSingleModule(string content, string name, ComponentType type, out IVBComponent component, Selection selection = default(Selection), bool referenceStdLibs = false)
+        public static Mock<IVBE> BuildFromSingleModule(string content, string name, ComponentType type, out IVBComponent component, Selection selection = default, bool referenceStdLibs = false)
         {
             var vbeBuilder = new MockVbeBuilder();
 
