@@ -533,7 +533,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public ParameterDeclaration FindParameterFromArgument(VBAParser.ArgumentExpressionContext argExpression, Declaration enclosingProcedure)
         {
-            if (argExpression?.GetDescendent<VBAParser.ParenthesizedExprContext>() != null || argExpression?.BYVAL() != null)
+            if (argExpression  == null || 
+                argExpression.GetDescendent<VBAParser.ParenthesizedExprContext>() != null || 
+                argExpression.BYVAL() != null)
             {
                 // not an argument, or argument is parenthesized and thus passed ByVal
                 return null;
