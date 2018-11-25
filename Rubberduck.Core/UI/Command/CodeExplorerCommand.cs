@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using NLog;
+using Rubberduck.UI.CodeExplorer;
 
 namespace Rubberduck.UI.Command
 {
@@ -9,9 +10,9 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class CodeExplorerCommand : CommandBase
     {
-        private readonly IDockablePresenter _presenter;
+        private readonly CodeExplorerDockablePresenter _presenter;
 
-        public CodeExplorerCommand(IDockablePresenter presenter)
+        public CodeExplorerCommand(CodeExplorerDockablePresenter presenter)
             : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;

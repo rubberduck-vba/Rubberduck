@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Rubberduck.Resources.Registration;
+using Rubberduck.UnitTesting.ComClientHelpers;
 
 namespace Rubberduck.UnitTesting
 {	
-    [ComVisible(true)]
-    [ComDefaultInterface(typeof(IAssert))]
-    [Guid(RubberduckGuid.PermissiveAssertClassGuid)]
-    [ProgId(RubberduckProgId.PermissiveAssertClassProgId)]
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.PermissiveAssertClassGuid),
+        ProgId(RubberduckProgId.PermissiveAssertClassProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IAssert)),
+        EditorBrowsable(EditorBrowsableState.Always)
+    ]
     public class PermissiveAssertClass : AssertClass
     {       
         private static readonly IEqualityComparer<object> PermissiveComparer = new PermissiveObjectComparer();

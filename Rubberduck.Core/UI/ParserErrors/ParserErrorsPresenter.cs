@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.IdentifierReferences;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.ParserErrors
 {
@@ -16,9 +17,12 @@ namespace Rubberduck.UI.ParserErrors
 
     public class ParserErrorsPresenter : DockableToolwindowPresenter, IParserErrorsPresenter
     {
+        private readonly IVBE _vbe;
+
         public ParserErrorsPresenter(IVBE vbe, IAddIn addin) 
             : base(vbe, addin, new SimpleListControl(RubberduckUI.ParseErrors_Caption), null)
         {
+            _vbe = vbe;
             _source = new BindingList<ParseErrorListItem>();
             var control = UserControl as SimpleListControl;
             Debug.Assert(control != null);
@@ -28,7 +32,7 @@ namespace Rubberduck.UI.ParserErrors
         private void Control_Navigate(object sender, ListItemActionEventArgs e)
         {
             var selection = (ParseErrorListItem) e.SelectedItem;
-            selection.Navigate();
+            selection.Navigate(_vbe);
         }
 
         private readonly IBindingList _source;

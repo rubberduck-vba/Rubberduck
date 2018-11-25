@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Controls
 {

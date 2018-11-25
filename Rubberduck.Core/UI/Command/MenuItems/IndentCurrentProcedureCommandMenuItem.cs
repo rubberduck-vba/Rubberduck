@@ -4,7 +4,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class IndentCurrentProcedureCommandMenuItem : CommandMenuItemBase
     {
-        public IndentCurrentProcedureCommandMenuItem(CommandBase command) : base(command)
+        public IndentCurrentProcedureCommandMenuItem(IndentCurrentProcedureCommand command) : base(command)
         {
         }
 

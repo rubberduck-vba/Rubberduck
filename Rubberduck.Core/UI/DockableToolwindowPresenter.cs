@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
+using Rubberduck.Resources.Registration;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -52,7 +53,8 @@ namespace Rubberduck.UI
             {
                 using (var windows = _vbe.Windows)
                 {
-                    var info = windows.CreateToolWindow(_addin, RubberduckProgId.DockableWindowHostProgId, control.Caption, control.ClassId);
+                    var info = windows.CreateToolWindow(_addin, RubberduckProgId.DockableWindowHostProgId,
+                        control.Caption, control.ClassId);
                     _userControlObject = info.UserControl;
                     toolWindow = info.ToolWindow;
                 }
@@ -67,14 +69,17 @@ namespace Rubberduck.UI
                 Logger.Error(exception);
                 throw;
             }
-            
+
             toolWindow.IsVisible = true; //window resizing doesn't work without this
             EnsureMinimumWindowSize(toolWindow);
             toolWindow.IsVisible = _settings != null && _settings.IsWindowVisible(this);
 
             // currently we always inject _DockableToolWindowHost from Rubberduck.Main.
             // that method is not exposed in any of the interfaces we know, though, so we need to invoke it blindly
-            ((dynamic)_userControlObject).AddUserControl(control as UserControl, new IntPtr(_vbe.MainWindow.HWnd));
+            using (var mainWindow = _vbe.MainWindow)
+            {
+                ((dynamic) _userControlObject).AddUserControl(control as UserControl, new IntPtr(mainWindow.HWnd));
+            }
 
             return toolWindow;
         }

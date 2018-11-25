@@ -5,18 +5,15 @@ namespace Rubberduck.UnitTesting
 {
     internal class Kill : StubBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcKillFiles");
-
         public Kill()
         {
-            InjectDelegate(new KillDelegate(KillCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcKillFiles");
+
+            InjectDelegate(new KillDelegate(KillCallback), processAddress);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         private delegate void KillDelegate(IntPtr pathname);
-
-        [DllImport(TargetLibrary, SetLastError = true)]
-        private static extern void rtcKillFiles(IntPtr pathname);
 
         public void KillCallback(IntPtr pathname)
         {
@@ -25,7 +22,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("pathname", pathname);
             if (PassThrough)
             {
-                rtcKillFiles(pathname);
+                VbeProvider.VbeRuntime.KillFiles(pathname);
             }
         }
     }

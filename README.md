@@ -1,5 +1,5 @@
-<img src="https://user-images.githubusercontent.com/5751684/38372412-c3247d70-38bc-11e8-8eaa-2f2d19595a42.png" width=100% />
-
+<img alt="Rubberduck Open-Source VBE Add-In - VBA6 | VBA7 x86/x64 | VB6" src="https://user-images.githubusercontent.com/5751684/48656196-a507af80-e9ef-11e8-9c09-1ce3c619c019.png" />
+    
 <!-- campaign is no longer accepting donations
 ### Donate!
 
@@ -18,7 +18,7 @@ If you like this project and would like to thank its contributors, you are welco
 
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Percentage of issues still open")
 
-> **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/retailcoder/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
+> **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
 > devs@rubberduckvba.com  
 > Follow [@rubberduckvba](https://twitter.com/rubberduckvba) on Twitter 
 
@@ -29,7 +29,6 @@ If you like this project and would like to thank its contributors, you are welco
  * [Installing](https://github.com/rubberduck-vba/Rubberduck/wiki/Installing)
  * [Getting Started](https://github.com/rubberduck-vba/Rubberduck/blob/next/docs/GettingStarted.md) using Rubberduck
  * [Contributing](https://github.com/rubberduck-vba/Rubberduck/blob/next/CONTRIBUTING.md)
- * [User Testimonials](https://github.com/rubberduck-vba/Rubberduck/blob/next/thanks.md)
 
 ---
 
@@ -37,7 +36,7 @@ If you like this project and would like to thank its contributors, you are welco
 
 Rubberduck is a COM add-in for the VBA IDE (VBE).
 
-Copyright (C) 2014-2018 Mathieu Guindon & Christopher McClellan
+Copyright (C) 2014-2018 Rubberduck project contributors
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

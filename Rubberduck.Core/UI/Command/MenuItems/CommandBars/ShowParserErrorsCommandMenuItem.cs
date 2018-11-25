@@ -2,13 +2,14 @@ using System;
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Properties;
-using Rubberduck.VBEditor.SafeComWrappers.MSForms;
+using Rubberduck.VBEditor.SafeComWrappers;
+
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
     public class ShowParserErrorsCommandMenuItem : CommandMenuItemBase
     {
-        public ShowParserErrorsCommandMenuItem(CommandBase command) : base(command)
+        public ShowParserErrorsCommandMenuItem(ShowParserErrorsCommand command) : base(command)
         {
         }
 
@@ -29,8 +30,8 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         public override ButtonStyle ButtonStyle => ButtonStyle.Icon;
 
         public override string Key => string.Empty;
-        public override Image Image => Resources.cross_circle;
-        public override Image Mask => Resources.circle_mask;
+        public override Image Image => Resources.CommandBarIcons.cross_circle;
+        public override Image Mask => Resources.CommandBarIcons.circle_mask;
         public override int DisplayOrder => (int)RubberduckCommandBarItemDisplayOrder.ShowErrors;
     }
 }

@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Rubberduck.Resources;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.Command.MenuItems.CommandBars
 {
@@ -56,19 +57,17 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         private void OnSelectionChange(object sender, DeclarationChangedEventArgs e)
         {
-            var caption = e.ActivePane != null
-                ? _formatter.Format(e.ActivePane, e.Declaration)
-                : _formatter.Format(e.Declaration, e.MultipleControlsSelected);
-           
-            if (string.IsNullOrEmpty(caption) && e.VBComponent != null)
+            var caption = _formatter.Format(e.Declaration, e.MultipleControlsSelected);
+            if (string.IsNullOrEmpty(caption))
             {
-                //Fallback caption for selections in the Project window.
-                caption = $"{e.VBComponent.ParentProject.Name}.{e.VBComponent.Name} ({e.VBComponent.Type})";
+                //Fallback caption for selections in the Project window.                               
+                caption = e.FallbackCaption;
             }
 
             var refCount = e.Declaration?.References.Count() ?? 0;
             var description = e.Declaration?.DescriptionString ?? string.Empty;
-            SetContextSelectionCaption(caption, refCount, description);
+            //& renders the next character as if it was an accelerator.
+            SetContextSelectionCaption(caption?.Replace("&", "&&"), refCount, description);
             EvaluateCanExecute(_parser.State, e.Declaration);
         }
 

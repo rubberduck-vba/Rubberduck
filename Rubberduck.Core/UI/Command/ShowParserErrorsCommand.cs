@@ -9,6 +9,8 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
+using Rubberduck.Resources;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.Command
 {

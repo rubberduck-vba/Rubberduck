@@ -11,8 +11,8 @@ namespace Rubberduck.UI
 
         public string Version
         {
-            get { return VersionLabel.Text; }
-            set { VersionLabel.Text = value; }
+            get => VersionLabel.Text;
+            set => VersionLabel.Text = value;
         }
     }
 }

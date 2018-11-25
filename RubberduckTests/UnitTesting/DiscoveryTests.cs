@@ -27,7 +27,7 @@ End Sub";
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.AreEqual(1, UnitTestUtils.GetAllTests(vbe, state).Count());
+                Assert.AreEqual(1, TestDiscovery.GetAllTests(state).Count());
             }
         }
 
@@ -45,7 +45,7 @@ End Sub";
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.IsFalse(UnitTestUtils.GetAllTests(vbe, state).Any());
+                Assert.IsFalse(TestDiscovery.GetAllTests(state).Any());
             }
         }
 
@@ -64,7 +64,7 @@ End Sub";
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                Assert.IsFalse(UnitTestUtils.GetAllTests(vbe, state).Any());
+                Assert.IsFalse(TestDiscovery.GetAllTests(state).Any());
             }
         }
 
@@ -84,7 +84,8 @@ End Sub";
             var vbe = builder.AddProject(project.Build()).Build().Object;
             using (var state = MockParser.CreateAndParse(vbe))
             {
-                var tests = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object.GetTests(vbe, state).ToList();
+                var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
+                var tests = TestDiscovery.GetTests(vbe, component, state).ToList();
 
                 Assert.AreEqual(1, tests.Count);
                 Assert.AreEqual("TestModule1", tests.ElementAt(0).Declaration.ComponentName);
@@ -105,8 +106,8 @@ End Sub";
             {
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
-
-                var initMethods = qualifiedModuleName.FindTestInitializeMethods(state).ToList();
+                
+                var initMethods = TestDiscovery.FindTestInitializeMethods(qualifiedModuleName, state).ToList();
 
                 Assert.AreEqual(1, initMethods.Count);
                 Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
@@ -129,7 +130,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindTestCleanupMethods(state).ToList();
+                var initMethods = TestDiscovery.FindTestCleanupMethods(qualifiedModuleName, state).ToList();
 
                 Assert.AreEqual(1, initMethods.Count);
                 Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
@@ -151,7 +152,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindTestInitializeMethods(state);
+                var initMethods = TestDiscovery.FindTestInitializeMethods(qualifiedModuleName, state);
                 Assert.IsFalse(initMethods.Any());
             }
         }
@@ -170,7 +171,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindTestCleanupMethods(state);
+                var initMethods = TestDiscovery.FindTestCleanupMethods(qualifiedModuleName, state);
                 Assert.IsFalse(initMethods.Any());
             }
         }
@@ -189,7 +190,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindTestInitializeMethods(state);
+                var initMethods = TestDiscovery.FindTestInitializeMethods(qualifiedModuleName, state);
                 Assert.IsFalse(initMethods.Any());
             }
         }
@@ -208,7 +209,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindTestCleanupMethods(state);
+                var initMethods = TestDiscovery.FindTestCleanupMethods(qualifiedModuleName, state);
                 Assert.IsFalse(initMethods.Any());
             }
         }
@@ -228,7 +229,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindModuleInitializeMethods(state).ToList();
+                var initMethods = TestDiscovery.FindModuleInitializeMethods(qualifiedModuleName, state).ToList();
 
                 Assert.AreEqual(1, initMethods.Count);
                 Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
@@ -251,7 +252,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindModuleCleanupMethods(state).ToList();
+                var initMethods = TestDiscovery.FindModuleCleanupMethods(qualifiedModuleName, state).ToList();
 
                 Assert.AreEqual(1, initMethods.Count);
                 Assert.AreEqual("TestModule1", initMethods.ElementAt(0).QualifiedName.QualifiedModuleName.ComponentName);
@@ -273,7 +274,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindModuleInitializeMethods(state);
+                var initMethods = TestDiscovery.FindModuleInitializeMethods(qualifiedModuleName, state);
                 Assert.IsFalse(initMethods.Any());
             }
         }
@@ -292,7 +293,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindModuleCleanupMethods(state);
+                var initMethods = TestDiscovery.FindModuleCleanupMethods(qualifiedModuleName, state);
                 Assert.IsFalse(initMethods.Any());
             }
         }
@@ -311,7 +312,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindModuleInitializeMethods(state);
+                var initMethods = TestDiscovery.FindModuleInitializeMethods(qualifiedModuleName, state);
                 Assert.IsFalse(initMethods.Any());
             }
         }
@@ -330,7 +331,7 @@ End Sub";
                 var component = project.MockComponents.Single(f => f.Object.Name == "TestModule1").Object;
                 var qualifiedModuleName = new QualifiedModuleName(component);
 
-                var initMethods = qualifiedModuleName.FindModuleCleanupMethods(state);
+                var initMethods = TestDiscovery.FindModuleCleanupMethods(qualifiedModuleName, state);
                 Assert.IsFalse(initMethods.Any());
             }
         }
@@ -339,6 +340,7 @@ End Sub";
 Option Private Module
 
 {0}
+
 Private Assert As New Rubberduck.AssertClass
 
 '@ModuleInitialize

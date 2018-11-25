@@ -335,7 +335,7 @@ namespace RubberduckTests.SmartIndenter
             {
                 "Private Function Foo()",
                 "    Foo = Bar(A, B, C + 1) = D * Baz(E, F, G) / (4 * X * Y) * Bar(A + 1, B + 1, C) _",
-                "          + (D * (Bar(E, F, G) / D ^ 2 + Baz(X, Y, Z) / (2 * X)))",
+                "        + (D * (Bar(E, F, G) / D ^ 2 + Baz(X, Y, Z) / (2 * X)))",
                 "End Function"
             };
 
@@ -345,6 +345,93 @@ namespace RubberduckTests.SmartIndenter
                 s.IgnoreOperatorsInContinuations = false;
                 return s;
             });
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void MultiLineFunctionCallsWorksWithSubFunctionCall()
+        {
+            var code = new[]
+            {
+                "Sub Foo()",
+                "Dim bar As Long",
+                "bar = Baz(Param:=AnotherFunction(Title:=\"foobar\"), _",
+                "Behavior:=\"expected\", _",
+                "Works:=True)",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Foo()",
+                "    Dim bar As Long",
+                "    bar = Baz(Param:=AnotherFunction(Title:=\"foobar\"), _",
+                "              Behavior:=\"expected\", _",
+                "              Works:=True)",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void MultiLineFunctionCallsWorksWithSubFunctionCallUnderScoreInParam()
+        {
+            var code = new[]
+            {
+                "Sub Foo()",
+                "Dim bar As Long",
+                "bar = Baz(Param:=AnotherFunction(Title:=FOO_BAR), _",
+                "Behavior:=\"expected\", _",
+                "Works:=True)",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Foo()",
+                "    Dim bar As Long",
+                "    bar = Baz(Param:=AnotherFunction(Title:=FOO_BAR), _",
+                "              Behavior:=\"expected\", _",
+                "              Works:=True)",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var actual = indenter.Indent(code);
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Indenter")]
+        public void MultiLineFunctionCallsWorksWithSubFunctionCallUnderScoreInParamString()
+        {
+            var code = new[]
+            {
+                "Sub Foo()",
+                "Dim bar As Long",
+                "bar = Baz(Param:=AnotherFunction(Title:=\"foo_bar\"), _",
+                "Behavior:=\"expected\", _",
+                "Works:=True)",
+                "End Sub"
+            };
+
+            var expected = new[]
+            {
+                "Sub Foo()",
+                "    Dim bar As Long",
+                "    bar = Baz(Param:=AnotherFunction(Title:=\"foo_bar\"), _",
+                "              Behavior:=\"expected\", _",
+                "              Works:=True)",
+                "End Sub"
+            };
+
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var actual = indenter.Indent(code);
             Assert.IsTrue(expected.SequenceEqual(actual));
         }

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
+using Rubberduck.UnitTesting.ComClientHelpers;
 
 namespace Rubberduck.UnitTesting.Fakes
 {
     internal class MsgBox : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcMsgBox");
-
         public MsgBox()
         {
-            InjectDelegate(new MessageBoxDelegate(MsgBoxCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcMsgBox");
+
+            InjectDelegate(new MessageBoxDelegate(MsgBoxCallback), processAddress);
         }
 
         public override bool PassThrough
@@ -21,7 +22,7 @@ namespace Rubberduck.UnitTesting.Fakes
             set
             {
                 Verifier.SuppressAsserts();
-                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_InvalidFakePassThrough, "MsgBox"));
+                AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_InvalidFakePassThrough, "MsgBox"));
             }
         }
 

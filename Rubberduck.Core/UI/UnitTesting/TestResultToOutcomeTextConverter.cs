@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using Rubberduck.UnitTesting;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -9,9 +10,9 @@ namespace Rubberduck.UI.UnitTesting
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is TestResult result)
+            if (value is TestOutcome result)
             {
-                return RubberduckUI.ResourceManager.GetString("TestOutcome_" + result.Outcome, CultureInfo.CurrentUICulture);
+                return TestExplorer.ResourceManager.GetString($"TestOutcome_{result}", CultureInfo.CurrentUICulture);
             }
 
             return null;

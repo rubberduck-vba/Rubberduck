@@ -1,12 +1,12 @@
 using System.Drawing;
-using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.UnitTesting.Commands;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class AddTestMethodCommandMenuItem : CommandMenuItemBase
     {
-        public AddTestMethodCommandMenuItem(CommandBase command)
+        public AddTestMethodCommandMenuItem(AddTestMethodCommand command)
             : base(command)
         {
         }
@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Command.MenuItems
         public override string Key => "TestExplorerMenu_AddTestMethod";
         public override int DisplayOrder => (int)UnitTestingMenuItemDisplayOrder.AddTestMethod;
 
-        public override Image Image => Resources.flask;
-        public override Image Mask => Resources.flask_mask;
+        public override Image Image => Resources.CommandBarIcons.flask;
+        public override Image Mask => Resources.CommandBarIcons.flask_mask;
     }
 }

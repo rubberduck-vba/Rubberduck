@@ -182,7 +182,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         void Placeholder12();
         void CompileComponent();
         void Placeholder14();
-        void Placeholder15();
+        IDispatch GetStdModAccessor();
         void Placeholder16();
         void Placeholder17();
         void Placeholder18();
@@ -202,39 +202,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         void Placeholder32();
         void Placeholder33();
         void GetSomeRelatedTypeInfoPtrs(out IntPtr A, out IntPtr B);        // returns 2 TypeInfos, seemingly related to this ITypeInfo, but slightly different.
-    }
-
-    /// <summary>
-    /// An extended version of ITypeInfo, hosted by the VBE that includes a particularly helpful member, GetStdModAccessor
-    /// see https://msdn.microsoft.com/en-gb/library/windows/desktop/ms221696(v=vs.85).aspx
-    /// </summary>
-    /// <remarks>This extended interface is known to be supported since the very earliest version of VBA6</remarks>
-    [ComImport(), Guid("CACC1E82-622B-11D2-AA78-00C04F9901D2")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface IVBETypeInfo
-    {
-        void GetTypeAttr(out IntPtr ppTypeAttr);
-        void GetTypeComp(out IntPtr ppTComp);
-        void GetFuncDesc(int index, out IntPtr ppFuncDesc);
-        void GetVarDesc(int index, out IntPtr ppVarDesc);
-        void GetNames(int memid, [Out] out string rgBstrNames, int cMaxNames, out int pcNames);
-        void GetRefTypeOfImplType(int index, out int href);
-        void GetImplTypeFlags(int index, out ComTypes.IMPLTYPEFLAGS pImplTypeFlags);
-        void GetIDsOfNames(string[] rgszNames, int cNames, int[] pMemId);
-        void Invoke(object pvInstance, int memid, short wFlags, ref ComTypes.DISPPARAMS pDispParams, IntPtr pVarResult, IntPtr pExcepInfo, out int puArgErr);
-        void GetDocumentation(int index, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile);
-        void GetDllEntry(int memid, ComTypes.INVOKEKIND invKind, IntPtr pBstrDllName, IntPtr pBstrName, IntPtr pwOrdinal);
-        void GetRefTypeInfo(int hRef, out IntPtr ppTI);
-        void AddressOfMember(int memid, ComTypes.INVOKEKIND invKind, out IntPtr ppv);
-        void CreateInstance(object pUnkOuter, ref Guid riid, out object ppvObj);
-        void GetMops(int memid, out string pBstrMops);
-        void GetContainingTypeLib(out IntPtr ppTLB, out int pIndex);
-        void ReleaseTypeAttr(IntPtr pTypeAttr);
-        void ReleaseFuncDesc(IntPtr pFuncDesc);
-        void ReleaseVarDesc(IntPtr pVarDesc);
-
-        void Placeholder1();
-        IDispatch GetStdModAccessor();            // a handy extra vtable entry we can use to invoke members in standard modules.
     }
 
     /// <summary>
@@ -450,7 +417,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
     /// </summary>
     public class StringLineBuilder
     {
-        StringBuilder _document = new StringBuilder();
+        private readonly StringBuilder _document = new StringBuilder();
 
         public override string ToString() => _document.ToString();
 
@@ -566,7 +533,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
             {
                 throw new InvalidOperationException("Cannot access the TypeLib API from this thread.  TypeLib API must be accessed from the main thread.");
             }
-            var retVal = StructHelper.ReadStructureSafe<T>(referencesPtr);
+            var retVal = ReadStructureSafe<T>(referencesPtr);
             Marshal.Release(referencesPtr);
             return retVal;
         }
@@ -611,8 +578,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
     /// <typeparam name="T">The COM interface for restriction</typeparam>
     public class RestrictComInterfaceByAggregation<T> : ICustomQueryInterface, IDisposable
     {
-        private IntPtr _outerObject;
-        private T _wrappedObject;
+        private readonly IntPtr _outerObject;
 
         /// <summary>
         /// Constructor
@@ -625,7 +591,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         {
             if (queryForType)
             {
-                var ppv = IntPtr.Zero;
                 var IID = typeof(T).GUID;
                 if (ComHelper.HRESULT_FAILED(Marshal.QueryInterface(outerObject, ref IID, out _outerObject)))
                 {
@@ -640,11 +605,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
             }
 
             var aggObjPtr = Marshal.CreateAggregatedObject(_outerObject, this);
-            _wrappedObject = (T)Marshal.GetObjectForIUnknown(aggObjPtr);        // when this CCW object gets released, it will free the aggObjInner (well, after GC)
+            WrappedObject = (T)Marshal.GetObjectForIUnknown(aggObjPtr);        // when this CCW object gets released, it will free the aggObjInner (well, after GC)
             Marshal.Release(aggObjPtr);         // _wrappedObject holds a reference to this now
         }
 
-        public T WrappedObject { get => _wrappedObject; }
+        public T WrappedObject { get; }
 
         private bool _isDisposed;
         public void Dispose()
@@ -652,7 +617,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
             if (_isDisposed) return;
             _isDisposed = true;
 
-            if (_wrappedObject != null) Marshal.ReleaseComObject(_wrappedObject);
+            if (WrappedObject != null) Marshal.ReleaseComObject(WrappedObject);
             if (_outerObject != IntPtr.Zero) Marshal.Release(_outerObject);
         }
 
@@ -705,8 +670,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         public bool Contains(T item) => _list.Contains(item);
         public void CopyTo(T[] array, int arrayIndex) => _list.CopyTo(array, arrayIndex);
         public bool Remove(T item) => _list.Remove(item);
-        public int Count { get => _list.Count; }
-        public bool IsReadOnly { get => _list.IsReadOnly; }
+        public int Count => _list.Count;
+        public bool IsReadOnly => _list.IsReadOnly; 
 
         public int IndexOf(T item) => _list.IndexOf(item);
         public void Insert(int index, T item) => _list.Insert(index, item);
@@ -728,23 +693,23 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsSupport
         IEnumerator IEnumerable.GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollectionBase<TItem>, TItem>(this);
         public IEnumerator<TItem> GetEnumerator() => new IIndexedCollectionEnumerator<IIndexedCollectionBase<TItem>, TItem>(this);
 
-        abstract public int Count { get; }
-        abstract public TItem GetItemByIndex(int index);
+        public abstract int Count { get; }
+        public abstract TItem GetItemByIndex(int index);
     }
 
     /// <summary>
     /// The enumerator implementation for IIndexedCollectionBase
     /// </summary>
-    /// <typeparam name="TCollection">the IIndexedCollectionBase<> type</typeparam>
+    /// <typeparam name="TCollection">the IIndexedCollectionBase type</typeparam>
     /// <typeparam name="TItem">the collection element type</typeparam>
     public class IIndexedCollectionEnumerator<TCollection, TItem> : IEnumerator<TItem>
         where TCollection : IIndexedCollectionBase<TItem>
         where TItem : class
     {
-        private TCollection _collection;
-        private int _collectionCount;
+        private readonly TCollection _collection;
+        private readonly int _collectionCount;
         private int _index = -1;
-        TItem _current;
+        private TItem _current;
 
         public IIndexedCollectionEnumerator(TCollection collection)
         {

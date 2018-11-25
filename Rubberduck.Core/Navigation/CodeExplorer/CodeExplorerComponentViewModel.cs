@@ -5,10 +5,11 @@ using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using resx = Rubberduck.UI.CodeExplorer.CodeExplorer;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.Resources.CodeExplorer;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -35,13 +36,19 @@ namespace Rubberduck.Navigation.CodeExplorer
         };
 
         private readonly IProjectsProvider _projectsProvider;
+        private readonly IVBE _vbe;
 
-        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider)
+        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider, IVBE vbe)
         {
             Parent = parent;
             Declaration = declaration;
             _projectsProvider = projectsProvider;
-            _icon = Icons[DeclarationType];
+            _vbe = vbe;
+
+            _icon = Icons.ContainsKey(DeclarationType) 
+                ? Icons[DeclarationType]
+                : GetImageSource(CodeExplorerUI.status_offline);
+
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
                                                 && item.ParentScope == declaration.Scope
@@ -50,34 +57,59 @@ namespace Rubberduck.Navigation.CodeExplorer
                                 .Select(item => new CodeExplorerMemberViewModel(this, item, grouping)))
                                 .ToList<CodeExplorerItemViewModel>();
 
-            _name = Declaration.IdentifierName;
+            _name = DeclarationType == DeclarationType.ResFile && string.IsNullOrEmpty(Declaration.IdentifierName) 
+                ? CodeExplorerUI.CodeExplorer_ResourceFileText
+                : Declaration.IdentifierName;
 
             var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
             try
             {
-                if (qualifiedModuleName.ComponentType == ComponentType.Document)
+                switch (qualifiedModuleName.ComponentType)
                 {
-                    var component = _projectsProvider.Component(qualifiedModuleName);
-                    string parenthesizedName;
-                    using (var properties = component.Properties)
-                    {
-                        parenthesizedName = properties["Name"].Value.ToString() ?? String.Empty;
-                    }
-
-                    if (ContainsBuiltinDocumentPropertiesProperty())
-                    {
-                        CodeExplorerItemViewModel node = this;
-                        while (node.Parent != null)
+                    case ComponentType.Document:
+                        var parenthesizedName = string.Empty;
+                        var state = DocumentState.Inaccessible;
+                        using (var app = _vbe.HostApplication())
                         {
-                            node = node.Parent;
+                            if (app != null)
+                            {
+                                var document = app.GetDocument(qualifiedModuleName);
+                                parenthesizedName = document?.DocumentName ?? string.Empty;
+                                state = document?.State ?? DocumentState.Inaccessible;
+                            }
                         }
+                        
+                        if (state == DocumentState.DesignView && ContainsBuiltinDocumentPropertiesProperty())
+                        {
+                            CodeExplorerItemViewModel node = this;
+                            while (node.Parent != null)
+                            {
+                                node = node.Parent;
+                            }
 
-                        ((CodeExplorerProjectViewModel) node).SetParenthesizedName(parenthesizedName);
-                    }
-                    else
-                    {
-                        _name += " (" + parenthesizedName + ")";
-                    }
+                            ((CodeExplorerProjectViewModel) node).SetParenthesizedName(parenthesizedName);
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrWhiteSpace(parenthesizedName))
+                            {
+                                _name += " (" + parenthesizedName + ")";
+                            }
+                        }
+                        break;
+
+                    case ComponentType.ResFile:
+                        var fileName = Declaration.IdentifierName.Split('\\').Last();
+                        _name = $"{CodeExplorerUI.CodeExplorer_ResourceFileText} ({fileName})";
+                        break;
+
+                    case ComponentType.RelatedDocument:
+                        _name = $"({Declaration.IdentifierName.Split('\\').Last()})";
+                        break;
+
+                    default:
+                        _name = Declaration.IdentifierName;
+                        break;
                 }
             }
             catch
@@ -88,9 +120,19 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool ContainsBuiltinDocumentPropertiesProperty()
         {
-            using (var properties = _projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName).Properties)
+            var component = _projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName);
+            using (var properties = component.Properties)
             {
-                return properties.Any(item => item.Name == "BuiltinDocumentProperties");
+                foreach (var property in properties)
+                using(property)
+                {
+                    if (property.Name == "BuiltinDocumentProperties")
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
 
@@ -101,7 +143,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             set
             {
                 _isErrorState = value;
-                _icon = GetImageSource(resx.Error);
+                _icon = GetImageSource(CodeExplorerUI.cross_circle);
 
 
                 foreach (var item in Items)
@@ -126,6 +168,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly string _name;
         public override string Name => _name;
+  
         public override string NameWithSignature => _name;
 
         public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
@@ -137,7 +180,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             { ComponentType.ClassModule, DeclarationType.ClassModule },
             { ComponentType.StandardModule, DeclarationType.ProceduralModule },
             { ComponentType.Document, DeclarationType.Document },
-            { ComponentType.UserForm, DeclarationType.UserForm }
+            { ComponentType.UserForm, DeclarationType.UserForm },
+            { ComponentType.VBForm, DeclarationType.VbForm },
+            { ComponentType.MDIForm, DeclarationType.MdiForm},
+            { ComponentType.UserControl, DeclarationType.UserControl},
+            { ComponentType.DocObject, DeclarationType.DocObject},
+            { ComponentType.ResFile, DeclarationType.ResFile},
+            { ComponentType.RelatedDocument, DeclarationType.RelatedDocument},
+            { ComponentType.PropPage, DeclarationType.PropPage},
+            { ComponentType.ActiveXDesigner, DeclarationType.ActiveXDesigner}
         };
 
         private DeclarationType DeclarationType
@@ -159,10 +210,18 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private static readonly IDictionary<DeclarationType,BitmapImage> Icons = new Dictionary<DeclarationType, BitmapImage>
         {
-            { DeclarationType.ClassModule, GetImageSource(resx.ObjectClass) },
-            { DeclarationType.ProceduralModule, GetImageSource(resx.ObjectModule) },
-            { DeclarationType.UserForm, GetImageSource(resx.ProjectForm) },
-            { DeclarationType.Document, GetImageSource(resx.document_office) }
+            { DeclarationType.ClassModule, GetImageSource(CodeExplorerUI.ObjectClass) },
+            { DeclarationType.ProceduralModule, GetImageSource(CodeExplorerUI.ObjectModule) },
+            { DeclarationType.UserForm, GetImageSource(CodeExplorerUI.ProjectForm) },
+            { DeclarationType.Document, GetImageSource(CodeExplorerUI.document_office) },
+            { DeclarationType.VbForm, GetImageSource(CodeExplorerUI.ProjectForm)},
+            { DeclarationType.MdiForm, GetImageSource(CodeExplorerUI.MdiForm)},
+            { DeclarationType.UserControl, GetImageSource(CodeExplorerUI.ui_scroll_pane_form)},
+            { DeclarationType.DocObject, GetImageSource(CodeExplorerUI.document_globe)},
+            { DeclarationType.PropPage, GetImageSource(CodeExplorerUI.ui_tab_content)},
+            { DeclarationType.ActiveXDesigner, GetImageSource(CodeExplorerUI.pencil_ruler)},
+            { DeclarationType.ResFile, GetImageSource(CodeExplorerUI.document_block)},
+            { DeclarationType.RelatedDocument, GetImageSource(CodeExplorerUI.document_import)}
         };
 
         private BitmapImage _icon;

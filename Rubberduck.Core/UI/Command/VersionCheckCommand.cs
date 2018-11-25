@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows.Forms;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.VersionCheck;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Command
 {
@@ -54,8 +55,7 @@ namespace Rubberduck.UI.Command
         private void PromptAndBrowse(Version latestVersion)
         {
             var prompt = string.Format(RubberduckUI.VersionCheck_NewVersionAvailable, latestVersion);
-            if (_prompt.Show(prompt, RubberduckUI.Rubberduck, MessageBoxButtons.YesNo, MessageBoxIcon.Information) ==
-                DialogResult.No)
+            if (!_prompt.Question(prompt, RubberduckUI.Rubberduck))
             {
                 return;
             }

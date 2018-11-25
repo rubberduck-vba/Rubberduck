@@ -1,11 +1,12 @@
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class CodePaneRefactorRenameCommandMenuItem : CommandMenuItemBase
     {
-        public CodePaneRefactorRenameCommandMenuItem(CommandBase command)
+        public CodePaneRefactorRenameCommandMenuItem(CodePaneRefactorRenameCommand command)
             : base(command)
         {
         }

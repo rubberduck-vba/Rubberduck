@@ -10,9 +10,9 @@ namespace Rubberduck.VBEditor.Utility
     internal sealed class DisposalActionContainer<T> : IDisposalActionContainer<T>
     {
         public T Value { get; }
-        private readonly Action _disposalAction;
+        private readonly Action<T> _disposalAction;
 
-        public DisposalActionContainer(T value, Action disposalAction)
+        public DisposalActionContainer(T value, Action<T> disposalAction)
         {
             Value = value;
             _disposalAction = disposalAction;
@@ -31,13 +31,13 @@ namespace Rubberduck.VBEditor.Utility
                 _isDisposed = true;
             }
 
-            _disposalAction.Invoke();
+            _disposalAction.Invoke(Value);
         }
     }
 
     public static class DisposalActionContainer
     {
-        public static IDisposalActionContainer<T> Create<T>(T value, Action disposalAction)
+        public static IDisposalActionContainer<T> Create<T>(T value, Action<T> disposalAction)
         {
             return new DisposalActionContainer<T>(value, disposalAction);
         }

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor.Utility;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
 using TYPEATTR = System.Runtime.InteropServices.ComTypes.TYPEATTR;
 using VARDESC = System.Runtime.InteropServices.ComTypes.VARDESC;
@@ -11,31 +14,25 @@ using CALLCONV = System.Runtime.InteropServices.ComTypes.CALLCONV;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    [DataContract]
+    [KnownType(typeof(ComType))]
     public class ComModule : ComType, IComTypeWithMembers, IComTypeWithFields
     {
-        private readonly List<ComMember> _members = new List<ComMember>();
-        public IEnumerable<ComMember> Members
-        {
-            get { return _members; }
-        }
+        [DataMember(IsRequired = true)]
+        private List<ComMember> _members = new List<ComMember>();
+        public IEnumerable<ComMember> Members => _members;
 
-        public ComMember DefaultMember
-        {
-            get { return null; }
-        }
+        public ComMember DefaultMember => null;
 
-        public bool IsExtensible
-        {
-            get { return false; }
-        }
+        public bool IsExtensible => false;
 
-        private readonly List<ComField> _fields = new List<ComField>();
-        public IEnumerable<ComField> Fields
-        {
-            get { return _fields; }
-        }
+        [DataMember(IsRequired = true)]
+        private List<ComField> _fields = new List<ComField>();
+        public IEnumerable<ComField> Fields => _fields;
 
-        public ComModule(ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(typeLib, attrib, index)
+        public IEnumerable<ComField> Properties => Enumerable.Empty<ComField>();
+
+        public ComModule(IComBase parent, ITypeLib typeLib, ITypeInfo info, TYPEATTR attrib, int index) : base(parent, typeLib, attrib, index)
         {
             Type = DeclarationType.ProceduralModule;
             if (attrib.cFuncs > 0)
@@ -55,15 +52,15 @@ namespace Rubberduck.Parsing.ComReflection
             var names = new string[1];
             for (var index = 0; index < attrib.cVars; index++)
             {
-                IntPtr varPtr;
-                info.GetVarDesc(index, out varPtr);
-                var desc = (VARDESC)Marshal.PtrToStructure(varPtr, typeof(VARDESC));
-                int length;
-                info.GetNames(desc.memid, names, names.Length, out length);
-                Debug.Assert(length == 1);
+                info.GetVarDesc(index, out IntPtr varPtr);
+                using (DisposalActionContainer.Create(varPtr, info.ReleaseVarDesc))
+                {
+                    var desc = Marshal.PtrToStructure<VARDESC>(varPtr);
+                    info.GetNames(desc.memid, names, names.Length, out int length);
+                    Debug.Assert(length == 1);
 
-                _fields.Add(new ComField(names[0], desc, index, DeclarationType.Constant));
-                info.ReleaseVarDesc(varPtr);
+                    _fields.Add(new ComField(this, info, names[0], desc, index, DeclarationType.Constant));
+                }
             }
         }
 
@@ -71,15 +68,16 @@ namespace Rubberduck.Parsing.ComReflection
         {
             for (var index = 0; index < attrib.cFuncs; index++)
             {
-                IntPtr memberPtr;
-                info.GetFuncDesc(index, out memberPtr);
-                var member = (FUNCDESC)Marshal.PtrToStructure(memberPtr, typeof(FUNCDESC));
-                if (member.callconv != CALLCONV.CC_STDCALL)
+                info.GetFuncDesc(index, out IntPtr memberPtr);
+                using (DisposalActionContainer.Create(memberPtr, info.ReleaseFuncDesc))
                 {
-                    continue;
+                    var member = Marshal.PtrToStructure<FUNCDESC>(memberPtr);
+                    if (member.callconv != CALLCONV.CC_STDCALL)
+                    {
+                        continue;
+                    }
+                    _members.Add(new ComMember(this, info, member));
                 }
-                _members.Add(new ComMember(info, member));
-                info.ReleaseFuncDesc(memberPtr);
             }
         }
     }

@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor;
-using RubberduckTests.Common;
 
 namespace RubberduckTests.PreProcessing
 {
@@ -14,7 +14,6 @@ namespace RubberduckTests.PreProcessing
     public class VBAPreprocessorTests
     {
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Preprocessor")]
         public void TestPreprocessor()
         {
@@ -37,7 +36,8 @@ namespace RubberduckTests.PreProcessing
         {
             // Reference_Module_1 = raw, unprocessed code.
             // Reference_Module_1_Processed = result of preprocessor.
-            var all = Directory.EnumerateFiles("Testfiles//Preprocessor").ToList();
+            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var all = Directory.EnumerateFiles(Path.Combine(basePath, "Testfiles//Preprocessor")).ToList();
             var rawAndProcessed = all
                 .Where(file => !file.Contains("_Processed"))
                 .Select(file => Tuple.Create(file, all.First(f => f.Contains(Path.GetFileNameWithoutExtension(file)) && f.Contains("_Processed")))).ToList();

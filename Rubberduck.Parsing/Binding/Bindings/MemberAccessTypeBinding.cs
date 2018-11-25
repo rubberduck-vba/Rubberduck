@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
 {
@@ -73,11 +74,7 @@ namespace Rubberduck.Parsing.Binding
             IBoundExpression boundExpression = null;
             var referencedProject = lExpression.ReferencedDeclaration;
             bool lExpressionIsEnclosingProject = _project.Equals(referencedProject);
-            boundExpression = ResolveProject(lExpression, name);
-            if (boundExpression != null)
-            {
-                return boundExpression;
-            }
+            
             boundExpression = ResolveProceduralModule(lExpressionIsEnclosingProject, lExpression, name, referencedProject);
             if (boundExpression != null)
             {
@@ -94,6 +91,11 @@ namespace Rubberduck.Parsing.Binding
                 return boundExpression;
             }
             boundExpression = ResolveMemberInReferencedProject(lExpressionIsEnclosingProject, lExpression, name, referencedProject, DeclarationType.Enumeration);
+            if (boundExpression != null)
+            {
+                return boundExpression;
+            }
+            boundExpression = ResolveProject(lExpression, name);
             if (boundExpression != null)
             {
                 return boundExpression;

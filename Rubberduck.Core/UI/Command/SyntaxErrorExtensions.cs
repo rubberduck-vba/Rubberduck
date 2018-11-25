@@ -1,5 +1,6 @@
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.Symbols.ParsingExceptions;
+using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Command

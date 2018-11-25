@@ -34,57 +34,27 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// VBEReferences collection, and CompileProject method.
     /// Can also be cast to ComTypes.ITypeLib for raw access to the underlying type library
     /// </remarks>
-    public class TypeLibWrapper : ComTypes.ITypeLib, IDisposable
+    public class TypeLibWrapper : ITypeLibWrapper
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private readonly bool _wrappedObjectIsWeakReference;
-
-        /// <summary>
-        /// Exposes an enumerable collection of TypeInfo objects exposed by this ITypeLib
-        /// </summary>
-        public class TypeInfosCollection : IIndexedCollectionBase<TypeInfoWrapper>
-        {
-            TypeLibWrapper _parent;
-            public TypeInfosCollection(TypeLibWrapper parent) => _parent = parent;
-            override public int Count { get => _parent.TypesCount; }
-            override public TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeTypeInfoByIndex(index);
-
-            public TypeInfoWrapper Find(string searchTypeName)
-            {
-                foreach (var typeInfo in this)
-                {
-                    if (typeInfo.Name == searchTypeName) return typeInfo;
-                    typeInfo.Dispose();
-                }
-                return null;
-            }
-
-            public TypeInfoWrapper Get(string searchTypeName)
-            {
-                var retVal = Find(searchTypeName);
-                if (retVal == null)
-                {
-                    throw new ArgumentException($"TypeInfosCollection::Get failed. '{searchTypeName}' component not found.");
-                }
-                return retVal;
-            }
-        }
-        public TypeInfosCollection TypeInfos;
+        public TypeInfosCollection TypeInfos { get; private set; }
         
         /// <summary>
         /// Exposes an enumerable collection of references used by the VBE type library
         /// </summary>
         public class ReferencesCollection : IIndexedCollectionBase<TypeInfoReference>
         {
-            TypeLibWrapper _parent;
+            private readonly TypeLibWrapper _parent;
             public ReferencesCollection(TypeLibWrapper parent) => _parent = parent;
-            override public int Count { get => _parent.GetVBEReferencesCount(); }
-            override public TypeInfoReference GetItemByIndex(int index) => _parent.GetVBEReferenceByIndex(index);
+            public override int Count => _parent.GetVBEReferencesCount();
+            public override TypeInfoReference GetItemByIndex(int index) => _parent.GetVBEReferenceByIndex(index);
         }
         public ReferencesCollection VBEReferences;
 
         private TypeLibTextFields? _cachedTextFields;
-        TypeLibTextFields CachedTextFields
+
+        private TypeLibTextFields CachedTextFields
         {
             get
             {
@@ -98,15 +68,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
-        public string Name      { get => CachedTextFields._name; }
-        public string DocString { get => CachedTextFields._docString; }
-        public int HelpContext  { get => CachedTextFields._helpContext; }
-        public string HelpFile  { get => CachedTextFields._helpFile; }
+        public string Name => CachedTextFields._name;
+        public string DocString => CachedTextFields._docString;
+        public int HelpContext => CachedTextFields._helpContext;
+        public string HelpFile => CachedTextFields._helpFile;
 
-        private ComTypes.ITypeLib target_ITypeLib;
+        private readonly ComTypes.ITypeLib target_ITypeLib;
         private IVBEProject target_IVBEProject;
 
-        public bool HasVBEExtensions { get => target_IVBEProject != null; }
+        public bool HasVBEExtensions => target_IVBEProject != null;
 
         public int GetVBEReferencesCount()
         {
@@ -196,7 +166,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }*/
 
-        public static TypeLibWrapper FromVBProject(IVBProject vbProject)
+        
+        internal static TypeLibWrapper FromVBProject(IVBProject vbProject)
         {
             using (var references = vbProject.References)
             {
@@ -247,19 +218,16 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public TypeInfoWrapper GetSafeTypeInfoByIndex(int index)
         {
-            IntPtr typeInfoPtr = IntPtr.Zero;
             // We cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
-            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfo(index, out typeInfoPtr);
+            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfo(index, out var typeInfoPtr);
             var outVal = new TypeInfoWrapper(typeInfoPtr);
+            _typeInfosWrapped?.Dispose();
             _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
             _typeInfosWrapped.Add(outVal);
             return outVal;
         }
 
-        public int TypesCount
-        {
-            get => target_ITypeLib.GetTypeInfoCount();
-        }
+        public int TypesCount => target_ITypeLib.GetTypeInfoCount();
 
         private ComTypes.TYPELIBATTR? _cachedLibAttribs;
         public ComTypes.TYPELIBATTR Attributes
@@ -336,7 +304,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         /// Exposes the conditional compilation arguments defined in the BA project represented by this ITypeLib
         /// as a dictionary of key/value pairs
         /// </summary>
-        public Dictionary<string, string> ConditionalCompilationArguments
+        public Dictionary<string, short> ConditionalCompilationArguments
         {
             get
             {
@@ -350,11 +318,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (args.Length > 0)
                 {
                     string[] argsArray = args.Split(new[] { ':' });
-                    return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0], s => s[1]);
+                    return argsArray.Select(item => item.Split('=')).ToDictionary(s => s[0].Trim(), s => short.Parse(s[1]));
                 }
                 else
                 {
-                    return new Dictionary<string, string>();
+                    return new Dictionary<string, short>();
                 }
             }
 
@@ -414,13 +382,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         // so we cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
         void ComTypes.ITypeLib.GetTypeInfoOfGuid(ref Guid guid, out ComTypes.ITypeInfo ppTInfo)
         {
-            IntPtr typeInfoPtr = IntPtr.Zero;
-            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfoOfGuid(guid, out typeInfoPtr);
-            var outVal = new TypeInfoWrapper(typeInfoPtr);  // takes ownership of the COM reference
-            ppTInfo = outVal;
+            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfoOfGuid(guid, out var typeInfoPtr);
+            using (var outVal = new TypeInfoWrapper(typeInfoPtr)) // takes ownership of the COM reference
+            {
+                ppTInfo = outVal;
 
-            _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
-            _typeInfosWrapped.Add(outVal);
+                _typeInfosWrapped?.Dispose();
+                _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
+                _typeInfosWrapped.Add(outVal);
+            }
         }
         void ComTypes.ITypeLib.GetTypeInfo(int index, out ComTypes.ITypeInfo ppTI)
             => ppTI = GetSafeTypeInfoByIndex(index);   // We have to wrap the ITypeInfo returned by GetTypeInfo

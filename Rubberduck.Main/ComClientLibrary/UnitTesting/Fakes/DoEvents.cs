@@ -1,15 +1,15 @@
-﻿using System;
+﻿using Rubberduck.UnitTesting.ComClientHelpers;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.UnitTesting.Fakes
 {
     internal class DoEvents : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcDoEvents");
-
         public DoEvents()
         {
-            InjectDelegate(new DoEventsDelegate(DoEventsCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcDoEvents");
+
+            InjectDelegate(new DoEventsDelegate(DoEventsCallback), processAddress);
         }
 
         private readonly ValueTypeConverter<int> _converter = new ValueTypeConverter<int>();
@@ -18,10 +18,6 @@ namespace Rubberduck.UnitTesting.Fakes
             _converter.Value = value;
             base.Returns((int)_converter.Value, invocation);
         }
-
-        [DllImport(TargetLibrary, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.I4)]
-        private static extern int rtcDoEvents();
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.I4)]
@@ -33,7 +29,7 @@ namespace Rubberduck.UnitTesting.Fakes
 
             if (PassThrough)
             {
-                return rtcDoEvents();
+                return VbeProvider.VbeRuntime.DoEvents();
             }
             return (int)(ReturnValue ?? 0);
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
 {
@@ -89,6 +90,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 null,
                 Accessibility.Public,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -126,6 +128,7 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 null,
                 null,
                 Accessibility.Public,
+                null,
                 null,
                 Selection.Home,
                 false,

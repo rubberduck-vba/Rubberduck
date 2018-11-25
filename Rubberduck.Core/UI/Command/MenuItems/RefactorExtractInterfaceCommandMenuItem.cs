@@ -1,21 +1,21 @@
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
     public class RefactorExtractInterfaceCommandMenuItem : CommandMenuItemBase
     {
-        public RefactorExtractInterfaceCommandMenuItem(CommandBase command) 
+        public RefactorExtractInterfaceCommandMenuItem(RefactorExtractInterfaceCommand command) 
             : base(command)
         {
         }
 
         public override string Key => "RefactorMenu_ExtractInterface";
         public override int DisplayOrder => (int)RefactoringsMenuItemDisplayOrder.ExtractInterface;
-        public override Image Image => Resources.ExtractInterface;
-        public override Image Mask => Resources.ExtractInterfaceMask;
+        public override Image Image => Resources.CommandBarIcons.ExtractInterface;
+        public override Image Mask => Resources.CommandBarIcons.ExtractInterfaceMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

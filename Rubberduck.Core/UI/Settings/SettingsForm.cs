@@ -1,7 +1,8 @@
 ﻿using System.Windows.Forms;
 using Rubberduck.Settings;
 using Rubberduck.Common;
-using Rubberduck.VBEditor.VBERuntime.Settings;
+using Rubberduck.Interaction;
+using Rubberduck.VBEditor.VbeRuntime.Settings;
 using System.Collections.Generic;
 using System;
 
@@ -20,11 +21,11 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public SettingsForm(IGeneralConfigService configService, IOperatingSystem operatingSystem, IMessageBox messageBox, IVBESettings vbeSettings, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
+        public SettingsForm(IGeneralConfigService configService, IOperatingSystem operatingSystem, IMessageBox messageBox, IVbeSettings vbeSettings, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
         {
             var config = configService.LoadConfiguration();
 
-            ViewModel = new SettingsControlViewModel(configService,
+            ViewModel = new SettingsControlViewModel(messageBox, configService,
                 config,
                 new SettingsView
                 {
@@ -58,6 +59,11 @@ namespace Rubberduck.UI.Settings
                 {
                     Control = new IndenterSettings(new IndenterSettingsViewModel(config)),
                     View = SettingsViews.IndenterSettings
+                },
+                new SettingsView
+                {
+                    Control = new AutoCompleteSettings(new AutoCompleteSettingsViewModel(config)),
+                    View = SettingsViews.AutoCompleteSettings
                 },
                 new SettingsView
                 {

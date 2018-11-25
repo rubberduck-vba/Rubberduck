@@ -59,35 +59,36 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
-        <StackPanel Background="White">
-            <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractInterface_TitleLabel}" FontWeight="Bold" />
-            <TextBlock Text="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractInterface_InstructionLabel}"
+        <DockPanel Dock="Top" Background="White">
+            <StackPanel>
+
+            <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_TitleLabel}" FontWeight="Bold" />
+            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_InstructionLabel}"
                        Margin="5,0" />
-        </StackPanel>
-        <StackPanel Grid.Row="1" Margin="5,0">
-            <Grid VerticalAlignment="Top" Margin="0,0,5,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto" />
-                    <RowDefinition Height="auto" />
-                </Grid.RowDefinitions>
-                <Label Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=NameLabelText}" />
-                <TextBox Grid.Row="1"
-                         Margin="5,-2,0,0"
+            </StackPanel>
+        </DockPanel>
+        <Grid Grid.Row="1" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0">
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=NameLabelText}" />
+                <TextBox Margin="5,-2,0,0"
                          Height="22"
                          VerticalAlignment="Top"
                          VerticalContentAlignment="Center"
                          Text="{Binding InterfaceName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                <Image Grid.Row="1"
-                       Source="../../../Resources/cross-circle.png"
+                <Image Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png"
                        Height="16"
                        Margin="0,-10,-8,0"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Visibility="{Binding IsValidInterfaceName, Converter={StaticResource BoolToHiddenVisibility}}"/>
-            </Grid>
+            </StackPanel>
 
-            <GroupBox Header="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ExtractInterface_MembersGroupBox}"
-                      Margin="5">
+            <GroupBox Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ExtractInterface_MembersGroupBox}"
+                      Grid.Row="1" Margin="5" Padding="5">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
@@ -132,12 +133,12 @@
                                 HorizontalAlignment="Right"
                                 Margin="5,0,0,0"
                                 MinWidth="100">
-                        <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=SelectAll_Button}"
+                        <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=SelectAll_Button}"
                                 Height="20"
                                 Margin="0,0,0,5"
                                 Padding="10,0"
                                 Command="{Binding SelectAllCommand}" />
-                        <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=DeselectAll_Button}"
+                        <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=DeselectAll_Button}"
                                 Height="20"
                                 Margin="0"
                                 Padding="10,0"
@@ -146,7 +147,8 @@
                     </StackPanel>
                 </Grid>
             </GroupBox>
-        </StackPanel>
+        </Grid>
+
         <Grid Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
             <Grid HorizontalAlignment="Right"
                   Margin="5,0">
@@ -154,14 +156,14 @@
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                     <ColumnDefinition SharedSizeGroup="SettingsButtons" />
                 </Grid.ColumnDefinitions>
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}"
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}"
                         Grid.Column="0"
                         Height="20"
                         Margin="5,0"
                         Padding="10,0"
                         IsEnabled="{Binding IsValidInterfaceName}"
                         Command="{Binding OkButtonCommand}" />
-                <Button Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}"
+                <Button Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}"
                         Grid.Column="1"
                         Height="20"
                         Margin="5,0"

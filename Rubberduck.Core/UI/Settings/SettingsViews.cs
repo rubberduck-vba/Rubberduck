@@ -7,6 +7,7 @@
         InspectionSettings,
         UnitTestSettings,
         IndenterSettings,
+        AutoCompleteSettings,
         WindowSettings
     }
 }

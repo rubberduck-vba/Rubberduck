@@ -3,11 +3,11 @@ using System.Windows.Forms;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.Resources;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.Command
 {
-    [CodeExplorerCommand]
     public class ExportAllCommand : CommandBase 
     {
         private readonly IVBE _vbe;
@@ -21,32 +21,67 @@ namespace Rubberduck.UI.Command
 
         protected override bool EvaluateCanExecute(object parameter)
         {
+            if (_vbe.Kind == VBEKind.Standalone)
+            {
+                return false;
+            }
+
             if (!(parameter is CodeExplorerProjectViewModel) && parameter is CodeExplorerItemViewModel)
             {
                 return false;
             }
 
-            var projectNode = parameter as CodeExplorerProjectViewModel;
+            switch (parameter)
+            {
+                case CodeExplorerProjectViewModel projectNode:
+                    return Evaluate(projectNode.Declaration.Project);
+                case IVBProject project:
+                    return Evaluate(project);
+            }
 
-            var project = parameter as IVBProject;
-
-            return Evaluate(projectNode?.Declaration.Project ?? project ?? _vbe.ActiveVBProject);
-
+            using (var activeProject = _vbe.ActiveVBProject)
+            {
+                return Evaluate(activeProject);
+            }
         }
 
         private bool Evaluate(IVBProject project)
         {
-            return project != null && !project.IsWrappingNullReference && project.VBComponents.Count > 0;
+            if (project == null || project.IsWrappingNullReference)
+            {
+                return false;
+            }
+
+            using (var compontents = project.VBComponents)
+            {
+                return compontents.Count > 0;
+            }
+
         }
 
         protected override void OnExecute(object parameter)
         {
-            var projectNode = parameter as CodeExplorerProjectViewModel;
+            switch (parameter)
+            {
+                case CodeExplorerProjectViewModel projectNode when projectNode.Declaration.Project != null:
+                    Export(projectNode.Declaration.Project);
+                    break;
+                case IVBProject vbproject:
+                    Export(vbproject);
+                    break;
+                default:
+                {
+                    using (var project = _vbe.ActiveVBProject)
+                    {
+                        Export(project);
+                    }
+                    break;
+                }
+            }
+        }
 
-            var vbproject = parameter as IVBProject;
-
-            var project = projectNode?.Declaration.Project ?? vbproject ?? _vbe.ActiveVBProject;
-            
+        private void Export(IVBProject project)
+        {
             var desc = string.Format(RubberduckUI.ExportAllCommand_SaveAsDialog_Title, project.Name);
 
             // If .GetDirectoryName is passed an empty string for a RootFolder, 

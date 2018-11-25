@@ -2,14 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using NLog;
-using Rubberduck.Common;
-using Rubberduck.Parsing.Grammar;
+using Rubberduck.Interaction;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command.MenuItems;
+using Rubberduck.Resources;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -133,7 +132,7 @@ namespace Rubberduck.UI.Command
             var viewModel = CreateViewModel(declaration);
             if (!viewModel.SearchResults.Any())
             {
-                _messageBox.Show(string.Format(RubberduckUI.AllReferences_NoneFound, declaration.IdentifierName), RubberduckUI.Rubberduck, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                _messageBox.NotifyWarn(string.Format(RubberduckUI.AllReferences_NoneFound, declaration.IdentifierName), RubberduckUI.Rubberduck);
                 return;
             }
 
@@ -159,21 +158,45 @@ namespace Rubberduck.UI.Command
 
         private SearchResultsViewModel CreateViewModel(Declaration target)
         {
-            var results = FindImplementations(target).Select(declaration =>
+            IEnumerable<Declaration> implementations;
+            if (target is ClassModuleDeclaration classModule)
+            {
+                implementations = _state.DeclarationFinder.FindAllImplementationsOfInterface(classModule);
+            }
+            else if (target is IInterfaceExposable member && member.IsInterfaceMember)
+            {
+                implementations = _state.DeclarationFinder.FindInterfaceImplementationMembers(target);
+            }
+            else
+            {
+                implementations = target is ModuleBodyElementDeclaration implementation
+                    ? _state.DeclarationFinder.FindInterfaceImplementationMembers(implementation.InterfaceMemberImplemented)
+                    : Enumerable.Empty<Declaration>();
+            }
+
+            var results = implementations.Select(declaration =>
                 new SearchResultItem(
                     declaration.ParentScopeDeclaration,
                     new NavigateCodeEventArgs(declaration.QualifiedName.QualifiedModuleName, declaration.Selection),
                     GetModuleLine(declaration.QualifiedName.QualifiedModuleName, declaration.Selection.StartLine)));
 
+            var accessor = target.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
+                         : target.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"
+                         : target.DeclarationType.HasFlag(DeclarationType.PropertySet) ? "(set)"
+                         : string.Empty;
+
+            var tabCaption = $"{target.IdentifierName} {accessor}".Trim();
+
             var viewModel = new SearchResultsViewModel(_navigateCommand,
-                string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, target.IdentifierName), target, results);
+                string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, tabCaption), target, results);
 
             return viewModel;
         }
 
         private string GetModuleLine(QualifiedModuleName module, int line)
         {
-            using (var codeModule = _state.ProjectsProvider.Component(module).CodeModule)
+            var component = _state.ProjectsProvider.Component(module);
+            using (var codeModule = component.CodeModule)
             {
                 return codeModule.GetLines(line, 1).Trim();
             }
@@ -190,67 +213,6 @@ namespace Rubberduck.UI.Command
             {
                 return _state.FindSelectedDeclaration(activePane);
             }
-        }
-
-        private IEnumerable<Declaration> FindImplementations(Declaration target)
-        {
-            var items = _state.AllDeclarations;
-            var implementations = (target.DeclarationType == DeclarationType.ClassModule
-                ? FindAllImplementationsOfClass(target, items, out _)
-                : FindAllImplementationsOfMember(target, items, out _)) ?? new List<Declaration>();
-
-            return implementations;
-        }
-
-        private IEnumerable<Declaration> FindAllImplementationsOfClass(Declaration target, IEnumerable<Declaration> declarations, out string name)
-        {
-            if (target.DeclarationType != DeclarationType.ClassModule)
-            {
-                name = string.Empty;
-                return Enumerable.Empty<Declaration>();
-            }
-
-            var identifiers = declarations as IList<Declaration> ?? declarations.ToList();
-
-            var result = target.References
-                .Where(reference => reference.Context.Parent is VBAParser.ImplementsStmtContext)
-                .SelectMany(reference => identifiers.Where(identifier => identifier.IdentifierName == reference.QualifiedModuleName.ComponentName))
-                .ToList();
-
-            name = target.ComponentName;
-            return result;
-        }
-
-        private IEnumerable<Declaration> FindAllImplementationsOfMember(Declaration target, IEnumerable<Declaration> declarations, out string name)
-        {
-            if (!target.DeclarationType.HasFlag(DeclarationType.Member))
-            {
-                name = string.Empty;
-                return Enumerable.Empty<Declaration>();
-            }
-
-            var items = declarations as IList<Declaration> ?? declarations.ToList();
-
-            var isInterface = items.FindInterfaces()
-                .Select(i => i.QualifiedName.QualifiedModuleName.ToString())
-                .Contains(target.QualifiedName.QualifiedModuleName.ToString());
-
-            if (isInterface)
-            {
-                name = target.ComponentName + "." + target.IdentifierName;
-                return items.FindInterfaceImplementationMembers(target.IdentifierName)
-                       .Where(item => item.IdentifierName == target.ComponentName + "_" + target.IdentifierName);
-            }
-
-            var member = items.FindInterfaceMember(target);
-            if (member == null)
-            {
-                name = string.Empty;
-                return Enumerable.Empty<Declaration>();
-            }
-            name = member.ComponentName + "." + member.IdentifierName;
-            return items.FindInterfaceImplementationMembers(member.IdentifierName)
-                   .Where(item => item.IdentifierName == member.ComponentName + "_" + member.IdentifierName);
         }
 
         public void Dispose()

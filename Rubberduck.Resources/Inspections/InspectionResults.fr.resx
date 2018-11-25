@@ -1,0 +1,378 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EncapsulatePublicFieldInspection" xml:space="preserve">
+    <value>Le champ public '{0}' rompt l'encapsulation</value>
+  </data>
+  <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
+    <value>Restreindre la portée du champ '{0}'</value>
+  </data>
+  <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
+    <value>La procédure '{0}' pourrait être une fonction</value>
+    <comment>{0} Procedure name</comment>
+  </data>
+  <data name="IdentifierNameInspection" xml:space="preserve">
+    <value>Considérez renommer {0} '{1}'</value>
+  </data>
+  <data name="WriteOnlyPropertyInspection" xml:space="preserve">
+    <value>La propriété '{0}' n'a pas d'accesseur (Get)</value>
+    <comment>{0} Property name</comment>
+  </data>
+  <data name="SelfAssignedDeclarationInspection" xml:space="preserve">
+    <value>La variable '{0}' est assignée lors de sa déclaration</value>
+  </data>
+  <data name="FunctionReturnValueNotUsedInspection" xml:space="preserve">
+    <value>La valeur de retour de la fonction '{0}' n'est jamais utilisée.</value>
+  </data>
+  <data name="AssignedByValParameterInspection" xml:space="preserve">
+    <value>Le paramètre '{0}' passé par valeur est assigné</value>
+  </data>
+  <data name="IdentifierNotUsedInspection" xml:space="preserve">
+    <value>{0} '{1}' n'est pas utilisé(e).</value>
+  </data>
+  <data name="ImplicitPublicMemberInspection" xml:space="preserve">
+    <value>Le membre '{0}' est implicitement public</value>
+  </data>
+  <data name="ImplicitVariantDeclarationInspection" xml:space="preserve">
+    <value>{0} '{1}' est implicitement de type Variant</value>
+  </data>
+  <data name="ImplicitVariantReturnTypeInspection" xml:space="preserve">
+    <value>La valeur de retour du membre '{0}' est implicitement 'Variant'</value>
+  </data>
+  <data name="MultilineParameterInspection" xml:space="preserve">
+    <value>Le paramètre '{0}' est déclaré sur plusieurs lignes</value>
+  </data>
+  <data name="NonReturningFunctionInspection" xml:space="preserve">
+    <value>La valeur de retour du membre '{0}' n'est pas assignée</value>
+  </data>
+  <data name="ObsoleteGlobalInspection" xml:space="preserve">
+    <value>{0} '{1}' utilise le modificateur obsolète 'Global'</value>
+  </data>
+  <data name="ParameterCanBeByValInspection" xml:space="preserve">
+    <value>Le paramètre '{0}' peut être passé par valeur</value>
+  </data>
+  <data name="ParameterNotUsedInspection" xml:space="preserve">
+    <value>Le paramètre '{0}' n'est pas utilisé</value>
+  </data>
+  <data name="ProcedureShouldBeFunctionInspection" xml:space="preserve">
+    <value>La procédure '{0}' pourrait être une fonction</value>
+  </data>
+  <data name="UnassignedVariableUsageInspection" xml:space="preserve">
+    <value>La variable '{0}' est utilisée, mais non assignée</value>
+  </data>
+  <data name="OptionExplicitInspection" xml:space="preserve">
+    <value>'Option Explicit' n'est pas spécifiée dans le module '{0}'.</value>
+  </data>
+  <data name="VariableNotAssignedInspection" xml:space="preserve">
+    <value>La variable '{0}' n'est jamais assignée</value>
+  </data>
+  <data name="EmptyStringLiteralInspection" xml:space="preserve">
+    <value>Préférez 'vbNullString' à une chaîne de caractères vide</value>
+  </data>
+  <data name="ObjectVariableNotSetInspection" xml:space="preserve">
+    <value>La variable '{0}' est assignée dans le mot-clé 'Set'</value>
+  </data>
+  <data name="ImplicitActiveWorkbookReferenceInspection" xml:space="preserve">
+    <value>Le membre '{0}' réfère implicitement au classeur actif</value>
+  </data>
+  <data name="MultipleDeclarationsInspection" xml:space="preserve">
+    <value>L'instruction comporte plusieurs déclarations</value>
+  </data>
+  <data name="VariableTypeNotDeclaredInspection" xml:space="preserve">
+    <value>{0} '{1}' est implicitement de type 'Variant'</value>
+  </data>
+  <data name="DefaultProjectNameInspection" xml:space="preserve">
+    <value>Le projet '{0}' n'est pas nommé</value>
+  </data>
+  <data name="ObsoleteCallStatementInspection" xml:space="preserve">
+    <value>L'assignation utilise le mot-clé obsolète 'Call'</value>
+  </data>
+  <data name="ObsoleteLetStatementInspection" xml:space="preserve">
+    <value>L'assignation utilise le mot-clé obsolète 'Let'</value>
+  </data>
+  <data name="OptionBaseInspection" xml:space="preserve">
+    <value>Le module '{0}' utilise 'Option Base 1'</value>
+  </data>
+  <data name="ObsoleteCommentSyntaxInspection" xml:space="preserve">
+    <value>Le commentaire utilise la forme obsolète 'Rem'</value>
+  </data>
+  <data name="ObsoleteTypeHintInspection" xml:space="preserve">
+    <value>{0} de {1} '{2}' utilise un indicateur de type</value>
+  </data>
+  <data name="ImplicitActiveSheetReferenceInspection" xml:space="preserve">
+    <value>Le membre '{0}' réfère implicitement à la feuille active</value>
+  </data>
+  <data name="UntypedFunctionUsageInspection" xml:space="preserve">
+    <value>Remplacer la fonction '{0}' par la fonction typée équivalente</value>
+  </data>
+  <data name="ModuleScopeDimKeywordInspection" xml:space="preserve">
+    <value>La variable module '{0}' est déclarée avec le mot-clé 'Dim'</value>
+  </data>
+  <data name="UndeclaredVariableInspection" xml:space="preserve">
+    <value>La variable locale '{0}' n'est pas déclarée</value>
+    <comment>{0} variable name</comment>
+  </data>
+  <data name="MissingAnnotationArgumentInspection" xml:space="preserve">
+    <value>Un paramètre était attendu dans l'annotation '{0}'.</value>
+  </data>
+  <data name="ImplicitDefaultMemberAssignmentInspection" xml:space="preserve">
+    <value>Assignation de '{0}' réfère implicitement au membre par défaut de la classe '{1}'</value>
+  </data>
+  <data name="AggregateInspection" xml:space="preserve">
+    <value>{0} ({1} résultats)</value>
+  </data>
+  <data name="ApplicationWorksheetFunctionInspection" xml:space="preserve">
+    <value>Utilisation du membre à liaison tardive Application.{0}.</value>
+  </data>
+  <data name="HostSpecificExpressionInspection" xml:space="preserve">
+    <value>L'espression '{0}' ne peut être validée lors de la compilation.</value>
+  </data>
+  <data name="MemberNotOnInterfaceInspection" xml:space="preserve">
+    <value>Le membre '{0}' n'est pas exposé par l'interface du type '{1}'.</value>
+  </data>
+  <data name="EmptyCaseBlockInspection" xml:space="preserve">
+    <value>Un block 'Case' ne contient aucune instruction exécutable</value>
+  </data>
+  <data name="ImplicitByRefModifierInspection" xml:space="preserve">
+    <value>Le paramètre '{0}' est passé implicitement par référence</value>
+  </data>
+  <data name="LineLabelNotUsedInspection" xml:space="preserve">
+    <value>L'étiquette de ligne '{0}' n'est pas utilisée</value>
+  </data>
+  <data name="StopKeywordInspection" xml:space="preserve">
+    <value>Le mot-clé 'Stop' halte l'exécution</value>
+  </data>
+  <data name="ShadowedDeclarationInspection" xml:space="preserve">
+    <value>{0} '{1}' cache {2} '{3}'</value>
+  </data>
+  <data name="ObsoleteErrorSyntaxInspection" xml:space="preserve">
+    <value>Une erreur d'exécution est générée à l'aide de l'instruction obsolète 'Error'</value>
+  </data>
+  <data name="RedundantByRefModifierInspection" xml:space="preserve">
+    <value>Le paramètre '{0}' a un modificateur 'ByRef' redondant.</value>
+  </data>
+  <data name="EmptyForEachBlockInspection" xml:space="preserve">
+    <value>Boucle 'For Each...Next' n'exécute aucune instruction.</value>
+  </data>
+  <data name="EmptyElseBlockInspection" xml:space="preserve">
+    <value>Bloc 'Else' n'exécute aucune instruction</value>
+  </data>
+  <data name="EmptyForLoopBlockInspection" xml:space="preserve">
+    <value>Boucle 'For...Next' n'exécute aucune instruction</value>
+  </data>
+  <data name="IntegerDataTypeInspection" xml:space="preserve">
+    <value>{0} '{1}' est déclarée 'As Integer'</value>
+  </data>
+  <data name="EmptyWhileWendBlockInspection" xml:space="preserve">
+    <value>Boucle 'While...Wend' n'exécute aucune instruction.</value>
+  </data>
+  <data name="EmptyIfBlockInspection" xml:space="preserve">
+    <value>Bloc 'If' n'exécute aucune instruction</value>
+  </data>
+  <data name="OptionBaseZeroInspection" xml:space="preserve">
+    <value>Le module '{0}' spécifie 'Option Base 0'</value>
+  </data>
+  <data name="EmptyDoWhileBlockInspection" xml:space="preserve">
+    <value>Une boucle 'Do...While' vide, qui ne contient aucune instruction exécutable, laisse songeur quant aux intentions de l'auteur. Évitez d'écrire du code qui n'a pas besoin d'être écrit.</value>
+  </data>
+  <data name="IllegalAnnotationInspection" xml:space="preserve">
+    <value>L'annotation '{0}' est illégale dans ce contexte.</value>
+  </data>
+  <data name="RedundantOptionInspection" xml:space="preserve">
+    <value>'{0}' n'a aucun effet</value>
+  </data>
+  <data name="MissingAnnotationInspection" xml:space="preserve">
+    <value>Le module ou membre '{0}' a un attribut '{1}', mais pas l'annotation correspondante</value>
+  </data>
+  <data name="MissingAttributeInspection" xml:space="preserve">
+    <value>Le module ou membre '{0}' a l'annotation '{1}', mais pas l'attribut correspondant</value>
+  </data>
+  <data name="BooleanAssignedInIfElseInspection" xml:space="preserve">
+    <value>Valeur Booléenne littérale '{0}' assignée dans une structure conditionnelle.</value>
+  </data>
+  <data name="EmptyModuleInspection" xml:space="preserve">
+    <value>Le module/classe {0} est vide.</value>
+  </data>
+  <data name="UnreachableCaseInspection" xml:space="preserve">
+    <value>Le bloc '{0}' est inatteignable</value>
+  </data>
+  <data name="UnreachableCaseInspection_CaseElse" xml:space="preserve">
+    <value>Le bloc 'Case Else' est inatteignable : toutes les valeurs possibles sont prises en charge par les blocs 'Case' précédents.</value>
+  </data>
+  <data name="UnreachableCaseInspection_TypeMismatch" xml:space="preserve">
+    <value>Type invalide : l'expression 'Case' ne peut être évaluée selon le type de l'expression 'Select'.</value>
+  </data>
+  <data name="UnreachableCaseInspection_Unreachable" xml:space="preserve">
+    <value>Bloc inatteignable : l'expression 'Case' est prise en charge par un bloc 'Case' précédent.</value>
+  </data>
+  <data name="UnhandledOnErrorResumeNextInspection" xml:space="preserve">
+    <value>La gestion d'erreurs est désactivée sans être réactivée.</value>
+  </data>
+  <data name="DefTypeStatementInspection" xml:space="preserve">
+    <value>Considérez l'utilisation de clause explicite 'As {0}' plutôt que '{1}'.</value>
+  </data>
+  <data name="StepOneIsRedundantInspection" xml:space="preserve">
+    <value>1 est la valeur d'incrémentation par défaut pour toute boucle 'For...Next'</value>
+  </data>
+  <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
+    <value>Clause 'Step' non spécifiée</value>
+  </data>
+  <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
+    <value>Une feuille Excel </value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Une assignation est écrasée par une assignation subséquente, ou la valeur assignée n'est jamais utilisée.</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>L'annotation '{0}' est dupliquée.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Le résultat de l'appel à '{0}' n'est pas testé pour 'Nothing'.</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>'{0}' est cachée par une référence à une cellule valide.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>'IsMissing' sera toujours 'False' avec ce paramètre.</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>'IsMissing' reçoit une expression qui n'est pas l'un des paramètres de la procédure.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Le module '{0}' n'a pas d'annotation '@Folder'</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>'{0}' est déclarée avec la convention d'appel 'CDecl'.</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Considérez remplacer l'appel par '{0}'.{1}</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>Instruction 'On Local Error' détectée.</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Le nom du membre public '{0}' contient un caractère de soulignement.</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Bloc inatteignable: l'expression 'Case' contient une clause invalide.</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>Bloc inatteignable: l'expression 'Case' causera une erreur d'exécution 6 : Overflow.</value>
+  </data>
+</root>

@@ -1,7 +1,7 @@
 ﻿using Rubberduck.Common;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
-using Rubberduck.UI.Controls;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.ToDoItems

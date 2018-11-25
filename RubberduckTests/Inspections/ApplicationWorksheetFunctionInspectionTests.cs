@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -22,21 +21,10 @@ namespace RubberduckTests.Inspections
 
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
-
-            parser.State.AddTestLibrary("Excel.1.8.xml");
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            return parser.State;
+            return MockParser.CreateAndParse(vbe.Object); ;
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_GlobalApplication()
         {
@@ -58,7 +46,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithGlobalApplication()
         {
@@ -82,7 +69,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_ApplicationVariable()
         {
@@ -106,7 +92,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithApplicationVariable()
         {
@@ -132,7 +117,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseGlobalApplication()
         {
@@ -154,7 +138,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseApplicationVariable()
         {
@@ -209,7 +192,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"Testfiles\")]
         [Category("Inspections")]
         public void ApplicationWorksheetFunction_Ignored_DoesNotReturnResult()
         {

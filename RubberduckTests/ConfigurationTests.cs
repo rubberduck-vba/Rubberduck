@@ -3,8 +3,8 @@ using System.Linq;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.Settings;
+using Rubberduck.Parsing.Inspections;
 
 namespace RubberduckTests
 {

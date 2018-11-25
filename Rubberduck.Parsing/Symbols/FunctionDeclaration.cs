@@ -9,10 +9,8 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class FunctionDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
+    public sealed class FunctionDeclaration : ModuleBodyElementDeclaration
     {
-        private readonly List<ParameterDeclaration> _parameters;
-
         public FunctionDeclaration(
             QualifiedMemberName name,
             Declaration parent,
@@ -22,65 +20,62 @@ namespace Rubberduck.Parsing.Symbols
             string typeHint,
             Accessibility accessibility,
             ParserRuleContext context,
+            ParserRuleContext attributesPassContext,
             Selection selection,
             bool isArray,
             bool isUserDefined,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
-                  name,
-                  parent,
-                  parentScope,
-                  asTypeName,
-                  typeHint,
-                  false,
-                  false,
-                  accessibility,
-                  DeclarationType.Function,
-                  context,
-                  selection,
-                  isArray,
-                  asTypeContext,
-                  isUserDefined,
-                  annotations,
-                  attributes)
-        {
-            _parameters = new List<ParameterDeclaration>();
-        }
+                name,
+                parent,
+                parentScope,
+                asTypeName,
+                asTypeContext,
+                typeHint,
+                accessibility,
+                DeclarationType.Function,
+                context,
+                attributesPassContext,
+                selection,
+                isArray,               
+                isUserDefined,
+                annotations,
+                attributes)
+        { }
 
-        public FunctionDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
-            Attributes attributes) : this(
+        public FunctionDeclaration(ComMember member, Declaration parent, QualifiedModuleName module, Attributes attributes) 
+            : this(
                 module.QualifyMemberName(member.Name),
                 parent,
                 parent,
-                member.ReturnType.TypeName,
+                member.AsTypeName.TypeName,
                 null,
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
-                member.ReturnType.IsArray,
+                member.AsTypeName.IsArray,
                 false,
                 null,
                 attributes)
         {
-            _parameters =
-                member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
-                    .ToList();
+            AddParameters(member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module)));
         }
 
-        public IEnumerable<ParameterDeclaration> Parameters => _parameters.ToList();
-
-        public void AddParameter(ParameterDeclaration parameter)
+        /// <inheritdoc/>
+        protected override bool Implements(IInterfaceExposable member)
         {
-            _parameters.Add(parameter);
-        }
+            if (ReferenceEquals(member, this))
+            {
+                return false;
+            }
 
-        /// <summary>
-        /// Gets an attribute value indicating whether a member is a class' default member.
-        /// If this value is true, any reference to an instance of the class it's the default member of,
-        /// should count as a member call to this member.
-        /// </summary>
-        public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
+            return member.DeclarationType == DeclarationType.Function
+                && member.IsInterfaceMember
+                && IdentifierName.Equals(member.ImplementingIdentifierName)
+                   && ((ClassModuleDeclaration)member.ParentDeclaration).Subtypes.Any(implementation => ReferenceEquals(implementation, ParentDeclaration));
+        }
     }
 }

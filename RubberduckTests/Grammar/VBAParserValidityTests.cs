@@ -5,11 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor;
-using Rubberduck.Parsing.Symbols;
-using RubberduckTests.Common;
 
 namespace RubberduckTests.Grammar
 {
@@ -20,7 +19,6 @@ namespace RubberduckTests.Grammar
         [Category("LongRunning")]
         [Category("Grammar")]
         [Category("Parser")]
-        [DeploymentItem(@"Testfiles\")]
         public void TestParser()
         {
             foreach (var testfile in GetTestFiles())
@@ -38,7 +36,8 @@ namespace RubberduckTests.Grammar
 
         private IEnumerable<Tuple<string, string>> GetTestFiles()
         {
-            return Directory.EnumerateFiles("Testfiles//Grammar").Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
+            var basePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            return Directory.EnumerateFiles(Path.Combine(basePath, "Testfiles//Grammar")).Select(file => Tuple.Create(file, File.ReadAllText(file))).ToList();
         }
 
         private static string Parse(string code, string filename)

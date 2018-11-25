@@ -4,8 +4,9 @@ using System.Globalization;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
+using Rubberduck.Resources.Menus;
+using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 {
@@ -23,12 +24,31 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             _items = items.ToDictionary(item => item, item => null as ICommandBarControl);
         }
 
-        public ICommandBarControls Parent { get; set; }
-        public ICommandBarPopup Item { get; private set; }
+        private ICommandBarControls _parent;
+        public ICommandBarControls Parent
+        {
+            get => _parent;
+            set
+            {
+                _parent?.Dispose();
+                _parent = value;
+            }
+        }
+
+        private ICommandBarPopup _item;
+        public ICommandBarPopup Item
+        {
+            get => _item;
+            private set
+            {
+                _item?.Dispose();
+                _item = value;
+            }
+        }
 
         public string Key => Item?.Tag;
 
-        public Func<string> Caption { get { return () => Key == null ? null : RubberduckUI.ResourceManager.GetString(Key, Settings.Settings.Culture); } }
+        public Func<string> Caption { get { return () => Key == null ? null : RubberduckMenus.ResourceManager.GetString(Key, Settings.Settings.Culture); } }
 
         public virtual string ToolTipKey { get; set; }
         public virtual Func<string> ToolTipText
@@ -37,7 +57,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             {
                 return () => string.IsNullOrEmpty(ToolTipKey)
                     ? string.Empty
-                    : RubberduckUI.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
+                    : RubberduckMenus.ResourceManager.GetString(ToolTipKey, CultureInfo.CurrentUICulture);
             }
         }
 
@@ -72,11 +92,9 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
                 return;
             }
 
-            Item = _beforeIndex.HasValue
-                ? CommandBarPopupFactory.Create(Parent, _beforeIndex.Value)
-                : CommandBarPopupFactory.Create(Parent);
+            Item =  Parent.AddPopup(_beforeIndex);                
 
-            Item.Tag = _key;
+            Item.Tag = _key;            
 
             foreach (var item in _items.Keys.OrderBy(item => item.DisplayOrder))
             {
@@ -92,7 +110,8 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             Logger.Debug($"Removing menu {_key}.");
             RemoveChildren();
             Item?.Delete();
-            Item?.Dispose();
+
+            //This will also dispose the Item as well
             Item = null;
         }
 
@@ -159,7 +178,7 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
             ICommandBarButton child;
             using (var controls = Item.Controls)
             {
-                child = CommandBarButtonFactory.Create(controls);
+                child = controls.AddButton();                
             }
             child.Picture = item.Image;
             child.Mask = item.Mask;
@@ -182,13 +201,13 @@ namespace Rubberduck.UI.Command.MenuItems.ParentMenus
 
         private void child_Click(object sender, CommandBarButtonClickEventArgs e)
         {
-            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Control.Tag.EndsWith(menu.GetType().Name)) as ICommandMenuItem;
+            var item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => e.Tag.EndsWith(menu.GetType().Name)) as ICommandMenuItem;
             if (item == null)
             {
                 return;
             }
 
-            Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
+            Logger.Debug("({0}) Executing click handler for menu item '{1}', hash code {2}", GetHashCode(), e.Caption, e.TargetHashCode);
             item.Command.Execute(null);
         }
     }

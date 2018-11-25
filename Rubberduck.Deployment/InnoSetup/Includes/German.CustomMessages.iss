@@ -1,10 +1,10 @@
-﻿; German Custom Messages Include
+﻿; German Custom Messages Include -- Must be encoded in UTF-8 BOM
 German.PerUser=Aktueller Benutzer
 German.Everyone=Alle Benutzer
 German.RegisterAddin=VBE AddIn Registrierung reparieren
 German.ProgramOnTheWeb=Rubberduck VBA Website
 German.UninstallProgram=Rubberduck deinstallieren
-German.NETFramework45NotInstalled=Microsoft .NET Framework 4.5 konnte nicht gefunden werden.
+German.NETFramework46NotInstalled=Microsoft .NET Framework 4.6 konnte nicht gefunden werden.
 German.InstallPerUserOrAllUsersCaption=Eine Installationsoption wähen
 German.InstallPerUserOrAllUsersMessage=Für wen soll diese Anwendung installiert werden?
 German.InstallPerUserOrAllUsersAdminDescription=Bitte wählen Sie, ob diese Anwendung für alle Benutzer or nur für Sie selbst verfügbar sein soll.

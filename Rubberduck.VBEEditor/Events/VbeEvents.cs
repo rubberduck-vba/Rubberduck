@@ -65,17 +65,36 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
+        private void RegisterComponents(string projectId, string projectName)
+        {
+            IVBProject project = null;
+            foreach (var item in _projects)
+            {
+                if (item.ProjectId == projectId && item.Name == projectName)
+                {
+                    project = item;
+                    break;
+                }
+
+                item.Dispose();
+            }
+
+            if (project == null)
+            {
+                return;
+            }
+
+            RegisterComponents(project);
+        }
+
         private void RegisterComponents(IVBProject project)
         {
             if (project.IsWrappingNullReference || project.Protection != ProjectProtection.Unprotected)
             {
-                return;    
+                return;
             }
 
-            if (string.IsNullOrWhiteSpace(project.ProjectId))
-            {
-                project.AssignProjectId();
-            }
+            project.AssignProjectId();
 
             var components = project.VBComponents;
             _components.Add(project.ProjectId, components);
@@ -115,7 +134,7 @@ namespace Rubberduck.VBEditor.Events
         {
             if (!_components.ContainsKey(e.ProjectId))
             {
-                RegisterComponents(e.Project);
+                RegisterComponents(e.ProjectId, e.ProjectName);
             }
             ProjectAdded?.Invoke(sender, e);
         }

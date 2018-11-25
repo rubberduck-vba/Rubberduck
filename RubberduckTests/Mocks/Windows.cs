@@ -109,5 +109,9 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.Caption).Returns(name);
             return result.Object;
         }
+
+        public void ReleaseDockableHosts()
+        {
+        }
     }
 }

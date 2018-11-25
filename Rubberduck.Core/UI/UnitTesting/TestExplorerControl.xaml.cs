@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Threading;
-using System.Windows.Input;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -37,9 +35,17 @@ namespace Rubberduck.UI.UnitTesting
         {
             _dispatcher.Invoke(() =>
             {
-                if (FindResource("ResultsByOutcome") is CollectionViewSource resource)
+                if (FindResource("ResultsByOutcome") is CollectionViewSource outcome)
                 {
-                    resource.View.Refresh();
+                    outcome.View.Refresh();
+                }
+                if (FindResource("ResultsByModule") is CollectionViewSource module)
+                {
+                    module.View.Refresh();
+                }
+                if (FindResource("ResultsByCategory") is CollectionViewSource category)
+                {
+                    category.View.Refresh();
                 }
             });
         }
@@ -49,8 +55,8 @@ namespace Rubberduck.UI.UnitTesting
         {
             if (_isDisposed || DataContext == null) { return; }
 
-            DataContextChanged -= TestExplorerControl_DataContextChanged;
             ((TestExplorerViewModel)DataContext).TestCompleted -= OnTestCompleted;
+            DataContextChanged -= TestExplorerControl_DataContextChanged;
 
             _isDisposed = true;
         }

@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using NUnit.Framework;
-using Rubberduck.Inspections;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -23,13 +22,14 @@ namespace RubberduckTests.QuickFixes
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var inspection = new ConstantNotUsedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { });
+                var quickFixProvider = new QuickFixProvider(rewritingManager, new IQuickFix[] { });
                 Assert.AreEqual(0, quickFixProvider.QuickFixes(inspectionResults.First()).Count());
             }
         }
@@ -45,14 +45,15 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var inspection = new EmptyStringLiteralInspection(state);
                 var inspector = InspectionsHelper.GetInspector(inspection);
                 var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
 
-                var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix(state) });
+                var quickFixProvider = new QuickFixProvider(rewritingManager, new IQuickFix[] { new ReplaceEmptyStringLiteralStatementQuickFix() });
                 Assert.AreEqual(1, quickFixProvider.QuickFixes(inspectionResults.First()).Count());
             }
         }
@@ -67,13 +68,14 @@ End Sub";
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var inspection = new ConstantNotUsedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                var quickFixProvider = new QuickFixProvider(state, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix(state) });
+                var quickFixProvider = new QuickFixProvider(rewritingManager, new IQuickFix[] { new RemoveUnusedDeclarationQuickFix() });
 
                 var result = inspectionResults.First();
                 result.Properties.DisableFixes = nameof(RemoveUnusedDeclarationQuickFix);

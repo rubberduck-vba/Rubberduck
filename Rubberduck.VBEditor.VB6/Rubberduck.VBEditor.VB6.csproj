@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47" ToolsVersion="15.0">
+  <PropertyGroup>
+    <Title>Rubberduck.VBEditor.VB6</Title>
+    <Product>Rubberduck.VBEditor.VB6</Product>
+    <Copyright>Copyright © 2018</Copyright>
+    <ProjectGuid>{5D683117-21F1-4A01-A0C7-6AE6F30A16A7}</ProjectGuid>
+  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+  
+  <ItemGroup>
+    <Reference Include="Microsoft.Vbe.Interop.VB6">
+      <HintPath>..\libs\Microsoft.Vbe.Interop.VB6.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Office.v8">
+      <HintPath>..\libs\Office.v8.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <Aliases>Office_v8</Aliases>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="NLog">
+      <Version>4.5.10</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Schema">
+      <Version>4.5.10</Version>
+    </PackageReference>
+  </ItemGroup>
+</Project>

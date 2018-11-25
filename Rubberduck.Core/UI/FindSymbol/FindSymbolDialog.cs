@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using Rubberduck.Interaction.Navigation;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.FindSymbol
 {

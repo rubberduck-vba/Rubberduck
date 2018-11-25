@@ -1,13 +1,16 @@
 using System.Drawing;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Properties;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
+using Rubberduck.UI.Command.Refactorings;
 
 namespace Rubberduck.UI.Command.MenuItems
 {
+#if !DEBUG
+    [Parsing.Common.Disabled]
+#endif 
     public class RefactorExtractMethodCommandMenuItem : CommandMenuItemBase
     {
-        public RefactorExtractMethodCommandMenuItem(CommandBase command) 
+        public RefactorExtractMethodCommandMenuItem(RefactorExtractMethodCommand command) 
             : base(command)
         {
         }
@@ -17,8 +20,8 @@ namespace Rubberduck.UI.Command.MenuItems
 
         public override bool BeginGroup => true;
 
-        public override Image Image => Resources.ExtractMethod;
-        public override Image Mask => Resources.ExtractMethodMask;
+        public override Image Image => Resources.CommandBarIcons.ExtractMethod;
+        public override Image Mask => Resources.CommandBarIcons.ExtractMethodMask;
 
         public override bool EvaluateCanExecute(RubberduckParserState state)
         {

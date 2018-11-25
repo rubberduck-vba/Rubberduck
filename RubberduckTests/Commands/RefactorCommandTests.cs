@@ -2,12 +2,12 @@ using System.Threading;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using Rubberduck.Interaction;
 
 namespace RubberduckTests.Commands
 {
@@ -18,14 +18,14 @@ namespace RubberduckTests.Commands
         [Test]
         public void EncapsulateField_CanExecute_NullActiveCodePane()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -34,13 +34,13 @@ namespace RubberduckTests.Commands
         [Test]
         public void EncapsulateField_CanExecute_NonReadyState()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -54,12 +54,12 @@ namespace RubberduckTests.Commands
     Dim d As Boolean
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(2, 9, 2, 9));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(2, 9, 2, 9));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -73,12 +73,12 @@ End Sub";
 Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(2, 7, 2, 7));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(2, 7, 2, 7));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -92,12 +92,12 @@ End Sub";
 Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 5, 1, 5));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 5, 1, 5));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null);
+                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -106,14 +106,14 @@ End Sub";
         [Test]
         public void ExtractInterface_CanExecute_NullActiveCodePane()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -122,14 +122,14 @@ End Sub";
         [Test]
         public void ExtractInterface_CanExecute_NonReadyState()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(string.Empty, ComponentType.ClassModule, out component, new Selection());
+            var vbe = MockVbeBuilder.BuildFromSingleModule(string.Empty, ComponentType.ClassModule, out _);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -138,11 +138,11 @@ End Sub";
         [Test]
         public void ExtractInterface_CanExecute_NoMembers()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule("Option Explicit", ComponentType.ClassModule, out component, new Selection());
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleModule("Option Explicit", ComponentType.ClassModule, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -155,12 +155,12 @@ End Sub";
                 @"Sub foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -169,12 +169,12 @@ End Sub";
         [Test]
         public void ExtractInterface_CanExecute_Field()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule("Dim d As Boolean", ComponentType.ClassModule, out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleModule("Dim d As Boolean", ComponentType.ClassModule, out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -206,9 +206,10 @@ End Sub
                 Assert.Inconclusive("The active code pane should be the one with the method stub.");
             }
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -232,10 +233,11 @@ End Sub";
 
             vbe.Setup(s => s.ActiveCodePane).Returns(proj1.Object.VBComponents[0].CodeModule.CodePane);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -248,12 +250,12 @@ End Sub";
                 @"Sub foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 var canExecute = extractInterfaceCommand.CanExecute(null);
                 Assert.IsTrue(canExecute);
             }
@@ -267,12 +269,12 @@ End Sub";
                 @"Function foo() As Integer
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -285,12 +287,12 @@ End Function";
                 @"Property Get foo() As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -303,12 +305,12 @@ End Property";
                 @"Property Let foo(value)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -321,12 +323,12 @@ End Property";
                 @"Property Set foo(value)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleModule(input, ComponentType.ClassModule, out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null);
+                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -335,14 +337,14 @@ End Property";
         [Test]
         public void ImplementInterface_CanExecute_NullActiveCodePane()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
+                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -351,14 +353,14 @@ End Property";
         [Test]
         public void ImplementInterface_CanExecute_NonReadyState()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
+                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -367,12 +369,12 @@ End Property";
         [Test]
         public void ImplementInterface_CanExecute_ImplementsInterfaceNotSelected()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(string.Empty, ComponentType.ClassModule, out component, new Selection());
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleModule(string.Empty, ComponentType.ClassModule, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
+                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -388,10 +390,11 @@ End Property";
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null);
+                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -400,14 +403,14 @@ End Property";
         [Test]
         public void IntroduceField_CanExecute_NullActiveCodePane()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
+                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -416,15 +419,15 @@ End Property";
         [Test]
         public void IntroduceField_CanExecute_NonReadyState()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
+                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -433,13 +436,13 @@ End Property";
         [Test]
         public void IntroduceField_CanExecute_Field()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("Dim d As Boolean", out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("Dim d As Boolean", out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
+                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -453,13 +456,13 @@ End Property";
     Dim d As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(2, 10, 2, 10));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object);
+                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsTrue(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -468,14 +471,14 @@ End Property";
         [Test]
         public void IntroduceParameter_CanExecute_NullActiveCodePane()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object);
+                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsFalse(introduceParameterCommand.CanExecute(null));
             }
         }
@@ -484,15 +487,15 @@ End Property";
         [Test]
         public void IntroduceParameter_CanExecute_NonReadyState()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object);
+                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsFalse(introduceParameterCommand.CanExecute(null));
             }
         }
@@ -501,13 +504,13 @@ End Property";
         [Test]
         public void IntroduceParameter_CanExecute_Field()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("Dim d As Boolean", out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("Dim d As Boolean", out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object);
+                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsFalse(introduceParameterCommand.CanExecute(null));
             }
         }
@@ -521,13 +524,13 @@ End Property";
     Dim d As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(2, 10, 2, 10));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object);
+                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object, rewritingManager);
                 Assert.IsTrue(introduceParameterCommand.CanExecute(null));
             }
         }
@@ -536,13 +539,13 @@ End Property";
         [Test]
         public void MoveCloserToUsage_CanExecute_NullActiveCodePane()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
+                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -551,14 +554,14 @@ End Property";
         [Test]
         public void MoveCloserToUsage_CanExecute_NonReadyState()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
+                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -567,12 +570,12 @@ End Property";
         [Test]
         public void MoveCloserToUsage_CanExecute_Field_NoReferences()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("Dim d As Boolean", out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("Dim d As Boolean", out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
+                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -586,12 +589,12 @@ End Property";
     Dim d As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(2, 10, 2, 10));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
+                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -600,12 +603,12 @@ End Property";
         [Test]
         public void MoveCloserToUsage_CanExecute_Const_NoReferences()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("Private Const const_abc = 0", out component, Selection.Home);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("Private Const const_abc = 0", out _, Selection.Home);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
+                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -620,12 +623,12 @@ Sub Foo()
     d = True
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 5, 1, 5));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 5, 1, 5));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
+                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -640,12 +643,12 @@ End Sub";
     d = True
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(2, 10, 2, 10));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(2, 10, 2, 10));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
+                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -661,12 +664,12 @@ Sub Foo()
     d = const_abc
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 17, 1, 17));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 17, 1, 17));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null);
+                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -675,13 +678,13 @@ End Sub";
         [Test]
         public void RemoveParameters_CanExecute_NullActiveCodePane()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -690,14 +693,14 @@ End Sub";
         [Test]
         public void RemoveParameters_CanExecute_NonReadyState()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -709,12 +712,12 @@ End Sub";
             const string input =
                 @"Public Event Foo()";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -727,12 +730,12 @@ End Sub";
                 @"Sub foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 6, 1, 6));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -745,12 +748,12 @@ End Sub";
                 @"Function foo() As Integer
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 11, 1, 11));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -763,12 +766,12 @@ End Function";
                 @"Property Get foo() As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -781,12 +784,12 @@ End Property";
                 @"Property Let foo(value)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -799,12 +802,12 @@ End Property";
                 @"Property Set foo(value)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -816,12 +819,12 @@ End Property";
             const string input =
                 @"Public Event Foo(value)";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -834,12 +837,12 @@ End Property";
                 @"Sub foo(value)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 6, 1, 6));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -852,12 +855,12 @@ End Sub";
                 @"Function foo(value) As Integer
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 11, 1, 11));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -870,12 +873,12 @@ End Function";
                 @"Property Get foo(value) As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -888,12 +891,12 @@ End Property";
                 @"Property Let foo(value1, value2)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -906,12 +909,12 @@ End Property";
                 @"Property Set foo(value1, value2)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null);
+                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -920,13 +923,13 @@ End Property";
         [Test]
         public void ReorderParameters_CanExecute_NullActiveCodePane()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -935,14 +938,14 @@ End Property";
         [Test]
         public void ReorderParameters_CanExecute_NonReadyState()
         {
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -954,12 +957,12 @@ End Property";
             const string input =
                 @"Public Event Foo(value)";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -972,12 +975,12 @@ End Property";
                 @"Sub foo(value)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 6, 1, 6));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -990,12 +993,12 @@ End Sub";
                 @"Function foo(value) As Integer
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 11, 1, 11));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1008,12 +1011,12 @@ End Function";
                 @"Property Get foo(value) As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1026,12 +1029,12 @@ End Property";
                 @"Property Let foo(value1, value2)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1044,12 +1047,12 @@ End Property";
                 @"Property Set foo(value1, value2)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1061,12 +1064,12 @@ End Property";
             const string input =
                 @"Public Event Foo(value1, value2)";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1079,12 +1082,12 @@ End Property";
                 @"Sub foo(value1, value2)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 6, 1, 6));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 6, 1, 6));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1097,12 +1100,12 @@ End Sub";
                 @"Function foo(value1, value2) As Integer
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 11, 1, 11));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 11, 1, 11));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1115,12 +1118,12 @@ End Function";
                 @"Property Get foo(value1, value2) As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1133,12 +1136,12 @@ End Property";
                 @"Property Let foo(value1, value2, value3)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1151,12 +1154,12 @@ End Property";
                 @"Property Set foo(value1, value2, value3)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out component, new Selection(1, 16, 1, 16));
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null);
+                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }

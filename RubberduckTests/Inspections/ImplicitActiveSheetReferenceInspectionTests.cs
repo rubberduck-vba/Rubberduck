@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Common;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -13,7 +12,6 @@ namespace RubberduckTests.Inspections
     public class ImplicitActiveSheetReferenceInspectionTests
     {
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ImplicitActiveSheetReference_ReportsRange()
         {
@@ -34,8 +32,6 @@ End Sub
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
-                state.AddTestLibrary("Excel.1.8.xml");
-
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
                 {
@@ -50,7 +46,6 @@ End Sub
         }
 
         [Test]
-        [DeploymentItem(@"TestFiles\")]
         [Category("Inspections")]
         public void ImplicitActiveSheetReference_Ignored_DoesNotReportRange()
         {
@@ -70,17 +65,8 @@ End Sub
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
-            using (var state = parser.State)
+            using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                state.AddTestLibrary("Excel.1.8.xml");
-
-                parser.Parse(new CancellationTokenSource());
-                if (state.Status >= ParserState.Error)
-                {
-                    Assert.Inconclusive("Parser Error");
-                }
-
                 var inspection = new ImplicitActiveSheetReferenceInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 

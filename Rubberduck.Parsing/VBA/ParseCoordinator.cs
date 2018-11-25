@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,10 +8,16 @@ using Rubberduck.VBEditor;
 using System.Diagnostics;
 using System.Linq;
 using NLog;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.VBA
 {
+    /// <remarks>
+    /// Note that for unit tests, TestParseCoodrinator is used in its place
+    /// to support synchronous parse from BeginParse.
+    /// </remarks>
     public class ParseCoordinator : IParseCoordinator
     {
         public RubberduckParserState State { get; }
@@ -21,8 +28,9 @@ namespace Rubberduck.Parsing.VBA
         private readonly IProjectManager _projectManager;
         private readonly IParsingCacheService _parsingCacheService;
         private readonly IParserStateManager _parserStateManager;
-
-        private readonly bool _isTestScope;
+        private readonly IRewritingManager _rewritingManager;
+        private readonly ConcurrentStack<object> _requestorStack;
+        private bool _isSuspended;
 
         public ParseCoordinator(
             RubberduckParserState state,
@@ -30,7 +38,7 @@ namespace Rubberduck.Parsing.VBA
             IParsingCacheService parsingCacheService,
             IProjectManager projectManager,
             IParserStateManager parserStateManager,
-            bool isTestScope = false)
+            IRewritingManager rewritingManager = null)
         {
             if (state == null)
             {
@@ -58,106 +66,151 @@ namespace Rubberduck.Parsing.VBA
             _projectManager = projectManager;
             _parsingCacheService = parsingCacheService;
             _parserStateManager = parserStateManager;
-            _isTestScope = isTestScope;
+            _rewritingManager = rewritingManager;
 
             state.ParseRequest += ReparseRequested;
+            state.SuspendRequest += SuspendRequested;
+
+            _requestorStack = new ConcurrentStack<object>();
         }
 
-        // Do not access this from anywhere but ReparseRequested.
-        // ReparseRequested needs to have a reference to the cancellation token.
-        private CancellationTokenSource _currentCancellationTokenSource = new CancellationTokenSource();
+        // In production, the cancellation token should be accessed inside the CancellationSyncObject
+        // lock. It should not be accessible by any other code. In unit tests, however, it may be 
+        // accessible in order to support synchronous parse/cancellation taking the token provided from
+        // outside the parse coordinator. 
+        protected CancellationTokenSource CurrentCancellationTokenSource = new CancellationTokenSource();
 
-        private readonly object _cancellationSyncObject = new object();
-        private readonly object _parsingRunSyncObject = new object();
+        protected readonly object CancellationSyncObject = new object();
+        protected readonly object ParsingRunSyncObject = new object();
+        protected readonly object SuspendStackSyncObject = new object();
+        protected readonly ReaderWriterLockSlim ParsingSuspendLock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
         private void ReparseRequested(object sender, EventArgs e)
         {
-            CancellationToken token;
-            lock (_cancellationSyncObject)
+            lock (SuspendStackSyncObject)
             {
-                Cancel();
-
-                if (_currentCancellationTokenSource == null)
+                if (_isSuspended)
                 {
-                    Logger.Error("Tried to request a parse after the final cancellation.");
+                    _requestorStack.Push(sender);
+                    return;
+                }
+            }
+
+            BeginParse(sender);
+        }
+
+        public void SuspendRequested(object sender, RubberduckStatusSuspendParserEventArgs e)
+        {
+            if (ParsingSuspendLock.IsReadLockHeld)
+            {
+                e.Result = SuspensionResult.UnexpectedError;
+                const string errorMessage =
+                    "A suspension action was attempted while a read lock was held. This indicates a bug in the code logic as suspension should not be requested from same thread that has a read lock.";
+                Logger.Error(errorMessage);
+#if DEBUG
+                Debug.Assert(false, errorMessage);
+#endif
+                return;
+            }
+
+            object parseRequestor = null;
+            try
+            {
+                if (!ParsingSuspendLock.TryEnterWriteLock(e.MillisecondsTimeout))
+                {
+                    e.Result = SuspensionResult.TimedOut;
                     return;
                 }
 
-                token = _currentCancellationTokenSource.Token;
+                lock (SuspendStackSyncObject)
+                {
+                    _isSuspended = true;
+                }
+
+                var originalStatus = State.Status;
+                if (!e.AllowedRunStates.Contains(originalStatus))
+                {
+                    e.Result = SuspensionResult.IncompatibleState;
+                    return;
+                }
+                _parserStateManager.SetStatusAndFireStateChanged(e.Requestor, ParserState.Busy,
+                    CancellationToken.None);
+                e.BusyAction.Invoke();
+            }
+            catch
+            {
+                e.Result = SuspensionResult.UnexpectedError;
+                throw;
+            }
+            finally
+            {
+                lock (SuspendStackSyncObject)
+                {
+                    _isSuspended = false;
+                    if (_requestorStack.TryPop(out var lastRequestor))
+                    {
+                        _requestorStack.Clear();
+                        parseRequestor = lastRequestor;
+                    }
+
+                    // Though there were no reparse requests, we need to reset the state before we release the 
+                    // write lock to avoid introducing discrepancy in the parser state due to readers being 
+                    // blocked. Any reparse requests must be done outside the write lock; see further below.
+                    if (parseRequestor == null)
+                    {
+                        // We cannot make any assumptions about the original state, nor do we know
+                        // anything about resuming the previous state, so we must delegate the state
+                        // evaluation to the state manager.
+                        _parserStateManager.EvaluateOverallParserState(CancellationToken.None);
+                    }
+                }
+
+                if (ParsingSuspendLock.IsWriteLockHeld)
+                {
+                    ParsingSuspendLock.ExitWriteLock();
+                }
+
+                if (e.Result == SuspensionResult.Pending)
+                {
+                    e.Result = SuspensionResult.Completed;
+                }
             }
 
+            // Any reparse requests must be done outside the write lock to avoid deadlocks
+            if (parseRequestor != null)
+            {
+                BeginParse(parseRequestor);
+            }
+        }
 
-            if (!_isTestScope)
-            {
-                Task.Run(() => ParseAll(sender, token), token);
-            }
-            else
-            {
-                ParseInternal(token);
-            }
+        /// <remarks>
+        /// Overriden in the unit test project to facilicate synchronous unit tests
+        /// Refer to TestParserCoordinator class in the unit test project.
+        /// </remarks>
+        public virtual void BeginParse(object sender)
+        {
+            Task.Run(() => ParseAll(sender));
         }
 
         private void Cancel(bool createNewTokenSource = true)
         {
-            lock (_cancellationSyncObject)
+            lock (CancellationSyncObject)
             {
-                if (_currentCancellationTokenSource == null)
+                if (CurrentCancellationTokenSource == null)
                 {
                     Logger.Error("Tried to cancel a parse after the final cancellation.");
                     return;
                 }
 
-                var oldTokenSource = _currentCancellationTokenSource;
-                _currentCancellationTokenSource = createNewTokenSource ? new CancellationTokenSource() : null;
+                var oldTokenSource = CurrentCancellationTokenSource;
+                CurrentCancellationTokenSource = createNewTokenSource ? new CancellationTokenSource() : null;
 
                 oldTokenSource.Cancel();
                 oldTokenSource.Dispose();
             }
         }
 
-        /// <summary>
-        /// For the use of tests only
-        /// </summary>
-        /// 
-        public void Parse(CancellationTokenSource token)
-        {
-            SetSavedCancellationTokenSource(token);
-            ParseInternal(token.Token);
-        }
-
-        /// <summary>
-        /// For the use of tests only
-        /// </summary>
-        /// 
-        private void SetSavedCancellationTokenSource(CancellationTokenSource tokenSource)
-        {
-            var oldTokenSource = _currentCancellationTokenSource;
-            _currentCancellationTokenSource = tokenSource;
-
-            oldTokenSource?.Cancel();
-            oldTokenSource?.Dispose();
-        }
-
-        private void ParseInternal(CancellationToken token)
-        {
-            var lockTaken = false;
-            try
-            {
-                Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
-                ParseAllInternal(this, token);
-            }
-            catch (OperationCanceledException)
-            {
-                //This is the point to which the cancellation should break.
-            }
-            finally
-            {
-                if (lockTaken) Monitor.Exit(_parsingRunSyncObject);
-            }
-        }
-
-
-        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferencesInput, CancellationToken token)
+        private void ExecuteCommonParseActivities(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<QualifiedModuleName> toReresolveReferencesInput, IReadOnlyCollection<string> newProjectIds, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
 
@@ -168,26 +221,56 @@ namespace Rubberduck.Parsing.VBA
             _parserStateManager.SetModuleStates(toParse, ParserState.Started, token);
             token.ThrowIfCancellationRequested();
 
+            _parsingCacheService.ClearProjectWhoseCompilationArgumentsChanged();
+            token.ThrowIfCancellationRequested();
+
             _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.LoadingReference, token);
             token.ThrowIfCancellationRequested();
 
-            _parsingStageService.SyncComReferences(State.Projects, token);
-            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedUnloadedInLastSync.Any())
+            _parsingStageService.SyncComReferences(token);
+            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedInLastSync.Any())
             {
-                var unloadedReferences = _parsingStageService.COMReferencesUnloadedUnloadedInLastSync;
-                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedReferences.ToHashSet().AsReadOnly(), toParse);
+                var unloadedReferences = _parsingStageService.COMReferencesUnloadedInLastSync.ToHashSet();
+                var unloadedModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => unloadedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
                 toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
                 _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
-                ClearModuleToModuleReferences(unloadedReferences);
+                ClearModuleToModuleReferences(unloadedModules);
                 RefreshDeclarationFinder();
+            }
+
+            if (_parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync.Any())
+            {
+                //We only use the referencedProjectId because that simplifies the reference management immensely.  
+                var affectedReferences = _parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync
+                    .Select(tpl => tpl.referencedProjectId)
+                    .ToHashSet();
+                var referenceModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => affectedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(referenceModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
             }
             token.ThrowIfCancellationRequested();
 
             _parsingStageService.LoadBuitInDeclarations();
-            if (_parsingStageService.LastLoadOfBuiltInDeclarationsLoadedDeclarations)
+            if (newProjectIds.Any())
+            {
+                _parsingStageService.CreateProjectDeclarations(newProjectIds);
+                RefreshDeclarationFinder();
+            }
+            if (_parsingStageService.LastLoadOfBuiltInDeclarationsLoadedDeclarations || newProjectIds.Any())
             { 
                 RefreshDeclarationFinder();
             }
+            token.ThrowIfCancellationRequested();
+
+            _parsingStageService.RefreshProjectReferences();
             token.ThrowIfCancellationRequested();
 
             IReadOnlyCollection<QualifiedModuleName> toResolveReferences;
@@ -299,13 +382,23 @@ namespace Rubberduck.Parsing.VBA
         /// <summary>
         /// Starts parsing all components of all unprotected VBProjects associated with the VBE-Instance passed to the constructor of this parser instance.
         /// </summary>
-        private void ParseAll(object requestor, CancellationToken token)
+        private void ParseAll(object requestor)
         {
+            CancellationToken token;
             Stopwatch watch = null;
             var lockTaken = false;
             try
             {
-                Monitor.Enter(_parsingRunSyncObject, ref lockTaken);
+                if (!ParsingSuspendLock.IsWriteLockHeld)
+                {
+                    ParsingSuspendLock.EnterReadLock();
+                }
+                lock (CancellationSyncObject)
+                {
+                    Cancel();
+                    token = CurrentCancellationTokenSource.Token;
+                }
+                Monitor.Enter(ParsingRunSyncObject, ref lockTaken);
                 
                 watch = Stopwatch.StartNew();
                 Logger.Debug("Parsing run started. (thread {0}).", Thread.CurrentThread.ManagedThreadId);
@@ -328,16 +421,23 @@ namespace Rubberduck.Parsing.VBA
             finally
             {
                 if (watch != null && watch.IsRunning) watch.Stop();
-                if (lockTaken) Monitor.Exit(_parsingRunSyncObject);
+                if (lockTaken) Monitor.Exit(ParsingRunSyncObject);
+                if (ParsingSuspendLock.IsReadLockHeld)
+                {
+                    ParsingSuspendLock.ExitReadLock();
+                }
             }
             if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId);
         }
 
-        private void ParseAllInternal(object requestor, CancellationToken token)
+        protected void ParseAllInternal(object requestor, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
 
             _parserStateManager.SetStatusAndFireStateChanged(requestor, ParserState.Started, token);
+            token.ThrowIfCancellationRequested();
+
+            _rewritingManager?.InvalidateAllSessions();
             token.ThrowIfCancellationRequested();
 
             _projectManager.RefreshProjects();
@@ -346,16 +446,32 @@ namespace Rubberduck.Parsing.VBA
             var modules = _projectManager.AllModules();
             token.ThrowIfCancellationRequested();
 
+            var projects = _projectManager.Projects;
+            var projectIds = projects.Select(tpl => tpl.ProjectId).ToList().AsReadOnly();
+            token.ThrowIfCancellationRequested();
+
             var toParse = modules.Where(module => State.IsNewOrModified(module)).ToHashSet();
             token.ThrowIfCancellationRequested();
 
             toParse.UnionWith(modules.Where(module => _parserStateManager.GetModuleState(module) != ParserState.Ready));
             token.ThrowIfCancellationRequested();
 
+            _parsingCacheService.ReloadCompilationArguments(projectIds);
+            token.ThrowIfCancellationRequested();
+
+            var projectsWithChangedCompilationArguments = _parsingCacheService.ProjectWhoseCompilationArgumentsChanged();
+            token.ThrowIfCancellationRequested();
+
+            toParse.UnionWith(ModulesInProjects(projectsWithChangedCompilationArguments));
+            token.ThrowIfCancellationRequested();
+
+            toParse = toParse.Where(module => module.IsParsable).ToHashSet();
+            token.ThrowIfCancellationRequested();
+
             var removedModules = RemovedModules(modules);
             token.ThrowIfCancellationRequested();
 
-            var removedProjects = RemovedProjects(_projectManager.Projects);
+            var removedProjects = RemovedProjects(projects.Select(tpl => tpl.Project).ToList().AsReadOnly());
             token.ThrowIfCancellationRequested();
 
             removedModules.UnionWith(ModulesInProjects(removedProjects));
@@ -380,7 +496,22 @@ namespace Rubberduck.Parsing.VBA
             CleanUpProjects(notRemovedDisposedProjects);
             token.ThrowIfCancellationRequested();
 
-            ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, token);
+            var newProjects = NewProjects(projectIds);
+
+            ExecuteCommonParseActivities(toParse.AsReadOnly(), toReResolveReferences, newProjects, token);
+        }
+
+        private IReadOnlyCollection<string> NewProjects(IReadOnlyCollection<string> projectIds)
+        {
+            var existingProjects = State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Project)
+                .Select(declaration => declaration.ProjectId)
+                .ToHashSet();
+            var newProjects = projectIds.Where(projectId => !existingProjects
+                    .Contains(projectId))
+                    .ToList()
+                    .AsReadOnly();
+            return newProjects;
         }
 
         private IReadOnlyCollection<QualifiedModuleName> OtherModulesReferencingAnyNotToBeParsed(IReadOnlyCollection<QualifiedModuleName> removedModules, IReadOnlyCollection<QualifiedModuleName> toParse)
@@ -418,6 +549,7 @@ namespace Rubberduck.Parsing.VBA
 
         private void CleanUpProjects(IReadOnlyCollection<string> removedProjectIds)
         {
+            _parsingCacheService.RemoveCompilationArgumentsFromCache(removedProjectIds);
             ClearStateCache(removedProjectIds);
         }
 
@@ -461,6 +593,7 @@ namespace Rubberduck.Parsing.VBA
         {
             State.ParseRequest -= ReparseRequested;
             Cancel(false);
+            ParsingSuspendLock.Dispose();
         }
     }
 }

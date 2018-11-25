@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using Rubberduck.UI;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting.Fakes
 {
     internal class InputBox : FakeBase
     {
-        private static readonly IntPtr ProcessAddress = EasyHook.LocalHook.GetProcAddress(TargetLibrary, "rtcInputBox");
-
         public InputBox()
         {
-            InjectDelegate(new InputBoxDelegate(InputBoxCallback), ProcessAddress);
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcInputBox");
+
+            InjectDelegate(new InputBoxDelegate(InputBoxCallback), processAddress);
         }
 
         public override bool PassThrough
@@ -20,7 +20,7 @@ namespace Rubberduck.UnitTesting.Fakes
             set
             {
                 Verifier.SuppressAsserts();
-                AssertHandler.OnAssertInconclusive(string.Format(RubberduckUI.Assert_InvalidFakePassThrough, "InputBox"));
+                AssertHandler.OnAssertInconclusive(string.Format(AssertMessages.Assert_InvalidFakePassThrough, "InputBox"));
             }
         }
 
