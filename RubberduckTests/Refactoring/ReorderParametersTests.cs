@@ -1198,7 +1198,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1, selection)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -1208,6 +1208,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
                 var module1 = project.Object.VBComponents[0].CodeModule;
+                vbe.Setup(v => v.ActiveCodePane).Returns(module1.CodePane);
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
@@ -1254,7 +1255,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1, selection)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -1264,6 +1265,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
                 var module1 = project.Object.VBComponents[0].CodeModule;
+                vbe.Setup(v => v.ActiveCodePane).Returns(module1.CodePane);
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
@@ -1320,7 +1322,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1, selection)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
                 .Build();
@@ -1331,6 +1333,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
                 var module1 = project.Object.VBComponents[0].CodeModule;
+                vbe.Setup(v => v.ActiveCodePane).Returns(module1.CodePane);
                 var module2 = project.Object.VBComponents[1].CodeModule;
                 var module3 = project.Object.VBComponents[2].CodeModule;
 
@@ -1380,7 +1383,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1, selection)
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -1390,6 +1393,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
                 var module1 = project.Object.VBComponents[0].CodeModule;
+                vbe.Setup(v => v.ActiveCodePane).Returns(module1.CodePane);
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 var messageBox = new Mock<IMessageBox>();
@@ -1407,44 +1411,6 @@ End Sub";
 
                 Assert.AreEqual(expectedCode1, module1.Content());
                 Assert.AreEqual(expectedCode2, module2.Content());
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Reorder Parameters")]
-        public void ReorderParametersRefactoring_ParamsSwapped_RejectPrompt()
-        {
-            //Input
-            const string inputCode1 =
-                @"Implements IClass1
-
-Private Sub IClass1_DoSomething(ByVal a As Integer, ByVal b As String)
-End Sub";
-            const string inputCode2 =
-                @"Public Sub DoSomething(ByVal a As Integer, ByVal b As String)
-End Sub";
-
-            var selection = new Selection(3, 23, 3, 27);
-
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
-                .AddComponent("IClass1", ComponentType.ClassModule, inputCode2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
-
-                var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.Confirm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<ConfirmationOutcome>())).Returns(ConfirmationOutcome.No);
-
-                //Specify Params to remove
-                var model = new ReorderParametersModel(state, qualifiedSelection);
-                Assert.IsNull(model.TargetDeclaration);
             }
         }
 
@@ -1477,7 +1443,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1, selection)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -1487,6 +1453,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
                 var module1 = project.Object.VBComponents[0].CodeModule;
+                vbe.Setup(v => v.ActiveCodePane).Returns(module1.CodePane);
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
@@ -1533,7 +1500,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1, selection)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -1543,6 +1510,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
                 var module1 = project.Object.VBComponents[0].CodeModule;
+                vbe.Setup(v => v.ActiveCodePane).Returns(module1.CodePane);
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
@@ -1589,7 +1557,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1, selection)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -1599,6 +1567,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
                 var module1 = project.Object.VBComponents[0].CodeModule;
+                vbe.Setup(v => v.ActiveCodePane).Returns(module1.CodePane);
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
                 //Specify Params to remove
@@ -1656,7 +1625,7 @@ End Sub";   // note: IDE removes excess spaces
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1, selection)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .AddComponent("Class3", ComponentType.ClassModule, inputCode3)
                 .Build();
@@ -1667,6 +1636,7 @@ End Sub";   // note: IDE removes excess spaces
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(project.Object.VBComponents[0]), selection);
                 var module1 = project.Object.VBComponents[0].CodeModule;
+                vbe.Setup(v => v.ActiveCodePane).Returns(module1.CodePane);
                 var module2 = project.Object.VBComponents[1].CodeModule;
                 var module3 = project.Object.VBComponents[2].CodeModule;
 

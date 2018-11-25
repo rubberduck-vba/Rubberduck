@@ -75,8 +75,10 @@ namespace RubberduckTests.Refactoring.Rename
 
             tdo.MsgBox = new Mock<IMessageBox>();
             tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == ConfirmationOutcome.Yes);
-
-            tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
+            
+            var activeIndex = renameTMDs.FindIndex(tmd => tmd.Input_WithFauxCursor != string.Empty);
+            tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs, activeIndex);
+            
             tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);
 
             CreateQualifiedSelectionForTestCase(tdo);
@@ -196,7 +198,7 @@ namespace RubberduckTests.Refactoring.Rename
             Assert.Inconclusive($"Unable to find target '{RenameTests.FAUX_CURSOR}' in { tdo.SelectionModuleName} content.");
         }
 
-        private static IVBE BuildProject(string projectName, List<RenameTestModuleDefinition> testComponents)
+        private static IVBE BuildProject(string projectName, List<RenameTestModuleDefinition> testComponents, int activeIndex)
         {
             var builder = new MockVbeBuilder();
             var enclosingProjectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
@@ -222,9 +224,11 @@ namespace RubberduckTests.Refactoring.Rename
                     enclosingProjectBuilder.AddComponent(comp.ModuleName, comp.ModuleType, comp.Input, selection);
                 }
             }
-
-            builder.AddProject(enclosingProjectBuilder.Build());
-            return builder.Build().Object;
+            var project = enclosingProjectBuilder.Build();
+            builder.AddProject(project);
+            var vbe = builder.Build();
+            vbe.SetupGet(v => v.ActiveCodePane).Returns(project.Object.VBComponents[activeIndex].CodeModule.CodePane);
+            return vbe.Object;
         }
 
         internal static IVBComponent RetrieveComponent(RenameTestsDataObject tdo, string componentName)

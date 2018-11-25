@@ -327,22 +327,16 @@ End Sub";
                 @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-
-                var presenter = new Mock<IExtractInterfacePresenter>();
-                presenter.Setup(p => p.Show()).Returns(value: null);
-
                 //SetupFactory
-                var factory = SetupFactory(model);
+                var factory = SetupFactory(null);
 
                 var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object);
                 refactoring.Refactor();

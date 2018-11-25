@@ -80,6 +80,9 @@ namespace RubberduckTests.Mocks
             foreach (var component in _projects.SelectMany(vbProject => vbProject.VBComponents))
             {
                 _codePanes.Add(component.CodeModule.CodePane);
+                {
+                    _vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
+                }
             }
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);

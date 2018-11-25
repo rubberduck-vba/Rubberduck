@@ -730,7 +730,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, codeClass1)
+                .AddComponent("Class1", ComponentType.ClassModule, codeClass1, selection)
                 .AddComponent("Class2", ComponentType.ClassModule, codeClass2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -755,7 +755,7 @@ End Sub";
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-
+                
                 var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
                 refactoring.Refactor(qualifiedSelection);
 

@@ -1919,6 +1919,12 @@ End Sub";
                 var presenter = new Mock<IRenamePresenter>();
                 var factory = GetFactoryMock(m => {
                     presenter.Setup(p => p.Model).Returns(m);
+                    presenter.Setup(p => p.Show(It.IsAny<Declaration>()))
+                        .Callback(() => m.NewName = newName)
+                        .Returns(m);
+                    presenter.Setup(p => p.Show())
+                        .Callback(() => m.NewName = newName)
+                        .Returns(m);
                     return presenter;
                 }, out var creator);
 
@@ -2594,21 +2600,23 @@ End Sub"
         [Category("Rename")]
         public void RenameRefactoring_RenameViewModel_IsValidName_ChangeCasingNotValid()
         {
-            var tdo = new RenameTestsDataObject(selection: "val1", newName: "Val1");
-            var inputOutput = new RenameTestModuleDefinition("TestClass")
-            {
-                Input =
+            const string input =
                     @"Private Sub Foo()
-    Dim va|l1 As Integer
-End Sub",
-                CheckExpectedEqualsActual = false
-            };
-            //FIXME retry
-            //InitializeTestDataObject(tdo, inputOutput);
-            var renameViewModel = new RenameViewModel(tdo.RenameModel.State, tdo.RenameModel);
-            renameViewModel.Target = tdo.RenameModel.Target;
-            renameViewModel.NewName = tdo.NewName;
-            Assert.IsFalse(renameViewModel.IsValidName);
+    Dim val1 As Integer
+End Sub";
+            const string selected = "val1";
+            const string newName = "Val1";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declaration = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
+                    .Where(d => d.IdentifierName.Equals(selected)).First();
+                var renameModel = new RenameModel(state, declaration.QualifiedSelection);
+                var renameViewModel = new RenameViewModel(state, renameModel);
+                renameViewModel.Target = renameModel.Target;
+                renameViewModel.NewName = newName;
+                Assert.IsFalse(renameViewModel.IsValidName); 
+            }
         }
 
 
