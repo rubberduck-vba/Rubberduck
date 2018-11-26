@@ -591,6 +591,19 @@ namespace Rubberduck.Parsing.VBA
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+            _isDisposed = true;
+
             State.ParseRequest -= ReparseRequested;
             Cancel(false);
             ParsingSuspendLock.Dispose();

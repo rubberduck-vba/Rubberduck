@@ -250,12 +250,25 @@ namespace Rubberduck.Inspections
 
             public void Dispose()
             {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            private bool _isDisposed;
+            protected virtual void Dispose(bool disposing)
+            {
+                if (_isDisposed || !disposing)
+                {
+                    return;
+                }
+
                 if (_configService != null)
                 {
                     _configService.SettingsChanged -= ConfigServiceSettingsChanged;
                 }
 
-                _inspections.Clear();
+                _inspections.Clear(); 
+                _isDisposed = true;
             }
         }
     }

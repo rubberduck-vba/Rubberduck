@@ -77,7 +77,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
         [PreserveSig] int Clone([Out] out IEnumVARIANT retval);
     }
 
-    public class ComWrapperEnumerator<TWrapperItem> : IEnumerator<TWrapperItem>
+    public sealed class ComWrapperEnumerator<TWrapperItem> : IEnumerator<TWrapperItem>
         where TWrapperItem : class
     {
         private readonly Func<object, TWrapperItem> _itemWrapper;

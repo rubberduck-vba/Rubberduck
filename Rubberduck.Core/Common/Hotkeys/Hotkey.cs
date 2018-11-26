@@ -33,7 +33,7 @@ namespace Rubberduck.Common.Hotkeys
         public Keys Combo { get; }
         public Keys SecondKey { get; }
         public bool IsTwoStepHotkey { get; }
-        public bool IsAttached => HotkeyInfo.HookId != IntPtr.Zero;
+        public bool IsAttached => HotkeyInfo.HookId != 0;
 
         public event EventHandler<HookEventArgs> MessageReceived;
 
@@ -69,9 +69,10 @@ namespace Rubberduck.Common.Hotkeys
                 return;
             }
 
-            if (!User32.UnregisterHotKey(_hWndVbe, HotkeyInfo.HookId))
+            if (!User32.UnregisterHotKey(_hWndVbe, new IntPtr(HotkeyInfo.HookId)))
             {
-                Logger.Warn($"Error calling UnregisterHotKey on hokey with id {HotkeyInfo.HookId} for command of type {Command.GetType()}; the error was {Marshal.GetLastWin32Error()}; going to delete the atom anyway... The memory may leak.");
+                var error = Marshal.GetLastWin32Error();
+                Logger.Warn($"Error calling UnregisterHotKey on hokey with id {HotkeyInfo.HookId} for command of type {Command.GetType()}; the error was {error}; going to delete the atom anyway... The memory may leak.");
             }
             Kernel32.SetLastError(Kernel32.ERROR_SUCCESS);
             Kernel32.GlobalDeleteAtom(HotkeyInfo.HookId);
@@ -81,7 +82,7 @@ namespace Rubberduck.Common.Hotkeys
                 Logger.Warn($"Error calling DeleteGlobalAtom; the error was {lastError}, the id {HotkeyInfo.HookId} and the type of the associated command {Command.GetType()}.");
             }
 
-            HotkeyInfo = new HotkeyInfo(IntPtr.Zero, Combo);
+            HotkeyInfo = new HotkeyInfo(0, Combo);
             ClearCommandShortcutText();
         }
 
@@ -92,14 +93,15 @@ namespace Rubberduck.Common.Hotkeys
                 return;
             }
 
-            var hookId = (IntPtr)Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
-            if (hookId == IntPtr.Zero)
-            {
-                Logger.Warn($"Error calling GlobalAddAtom; the error was {Marshal.GetLastWin32Error()}; aborting the HookKey operation...");    
+            var hookId = Kernel32.GlobalAddAtom(Guid.NewGuid().ToString());
+            var error = Marshal.GetLastWin32Error();
+            if (hookId == 0)
+            {               
+                Logger.Warn($"Error calling GlobalAddAtom; the error was {error}; aborting the HookKey operation...");    
                 return;
             }
 
-            var success = User32.RegisterHotKey(_hWndVbe, hookId, shift, (uint)key);
+            var success = User32.RegisterHotKey(_hWndVbe, new IntPtr(hookId), shift, (uint)key);
             if (!success)
             {
                 Logger.Debug(RubberduckUI.CommonHotkey_KeyNotRegistered, key);
