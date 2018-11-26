@@ -125,13 +125,13 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
         private IVBProject GetProject()
         {
-            using (var activeProject = _vbe.ActiveVBProject)
+            //No using because the wrapper gets returned potentially. 
+            var activeProject = _vbe.ActiveVBProject;
+            if (!activeProject.IsWrappingNullReference)
             {
-                if (!activeProject.IsWrappingNullReference)
-                {
-                    return activeProject;
-                }
+                return activeProject;
             }
+            activeProject.Dispose();
             
             using (var projects = _vbe.VBProjects)
             {
