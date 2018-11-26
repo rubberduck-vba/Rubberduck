@@ -143,10 +143,13 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
+            bool canExecute;
             using (var project = GetProject())
             {
-                return project != null && !project.IsWrappingNullReference && CanExecuteCode(project);
+                canExecute = project != null && !project.IsWrappingNullReference && CanExecuteCode(project);
             }
+
+            return canExecute;
         }
         
         private bool CanExecuteCode(IVBProject project)
