@@ -1,22 +1,22 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ProcedureShouldBeFunctionInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_ReturnsResult()
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef foo As Boolean)
+    foo = 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -30,15 +30,17 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_ReturnsResult_MultipleSubs()
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef foo As Boolean)
+    foo = True
 End Sub
 
 Private Sub Goo(ByRef foo As Integer)
+    foo = 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -53,8 +55,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_Function()
         {
             const string inputCode =
@@ -74,8 +76,8 @@ End Function";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_SingleByValParam()
         {
             const string inputCode =
@@ -94,8 +96,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnsResult_MultipleByValParams()
         {
             const string inputCode =
@@ -114,12 +116,14 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnsResult_MultipleByRefParams()
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef foo As Integer, ByRef goo As Integer)
+    foo = 42
+    goo = 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -134,13 +138,14 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_InterfaceImplementation()
         {
             //Input
             const string inputCode1 =
                 @"Public Sub DoSomething(ByRef a As Integer)
+    a = 42
 End Sub";
             const string inputCode2 =
                 @"Implements IClass1
@@ -166,8 +171,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_DoesNotReturnResult_EventImplementation()
         {
             //Input
@@ -177,6 +182,7 @@ End Sub";
                 @"Private WithEvents abc As Class1
 
 Private Sub abc_Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub";
 
             var builder = new MockVbeBuilder();
@@ -197,13 +203,14 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ProcedureShouldBeFunction_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
                 @"'@Ignore ProcedureCanBeWrittenAsFunction
 Private Sub Foo(ByRef foo As Boolean)
+    foo = 42
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -218,16 +225,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new ProcedureCanBeWrittenAsFunctionInspection(null);
-            Assert.AreEqual(CodeInspectionType.LanguageOpportunities, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ProcedureCanBeWrittenAsFunctionInspection";

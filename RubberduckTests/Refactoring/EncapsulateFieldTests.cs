@@ -1,5 +1,5 @@
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Common;
 using Rubberduck.Refactorings;
@@ -15,12 +15,12 @@ using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.Refactoring
 {
-    [TestClass]
+    [TestFixture]
     public class EncapsulateFieldTests
     {
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_WithLetter()
         {
             //Input
@@ -43,7 +43,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -60,17 +61,18 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldIsOverMultipleLines()
         {
             //Input
@@ -96,7 +98,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -113,17 +116,18 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_WithSetter()
         {
             //Input
@@ -146,7 +150,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -163,17 +168,18 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_WithOnlyGetter()
         {
             //Input
@@ -192,7 +198,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -209,17 +216,18 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_OtherMethodsInClass()
         {
             //Input
@@ -246,6 +254,7 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 
+
 Sub Foo()
 End Sub
 
@@ -255,7 +264,8 @@ End Function";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -272,17 +282,18 @@ End Function";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_OtherPropertiesInClass()
         {
             //Input
@@ -312,6 +323,7 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 
+
 Property Get Foo() As Variant
     Foo = True
 End Property
@@ -324,7 +336,8 @@ End Property";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -341,17 +354,18 @@ End Property";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_OtherFieldsInClass()
         {
             //Input
@@ -376,7 +390,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -393,17 +408,18 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveFirst()
         {
             //Input
@@ -438,7 +454,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -455,17 +472,18 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveSecond()
         {
             //Input
@@ -492,7 +510,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -509,17 +528,18 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldDeclarationHasMultipleFields_MoveLast()
         {
             //Input
@@ -546,7 +566,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -563,17 +584,18 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePrivateField()
         {
             //Input
@@ -596,7 +618,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -613,17 +636,18 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldHasReferences()
         {
             //Input
@@ -651,6 +675,7 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 
+
 Sub Foo()
     Name = 0
     Bar Name
@@ -661,7 +686,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -678,17 +704,18 @@ End Sub";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void GivenReferencedPublicField_UpdatesReferenceToNewProperty()
         {
             //Input
@@ -722,6 +749,7 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 
+
 Sub Foo()
     Name = 1
 End Sub";
@@ -745,7 +773,8 @@ End Sub";
             var component = project.Object.VBComponents[0];
             vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -764,7 +793,7 @@ End Sub";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode1 = module1.Content();
@@ -772,18 +801,12 @@ End Sub";
 
                 Assert.AreEqual(expectedCode1, actualCode1);
                 Assert.AreEqual(expectedCode2, actualCode2);
-
-                var rewriter1 = state.GetRewriter(module1.Parent);
-                Assert.AreEqual(expectedCode1, rewriter1.GetText());
-
-                var rewriter2 = state.GetRewriter(module2.Parent);
-                Assert.AreEqual(expectedCode2, rewriter2.GetText());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_PassInTarget()
         {
             //Input
@@ -806,7 +829,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -823,17 +847,17 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_PresenterIsNull()
         {
             //Input
@@ -842,23 +866,24 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var vbeWrapper = vbe.Object;
                 var factory = new EncapsulateFieldPresenterFactory(vbeWrapper, state, null);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbeWrapper, CreateIndenter(vbe.Object), factory);
+                var refactoring = new EncapsulateFieldRefactoring(vbeWrapper, CreateIndenter(vbe.Object), factory, rewritingManager);
                 refactoring.Refactor();
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(inputCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(inputCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulateField_ModelIsNull()
         {
             //Input
@@ -868,7 +893,8 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -876,17 +902,17 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(null);
 
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(inputCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(inputCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void GivenNullActiveCodePane_FactoryReturnsNullPresenter()
         {
             //Input
@@ -895,7 +921,7 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            using(var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 vbe.Object.ActiveCodePane = null;
@@ -906,9 +932,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_ParameterlessTargetReturnsNullModel()
         {
             //Input
@@ -929,9 +955,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_NullTargetReturnsNullModel()
         {
             //Input
@@ -957,9 +983,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithParameterNameChanged()
         {
             //Input
@@ -984,9 +1010,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Reject_ReturnsNull()
         {
             //Input
@@ -1011,16 +1037,16 @@ End Sub";
             }
         }
 
-        //TODO: The tests below are commented out pending some sort of refactoring that enables them
+        //TODO: The tests below are ignored pending some sort of refactoring that enables them
         //to actually *test* something.  Currently, all of the behavior the tests are looking for is
         //being mocked.
         // SEE: https://github.com/rubberduck-vba/Rubberduck/issues/3072
 
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetChanged()
         {
             //Input
@@ -1047,10 +1073,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetChanged()
         {
             //Input
@@ -1077,10 +1103,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetAllowedForPrimitiveTypes_NoReferences()
         {
             //Input
@@ -1107,10 +1133,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetNotAllowedForPrimitiveTypes_NoReferences()
         {
             //Input
@@ -1137,10 +1163,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetAllowedForNonVariantNonPrimitiveTypes_NoReferences()
         {
             //Input
@@ -1167,10 +1193,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetNotAllowedForNonVariantNonPrimitiveType_NoReferences()
         {
             //Input
@@ -1197,10 +1223,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetAllowedForVariant_NoReferences()
         {
             //Input
@@ -1227,10 +1253,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetAllowedForVariant_NoReferences()
         {
             //Input
@@ -1257,10 +1283,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetRequiredForPrimitiveTypes_References()
         {
             //Input
@@ -1290,10 +1316,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetRequiredForNonVariantNonPrimitiveTypes_References()
         {
             //Input
@@ -1323,10 +1349,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementLetRequiredForNonSetVariant_References()
         {
             //Input
@@ -1356,10 +1382,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_ReturnsModelWithImplementSetRequiredForSetVariant_References()
         {
             //Input
@@ -1390,10 +1416,10 @@ End Sub";
         }
 
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_DefaultCreateGetOnly_PrimitiveType_NoReference()
         {
             //Input
@@ -1421,10 +1447,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_DefaultCreateGetOnly_NonPrimitiveTypeNonVariant_NoReference()
         {
             //Input
@@ -1452,10 +1478,10 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [Ignore]
-        [TestCategory("Refactorings")]
-        [TestCategory("Encapsulate Field")]
+        [Test]
+        [Ignore("")]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void Presenter_Accept_DefaultCreateGetOnly_Variant_NoReference()
         {
             //Input

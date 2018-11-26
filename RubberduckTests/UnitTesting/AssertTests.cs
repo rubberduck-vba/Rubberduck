@@ -1,33 +1,33 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.UnitTesting;
 
 namespace RubberduckTests.UnitTesting
 {
-    //NOTE: The tests for reference equity are commented out pending some way of figuring out how to test the correct behavior.
+    //NOTE: The tests for reference equity are ignored pending some way of figuring out how to test the correct behavior.
     //These methods have to check to see if the parameters are COM objects (see https://github.com/rubberduck-vba/Rubberduck/issues/2848)
     //to make the result match the VBA interpretations of reference and value types.  Similarly, the SequenceEqual and NotSequenceEqual
     //methods remain untested because they make several of the same Type tests that are AFAIK impossible to mock.
 
-    [TestClass]
+    [TestFixture]
     public class AssertTests
     {
         private AssertCompletedEventArgs _args;
 
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             AssertHandler.OnAssertCompleted += AssertHandler_OnAssertCompleted;
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             _args = null;
             AssertHandler.OnAssertCompleted -= AssertHandler_OnAssertCompleted;
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void IsTrueSucceedsWithTrueExpression()
         {
             var assert = new AssertClass();
@@ -36,8 +36,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void IsTrueFailsWithFalseExpression()
         {
             var assert = new AssertClass();
@@ -46,8 +46,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void IsFalseSucceedsWithFalseExpression()
         {
             var assert = new AssertClass();
@@ -56,8 +56,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void IsFalseFailsWithTrueExpression()
         {
             var assert = new AssertClass();
@@ -66,32 +66,34 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        //[TestCategory("Unit Testing")]
-        //[TestMethod]
-        //public void AreSameShouldSucceedWithSameReferences()
-        //{
-        //    var assert = new AssertClass();
-        //    var obj1 = new object();
-        //    var obj2 = obj1;
-        //    assert.AreSame(obj1, obj2);
+        [Category("Unit Testing")]
+        [Test]
+        [Ignore("Would require passing COM objects for proper verification")]
+        public void AreSameShouldSucceedWithSameReferences()
+        {
+            var assert = new AssertClass();
+            var obj1 = new object();
+            var obj2 = obj1;
+            assert.AreSame(obj1, obj2);
 
-        //    Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
-        //}
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
 
-        //[TestCategory("Unit Testing")]
-        //[TestMethod]
-        //public void AreSameShouldFailWithDifferentReferences()
-        //{
-        //    var assert = new AssertClass();
-        //    var obj1 = new object();
-        //    var obj2 = new object();
-        //    assert.AreSame(obj1, obj2);
+        [Category("Unit Testing")]
+        [Test]
+        [Ignore("Would require passing COM objects for proper verification")]
+        public void AreSameShouldFailWithDifferentReferences()
+        {
+            var assert = new AssertClass();
+            var obj1 = new object();
+            var obj2 = new object();
+            assert.AreSame(obj1, obj2);
 
-        //    Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
-        //}
+            Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
+        }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void AreSameShouldSucceedWithTwoNullReferences()
         {
             var assert = new AssertClass();
@@ -100,50 +102,54 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        //[TestCategory("Unit Testing")]
-        //[TestMethod]
-        //public void AreSameShouldFailWithActualNullReference()
-        //{
-        //    var assert = new AssertClass();
-        //    assert.AreSame(new object(), null);
+        [Category("Unit Testing")]
+        [Test]
+        [Ignore("Would require passing COM objects for proper verification")]
+        public void AreSameShouldFailWithActualNullReference()
+        {
+            var assert = new AssertClass();
+            assert.AreSame(new object(), null);
 
-        //    Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
-        //}
+            Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
+        }
 
-        //[TestCategory("Unit Testing")]
-        //[TestMethod]
-        //public void AreSameShouldFailWithExpectedNullReference()
-        //{
-        //    var assert = new AssertClass();
-        //    assert.AreSame(null, new object());
+        [Category("Unit Testing")]
+        [Test]
+        [Ignore("Would require passing COM objects for proper verification")]
+        public void AreSameShouldFailWithExpectedNullReference()
+        {
+            var assert = new AssertClass();
+            assert.AreSame(null, new object());
 
-        //    Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
-        //}
+            Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
+        }
 
-        //[TestCategory("Unit Testing")]
-        //[TestMethod]
-        //public void AreNotSameShouldSucceedWithDifferentReferences()
-        //{
-        //    var assert = new AssertClass();
-        //    var obj1 = new object();
-        //    var obj2 = new object();
-        //    assert.AreNotSame(obj1, obj2);
+        [Category("Unit Testing")]
+        [Test]
+        [Ignore("Would require passing COM objects for proper verification")]
+        public void AreNotSameShouldSucceedWithDifferentReferences()
+        {
+            var assert = new AssertClass();
+            var obj1 = new object();
+            var obj2 = new object();
+            assert.AreNotSame(obj1, obj2);
 
-        //    Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
-        //}
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
 
-        //[TestCategory("Unit Testing")]
-        //[TestMethod]
-        //public void AreNotSameShouldSuccedWithOneNullReference()
-        //{
-        //    var assert = new AssertClass();
-        //    assert.AreNotSame(new object(), null);
+        [Category("Unit Testing")]
+        [Test]
+        [Ignore("Would require passing COM objects for proper verification")]
+        public void AreNotSameShouldSuccedWithOneNullReference()
+        {
+            var assert = new AssertClass();
+            assert.AreNotSame(new object(), null);
 
-        //    Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
-        //}
+            Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
+        }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void AreNotSameShouldFailWithBothNullReferences()
         {
             var assert = new AssertClass();
@@ -152,20 +158,21 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        //[TestCategory("Unit Testing")]
-        //[TestMethod]
-        //public void AreNotSameShouldFailWithSameReferences()
-        //{
-        //    var assert = new AssertClass();
-        //    var obj1 = new object();
-        //    var obj2 = obj1;
-        //    assert.AreNotSame(obj1, obj2);
+        [Category("Unit Testing")]
+        [Test]
+        [Ignore("Would require passing COM objects for proper verification")]
+        public void AreNotSameShouldFailWithSameReferences()
+        {
+            var assert = new AssertClass();
+            var obj1 = new object();
+            var obj2 = obj1;
+            assert.AreNotSame(obj1, obj2);
 
-        //    Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
-        //}
+            Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
+        }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void AreEqualShouldSucceedWithSameValues()
         {
             var assert = new AssertClass();
@@ -174,8 +181,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void AreEqualShouldFailWithDifferentValues()
         {
             var assert = new AssertClass();
@@ -184,8 +191,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void AreNotEqualShouldSucceedWithDifferentValues()
         {
             var assert = new AssertClass();
@@ -194,8 +201,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void AreNotEqualShouldFailWithSameValues()
         {
             var assert = new AssertClass();
@@ -204,8 +211,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void AreNotEqualShouldBeInconclusiveWithDifferentTypes()
         {
             int obj1 = 10;
@@ -217,8 +224,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void IsNothingShouldSucceedWithNullValue()
         {
             var assert = new AssertClass();
@@ -227,8 +234,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void IsNothingShouldFailWithNonNullValue()
         {
             var assert = new AssertClass();
@@ -237,8 +244,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void IsNotNothingShouldFailWithNullValue()
         {
             var assert = new AssertClass();
@@ -247,8 +254,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void IsNotNothingShouldSucceedWithNonNullValue()
         {
             var assert = new AssertClass();
@@ -257,8 +264,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void FailShouldFail()
         {
             var assert = new AssertClass();
@@ -267,8 +274,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void InconclusiveShouldBeInconclusive()
         {
             var assert = new AssertClass();
@@ -282,8 +289,8 @@ namespace RubberduckTests.UnitTesting
             _args = e;
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void NullValuesAreEqual()
         {
             var assert = new AssertClass();
@@ -292,8 +299,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void NullAndEmptyStringAreEqual()
         {
             var assert = new AssertClass();
@@ -302,8 +309,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void NullIsNotComparableWithValues()
         {
             var assert = new AssertClass();
@@ -312,8 +319,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void DifferentTypesEqualityIsNotConclusive()
         {
             var assert = new AssertClass();
@@ -322,8 +329,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void OnAssertSucceeded_ReturnsResultSuccess()
         {
             AssertHandler.OnAssertSucceeded();
@@ -331,8 +338,8 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Succeeded, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void OnAssertFailed_ReturnsResultFailed()
         {
             AssertHandler.OnAssertFailed("MyMethod", "I Failed");
@@ -340,22 +347,13 @@ namespace RubberduckTests.UnitTesting
             Assert.AreEqual(TestOutcome.Failed, _args.Outcome);
         }
 
-        [TestCategory("Unit Testing")]
-        [TestMethod]
+        [Category("Unit Testing")]
+        [Test]
         public void OnAssertInconclusive_ReturnsResultInconclusive()
         {
             AssertHandler.OnAssertInconclusive("Inconclusive");
 
             Assert.AreEqual(TestOutcome.Inconclusive, _args.Outcome);
-        }
-
-        [TestCategory("Unit Testing")]
-        [TestMethod]
-        public void OnAssertIgnored_ReturnsResultIgnored()
-        {
-            AssertHandler.OnAssertIgnored();
-
-            Assert.AreEqual(TestOutcome.Ignored, _args.Outcome);
         }
     }
 }

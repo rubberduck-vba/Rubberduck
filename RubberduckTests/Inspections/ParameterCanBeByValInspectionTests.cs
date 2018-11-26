@@ -1,17 +1,17 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ParameterCanBeByValInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_NoResultForByValObjectInInterfaceImplementationProperty()
         {
             const string modelCode = @"
@@ -67,20 +67,20 @@ End Sub
                 .AddComponent("IView", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("MyModel", ComponentType.ClassModule, modelCode)
                 .AddComponent("MyForm", ComponentType.UserForm, implementationCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_NoResultForByValObjectInProperty()
         {
             const string inputCode =
@@ -91,14 +91,14 @@ End Property";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_NoResultForByValObject()
         {
             const string inputCode =
@@ -109,14 +109,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedByNotSpecified()
         {
             const string inputCode =
@@ -127,14 +127,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedByRef_Unassigned()
         {
             const string inputCode =
@@ -145,14 +145,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_Multiple()
         {
             const string inputCode =
@@ -163,14 +163,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_DoesNotReturnResult_PassedByValExplicitly()
         {
             const string inputCode =
@@ -181,14 +181,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_DoesNotReturnResult_PassedByRefAndAssigned()
         {
             const string inputCode =
@@ -200,14 +200,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_DoesNotReturnResult_BuiltInEventParam()
         {
             const string inputCode =
@@ -219,14 +219,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_SomeParams()
         {
             const string inputCode =
@@ -237,14 +237,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void GivenArrayParameter_ReturnsNoResult()
         {
             const string inputCode =
@@ -255,14 +255,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var results = inspection.GetInspectionResults().ToList();
+                var results = inspection.GetInspectionResults(CancellationToken.None).ToList();
 
                 Assert.AreEqual(0, results.Count);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedToByRefProc_NoAssignment()
         {
             const string inputCode =
@@ -277,14 +277,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_DoesNotReturnResult_PassedToByRefProc_WithAssignment()
         {
             const string inputCode =
@@ -300,14 +300,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedToByValProc_WithAssignment()
         {
             const string inputCode =
@@ -323,14 +323,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -342,14 +342,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_SingleParam()
         {
             //Input
@@ -374,14 +374,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_SingleByValParam()
         {
             //Input
@@ -406,14 +406,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRef()
         {
             //Input
@@ -439,14 +439,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal()
         {
             //Input
@@ -477,14 +477,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual("a", inspectionResults.Single().Target.IdentifierName);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_EventMember_SingleParam()
         {
             //Input
@@ -509,14 +509,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_EventMember_SingleByValParam()
         {
             //Input
@@ -541,14 +541,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_EventMember_SingleParamUsedByRef()
         {
             //Input
@@ -574,14 +574,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_EventMember_MultipleParams_OneCanBeByVal()
         {
             //Input
@@ -607,22 +607,14 @@ End Sub";
             {
 
                 var inspection = new ParameterCanBeByValInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual("arg2", inspectionResults.Single().Target.IdentifierName);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new ParameterCanBeByValInspection(null);
-            Assert.AreEqual(CodeInspectionType.MaintainabilityAndReadabilityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "ParameterCanBeByValInspection";

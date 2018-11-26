@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -6,12 +6,12 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
-    [TestClass]
+    [TestFixture]
     public class ImplementInterfaceTests
     {
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Procedure()
         {
             //Input
@@ -39,22 +39,23 @@ End Sub
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Procedure_ClassHasOtherProcedure()
         {
             //Input
@@ -88,22 +89,87 @@ End Sub
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_PartiallyImplementedInterface()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Property Get a() As String
+End Property
+Public Property Let a(RHS As String)
+End Property
+Public Property Get b() As String
+End Property
+Public Property Let b(RHS As String)
+End Property";
+
+            const string inputCode2 =
+                @"Implements Class1
+
+Private Property Let Class1_b(RHS As String)
+End Property";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Class1
+
+Private Property Let Class1_b(RHS As String)
+End Property
+
+Private Property Get Class1_a() As String
+    Err.Raise 5 'TODO implement interface member
+End Property
+
+Private Property Let Class1_a(ByRef RHS As String)
+    Err.Raise 5 'TODO implement interface member
+End Property
+
+Private Property Get Class1_b() As String
+    Err.Raise 5 'TODO implement interface member
+End Property
+";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents[1];
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                refactoring.Refactor(qualifiedSelection);
+
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Procedure_WithParams()
         {
             //Input
@@ -131,22 +197,23 @@ End Sub
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Function()
         {
             //Input
@@ -174,22 +241,23 @@ End Function
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Function_WithImplicitType()
         {
             //Input
@@ -217,22 +285,23 @@ End Function
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Function_WithParam()
         {
             //Input
@@ -260,22 +329,23 @@ End Function
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyGet()
         {
             //Input
@@ -303,22 +373,23 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyGet_WithImplicitType()
         {
             //Input
@@ -346,22 +417,23 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyGet_WithParam()
         {
             //Input
@@ -389,22 +461,23 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyLet()
         {
             //Input
@@ -432,22 +505,23 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertyLet_WithParam()
         {
             //Input
@@ -475,22 +549,23 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertySet()
         {
             //Input
@@ -518,22 +593,23 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertySet_WithParam()
         {
             //Input
@@ -561,22 +637,23 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_PropertySet_AllTypes()
         {
             //Input
@@ -625,22 +702,23 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void CreatesMethodStubForAllProcedureKinds()
         {
             //Input
@@ -696,22 +774,23 @@ End Property
             var vbe = builder.AddProject(project).Build();
             var component = project.Object.VBComponents[1];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementsInterfaceInDocumentModule()
         {
             const string interfaceCode = @"Option Explicit
@@ -730,28 +809,29 @@ End Sub
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Sheet1", ComponentType.Document, initialCode, Selection.Home)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             var project = vbe.Object.VBProjects[0];
             var component = project.VBComponents["Sheet1"];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Implement Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementsInterfaceInUserFormModule()
         {
             const string interfaceCode = @"Option Explicit
@@ -770,22 +850,164 @@ End Sub
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("IInterface", ComponentType.ClassModule, interfaceCode)
                 .AddComponent("Form1", ComponentType.UserForm, initialCode, Selection.Home)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
             var project = vbe.Object.VBProjects[0];
             var component = project.VBComponents["Form1"];
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null);
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
+            }
+        }
+
+        [Test]
+        [TestCase(@"Public Foo As Long")]
+        [TestCase(@"Dim Foo As Long")]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_PublicIntrinsic(string inputCode1)
+        {
+            const string inputCode2 =
+                @"Implements Class1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Class1
+
+Private Property Get Class1_Foo() As Long
+    Err.Raise 5 'TODO implement interface member
+End Property
+
+Private Property Let Class1_Foo(ByVal rhs As Long)
+    Err.Raise 5 'TODO implement interface member
+End Property
+";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents[1];
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                refactoring.Refactor(qualifiedSelection);
+
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
+            }
+        }
+
+        [Test]
+        [TestCase(@"Public Foo As Object")]
+        [TestCase(@"Dim Foo As Object")]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_PublicObject(string inputCode1)
+        {
+            const string inputCode2 =
+                @"Implements Class1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Class1
+
+Private Property Get Class1_Foo() As Object
+    Err.Raise 5 'TODO implement interface member
+End Property
+
+Private Property Set Class1_Foo(ByVal rhs As Object)
+    Err.Raise 5 'TODO implement interface member
+End Property
+";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents[1];
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                refactoring.Refactor(qualifiedSelection);
+
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
+            }
+        }
+
+        [Test]
+        [TestCase(@"Public Foo As Variant")]
+        [TestCase(@"Public Foo")]
+        [TestCase(@"Dim Foo As Variant")]
+        [TestCase(@"Dim Foo")]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementInterface_PublicVariant(string inputCode1)
+        {
+            const string inputCode2 =
+                @"Implements Class1";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Class1
+
+Private Property Get Class1_Foo() As Variant
+    Err.Raise 5 'TODO implement interface member
+End Property
+
+Private Property Let Class1_Foo(ByVal rhs As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Property
+
+Private Property Set Class1_Foo(ByVal rhs As Variant)
+    Err.Raise 5 'TODO implement interface member
+End Property
+";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents[1];
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+
+                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                refactoring.Refactor(qualifiedSelection);
+
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
     }

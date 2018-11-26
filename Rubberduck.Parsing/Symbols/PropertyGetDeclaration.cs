@@ -9,10 +9,8 @@ using System.Linq;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class PropertyGetDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
+    public sealed class PropertyGetDeclaration : PropertyDeclaration
     {
-        private readonly List<Declaration> _parameters;
-
         public PropertyGetDeclaration(
             QualifiedMemberName name,
             Declaration parent,
@@ -22,6 +20,7 @@ namespace Rubberduck.Parsing.Symbols
             string typeHint,
             Accessibility accessibility,
             ParserRuleContext context,
+            ParserRuleContext attributesPassContext,
             Selection selection,
             bool isArray,
             bool isUserDefined,
@@ -32,57 +31,69 @@ namespace Rubberduck.Parsing.Symbols
                   parent,
                   parentScope,
                   asTypeName,
+                  asTypeContext,
                   typeHint,
-                  false,
-                  false,
                   accessibility,
                   DeclarationType.PropertyGet,
                   context,
+                  attributesPassContext,
                   selection,
                   isArray,
-                  asTypeContext,
                   isUserDefined,
                   annotations,
                   attributes)
-        {
-            _parameters = new List<Declaration>();
-        }
+        { }
 
-        public PropertyGetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
-            Attributes attributes)
+        public PropertyGetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module, Attributes attributes)
             : this(
                 module.QualifyMemberName(member.Name),
                 parent,
                 parent,
-                member.ReturnType.TypeName,
+                member.AsTypeName.TypeName,
                 null,
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
-                member.ReturnType.IsArray,
+                member.AsTypeName.IsArray,
                 false,
                 null,
                 attributes)
         {
-            _parameters =
-                member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
-                    .Cast<Declaration>()
-                    .ToList();
-        } 
-
-        public IEnumerable<Declaration> Parameters => _parameters.ToList();
-
-        public void AddParameter(Declaration parameter)
-        {
-            _parameters.Add(parameter);
+            AddParameters(member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module)));
         }
 
-        /// <summary>
-        /// Gets an attribute value indicating whether a member is a class' default member.
-        /// If this value is true, any reference to an instance of the class it's the default member of,
-        /// should count as a member call to this member.
-        /// </summary>
-        public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
+        public PropertyGetDeclaration(ComField field, Declaration parent, QualifiedModuleName module, Attributes attributes)
+            : this(
+                module.QualifyMemberName(field.Name),
+                parent,
+                parent,
+                field.ValueType,
+                null,
+                null,
+                Accessibility.Global,
+                null,
+                null,
+                Selection.Home,
+                false,  //TODO - check this assumption.
+                false,
+                null,
+                attributes)
+        { }
+
+        /// <inheritdoc/>
+        protected override bool Implements(IInterfaceExposable member)
+        {
+            if (ReferenceEquals(member, this))
+            {
+                return false;
+            }
+
+            return (member.DeclarationType == DeclarationType.PropertyGet || member.DeclarationType == DeclarationType.Variable)
+                   && member.IsInterfaceMember
+                   && ((ClassModuleDeclaration)member.ParentDeclaration).Subtypes.Any(implementation => ReferenceEquals(implementation, ParentDeclaration))
+                   && IdentifierName.Equals(member.ImplementingIdentifierName);
+        }
     }
 }

@@ -4,9 +4,13 @@ namespace Rubberduck.Parsing.VBA
     public enum ParserState
     {
         /// <summary>
-        /// Parse was requested but hasn't started yet.
+        /// Parse has not been requested or has not started yet.
         /// </summary>
         Pending,
+        /// <summary>
+        /// Parse has started and is in the coordination phase.
+        /// </summary>
+        Started,
         /// <summary>
         /// Project references are being loaded into parser state.
         /// </summary>
@@ -36,6 +40,10 @@ namespace Rubberduck.Parsing.VBA
         /// </summary>
         Ready,
         /// <summary>
+        /// The parser cannot run during that time (e.g. unit tests are running); any parse requests will be queued.
+        /// </summary>
+        Busy,
+        /// <summary>
         /// Parsing could not be completed for one or more modules.
         /// </summary>
         Error,
@@ -43,6 +51,10 @@ namespace Rubberduck.Parsing.VBA
         /// Parsing completed, but identifier references could not be resolved for one or more modules.
         /// </summary>
         ResolverError,
+        /// <summary>
+        /// Unexpected exception has been encountered during a parse.
+        /// </summary>
+        UnexpectedError,
         /// <summary>
         /// This component doesn't need a state.  Use for built-in declarations.
         /// </summary>

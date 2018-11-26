@@ -1,71 +1,55 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using RubberduckTests.Mocks;
-using System.Threading;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Inspections;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
-    public class ChangeProcedureToFunctionQuickFixTests
+    [TestFixture]
+    public class ChangeProcedureToFunctionQuickFixTests : QuickFixTestBase
     {
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks()
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub";
 
             const string expectedCode =
                 @"Private Function Foo(ByVal arg1 As Integer) As Integer
+    arg1 = 42
     Foo = arg1
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_NoAsTypeClauseInParam()
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef arg1)
+    arg1 = 42
 End Sub";
 
             const string expectedCode =
                 @"Private Function Foo(ByVal arg1) As Variant
+    arg1 = 42
     Foo = arg1
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody()
         {
             const string inputCode =
@@ -87,21 +71,12 @@ End Function
 Sub Goo(ByVal a As Integer)
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine()
         {
             const string inputCode =
@@ -117,21 +92,12 @@ End Function
 Sub Goo(ByVal a As Integer)
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_DoesNotInterfereWithBody_BodyOnSingleLine_BodyHasStringLiteralContainingColon()
         {
             const string inputCode =
@@ -147,21 +113,12 @@ End Function
 Sub Goo(ByVal a As String)
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsAbove()
         {
             const string inputCode =
@@ -171,6 +128,7 @@ End Sub";
 End Sub
 
 Private Sub Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub";
 
             const string expectedCode =
@@ -180,28 +138,21 @@ End Sub";
 End Sub
 
 Private Function Foo(ByVal arg1 As Integer) As Integer
+    arg1 = 42
     Foo = arg1
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureShouldBeFunction_QuickFixWorks_UpdatesCallsBelow()
         {
             const string inputCode =
                 @"Private Sub Foo(ByRef arg1 As Integer)
+    arg1 = 42
 End Sub
 
 Sub Goo(ByVal a As Integer)
@@ -211,6 +162,7 @@ End Sub";
 
             const string expectedCode =
                 @"Private Function Foo(ByVal arg1 As Integer) As Integer
+    arg1 = 42
     Foo = arg1
 End Function
 
@@ -219,18 +171,14 @@ Sub Goo(ByVal a As Integer)
     fizz = Foo(fizz)
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ProcedureCanBeWrittenAsFunctionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new ChangeProcedureToFunctionQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureCanBeWrittenAsFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new ChangeProcedureToFunctionQuickFix();
+        }
     }
 }

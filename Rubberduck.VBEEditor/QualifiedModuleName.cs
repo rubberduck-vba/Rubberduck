@@ -1,4 +1,3 @@
-using System;
 using System.Globalization;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -8,7 +7,7 @@ namespace Rubberduck.VBEditor
     /// <summary>
     /// Represents a VBComponent or a VBProject.
     /// </summary>
-    public struct QualifiedModuleName
+    public readonly struct QualifiedModuleName
     {
         public static string GetProjectId(IVBProject project)
         {
@@ -17,51 +16,65 @@ namespace Rubberduck.VBEditor
                 return string.Empty;
             }
 
-            if (string.IsNullOrEmpty(project.HelpFile))
+            var projectId = project.ProjectId;
+
+            if (string.IsNullOrEmpty(projectId))
             {
-                project.HelpFile = project.GetHashCode().ToString(CultureInfo.InvariantCulture);
+                project.AssignProjectId();
+                projectId = project.ProjectId;
             }
 
-            return project.HelpFile;
+            return projectId;
         }
 
-        public static string GetProjectId(IReference reference)
+        /// <summary>
+        /// Gets the standard projectId for a library reference.
+        /// Do not use this overload for referenced user projects.
+        /// </summary>
+        public static string GetProjectId(ReferenceInfo reference)
         {
-            var projectName = reference.Name;
-            return new QualifiedModuleName(projectName, reference.FullPath, projectName).ProjectId;
+            return new QualifiedModuleName(reference).ProjectId;
+        }
+
+        public static int GetContentHash(IVBComponent component)
+        {
+            return component?.ContentHash() ?? 0;
         }
 
         public QualifiedModuleName(IVBProject project)
         {
-            Component = null;
             _componentName = null;
             ComponentType = ComponentType.Undefined;
             _projectName = project.Name;
             ProjectPath = string.Empty;
-            ProjectId = GetProjectId(project);           
-            ContentHashCode = 0;
+            ProjectId = GetProjectId(project);
         }
 
         public QualifiedModuleName(IVBComponent component)
         {
             ComponentType = component.Type;
-            Component = component;
             _componentName = component.IsWrappingNullReference ? string.Empty : component.Name;
 
-            ContentHashCode = 0;
-            if (!component.IsWrappingNullReference)
+            using (var components = component.Collection)
             {
-                var module = Component.CodeModule;
-                ContentHashCode = module.CountOfLines > 0
-                    ? module.GetLines(1, module.CountOfLines).GetHashCode()
-                    : 0;
+                using (var project = components.Parent)
+                {
+                    _projectName = project == null ? string.Empty : project.Name;
+                    ProjectPath = string.Empty;
+                    ProjectId = GetProjectId(project);
+                }
             }
-
-            var project = component.Collection.Parent;
-            _projectName = project == null ? string.Empty : project.Name;
-            ProjectPath = string.Empty;
-            ProjectId = GetProjectId(project);
         }
+
+        /// <summary>
+        /// Creates a QualifiedModuleName for a library reference.
+        /// Do not use this overload for referenced user projects.
+        /// </summary>
+        public QualifiedModuleName(ReferenceInfo reference)
+        :this(reference.Name,
+            reference.FullPath,
+            reference.Name)
+        {}
 
         /// <summary>
         /// Creates a QualifiedModuleName for a built-in declaration.
@@ -71,11 +84,9 @@ namespace Rubberduck.VBEditor
         {
             _projectName = projectName;
             ProjectPath = projectPath;
-            ProjectId = $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
+            ProjectId = "External" + $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
-            Component = null;
             ComponentType = ComponentType.ComComponent;
-            ContentHashCode = 0;
         }
 
         public QualifiedMemberName QualifyMemberName(string member)
@@ -83,12 +94,9 @@ namespace Rubberduck.VBEditor
             return new QualifiedMemberName(this, member);
         }
 
-        public IVBComponent Component { get; }
-
         public ComponentType ComponentType { get; }
 
-        public int ContentHashCode { get; }
-
+        public bool IsParsable => ComponentType != ComponentType.ResFile && ComponentType != ComponentType.RelatedDocument;
         public string ProjectId { get; }
 
         private readonly string _componentName;
@@ -116,18 +124,19 @@ namespace Rubberduck.VBEditor
 
         public override bool Equals(object obj)
         {
-            if (obj == null) { return false; }
-
-            try
-            {
-                var other = (QualifiedModuleName)obj;
-                var result = other.ProjectId == ProjectId && other.ComponentName == ComponentName;
-                return result;
-            }
-            catch (InvalidCastException)
+            if (obj == null)
             {
                 return false;
             }
+
+            var other = obj as QualifiedModuleName?;
+
+            if (other == null)
+            {
+                return false;
+            }
+
+            return other.Value.ProjectId == ProjectId && other.Value.ComponentName == ComponentName;
         }
 
         public static bool operator ==(QualifiedModuleName a, QualifiedModuleName b)
@@ -138,6 +147,46 @@ namespace Rubberduck.VBEditor
         public static bool operator !=(QualifiedModuleName a, QualifiedModuleName b)
         {
             return !a.Equals(b);
+        }
+    }
+
+    public static class QualifiedModuleNameExtensions
+    {
+
+        public static bool TryGetProject(this QualifiedModuleName moduleName, IVBE vbe, out IVBProject project)
+        {
+            using (var projects = vbe.VBProjects)
+            {
+                foreach (var item in projects)
+                {
+                    if (item.ProjectId == moduleName.ProjectId && item.Name == moduleName.ProjectName)
+                    {
+                        project = item;
+                        return true;
+                    }
+
+                    item.Dispose();
+                }
+
+                project = null;
+                return false;
+            }
+        }
+
+        public static bool TryGetComponent(this QualifiedModuleName moduleName, IVBE vbe, out IVBComponent component)
+        {
+            if (TryGetProject(moduleName, vbe, out var project))
+            {
+                using (project)
+                using (var components = project.VBComponents)
+                {
+                    component = components[moduleName.ComponentName];
+                    return true;
+                }
+            }
+
+            component = null;
+            return false;
         }
     }
 }

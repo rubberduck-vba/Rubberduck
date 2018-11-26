@@ -1,17 +1,18 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class AccessibilityCheckTests
     {
 
         //project tests
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ProjectsAreAlwaysAccessible()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -34,8 +35,8 @@ namespace RubberduckTests.Symbols
 
         //module tests
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ModulesCanBeAccessedFromWithinThemselves()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -47,7 +48,7 @@ namespace RubberduckTests.Symbols
             private static ClassModuleDeclaration GetTestClassModule(Declaration projectDeclatation, string name, bool isExposed = false)
             {
                 var qualifiedClassModuleMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                var classModuleAttributes = new Rubberduck.Parsing.VBA.Attributes();
+                var classModuleAttributes = new Attributes();
                 if (isExposed)
                 {
                     classModuleAttributes.AddExposedClassAttribute();
@@ -56,8 +57,8 @@ namespace RubberduckTests.Symbols
             }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ModulesCanBeAccessedFromTheSameProject()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -68,8 +69,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ExposedClassModulesCanBeAccessedFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("calleeProject");
@@ -81,8 +82,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void NonExposedClassModulesCannotBeAccessedFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("calleeProject");
@@ -94,8 +95,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void NonPrivateProceduralModulesCanBeAccessedFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("calleeProject");
@@ -120,8 +121,8 @@ namespace RubberduckTests.Symbols
 
         //procedure tests
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PrivateProceduresAreAccessibleFromTheEnclosingModule()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -135,11 +136,11 @@ namespace RubberduckTests.Symbols
             private static FunctionDeclaration GetTestFunction(Declaration moduleDeclatation, string name, Accessibility functionAccessibility)
             {
                 var qualifiedFunctionMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new FunctionDeclaration(qualifiedFunctionMemberName, moduleDeclatation, moduleDeclatation, "test", null, "test", functionAccessibility, null, Selection.Home, false, true, null, null);
+                return new FunctionDeclaration(qualifiedFunctionMemberName, moduleDeclatation, moduleDeclatation, "test", null, "test", functionAccessibility, null, null, Selection.Home, false, true, null, null);
             }
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PrivateProceduresAreAccessibleIfTheyAreInAClassAboveTheEnclosingModuleOfTheCallerInTheClassHierarchy()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -155,8 +156,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PrivateProceduresAreNotAcessibleFromOtherUnrelatedModules()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -169,8 +170,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void FriendProceduresAreAcessibleFromOtherModulesInTheSameProject()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -183,8 +184,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void FriendProceduresAreNotAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -198,8 +199,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PublicProceduresInExposedClassModulesAreAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -213,8 +214,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PublicProceduresInNonPrivateProceduralModulesAreAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -228,8 +229,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ImplicitelyScopedProceduresInExposedClassModulesAreAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -243,8 +244,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ImplicitelyScopedProceduresInNonPrivateProceduralModulesAreAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -261,8 +262,8 @@ namespace RubberduckTests.Symbols
 
         //instance variable tests
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PrivateInstanceVariablesAreAccessibleFromTheEnclosingModule()     
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -276,12 +277,12 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestVariable(Declaration parentDeclatation, string name, Accessibility variableAccessibility)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, variableAccessibility, DeclarationType.Variable, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, variableAccessibility, DeclarationType.Variable, null, null, Selection.Home, true, null);
             }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
             public void PrivateInstanceVariablesAreAccessibleIfTheyAreInAClassAboveTheEnclosingModuleOfTheCallerInTheClassHierarchy()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -297,8 +298,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PrivateInstanceVariablesAreNotAcessibleFromOtherUnrelatedModules()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -311,8 +312,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PublicInstanceVariablesInExposedClassModulesAreAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -326,8 +327,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PublicInstanceVariablesInNonPrivateProceduralModulesAreAcessibleFromTheSameProject()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -340,8 +341,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod] 
+        [Category("Resolver")]
+        [Test] 
         public void PublicInstanceVariablesInNonPrivateProceduralModulesAreAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -355,8 +356,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod] 
+        [Category("Resolver")]
+        [Test] 
         public void GlobalInstanceVariablesInNonPrivateProceduralModulesAreAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -370,8 +371,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ImplicitlyScopedInstanceVariablesAreAcessibleWithinTheirEnclosingModule()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -383,8 +384,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ImplicitlyScopedInstanceVariablesAreNotAcessibleFromOtherModules()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -400,8 +401,8 @@ namespace RubberduckTests.Symbols
 
         //local variable tests
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void LocalMembersAreAcessibleFromTheMethodTheyAreDefinedIn()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -413,8 +414,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void LocalMembersAreNotAcessibleFromOtherMethods()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -427,8 +428,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void StaticLocalMembersAreAcessibleFromTheMethodTheyAreDefinedIn()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -440,8 +441,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void StaticLocalMembersAreNotAcessibleFromOtherMethods()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -457,8 +458,8 @@ namespace RubberduckTests.Symbols
 
         //enum tests
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PrivateEnumsAreAccessibleInTheSameModule()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -472,12 +473,12 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestEnum(Declaration parentDeclatation, string name, Accessibility enumAccessibility)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, enumAccessibility, DeclarationType.Enumeration, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, enumAccessibility, DeclarationType.Enumeration, null, null, Selection.Home, true, null);
             }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PrivateEnumsAreNotAccessibleFromOtherModules()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -490,8 +491,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PublicEnumsInNonPrivateProceduralModulesAreAccessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -505,8 +506,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void GlobalEnumsInNonPrivateProceduralModulesAreAccessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -520,8 +521,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ImplicitelyScopedEnumsInNonPrivateProceduralModulesAreAccessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -535,8 +536,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PublicEnumsInExposedClassesAreNotAccessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -550,8 +551,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void GlobalEnumsInExposedClassesAreAccessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -565,8 +566,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ImplicitelyScopedEnumsInExposedClassesAreAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -584,8 +585,8 @@ namespace RubberduckTests.Symbols
         //user type tests
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PrivateUserTypesAreAccessibleInTheSameModule()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -599,12 +600,12 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestUserType(Declaration parentDeclatation, string name, Accessibility userTypeAccessibility)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, userTypeAccessibility, DeclarationType.UserDefinedType, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, userTypeAccessibility, DeclarationType.UserDefinedType, null, null, Selection.Home, true, null);
             }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PrivateUserTypesAreNotAccessibleFromOtherModules()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -617,8 +618,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void PublicUserTypesInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -632,8 +633,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void GlobalUserTypesInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -647,8 +648,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void ImplicitelyScopedUserTypesInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -664,8 +665,8 @@ namespace RubberduckTests.Symbols
 
         //further tests (derived from code already present)
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void EnumMembersInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -681,12 +682,12 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestEnumMember(Declaration parentDeclatation, string name)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Implicit, DeclarationType.EnumerationMember, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Implicit, DeclarationType.EnumerationMember, null, null, Selection.Home, true, null);
             }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void UserTypeMembersInExposedClassModulesAreAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -702,12 +703,12 @@ namespace RubberduckTests.Symbols
             private static Declaration GetTestUserTypeMember(Declaration parentDeclatation, string name)
             {
                 var qualifiedVariableMemberName = new QualifiedMemberName(StubQualifiedModuleName(), name);
-                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Implicit, DeclarationType.UserDefinedTypeMember, null, Selection.Home, true, null);
+                return new Declaration(qualifiedVariableMemberName, parentDeclatation, "dummy", "test", "test", false, false, Accessibility.Implicit, DeclarationType.UserDefinedTypeMember, null, null, Selection.Home, true, null);
             }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void UserTypeMembersInNonPrivateProceduralModulesAreNotAcessibleFromOtherProjects()
         {
             var calleeProjectDeclatation = GetTestProject("callee_test_project");
@@ -720,8 +721,8 @@ namespace RubberduckTests.Symbols
             Assert.IsTrue(AccessibilityCheck.IsAccessible(callingProjectDeclatation, callingModuleDeclatation, otherPrivateFunctionDeclaration, instanceVariable));
         }
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void AccessibilityCheckDoesNotTakeIntoAccountThatAMemberMightNotBeAccessibleBecauseItIsCoveredByAnotherMemberInNarrowerScope()
         {
             var projectDeclatation = GetTestProject("test_project");
@@ -737,8 +738,8 @@ namespace RubberduckTests.Symbols
 
         //null reference handling tests
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void CalleesWhichAreNullAreNotAcessibleFromOtherProjects()
         {
             var callingProjectDeclatation = GetTestProject("calling_test_project");
@@ -749,8 +750,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void CalleeModulesWhichAreNullAreNotAcessibleFromOtherProjects()
         {
             var callingProjectDeclatation = GetTestProject("calling_test_project");
@@ -761,8 +762,8 @@ namespace RubberduckTests.Symbols
         }
 
 
-        [TestCategory("Resolver")]
-        [TestMethod]
+        [Category("Resolver")]
+        [Test]
         public void CalleeMembersWhichAreNullAreNotAcessibleFromOtherProjects()
         {
             var callingProjectDeclatation = GetTestProject("calling_test_project");

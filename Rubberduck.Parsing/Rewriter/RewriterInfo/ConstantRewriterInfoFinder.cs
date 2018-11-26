@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
 
             var items = context.constSubStmt();
             var itemIndex = items.ToList().IndexOf(target);
-            var count = items.Count;
+            var count = items.Length;
 
             var element = context.Parent as VBAParser.ModuleDeclarationsElementContext;
             if (element != null)
@@ -37,34 +37,39 @@ namespace Rubberduck.Parsing.Rewriter.RewriterInfo
             VBAParser.ConstSubStmtContext target, VBAParser.ModuleDeclarationsElementContext element,
             int count, int itemIndex, IReadOnlyList<VBAParser.ConstSubStmtContext> items)
         {
-            var startIndex = element.Start.TokenIndex;
-            var parent = (VBAParser.ModuleDeclarationsContext)element.Parent;
-            var elements = parent.moduleDeclarationsElement();
-
             if (count == 1)
             {
-                var stopIndex = FindStopTokenIndex(elements, element, parent);
-                return new RewriterInfo(startIndex, stopIndex);
+                return GetSeparateModuleConstantRemovalInfo(element);
             }
             return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
+        }
+
+        private static RewriterInfo GetSeparateModuleConstantRemovalInfo(VBAParser.ModuleDeclarationsElementContext element)
+        {
+            var startIndex = element.Start.TokenIndex;
+            var stopIndex = FindStopTokenIndexForRemoval(element);
+            return new RewriterInfo(startIndex, stopIndex);
         }
 
         private static RewriterInfo GetLocalConstantRemovalInfo(VBAParser.ConstSubStmtContext target,
             VBAParser.ConstStmtContext constants,
             int count, int itemIndex, IReadOnlyList<VBAParser.ConstSubStmtContext> items)
         {
-            var mainBlockStmt = (VBAParser.MainBlockStmtContext)constants.Parent;
-            var startIndex = mainBlockStmt.Start.TokenIndex;
-            var blockStmt = (VBAParser.BlockStmtContext)mainBlockStmt.Parent;
-            var block = (VBAParser.BlockContext)blockStmt.Parent;
-            var statements = block.blockStmt();
-
             if (count == 1)
             {
-                var stopIndex = FindStopTokenIndex(statements, mainBlockStmt, block);
-                return new RewriterInfo(startIndex, stopIndex);
+                return GetSeparateLocalConstantRemovalInfo(constants);
             }
             return GetRewriterInfoForTargetRemovedFromListStmt(target.Start, itemIndex, items);
+        }
+
+        private static RewriterInfo GetSeparateLocalConstantRemovalInfo(VBAParser.ConstStmtContext constStmtContext)
+        {
+            var mainBlockStmt = constStmtContext.GetAncestor<VBAParser.MainBlockStmtContext>();
+            var startIndex = mainBlockStmt.Start.TokenIndex;
+
+            var stopIndex = FindStopTokenIndexForRemoval(mainBlockStmt);
+
+            return new RewriterInfo(startIndex, stopIndex);
         }
     }
 }

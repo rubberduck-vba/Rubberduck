@@ -4,11 +4,11 @@ namespace Rubberduck.VBEditor.Extensions
 {
     public static class ComponentTypeExtensions
     {
-        internal const string ClassExtension = ".cls";
-        internal const string FormExtension = ".frm";
-        internal const string StandardExtension = ".bas";
-        internal const string FormBinaryExtension = ".frx";
-        internal const string DocClassExtension = ".doccls";
+        public const string ClassExtension = ".cls";
+        public const string FormExtension = ".frm";
+        public const string StandardExtension = ".bas";
+        public const string FormBinaryExtension = ".frx";
+        public const string DocClassExtension = ".doccls";
 
         /// <summary>
         /// Returns the proper file extension for the Component Type.

@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
@@ -10,15 +10,16 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
+using Rubberduck.UI.Refactorings.ExtractInterface;
 
 namespace RubberduckTests.Refactoring
 {
-    [TestClass]
+    [TestFixture]
     public class ExtractInterfaceTests
     {
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProc()
         {
             //Input
@@ -49,32 +50,30 @@ End Sub
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                foreach (var member in model.Members)
-                {
-                    member.IsSelected = true;
-                }
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
+                var actualCode = component.CodeModule.Content();
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
-                Assert.AreEqual(expectedCode, component.CodeModule.Content());
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProcAndFuncAndPropGetSetLet()
         {
             //Input
@@ -158,22 +157,19 @@ End Property
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                foreach (var member in model.Members)
-                {
-                    member.IsSelected = true;
-                }
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -181,9 +177,9 @@ End Property
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProcAndFunc_IgnoreProperties()
         {
             //Input
@@ -246,25 +242,20 @@ End Function
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                foreach (var member in model.Members)
-                {
-                    if (!member.FullMemberSignature.Contains("Property"))
-                    {
-                        member.IsSelected = true;
-                    }
-                }
+                model.Members = model.Members.Where(member => !member.FullMemberSignature.Contains("Property")).ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -272,9 +263,9 @@ End Function
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_IgnoresField()
         {
             //Input
@@ -285,7 +276,8 @@ End Function
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -296,9 +288,9 @@ End Function
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_NullPresenter_NoChanges()
         {
             //Input
@@ -309,7 +301,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -321,7 +314,7 @@ End Sub";
                 var factory = SetupFactory(model);
                 factory.Setup(f => f.Create()).Returns(value: null);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor();
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -329,9 +322,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_NullModel_NoChanges()
         {
             //Input
@@ -342,7 +335,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -357,7 +351,7 @@ End Sub";
                 var factory = SetupFactory(model);
                 factory.Setup(f => f.Create()).Returns(presenter.Object);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor();
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -365,9 +359,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_PassTargetIn()
         {
             //Input
@@ -398,19 +392,20 @@ End Sub
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                model.Members.ElementAt(0).IsSelected = true;
+                model.Members = new[]{ model.Members.ElementAt(0) }.ToList();
 
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object);
+                var refactoring = new ExtractInterfaceRefactoring(vbe.Object, null, factory.Object, rewritingManager);
                 refactoring.Refactor(state.AllUserDeclarations.Single(s => s.DeclarationType == DeclarationType.ClassModule));
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -418,9 +413,9 @@ End Sub
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void Presenter_Reject_ReturnsNull()
         {
             //Input
@@ -437,7 +432,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                model.Members.ElementAt(0).IsSelected = true;
+                model.Members = new[] { model.Members.ElementAt(0) }.ToList();
 
                 var view = new Mock<IRefactoringDialog<ExtractInterfaceViewModel>>();
                 view.Setup(v => v.ViewModel).Returns(new ExtractInterfaceViewModel());
@@ -451,9 +446,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void Presenter_NullTarget_ReturnsNull()
         {
             //Input
@@ -479,9 +474,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void Factory_NoMembersInTarget_ReturnsNull()
         {
             //Input
@@ -501,9 +496,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Extract Interface")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void Factory_NullSelectionNullReturnsNullPresenter()
         {
             //Input
@@ -513,7 +508,7 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            using(var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 vbe.Setup(v => v.ActiveCodePane).Returns((ICodePane)null);

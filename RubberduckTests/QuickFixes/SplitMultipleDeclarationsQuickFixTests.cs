@@ -1,18 +1,16 @@
-﻿using System.Linq;
-using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Mocks;
-using RubberduckTests.Inspections;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
-    public class SplitMultipleDeclarationsQuickFixTests
+    [TestFixture]
+    public class SplitMultipleDeclarationsQuickFixTests : QuickFixTestBase
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MultipleDeclarations_QuickFixWorks_Variables()
         {
             const string inputCode =
@@ -27,21 +25,12 @@ Dim var2 As String
 
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new MultipleDeclarationsInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new SplitMultipleDeclarationsQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MultipleDeclarationsInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MultipleDeclarations_QuickFixWorks_Constants()
         {
             const string inputCode =
@@ -56,21 +45,12 @@ Const var2 As String = ""test""
 
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new MultipleDeclarationsInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new SplitMultipleDeclarationsQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MultipleDeclarationsInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void MultipleDeclarations_QuickFixWorks_StaticVariables()
         {
             const string inputCode =
@@ -85,18 +65,14 @@ Static var2 As String
 
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new MultipleDeclarationsInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new SplitMultipleDeclarationsQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MultipleDeclarationsInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new SplitMultipleDeclarationsQuickFix();
+        }
     }
 }

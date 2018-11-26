@@ -5,11 +5,9 @@ namespace Rubberduck.VBEditor.Events
 {
     public class SelectionChangedEventArgs : EventArgs
     {
-        public ICodePane CodePane { get; }
-
-        public SelectionChangedEventArgs(ICodePane pane)
+        public SelectionChangedEventArgs()
         {
-            CodePane = pane;
+            //stub.
         }
     }
 }

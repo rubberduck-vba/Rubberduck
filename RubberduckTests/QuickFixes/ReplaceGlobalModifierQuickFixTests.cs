@@ -1,17 +1,17 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
-    public class ReplaceGlobalModifierQuickFixTests
+    [TestFixture]
+    public class ReplaceGlobalModifierQuickFixTests : QuickFixTestBase
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ObsoleteGlobal_QuickFixWorks()
         {
             const string inputCode =
@@ -20,16 +20,14 @@ namespace RubberduckTests.QuickFixes
             const string expectedCode =
                 @"Public var1 As Integer";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new ObsoleteGlobalInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ReplaceGlobalModifierQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ObsoleteGlobalInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new ReplaceGlobalModifierQuickFix();
+        }
     }
 }

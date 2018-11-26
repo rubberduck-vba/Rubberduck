@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
@@ -140,7 +141,8 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 debugClass, 
                 null, 
                 Accessibility.Global, 
-                null, 
+                null,
+                null,
                 Selection.Home, 
                 false,
                 new List<IAnnotation>(), 
@@ -155,7 +157,9 @@ namespace Rubberduck.Parsing.Symbols.DeclarationLoaders
                 debugClass, 
                 null, 
                 Accessibility.Global, 
-                null, Selection.Home, 
+                null, 
+                null,
+                Selection.Home, 
                 false,
                 new List<IAnnotation>(), 
                 new Attributes());

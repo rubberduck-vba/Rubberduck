@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using RubberduckTests.Mocks;
@@ -11,15 +11,15 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Binding
 {
-    [TestClass]
+    [TestFixture]
     public class SimpleNameDefaultBindingTests
     {
         private const string BindingTargetName = "BindingTarget";
         private const string TestClassName = "TestClass";
         private const string ReferencedProjectFilepath = @"C:\Temp\ReferencedProjectA";
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void EnclosingProcedureComesBeforeEnclosingModule()
         {
             string testCode = string.Format(@"
@@ -41,8 +41,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void EnclosingModuleComesBeforeEnclosingProject()
         {
             var builder = new MockVbeBuilder();
@@ -59,8 +59,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void EnclosingProjectComesBeforeOtherModuleInEnclosingProject()
         {
             var builder = new MockVbeBuilder();
@@ -79,8 +79,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void OtherModuleInEnclosingProjectComesBeforeReferencedProjectModule()
         {
             var builder = new MockVbeBuilder();
@@ -92,7 +92,7 @@ End Sub", BindingTargetName);
             builder.AddProject(referencedProject);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath);
+            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath, 0, 0);
             enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName));
             enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BindingTargetName));
             var enclosingProject = enclosingProjectBuilder.Build();
@@ -108,8 +108,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void ReferencedProjectModuleComesBeforeReferencedProjectType()
         {
             var builder = new MockVbeBuilder();
@@ -123,7 +123,7 @@ End Sub", BindingTargetName);
 
             var enclosingProject = builder
                 .ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected)
-                .AddReference(referencedProjectName, ReferencedProjectFilepath)
+                .AddReference(referencedProjectName, ReferencedProjectFilepath, 0, 0)
                 .AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName))
                 .Build();
             builder.AddProject(enclosingProject);
@@ -138,8 +138,8 @@ End Sub", BindingTargetName);
             }
         }
 
-        [TestCategory("Binding")]
-        [TestMethod]
+        [Category("Binding")]
+        [Test]
         public void ReferencedProjectClassNotMarkedAsGlobalClassModuleIsNotReferenced()
         {
             var builder = new MockVbeBuilder();
@@ -151,7 +151,7 @@ End Sub", BindingTargetName);
             builder.AddProject(referencedProject);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath);
+            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath, 0, 0);
             enclosingProjectBuilder.AddComponent(TestClassName, ComponentType.ClassModule, CreateTestProcedure(BindingTargetName));
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);

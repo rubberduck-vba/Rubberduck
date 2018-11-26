@@ -1,39 +1,57 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Moq;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.SafeComWrappers.Office.Core.Abstract;
 
 namespace RubberduckTests.Mocks
 {
     /// <summary>
     /// Builds a mock <see cref="IVBE"/>.
     /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1001")] //CA1001 is complaining about RubberduckTests.Mocks.Windows, which doesn't need to be disposed in this context.
     public class MockVbeBuilder
     {
         public const string TestProjectName = "TestProject1";
         public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
+        private readonly Mock<IVBEEvents> _vbeEvents;     
 
         #region standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
-        public static readonly string LibraryPathVBA = @"C:\PROGRA~2\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
-        public static readonly string LibraryPathMsExcel = @"C:\Program Files (x86)\Microsoft Office\Office15\EXCEL.EXE";   // mock host application, priority locked
-        public static readonly string LibraryPathMsOffice = @"C:\Program Files (x86)\Common Files\Microsoft Shared\OFFICE15\MSO.DLL";
-        public static readonly string LibraryPathStdOle = @"C:\Windows\SysWOW64\stdole2.tlb";
-        public static readonly string LibraryPathMsForms = @"C:\Windows\SysWOW64\FM20.DLL"; // standard in projects with a UserForm module
+        public static readonly string LibraryPathVBA = @"C:\PROGRA~1\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
+        public static readonly string LibraryPathMsExcel = @"C:\Program Files\Microsoft Office\Office15\EXCEL.EXE";   // mock host application, priority locked
+        public static readonly string LibraryPathMsOffice = @"C:\Program Files\Common Files\Microsoft Shared\OFFICE15\MSO.DLL";
+        public static readonly string LibraryPathStdOle = @"C:\Windows\System32\stdole2.tlb";
+        public static readonly string LibraryPathMsForms = @"C:\Windows\system32\FM20.DLL"; // standard in projects with a UserForm module
         #endregion
 
         public static readonly string LibraryPathVBIDE = @"C:\Program Files (x86)\Common Files\Microsoft Shared\VBA\VBA6\VBE6EXT.OLB";
-        public static readonly string LibraryPathScripting = @"C:\Windows\SysWOW64\scrrun.dll";
-        public static readonly string LibraryPathRegex = @"C:\Windows\SysWOW64\vbscript.dll\3";
+        public static readonly string LibraryPathScripting = @"C:\Windows\System32\scrrun.dll";
+        public static readonly string LibraryPathRegex = @"C:\Windows\System32\vbscript.dll\3";
         public static readonly string LibraryPathMsXml = @"C:\Windows\System32\msxml6.dll";
-        public static readonly string LibraryPathShDoc = @"C:\Windows\SysWOW64\ieframe.dll";
-        public static readonly string LibraryPathAdoDb = @"C:\Program Files (x86)\Common Files\System\ado\msado15.dll";
-        public static readonly string LibraryPathAdoRecordset = @"C:\Program Files (x86)\Common Files\System\ado\msador15.dll";
+        public static readonly string LibraryPathShDoc = @"C:\Windows\System32\ieframe.dll";
+        public static readonly string LibraryPathAdoDb = @"C:\Program Files\Common Files\System\ado\msado15.dll";
+        public static readonly string LibraryPathAdoRecordset = @"C:\Program Files\Common Files\System\ado\msador15.dll";
+
+        public static readonly Dictionary<string, string> LibraryPaths = new Dictionary<string, string>
+        {
+            ["VBA"] = LibraryPathVBA,
+            ["Excel"] = LibraryPathMsExcel,
+            ["Office"] = LibraryPathMsOffice,
+            ["stdole"] = LibraryPathStdOle,
+            ["MSForms"] = LibraryPathMsForms,
+            ["VBIDE"] = LibraryPathVBIDE,
+            ["Scripting"] = LibraryPathScripting,
+            ["VBScript_RegExp_55"] = LibraryPathRegex,
+            ["MSXML2"] = LibraryPathMsXml,
+            ["SHDocVw"] = LibraryPathShDoc,
+            ["ADODB"] = LibraryPathAdoDb,
+            ["ADOR"] = LibraryPathAdoRecordset
+        };
 
         //private Mock<IWindows> _vbWindows;
         private readonly Windows _windows = new Windows();
@@ -43,12 +61,6 @@ namespace RubberduckTests.Mocks
         
         private Mock<ICodePanes> _vbCodePanes;
         private readonly ICollection<ICodePane> _codePanes = new List<ICodePane>();
-
-        private const int MenuBar = 1;
-        private const int CodeWindow = 9;
-        private const int ProjectWindow = 14;
-        private const int MsForms = 17;
-        private const int MsFormsControl = 18;
 
         public MockVbeBuilder()
         {
@@ -73,7 +85,6 @@ namespace RubberduckTests.Mocks
             }
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
-            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
 
             return this;
@@ -84,19 +95,19 @@ namespace RubberduckTests.Mocks
         /// </summary>
         /// <param name="name">The name of the project to build.</param>
         /// <param name="protection">A value that indicates whether the project is protected.</param>
-        public MockProjectBuilder ProjectBuilder(string name, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return ProjectBuilder(name, string.Empty, protection);
+            return ProjectBuilder(name, string.Empty, protection, projectType);
         }
 
-        public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, string filename, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return new MockProjectBuilder(name, filename, protection, () => _vbe.Object, this);
+            return new MockProjectBuilder(name, filename, protection, projectType, () => _vbe.Object, this);
         }
 
-        public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection)
+        public MockProjectBuilder ProjectBuilder(string name, string filename, string projectId, ProjectProtection protection, ProjectType projectType = ProjectType.HostProject)
         {
-            return new MockProjectBuilder(name, filename, projectId, protection, () => _vbe.Object, this);
+            return new MockProjectBuilder(name, filename, projectId, protection, projectType, () => _vbe.Object, this);
         }
 
         /// <summary>
@@ -104,6 +115,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         public Mock<IVBE> Build()
         {
+            _vbe.SetupGet(vbe => vbe.Version).Returns("7.1");
             return _vbe;
         }
 
@@ -183,11 +195,14 @@ namespace RubberduckTests.Mocks
         {
             var vbe = new Mock<IVBE>();
             _windows.VBE = vbe.Object;
+            vbe.Setup(m => m.Dispose());
+            vbe.SetupReferenceEqualityIncludingHashCode();
             vbe.Setup(m => m.Windows).Returns(() => _windows);
             vbe.SetupProperty(m => m.ActiveCodePane);
             vbe.SetupProperty(m => m.ActiveVBProject);
             
             vbe.SetupGet(m => m.SelectedVBComponent).Returns(() => vbe.Object.ActiveCodePane?.CodeModule?.Parent);
+            vbe.Setup(m => m.GetActiveSelection()).Returns(() => vbe.Object.ActiveCodePane?.GetQualifiedSelection());
             vbe.SetupGet(m => m.ActiveWindow).Returns(() => vbe.Object.ActiveCodePane.Window);
 
             var mainWindow = new Mock<IWindow>();
@@ -203,7 +218,9 @@ namespace RubberduckTests.Mocks
 
             var commandBars = DummyCommandBars();
             vbe.SetupGet(m => m.CommandBars).Returns(() => commandBars);
-            
+
+            vbe.Setup(m => m.IsInDesignMode).Returns(true);
+
             return vbe;
         }
 
@@ -213,11 +230,7 @@ namespace RubberduckTests.Mocks
  
             var dummyCommandBar = DummyCommandBar();
 
-            commandBars.SetupGet(m => m[MenuBar]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[CodeWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[ProjectWindow]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsForms]).Returns(dummyCommandBar);
-            commandBars.SetupGet(m => m[MsFormsControl]).Returns(dummyCommandBar);
+            commandBars.SetupGet(m => m[It.IsAny<int>()]).Returns(dummyCommandBar);
 
             return commandBars.Object;
         }
@@ -252,12 +265,25 @@ namespace RubberduckTests.Mocks
         {
             var result = new Mock<IVBProjects>();
 
+            result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
+
             result.Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _projects.GetEnumerator());
             
             result.Setup(m => m[It.IsAny<int>()]).Returns<int>(value => _projects.ElementAt(value));
             result.SetupGet(m => m.Count).Returns(() => _projects.Count);
 
+            result.Setup(m => m.Add(It.IsAny<ProjectType>()))
+                .Returns((ProjectType pt) =>
+            {
+                var projectBuilder = ProjectBuilder("test", ProjectProtection.Unprotected);
+                var project = projectBuilder.Build();
+                project.Object.AssignProjectId();
+                AddProject(project);
+                return project.Object;
+            });
+            result.Setup(m => m.Remove(It.IsAny<IVBProject>())).Callback((IVBProject proj) => _projects.Remove(proj));
 
             return result;
         }
@@ -265,6 +291,9 @@ namespace RubberduckTests.Mocks
         private Mock<ICodePanes> CreateCodePanesMock()
         {
             var result = new Mock<ICodePanes>();
+
+            result.Setup(m => m.Dispose());
+            result.SetupReferenceEqualityIncludingHashCode();
 
             result.Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
             result.As<IEnumerable>().Setup(m => m.GetEnumerator()).Returns(() => _codePanes.GetEnumerator());
@@ -274,5 +303,7 @@ namespace RubberduckTests.Mocks
 
             return result;
         }
+
+        public Mock<IVBProjects> MockProjectsCollection => _vbProjects;
     }
 }

@@ -1,17 +1,20 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
-    public class ConvertToProcedureQuickFixTests
+    [TestFixture]
+    public class ConvertToProcedureQuickFixTests : QuickFixTestBase
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface()
         {
             const string inputCode =
@@ -22,7 +25,12 @@ namespace RubberduckTests.QuickFixes
     Else
         Foo = False
     End If
-End Function";
+End Function
+
+Public Sub Test()
+    Foo ""test""
+End Sub
+";
 
             const string expectedCode =
                 @"Public Sub Foo(ByVal bar As String)
@@ -31,22 +39,19 @@ End Function";
     Else
         
     End If
-End Sub";
+End Sub
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
+Public Sub Test()
+    Foo ""test""
+End Sub
+";
 
-                var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_NoInterface_ManyBodyStatements()
         {
             const string inputCode =
@@ -58,7 +63,12 @@ label1:
 End Function
 
 Sub goo()
-End Sub";
+End Sub
+
+Public Sub Test()
+    foo ""test""
+End Sub
+";
 
             const string expectedCode =
                 @"Sub foo(ByRef fizz As Boolean)
@@ -69,22 +79,19 @@ label1:
 End Sub
 
 Sub goo()
-End Sub";
+End Sub
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
+Public Sub Test()
+    foo ""test""
+End Sub
+";
 
-                var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new FunctionReturnValueNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void FunctionReturnValueNotUsed_QuickFixWorks_Interface()
         {
             const string inputInterfaceCode =
@@ -121,23 +128,26 @@ End Function";
                 .AddComponent("Bar", ComponentType.ClassModule, inputImplementationCode1)
                 .AddComponent("Bar2", ComponentType.ClassModule, inputImplementationCode2)
                 .AddComponent("TestModule", ComponentType.StandardModule, callSiteCode)
-                .MockVbeBuilder().Build();
+                .AddProjectToVbeBuilder().Build();
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var inspection = new FunctionReturnValueNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
+                new ConvertToProcedureQuickFix().Fix(inspectionResults.First(), rewriteSession);
 
                 var component = vbe.Object.VBProjects[0].VBComponents[0];
-                Assert.AreEqual(expectedInterfaceCode, state.GetRewriter(component).GetText());
+                var actualCode = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
+                Assert.AreEqual(expectedInterfaceCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void NonReturningFunction_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -148,20 +158,12 @@ End Function";
                 @"Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenFunctionNameWithTypeHint_SubNameHasNoTypeHint()
         {
             const string inputCode =
@@ -172,20 +174,12 @@ End Function";
                 @"Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void NonReturningFunction_QuickFixWorks_FunctionReturnsImplicitVariant()
         {
             const string inputCode =
@@ -196,20 +190,12 @@ End Function";
                 @"Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void NonReturningFunction_QuickFixWorks_FunctionHasVariable()
         {
             const string inputCode =
@@ -220,20 +206,12 @@ End Function";
                 @"Sub Foo(ByVal b As Boolean)
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenNonReturningPropertyGetter_QuickFixConvertsToSub()
         {
             const string inputCode =
@@ -244,20 +222,12 @@ End Property";
                 @"Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenNonReturningPropertyGetWithTypeHint_QuickFixDropsTypeHint()
         {
             const string inputCode =
@@ -268,20 +238,12 @@ End Property";
                 @"Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenImplicitVariantPropertyGetter_StillConvertsToSub()
         {
             const string inputCode =
@@ -292,20 +254,12 @@ End Property";
                 @"Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void GivenParameterizedPropertyGetter_QuickFixKeepsParameter()
         {
             const string inputCode =
@@ -316,17 +270,14 @@ End Property";
                 @"Sub Foo(ByVal b As Boolean)
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new NonReturningFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new ConvertToProcedureQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new NonReturningFunctionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new ConvertToProcedureQuickFix();
+        }
     }
 }

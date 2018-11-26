@@ -1,23 +1,36 @@
-﻿using Castle.Windsor;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Collections.Generic;
+using Castle.Windsor;
 using Moq;
+using NUnit.Framework;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Root;
+using Rubberduck.VBEditor.SourceCodeHandling;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.IoCContainer
 {
-    [TestClass]
+    [TestFixture]
     public class IoCRegistrationTests
     {
-        [TestMethod]
+        [Test]
+        [Category("IoC_Registration")]
         public void RegistrationOfRubberduckIoCContainerWithSC_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var ide = vbeBuilder.Build().Object;
-            var addin = new Mock<IAddIn>().Object;
-            var initialSettings = new GeneralSettings {IsSourceControlEnabled = true};
+            var ideMock = vbeBuilder.Build();
+            var sourceFileHandler = new Mock<ITempSourceFileHandler>().Object;
+            ideMock.Setup(m => m.TempSourceFileHandler).Returns(() => sourceFileHandler);
+            var ide = ideMock.Object;
+            var addInBuilder = new MockAddInBuilder();
+            var addin = addInBuilder.Build().Object;
+
+            var initialSettings = new GeneralSettings
+            {
+                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                {
+                    new ExperimentalFeatures()
+                }
+            };
 
             using (var container =
                 new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings)))
@@ -27,13 +40,19 @@ namespace RubberduckTests.IoCContainer
             //This test does not need an assert because it tests that no exception has been thrown.
         }
 
-        [TestMethod]
+        [Test]
+        [Category("IoC_Registration")]
         public void RegistrationOfRubberduckIoCContainerWithoutSC_NoException()
         {
             var vbeBuilder = new MockVbeBuilder();
-            var ide = vbeBuilder.Build().Object;
-            var addin = new Mock<IAddIn>().Object;
-            var initialSettings = new GeneralSettings {IsSourceControlEnabled = false};
+            var ideMock = vbeBuilder.Build();
+            var sourceFileHandler = new Mock<ITempSourceFileHandler>().Object;
+            ideMock.Setup(m => m.TempSourceFileHandler).Returns(() => sourceFileHandler);
+            var ide = ideMock.Object;
+            var addInBuilder = new MockAddInBuilder();
+            var addin = addInBuilder.Build().Object;
+
+            var initialSettings = new GeneralSettings {EnableExperimentalFeatures = new List<ExperimentalFeatures>()};
 
             using (var container =
                 new WindsorContainer().Install(new RubberduckIoCInstaller(ide, addin, initialSettings)))

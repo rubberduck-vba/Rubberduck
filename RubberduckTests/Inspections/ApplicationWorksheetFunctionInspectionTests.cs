@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -8,7 +8,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ApplicationWorksheetFunctionInspectionTests
     {
         private static RubberduckParserState ArrangeParserAndParse(string inputCode)
@@ -21,22 +21,11 @@ namespace RubberduckTests.Inspections
 
             var vbe = builder.AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
-
-            parser.State.AddTestLibrary("Excel.1.8.xml");
-
-            parser.Parse(new CancellationTokenSource());
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            return parser.State;
+            return MockParser.CreateAndParse(vbe.Object); ;
         }
 
-        [TestMethod]
-        [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_GlobalApplication()
         {
             const string inputCode =
@@ -50,15 +39,14 @@ End Sub
             {
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithGlobalApplication()
         {
             const string inputCode =
@@ -74,15 +62,14 @@ End Sub
             {
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_ApplicationVariable()
         {
             const string inputCode =
@@ -98,15 +85,14 @@ End Sub
             {
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_ReturnsResult_WithApplicationVariable()
         {
             const string inputCode =
@@ -124,15 +110,14 @@ End Sub
             {
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseGlobalApplication()
         {
             const string inputCode =
@@ -146,15 +131,14 @@ End Sub
             {
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [DeploymentItem(@"TestFiles\")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_ExplicitUseApplicationVariable()
         {
             const string inputCode =
@@ -170,14 +154,14 @@ End Sub
             {
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_DoesNotReturnResult_NoExcelReference()
         {
             const string inputCode =
@@ -201,15 +185,14 @@ End Sub
                 }
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [DeploymentItem(@"Testfiles\")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ApplicationWorksheetFunction_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -224,10 +207,20 @@ End Sub
             {
 
                 var inspection = new ApplicationWorksheetFunctionInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "ApplicationWorksheetFunctionInspection";
+            var inspection = new ApplicationWorksheetFunctionInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
         }
     }
 }

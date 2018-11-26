@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
-using System.Windows.Forms;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -14,19 +12,22 @@ using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.Interaction;
+using Rubberduck.Common;
+using Rubberduck.Parsing.Rewriter;
 
 namespace RubberduckTests.Refactoring
 {
-    [TestClass]
+    [TestFixture]
     public class RenameTests
     {
         private const string FAUX_CURSOR = "|";
 
         #region Rename Variable Tests
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameVariable()
         {
             var tdo = new RenameTestsDataObject(selection: "val1", newName: "val2");
@@ -44,9 +45,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameVariable_UpdatesReferences()
         {
             var tdo = new RenameTestsDataObject(selection: "val1", newName: "val2");
@@ -69,9 +70,9 @@ End Sub"
         #endregion
         #region Rename Parameter Tests
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameParameter()
         {
             var tdo = new RenameTestsDataObject(selection: "arg1", newName: "arg2");
@@ -87,9 +88,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameMulitlinedParameter()
         {
             var tdo = new RenameTestsDataObject(selection: "arg3", newName: "arg2");
@@ -107,9 +108,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameParameter_UpdatesReferences()
         {
             var tdo = new RenameTestsDataObject(selection: "arg1", newName: "arg2");
@@ -127,9 +128,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameFirstPropertyParameter_UpdatesAllRelatedParameters()
         {
             var tdo = new RenameTestsDataObject(selection: "index", newName: "renamed");
@@ -170,9 +171,110 @@ End Property"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameFirstPropertyParameter_DoesNotUpdateUnrelatedParameters()
+        {
+            var tdo = new RenameTestsDataObject(selection: "index", newName: "renamed");
+            var inputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Property Get Foo(ByVal in|dex As Integer) As Variant
+    Dim d As Integer
+    d = index
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property
+
+Property Set Bar(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property",
+
+                Expected =
+                    @"Property Get Foo(ByVal renamed As Integer) As Variant
+    Dim d As Integer
+    d = renamed
+End Property
+
+Property Let Foo(ByVal renamed As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = renamed
+End Property
+
+Property Set Bar(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameFirstPropertyParameter_DoesNotUpdateOtherModules()
+        {
+            var tdo = new RenameTestsDataObject(selection: "index", newName: "renamed");
+            var inputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Property Get Foo(ByVal in|dex As Integer) As Variant
+    Dim d As Integer
+    d = index
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property",
+
+                Expected =
+                    @"Property Get Foo(ByVal renamed As Integer) As Variant
+    Dim d As Integer
+    d = renamed
+End Property
+
+Property Let Foo(ByVal renamed As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = renamed
+End Property"
+            };
+
+            var secondInputOutput = new RenameTestModuleDefinition("ClassBar")
+            {
+                Input =
+                    @"Property Get Foo(ByVal index As Integer) As Variant
+    Dim d As Integer
+    d = index
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property",
+
+                Expected =
+                    @"Property Get Foo(ByVal index As Integer) As Variant
+    Dim d As Integer
+    d = index
+End Property
+
+Property Let Foo(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Integer
+    d = index
+End Property"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput, secondInputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameLastPropertyParameter_UpdatesAllRelatedParameters()
         {
             var tdo = new RenameTestsDataObject(selection: "value", newName: "renamed");
@@ -202,9 +304,41 @@ End Property"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameLastPropertyParameter_DoesNotUpdateUnrelatedParameters()
+        {
+            var tdo = new RenameTestsDataObject(selection: "value", newName: "renamed");
+            var inputOutput = new RenameTestModuleDefinition("ClassFoo")
+            {
+                Input =
+                    @"Property Let Foo(ByVal index As Integer, ByVal va|lue As Variant)
+    Dim d As Variant
+    d = value
+End Property
+
+Property Set Bar(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Variant
+    d = value
+End Property",
+                Expected =
+                    @"Property Let Foo(ByVal index As Integer, ByVal renamed As Variant)
+    Dim d As Variant
+    d = renamed
+End Property
+
+Property Set Bar(ByVal index As Integer, ByVal value As Variant)
+    Dim d As Variant
+    d = value
+End Property"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameLastPropertyParameter_UpdatesRelatedParametersWithSameName()
         {
             var tdo = new RenameTestsDataObject(selection: "value", newName: "renamed");
@@ -243,9 +377,9 @@ End Property"
         #endregion
         #region Rename Member Tests
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameSub_ConflictingNames_Reject()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Goo");
@@ -255,18 +389,14 @@ End Property"
                     @"Private Sub Fo|o()
     Dim Goo As Integer
 End Sub",
-                Expected =
-                    @"Private Sub Foo()
-    Dim Goo As Integer
-End Sub"
             };
-            tdo.MsgBoxReturn = DialogResult.No;
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameSub_ConflictingNames_Accept()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Goo");
@@ -284,9 +414,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameSub_UpdatesReferences()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Hoo");
@@ -309,9 +439,9 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameGetterAndSetter()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Goo");
@@ -335,9 +465,9 @@ End Property"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameGetterAndLetter()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Goo");
@@ -359,9 +489,9 @@ End Property"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameFunction()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Hoo");
@@ -379,9 +509,9 @@ End Function"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameFunction_UpdatesReferences()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Hoo");
@@ -415,7 +545,9 @@ End Sub"
         //Non-UserDefined declarations in the DeclarationFinder.  So, the control rename scenarios
         //below can only be tested if implemented (and tested) within Excel.  
 
-        [TestMethod, Ignore]
+        [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlFromEventHandler()
         {
             var tdo = new RenameTestsDataObject(selection: "cmdBtn1", newName: "cmdBigButton");
@@ -448,7 +580,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod, Ignore]
+        [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlFromEventHandlerNameCollision()
         {
             var tdo = new RenameTestsDataObject(selection: "cmdBtn1", newName: "cmdBigButton");
@@ -483,7 +617,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod, Ignore]
+        [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlRenameInReference()
         {
             var tdo = new RenameTestsDataObject(selection: "cmdBtn1", newName: "cmdBigButton");
@@ -515,10 +651,12 @@ End Sub"
             inputOutput.ControlNames.Add("cmdBtn1");
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
-        [TestMethod, Ignore]
+        [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlFromEventHandlerReference()
         {
             var tdo = new RenameTestsDataObject(selection: "cmdBtn1", newName: "cmdBigButton");
@@ -550,10 +688,12 @@ End Sub"
             inputOutput.ControlNames.Add("cmdBtn1");
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.OK, It.IsAny<MessageBoxIcon>()), Times.Never);
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
-        [TestMethod, Ignore]
+        [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlHandlesUnderscoresInNewName()
         {
             var tdo = new RenameTestsDataObject(selection: "bigButton_ClickAgain", newName: "bigButton_ClickAgain_AndAgain");
@@ -570,7 +710,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod, Ignore]
+        [Test, Ignore("")]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameControlSimilarNames()
         {
             var tdo = new RenameTestsDataObject(selection: "bigButton", newName: "smallButton");
@@ -603,9 +745,9 @@ End Sub"
         #endregion
         #region Rename Event Tests
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEvent()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Goo");
@@ -620,9 +762,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEventAndHandlers()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Goo");
@@ -650,9 +792,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEventUnaffectedByLookAlikeName()
         {
             var tdo = new RenameTestsDataObject(selection: "abc_Foo", newName: "abc_Goo");
@@ -676,9 +818,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEventUnaffectedByLookAlikeName2()
         {
             var tdo = new RenameTestsDataObject(selection: "def_Foo", newName: "def_Goo");
@@ -712,9 +854,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEventAndHandlersNarrowScope()
         {
             var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Goo");
@@ -793,9 +935,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutputWithSelection, inputOutput2, inputOutput3, inputOutput4);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEventUpdatesUsages()
         {
             var tdo = new RenameTestsDataObject(selection: "MyEvent", newName: "YourEvent");
@@ -844,9 +986,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEventUsingWithEventsVariable()
         {
             var tdo = new RenameTestsDataObject(selection: "XLEvents", newName: "NewEventImpl");
@@ -892,9 +1034,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithRenameTarget);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEventUsingWithEventsVariableConfictingName()
         {
             var tdo = new RenameTestsDataObject(selection: "abc", newName: "def");
@@ -928,9 +1070,9 @@ End Sub",
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEventFromHandler()
         {
             var tdo = new RenameTestsDataObject(selection: "MyEvent", newName: "YourEvent_withUnderscore");
@@ -989,9 +1131,9 @@ End Function"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEventFromUsage()
         {
             var tdo = new RenameTestsDataObject(selection: "MyEvent", newName: "YourEvent");
@@ -1018,9 +1160,9 @@ End Sub"
         #endregion
         #region Rename Interface Tests
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterface()
         {
             var tdo = new RenameTestsDataObject(selection: "DoSomething", newName: "DoNothing");
@@ -1048,12 +1190,12 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterfaceMemberDuplicateMemberInOtherInterface()
         {
             var tdo = new RenameTestsDataObject(selection: "DoSomething", newName: "DoNothing");
@@ -1096,9 +1238,9 @@ End Sub",
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2, inputOutput3, inputOutput4);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterfaceReferences()
         {
             var tdo = new RenameTestsDataObject(selection: "DoSomething", newName: "DoNothing");
@@ -1158,9 +1300,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutputWithSelection, inputOutput2, inputOutput3);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterfaceFromImplementingMember()
         {
             var tdo = new RenameTestsDataObject(selection: "DoSomething", newName: "DoNothing");
@@ -1219,12 +1361,115 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithSelection, inputOutput3);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameInterfaceVariable()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Bar");
+            var inputOutput1 = new RenameTestModuleDefinition("IClass1")
+            {
+                Input =
+                    @"Public F|oo As Long",
+                Expected =
+                    @"Public Bar As Long"
+            };
+            var inputOutput2 = new RenameTestModuleDefinition("Class1")
+            {
+                Input =
+                    @"Implements IClass1
+
+Private Property Get IClass1_Foo() As Long
+End Property
+
+Private Property Let IClass1_Foo(rhs As Long)
+End Property",
+                Expected =
+                    @"Implements IClass1
+
+Private Property Get IClass1_Bar() As Long
+End Property
+
+Private Property Let IClass1_Bar(rhs As Long)
+End Property"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameInterfaceVariable_AcceptPrompt()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Bar");
+            var inputOutput1 = new RenameTestModuleDefinition("Class1")
+            {
+                Input = @"Implements IClass1
+
+Private Property Get IClass1_F|oo() As Long
+End Property
+
+Private Property Let IClass1_Foo(rhs As Long)
+End Property",
+                Expected =
+                    @"Implements IClass1
+
+Private Property Get IClass1_Bar() As Long
+End Property
+
+Private Property Let IClass1_Bar(rhs As Long)
+End Property"
+            };
+
+            var inputOutput2 = new RenameTestModuleDefinition("IClass1")
+            {
+                Input =
+                    @"Public Foo As Long",
+                Expected =
+                    @"Public Bar As Long"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
+
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameInterfaceVariable_RejectPrompt()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Bar");
+            var inputOutput1 = new RenameTestModuleDefinition("Class1")
+            {
+                Input = @"Implements IClass1
+
+Private Property Get IClass1_F|oo() As Long
+End Property
+
+Private Property Let IClass1_Foo(rhs As Long)
+End Property"
+            };
+
+            var inputOutput2 = new RenameTestModuleDefinition("IClass1")
+            {
+                Input = @"Public Foo As Long"
+            };
+            inputOutput2.Expected = inputOutput2.Input;
+
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
+
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterfaceFromMemberProperty()
         {
             var tdo = new RenameTestsDataObject(selection: "Something", newName: "Nothing");
@@ -1297,12 +1542,12 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithSelection, inputOutput3);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterfaceNoImplementers()
         {
             var tdo = new RenameTestsDataObject(selection: "DoSomething", newName: "DoNothing");
@@ -1317,12 +1562,12 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterfaceFromReference()
         {
             var tdo = new RenameTestsDataObject(selection: "DoSomething", newName: "DoNothing");
@@ -1384,9 +1629,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2, inputOutputWithSelection);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterfaceReferencesWithinScope()
         {
             var tdo = new RenameTestsDataObject(selection: "DoSomething", newName: "DoNothing");
@@ -1450,9 +1695,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutputWithSelection, inputOutput2, inputOutput3);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterface_AcceptPrompt()
         {
             var tdo = new RenameTestsDataObject(selection: "DoSomething", newName: "DoNothing");
@@ -1481,12 +1726,12 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameInterface_RejectPrompt()
         {
             var tdo = new RenameTestsDataObject(selection: "DoSomething", newName: "DoNothing");
@@ -1498,7 +1743,6 @@ End Sub"
 Private Sub ICla|ss1_DoSomething(ByVal a As Integer, ByVal b As String)
 End Sub"
             };
-            inputOutput1.Expected = inputOutput1.Input.Replace(FAUX_CURSOR, "");
 
             var inputOutput2 = new RenameTestModuleDefinition("IClass1")
             {
@@ -1508,18 +1752,18 @@ End Sub"
             };
             inputOutput2.Expected = inputOutput2.Input;
 
-            tdo.MsgBoxReturn = DialogResult.No;
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutput2);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()), Times.Once);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
         }
 
         #endregion
         #region Rename CodeModule Tests
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameModuleFromImplementsStmt()
         {
             var tdo = new RenameTestsDataObject(selection: "IClass1", newName: "INewClass");
@@ -1559,9 +1803,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1, inputOutputWithSelection, inputOutput3);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameModuleFromReference()
         {
             var tdo = new RenameTestsDataObject(selection: "CTestClass", newName: "CMyTestClass");
@@ -1599,14 +1843,13 @@ End Sub"
             Assert.AreSame(tdo.NewName, component.CodeModule.Name);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameCodeModule()
         {
             const string newName = "RenameModule";
 
-            //Input
             const string inputCode =
                 @"Private Sub Foo(ByVal a As Integer, ByVal b As String)
 End Sub";
@@ -1615,23 +1858,22 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, "Class1", ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var msgbox = new Mock<IMessageBox>();
-                msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.Yes);
+                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
                 model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
 
-                //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -1641,9 +1883,9 @@ End Sub";
         #endregion
         #region Rename Project Tests
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameProject()
         {
             const string oldName = "TestProject1";
@@ -1652,24 +1894,23 @@ End Sub";
             var builder = new MockVbeBuilder();
             var vbe = builder.ProjectBuilder(oldName, ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, string.Empty)
-                .MockVbeBuilder()
+                .AddProjectToVbeBuilder()
                 .Build();
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var msgbox = new Mock<IMessageBox>();
-                msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.Yes);
+                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
                 var model = new RenameModel(vbeWrapper, state, default(QualifiedSelection)) { NewName = newName };
                 model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
 
-                //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreEqual(newName, vbe.Object.VBProjects[0].Name);
@@ -1679,9 +1920,9 @@ End Sub";
         #endregion
         #region Rename Enumeration Tests
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEnumeration()
         {
             var tdo = new RenameTestsDataObject(selection: "FruitType", newName: "Fruits");
@@ -1714,12 +1955,12 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameEnumerationMember()
         {
             var tdo = new RenameTestsDataObject(selection: "Apple", newName: "CranApple");
@@ -1752,14 +1993,280 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameEnumerationMember_WarnMemberExists()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Apple", newName: "Plum");
+            var moduleCode =
+                @"Option Explicit
+
+Public Enum FruitType
+    App|le = 1
+    Orange = 2
+    Plum = 3
+End Enum
+
+Sub DoSomething()
+    MsgBox CStr(Apple)
+End Sub";
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input = moduleCode,
+            };
+
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        }
+
+        #endregion
+        #region Rename UDT Tests
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePublicUDT()
+        {
+            var tdo = new RenameTestsDataObject(selection: "UserType", newName: "NewUserType");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType|
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Public Type NewUserType
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As NewUserType)
+    MsgBox CStr(baz.bar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePrivateUDT()
+        {
+            var tdo = new RenameTestsDataObject(selection: "UserType", newName: "NewUserType");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType|
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Public Type NewUserType
+    foo As String
+    bar As Long
+End Type
+
+
+Private Sub DoSomething(baz As NewUserType)
+    MsgBox CStr(baz.bar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameUDTMember()
+        {
+            var tdo = new RenameTestsDataObject(selection: "bar", newName: "fooBar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Private Type UserType
+    foo As String
+    bar| As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Private Type UserType
+    foo As String
+    fooBar As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.fooBar)
+End Sub"
+            };
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenameUDTMember_WarnMemberExists()
+        {
+            var tdo = new RenameTestsDataObject(selection: "bar", newName: "foo");
+            var moduleCode =
+@"Option Explicit
+
+Private Type UserType
+    foo As String
+    bar| As Long
+End Type
+
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub";
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input = moduleCode,
+            };
+
+            tdo.MsgBoxReturn = ConfirmationOutcome.No;
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Once);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePublicUDT_ReferenceInDifferentModule()
+        {
+            var tdo = new RenameTestsDataObject(selection: "UserType", newName: "NewUserType");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType|
+    foo As String
+    bar As Long
+End Type",
+
+                Expected =
+                    @"Option Explicit
+
+Public Type NewUserType
+    foo As String
+    bar As Long
+End Type"
+            };
+
+            var otherModule = new RenameTestModuleDefinition("Module2", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Private Sub DoSomething(baz As NewUserType)
+    MsgBox CStr(baz.bar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput, otherModule);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RenamePublicUDTMember_ReferenceInDifferentModule()
+        {
+            var tdo = new RenameTestsDataObject(selection: "bar", newName: "fooBar");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Public Type UserType
+    foo As String
+    bar| As Long
+End Type",
+                Expected =
+                    @"Option Explicit
+
+Public Type UserType
+    foo As String
+    fooBar As Long
+End Type"
+            };
+
+            var otherModule = new RenameTestModuleDefinition("Module2", ComponentType.StandardModule)
+            {
+                Input =
+                    @"Option Explicit
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.bar)
+End Sub",
+                Expected =
+                    @"Option Explicit
+
+Private Sub DoSomething(baz As UserType)
+    MsgBox CStr(baz.fooBar)
+End Sub"
+            };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput, otherModule);
+
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         #endregion
         #region Rename Label Tests
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameLabel()
         {
             var tdo = new RenameTestsDataObject(selection: "EH", newName: "ErrorHandler");
@@ -1790,14 +2297,207 @@ End Sub"
             };
             PerformExpectedVersusActualRenameTests(tdo, inputOutput1);
 
-            tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
         #endregion
+        #region Property Tests
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_RefactorProperties_UpdatesReferences()
+        {
+            var oldName = "Column";
+            var refactoredName = "Rank";
+
+            var classInputOutput = new RenameTestModuleDefinition("MyClass", ComponentType.ClassModule)
+            {
+                Input = $@"Option Explicit
+
+Private colValue As Long
+
+Public Property Get {oldName}() As Long
+    {oldName} = colValue
+End Property
+Public Property Let {FAUX_CURSOR}{oldName}(value As Long)
+    colValue = value
+End Property
+",
+                Expected = $@"Option Explicit
+
+Private colValue As Long
+
+Public Property Get {refactoredName}() As Long
+    {refactoredName} = colValue
+End Property
+Public Property Let {refactoredName}(value As Long)
+    colValue = value
+End Property
+"
+            };
+            var usageInputOutput = new RenameTestModuleDefinition("Usage", ComponentType.StandardModule)
+            {
+                Input = $@"Option Explicit
+
+Public Sub useColValue()
+    Dim instance As MyClass
+    Set instance = New MyClass
+    instance.{oldName} = 97521
+    PrintValue instance.{oldName} & ""is the value""
+End Sub
+
+Private Sub PrintValue(value As String)
+    Debug.Print value
+End Sub
+",
+                Expected = $@"Option Explicit
+
+Public Sub useColValue()
+    Dim instance As MyClass
+    Set instance = New MyClass
+    instance.{refactoredName} = 97521
+    PrintValue instance.{refactoredName} & ""is the value""
+End Sub
+
+Private Sub PrintValue(value As String)
+    Debug.Print value
+End Sub
+"
+            };
+
+            var builder = new MockVbeBuilder();
+            var projectName = "Test";
+            var vbe = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, major: 4, minor: 1, isBuiltIn: true)
+                .AddComponent("MyClass", ComponentType.ClassModule, classInputOutput.Input)
+                .AddComponent("Usage", ComponentType.StandardModule, usageInputOutput.Input)
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            var tdo = new RenameTestsDataObject(oldName, refactoredName)
+            {
+                VBE = vbe.Object,
+                RefactorParamType = RefactorParams.Declaration,
+                SelectionModuleName = "MyClass",
+                ProjectName = projectName
+            };
+            PerformExpectedVersusActualRenameTests(tdo, classInputOutput, usageInputOutput);
+            tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
+        }
+
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_DoesNotWarnForUDTMember()
+        {
+            var tdo = new RenameTestsDataObject(selection: "VS", newName: "VerySatisfiedResponses");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Private Type TMonthScoreInfo
+            VerySatisfiedResponses As Long
+        End Type
+
+        Private monthScoreInfo As TMonthScoreInfo
+
+        Public Property Get V|S() As Long
+            VS = monthScoreInfo.VerySatisfiedResponses
+        End Property
+        Public Property Let VS(ByVal theVal As Long)
+            monthScoreInfo.VerySatisfiedResponses = theVal
+        End Property",
+                Expected =
+@"Private Type TMonthScoreInfo
+            VerySatisfiedResponses As Long
+        End Type
+
+        Private monthScoreInfo As TMonthScoreInfo
+
+        Public Property Get VerySatisfiedResponses() As Long
+            VerySatisfiedResponses = monthScoreInfo.VerySatisfiedResponses
+        End Property
+        Public Property Let VerySatisfiedResponses(ByVal theVal As Long)
+            monthScoreInfo.VerySatisfiedResponses = theVal
+        End Property"
+            };
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        }
+
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_DoesNotWarnForEnumMember()
+        {
+            var tdo = new RenameTestsDataObject(selection: "VerySatisfiedID", newName: "VerySatisfiedResponse");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Private Enum MonthScoreTypes
+            VerySatisfiedResponse
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get V|erySatisfiedID() As Long
+            VerySatisfiedID = MonthScoreTypes.VerySatisfiedResponse
+        End Property",
+                Expected =
+@"Private Enum MonthScoreTypes
+            VerySatisfiedResponse
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get VerySatisfiedResponse() As Long
+            VerySatisfiedResponse = MonthScoreTypes.VerySatisfiedResponse
+        End Property",
+            };
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        }
+
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_DoesNotWarnForMember()
+        {
+            var tdo = new RenameTestsDataObject(selection: "VerySatisfiedResponse", newName: "VerySatisfiedID");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Private Enum MonthScoreTypes
+            VerySa|tisfiedResponse
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get VerySatisfiedID() As Long
+            VerySatisfiedID = MonthScoreTypes.VerySatisfiedResponse
+        End Property",
+                Expected =
+@"Private Enum MonthScoreTypes
+            VerySatisfiedID
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get VerySatisfiedID() As Long
+            VerySatisfiedID = MonthScoreTypes.VerySatisfiedID
+        End Property",
+            };
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        }
+
+        #endregion
+
         #region Other Tests
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_CheckAllRefactorCallPaths()
         {
             RefactorParams[] refactorParams = { RefactorParams.None, RefactorParams.QualifiedSelection, RefactorParams.Declaration };
@@ -1817,13 +2517,13 @@ End Sub"
 
                 PerformExpectedVersusActualRenameTests(tdo, inputOutput);
 
-                tdo.MsgBox.Verify(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()), Times.Never);
+                tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void Rename_PresenterIsNull()
         {
             const string inputCode =
@@ -1832,7 +2532,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var codePaneMock = new Mock<ICodePane>();
@@ -1843,17 +2544,17 @@ End Sub";
                 var vbeWrapper = vbe.Object;
                 var factory = new RenamePresenterFactory(vbeWrapper, null, state);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory, null, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory, null, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor();
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(inputCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(inputCode, actualCode);
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void Presenter_TargetIsNull()
         {
             const string inputCode =
@@ -1880,9 +2581,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void Factory_SelectionIsNull()
         {
             const string inputCode =
@@ -1907,9 +2608,9 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameParameter_DoesNotAlterPrecompilerDirectives()
         {
             var tdo = new RenameTestsDataObject(selection: "arg1", newName: "arg2");
@@ -1941,9 +2642,9 @@ End Sub"
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameViewModel_IsValidName_ChangeCasingNotValid()
         {
             var tdo = new RenameTestsDataObject(selection: "val1", newName: "Val1");
@@ -1963,14 +2664,13 @@ End Sub",
         }
 
 
-        [TestMethod]
-        [TestCategory("Refactorings")]
-        [TestCategory("Rename")]
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
         public void RenameRefactoring_RenameClassModule_DoesNotChangeMeReferences()
         {
             const string newName = "RenamedClassModule";
 
-            //Input
             const string inputCode =
                 @"Property Get Self() As IClassModule
     Set Self = Me
@@ -1980,23 +2680,22 @@ End Property";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, "ClassModule1", ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var msgbox = new Mock<IMessageBox>();
-                msgbox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), MessageBoxButtons.YesNo, It.IsAny<MessageBoxIcon>()))
-                    .Returns(DialogResult.Yes);
+                msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
                 var model = new RenameModel(vbeWrapper, state, qualifiedSelection) { NewName = newName };
                 model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "ClassModule1");
 
-                //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -2039,12 +2738,10 @@ End Property";
                 if (io.HasValue)
                 {
                     var renameTMD = io.Value;
-                    if (renameTMD.Input.Contains(FAUX_CURSOR))
+                    if (!renameTMD.Input_WithFauxCursor.Equals(string.Empty))
                     {
                         if (cursorFound) { Assert.Inconclusive($"Found multiple selection cursors ('{FAUX_CURSOR}') in the test input"); }
                         cursorFound = true;
-                        renameTMD.Input_WithFauxCursor = renameTMD.Input;
-                        renameTMD.Input = renameTMD.Input.Replace(FAUX_CURSOR, "");
                     }
                     renameTMDs.Add(renameTMD);
                 }
@@ -2067,11 +2764,10 @@ End Property";
             }
 
             tdo.MsgBox = new Mock<IMessageBox>();
-            tdo.MsgBox.Setup(m => m.Show(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<MessageBoxButtons>(), It.IsAny<MessageBoxIcon>()))
-                .Returns(tdo.MsgBoxReturn);
+            tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == ConfirmationOutcome.Yes);
 
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
-            tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);
+            (tdo.ParserState, tdo.RewritingManager) = MockParser.CreateAndParseWithRewritingManager(tdo.VBE);
 
             CreateQualifiedSelectionForTestCase(tdo);
             tdo.RenameModel = new RenameModel(tdo.VBE, tdo.ParserState, tdo.QualifiedSelection) { NewName = tdo.NewName };
@@ -2080,17 +2776,12 @@ End Property";
 
             var factory = SetupFactory(tdo.RenameModel);
 
-            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState);
+            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState, tdo.ParserState.ProjectsProvider, tdo.RewritingManager);
         }
 
         private static void AddTestModuleDefinition(RenameTestsDataObject tdo, RenameTestModuleDefinition inputOutput)
         {
-            if (inputOutput.RenameSelection.HasValue)
-            {
-                tdo.SelectionModuleName = inputOutput.ModuleName;
-                tdo.RawSelection = inputOutput.RenameSelection;
-            }
-            else if (inputOutput.Input_WithFauxCursor.Length > 0)
+            if (inputOutput.Input_WithFauxCursor.Length > 0)
             {
                 tdo.SelectionModuleName = inputOutput.ModuleName;
                 if (inputOutput.Input_WithFauxCursor.Contains(FAUX_CURSOR))
@@ -2100,7 +2791,7 @@ End Property";
                     {
                         Assert.Inconclusive($"{numCursors} found in FauxCursor input - only a single cursor is allowed.");
                     }
-                    tdo.RawSelection = FindSelection(inputOutput.Input_WithFauxCursor, tdo.OriginalName);
+                    tdo.RawSelection = inputOutput.RenameSelection;
                     if (!tdo.RawSelection.HasValue)
                     {
                         Assert.Inconclusive($"Unable to set RawSelection field for test module {inputOutput.ModuleName}");
@@ -2108,37 +2799,6 @@ End Property";
                 }
             }
             tdo.ModuleTestSetupDefs.Add(inputOutput);
-        }
-
-        private static Selection? FindSelection(string input, string originalName)
-        {
-            var lines = input.Split(new[] { "\r\n" }, StringSplitOptions.None);
-            for (var idx = 0; idx < lines.Count(); idx++)
-            {
-                var testLine = lines[idx];
-                if (testLine.Contains(FAUX_CURSOR))
-                {
-                    var fauxCursorLine = idx + 1;
-                    var fauxCursorColumn = testLine.IndexOf(FAUX_CURSOR);
-                    if (!testLine.Replace(FAUX_CURSOR, "").Contains(originalName))
-                    {
-                        Assert.Inconclusive($"Module line with faux cursor does not contain target '{originalName}'");
-                    }
-
-                    int fauxCursorColumnOffset = 0;
-                    if (testLine.StartsWith($"{FAUX_CURSOR}") || testLine.Contains($" {FAUX_CURSOR}"))
-                    {
-                        fauxCursorColumnOffset = 1;
-                    }
-                    else if (testLine.EndsWith($"{FAUX_CURSOR}") || testLine.Contains($"{FAUX_CURSOR} "))
-                    {
-                        fauxCursorColumnOffset = -1;
-                    }
-
-                    return new Selection(fauxCursorLine, fauxCursorColumn + fauxCursorColumnOffset);
-                }
-            }
-            return null;
         }
 
         private static void RunRenameRefactorScenario(RenameTestsDataObject tdo)
@@ -2163,8 +2823,10 @@ End Property";
             {
                 if (inputOutput.CheckExpectedEqualsActual)
                 {
-                    var rewriter = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, inputOutput.ModuleName).CodeModule.Parent);
-                    Assert.AreEqual(inputOutput.Expected, rewriter.GetText());
+                    var codeModule = RetrieveComponent(tdo, inputOutput.ModuleName).CodeModule;
+                    var expected = inputOutput.Expected;
+                    var actual = codeModule.Content();
+                    Assert.AreEqual(expected, actual);
                 }
             }
         }
@@ -2196,7 +2858,6 @@ End Property";
         {
             var builder = new MockVbeBuilder();
             var enclosingProjectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
-
             foreach (var comp in testComponents)
             {
                 if (comp.ModuleType == ComponentType.UserForm)
@@ -2210,7 +2871,8 @@ End Property";
                     {
                         form.AddControl(control);
                     }
-                    enclosingProjectBuilder.AddComponent(form.Build());
+                    (var component, var codeModule) = form.Build(); 
+                    enclosingProjectBuilder.AddComponent(component, codeModule);
                 }
                 else
                 {
@@ -2230,27 +2892,53 @@ End Property";
 
         internal struct RenameTestModuleDefinition
         {
-            public string Input_WithFauxCursor;
-            public string Input;
-            public string Expected;
+            private CodeString _codeString;
+            private string _inputWithFauxCursor;
+            private string _expected;
+
+            public string Input_WithFauxCursor => _inputWithFauxCursor;
+            public string Input
+            {
+                set
+                {
+                    _inputWithFauxCursor = value.Contains(FAUX_CURSOR) ? value : _inputWithFauxCursor;
+                    _codeString = value.ToCodeString();
+                }
+                get
+                {
+                    return _codeString.Code;
+                }
+            }
+
+            public string Expected
+            {
+                set
+                {
+                    _expected = value;
+                }
+                get
+                {
+                    return _expected.Equals(string.Empty) ? Input : _expected;
+                }
+            }
+
             public string ModuleName;
             public ComponentType ModuleType;
             public bool CheckExpectedEqualsActual;
             public List<string> ControlNames;
             public string NewName;
-            public Selection? RenameSelection;
+            public Selection? RenameSelection => _codeString.CaretPosition.ToOneBased();
 
             public RenameTestModuleDefinition(string moduleName, ComponentType moduleType = ComponentType.ClassModule)
             {
-                Input_WithFauxCursor = "";
-                Expected = "";
-                Input = "";
+                _codeString = new CodeString(string.Empty, default);
+                _inputWithFauxCursor = string.Empty;
+                _expected = string.Empty;
                 ModuleName = moduleName;
                 ModuleType = moduleType;
                 CheckExpectedEqualsActual = true;
                 ControlNames = new List<String>();
                 NewName = "";
-                RenameSelection = null;
             }
         }
 
@@ -2266,7 +2954,7 @@ End Property";
             public RenameTestsDataObject(string selection, string newName)
             {
                 ProjectName = "TestProject";
-                MsgBoxReturn = DialogResult.Yes;
+                MsgBoxReturn = ConfirmationOutcome.Yes;
                 RefactorParamType = RefactorParams.QualifiedSelection;
                 RawSelection = null;
                 NewName = newName;
@@ -2277,13 +2965,14 @@ End Property";
 
             public IVBE VBE { get; set; }
             public RubberduckParserState ParserState { get; set; }
+            public IRewritingManager RewritingManager { get; set; }
             public string ProjectName { get; set; }
             public string NewName { get; set; }
             public string SelectionModuleName { get; set; }
             public QualifiedSelection QualifiedSelection { get; set; }
             public RenameModel RenameModel { get; set; }
             public Mock<IMessageBox> MsgBox { get; set; }
-            public DialogResult MsgBoxReturn { get; set; }
+            public ConfirmationOutcome MsgBoxReturn { get; set; }
             public RefactorParams RefactorParamType { get; set; }
             public Selection? RawSelection { get; set; }
             public List<RenameTestModuleDefinition> ModuleTestSetupDefs { get; set; }

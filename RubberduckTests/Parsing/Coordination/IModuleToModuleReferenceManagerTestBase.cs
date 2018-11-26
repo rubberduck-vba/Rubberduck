@@ -1,12 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Linq;
 using System.Collections.Generic;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 
 namespace RubberduckTests.Parsing.Coordination
 {
-    [TestClass]
+    [TestFixture]
     public abstract class IModuleToModuleReferenceManagerTestBase
     {
 
@@ -40,8 +41,8 @@ namespace RubberduckTests.Parsing.Coordination
 
         //Initial Condition Tests
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingStartsEmpty()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -51,8 +52,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencingModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingAnyStartsEmpty()
         {
 
@@ -62,8 +63,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencingModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByStartsEmpty()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -73,8 +74,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencedModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByAnyStartsEmpty()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -86,8 +87,8 @@ namespace RubberduckTests.Parsing.Coordination
 
         //Add Tests
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingReturnsAddedReferencesWithMatchingReferencedSide_Single()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -101,8 +102,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(referencingModules.Contains(referencingTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByReturnsAddedReferencesWithMatchingReferencingModule_Single()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -116,8 +117,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(referencedModules.Contains(referencedTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingReturnsAddedReferencesWithMatchingReferencedSide_MultipleDifferent()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -134,8 +135,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(referencingModules.Contains(referencingTestModule2));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByReturnsAddedReferencesWithMatchingReferencingModule_MultipleDifferent()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -152,8 +153,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(referencedModules.Contains(referencedTestModule2));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingReturnsUniqueValues()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -167,8 +168,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.AreEqual(1,referencingModules.Count());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByReturnsUniqueValues()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -182,8 +183,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.AreEqual(1, referencedModules.Count());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingDoesNotReturnAddedReferencesWithNonMatchingReferencedSide_NoneMatching()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -197,8 +198,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencingModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByDoesNotReturnAddedReferencesWithNonMatchingReferencingModule_NoneMatching()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -212,8 +213,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencedModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingDoesNotReturnAddedReferencesWithNonMatchingReferencedSide_SomeNotMatching()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -231,8 +232,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(referencingModules.Contains(referencingTestModule1));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByDoesNotReturnAddedReferencesWithNonMatchingReferencingModule_SomeNotMatching()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -253,8 +254,8 @@ namespace RubberduckTests.Parsing.Coordination
 
         //Any Tests
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingAnyReturnsTheUnionOfTheResultsOfModulesReferencingForTheIndividualModules()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -278,8 +279,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencingModules.Contains(referencingTestModule3));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByAnyReturnsTheUnionOfTheResultsOfModulesReferencingForTheIndividualModules()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -303,8 +304,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencedModules.Contains(referencedTestModule3));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingAnyReturnsAnEmptyCollectionForEmptyInputCollections()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -325,8 +326,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencingModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByAnyReturnsAnEmptyCollectionForEmptyInputCollections()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -350,8 +351,8 @@ namespace RubberduckTests.Parsing.Coordination
 
         //Remove Tests
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingDoesNotReturnResultsForModuleToModuleReferencesThatHaveBeenRemoved()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -366,8 +367,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencingModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByDoesNotReturnResultsForModuleToModuleReferencesThatHaveBeenRemoved()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -382,8 +383,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencedModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingReturnsResultsForModuleToModuleReferencesThatHaveNotBeenRemoved_DifferentReferenced()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -400,8 +401,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(referencingModules.Contains(referencingTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByReturnsResultsForModuleToModuleReferencesThatHaveNotBeenRemoved_DifferentReferencing()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -418,8 +419,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(referencedModules.Contains(referencedTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencingReturnsResultsForModuleToModuleReferencesThatHaveNotBeenRemoved_SameReferenced()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -436,8 +437,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(referencingModules.Contains(otherReferencingTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ModulesReferencedByReturnsResultsForModuleToModuleReferencesThatHaveNotBeenRemoved_SameReferencing()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -457,8 +458,8 @@ namespace RubberduckTests.Parsing.Coordination
 
         //Clear Tests
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesFromModuleRemovesAllMtMReferencesWithTheModuleAsReferencingSide_ReferencingSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -474,8 +475,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencedModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesFromModuleRemovesAllMtMReferencesWithTheModuleAsReferencingSide_ReferncedSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -493,8 +494,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencingModules2.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesToModuleRemovesAllMtMReferencesWithTheModuleAsReferencedSide_ReferencingSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -512,8 +513,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencedModules2.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesToModuleRemovesAllMtMReferencesWithTheModuleAsReferencedSide_ReferncedSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -529,8 +530,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsFalse(referencingModules.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesFromModuleDoesNotRemoveMtMReferencesNotWithTheModuleAsReferencingSide_ReferencingSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -552,8 +553,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(referencedModules.Contains(otherReferencedTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesFromModuleDoesNotRemoveMtMReferencesNotWithTheModuleAsReferencingSide_ReferncedSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -577,8 +578,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(otherReferencingModules.Contains(otherReferencingTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesToModuleDoesNotRemoveMtMReferencesNotWithTheModuleAsReferencedSide_ReferencingSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -602,8 +603,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(otherReferencedModules.Contains(otherReferencedTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesToModuleDoesNotRemoveMtMReferencesNotWithTheModuleAsReferencedSide_ReferncedSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -628,8 +629,8 @@ namespace RubberduckTests.Parsing.Coordination
 
         //Clear Enumerable Overload Tests
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesFromModuleForEnumerablesWorksLikeTheSingleVersionForAllMembersOfTheEnumerable_ReferencingSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -656,8 +657,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(otherReferencedModules.Contains(otherReferencedTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesFromModuleForEnumerablesWorksLikeTheSingleVersionForAllMembersOfTheEnumerable_ReferncedSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -687,8 +688,8 @@ namespace RubberduckTests.Parsing.Coordination
         }
 
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesToModuleForEnumerablesWorksLikeTheSingleVersionForAllMembersOfTheEnumerable_ReferencingSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -717,8 +718,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(otherReferencedModules.Contains(otherReferencedTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesToModuleForEnumerablesWorksLikeTheSingleVersionForAllMembersOfTheEnumerable_ReferncedSide()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -745,8 +746,8 @@ namespace RubberduckTests.Parsing.Coordination
             Assert.IsTrue(otherReferencingModules.Contains(otherReferencingTestModule));
         }
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesFromModuleDoesNothingForAnEmptyEnumerables()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();
@@ -766,8 +767,8 @@ namespace RubberduckTests.Parsing.Coordination
         }
 
 
-        [TestMethod]
-        [TestCategory("Parser")]
+        [Test]
+        [Category("Parser")]
         public void ClearMtMReferencesToModuleDoesNothingForAnEmptyEnumerables()
         {
             var manager = GetNewTestModuleToModuleReferenceManager();

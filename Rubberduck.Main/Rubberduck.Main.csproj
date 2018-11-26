@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+  <PropertyGroup>
+    <RootNamespace>Rubberduck</RootNamespace>
+    <AssemblyName>Rubberduck</AssemblyName>
+    <Copyright>Copyright © 2014-2018</Copyright>
+    <Description>Rubberduck AddIn</Description>
+    <ProjectGuid>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</ProjectGuid>
+    <!-- Disable "Missing XML documentation" warning (CS1591) -->
+    <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
+  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
+    <OutputPath>bin\DebugAccess\</OutputPath>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <WarningLevel>0</WarningLevel>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="NLog.dll.nlog">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Ducky.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="extensibility">
+      <HintPath>$(MSBuildProgramFiles32)\Common Files\microsoft shared\MSEnv\PublicAssemblies\extensibility.dll</HintPath>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj" />
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
+    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
+    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj" />
+    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj" />
+    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime">
+      <Version>4.6.4</Version>
+    </PackageReference>
+    <PackageReference Include="Castle.Core">
+      <Version>4.2.1</Version>
+    </PackageReference>
+    <PackageReference Include="Castle.Windsor">
+      <Version>4.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="EasyHook">
+      <Version>2.7.6684</Version>
+    </PackageReference>
+    <PackageReference Include="NLog">
+      <Version>4.5.10</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Schema">
+      <Version>4.5.10</Version>
+    </PackageReference>
+  </ItemGroup>
+</Project>

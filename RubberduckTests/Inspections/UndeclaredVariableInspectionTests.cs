@@ -1,18 +1,17 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class UndeclaredVariableInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsResult()
         {
             const string inputCode =
@@ -30,14 +29,14 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UndeclaredVariableInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsNoResultIfDeclaredLocally()
         {
             const string inputCode =
@@ -56,14 +55,14 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UndeclaredVariableInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsNoResultIfDeclaredModuleScope()
         {
             const string inputCode =
@@ -83,15 +82,15 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UndeclaredVariableInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/2525
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void UndeclaredVariable_ReturnsNoResultIfAnnotated()
         {
             const string inputCode =
@@ -110,10 +109,20 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new UndeclaredVariableInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            const string inspectionName = "UndeclaredVariableInspection";
+            var inspection = new UndeclaredVariableInspection(null);
+
+            Assert.AreEqual(inspectionName, inspection.Name);
         }
     }
 }

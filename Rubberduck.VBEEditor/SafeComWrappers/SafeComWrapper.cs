@@ -2,21 +2,35 @@ using System;
 using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using NLog;
+using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.VBEditor.SafeComWrappers
 {
     public abstract class SafeComWrapper<T> : ISafeComWrapper<T>
         where T : class
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();     
+#if DEBUG
+        private const bool LogSuccessfulComRelease = true;
+#endif
+        protected static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        protected SafeComWrapper(T target)
+        private IComSafe _comSafe;
+        private bool _rewrapping;
+
+        protected SafeComWrapper(T target, bool rewrapping = false)
         {
             Target = target;
+            _rewrapping = rewrapping;
+
+            if (!rewrapping && target != null)
+            {
+                _comSafe = ComSafeManager.GetCurrentComSafe();
+                _comSafe.Add(this);
+            }
         }
 
         private int? _rcwReferenceCount;
-        public void Release(bool final = false)
+        private void Release(bool final = false)
         {
             if (HasBeenReleased)
             {
@@ -54,15 +68,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers
                 else
                 {
                     _rcwReferenceCount = Marshal.ReleaseComObject(Target);
-                    if (_rcwReferenceCount >= 0)
+                    if (_rcwReferenceCount < 0)
+                    {
+                        _logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper. New reference count is {_rcwReferenceCount}.");
+                    }
+#if DEBUG
+                    else if(LogSuccessfulComRelease)
                     {
                         _logger.Trace($"Released COM wrapper of type {this.GetType()} with remaining reference count {_rcwReferenceCount}.");
                     }
-                    else
-                    {
-                        _logger.Warn($"Released COM wrapper of type {this.GetType()} whose underlying RCW has already been released from outside the SafeComWrapper.");
-                    }
-                } 
+#endif
+                }
             }
             catch(COMException exception)
             {
@@ -80,7 +96,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             }
         }
 
-        public bool HasBeenReleased => _rcwReferenceCount <= 0;
+        private bool HasBeenReleased => _rcwReferenceCount <= 0;
 
         public bool IsWrappingNullReference => Target == null;
         object INullObjectWrapper.Target => Target;
@@ -119,20 +135,30 @@ namespace Rubberduck.VBEditor.SafeComWrappers
             GC.SuppressFinalize(this);
         }
 
+        private readonly object _disposalLockObject = new object();
         private bool _isDisposed;
         protected virtual void Dispose(bool disposing)
         {
-            if (_isDisposed)
+            lock (_disposalLockObject)
             {
-                return;
+                if (_isDisposed)
+                {
+                    return;
+                }
+                _isDisposed = true;
             }
 
-            if (disposing && !HasBeenReleased)
+            if (disposing)
             {
-                Release();
-            }
+                _comSafe?.TryRemove(this);
 
-            _isDisposed = true;
+                if (!_rewrapping && !IsWrappingNullReference && !HasBeenReleased)
+                {
+                    Release();
+                }
+
+                _comSafe = null;
+            }
         }
     }
 }

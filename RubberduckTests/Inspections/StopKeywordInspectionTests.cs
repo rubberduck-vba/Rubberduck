@@ -1,17 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class StopKeywordInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void StopKeyword_ReturnsResult()
         {
             const string inputCode =
@@ -31,8 +30,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NoStopKeyword_NoResult()
         {
             var inputCode =
@@ -51,8 +50,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void StopKeyword_Ignored_DoesNotReturnResult()
         {
             var inputCode =
@@ -73,8 +72,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void StopKeywords_Ignored_ReturnsCorrectResults()
         {
             var inputCode =
@@ -102,16 +101,8 @@ End Sub";
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new StopKeywordInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = nameof(StopKeywordInspection);

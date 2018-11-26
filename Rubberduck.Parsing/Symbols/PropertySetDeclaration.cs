@@ -5,13 +5,12 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public sealed class PropertySetDeclaration : Declaration, IParameterizedDeclaration, ICanBeDefaultMember
+    public sealed class PropertySetDeclaration : PropertyDeclaration
     {
-        private readonly List<Declaration> _parameters;
-
         public PropertySetDeclaration(
             QualifiedMemberName name,
             Declaration parent,
@@ -19,62 +18,75 @@ namespace Rubberduck.Parsing.Symbols
             string asTypeName,
             Accessibility accessibility,
             ParserRuleContext context,
+            ParserRuleContext attributesPassContext,
             Selection selection,
             bool isUserDefined,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
             : base(
-                  name,
-                  parent,
-                  parentScope,
-                  asTypeName,
-                  null,
-                  false,
-                  false,
-                  accessibility,
-                  DeclarationType.PropertySet,
-                  context,
-                  selection,
-                  false,
-                  null,
-                  isUserDefined,
-                  annotations,
-                  attributes)
-        {
-            _parameters = new List<Declaration>();
-        }
+                name,
+                parent,
+                parentScope,
+                asTypeName,
+                null,
+                null,
+                accessibility,
+                DeclarationType.PropertySet,
+                context,
+                attributesPassContext,
+                selection,
+                false,
+                isUserDefined,
+                annotations,
+                attributes)
+        { }
 
-        public PropertySetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module,
-            Attributes attributes) : this(
+        public PropertySetDeclaration(ComMember member, Declaration parent, QualifiedModuleName module, Attributes attributes) 
+            : this(
                 module.QualifyMemberName(member.Name),
                 parent,
                 parent,
-                string.Empty, //TODO:  Need to get the types for these.
+                member.AsTypeName.TypeName,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
                 null,
                 attributes)
         {
-            _parameters =
-                member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module))
-                    .Cast<Declaration>()
-                    .ToList();
+            AddParameters(member.Parameters.Select(decl => new ParameterDeclaration(decl, this, module)));
         }
 
-        public IEnumerable<Declaration> Parameters => _parameters.ToList();
+        public PropertySetDeclaration(ComField field, Declaration parent, QualifiedModuleName module, Attributes attributes) 
+            : this(
+                module.QualifyMemberName(field.Name),
+                parent,
+                parent,
+                field.ValueType,
+                Accessibility.Global,
+                null,
+                null,
+                Selection.Home,
+                false,
+                null,
+                attributes)
+        { }
 
-        public void AddParameter(Declaration parameter)
+        /// <inheritdoc/>
+        protected override bool Implements(IInterfaceExposable member)
         {
-            _parameters.Add(parameter);
-        }
+            if (ReferenceEquals(member, this))
+            {
+                return false;
+            }
 
-        /// <summary>
-        /// Gets an attribute value indicating whether a member is a class' default member.
-        /// If this value is true, any reference to an instance of the class it's the default member of,
-        /// should count as a member call to this member.
-        /// </summary>
-        public bool IsDefaultMember => Attributes.Any(a => a.Name == $"{IdentifierName}.VB_UserMemId" && a.Values.Single() == "0");
+            return member.IsInterfaceMember
+                   && IdentifierName.Equals(member.ImplementingIdentifierName)
+                   && ((ClassModuleDeclaration)member.ParentDeclaration).Subtypes.Any(implementation => ReferenceEquals(implementation, ParentDeclaration))
+                   && (member.DeclarationType == DeclarationType.PropertySet
+                       || member.DeclarationType == DeclarationType.Variable 
+                       && (member.IsObject || member.AsTypeName.Equals(Tokens.Variant)));
+        }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Annotations
@@ -8,8 +9,8 @@ namespace Rubberduck.Parsing.Annotations
     /// </summary>
     public sealed class ExposedModuleAnnotation : AnnotationBase, IAttributeAnnotation
     {
-        public ExposedModuleAnnotation(QualifiedSelection qualifiedSelection, IEnumerable<string> parameters)
-            : base(AnnotationType.Exposed, qualifiedSelection)
+        public ExposedModuleAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
+            : base(AnnotationType.Exposed, qualifiedSelection, context)
         {
             
         }

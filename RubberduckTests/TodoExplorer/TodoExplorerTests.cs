@@ -1,4 +1,4 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Moq;
 using System.Linq;
 using System.Threading;
@@ -11,11 +11,11 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace RubberduckTests.TodoExplorer
 {
-    [TestClass]
+    [TestFixture]
     public class TodoExplorerTests
     {
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void PicksUpComments()
         {
             const string inputCode =
@@ -34,7 +34,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -48,8 +48,8 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void PicksUpComments_StrangeCasing()
         {
             const string inputCode =
@@ -69,7 +69,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -83,8 +83,8 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void PicksUpComments_SpecialCharacters()
         {
             const string inputCode =
@@ -104,7 +104,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TO-DO", "N@TE", "BUG " });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -118,8 +118,8 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void AvoidsFalsePositiveComments()
         {
             const string inputCode =
@@ -138,7 +138,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -152,8 +152,8 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        [TestMethod]
-        [TestCategory("Annotations")]
+        [Test]
+        [Category("Annotations")]
         public void RemoveRemovesComment()
         {
             const string inputCode =
@@ -168,11 +168,12 @@ namespace RubberduckTests.TodoExplorer
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
+
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, GetOperatingSystemMock().Object);
+                var vm = new ToDoExplorerViewModel(state, cs, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -204,13 +205,8 @@ namespace RubberduckTests.TodoExplorer
                 ToDoMarkers = markers.Select(m => new ToDoMarker(m)).ToArray()
             };
 
-            var userSettings = new UserSettings(null, null, todoSettings, null, null, null, null);
+            var userSettings = new UserSettings(null, null, null, todoSettings, null, null, null, null);
             return new Configuration(userSettings);
-        }
-
-        private Mock<IOperatingSystem> GetOperatingSystemMock()
-        {
-            return new Mock<IOperatingSystem>();
         }
     }
 }

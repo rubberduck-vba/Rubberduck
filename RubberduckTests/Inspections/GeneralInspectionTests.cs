@@ -3,24 +3,25 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
-using Rubberduck.UI;
+using Rubberduck.Resources;
+using Rubberduck.Resources.Inspections;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class GeneralInspectionTests
     {
-        [TestInitialize]
+        [SetUp]
         public void InitResources()
         {
             // ensure resources are using an invariant culture.
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
             InspectionsUI.Culture = Thread.CurrentThread.CurrentUICulture;
+            InspectionNames.Culture = Thread.CurrentThread.CurrentUICulture;
             RubberduckUI.Culture = Thread.CurrentThread.CurrentUICulture;
         }
 
@@ -38,35 +39,35 @@ namespace RubberduckTests.Inspections
             return baseTypes;
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionNameStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
                           .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
-                          .Where(i => string.IsNullOrWhiteSpace(InspectionsUI.ResourceManager.GetString(i.Name + "Name")))
+                          .Where(i => string.IsNullOrWhiteSpace(InspectionNames.ResourceManager.GetString(i.Name)))
                           .Select(i => i.Name)
                           .ToList();
-            
+
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionMetaStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
                           .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
-                          .Where(i => string.IsNullOrWhiteSpace(InspectionsUI.ResourceManager.GetString(i.Name + "Meta")))
+                          .Where(i => string.IsNullOrWhiteSpace(InspectionInfo.ResourceManager.GetString(i.Name)))
                           .Select(i => i.Name)
                           .ToList();
             
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
+        [Category("Inspections")]
         public void InspectionResultFormatStringsExist()
         {
             var inspectionsWithSharedResultFormat = new List<string>
@@ -83,15 +84,15 @@ namespace RubberduckTests.Inspections
             var inspections = typeof(InspectionBase).Assembly.GetTypes()
                           .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
                           .Where(i => !inspectionsWithSharedResultFormat.Contains(i.Name) &&
-                                      string.IsNullOrWhiteSpace(InspectionsUI.ResourceManager.GetString(i.Name + "ResultFormat")))
+                                      string.IsNullOrWhiteSpace(InspectionResults.ResourceManager.GetString(i.Name)))
                           .Select(i => i.Name)
                           .ToList();
 
             Assert.IsFalse(inspections.Any(), string.Join(Environment.NewLine, inspections));
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionNameStrings_AreNotFormatted()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()

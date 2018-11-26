@@ -1,16 +1,16 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
-    public class RemoveUnusedDeclarationQuickFixTests
+    [TestFixture]
+    public class RemoveUnusedDeclarationQuickFixTests : QuickFixTestBase
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ConstantNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -22,24 +22,13 @@ End Sub";
                 @"Public Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ConstantNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
-
-                var rewriter = state.GetRewriter(component);
-                var rewrittenCode = rewriter.GetText();
-                Assert.AreEqual(expectedCode, rewrittenCode);
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ConstantNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void LabelNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -52,20 +41,12 @@ End Sub";
 
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new LineLabelNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new LineLabelNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void LabelNotUsed_QuickFixWorks_MultipleLabels()
         {
             const string inputCode =
@@ -84,20 +65,12 @@ dim var1 as variant
 goto label1:
 End Sub"; ;
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new LineLabelNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new LineLabelNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ProcedureNotUsed_QuickFixWorks()
         {
             const string inputCode =
@@ -106,22 +79,12 @@ End Sub";
 
             const string expectedCode = @"";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ProcedureNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspectionResults.First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ProcedureNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_QuickFixWorks()
         {
             const string inputCode =
@@ -133,21 +96,13 @@ End Sub";
                 @"Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithFollowingEmptyLine_DoesNotRemoveEmptyLine()
         {
             const string inputCode =
@@ -161,20 +116,12 @@ End Sub";
 
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithCommentOnSameLine_DoesNotRemoveComment()
         {
             const string inputCode =
@@ -187,20 +134,12 @@ End Sub";
 ' Comment
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithCommentOnSameLineAndFollowingStuff_DoesNotRemoveComment()
         {
             const string inputCode =
@@ -219,22 +158,14 @@ var2 = ""Something""
 Foo = var2
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
 
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_WithFollowingCommentLine_DoesNotRemoveCommentLine()
         {
             const string inputCode =
@@ -248,20 +179,12 @@ End Sub";
 ' Comment
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_InMultideclaration_WithFollowingCommentLine_DoesNotRemoveCommentLineOrOtherDeclarations()
         {
             const string inputCode =
@@ -280,20 +203,12 @@ var2 = ""Something""
 Foo = var2
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void UnassignedVariable_InMultideclarationByStmtSeparators_WithFollowingCommentLine_DoesNotRemoveCommentLineOrOtherDeclarations()
         {
             const string inputCode =
@@ -312,17 +227,14 @@ var2 = ""Something""
 Foo = var2
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new VariableNotUsedInspection(state);
-                new RemoveUnusedDeclarationQuickFix(state).Fix(inspection.GetInspectionResults().First());
-
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new VariableNotUsedInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new RemoveUnusedDeclarationQuickFix();
+        }
     }
 }

@@ -1,17 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using RubberduckTests.Mocks;
 using System.Threading;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class MalformedAnnotationInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MalformedAnnotation_ReturnsResult_Folder()
         {
             const string inputCode =
@@ -29,8 +28,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MalformedAnnotation_DoesNotReturnResult_Folder()
         {
             const string inputCode =
@@ -48,8 +47,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MalformedAnnotation_ReturnsResult_Ignore()
         {
             const string inputCode =
@@ -67,8 +66,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MalformedAnnotation_DoesNotReturnResult_Ignore()
         {
             const string inputCode =
@@ -86,8 +85,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void MalformedAnnotation_ReturnsMultipleResults()
         {
             const string inputCode =
@@ -106,16 +105,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
-        {
-            var inspection = new MissingAnnotationArgumentInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
-        }
-
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "MissingAnnotationArgumentInspection";

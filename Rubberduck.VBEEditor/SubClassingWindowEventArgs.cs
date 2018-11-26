@@ -1,7 +1,6 @@
 using System;
-using System.Windows.Forms;
 
-namespace Rubberduck.VBEditor
+namespace Rubberduck.VBEditor.Events
 {
     public class SubClassingWindowEventArgs : EventArgs
     {

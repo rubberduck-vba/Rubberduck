@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Assert_DimensionMismatchFormat" xml:space="preserve">
+    <value>expected has {0} dimensions; actual has {1} dimensions. {2}</value>
+    <comment>{0} and {1} are dimension numbers (1, 2, etc.), {2} = message parameter.  This should always be at the end.</comment>
+  </data>
+  <data name="Assert_EasterEggAssertClassPassed" xml:space="preserve">
+    <value>OK, Rubberduck asserted.  Now what?</value>
+    <comment>Reported when an AssertClass is passed as a parameter to a faked function.</comment>
+  </data>
+  <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
+    <value>Expected: Stack overflow?; Actual: Guard clause.</value>
+    <comment>Reported when an IFake interface is passed as a parameter to a faked function.</comment>
+  </data>
+  <data name="Assert_EasterEggIVerifyPassed" xml:space="preserve">
+    <value>IVerify too.</value>
+    <comment>Reported when an IVerify interface is passed as a parameter to a faked function.</comment>
+  </data>
+  <data name="Assert_FailedMessageFormat" xml:space="preserve">
+    <value>{0} assertion failed. {1}</value>
+    <comment>{0} = method placeholder (i.e. AreEqual), {1} = message parameter.  This should always be at the end.</comment>
+  </data>
+  <data name="Assert_InvalidFakePassThrough" xml:space="preserve">
+    <value>Invalid setup of IFake {0}. PassThrough property must be False.</value>
+    <comment>{0} = name of the function being faked.</comment>
+  </data>
+  <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
+    <value>Dimension {0}: expected has an LBound of {1}; actual has an LBound of {2}. {3}</value>
+    <comment>{0} = dimension number, {1} and {2} = LBound numbers, {3} = message parameter.  This should always be at the end.</comment>
+  </data>
+  <data name="Assert_MismatchedTypes" xml:space="preserve">
+    <value>[expected] and [actual] values are not the same type.</value>
+  </data>
+  <data name="Assert_NeitherParameterIsArray" xml:space="preserve">
+    <value>Neither [expected] or [actual] is an array.</value>
+  </data>
+  <data name="Assert_NotImplemented" xml:space="preserve">
+    <value>Not implemented.</value>
+    <comment>Placeholder text for planned functionality.</comment>
+  </data>
+  <data name="Assert_ParameterIsNotArrayFormat" xml:space="preserve">
+    <value>{0} is not an array.</value>
+    <comment>{0} is either [expected] or [actual]</comment>
+  </data>
+  <data name="Assert_ParameterResultFormat" xml:space="preserve">
+    <value>Expected: {0}; Actual: {1}. {2}</value>
+    <comment>{0} = expected value, {1} = actual value, {2} = optional user supplied message (always last)</comment>
+  </data>
+  <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
+    <value>[expected] is a reference type and [actual] is a value type.</value>
+  </data>
+  <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
+    <value>Dimension {0}: expected has a UBound of {1}; actual has a UBound of {2}. {3}</value>
+    <comment>{0} = dimension number, {1} and {2} = UBound numbers, {3} = message parameter.  This should always be at the end.</comment>
+  </data>
+  <data name="Assert_UnexpectedArrayFormat" xml:space="preserve">
+    <value>[expected] and [actual] are arrays. Consider using {0}.</value>
+    <comment>{0} is either Assert.SequenceEquals or Assert.NotSequenceEquals.</comment>
+  </data>
+  <data name="Assert_UnexpectedNullArraysFormat" xml:space="preserve">
+    <value>[expected] and [actual] are Nothing. Consider using {0}.</value>
+    <comment>{0} is either Assert.AreSame or Assert.AreNotSame.</comment>
+  </data>
+  <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
+    <value>[expected] and [actual] are reference types. Consider using {0}.</value>
+    <comment>{0} is either Assert.AreSame or Assert.AreNotSame.</comment>
+  </data>
+  <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
+    <value>[expected] and [actual] are value types. Consider using {0}.</value>
+    <comment>{0} is either Assert.AreEqual or Assert.AreNotEqual.</comment>
+  </data>
+  <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
+    <value>[expected] is a value type and [actual] is a reference type.</value>
+  </data>
+  <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
+    <value>Rubberduck could not process the invocation results.</value>
+  </data>
+  <data name="Assert_VerifyNoInvocationFormat" xml:space="preserve">
+    <value>No matching invocation for parameter {0}; Only {1} invocations. {2}</value>
+    <comment>{0} = parameter name, {1} = number of invokes, {2} = optional user supplied message (always last)</comment>
+  </data>
+  <data name="Assert_VerifyParameterNonNumeric" xml:space="preserve">
+    <value>Parameter {0} was not a numeric value on invocation {1}. {2}</value>
+    <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
+  </data>
+  <data name="Assert_VerifyParameterNotPassed" xml:space="preserve">
+    <value>Parameter {0} was not passed on invocation {1}. {2}</value>
+    <comment>{0} = parameter name, {1} = invocation under test, {2} = optional user supplied message (always last)</comment>
+  </data>
+  <data name="Prerequisite_EarlyBindingReferenceMissing" xml:space="preserve">
+    <value>The Reference to Rubberduck required for early-binding tests could not be resolved. It may be corrupt.</value>
+    <comment>Reported when ensuring the reference to Rubberduck failed with an exception</comment>
+  </data>
+  <data name="TestRunner_ComException" xml:space="preserve">
+    <value>Unexpected COM exception while running tests.</value>
+    <comment>Reported when a COM exception is raised during test runs</comment>
+  </data>
+  <data name="TestRunner_ExceptionDuringRun" xml:space="preserve">
+    <value>Running a test method failed with an exception.</value>
+    <comment>Reported when a generic exception is raised during test runs</comment>
+  </data>
+  <data name="TestRunner_GenericException" xml:space="preserve">
+    <value>Unexpected exception while running tests.</value>
+    <comment>Reported when a generic exception is raised but not caught in any of the safeguards</comment>
+  </data>
+  <data name="TestRunner_ModuleInitializeFailure" xml:space="preserve">
+    <value>Something went wrong when trying to run @ModuleInitialize. Module skipped.</value>
+    <comment>Reported when running ModuleInitialize failed with an exception</comment>
+  </data>
+  <data name="TestRunner_TestInitializeFailure" xml:space="preserve">
+    <value>Something went wrong when trying to run @TestInitialize. Test skipped.</value>
+    <comment>Reported when running TestInitialize failed with an exception</comment>
+  </data>
+</root>

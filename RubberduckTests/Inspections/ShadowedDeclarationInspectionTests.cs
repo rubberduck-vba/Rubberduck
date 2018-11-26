@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -10,7 +11,7 @@ using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class ShadowedDeclarationInspectionTests
     {
         private const string ProjectName = "SameNameProject";
@@ -97,8 +98,8 @@ End Property
 Public Property Set {PropertyLetName}(s As String)
 End Property";
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -132,11 +133,11 @@ End Property";
             var userProjectBuilder = CreateUserProject(builder);
             foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var referencedProject = builder.ProjectBuilder(expectedResultCount.Key, ProjectProtection.Unprotected)
-                    .AddComponent("Foo" + expectedResultCount.Key, ComponentType.StandardModule, "")
+                var referencedProject = builder.ProjectBuilder(expectedResultCount.Key, "somePath", ProjectProtection.Unprotected)
+                    .AddComponent("Foo" + expectedResultCount.Key, ComponentType.StandardModule, string.Empty)
                     .Build();
                 builder.AddProject(referencedProject);
-                userProjectBuilder = userProjectBuilder.AddReference(expectedResultCount.Key, "");
+                userProjectBuilder = userProjectBuilder.AddReference(expectedResultCount.Key, "somePath", 0, 0);
             }
 
             var userProject = userProjectBuilder.Build();
@@ -154,8 +155,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -196,15 +197,15 @@ End Property";
                 using (var state = MockParser.CreateAndParse(vbe.Object))
                 {
                     var inspection = new ShadowedDeclarationInspection(state);
-                    inspectionResults = inspection.GetInspectionResults();
+                    inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 }
 
                 Assert.AreEqual(expectedResultCount.Value, inspectionResults.Count(), $"Wrong number of inspection results for {expectedResultCount.Key}");
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProceduralModuleInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -250,17 +251,18 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProceduralModuleInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
-                [ProceduralModuleName] = 0,
-                [ClassModuleName] = 0,
-                [UserFormName] = 0,
-                [DocumentName] = 0,
+                //We do not test the following, because they cannot exist in the VBE.
+                //[ProceduralModuleName] = 0,
+                //[ClassModuleName] = 0,
+                //[UserFormName] = 0,
+                //[DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -297,8 +299,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsNonExposedClassModuleInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -345,8 +347,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserFormInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -393,17 +395,18 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserFormInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
-                [ProceduralModuleName] = 0,
-                [ClassModuleName] = 0,
-                [UserFormName] = 0,
-                [DocumentName] = 0,
+                //We do not test the following, because they cannot exist in the VBE.
+                //[ProceduralModuleName] = 0,
+                //[ClassModuleName] = 0,
+                //[UserFormName] = 0,
+                //[DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -440,8 +443,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsDocumentInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -488,17 +491,18 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsDocumentInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
                 [ProjectName] = 0,
-                [ProceduralModuleName] = 0,
-                [ClassModuleName] = 0,
-                [UserFormName] = 0,
-                [DocumentName] = 0,
+                //We do not test the following, because they cannot exist in the VBE.
+                //[ProceduralModuleName] = 0,
+                //[ClassModuleName] = 0,
+                //[UserFormName] = 0,
+                //[DocumentName] = 0,
                 [ProcedureName] = 1,
                 [FunctionName] = 1,
                 [PropertyGetName] = 1,
@@ -535,8 +539,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicProcedureInReferencedProject()
         {
@@ -585,8 +589,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateProcedureInReferencedProject()
         {
@@ -635,8 +639,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicProcedureInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -683,8 +687,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateProcedureInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -731,8 +735,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsProcedureInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -805,8 +809,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicFunctionInReferencedProject()
         {
@@ -855,8 +859,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateFunctionInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -904,8 +908,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicFunctionInContainingProject()
         {
@@ -953,8 +957,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateFunctionInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1001,8 +1005,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsFunctionInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1076,8 +1080,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicPropertyGetInReferencedProject()
         {
@@ -1126,8 +1130,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivatePropertyGetInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1175,8 +1179,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicPropertyGetInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1223,8 +1227,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivatePropertyGetInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1271,8 +1275,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyGetInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1346,8 +1350,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicPropertySetInReferencedProject()
         {
@@ -1396,8 +1400,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivatePropertySetInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1445,8 +1449,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicPropertySetInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1493,8 +1497,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivatePropertySetInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1541,8 +1545,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertySetInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1615,8 +1619,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicPropertyLetInReferencedProject()
         {
@@ -1665,8 +1669,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivatePropertyLetInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1714,8 +1718,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicPropertyLetInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1762,8 +1766,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivatePropertyLetInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1810,8 +1814,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPropertyLetInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1884,8 +1888,8 @@ End Property");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsParameterInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1933,8 +1937,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsParameterInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -1981,8 +1985,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsParameterInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2024,8 +2028,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsGlobalVariableInReferencedProject()
         {
@@ -2073,8 +2077,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicVariableInReferencedProject()
         {
@@ -2122,8 +2126,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateVariableInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2170,8 +2174,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsGlobalVariableInContainingProject()
         {
@@ -2218,8 +2222,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicVariableInContainingProject()
         {
@@ -2266,8 +2270,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateVariableInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2313,8 +2317,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsVariableInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2388,8 +2392,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalVariableInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2438,8 +2442,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalVariableInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2487,8 +2491,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalVariableInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2531,8 +2535,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsGlobalConstantInReferencedProject()
         {
@@ -2580,8 +2584,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicConstantInReferencedProject()
         {
@@ -2629,8 +2633,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateConstantInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2677,8 +2681,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsGlobalConstantInUserProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2724,8 +2728,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicConstantInUserProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2771,8 +2775,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateConstantInUserProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2818,8 +2822,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsConstantInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2893,8 +2897,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalConstantInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2943,8 +2947,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalConstantInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -2992,8 +2996,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLocalConstantInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3036,8 +3040,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicEnumerationInReferencedProject()
         {
@@ -3087,8 +3091,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateEnumerationInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3137,8 +3141,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicEnumerationInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3186,8 +3190,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateEnumerationInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3235,8 +3239,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3312,8 +3316,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberOfPublicEnumerationInReferencedProject()
         {
@@ -3363,8 +3367,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberOfPrivateEnumerationInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3413,8 +3417,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberOrPublicEnumerationInContainingProject()
         {
@@ -3463,8 +3467,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberOrPrivateEnumerationInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3512,8 +3516,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3554,8 +3558,8 @@ End Enum");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsResult_EnumerationWithSameNameAsEnumerationMember()
         {
             var code =
@@ -3573,14 +3577,14 @@ End Enum";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsResult_EnumerationMemberWithSameNameAsEnumeration()
         {
             var code =
@@ -3598,14 +3602,14 @@ End Enum";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.AreEqual(1, inspectionResults.Count());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_EnumerationMemberWithSameNameAsEnumerationMember()
         {
             var code =
@@ -3623,14 +3627,14 @@ End Enum";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_EnumerationWithSameNameAsOwnMember()
         {
             var code =
@@ -3644,14 +3648,14 @@ End Enum";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicUserDefinedTypeInReferencedProject()
         {
@@ -3701,8 +3705,8 @@ End Type");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateUserDefinedTypeInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3751,8 +3755,8 @@ End Type");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicUserDefinedTypeInContainingProject()
         {
@@ -3801,8 +3805,8 @@ End Type");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateUserDefinedTypeInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3850,8 +3854,8 @@ End Type");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3927,8 +3931,8 @@ End Type");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeMemberInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -3977,8 +3981,8 @@ End Type");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeMemberInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4026,8 +4030,8 @@ End Type");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsUserDefinedTypeMemberInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4070,8 +4074,8 @@ End Type");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_UserDefinedTypeWithSameNameAsOwnMember()
         {
             var code =
@@ -4085,14 +4089,14 @@ End Type";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicLibraryProcedureInReferencedProject()
         {
@@ -4140,8 +4144,8 @@ End Type";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateLibraryProcedureInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4188,8 +4192,8 @@ End Type";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicLibraryProcedureInContainingProject()
         {
@@ -4236,8 +4240,8 @@ End Type";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateLibraryProcedureInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4283,8 +4287,8 @@ End Type";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryProcedureInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4358,8 +4362,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicLibraryFunctionInReferencedProject()
         {
@@ -4407,8 +4411,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateLibraryFunctionInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4455,8 +4459,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void
             ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPublicLibraryFunctionInContainingProject()
         {
@@ -4503,8 +4507,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsPrivateLibraryFunctionInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4550,8 +4554,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLibraryFunctionInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4625,8 +4629,8 @@ End Property";
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLineLabelInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4675,8 +4679,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLineLabelInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4724,8 +4728,8 @@ End Sub");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsLineLabelInSameComponent()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4768,8 +4772,8 @@ End Function");
             AssertResultCountsEqualForThoseWithExpectation(expectedResultCountsByDeclarationIdentifierName, inspectionResultCounts);
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideOptionPrivateModuleInReferencedProject()
         {
             var referencedComponentCodeBuilder = new StringBuilder();
@@ -4788,14 +4792,14 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsInsideOptionPrivateModuleInContainingProject()
         {
             var additionalComponentCodeBuilder = new StringBuilder();
@@ -4813,14 +4817,14 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.AreEqual(12, inspectionResults.Count());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideClassModuleInReferencedProject()
         {
             var builder = TestVbeWithUserProjectAndReferencedProjectWithComponent(
@@ -4834,14 +4838,14 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsInsideClassModuleInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4880,7 +4884,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults().ToList();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
             }
             var inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspectionResults);
 
@@ -4889,8 +4893,8 @@ End Function");
             Assert.IsTrue(inspectionResults.All(result => result.Target.QualifiedName.QualifiedModuleName.ComponentName == "Foo"));
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideUserFormInReferencedProject()
         {
             var builder = TestVbeWithUserProjectAndReferencedProjectWithComponent(
@@ -4904,14 +4908,14 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsInsideUserFormInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -4950,7 +4954,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults().ToList();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
             }
             var inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspectionResults);
 
@@ -4959,8 +4963,8 @@ End Function");
             Assert.IsTrue(inspectionResults.All(result => result.Target.QualifiedName.QualifiedModuleName.ComponentName == "Foo"));
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_DeclarationsInsideDocumentInReferencedProject()
         {
             var builder = TestVbeWithUserProjectAndReferencedProjectWithComponent(
@@ -4974,14 +4978,14 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_ReturnsCorrectResult_DeclarationsInsideDocumentInContainingProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
@@ -5020,7 +5024,7 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults().ToList();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None).ToList();
             }
             var inspectionResultCounts = InspectionResultCountsByTargetIdentifierName(inspectionResults);
 
@@ -5029,8 +5033,8 @@ End Function");
             Assert.IsTrue(inspectionResults.All(result => result.Target.QualifiedName.QualifiedModuleName.ComponentName == "Foo"));
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_EventParameterWithSameNameAsDeclarationInReferencedProject()
         {
             const string sameName = "SameName";
@@ -5042,7 +5046,7 @@ End Function");
             builder.AddProject(referencedProject);
             var userProject = builder.ProjectBuilder("Baz", ProjectProtection.Unprotected)
                 .AddComponent("Qux", ComponentType.ClassModule, $"Public Event E ({sameName} As String)")
-                .AddReference("Foo", "")
+                .AddReference("Foo", string.Empty, 0, 0)
                 .Build();
             builder.AddProject(userProject);
 
@@ -5052,14 +5056,14 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_EventParameterWithSameNameAsDeclarationInContainingProject()
         {
             const string sameName = "SameName";
@@ -5077,14 +5081,14 @@ End Function");
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_DoesNotReturnResult_EventParameterWithSameNameAsDeclarationInSameComponent()
         {
             const string sameName = "SameName";
@@ -5099,14 +5103,14 @@ Public {sameName} As String";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void ShadowedDeclaration_Ignored_DoesNotReturnResult()
         {
             string ignoredDeclarationCode =
@@ -5121,7 +5125,7 @@ End Sub";
             builder.AddProject(referencedProject);
             var userProject = builder.ProjectBuilder("Baz", ProjectProtection.Unprotected)
                 .AddComponent("Qux", ComponentType.StandardModule, ignoredDeclarationCode)
-                .AddReference("Foo", string.Empty)
+                .AddReference("Foo", string.Empty, 0, 0)
                 .Build();
             builder.AddProject(userProject);
 
@@ -5131,10 +5135,19 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new ShadowedDeclarationInspection(state);
-                inspectionResults = inspection.GetInspectionResults();
+                inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             }
 
             Assert.IsFalse(inspectionResults.Any());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void InspectionName()
+        {
+            var inspection = new ShadowedDeclarationInspection(null);
+
+            Assert.AreEqual("ShadowedDeclarationInspection", inspection.Name);
         }
 
         private void AssertResultCountsEqualForThoseWithExpectation(Dictionary<string, int> expectedResultCounts,
@@ -5155,7 +5168,7 @@ End Sub";
 
         private Dictionary<string, int> InspectionResultCountsByTargetIdentifierName(IInspection inspection)
         {
-            var inspectionResults = inspection.GetInspectionResults();
+            var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
             return InspectionResultCountsByTargetIdentifierName(inspectionResults);
         }
 
@@ -5185,7 +5198,7 @@ End Sub";
             }
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty).Build();
+            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty, 0, 0).Build();
             builder.AddProject(userProject);
 
             return builder;
@@ -5220,7 +5233,7 @@ End Sub";
             referencedProjectBuilder.AddComponent(referencedComponentName, referencedComponentComponentType, referencedComponentCode);
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty).Build();
+            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty, 0, 0).Build();
             builder.AddProject(userProject);
 
             return builder;

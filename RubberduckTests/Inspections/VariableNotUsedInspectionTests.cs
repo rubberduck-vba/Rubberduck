@@ -1,16 +1,16 @@
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Threading;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class VariableNotUsedInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableNotUsed_ReturnsResult()
         {
             const string inputCode =
@@ -23,14 +23,14 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableNotUsed_ReturnsResult_MultipleVariables()
         {
             const string inputCode =
@@ -44,14 +44,14 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(2, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableUsed_DoesNotReturnResult()
         {
             const string inputCode =
@@ -70,14 +70,14 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(0, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableNotUsed_ReturnsResult_MultipleVariables_SomeAssigned()
         {
             const string inputCode =
@@ -98,14 +98,14 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableNotUsed_Ignored_DoesNotReturnResult()
         {
             const string inputCode =
@@ -119,14 +119,14 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void VariableNotUsed_DoesNotReturnsResult_UsedInNameStatement()
         {
             const string inputCode =
@@ -140,28 +140,32 @@ End Sub";
             {
 
                 var inspection = new VariableNotUsedInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.IsFalse(inspectionResults.Any());
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
+        [Test]
+        [Category("Inspections")]
+        public void VariableUsed_DoesNotReturnResultIfAssigned()
         {
-            var inspection = new VariableNotUsedInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+            const string inputCode =
+                @"Function Foo() As Boolean
+    Dim var1 as String
+    var1 = ""test""
+End Function";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new VariableNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionName()
-        {
-            const string inspectionName = "VariableNotUsedInspection";
-            var inspection = new VariableNotUsedInspection(null);
-
-            Assert.AreEqual(inspectionName, inspection.Name);
-        }
     }
 }

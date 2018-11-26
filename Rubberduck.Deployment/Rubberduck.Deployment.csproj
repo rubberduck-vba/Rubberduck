@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+  <PropertyGroup>
+    <Product>Rubberduck.Deployment</Product>
+    <Copyright>Copyright © 2018</Copyright>
+    <ProjectGuid>{4B9BD3FE-DDC8-4842-BC3D-B8EF43011F0C}</ProjectGuid>
+    <RootNamespace>Rubberduck.Deployment</RootNamespace>
+    <AssemblyName>Rubberduck.Deployment</AssemblyName>
+    
+    <!-- Installer references depend on the unified output path -->
+    <UnifyOutputPath>true</UnifyOutputPath>
+  </PropertyGroup>
+  <Import Project="..\RubberduckBaseProject.csproj" />
+
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="BuildRegistryScript.ps1" />
+    <None Include="Licenses\License.rtf" />
+    <None Include="PreInnoSetupConfiguration.ps1" />
+    
+    <!-- EasyHook nuget may be not be within the solution so we need to check different places. The PreserveNewest should hopefully avoid repetitive (but harmless) copying -->
+    <Content Include="..\packages\EasyHook.2.7.6684\content\net40\**" CopyToPublishDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
+    <Content Include="$(USERPROFILE)\.nuget\packages\easyHook\2.7.6684\content\net40\**" CopyToPublishDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj" />
+    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
+    <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj" />
+    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
+    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj" />
+    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
+    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj" />
+    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EasyHook" Version="2.7.6684">
+      <CopyToOutputDirectory>content/net40/*</CopyToOutputDirectory>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="olewoo">
+      <HintPath>OleWoo\olewoo.dll</HintPath>
+    </Reference>
+    <Reference Include="olewoo_interop">
+      <HintPath>OleWoo\olewoo_interop.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Target Name="CopyLinkedContentFiles" BeforeTargets="Build">
+    <Copy SourceFiles="%(Content.Identity)"
+          DestinationFiles="$(OutputPath)\%(Content.Link)"
+          SkipUnchangedFiles="true"
+          OverwriteReadOnlyFiles="true" />
+  </Target>
+  <Target Name="InnoSetupConfig" BeforeTargets="PreBuildEvent">
+      <CreateProperty Value="&amp;  '$(ProjectDir)PreInnoSetupConfiguration.ps1' -WorkingDir  '$(ProjectDir)'">
+      <Output TaskParameter="Value" PropertyName="PowershellCommand" />
+    </CreateProperty>
+    <Exec Command="%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command &quot;$(PowershellCommand)&quot;" ConsoleToMsBuild="true" />
+    <Message Text="Ran InnoSetupConfig" Importance="normal" />
+  </Target>
+  <Target Name="Register" AfterTargets="PostBuildEvent">
+    <GetFrameworkSdkPath>
+      <Output TaskParameter="Path" PropertyName="SdkPath" />
+    </GetFrameworkSdkPath>
+    <CreateProperty Value="$(ProjectDir)$(OutputPath)$(TargetFileName)">
+      <Output TaskParameter="Value" PropertyName="TargetAssembly" />
+    </CreateProperty>
+    <CreateProperty Value="&amp; '$(ProjectDir)BuildRegistryScript.ps1' -config  '$(ConfigurationName)' -builderAssemblyPath  '$(TargetPath)'  -netToolsDir  '$(SdkPath)bin\NETFX 4.6.1 Tools\' -wixToolsDir  '$(ProjectDir)WixToolset\' -sourceDir  '$(TargetDir)' -targetDir  '$(TargetDir)' -projectDir  '$(ProjectDir)' -includeDir  '$(ProjectDir)InnoSetup\Includes\' -filesToExtract  'Rubberduck.dll|Rubberduck.API.dll'">
+      <Output TaskParameter="Value" PropertyName="PowershellCommand" />
+    </CreateProperty>
+    <Exec Command="%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command &quot;$(PowershellCommand)&quot;" ConsoleToMsBuild="true" />
+    <Message Text="Ran Registration script" Importance="normal" />
+  </Target>
+</Project>

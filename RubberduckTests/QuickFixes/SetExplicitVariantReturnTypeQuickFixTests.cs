@@ -1,16 +1,16 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
-    [TestClass]
-    public class SetExplicitVariantReturnTypeQuickFixTests
+    [TestFixture]
+    public class SetExplicitVariantReturnTypeQuickFixTests : QuickFixTestBase
     {
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_QuickFixWorks_Function()
         {
             const string inputCode =
@@ -21,20 +21,12 @@ End Function";
                 @"Function Foo() As Variant
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ImplicitVariantReturnTypeInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_QuickFixWorks_PropertyGet()
         {
             const string inputCode =
@@ -45,21 +37,12 @@ End Property";
                 @"Property Get Foo() As Variant
 End Property";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ImplicitVariantReturnTypeInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_QuickFixWorks_LibraryFunction()
         {
             const string inputCode =
@@ -88,21 +71,12 @@ End Property";
                                                            lpStartupInfo As STARTUPINFO, _
                                                            lpProcessInformation As PROCESS_INFORMATION) As Variant";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
-
-                new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ImplicitVariantReturnTypeInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        [TestMethod]
-        [TestCategory("QuickFixes")]
+        [Test]
+        [Category("QuickFixes")]
         public void ImplicitVariantReturnType_QuickFixWorks_Function_HasComment()
         {
             const string inputCode =
@@ -113,17 +87,14 @@ End Function";
                 @"Function Foo() As Variant    ' comment
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new ImplicitVariantReturnTypeInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
 
-                var inspection = new ImplicitVariantReturnTypeInspection(state);
-                var inspectionResults = inspection.GetInspectionResults();
 
-                new SetExplicitVariantReturnTypeQuickFix(state).Fix(inspectionResults.First());
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new SetExplicitVariantReturnTypeQuickFix();
         }
     }
 }

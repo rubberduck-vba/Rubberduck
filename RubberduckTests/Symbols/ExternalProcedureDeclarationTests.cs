@@ -1,15 +1,15 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Symbols
 {
-    [TestClass]
+    [TestFixture]
     public class ExternalProcedureDeclarationTests
     {
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ByDefaultExternalProceduresDoNotHaveParameters()
         {
             var externalProcedure = GetTestExternalProcedure("testProcedure");
@@ -29,8 +29,8 @@ namespace RubberduckTests.Symbols
                 }
 
 
-        [TestMethod]
-        [TestCategory("Resolver")]
+        [Test]
+        [Category("Resolver")]
         public void ParametersReturnsTheParametersAddedViaAddParameters()
         {
             var externalProcedure = GetTestExternalProcedure("testProcedure");

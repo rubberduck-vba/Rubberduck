@@ -1,18 +1,17 @@
 using System.Linq;
 using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
-using Rubberduck.Parsing.Inspections.Resources;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
 {
-    [TestClass]
+    [TestFixture]
     public class OptionExplicitInspectionTests
     {
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NotAlreadySpecified_ReturnsResult()
         {
             const string inputCode = @"";
@@ -29,8 +28,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void AlreadySpecified_DoesNotReturnResult()
         {
             const string inputCode = @"Option Explicit";
@@ -47,8 +46,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void NotAlreadySpecified_ReturnsMultipleResults()
         {
             const string inputCode = @"";
@@ -71,8 +70,8 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
         public void PartiallySpecified_ReturnsResults()
         {
             const string inputCode1 = @"";
@@ -96,16 +95,58 @@ namespace RubberduckTests.Inspections
             }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
-        public void InspectionType()
+        [Test]
+        [Category("Inspections")]
+        public void IgnoredModule_DoesNotReturnResults()
         {
-            var inspection = new OptionExplicitInspection(null);
-            Assert.AreEqual(CodeInspectionType.CodeQualityIssues, inspection.InspectionType);
+            const string inputCode1 = @"'@IgnoreModule";
+            const string inputCode2 = @"Option Explicit";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new OptionExplicitInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
         }
 
-        [TestMethod]
-        [TestCategory("Inspections")]
+        [Test]
+        [Category("Inspections")]
+        public void IgnoredInspection_DoesNotReturnResults()
+        {
+            const string inputCode1 = @"'@Ignore OptionExplicit";
+            const string inputCode2 = @"Option Explicit";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new OptionExplicitInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+        
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "OptionExplicitInspection";

@@ -1,0 +1,4 @@
+# ignore any auto-generated files
+/Rubberduck.reg.iss
+/Rubberduck.API.reg.iss
+/license.rtf
