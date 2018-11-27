@@ -146,7 +146,7 @@ End Function";
         }
 
         [Test]
-        //[Ignore("We cannot test this because we do not have any identifier annotation that is not a member annotation.")]
+        [Ignore("We cannot test this because we do not have any identifier annotation that is not a member annotation.")]
         public void MemberAnnotationsAboveIdentifierAnnotationLineAboveMemberGetScopedToMember()
         {
             const string inputCode =
@@ -397,7 +397,7 @@ End Function";
         }
 
         [Test]
-        //[Ignore("We cannot test this because we do not have any identifier annotation that is not a member annotation.")]
+        [Ignore("We cannot test this because we do not have any identifier annotation that is not a member annotation.")]
         public void VariableAnnotationsAboveIdentifierAnnotationLineAboveVariableGetScopedToVariable()
         {
             const string inputCode =

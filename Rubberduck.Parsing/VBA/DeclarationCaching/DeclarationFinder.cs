@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IHostApplication _hostApp;
-        private readonly AnnotationService _annotationService;
+        private readonly IdentifierAnnotationService _identifierAnnotationService;
         private IDictionary<string, List<Declaration>> _declarationsByName;
         private IDictionary<QualifiedModuleName, List<Declaration>> _declarations;
         private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
@@ -68,7 +68,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             _newUndeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>(new Dictionary<QualifiedMemberName, ConcurrentBag<Declaration>>());
             _newUnresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
 
-            _annotationService = new AnnotationService(this);
+            _identifierAnnotationService = new IdentifierAnnotationService(this);
 
             var collectionConstructionActions = CollectionConstructionActions(declarations, annotations, unresolvedMemberDeclarations);
             ExecuteCollectionConstructionActions(collectionConstructionActions);
@@ -804,7 +804,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public Declaration OnUndeclaredVariable(Declaration enclosingProcedure, string identifierName, ParserRuleContext context)
         {
-            var annotations = _annotationService.FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line);
+            var annotations = _identifierAnnotationService.FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line);
             var undeclaredLocal =
                 new Declaration(
                     new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
@@ -859,7 +859,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
 
             var identifier = context.GetChild<VBAParser.UnrestrictedIdentifierContext>(0);
-            var annotations = _annotationService.FindAnnotations(parentDeclaration.QualifiedName.QualifiedModuleName, context.Start.Line);
+            var annotations = _identifierAnnotationService.FindAnnotations(parentDeclaration.QualifiedName.QualifiedModuleName, context.Start.Line);
 
             var declaration = new UnboundMemberDeclaration(parentDeclaration, identifier,
                 (context is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)context.children[0] : withExpression.Context, 
