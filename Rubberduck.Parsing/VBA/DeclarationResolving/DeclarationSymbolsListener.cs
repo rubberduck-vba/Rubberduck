@@ -178,7 +178,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                             selection,
                             isArray,
                             true,
-                            FindVariableAnnotations(selection.StartLine),
+                            FindGeneralAnnotations(selection.StartLine),
                             attributes);
                         break;
                     case DeclarationType.LibraryProcedure:
