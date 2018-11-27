@@ -423,7 +423,7 @@ namespace Rubberduck.Parsing.VBA
             if (AllUserDeclarations.Any())
             {
                 var projectId = module.ProjectId;
-                IVBProject project = GetProject(projectId);
+                var project = GetProject(projectId);
 
                 if (project == null)
                 {

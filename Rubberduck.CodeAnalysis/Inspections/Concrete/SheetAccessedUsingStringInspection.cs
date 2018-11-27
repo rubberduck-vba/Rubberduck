@@ -96,7 +96,7 @@ namespace Rubberduck.Inspections.Concrete
 
             var sheetArgumentContext = indexExprContext.argumentList().argument(0);
             var sheetName = FormatSheetName(sheetArgumentContext.GetText());
-            var project = State.Projects.First(p => p.ProjectId == reference.QualifiedName.ProjectId);
+            var project = State.ProjectsProvider.Project(reference.QualifiedName.ProjectId);
 
             using (var components = project.VBComponents)
             {
