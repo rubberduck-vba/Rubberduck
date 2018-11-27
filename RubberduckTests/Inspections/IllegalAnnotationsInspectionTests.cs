@@ -2,6 +2,7 @@ using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
+using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -685,6 +686,32 @@ label:
 End Sub
 ";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        //Issue #4558.
+        [Test]
+        [Category("Inspections")]
+        public void FolderBelowOptionExplicitAndAboveImplements_NoResult()
+        {
+            const string inputCode = @"Option Explicit
+'@Folder(""Excel.Abstract"")
+Implements IWorkbookData
+
+";
+            const string interfaceCode = @"Option Explicit
+'@Folder(""Excel.Abstract"")
+Implements IWorkbookData
+
+";
+            var vbe = MockVbeBuilder.BuildFromModules(new[]{("testClass", inputCode, ComponentType.ClassModule), ("IWorkbookData", interfaceCode, ComponentType.ClassModule) });
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new IllegalAnnotationInspection(state);
