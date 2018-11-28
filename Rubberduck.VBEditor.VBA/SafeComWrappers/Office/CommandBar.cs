@@ -155,5 +155,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
         {
             return IsWrappingNullReference ? 0 : HashCode.Compute(Type, Id, Index, IsBuiltIn, Target.Parent);
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

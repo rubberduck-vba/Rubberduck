@@ -117,70 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AutoCompleteClosingBraceDescription" xml:space="preserve">
-    <value>Fermer les accolades '{'</value>
-  </data>
-  <data name="AutoCompleteClosingBracketDescription" xml:space="preserve">
-    <value>Fermer les braquettes '['</value>
-  </data>
-  <data name="AutoCompleteClosingParentheseDescription" xml:space="preserve">
-    <value>Fermer les parenthèses '('</value>
-  </data>
-  <data name="AutoCompleteClosingStringDescription" xml:space="preserve">
-    <value>Fermer les chaînes littérales '"'</value>
-  </data>
-  <data name="AutoCompleteDoBlockDescription" xml:space="preserve">
-    <value>Fermer les boucles 'Do [While|Until]...Loop'</value>
-  </data>
-  <data name="AutoCompleteEnumBlockDescription" xml:space="preserve">
-    <value>Fermer les blocs 'Enum'</value>
-  </data>
-  <data name="AutoCompleteForBlockDescription" xml:space="preserve">
-    <value>Fermer les boucles 'For [Each]...Next'</value>
-  </data>
-  <data name="AutoCompleteIfBlockDescription" xml:space="preserve">
-    <value>Fermer les blocs 'If'</value>
-  </data>
-  <data name="AutoCompleteOnErrorResumeNextBlockDescription" xml:space="preserve">
-    <value>Traiter 'On Error Resume Next...GoTo 0' comme un bloc</value>
-  </data>
-  <data name="AutoCompletePrecompilerIfBlockDescription" xml:space="preserve">
-    <value>Fermer les blocs '#If' (préprocesseur)</value>
-  </data>
-  <data name="AutoCompleteSelectBlockDescription" xml:space="preserve">
-    <value>Fermer les blocs 'Select'</value>
-  </data>
-  <data name="AutoCompleteTypeBlockDescription" xml:space="preserve">
-    <value>Fermer les blocs 'Type'</value>
-  </data>
-  <data name="AutoCompleteWhileBlockDescription" xml:space="preserve">
-    <value>Fermer les boucles 'While...Wend'</value>
-  </data>
-  <data name="AutoCompleteWithBlockDescription" xml:space="preserve">
-    <value>Fermer les blocs 'With'</value>
-  </data>
-  <data name="AutoCompleteSubBlockDescription" xml:space="preserve">
-    <value>Prendre en charge la fermeture des blocs 'Sub'</value>
-  </data>
-  <data name="AutoCompleteFunctionBlockDescription" xml:space="preserve">
-    <value>Prendre en charge la fermeture des blocs 'Function'</value>
-  </data>
-  <data name="AutoCompletePropertyBlockDescription" xml:space="preserve">
-    <value>Prendre en charge la fermeture des blocs 'Property'</value>
-  </data>
-  <data name="HandleTabKey" xml:space="preserve">
-    <value>Autocompléter les blocs avec TAB</value>
-  </data>
-  <data name="HandleEnterKey" xml:space="preserve">
-    <value>Autocompléter les blocs avec ENTER</value>
-  </data>
   <data name="PageHeader" xml:space="preserve">
-    <value>Autocompletion Settings</value>
+    <value>Paramètres d'autocomplétion</value>
   </data>
   <data name="PageInstructions" xml:space="preserve">
     <value>Configure which Rubberduck autocompletions are enabled.</value>
   </data>
   <data name="EnableSmartConcat" xml:space="preserve">
     <value>Activer la concaténation intelligente</value>
+  </data>
+  <data name="BlockCompletion" xml:space="preserve">
+    <value>Fermeture des blocs</value>
+  </data>
+  <data name="CompleteBlockOnEnter" xml:space="preserve">
+    <value>Compléter les blocs avec ENTREE</value>
+  </data>
+  <data name="CompleteBlockOnTab" xml:space="preserve">
+    <value>Compléter les blocs avec TAB</value>
+  </data>
+  <data name="ConcatVbNewLine" xml:space="preserve">
+    <value>Concaténer 'vbNewLine' avec Ctrl+Entrée</value>
+  </data>
+  <data name="EnableAutocompleteLabel" xml:space="preserve">
+    <value>Activer l'autocomplétion</value>
+  </data>
+  <data name="EnableBlockCompletion" xml:space="preserve">
+    <value>Fermer automatiquement les blocs</value>
+  </data>
+  <data name="EnableSelfClosingPairs" xml:space="preserve">
+    <value>Fermer automatiquement les paires</value>
+  </data>
+  <data name="MaxConcatLines" xml:space="preserve">
+    <value>Lignes</value>
+  </data>
+  <data name="SelfClosingPairs" xml:space="preserve">
+    <value>Paires automatiques</value>
+  </data>
+  <data name="SmartConcat" xml:space="preserve">
+    <value>Concaténation intelligente</value>
   </data>
 </root>

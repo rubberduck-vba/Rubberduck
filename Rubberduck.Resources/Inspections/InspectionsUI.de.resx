@@ -174,4 +174,7 @@
   <data name="CodeInspectionSeverity_Error" xml:space="preserve">
     <value>Fehler</value>
   </data>
+  <data name="CodeInspectionSeverity_All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
 </root>

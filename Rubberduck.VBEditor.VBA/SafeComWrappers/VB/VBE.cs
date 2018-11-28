@@ -331,6 +331,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 return activePane.GetQualifiedSelection();
             }
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }
 

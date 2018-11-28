@@ -153,9 +153,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Anweisung enthält Mehrfachdeklarationen</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Das Modul hat mehr als eine Ordner Annotation.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Funktion oder Eigenschaft ohne Rückgabewert</value>
   </data>
@@ -326,5 +323,38 @@
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Statically accessible sheet accessed using string</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Verwendung eines als '@Obsolete' markierten Members</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Verwendung der 'CDecl' Aufrufkonvention unter Windows </value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Annotation ist dupliziert</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Modul ohne '@Folder'-Annotation</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>'On Local Error'-Direktive</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>Unpassende Verwendung der 'IsMissing'-Funktion</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>Unpassende Verwendung der 'IsMissing'-Funktion</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Zuweisung wird nie gelesen</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Unterstrich im Namen eines öffentlichen Members</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Memberaufruf kann 'Nothing' zurückgeben</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Funktion wird von EXCEL-Zellreferenz verdeckt</value>
   </data>
 </root>

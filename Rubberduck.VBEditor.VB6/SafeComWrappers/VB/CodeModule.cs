@@ -128,7 +128,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                // "too many line continuations" is one possible cause for a COMException here.
+                // deleting the only line in a module is another.
+                // we can log the exception, but really we're just intentionally swallowing it.
+                _logger.Warn(e, $"{nameof(InsertLines)} failed.");
             }
         }
 
@@ -142,7 +145,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                // "too many line continuations" is one possible cause for a COMException here.
+                // deleting the only line in a module is another.
+                // we can log the exception, but really we're just intentionally swallowing it.
+                _logger.Warn(e, $"{nameof(DeleteLines)} failed.");
             }
         }
 
@@ -160,7 +166,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
             catch (Exception e)
             {
-                _logger.Error(e);
+                // "too many line continuations" is one possible cause for a COMException here.
+                // deleting the only line in a module is another.
+                // we can log the exception, but really we're just intentionally swallowing it.
+                _logger.Warn(e, $"{nameof(ReplaceLine)} failed.");
             }
         }
 
@@ -219,5 +228,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

@@ -16,5 +16,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
         public ICommandBar CommandBar => new CommandBar(IsWrappingNullReference ? null : Popup.CommandBar);
 
         public ICommandBarControls Controls => new CommandBarControls(IsWrappingNullReference ? null : Popup.Controls);
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

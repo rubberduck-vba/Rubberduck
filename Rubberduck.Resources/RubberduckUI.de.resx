@@ -274,9 +274,6 @@
   <data name="AllImplementations_NoneFound" xml:space="preserve">
     <value>Klasse oder Member '{0}' ist nicht implementiert.</value>
   </data>
-  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
-    <value>{0} (parse...)</value>
-  </data>
   <data name="Home" xml:space="preserve">
     <value>Start</value>
   </data>
@@ -385,24 +382,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Parserfehler</value>
   </data>
-  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Standardmodul (.bas)</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Testmodul</value>
-  </data>
-  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
-    <value>Member&amp;namen anzeigen</value>
-  </data>
-  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
-    <value>Volle &amp;Signaturen anzeigen</value>
-  </data>
-  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
-    <value>Alle Implementierungen finden...</value>
-  </data>
-  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
-    <value>Alle Referenzen finden...</value>
-  </data>
   <data name="Inspect" xml:space="preserve">
     <value>Inspizieren</value>
   </data>
@@ -414,15 +393,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   </data>
   <data name="Rename" xml:space="preserve">
     <value>Umbenennen</value>
-  </data>
-  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Alle &amp;Tests ausführen</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Designer öffnen</value>
-  </data>
-  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Ordner umschalten</value>
   </data>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
     <value>Untersuchungsergebnisse in Zwischenablage kopieren</value>
@@ -484,9 +454,6 @@ Warnung: Alle eigenen Einstellungen gehen dabei verloren. Die Originaldatei wird
   <data name="Navigation" xml:space="preserve">
     <value>Navigation</value>
   </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>To-Do Explorer</value>
-  </data>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>Methode '{0}' implementiert '{1}.{2}'. Wollen Sie den Interfacemember umbenennen?</value>
     <comment>0: Selected target; 1: Interface name; 2: Interface member name</comment>
@@ -504,36 +471,18 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>{0} Umbenennen</value>
   </data>
-  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
-    <value>Code Explorer</value>
-  </data>
-  <data name="CodeExplorer_New" xml:space="preserve">
-    <value>&amp;Neu</value>
-  </data>
   <data name="CodeInspections_NumberOfIssues_Singular" xml:space="preserve">
     <value>{0} Problem</value>
   </data>
   <data name="CodeInspections_InspectingIssues_Plural" xml:space="preserve">
     <value>{0} ({1} Probleme)</value>
   </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
   <data name="CodeInspections_NumberOfIssuesFound_Singular" xml:space="preserve">
     <value>Rubberduck Code Untersuchung - {0} 
 {1} Problem gefunden.</value>
   </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
-  </data>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} Probleme</value>
-  </data>
-  <data name="CodeExplorer_Refresh" xml:space="preserve">
-    <value>Aktualisieren</value>
-  </data>
-  <data name="CodeExplorer_Navigate" xml:space="preserve">
-    <value>Na&amp;vigieren</value>
   </data>
   <data name="CodeInspections_InspectingIssues_Singular" xml:space="preserve">
     <value>{0} ({1} Problem)</value>
@@ -590,12 +539,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="MakeActiveSheetReferenceExplicit" xml:space="preserve">
     <value>Setze die Referenz explizit auf das 'ActiveSheet'</value>
   </data>
-  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
-    <value>Style anzeigen</value>
-  </data>
-  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
-    <value>Füge eine Komponente zum aktiven Projekt hinzu</value>
-  </data>
   <data name="FindSymbolDialog_Caption" xml:space="preserve">
     <value>Finde Symbol</value>
   </data>
@@ -616,9 +559,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="ExtractInterface_InstructionLabel" xml:space="preserve">
     <value>Bitte spezifizieren Sie den Interface-Namen und die Mitglieder</value>
-  </data>
-  <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>Ein&amp;rücken</value>
   </data>
   <data name="PromoteVariable_InvalidSelection" xml:space="preserve">
     <value>Die Auswahl ist keine Variable</value>
@@ -866,26 +806,8 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="DeclarationType_LibraryProcedure" xml:space="preserve">
     <value>Bibliotheksprozedur</value>
   </data>
-  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
-    <value>Klassenmodul (.cls)</value>
-  </data>
-  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
-    <value>Wechsele Signatur</value>
-  </data>
   <data name="Find" xml:space="preserve">
     <value>Suchen</value>
-  </data>
-  <data name="CodeExplorer_Remove" xml:space="preserve">
-    <value>Entfernen...</value>
-  </data>
-  <data name="CodeExplorer_Print" xml:space="preserve">
-    <value>Drucken...</value>
-  </data>
-  <data name="CodeExplorer_Import" xml:space="preserve">
-    <value>Importieren...</value>
-  </data>
-  <data name="CodeExplorer_Export" xml:space="preserve">
-    <value>Exportieren...</value>
   </data>
   <data name="GeneralSettings_PeriodDelimiter" xml:space="preserve">
     <value>Punkte (.)</value>
@@ -895,9 +817,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="GeneralSettings_SlashDelimiter" xml:space="preserve">
     <value>Schrägstrich (/)</value>
-  </data>
-  <data name="CodeExplorer_Sort" xml:space="preserve">
-    <value>Sortieren</value>
   </data>
   <data name="Parser_ParserError" xml:space="preserve">
     <value>Parserfehler</value>
@@ -928,12 +847,6 @@ Wollen Sie trotzdem fortfahren?</value>
   </data>
   <data name="GeneralSettings_ShowLogFolder" xml:space="preserve">
     <value>Logging-Ordner anzeigen</value>
-  </data>
-  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>In Zwischenablage kopieren</value>
-  </data>
-  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
-    <value>Projekteigenschaften öffnen</value>
   </data>
   <data name="ParserState_ResolvingReferences" xml:space="preserve">
     <value>Löse Referenzen auf...</value>
@@ -974,9 +887,6 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="RegexAssistant_DescriptionResultsLabel" xml:space="preserve">
     <value>Beschreibung</value>
   </data>
-  <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Einrücken</value>
-  </data>
   <data name="RegexAssistant_RegexPatternLabel" xml:space="preserve">
     <value>Ausdruck</value>
   </data>
@@ -992,14 +902,8 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="GeneralSettings_ShowSplash" xml:space="preserve">
     <value>Ein Startlogo zu Beginn zeigen</value>
   </data>
-  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
-    <value>Knoten und alle Kindknoten einklappen</value>
-  </data>
   <data name="CodeInspectionSettings_Misc" xml:space="preserve">
     <value>Verschiedenes</value>
-  </data>
-  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
-    <value>Knoten und alle Kindknoten aufklappen</value>
   </data>
   <data name="RubberduckReloadFailure_Message" xml:space="preserve">
     <value>Werkzeugfenster wurden nicht korrekt entfernt und/oder konnten nicht wieder hergestellt werden; Die VBE könnte instabil sein. Rubberduck wird beim nächsten Start der VBE normal laden.</value>
@@ -1130,14 +1034,8 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="Preview" xml:space="preserve">
     <value>Vorschau</value>
   </data>
-  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
-    <value>Designer öffnen</value>
-  </data>
   <data name="EmptyUIRefreshMessage" xml:space="preserve">
     <value>Um die Projekte in der VBE zu parsen und zu analysieren.</value>
-  </data>
-  <data name="CodeExplorer_ExportAll" xml:space="preserve">
-    <value>Projekt exportieren...</value>
   </data>
   <data name="ImportCommand_OpenDialog_Filter_VBFiles" xml:space="preserve">
     <value>VB Dateien</value>
@@ -1151,15 +1049,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Alle Dateien</value>
   </data>
-  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
-    <value>Nach Typ gruppieren</value>
-  </data>
-  <data name="CodeExplorer_AddModule" xml:space="preserve">
-    <value>Modul hinzufügen</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
-    <value>nach Name</value>
-  </data>
   <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Quellcode aus Datei importieren</value>
   </data>
@@ -1169,26 +1058,14 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="GeneralSettings_ExperimentalFeaturesWarning" xml:space="preserve">
     <value>Auf eigene Verantwortung und Gefahr aktivieren. Aktivierung und / oder Verwendung von Funktionalitäten in dieser Sektion kann zu unvorhergesehenen Fehlern und unwiederbringlichem Datenverlust führen.</value>
   </data>
-  <data name="CodeExplorer_Open" xml:space="preserve">
-    <value>Öffnen</value>
-  </data>
   <data name="RenamePresenter_TargetIsEventHandlerImplementation" xml:space="preserve">
     <value>Die Methode '{0}' ist eine Implementierung des Ereignisses '{1}.{2}'. Stattdessen Ereignis '{2}' umbenennen?</value>
   </data>
   <data name="ExportAllCommand_SaveAsDialog_Title" xml:space="preserve">
     <value>Einen Ordner als Ziel für den Quellcode von {0} wählen:</value>
   </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>Formular (.frm)</value>
-  </data>
   <data name="GeneralSettings_ExperimentalFeatures" xml:space="preserve">
     <value>Experimentelle Funktionalität:</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
-    <value>Testmodul mit Skelettmethoden</value>
-  </data>
-  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
-    <value>Wie im Modul deklariert</value>
   </data>
   <data name="ToDoExplorer_CopyToolTip" xml:space="preserve">
     <value>In die Zwischenablage kopieren</value>
@@ -1290,10 +1167,64 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>"Bei Bedarf Kompilieren" ist aktuell eingeschalten</value>
   </data>
-  <data name="InspectionSettings_FilterDescription" xml:space="preserve">
-    <value>Nach Beschreibung filtern:</value>
-  </data>
   <data name="Add" xml:space="preserve">
     <value>Hinzufügen</value>
+  </data>
+  <data name="TodoMarkerBug" xml:space="preserve">
+    <value>BUG</value>
+  </data>
+  <data name="TodoMarkerNote" xml:space="preserve">
+    <value>NOTE</value>
+  </data>
+  <data name="TodoMarkerTodo" xml:space="preserve">
+    <value>TODO</value>
+  </data>
+  <data name="IndentCurrentProject" xml:space="preserve">
+    <value>Aktuelles Projekt</value>
+  </data>
+  <data name="InspectionSettings_FilterByDescription" xml:space="preserve">
+    <value>Beschreibung:</value>
+  </data>
+  <data name="ParserState_Busy" xml:space="preserve">
+    <value>Beschäftigt</value>
+  </data>
+  <data name="InspectionResults_FilterByError" xml:space="preserve">
+    <value>Fehler</value>
+  </data>
+  <data name="InspectionResults_FilterByHint" xml:space="preserve">
+    <value>Tipp</value>
+  </data>
+  <data name="InspectionResults_FilterBySuggestion" xml:space="preserve">
+    <value>Vorschlag</value>
+  </data>
+  <data name="InspectionResults_FilterByWarning" xml:space="preserve">
+    <value>Warnung</value>
+  </data>
+  <data name="GroupingGrid_FilterBy" xml:space="preserve">
+    <value>Filtern nach</value>
+  </data>
+  <data name="GroupingStyle_ByCategory" xml:space="preserve">
+    <value>Nach Kategorie</value>
+  </data>
+  <data name="IndenterSettings_IgnoreEmptyLinesInFirstBlocks" xml:space="preserve">
+    <value>Leerzeilen bei der Suche nach dem ersten Kommentar und nach Deklarationsblöcken ignorieren</value>
+  </data>
+  <data name="InspectionSettings_FilterBySeverity" xml:space="preserve">
+    <value>Schweregrad:</value>
+  </data>
+  <data name="Language_CS" xml:space="preserve">
+    <value>Tschechisch</value>
+  </data>
+  <data name="EmptyLineHandling_Ignore" xml:space="preserve">
+    <value>Ignorieren</value>
+  </data>
+  <data name="EmptyLineHandling_Indent" xml:space="preserve">
+    <value>Einrücken</value>
+  </data>
+  <data name="EmptyLineHandling_Remove" xml:space="preserve">
+    <value>Entfernen</value>
+  </data>
+  <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
+    <value>Leerzeilenbehandlung:</value>
   </data>
 </root>

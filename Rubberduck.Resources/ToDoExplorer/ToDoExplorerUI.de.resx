@@ -132,12 +132,6 @@
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Markierungen:</value>
   </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>To-Do Explorer</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Text</value>
   </data>

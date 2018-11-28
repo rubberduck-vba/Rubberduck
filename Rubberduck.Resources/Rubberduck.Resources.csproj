@@ -8,8 +8,17 @@
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <ItemGroup>
-    <Resource Include="**\*.png" />
-    <Resource Include="**\*.bmp" />
-    <Resource Include="**\*.txt" />
+    <Resource Include="**\*.png" Exclude="$(IntermediateOutputPath)\**" />
+    <Resource Include="**\*.bmp" Exclude="$(IntermediateOutputPath)\**" />
+    <Resource Include="**\*.txt" Exclude="$(IntermediateOutputPath)\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Update="**\*.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>$([System.String]::Copy('%(FileName)')).Designer.cs</LastGenOutput>
+    </Resource>
+    <Compile Update="**\*.Designer.cs">
+      <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

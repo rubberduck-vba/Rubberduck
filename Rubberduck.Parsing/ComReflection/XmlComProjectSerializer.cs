@@ -1,15 +1,21 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
+using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.ComReflection
 {
     public class XmlComProjectSerializer : IComProjectSerializationProvider
     {
-        public static readonly string DefaultSerializationPath =
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
+        public readonly string DefaultSerializationPath;
+
+        public XmlComProjectSerializer(IPersistancePathProvider pathProvider)
+        {
+            DefaultSerializationPath = pathProvider.DataFolderPath("Declarations");
+        }
 
         private static readonly XmlReaderSettings ReaderSettings = new XmlReaderSettings
         {
@@ -46,6 +52,7 @@ namespace Rubberduck.Parsing.ComReflection
             return File.Exists(testFile);
         }
 
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")] //This is fine. XmlWriter disposes the FileStream, but calling twice is a NOP.
         public void SerializeProject(ComProject project)
         {
             var filepath = Path.Combine(Target, FileName(project));

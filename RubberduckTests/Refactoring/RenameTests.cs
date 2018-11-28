@@ -521,7 +521,6 @@ End Function"
                     @"Private Function Fo|o() As Boolean
     Foo = True
 End Function
-
 Private Sub Goo()
     Dim var1 As Boolean
     var1 = Foo()
@@ -530,12 +529,45 @@ End Sub",
                     @"Private Function Hoo() As Boolean
     Hoo = True
 End Function
-
 Private Sub Goo()
     Dim var1 As Boolean
     var1 = Hoo()
 End Sub"
             };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameVariableWithBracketedExpressionInModule()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Hoo");
+            var inputOutput = new RenameTestModuleDefinition("TestModule1", ComponentType.Document)
+            {
+                Input =
+                    @"Private Fo|o() As Long
+
+Public Sub Derp()
+  [Something].Clear
+End Sub",
+                Expected =
+                    @"Private Hoo() As Long
+
+Public Sub Derp()
+  [Something].Clear
+End Sub"
+            };
+
+            tdo.UseLibraries = true;
+            tdo.AdditionalSetup = t =>
+            {
+                var hostApp = new Mock<IHostApplication>();
+                hostApp.Setup(x => x.ApplicationName).Returns("EXCEL");
+                var mock = Mock.Get(tdo.VBE);
+                mock.Setup(x => x.HostApplication()).Returns(hostApp.Object);
+            };
+
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
@@ -2766,7 +2798,8 @@ End Property";
             tdo.MsgBox = new Mock<IMessageBox>();
             tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == ConfirmationOutcome.Yes);
 
-            tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs);
+            tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs, tdo.UseLibraries);
+            tdo.AdditionalSetup?.Invoke(tdo);
             (tdo.ParserState, tdo.RewritingManager) = MockParser.CreateAndParseWithRewritingManager(tdo.VBE);
 
             CreateQualifiedSelectionForTestCase(tdo);
@@ -2775,7 +2808,6 @@ End Property";
                 , $"Target aquired ({tdo.RenameModel.Target.IdentifierName} does not equal name specified ({tdo.OriginalName}) in the test");
 
             var factory = SetupFactory(tdo.RenameModel);
-
             tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState, tdo.ParserState.ProjectsProvider, tdo.RewritingManager);
         }
 
@@ -2854,10 +2886,17 @@ End Property";
             Assert.Inconclusive($"Unable to find target '{FAUX_CURSOR}' in { tdo.SelectionModuleName} content.");
         }
 
-        private static IVBE BuildProject(string projectName, List<RenameTestModuleDefinition> testComponents)
+        private static IVBE BuildProject(string projectName, List<RenameTestModuleDefinition> testComponents, bool useLibraries = false)
         {
             var builder = new MockVbeBuilder();
             var enclosingProjectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
+
+            if (useLibraries)
+            {
+                enclosingProjectBuilder.AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true);
+                enclosingProjectBuilder.AddReference("EXCEL", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true);
+            }
+            
             foreach (var comp in testComponents)
             {
                 if (comp.ModuleType == ComponentType.UserForm)
@@ -2961,6 +3000,7 @@ End Property";
                 OriginalName = selection;
                 ModuleTestSetupDefs = new List<RenameTestModuleDefinition>();
                 RenameRefactoringUnderTest = null;
+                UseLibraries = false;
             }
 
             public IVBE VBE { get; set; }
@@ -2978,6 +3018,8 @@ End Property";
             public List<RenameTestModuleDefinition> ModuleTestSetupDefs { get; set; }
             public string OriginalName { get; set; }
             public RenameRefactoring RenameRefactoringUnderTest { get; set; }
+            public Action<RenameTestsDataObject> AdditionalSetup { get; set; }
+            public bool UseLibraries { get; set; }
         }
         #endregion
     }

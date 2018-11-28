@@ -282,9 +282,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="Result" xml:space="preserve">
     <value>Výsledek</value>
   </data>
-  <data name="Outcome" xml:space="preserve">
-    <value>Výsledek</value>
-  </data>
   <data name="Component" xml:space="preserve">
     <value>Komponenta</value>
   </data>
@@ -296,12 +293,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="Rename" xml:space="preserve">
     <value>Přejmenovat</value>
-  </data>
-  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
-    <value>Spustit Všechny &amp;Testy</value>
-  </data>
-  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
-    <value>Otevřít Návrhář</value>
   </data>
   <data name="ProjectName" xml:space="preserve">
     <value>Jméno projektu</value>
@@ -354,9 +345,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="ExtractMethod_ParametersLabel" xml:space="preserve">
     <value>Parametry:</value>
   </data>
-  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
-    <value>{0} (parsuji...)</value>
-  </data>
   <data name="LoadConfigError" xml:space="preserve">
     <value>Chyba při načítání konfigurace Rubberducku</value>
   </data>
@@ -396,29 +384,11 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="ParseErrors_Caption" xml:space="preserve">
     <value>Rubberduck - Chyby parseru</value>
   </data>
-  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
-    <value>Modul třídy (.cls)</value>
-  </data>
-  <data name="CodeExplorer_AddFormText" xml:space="preserve">
-    <value>UserForm (.frm)</value>
-  </data>
-  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
-    <value>Standardní modul (.bas)</value>
-  </data>
-  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
-    <value>Testovací modul</value>
-  </data>
   <data name="Inspect" xml:space="preserve">
     <value>Zkontrolovat</value>
   </data>
   <data name="Navigate" xml:space="preserve">
     <value>Navigovat</value>
-  </data>
-  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
-    <value>Přepnout složky</value>
-  </data>
-  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
-    <value>Zkopírovat do schránky</value>
   </data>
   <data name="CodeInspections_CopyToolTip" xml:space="preserve">
     <value>Zkopírovat výsledky kontroly do schránky</value>
@@ -465,9 +435,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="Navigation" xml:space="preserve">
     <value>Navigace</value>
   </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>TODO Explorer</value>
-  </data>
   <data name="RenamePresenter_TargetIsInterfaceMemberImplementation" xml:space="preserve">
     <value>Metoda '{0}' implementuje '{1}.{2}'. Přejmenovat člena rozhraní?</value>
   </data>
@@ -479,9 +446,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   </data>
   <data name="Rename_DeclarationType" xml:space="preserve">
     <value>Přejmenovat {0}</value>
-  </data>
-  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
-    <value>Code Explorer</value>
   </data>
   <data name="DeclarationType_UserDefinedType" xml:space="preserve">
     <value>uživatelsky-definovaný typ</value>
@@ -558,12 +522,6 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
   <data name="SearchResults_MemberType" xml:space="preserve">
     <value>Typ</value>
   </data>
-  <data name="CodeExplorer_Commit" xml:space="preserve">
-    <value>Commit...</value>
-  </data>
-  <data name="CodeExplorer_Indent" xml:space="preserve">
-    <value>Odsazení</value>
-  </data>
   <data name="Add" xml:space="preserve">
     <value>Přidat</value>
   </data>
@@ -592,12 +550,6 @@ Jste si jisti, že chcete pokračovat s tímto přejmenováním?</value>
   </data>
   <data name="CodeInspections_NumberOfIssues_Plural" xml:space="preserve">
     <value>{0} problémů</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Text:</value>
-  </data>
-  <data name="TodoSettings_Text" xml:space="preserve">
-    <value>Text</value>
   </data>
   <data name="Language_DE" xml:space="preserve">
     <value>Němčina</value>
@@ -1133,9 +1085,6 @@ POZNÁMKA: Pro aplikování tohoto nastavení je třeba restartovat Excel.</valu
   </data>
   <data name="GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption" xml:space="preserve">
     <value>Zkompilovat na Žádost je aktuálně povoleno</value>
-  </data>
-  <data name="InspectionSettings_FilterDescription" xml:space="preserve">
-    <value>Filtrovat podle Popisu:</value>
   </data>
   <data name="SmartIndenter_LegacySettingPrompt" xml:space="preserve">
     <value>Ve vašich registrech bylo nalezeno Chytré Odsazování.

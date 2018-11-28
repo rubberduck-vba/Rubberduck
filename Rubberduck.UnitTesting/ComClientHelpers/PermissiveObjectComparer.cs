@@ -56,6 +56,7 @@ namespace Rubberduck.UnitTesting.ComClientHelpers
         /// </summary>
         /// <param name="obj"></param>
         /// <returns>NotSupportedException</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1065")]     // see comment below.
         public int GetHashCode(object obj)
         {
             //This is intentional to "discourage" any use of the comparer that relies on GetHashCode().

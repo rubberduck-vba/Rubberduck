@@ -126,9 +126,6 @@
   <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
     <value>[attendu] est une référence, mais [réel] est une valeur.</value>
   </data>
-  <data name="Assert_GenericException" xml:space="preserve">
-    <value>Une exception s'est produite lors de l'exécution des tests.</value>
-  </data>
   <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
     <value>Dimension {0}: valeur UBound attendue {1}; valeur UBound réelle {2}. {3}</value>
   </data>
@@ -140,9 +137,6 @@
   </data>
   <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
     <value>[attendu] et [réel] sont des valeurs. Considérez utiliser {0}.</value>
-  </data>
-  <data name="Assert_ComException" xml:space="preserve">
-    <value>Une erreur COM inattendue s'est produite lors de l'exécution des tests.</value>
   </data>
   <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
     <value>[attendu] et [réel] sont des références. Considérez utiliser {0}.</value>
@@ -191,5 +185,23 @@
   </data>
   <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
     <value>Attendu: Stack overflow?; Réel: Clause de garde. Oui oui!</value>
+  </data>
+  <data name="Prerequisite_EarlyBindingReferenceMissing" xml:space="preserve">
+    <value>La référence à la libraire de Rubberduck requise pour l'exécution à liaison hâtive (early-binding) des tests, n'a pu être résolue. La librairie est peut-être corrompue.</value>
+  </data>
+  <data name="TestRunner_ComException" xml:space="preserve">
+    <value>Une exception COM inattendue s'est produite lors de l'exécution des tests.</value>
+  </data>
+  <data name="TestRunner_ExceptionDuringRun" xml:space="preserve">
+    <value>L'exécution d'un test a échouée avec une exception.</value>
+  </data>
+  <data name="TestRunner_GenericException" xml:space="preserve">
+    <value>Exception inattendue lors de l'exécution des tests.</value>
+  </data>
+  <data name="TestRunner_ModuleInitializeFailure" xml:space="preserve">
+    <value>Une erreur s'est produite durant l'exécution de @ModuleInitialize. Le module est ignoré.</value>
+  </data>
+  <data name="TestRunner_TestInitializeFailure" xml:space="preserve">
+    <value>Une erreur s'est produite durant l'exécution de @TestInitialize. Le test sera ignoré.</value>
   </data>
 </root>

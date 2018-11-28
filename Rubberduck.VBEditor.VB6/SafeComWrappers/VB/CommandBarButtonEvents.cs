@@ -3,7 +3,7 @@ using VB = Microsoft.Vbe.Interop.VB6;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
-    public class CommandBarButtonEvents : SafeComWrapper<VB.CommandBarEvents>, ICommandBarButtonEvents, IEventSource<VB.CommandBarEvents>
+    public sealed class CommandBarButtonEvents : SafeComWrapper<VB.CommandBarEvents>, ICommandBarButtonEvents, IEventSource<VB.CommandBarEvents>
     {
         public CommandBarButtonEvents(VB.CommandBarEvents target, bool rewrapping = false)
             : base(target, rewrapping)
@@ -27,5 +27,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

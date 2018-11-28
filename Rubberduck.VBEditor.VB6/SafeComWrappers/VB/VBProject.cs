@@ -216,6 +216,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
+
         private const string DllName = "vba6.dll";
         [DllImport(DllName)]
         private static extern int EbMode();

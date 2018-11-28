@@ -164,4 +164,25 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
   <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
     <value>You can also find us at:</value>
   </data>
+  <data name="AboutWindow_HostExecutable" xml:space="preserve">
+    <value>Hostprogramm: {0}</value>
+  </data>
+  <data name="AboutWindow_HostProduct" xml:space="preserve">
+    <value>Hostprodukt: {0} {1}</value>
+  </data>
+  <data name="AboutWindow_HostVersion" xml:space="preserve">
+    <value>Hostversion: {0}</value>
+  </data>
+  <data name="AboutWindow_OperatingSystem" xml:space="preserve">
+    <value>Betriebssystem: {0}, {1}</value>
+  </data>
+  <data name="AboutWindow_FoundAnIssue" xml:space="preserve">
+    <value>Einen Fehler gefunden?</value>
+  </data>
+  <data name="AboutWindow_HelpImproveRubberduck" xml:space="preserve">
+    <value>Hilf uns, Rubberduck zu verbessern!</value>
+  </data>
+  <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
+    <value>Einen Fehler melden</value>
+  </data>
 </root>

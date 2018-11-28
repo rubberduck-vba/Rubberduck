@@ -120,6 +120,19 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+            _isDisposed = true;
+
             _state.StateChanged -= OnStateChanged;
         }
 

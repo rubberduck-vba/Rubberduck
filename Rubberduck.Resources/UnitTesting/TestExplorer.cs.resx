@@ -229,7 +229,7 @@
     <value>Celkové Trvání</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
-    <value>Jméno Kategorie</value>
+    <value>Kategorie</value>
   </data>
   <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
     <value>Vybraná Kategorie</value>

@@ -103,5 +103,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             return IsBroken ? 0 : HashCode.Compute(Type, Name, Guid, FullPath, Major, Minor);
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }
