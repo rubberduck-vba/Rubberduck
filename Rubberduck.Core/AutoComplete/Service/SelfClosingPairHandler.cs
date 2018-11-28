@@ -66,11 +66,11 @@ namespace Rubberduck.AutoComplete.Service
                         break;
                     }
                 }
+            }
 
-                if (result == null)
-                {
-                    return false;
-                }
+            if (result == null)
+            {
+                return false;
             }
 
             var snippetPosition = new Selection(result.SnippetPosition.StartLine, 1, result.SnippetPosition.EndLine, 1);
@@ -109,14 +109,21 @@ namespace Rubberduck.AutoComplete.Service
                 return false;
             }
 
-            result = CodePaneHandler.Prettify(e.Module, result);
+            var reprettified = CodePaneHandler.Prettify(e.Module, result);
+            if (pair.OpeningChar == '(' && !reprettified.Equals(result))
+            {
+                // VBE eats it. bail out but don't swallow the keypress.
+                e.Handled = false;
+                result = null;
+                return false;
+            }
 
-            var currentLine = result.Lines[result.CaretPosition.StartLine];
+            var currentLine = reprettified.Lines[reprettified.CaretPosition.StartLine];
             if (!string.IsNullOrWhiteSpace(currentLine) &&
                 currentLine.EndsWith(" ") &&
-                result.CaretPosition.StartColumn == currentLine.Length)
+                reprettified.CaretPosition.StartColumn == currentLine.Length)
             {
-                result = result.ReplaceLine(result.CaretPosition.StartLine, currentLine.TrimEnd());
+                result = reprettified.ReplaceLine(reprettified.CaretPosition.StartLine, currentLine.TrimEnd());
             }
 
             if (pair.OpeningChar == '(' && 
