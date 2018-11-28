@@ -110,7 +110,7 @@ namespace Rubberduck.AutoComplete.Service
             }
 
             var reprettified = CodePaneHandler.Prettify(e.Module, result);
-            if (pair.OpeningChar == '(' && !reprettified.Equals(result))
+            if (pair.OpeningChar == '(' && e.Character == pair.OpeningChar && !reprettified.Equals(result))
             {
                 // VBE eats it. bail out but don't swallow the keypress.
                 e.Handled = false;
@@ -130,7 +130,7 @@ namespace Rubberduck.AutoComplete.Service
                 e.Character == pair.OpeningChar &&
                 !result.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}"))
             {
-                // VBE eats it. bail out but still swallow the keypress, since we've already re-prettified.
+                // VBE eats it. bail out but still swallow the keypress.
                 e.Handled = true;
                 result = null;
                 return false;
