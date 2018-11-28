@@ -793,9 +793,9 @@ Option Private Module
 
 Public foo As Long
 
-`@Description ""Test""
-`@IDENTIFIER_ANNOTATION
-`@TestMethod
+'@Description ""Test""
+'@IDENTIFIER_ANNOTATION
+'@TestMethod
 Public Sub Test2() : foo = 2
 End Sub
 ";
@@ -819,9 +819,9 @@ End Sub
 Option Explicit
 Option Private Module
 
-`@Obsolete
-`@IDENTIFIER_ANNOTATION
-`@Obsolete
+'@Obsolete
+'@IDENTIFIER_ANNOTATION
+'@Obsolete
 Implements IInterface : Public foo As Long
 
 Public Sub Test2()
