@@ -10,11 +10,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 {
     public sealed class BoundExpressionVisitor
     {
-        private readonly AnnotationService _annotationService;
+        private readonly IdentifierAnnotationService _identifierAnnotationService;
 
-        public BoundExpressionVisitor(AnnotationService annotationService)
+        public BoundExpressionVisitor(IdentifierAnnotationService identifierAnnotationService)
         {
-            _annotationService = annotationService;
+            _identifierAnnotationService = identifierAnnotationService;
         }
 
         public void AddIdentifierReferences(
@@ -73,7 +73,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 identifier,
                 callee,
                 callSiteContext.GetSelection(),
-                _annotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                _identifierAnnotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment);
@@ -103,7 +103,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     identifier,
                     callee,
                     callSiteContext.GetSelection(),
-                    _annotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                    _identifierAnnotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
                     isAssignmentTarget,
                     hasExplicitLetStatement,
                     isSetAssignment);
@@ -140,7 +140,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                         identifier,
                         callee,
                         callSiteContext.GetSelection(),
-                        _annotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                        _identifierAnnotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
                         isSetAssignment);
                 }
             }
@@ -254,7 +254,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 identifier,
                 callee,
                 callSiteContext.GetSelection(),
-                _annotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                _identifierAnnotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment);
