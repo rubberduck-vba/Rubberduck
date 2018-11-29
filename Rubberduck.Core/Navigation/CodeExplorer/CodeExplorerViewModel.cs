@@ -18,6 +18,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
+using GongSolutions.Wpf.DragDrop;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -27,7 +28,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public sealed class CodeExplorerViewModel : ViewModelBase, IDisposable
+    public sealed class CodeExplorerViewModel : ViewModelBase, IDisposable, IDropTarget
     {
         private readonly FolderHelper _folderHelper;
         private readonly RubberduckParserState _state;
@@ -533,6 +534,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public AddUserDocumentCommand AddUserDocumentCommand { get; set; }
         public AddTestModuleCommand AddTestModuleCommand { get; set; }
         public AddTestModuleWithStubsCommand AddTestModuleWithStubsCommand { get; set; }
+        public AddRemoveReferencesCommand AddRemoveReferencesCommand { get; set; }
 
         public OpenDesignerCommand OpenDesignerCommand { get; set; }
         public SetAsStartupProjectCommand SetAsStartupProjectCommand { get; set; }
@@ -596,6 +598,49 @@ namespace Rubberduck.Navigation.CodeExplorer
                 item.IsVisible = string.IsNullOrEmpty(searchString) ||
                                  item.Items.Any(c => c.IsVisible) ||
                                  item.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant());
+            }
+        }
+
+        public void DragOver(IDropInfo dropInfo)
+        {
+            //if (!(dropInfo.Data is CodeExplorerReferenceViewModel reference))
+            //{
+            //    dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+            //    dropInfo.Effects = DragDropEffects.None;
+            //    return;
+            //}
+
+            //if (dropInfo.TargetItem is CodeExplorerReferenceFolderViewModel references)
+            //{
+            //    dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+            //    dropInfo.Effects = reference.Parent == references ? DragDropEffects.Move : DragDropEffects.Copy;
+            //    return;
+            //}
+
+            //if (!(dropInfo.TargetItem is CodeExplorerReferenceViewModel target))
+            //{
+            //    return;
+            //}
+
+            //dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+            //dropInfo.Effects = reference.Parent == target.Parent ? DragDropEffects.Move : DragDropEffects.Copy;
+        }
+
+        public void Drop(IDropInfo dropInfo)
+        {
+            if (!(dropInfo.Data is CodeExplorerReferenceViewModel reference))
+            {
+                return;
+            }
+
+            if (dropInfo.TargetItem is CodeExplorerReferenceFolderViewModel references)
+            {
+                return;
+            }
+
+            if (dropInfo.TargetItem is CodeExplorerReferenceFolderViewModel target)
+            {
+                return;
             }
         }
 

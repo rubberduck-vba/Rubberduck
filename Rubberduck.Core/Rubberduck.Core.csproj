@@ -65,6 +65,7 @@
     <PackageReference Include="EasyHook">
       <Version>2.7.6684</Version>
     </PackageReference>
+    <PackageReference Include="gong-wpf-dragdrop" Version="1.1.0" />
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.8.4</Version>
     </PackageReference>

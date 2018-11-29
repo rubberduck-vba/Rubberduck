@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:dd="urn:gong-wpf-dragdrop"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
@@ -175,6 +176,9 @@
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Rename}"
                                   Command="{Binding RenameCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References}"
+                                      Command="{Binding AddRemoveReferencesCommand}"
+                                      CommandParameter="{Binding SelectedItem}" />
                             <Separator />
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SetAsStartupProject}"
                                       Command="{Binding SetAsStartupProjectCommand}"
@@ -653,7 +657,11 @@
                   HorizontalContentAlignment="Stretch"
                   Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1"
                   VirtualizingPanel.IsVirtualizing="False"
-                  Visibility="{Binding Path=TreeViewVisibility}">
+                  Visibility="{Binding Path=TreeViewVisibility}"
+                  dd:DragDrop.IsDragSource="True"
+                  dd:DragDrop.IsDropTarget="True" 
+                  dd:DragDrop.DragHandler="{Binding}"
+                  dd:DragDrop.DropHandler="{Binding}">
             
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />

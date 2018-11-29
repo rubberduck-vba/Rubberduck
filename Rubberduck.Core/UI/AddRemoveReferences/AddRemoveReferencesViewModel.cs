@@ -39,9 +39,9 @@ namespace Rubberduck.UI.AddRemoveReferences
         public IEnumerable<ReferenceModel> ComLibraries { get; }
         public IEnumerable<ReferenceModel> VbaProjects { get; }
 
-        public ReferenceModel SelectedLibrary { get; }
-        public ReferenceModel SelectedProject { get; }
-        public ReferenceModel SelectedReference { get; }
+        public ReferenceModel SelectedLibrary { get; set; }
+        public ReferenceModel SelectedProject { get; set; }
+        public ReferenceModel SelectedReference { get; set; }
 
         /// <summary>
         /// Gets all selected COM libraries and VBA projects.

@@ -13,10 +13,10 @@ namespace Rubberduck.UI.AddRemoveReferences
         private readonly IDictionary<ReferenceStatus, ImageSource> _icons =
             new Dictionary<ReferenceStatus, ImageSource>
             {
-                { ReferenceStatus.BuiltIn, ToImageSource(Properties.Resources.padlock) },
-                { ReferenceStatus.Broken, ToImageSource(Properties.Resources.exclamation_diamond) },
-                { ReferenceStatus.Loaded, ToImageSource(Properties.Resources.tick) },
-                { ReferenceStatus.Removed, ToImageSource(Properties.Resources.minus_circle) },
+                { ReferenceStatus.BuiltIn, ToImageSource(Resources.RubberduckUI.tick_circle) },
+                { ReferenceStatus.Broken, ToImageSource(Resources.RubberduckUI.exclamation) },
+                { ReferenceStatus.Loaded, ToImageSource(Resources.RubberduckUI.tick_circle) },
+                { ReferenceStatus.Removed, ToImageSource(Resources.RubberduckUI.cross_circle) }
             };
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)

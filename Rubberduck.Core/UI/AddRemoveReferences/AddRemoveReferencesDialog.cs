@@ -8,5 +8,10 @@ namespace Rubberduck.UI.AddRemoveReferences
         {
             InitializeComponent();
         }
+
+        public AddRemoveReferencesDialog(AddRemoveReferencesViewModel viewModel) : this()
+        {
+            addRemoveReferencesWindow1.DataContext = viewModel;
+        }
     }
 }

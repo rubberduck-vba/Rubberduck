@@ -37,8 +37,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             try
             {
+                Items = new List<CodeExplorerItemViewModel> { new CodeExplorerReferenceFolderViewModel(this) };
                 FillFolders(declarations.ToList());
-                Items = _folderTree.Items.ToList();
+                Items.AddRange(_folderTree.Items);
 
                 _icon = Declaration.Project?.Protection == ProjectProtection.Locked
                     ? GetImageSource(resx.lock__exclamation)

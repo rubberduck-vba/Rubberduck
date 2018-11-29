@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.ComTypes;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -10,7 +11,7 @@ namespace Rubberduck.AddRemoveReferences
         {
             Name = project.Name;
             Priority = priority;
-            Guid = string.Empty;
+            Guid = Guid.Empty;
             Description = project.Description;
             Version = default(Version);
             FullPath = project.FileName;
@@ -23,12 +24,12 @@ namespace Rubberduck.AddRemoveReferences
             Name = info.Name;
             Guid = info.Guid;
             Description = info.Description;
-            Version = info.Version;
+            Major = info.Major;
+            Minor = info.Minor;
             FullPath = info.FullPath;
             IsBuiltIn = false;
             Type = ReferenceKind.TypeLibrary;
             Flags = info.Flags;
-            SubKey = info.SubKey;
         }
 
         public ReferenceModel(IReference reference, int priority)
@@ -36,7 +37,7 @@ namespace Rubberduck.AddRemoveReferences
             IsSelected = true;
             Priority = priority;
             Name = reference.Name;
-            Guid = reference.Guid;
+            Guid = new Guid(reference.Guid);
             Description = reference.Description;
             Version = new Version(reference.Major, reference.Minor);
             FullPath = reference.FullPath;
@@ -50,15 +51,19 @@ namespace Rubberduck.AddRemoveReferences
         public int Priority { get; set; }
 
         public string Name { get; }
-        public string Guid { get; }
+        public Guid Guid { get; }
         public string Description { get; }
         public Version Version { get; }
         public string FullPath { get; }
         public bool IsBuiltIn { get; }
         public bool IsBroken { get; }
-        public int Flags { get; }
-        public int SubKey { get; }
+        public LIBFLAGS Flags { get; }
         public ReferenceKind Type { get; }
+
+        private string FullPath32 { get; }
+        private string FullPath64 { get; }
+        public int Major { get; set; }
+        public int Minor { get; set; }
 
         public ReferenceStatus Status => IsBuiltIn
             ? ReferenceStatus.BuiltIn

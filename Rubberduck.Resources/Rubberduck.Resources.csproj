@@ -12,4 +12,9 @@
     <Resource Include="**\*.bmp" />
     <Resource Include="**\*.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Remove="Resources\BrokenReference.png" />
+    <Resource Remove="Resources\LockedReference.png" />
+    <Resource Remove="Resources\ObjectAssembly.bmp" />
+  </ItemGroup>
 </Project>
