@@ -160,6 +160,17 @@ namespace Rubberduck
                 catch (CultureNotFoundException)
                 {
                 }
+                try
+                {
+                    if (_initialSettings.SetDpiUnaware)
+                    {
+                        SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
+                    }
+                }
+                catch (Exception)
+                {
+                    Debug.Assert(false, "Could not set DPI awareness.");
+                }
             }
             else
             {
@@ -299,6 +310,16 @@ namespace Rubberduck
                     _isInitialized = false;
                 }
             }
+        }
+
+        [DllImport("SHCore.dll", SetLastError = true)]
+        private static extern bool SetProcessDpiAwareness(PROCESS_DPI_AWARENESS awareness);
+
+        private enum PROCESS_DPI_AWARENESS
+        {
+            Process_DPI_Unaware = 0,
+            Process_System_DPI_Aware = 1,
+            Process_Per_Monitor_DPI_Aware = 2
         }
     }
 }

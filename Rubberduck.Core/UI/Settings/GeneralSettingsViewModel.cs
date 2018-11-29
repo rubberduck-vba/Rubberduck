@@ -158,6 +158,20 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _setDpiUnaware;
+        public bool SetDpiUnaware
+        {
+            get => _setDpiUnaware;
+            set
+            {
+                if (_setDpiUnaware != value)
+                {
+                    _setDpiUnaware = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private bool SynchronizeVBESettings()
         {
             if (!_messageBox.ConfirmYesNo(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
@@ -243,6 +257,7 @@ namespace Rubberduck.UI.Settings
                 CanShowSplash = ShowSplashAtStartup,
                 CanCheckVersion = CheckVersionAtStartup,
                 CompileBeforeParse = CompileBeforeParse,
+                SetDpiUnaware =  SetDpiUnaware,
                 IsSmartIndenterPrompted = _indenterPrompted,
                 IsAutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
@@ -259,6 +274,7 @@ namespace Rubberduck.UI.Settings
             ShowSplashAtStartup = general.CanShowSplash;
             CheckVersionAtStartup = general.CanCheckVersion;
             CompileBeforeParse = general.CompileBeforeParse;
+            SetDpiUnaware = general.SetDpiUnaware;
             _indenterPrompted = general.IsSmartIndenterPrompted;
             AutoSaveEnabled = general.IsAutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
