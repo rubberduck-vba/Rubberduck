@@ -104,6 +104,17 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
+        public void GivenOpeningParenthesisOnCallStatement_ReturnsFalseAndLetsKeypressThrough()
+        {
+            var input = '(';
+            var original = "Call DoSomething|".ToCodeString();
+            var rePrettified = "Call DoSomething|".ToCodeString();
+            var info = new SelfClosingPairTestInfo(original, input, rePrettified);
+
+            Assert.IsFalse(Run(info));
+            Assert.IsFalse(info.Args.Handled);
+        }
+        [Test]
         public void GivenBackspaceOnMatchedPair_DeletesMatchingTokens()
         {
             var input = '\b';
