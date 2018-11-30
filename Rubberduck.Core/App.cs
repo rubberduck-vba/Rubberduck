@@ -230,14 +230,26 @@ namespace Rubberduck
         {
             var version = _version.CurrentVersion;
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
+
             var headers = new List<string>
             {
                 $"\r\n\tRubberduck version {version} loading:",
-                $"\tOperating System: {Environment.OSVersion.VersionString} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}",
-                $"\tHost Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}",
-                $"\tHost Version: {Application.ProductVersion}",
-                $"\tHost Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}", // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
+                $"\tOperating System: {Environment.OSVersion.VersionString} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}"
             };
+            try
+            {
+                headers.AddRange(new []
+                {
+                    $"\tHost Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}",
+                    $"\tHost Version: {Application.ProductVersion}",
+                    $"\tHost Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}", // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
+                });
+            }
+            catch
+            {
+                headers.Add("\tHost could not be determined.");
+            }
+
             LogLevelHelper.SetDebugInfo(string.Join(Environment.NewLine, headers));
         }
 
