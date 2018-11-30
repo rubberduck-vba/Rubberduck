@@ -9,7 +9,7 @@
     <!-- Installer references depend on the unified output path -->
     <UnifyOutputPath>true</UnifyOutputPath>
   </PropertyGroup>
-  <Import Project="..\RubberduckBaseProject.csproj" />
+  <Import Project="..\RubberduckBaseMetaProject.csproj" />
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Tasks.v4.0" />

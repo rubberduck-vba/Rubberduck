@@ -39,21 +39,6 @@
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
   </PropertyGroup>
 
-  <!-- Analyzer projects must set UnifyOutputPath to have this reference correctly -->
-  <ItemGroup Condition=" '$(AssemblyName)' != 'RubberduckTests' 
-                        AND '$(AssemblyName)' != 'RubberduckCodeAnalysis'
-                        AND '$(AssemblyName)' != 'RubberduckTestsCodeAnalysis'">
-        <Analyzer Include="$(SolutionDir)\RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll" />
-  </ItemGroup>
-  <!-- Commented out due to large number of false positives. Hopefully the package
-	   will get annotations, which would enable us to exclude those false positives.
-	   Ref: https://github.com/DotNetAnalyzers/IDisposableAnalyzers/issues/126
-  <ItemGroup>
-    <PackageReference Include="IDisposableAnalyzers">
-	  <Version>2.0.5</Version>
-	</PackageReference>
-  </ItemGroup>
-  -->
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug'">
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -73,42 +58,6 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
 
-  <ItemGroup>
-    <CodeAnalyzersToBuild Include="$(SolutionDir)\RubberduckCodeAnalysis\RubberduckCodeAnalysis.csproj">
-      <Properties>Configuration=Release</Properties>
-    </CodeAnalyzersToBuild>
-    <MSBuildProjectsToBuild Include="$(SolutionDir)\Rubberduck.Deployment.Build\Rubberduck.Deployment.Build.csproj">
-      <Properties>Configuration=Release</Properties>
-    </MSBuildProjectsToBuild>
-  </ItemGroup>
-  <Target Name="EnsureCodeAnalyzersBuild" BeforeTargets="PrepareForBuild"
-          Condition="!Exists('$(SolutionDir)RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll')">
-    <Message Text="Missing the required code analyzers. Building the code analzyers..." Importance="high" />
-    <MSBuild Projects="@(CodeAnalyzersToBuild)"
-             BuildInParallel="false"
-             ContinueOnError="false"
-             SkipNonexistentProjects="false"
-             StopOnFirstFailure="true"
-             UnloadProjectsOnCompletion="true"
-             UseResultsCache="false" 
-             RunEachTargetSeparately=""
-             RebaseOutputs="true"/>
-    <Message Text="Built the code analyzers" Importance="high" />
-  </Target>
-  <Target Name="EnsureMSBuildTargetBuild" BeforeTargets="PrepareForBuild"
-          Condition="!Exists('$(SolutionDir)Rubberduck.Deployment.Build\bin\Rubberduck.Deployment.Build.dll')">
-    <Message Text="Missing the required metaprojects. Building the metaprojects..." Importance="high" />
-    <MSBuild Projects="@(MSBuildProjectsToBuild)"
-             BuildInParallel="false"
-             ContinueOnError="false"
-             SkipNonexistentProjects="false"
-             StopOnFirstFailure="true"
-             UnloadProjectsOnCompletion="true"
-             RunEachTargetSeparately="true"
-             UseResultsCache="true"
-             RebaseOutputs="true"/>
-    <Message Text="Built the metaprojects" Importance="high" />
-  </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 
   <PropertyGroup>
