@@ -552,8 +552,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
 
             var procedure = MatchName(procedureName)
-                .Where(p => AccessibilityCheck.IsAccessible(enclosingProcedure, p))
-                .SingleOrDefault(p => !p.DeclarationType.HasFlag(DeclarationType.Property) || p.DeclarationType.HasFlag(DeclarationType.PropertyGet));
+                .SingleOrDefault(p =>
+                    (!p.DeclarationType.HasFlag(DeclarationType.Property) ||
+                     p.DeclarationType.HasFlag(DeclarationType.PropertyGet)) &&
+                    p.References.Any(r => callStmt == r.Context.GetAncestor<VBAParser.CallStmtContext>()));
             if (procedure?.ParentScopeDeclaration is ClassModuleDeclaration)
             {
                 // we can't know that the member is on the class' default interface
