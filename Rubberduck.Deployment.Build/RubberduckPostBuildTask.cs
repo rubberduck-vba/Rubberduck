@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Tasks;
+using Microsoft.Build.Utilities;
 using Microsoft.VisualStudio.Setup.Configuration;
 using Rubberduck.Deployment.Build.Builders;
 using Rubberduck.Deployment.Build.IdlGeneration;
@@ -45,18 +46,30 @@ namespace Rubberduck.Deployment.Build
         }
     }
 
-    public class PostBuildTask : ITask
+    public class RubberduckPostBuildTask : AppDomainIsolatedTask
     {
-        public IBuildEngine BuildEngine { get; set; }
-        public ITaskHost HostObject { get; set; }
-
+        [Required]
         public string Config { get; set; }
+
+        [Required]
         public string NetToolsDir { get; set; }
+
+        [Required]
         public string WixToolsDir { get; set; }
+
+        [Required]
         public string SourceDir { get; set; }
+
+        [Required]
         public string TargetDir { get; set; }
+
+        [Required]
         public string ProjectDir { get; set; }
+
+        [Required]
         public string IncludeDir { get; set; }
+
+        [Required]
         public string FilesToExtract { get; set; }
 
         private string RegFilePath =>
@@ -65,12 +78,12 @@ namespace Rubberduck.Deployment.Build
         private string _rootPath;
         private string _batchPath;
 
-        public bool Execute()
+        public override bool Execute()
         {
             var result = true;
             try
             {
-                this.LogCustom(FormatParameterList());
+                this.LogMessage(FormatParameterList());
 
                 CleanOldImports(ProjectDir);
 
@@ -79,7 +92,7 @@ namespace Rubberduck.Deployment.Build
                 var message = SetVCToolsPath()
                     ? "No C++ build tools found; using tlbexp.exe to generate TLBs."
                     : "C++ build tools found; using midl.exe to generate TLBs.";
-                this.LogCustom(message);
+                this.LogMessage(message);
                 
                 foreach (var dllFile in dllFiles)
                 {
@@ -154,7 +167,7 @@ namespace Rubberduck.Deployment.Build
 
         private void CleanOldImports(string dir)
         {
-            this.LogCustom("Cleaing out old imports");
+            this.LogMessage("Cleaing out old imports");
 
             var files = Directory.GetFiles(dir, "DebugRegistryEntries.reg.imported_*.txt").OrderByDescending(f => f);
             var i = 0;
@@ -162,7 +175,7 @@ namespace Rubberduck.Deployment.Build
             {
                 if (i > 10)
                 {
-                    this.LogCustom($"Deleting {file}");
+                    this.LogMessage($"Deleting {file}");
                     File.Delete(file);
                 }
 
@@ -172,7 +185,7 @@ namespace Rubberduck.Deployment.Build
 
         private void UpdateAddInRegistration()
         {
-            this.LogCustom("Updating addin registration...");
+            this.LogMessage("Updating addin registration...");
             var addInRegFile = Path.Combine(Path.GetDirectoryName(RegFilePath), "RubberduckAddinRegistry.reg");
             var command = $"reg.exe import \"{addInRegFile}";
             ExecuteTask(command);
@@ -180,29 +193,29 @@ namespace Rubberduck.Deployment.Build
 
         private void ProcessDll(string file)
         {
-            this.LogCustom($"Processing {file}...");
+            this.LogMessage($"Processing {file}...");
 
             var parameters = new DllFileParameters(file, SourceDir, TargetDir);
             
             if (_batchPath == string.Empty)
             {
-                this.LogCustom("Compiling with tlbexp...");
+                this.LogMessage("Compiling with tlbexp...");
                 CompileWithTlbExp(parameters);
             }
             else
             {
-                this.LogCustom("Compiling with midl...");
+                this.LogMessage("Compiling with midl...");
                 CreateIdlFile(parameters);
                 CompileWithMidl(parameters);
             }
 
-            this.LogCustom("Extracting metadata using WiX...");
+            this.LogMessage("Extracting metadata using WiX...");
             HarvestMetadataWithWix(parameters);
 
-            this.LogCustom("Building registry entries...");
+            this.LogMessage("Building registry entries...");
             var entries = BuildRegistryEntriesFromMetadata(parameters);
 
-            this.LogCustom("Creating InnoSetup registry entries...");
+            this.LogMessage("Creating InnoSetup registry entries...");
             CreateInnoSetupRegistryEntries(entries, parameters);
 
             if (Config != "Debug")
@@ -225,10 +238,10 @@ namespace Rubberduck.Deployment.Build
         private void CompileWithMidl(DllFileParameters parameters)
         {
             var targetPath = TargetDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            var command = _batchPath +
-                          $" && midl.exe /win32 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"" +
-                          $" && midl.exe /amd64 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"";
-            ExecuteTask(command);
+            var command = $"\"{_batchPath}\"{Environment.NewLine}" +
+                          $"midl.exe /win32 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"{Environment.NewLine}" +
+                          $"midl.exe /amd64 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"{Environment.NewLine}";
+            ExecuteTask(command, SourceDir);
         }
 
         private void CompileWithTlbExp(DllFileParameters parameters)
@@ -273,7 +286,7 @@ namespace Rubberduck.Deployment.Build
                 return;
             }
 
-            this.LogCustom("Removing previous debug build's registration...");
+            this.LogMessage("Removing previous debug build's registration...");
 
             // First see if there are registry script from the previous build
             // If so, execute them to delete previous build's keys (which may
@@ -311,7 +324,7 @@ namespace Rubberduck.Deployment.Build
 
         private void UpdateDebugRegistration(IOrderedEnumerable<RegistryEntry> entries, DllFileParameters parameters)
         {
-            this.LogCustom($"Updating debug build reigstration for {parameters.DllFile}");
+            this.LogMessage($"Updating debug build reigstration for {parameters.DllFile}");
 
             // NOTE: The local writer will perform the actual registry changes; the return
             // is a registry script with deletion instructions for the keys to be deleted
@@ -331,7 +344,7 @@ namespace Rubberduck.Deployment.Build
                 ConsoleToMSBuild = true,
                 EchoOff = false,
                 IgnoreExitCode = false,
-                WorkingDirectory = workingDirectory
+                WorkingDirectory = workingDirectory ?? ProjectDir
             };
 
             if (!exec.Execute())

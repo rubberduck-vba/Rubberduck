@@ -4,9 +4,11 @@ using Microsoft.Build.Framework;
 
 namespace Rubberduck.Deployment.Build
 {
-    internal class RubberduckBuildEventArgs : CustomBuildEventArgs
+    [Serializable]
+    internal class RubberduckBuildEventArgs : BuildMessageEventArgs
     {
-        internal RubberduckBuildEventArgs(string message, string helpKeyword, string senderName) : base(message, helpKeyword, senderName) { }
+        internal RubberduckBuildEventArgs(string message, string helpKeyword, string senderName) : 
+            base(message, helpKeyword, senderName, MessageImportance.Normal) { }
     }
 
     internal static class LogHelper
@@ -38,13 +40,12 @@ namespace Rubberduck.Deployment.Build
             sender.BuildEngine.LogErrorEvent(args);
         }
 
-        internal static void LogCustom(this ITask sender, string message, string helpKeyword = null)
+        internal static void LogMessage(this ITask sender, string message, string helpKeyword = null)
         {
             var senderName = sender.GetType().FullName;
 
             var args = new RubberduckBuildEventArgs(message, helpKeyword, senderName);
-
-            sender.BuildEngine.LogCustomEvent(args);
+            sender.BuildEngine.LogMessageEvent(args);
         }
     }
 }

@@ -1,22 +1,19 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 
 namespace Rubberduck.Deployment.Build
 {
-    public class PreBuildTask : ITask
+    public class RubberduckPreBuildTask : AppDomainIsolatedTask
     {
-        public IBuildEngine BuildEngine { get; set; }
-
-        public ITaskHost HostObject { get; set; }
-
         [Required]
         public string WorkingDir { get; set; }
 
         [Required]
         public string OutputDir { get; set; }
 
-        public bool Execute()
+        public override bool Execute()
         {
             var result = true;
             try
