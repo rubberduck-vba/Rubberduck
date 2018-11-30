@@ -54,6 +54,7 @@ before_build:
   - cinst innosetup
   - cinst codecov
   - cinst opencover.portable
+  - nuget restore RubberduckMeta.sln
   - nuget restore Rubberduck.sln
 build:
   verbosity: minimal
