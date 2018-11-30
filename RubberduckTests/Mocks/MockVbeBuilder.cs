@@ -153,7 +153,7 @@ namespace RubberduckTests.Mocks
 
             if (referenceStdLibs)
             {
-                builder.AddReference("VBA", LibraryPathVBA, 4, 1, true);
+                builder.AddReference("VBA", LibraryPathVBA, 4, 2, true);
             }
 
             var project = builder.Build();
