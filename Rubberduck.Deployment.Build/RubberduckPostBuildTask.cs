@@ -13,7 +13,7 @@ using Rubberduck.Deployment.Build.Writers;
 
 namespace Rubberduck.Deployment.Build
 {
-    internal struct DllFileParameters
+    internal readonly struct DllFileParameters
     {
         public string DllFile { get; }
         public string IdlFile { get; }
@@ -75,9 +75,6 @@ namespace Rubberduck.Deployment.Build
         private string RegFilePath =>
             Path.Combine(Path.Combine(ProjectDir, "LocalRegistryEntries"), "DebugRegistryEntries.reg");
 
-        private string _rootPath;
-        private string _batchPath;
-
         public override bool Execute()
         {
             var result = true;
@@ -88,15 +85,15 @@ namespace Rubberduck.Deployment.Build
                 CleanOldImports(ProjectDir);
 
                 var dllFiles = FilesToExtract.Split(new[] {"|"}, StringSplitOptions.RemoveEmptyEntries);
-
-                var message = SetVCToolsPath()
+                var hasVCTools = TryGetVCToolsPath(out var batchPath);
+                var message = hasVCTools
                     ? "No C++ build tools found; using tlbexp.exe to generate TLBs."
                     : "C++ build tools found; using midl.exe to generate TLBs.";
                 this.LogMessage(message);
                 
                 foreach (var dllFile in dllFiles)
                 {
-                    ProcessDll(dllFile);
+                    ProcessDll(dllFile, batchPath);
                 }
 
                 if (Config == "Debug")
@@ -116,21 +113,21 @@ namespace Rubberduck.Deployment.Build
         private string FormatParameterList()
         {
             var sb = new StringBuilder();
-            sb.AppendLine("Parameters provided:");
-            sb.AppendLine($"          Config: {Config}");
-            sb.AppendLine($"     NetToolsDir: {NetToolsDir}");
-            sb.AppendLine($"     WixToolsDir: {WixToolsDir}");
-            sb.AppendLine($"       SourceDir: {SourceDir}");
-            sb.AppendLine($"       TargetDir: {TargetDir}");
-            sb.AppendLine($"      ProjectDir: {ProjectDir}");
-            sb.AppendLine($"     IncludesDir: {IncludeDir}");
-            sb.AppendLine($"  FilesToExtract: {FilesToExtract}");
-            sb.AppendLine(string.Empty);
+            sb.AppendLine("Parameters provided:")
+              .AppendLine($"          Config: {Config}")
+              .AppendLine($"     NetToolsDir: {NetToolsDir}")
+              .AppendLine($"     WixToolsDir: {WixToolsDir}")
+              .AppendLine($"       SourceDir: {SourceDir}")
+              .AppendLine($"       TargetDir: {TargetDir}")
+              .AppendLine($"      ProjectDir: {ProjectDir}")
+              .AppendLine($"     IncludesDir: {IncludeDir}")
+              .AppendLine($"  FilesToExtract: {FilesToExtract}")
+              .AppendLine(string.Empty);
 
             return sb.ToString();
         }
 
-        private bool SetVCToolsPath()
+        private bool TryGetVCToolsPath(out string batchPath)
         {
             var configuration = new SetupConfiguration();
             var enumInstances = configuration.EnumInstances();
@@ -145,7 +142,11 @@ namespace Rubberduck.Deployment.Build
                     continue;
                 }
 
-                var instance = (ISetupInstance2) instances[0];
+                if (!(instances[0] is ISetupInstance2 instance))
+                {
+                    continue;
+                }
+
                 var packages = instance.GetPackages();
                 foreach (var package in packages)
                 {
@@ -154,14 +155,15 @@ namespace Rubberduck.Deployment.Build
                         continue;
                     }
 
-                    _rootPath = instance.ResolvePath();
-                    _batchPath = Directory.GetFiles(_rootPath, "VsDevCmd.bat", SearchOption.AllDirectories)
+                    var rootPath = instance.ResolvePath();
+                    batchPath = Directory.GetFiles(rootPath, "VsDevCmd.bat", SearchOption.AllDirectories)
                         .FirstOrDefault();
 
                     return true;
                 }
             } while (fetched > 0);
 
+            batchPath = null;
             return false;
         }
 
@@ -191,13 +193,13 @@ namespace Rubberduck.Deployment.Build
             ExecuteTask(command, ignoreErrors:true);
         }
 
-        private void ProcessDll(string file)
+        private void ProcessDll(string file, string batchPath)
         {
             this.LogMessage($"Processing {file}...");
 
             var parameters = new DllFileParameters(file, SourceDir, TargetDir);
             
-            if (_batchPath == string.Empty)
+            if (string.IsNullOrWhiteSpace(batchPath))
             {
                 this.LogMessage("Compiling with tlbexp...");
                 CompileWithTlbExp(parameters);
@@ -206,7 +208,7 @@ namespace Rubberduck.Deployment.Build
             {
                 this.LogMessage("Compiling with midl...");
                 CreateIdlFile(parameters);
-                CompileWithMidl(parameters);
+                CompileWithMidl(parameters, batchPath);
             }
 
             this.LogMessage("Extracting metadata using WiX...");
@@ -235,13 +237,13 @@ namespace Rubberduck.Deployment.Build
             File.WriteAllText(Path.Combine(TargetDir, parameters.IdlFile), idl, new UTF8Encoding(true));
         }
 
-        private void CompileWithMidl(DllFileParameters parameters)
+        private void CompileWithMidl(DllFileParameters parameters, string batchPath)
         {
             var targetPath = TargetDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            var command = $"call \"{_batchPath}\"{Environment.NewLine}" +
+            var command = $"call \"{batchPath}\"{Environment.NewLine}" +
                           $"midl.exe /win32 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"{Environment.NewLine}" +
                           $"midl.exe /amd64 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"";
-            ExecuteTask(command, SourceDir, true);
+            ExecuteTask(command, SourceDir, ignoreErrors:true);
         }
 
         private void CompileWithTlbExp(DllFileParameters parameters)
