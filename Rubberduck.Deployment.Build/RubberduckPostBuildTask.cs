@@ -89,8 +89,8 @@ namespace Rubberduck.Deployment.Build
                 var dllFiles = FilesToExtract.Split(new[] {"|"}, StringSplitOptions.RemoveEmptyEntries);
                 var hasVCTools = TryGetVCToolsPath(out var batchPath);
                 var message = hasVCTools
-                    ? "No C++ build tools found; using tlbexp.exe to generate TLBs."
-                    : "C++ build tools found; using midl.exe to generate TLBs.";
+                    ? "C++ build tools found; using midl.exe to generate TLBs."
+                    : "No C++ build tools found; using tlbexp.exe to generate TLBs.";
                 this.LogMessage(message);
                 
                 foreach (var dllFile in dllFiles)
