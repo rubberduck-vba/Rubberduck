@@ -73,21 +73,37 @@
     <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
   </Target>
 
-  <ItemGroup>
-    <CodeAnalyzersToBuild Include="$(SolutionDir)\RubberduckCodeAnalysis\RubberduckCodeAnalysis.csproj">
-      <Properties>Configuration=Release</Properties>
-    </CodeAnalyzersToBuild>
-    <MSBuildProjectsToBuild Include="$(SolutionDir)\Rubberduck.Deployment.Build\Rubberduck.Deployment.Build.csproj">
-      <Properties>Configuration=Release</Properties>
-    </MSBuildProjectsToBuild>
-    <MetaTestsToBuild Include="$(SolutionDir)\RubberduckTestsCodeAnalysis\RubberduckTestsCodeAnalysis.csproj">
-      <Properties>Configuration=Release</Properties>
-    </MetaTestsToBuild>
-  </ItemGroup>
-  <Target Name="EnsureCodeAnalyzersBuild" BeforeTargets="PrepareForBuild"
+  <!-- This section does not work; it seems to find the solution fine but doesn't actually build
+       so we work around this by enumerating the projects in the next section below
+  <Target Name="EnsureMetaProjectsBuild" BeforeTargets="PrepareForBuild"
           Condition="!Exists('$(SolutionDir)RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll')">
-    <Message Text="Missing the required code analyzers. Building the code analzyers..." Importance="high" />
-    <MSBuild Projects="@(CodeAnalyzersToBuild)"
+    <Message Text="Missing the required meta projects. Building the meta projects..." Importance="high" />
+    <MSBuild Projects="$(SolutionDir)\RubberduckMeta.sln" 
+             Targets="Build" 
+             Properties="Configuration=Release">
+      <Output TaskParameter="TargetOutputs"
+              ItemName="MetaAssemblies" />
+    </MSBuild>
+    <Message Text="Built the meta projects" Importance="high" />
+  </Target>
+  -->
+
+  <ItemGroup>
+    <MetaProjects Include="$(SolutionDir)\RubberduckCodeAnalysis\RubberduckCodeAnalysis.csproj">
+      <Properties>Configuration=Release</Properties>
+    </MetaProjects>
+    <MetaProjects Include="$(SolutionDir)\Rubberduck.Deployment.Build\Rubberduck.Deployment.Build.csproj">
+      <Properties>Configuration=Release</Properties>
+    </MetaProjects>
+    <MetaProjects Include="$(SolutionDir)\RubberduckTestsCodeAnalysis\RubberduckTestsCodeAnalysis.csproj">
+      <Properties>Configuration=Release</Properties>
+    </MetaProjects>
+  </ItemGroup>
+  
+  <Target Name="EnsureMetaProjectsBuild" BeforeTargets="PrepareForBuild"
+          Condition="!Exists('$(SolutionDir)RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll') OR !Exists('$(SolutionDir)Rubberduck.Deployment.Build\bin\Rubberduck.Deployment.Build.dll') OR !Exists('$(SolutionDir)RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll')">
+    <Message Text="Missing the required meta projects. Building the meta projects..." Importance="high" />
+    <MSBuild Projects="@(MetaProjects)"
              BuildInParallel="false"
              ContinueOnError="false"
              SkipNonexistentProjects="false"
@@ -96,36 +112,9 @@
              UseResultsCache="false" 
              RunEachTargetSeparately=""
              RebaseOutputs="true"/>
-    <Message Text="Built the code analyzers" Importance="high" />
+    <Message Text="Built the meta projects" Importance="high" />
   </Target>
-  <Target Name="EnsureMSBuildTargetBuild" BeforeTargets="PrepareForBuild"
-          Condition="!Exists('$(SolutionDir)Rubberduck.Deployment.Build\bin\Rubberduck.Deployment.Build.dll')">
-    <Message Text="Missing the required build tasks. Building the build tasks..." Importance="high" />
-    <MSBuild Projects="@(MSBuildProjectsToBuild)"
-             BuildInParallel="false"
-             ContinueOnError="false"
-             SkipNonexistentProjects="false"
-             StopOnFirstFailure="true"
-             UnloadProjectsOnCompletion="true"
-             RunEachTargetSeparately="true"
-             UseResultsCache="true"
-             RebaseOutputs="true"/>
-    <Message Text="Built the build tasks" Importance="high" />
-  </Target>
-  <Target Name="EnsureMetaTestsBuild" BeforeTargets="PrepareForBuild"
-          Condition="!Exists('$(SolutionDir)RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll')">
-    <Message Text="Missing the required meta tests. Building the meta tests..." Importance="high" />
-    <MSBuild Projects="@(MetaTestsToBuild)"
-             BuildInParallel="false"
-             ContinueOnError="false"
-             SkipNonexistentProjects="false"
-             StopOnFirstFailure="true"
-             UnloadProjectsOnCompletion="true"
-             RunEachTargetSeparately="true"
-             UseResultsCache="true"
-             RebaseOutputs="true"/>
-    <Message Text="Built the build tasks" Importance="high" />
-  </Target>
+  
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 
   <PropertyGroup>
