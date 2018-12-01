@@ -685,7 +685,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                     ? Tokens.Variant
                     : asTypeClause.type().GetText()
                 : SymbolList.TypeHintToTypeName[typeHint];
-            var withEvents = parent.WITHEVENTS() != null;
+            var withEvents = context.WITHEVENTS() != null;
             var isAutoObject = asTypeClause != null && asTypeClause.NEW() != null;
             bool isArray = context.LPAREN() != null;
             AddDeclaration(
