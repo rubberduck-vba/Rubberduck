@@ -546,7 +546,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public AddTestModuleCommand AddTestModuleCommand { get; set; }
         public AddTestModuleWithStubsCommand AddTestModuleWithStubsCommand { get; set; }
 		public AddTemplateCommand AddTemplateCommand { get; set; }
-        public CommandBase OpenDesignerCommand { get; set; }
+        public OpenDesignerCommand OpenDesignerCommand { get; set; }
         public CommandBase OpenProjectPropertiesCommand { get; set; }
         public SetAsStartupProjectCommand SetAsStartupProjectCommand { get; set; }
         public RenameCommand RenameCommand { get; set; }
