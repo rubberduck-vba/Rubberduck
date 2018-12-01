@@ -503,7 +503,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         private IEnumerable<Declaration> FindEvents(Declaration module)
         {
-            Debug.Assert(module != null);
+            if (module is null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
 
             var members = Members(module.QualifiedName.QualifiedModuleName);
             return members == null 
