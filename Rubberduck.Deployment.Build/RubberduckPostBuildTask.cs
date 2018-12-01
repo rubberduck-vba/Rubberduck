@@ -188,7 +188,7 @@ namespace Rubberduck.Deployment.Build
             this.LogMessage("Updating addin registration...");
             var addInRegFile = Path.Combine(Path.GetDirectoryName(RegFilePath), "RubberduckAddinRegistry.reg");
             var command = $"reg.exe import \"{addInRegFile}";
-            ExecuteTask(command);
+            ExecuteTask(command, ignoreErrors:true);
         }
 
         private void ProcessDll(string file)
@@ -238,10 +238,10 @@ namespace Rubberduck.Deployment.Build
         private void CompileWithMidl(DllFileParameters parameters)
         {
             var targetPath = TargetDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            var command = $"\"{_batchPath}\"{Environment.NewLine}" +
+            var command = $"call \"{_batchPath}\"{Environment.NewLine}" +
                           $"midl.exe /win32 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"{Environment.NewLine}" +
-                          $"midl.exe /amd64 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"{Environment.NewLine}";
-            ExecuteTask(command, SourceDir);
+                          $"midl.exe /amd64 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"";
+            ExecuteTask(command, SourceDir, true);
         }
 
         private void CompileWithTlbExp(DllFileParameters parameters)
@@ -302,14 +302,14 @@ namespace Rubberduck.Deployment.Build
                     if (Environment.Is64BitOperatingSystem)
                     {
                         var command = $"reg.exe import {lastRegFile} /reg:32";
-                        ExecuteTask(command);
+                        ExecuteTask(command, ignoreErrors:true);
                         command = $"reg.exe import {lastRegFile} /reg:64";
-                        ExecuteTask(command);
+                        ExecuteTask(command, ignoreErrors:true);
                     }
                     else
                     {
                         var command = $"reg.exe import {lastRegFile}";
-                        ExecuteTask(command);
+                        ExecuteTask(command, ignoreErrors:true);
                     }
                     File.Move(lastRegFile, lastRegFile + ".imported_" + now.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt");
                 }
@@ -334,7 +334,7 @@ namespace Rubberduck.Deployment.Build
             File.AppendAllText(RegFilePath, content, Encoding.ASCII);
         }
 
-        private void ExecuteTask(string command, string workingDirectory = null)
+        private void ExecuteTask(string command, string workingDirectory = null, bool ignoreErrors = false)
         {
             var exec = new Exec
             {
@@ -343,11 +343,19 @@ namespace Rubberduck.Deployment.Build
                 Command = command,
                 ConsoleToMSBuild = true,
                 EchoOff = false,
-                IgnoreExitCode = false,
-                WorkingDirectory = workingDirectory ?? ProjectDir
+                LogStandardErrorAsError = !ignoreErrors,
+                IgnoreExitCode = ignoreErrors,
+                UseCommandProcessor = false,
+                WorkingDirectory = workingDirectory ?? ProjectDir,
+                YieldDuringToolExecution = true
             };
 
-            if (!exec.Execute())
+            var log = new TaskLoggingHelper(exec);
+
+            log.LogCommandLine(MessageImportance.Normal, command);
+            var result = exec.Execute();
+
+            if (!result && !log.HasLoggedErrors)
             {
                 throw new InvalidOperationException("Execution of task failed");
             }
