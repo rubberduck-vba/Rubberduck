@@ -9,7 +9,9 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -29,32 +31,31 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
+            var annotationText = result.Target?.DeclarationType.HasFlag(DeclarationType.Module) == true
+                                    ? $"'@IgnoreModule {result.Inspection.AnnotationName}"
+                                    : $"'@Ignore {result.Inspection.AnnotationName}";
 
             int annotationLine;
             //TODO: Make this use the parse tree instead of the code module.
             var component = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName);
-            using (var module = component.CodeModule)
+            using (var codeModule = component.CodeModule)
             {
                 annotationLine = result.QualifiedSelection.Selection.StartLine;
-                while (annotationLine != 1 && module.GetLines(annotationLine - 1, 1).EndsWith(" _"))
+                while (annotationLine != 1 && codeModule.GetLines(annotationLine - 1, 1).EndsWith(" _"))
                 {
                     annotationLine--;
                 }
             }
 
-            RuleContext treeRoot = result.Context;
-            while (treeRoot.Parent != null)
-            {
-                treeRoot = treeRoot.Parent;
-            }
+            var module = result.QualifiedSelection.QualifiedName;
+            var parseTree = _state.GetParseTree(module, CodeKind.CodePaneCode);
 
             var listener = new CommentOrAnnotationListener();
-            ParseTreeWalker.Default.Walk(listener, treeRoot);
+            ParseTreeWalker.Default.Walk(listener, parseTree);
             var commentContext = listener.Contexts.LastOrDefault(i => i.Stop.TokenIndex <= result.Context.Start.TokenIndex);
             var commented = commentContext?.Stop.Line + 1 == annotationLine;
 
-            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
 
             if (commented)
             {
@@ -82,7 +83,7 @@ namespace Rubberduck.Inspections.QuickFixes
                 else
                 {
                     var eol = new EndOfLineListener();
-                    ParseTreeWalker.Default.Walk(eol, treeRoot);
+                    ParseTreeWalker.Default.Walk(eol, parseTree);
 
                     // we subtract 2 here to get the insertion index to A) account for VBE's one-based indexing
                     // and B) to get the newline token that introduces that line

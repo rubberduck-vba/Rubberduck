@@ -830,6 +830,38 @@ End Sub";
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+
+        [Test]
+        [Category("QuickFixes")]
+        public void EmptyModule_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+                @"Option Explicit";
+
+            const string expectedCode =
+                @"'@IgnoreModule EmptyModule
+Option Explicit";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new EmptyModuleInspection(state), TestStandardModuleVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+
+        [Test]
+        [Category("QuickFixes")]
+        public void ModuleWithoutFolder_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+                @"Option Explicit";
+
+            const string expectedCode =
+                @"'@IgnoreModule ModuleWithoutFolder
+Option Explicit";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new ModuleWithoutFolderInspection(state), TestStandardModuleVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
         [Test]
         [Category("QuickFixes")]
         public void WriteOnlyProperty_IgnoreQuickFixWorks()
