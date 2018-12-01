@@ -14,7 +14,7 @@
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Tasks.v4.0" />
     <Reference Include="Microsoft.Build.Utilities.v4.0">
-      <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\Microsoft.Build.Utilities.v4.0.dll</HintPath>
+      <HintPath>$(MSBuildBinPath)\Microsoft.Build.Utilities.v4.0.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop">
       <HintPath>VisualStudioSetup\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
