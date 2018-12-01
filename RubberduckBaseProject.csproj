@@ -80,6 +80,9 @@
     <MSBuildProjectsToBuild Include="$(SolutionDir)\Rubberduck.Deployment.Build\Rubberduck.Deployment.Build.csproj">
       <Properties>Configuration=Release</Properties>
     </MSBuildProjectsToBuild>
+    <MetaTestsToBuild Include="$(SolutionDir)\RubberduckTestsCodeAnalysis\RubberduckTestsCodeAnalysis.csproj">
+      <Properties>Configuration=Release</Properties>
+    </MetaTestsToBuild>
   </ItemGroup>
   <Target Name="EnsureCodeAnalyzersBuild" BeforeTargets="PrepareForBuild"
           Condition="!Exists('$(SolutionDir)RubberduckCodeAnalysis\bin\RubberduckCodeAnalysis.dll')">
@@ -97,7 +100,7 @@
   </Target>
   <Target Name="EnsureMSBuildTargetBuild" BeforeTargets="PrepareForBuild"
           Condition="!Exists('$(SolutionDir)Rubberduck.Deployment.Build\bin\Rubberduck.Deployment.Build.dll')">
-    <Message Text="Missing the required metaprojects. Building the metaprojects..." Importance="high" />
+    <Message Text="Missing the required build tasks. Building the build tasks..." Importance="high" />
     <MSBuild Projects="@(MSBuildProjectsToBuild)"
              BuildInParallel="false"
              ContinueOnError="false"
@@ -107,7 +110,21 @@
              RunEachTargetSeparately="true"
              UseResultsCache="true"
              RebaseOutputs="true"/>
-    <Message Text="Built the metaprojects" Importance="high" />
+    <Message Text="Built the build tasks" Importance="high" />
+  </Target>
+  <Target Name="EnsureMetaTestsBuild" BeforeTargets="PrepareForBuild"
+          Condition="!Exists('$(SolutionDir)RubberduckTestsCodeAnalysis\bin\RubberduckTestsCodeAnalysis.dll')">
+    <Message Text="Missing the required meta tests. Building the meta tests..." Importance="high" />
+    <MSBuild Projects="@(MetaTestsToBuild)"
+             BuildInParallel="false"
+             ContinueOnError="false"
+             SkipNonexistentProjects="false"
+             StopOnFirstFailure="true"
+             UnloadProjectsOnCompletion="true"
+             RunEachTargetSeparately="true"
+             UseResultsCache="true"
+             RebaseOutputs="true"/>
+    <Message Text="Built the build tasks" Importance="high" />
   </Target>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 
