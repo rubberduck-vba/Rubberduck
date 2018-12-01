@@ -232,7 +232,7 @@ namespace Rubberduck.Deployment.Build
             var generator = new IdlGenerator();
             var idl = generator.GenerateIdl(parameters.SourceDll);
             // Encoding must be UTF8 BOM
-            File.WriteAllText(parameters.IdlFile, idl, new UTF8Encoding(true));
+            File.WriteAllText(Path.Combine(TargetDir, parameters.IdlFile), idl, new UTF8Encoding(true));
         }
 
         private void CompileWithMidl(DllFileParameters parameters)
