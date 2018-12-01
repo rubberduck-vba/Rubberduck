@@ -7,8 +7,11 @@ namespace Rubberduck.Deployment.Build
     [Serializable]
     internal class RubberduckBuildEventArgs : BuildMessageEventArgs
     {
+        // Default MSBuild verbosity is minimal; meaning that a normal message will not be shown.
+        // Hence, we use high importance to ensure that it will still show in the build log at the
+        // default verbosity level.
         internal RubberduckBuildEventArgs(string message, string helpKeyword, string senderName) : 
-            base(message, helpKeyword, senderName, MessageImportance.Normal) { }
+            base(message, helpKeyword, senderName, MessageImportance.High) { }
     }
 
     internal static class LogHelper
@@ -43,7 +46,7 @@ namespace Rubberduck.Deployment.Build
         internal static void LogMessage(this ITask sender, string message, string helpKeyword = null)
         {
             var senderName = sender.GetType().FullName;
-
+            
             var args = new RubberduckBuildEventArgs(message, helpKeyword, senderName);
             sender.BuildEngine.LogMessageEvent(args);
         }

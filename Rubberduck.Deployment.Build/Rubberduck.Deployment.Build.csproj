@@ -6,8 +6,6 @@
     <ProjectGuid>{3A3E3535-FF24-40BD-A4D4-5C88AF6DB1BA}</ProjectGuid>
     <RootNamespace>Rubberduck.Deployment.Build</RootNamespace>
     <AssemblyName>Rubberduck.Deployment.Build</AssemblyName>
-    <!-- Installer references depend on the unified output path -->
-    <UnifyOutputPath>true</UnifyOutputPath>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseMetaProject.csproj" />
   <ItemGroup>

@@ -12,8 +12,8 @@
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <RestorePackages>true</RestorePackages>
-    <!-- do not unify output paths by default -->
-    <UnifyOutputPath Condition=" '$(UnifyOutputPath)' == ''">false</UnifyOutputPath>
+    <!-- meta projects should have its path unified for easier discovery by the core solution -->
+    <UnifyOutputPath>true</UnifyOutputPath>
     <!-- Ignore MSB4011 warning, rationale above -->
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
     <DisabledWarnings>$(DisabledWarnings);4011;1001</DisabledWarnings>

@@ -72,6 +72,8 @@ namespace Rubberduck.Deployment.Build
         [Required]
         public string FilesToExtract { get; set; }
 
+        private const int MaxNumberOfPreviousRegistrationFiles = 10;
+
         private string RegFilePath =>
             Path.Combine(Path.Combine(ProjectDir, "LocalRegistryEntries"), "DebugRegistryEntries.reg");
 
@@ -175,7 +177,7 @@ namespace Rubberduck.Deployment.Build
             var i = 0;
             foreach (var file in files)
             {
-                if (i > 10)
+                if (i > MaxNumberOfPreviousRegistrationFiles)
                 {
                     this.LogMessage($"Deleting {file}");
                     File.Delete(file);
@@ -190,7 +192,7 @@ namespace Rubberduck.Deployment.Build
             this.LogMessage("Updating addin registration...");
             var addInRegFile = Path.Combine(Path.GetDirectoryName(RegFilePath), "RubberduckAddinRegistry.reg");
             var command = $"reg.exe import \"{addInRegFile}";
-            ExecuteTask(command, ignoreErrors:true);
+            ExecuteTask(command);
         }
 
         private void ProcessDll(string file, string batchPath)
@@ -212,13 +214,13 @@ namespace Rubberduck.Deployment.Build
             }
 
             this.LogMessage("Extracting metadata using WiX...");
-            HarvestMetadataWithWix(parameters);
+            HarvestMetadataWithWixToFile(parameters);
 
             this.LogMessage("Building registry entries...");
             var entries = BuildRegistryEntriesFromMetadata(parameters);
 
             this.LogMessage("Creating InnoSetup registry entries...");
-            CreateInnoSetupRegistryEntries(entries, parameters);
+            CreateInnoSetupRegistryFile(entries, parameters);
 
             if (Config != "Debug")
             {
@@ -233,7 +235,6 @@ namespace Rubberduck.Deployment.Build
         {
             var generator = new IdlGenerator();
             var idl = generator.GenerateIdl(parameters.SourceDll);
-            // Encoding must be UTF8 BOM
             File.WriteAllText(Path.Combine(TargetDir, parameters.IdlFile), idl, new UTF8Encoding(true));
         }
 
@@ -243,7 +244,7 @@ namespace Rubberduck.Deployment.Build
             var command = $"call \"{batchPath}\"{Environment.NewLine}" +
                           $"midl.exe /win32 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"{Environment.NewLine}" +
                           $"midl.exe /amd64 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"";
-            ExecuteTask(command, SourceDir, ignoreErrors:true);
+            ExecuteTask(command, SourceDir);
         }
 
         private void CompileWithTlbExp(DllFileParameters parameters)
@@ -255,7 +256,7 @@ namespace Rubberduck.Deployment.Build
             ExecuteTask(command);
         }
 
-        private void HarvestMetadataWithWix(DllFileParameters parameters)
+        private void HarvestMetadataWithWixToFile(DllFileParameters parameters)
         {
             var command = $"{WixToolsDir}heat.exe file \"{parameters.SourceDll}\" -out \"{parameters.DllXml}\"";
             ExecuteTask(command);
@@ -270,13 +271,13 @@ namespace Rubberduck.Deployment.Build
             return builder.Parse(parameters.TlbXml, parameters.DllXml);
         }
 
-        private void CreateInnoSetupRegistryEntries(IOrderedEnumerable<RegistryEntry> entries, DllFileParameters parameters)
+        private void CreateInnoSetupRegistryFile(IOrderedEnumerable<RegistryEntry> entries, DllFileParameters parameters)
         {
             var writer = new InnoSetupRegistryWriter();
             var content = writer.Write(entries, parameters.DllFile, parameters.Tlb32File, parameters.Tlb64File);
             var regFile = Path.Combine(IncludeDir, parameters.DllFile.Replace(".dll", ".reg.iss"));
             
-            // Encoding must be UTF8 BOM
+            // To use unicode with InnoSetup, encoding must be UTF8 BOM
             File.WriteAllText(regFile, content, new UTF8Encoding(true));
         }
 
@@ -300,18 +301,21 @@ namespace Rubberduck.Deployment.Build
                 var lastRegFile = RegFilePath;
                 if (File.Exists(lastRegFile))
                 {
+                    //reg.exe should be present on all Windows since NT, so it's safe to assume
+                    //that it's always there
+
                     var now = DateTime.UtcNow;
                     if (Environment.Is64BitOperatingSystem)
                     {
                         var command = $"reg.exe import {lastRegFile} /reg:32";
-                        ExecuteTask(command, ignoreErrors:true);
+                        ExecuteTask(command);
                         command = $"reg.exe import {lastRegFile} /reg:64";
-                        ExecuteTask(command, ignoreErrors:true);
+                        ExecuteTask(command);
                     }
                     else
                     {
                         var command = $"reg.exe import {lastRegFile}";
-                        ExecuteTask(command, ignoreErrors:true);
+                        ExecuteTask(command);
                     }
                     File.Move(lastRegFile, lastRegFile + ".imported_" + now.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt");
                 }
@@ -336,7 +340,7 @@ namespace Rubberduck.Deployment.Build
             File.AppendAllText(RegFilePath, content, Encoding.ASCII);
         }
 
-        private void ExecuteTask(string command, string workingDirectory = null, bool ignoreErrors = false)
+        private void ExecuteTask(string command, string workingDirectory = null)
         {
             var exec = new Exec
             {
@@ -345,8 +349,8 @@ namespace Rubberduck.Deployment.Build
                 Command = command,
                 ConsoleToMSBuild = true,
                 EchoOff = false,
-                LogStandardErrorAsError = !ignoreErrors,
-                IgnoreExitCode = ignoreErrors,
+                LogStandardErrorAsError = false,
+                IgnoreExitCode = false,
                 UseCommandProcessor = false,
                 WorkingDirectory = workingDirectory ?? ProjectDir,
                 YieldDuringToolExecution = true
