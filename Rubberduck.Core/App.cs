@@ -9,6 +9,7 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Resources;
 using Rubberduck.UI.Command;
@@ -182,24 +183,22 @@ namespace Rubberduck
 
         private static void LocalizeResources(CultureInfo culture)
         {
-            //TODO: this method needs something better - maybe use reflection to discover all resourcees
-            //      to set culture for all resources files?
-            Resources.RubberduckUI.Culture = culture;
-            Resources.About.AboutUI.Culture = culture;
-            Resources.Inspections.InspectionInfo.Culture = culture;
-            Resources.Inspections.InspectionNames.Culture = culture;
-            Resources.Inspections.InspectionResults.Culture = culture;
-            Resources.Inspections.InspectionsUI.Culture = culture;
-            Resources.Inspections.QuickFixes.Culture = culture;
-            Resources.Menus.RubberduckMenus.Culture = culture;
-            Resources.RegexAssistant.RegexAssistantUI.Culture = culture;
-            Resources.Settings.SettingsUI.Culture = culture;
-            Resources.Settings.ToDoExplorerPage.Culture = culture;
-            Resources.Settings.UnitTestingPage.Culture = culture;
-            Resources.ToDoExplorer.ToDoExplorerUI.Culture = culture;
-            Resources.UnitTesting.AssertMessages.Culture = culture;
-            Resources.UnitTesting.TestExplorer.Culture = culture;
-            Resources.Templates.Culture = culture;
+            var localizers = AppDomain.CurrentDomain.GetAssemblies()
+                .SingleOrDefault(assembly => assembly.GetName().Name == "Rubberduck.Resources")
+                ?.DefinedTypes.SelectMany(type => type.DeclaredProperties.Where(prop =>
+                    prop.CanWrite && prop.Name.Equals("Culture") && prop.PropertyType == typeof(CultureInfo) &&
+                    (prop.SetMethod?.IsStatic ?? false)));
+
+            if (localizers == null)
+            {
+                return;
+            }
+
+            var args = new object[] { culture };
+            foreach (var localizer in localizers)
+            {
+                localizer.SetMethod.Invoke(null, args);
+            }
         }
 
         private void CheckForLegacyIndenterSettings()
