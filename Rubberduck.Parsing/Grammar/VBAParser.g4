@@ -898,7 +898,7 @@ statementKeyword :
 ;
 
 endOfLine :
-    whiteSpace? NEWLINE whiteSpace?
+    whiteSpace? NEWLINE
     | whiteSpace? commentOrAnnotation
 ;
 
