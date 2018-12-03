@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            if (result.Target?.DeclarationType.HasFlag(DeclarationType.Module) == true)
+            if (result.Target?.DeclarationType.HasFlag(DeclarationType.Module) ?? false)
             {
                 FixModule(result, rewriteSession);
             }
@@ -92,7 +92,7 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertAfter(insertionIndex, insertText);
         }
 
-        private string WhitespaceAfter(VBAParser.EndOfLineContext endOfLine)
+        private static string WhitespaceAfter(VBAParser.EndOfLineContext endOfLine)
         {
             var individualEndOfStatement = (VBAParser.IndividualNonEOFEndOfStatementContext) endOfLine.Parent;
             var whiteSpaceOnNextLine = individualEndOfStatement.whiteSpace(0);
