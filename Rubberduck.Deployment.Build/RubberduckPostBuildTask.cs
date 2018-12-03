@@ -317,12 +317,17 @@ namespace Rubberduck.Deployment.Build
                         var command = $"reg.exe import {lastRegFile}";
                         ExecuteTask(command);
                     }
-                    File.Move(lastRegFile, lastRegFile + ".imported_" + now.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt");
+
+                    var archivedRegFile = lastRegFile + ".imported_" +
+                                          now.ToUniversalTime().ToString("yyyyMMddHHmmss") + ".txt";
+                    File.Move(lastRegFile, archivedRegFile);
+                    this.LogMessage($"Renamed the previous build reg file to '{archivedRegFile}'");
                 }
             }
             else
             {
                 Directory.CreateDirectory(dir);
+                this.LogMessage($"Created the directory '{dir}'");
             }
 
             _previousRegistrationRemoved = true;
@@ -358,7 +363,7 @@ namespace Rubberduck.Deployment.Build
 
             var log = new TaskLoggingHelper(exec);
 
-            log.LogCommandLine(MessageImportance.Normal, command);
+            this.LogMessage(command);
             var result = exec.Execute();
 
             if (!result && !log.HasLoggedErrors)
