@@ -23,7 +23,7 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _currentParent;
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
-        private readonly AnnotationService _annotationService;
+        private readonly IdentifierAnnotationService _identifierAnnotationService;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
@@ -44,8 +44,8 @@ namespace Rubberduck.Parsing.Symbols
                 new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
                 typeBindingContext,
                 procedurePointerBindingContext);
-            _annotationService = new AnnotationService(_declarationFinder);
-            _boundExpressionVisitor = new BoundExpressionVisitor(_annotationService);
+            _identifierAnnotationService = new IdentifierAnnotationService(_declarationFinder);
+            _boundExpressionVisitor = new BoundExpressionVisitor(_identifierAnnotationService);
         }
 
         public void SetCurrentScope()
@@ -153,7 +153,7 @@ namespace Rubberduck.Parsing.Symbols
                     identifier,
                     callee,
                     callSiteContext.GetSelection(),
-                    _annotationService.FindAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
+                    _identifierAnnotationService.FindAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
             }
         }
 
@@ -713,7 +713,7 @@ namespace Rubberduck.Parsing.Symbols
                     identifier,
                     callee,
                     callSiteContext.GetSelection(),
-                    _annotationService.FindAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
+                    _identifierAnnotationService.FindAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
             }
             if (context.eventArgumentList() == null)
             {
@@ -819,7 +819,7 @@ namespace Rubberduck.Parsing.Symbols
                 context.debugPrint().debugModule().GetText(),
                 debugModule,
                 context.debugPrint().debugModule().GetSelection(),
-                _annotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugModule().GetSelection().StartLine));
+                _identifierAnnotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugModule().GetSelection().StartLine));
             debugPrint.AddReference(
                 _qualifiedModuleName,
                 _currentScope,
@@ -828,7 +828,7 @@ namespace Rubberduck.Parsing.Symbols
                 context.debugPrint().debugPrintSub().GetText(),
                 debugPrint,
                 context.debugPrint().debugPrintSub().GetSelection(),
-                _annotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugPrintSub().GetSelection().StartLine));
+                _identifierAnnotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugPrintSub().GetSelection().StartLine));
             var outputList = context.outputList();
             if (outputList != null)
             {

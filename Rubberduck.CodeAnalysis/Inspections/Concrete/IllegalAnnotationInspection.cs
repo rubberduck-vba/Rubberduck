@@ -20,18 +20,11 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var illegalAnnotations = new List<IAnnotation>();
-
             var userDeclarations = State.DeclarationFinder.AllUserDeclarations.ToList();
             var identifierReferences = State.DeclarationFinder.AllIdentifierReferences().ToList();
             var annotations = State.AllAnnotations;
 
-            illegalAnnotations.AddRange(UnboundAnnotations(annotations, userDeclarations, identifierReferences));
-            illegalAnnotations.AddRange(NonIdentifierAnnotationsOnIdentifiers(identifierReferences));
-            illegalAnnotations.AddRange(NonModuleAnnotationsOnModules(userDeclarations));
-            illegalAnnotations.AddRange(NonMemberAnnotationsOnMembers(userDeclarations));
-            illegalAnnotations.AddRange(NonVariableAnnotationsOnVariables(userDeclarations));
-            illegalAnnotations.AddRange(NonGeneralAnnotationsWhereOnlyGeneralAnnotationsBelong(userDeclarations));
+            var illegalAnnotations = UnboundAnnotations(annotations, userDeclarations, identifierReferences);
 
             return illegalAnnotations.Select(annotation => 
                 new QualifiedContextInspectionResult(
@@ -49,65 +42,6 @@ namespace Rubberduck.Inspections.Concrete
                 .ToHashSet();
             
             return annotations.Where(annotation => !boundAnnotationsSelections.Contains(annotation.QualifiedSelection)).ToList();
-        }
-
-        private static ICollection<IAnnotation> NonIdentifierAnnotationsOnIdentifiers(IEnumerable<IdentifierReference> identifierReferences)
-        {
-            return identifierReferences
-                .SelectMany(reference => reference.Annotations)
-                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.IdentifierAnnotation))
-                .ToList();
-        }
-
-        private static ICollection<IAnnotation> NonModuleAnnotationsOnModules(IEnumerable<Declaration> userDeclarations)
-        {
-            return userDeclarations
-                .Where(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module))
-                .SelectMany(moduleDeclaration => moduleDeclaration.Annotations)
-                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.ModuleAnnotation))
-                .ToList();
-        }
-
-        private static ICollection<IAnnotation> NonMemberAnnotationsOnMembers(IEnumerable<Declaration> userDeclarations)
-        {
-            return userDeclarations
-                .Where(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Member))
-                .SelectMany(member => member.Annotations)
-                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.MemberAnnotation))
-                .ToList();
-        }
-
-        private static ICollection<IAnnotation> NonVariableAnnotationsOnVariables(IEnumerable<Declaration> userDeclarations)
-        {
-            return userDeclarations
-                .Where(declaration => VariableAnnotationDeclarationTypes.Contains(declaration.DeclarationType))
-                .SelectMany(declaration => declaration.Annotations)
-                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.VariableAnnotation))
-                .ToList();
-        }
-
-        private static readonly HashSet<DeclarationType> VariableAnnotationDeclarationTypes = new HashSet<DeclarationType>()
-        {
-            DeclarationType.Variable,
-            DeclarationType.Control,
-            DeclarationType.Constant,
-            DeclarationType.Enumeration,
-            DeclarationType.EnumerationMember,
-            DeclarationType.UserDefinedType,
-            DeclarationType.UserDefinedType,
-            DeclarationType.UserDefinedTypeMember
-        };
-
-        private static ICollection<IAnnotation> NonGeneralAnnotationsWhereOnlyGeneralAnnotationsBelong(IEnumerable<Declaration> userDeclarations)
-        {
-            return userDeclarations
-                .Where(declaration => !declaration.DeclarationType.HasFlag(DeclarationType.Module) 
-                                      && !declaration.DeclarationType.HasFlag(DeclarationType.Member) 
-                                      && !VariableAnnotationDeclarationTypes.Contains(declaration.DeclarationType) 
-                                      && declaration.DeclarationType != DeclarationType.Project)
-                .SelectMany(member => member.Annotations)
-                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.GeneralAnnotation))
-                .ToList();
         }
     }
 }
