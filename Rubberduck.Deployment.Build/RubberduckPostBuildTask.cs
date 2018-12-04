@@ -84,7 +84,7 @@ namespace Rubberduck.Deployment.Build
             {
                 this.LogMessage(FormatParameterList());
 
-                CleanOldImports(ProjectDir);
+                CleanOldImports(Path.Combine(ProjectDir, "LocalRegistryEntries"));
 
                 var dllFiles = FilesToExtract.Split(new[] {"|"}, StringSplitOptions.RemoveEmptyEntries);
                 var hasVCTools = TryGetVCToolsPath(out var batchPath);
@@ -341,6 +341,7 @@ namespace Rubberduck.Deployment.Build
             // is a registry script with deletion instructions for the keys to be deleted
             // in the next build.
             var writer = new LocalDebugRegistryWriter();
+            writer.CurrentPath = TargetDir;
             var content = writer.Write(entries, parameters.DllFile, parameters.Tlb32File, parameters.Tlb64File);
             File.AppendAllText(RegFilePath, content, Encoding.ASCII);
         }

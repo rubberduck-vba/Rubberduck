@@ -37,7 +37,8 @@ namespace Rubberduck.Deployment.Build
                 var files = Directory.GetFiles(OutputDir);
                 foreach (var file in files)
                 {
-                    if (file.StartsWith("Rubberduck") && file.EndsWith(".dll"))
+                    var fileName = Path.GetFileName(file);
+                    if (fileName.StartsWith("Rubberduck") && fileName.EndsWith(".dll"))
                     {
                         //If we can't delete it, then file is in use.
                         File.Delete(file);

@@ -46,7 +46,7 @@
   <Target Name="PreBuildTask" BeforeTargets="PreBuildEvent">
     <RubberduckPreBuildTask 
         WorkingDir="$(ProjectDir)" 
-        OutputDir="$(OutputPath)" />
+        OutputDir="$(TargetDir)" />
 
     <Message Text="Ran Rubberduck prebuild task" Importance="normal" />
   </Target>
