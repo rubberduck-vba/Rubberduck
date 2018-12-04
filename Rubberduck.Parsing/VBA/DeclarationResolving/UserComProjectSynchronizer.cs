@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.ComReflection;
 
 namespace Rubberduck.Parsing.VBA.DeclarationResolving
@@ -35,6 +36,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
         public void SyncUserComProjects()
         {
+            var parsingStateTimer = ParsingStageTimer.StartNew();
+
             _lastSyncLoadedDeclaration = false;
             _unloadedProjectIds.Clear();
 
@@ -46,6 +49,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
             LoadProjects(newProjectIdsToBeLoaded);
             UnloadProjects(projectsToBeUndloaded);
+
+            parsingStateTimer.Stop();
+            parsingStateTimer.Log("Loaded declarations from ComProjects for user projects in {0}ms.");
         }
 
         private void LoadProjects(IEnumerable<string> projectIds)
