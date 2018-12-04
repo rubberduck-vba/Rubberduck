@@ -13,5 +13,6 @@ namespace Rubberduck.AddRemoveReferences
         string FullPath { get; }
         int Major { get; }
         int Minor { get; }
+        int? Priority { get; }
     }
 }

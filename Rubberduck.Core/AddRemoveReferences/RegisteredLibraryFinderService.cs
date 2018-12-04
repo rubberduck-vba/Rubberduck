@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using Microsoft.Win32;
 
@@ -19,22 +17,15 @@ namespace Rubberduck.AddRemoveReferences
 
     public interface IRegisteredLibraryFinderService
     {
-        IEnumerable<ReferenceModel> FindRegisteredLibraries();
+        IEnumerable<RegisteredLibraryInfo> FindRegisteredLibraries();
     }
 
+    // inspired from https://github.com/rossknudsen/Kavod.ComReflection
     public class RegisteredLibraryFinderService : IRegisteredLibraryFinderService
     {
-        private readonly bool _use64BitPaths;
-
-        // inspired from https://github.com/rossknudsen/Kavod.ComReflection
-        public RegisteredLibraryFinderService(bool use64BitPaths)
-        {
-            _use64BitPaths = use64BitPaths;
-        }
-
         private static readonly List<string> IgnoredKeys = new List<string> { "FLAGS", "HELPDIR" };
 
-        public IEnumerable<ReferenceModel> FindRegisteredLibraries()
+        public IEnumerable<RegisteredLibraryInfo> FindRegisteredLibraries()
         {
             using (var typelibSubKey = Registry.ClassesRoot.OpenSubKey("TypeLib"))
             {
@@ -61,46 +52,36 @@ namespace Rubberduck.AddRemoveReferences
                             }
                         }
 
-                        foreach (var lcid in EnumerateSubKeys(versionKey))
+                        foreach (var lcid in versionKey.GetSubKeyNames().Where(key => !IgnoredKeys.Contains(key)))
                         {
-                            if (IgnoredKeys.Contains(lcid.GetValue(string.Empty)?.ToString()))
+                            if (!int.TryParse(lcid, out var id))
                             {
                                 continue;
                             }
+                            using (var paths = versionKey.OpenSubKey(lcid))
+                            {
+                                string bit32;
+                                string bit64;
+                                using (var win32 = paths?.OpenSubKey("win32"))
+                                {
+                                    bit32 = win32?.GetValue(string.Empty)?.ToString() ?? string.Empty;
+                                }
+                                using (var win64 = paths?.OpenSubKey("win64"))
+                                {
+                                    bit64 = win64?.GetValue(string.Empty)?.ToString() ?? string.Empty;
+                                }
 
-                            string bit32;
-                            string bit64;
-                            using (var win32 = lcid.OpenSubKey("win32"))
-                            {
-                                bit32 = win32?.GetValue(string.Empty)?.ToString() ?? string.Empty;
+                                yield return new RegisteredLibraryInfo(guid, name, version, bit32, bit64)
+                                {
+                                    Flags = flagValue,
+                                    LocaleId = id
+                                };
                             }
-                            using (var win64 = lcid.OpenSubKey("win64"))
-                            {
-                                bit64 = win64?.GetValue(string.Empty)?.ToString() ?? string.Empty;
-                            }
-                            var info = new RegisteredLibraryInfo(guid, name, version, bit32, bit64)
-                            {
-                                Flags = flagValue,
-                            };
-
-                            yield return new ReferenceModel(info);
                         }
                     }
                 }
             }
         }
-
-        //private static readonly HashSet<string> Extensions = new HashSet<string> { "tlb", "olb", "dll" };
-
-        //private string GetLibraryExtension(string fullPath)
-        //{
-        //    var lastBackslashIndex = fullPath.LastIndexOf(@"\", StringComparison.OrdinalIgnoreCase);
-        //    var lastDotIndex = fullPath.LastIndexOf(".", StringComparison.OrdinalIgnoreCase);
-        //    var result = lastBackslashIndex > lastDotIndex 
-        //        ? fullPath.Substring(lastDotIndex + 1, lastBackslashIndex - lastDotIndex) 
-        //        : fullPath.Substring(lastDotIndex + 1);
-        //    return result;
-        //}
 
         private IEnumerable<RegistryKey> EnumerateSubKeys(RegistryKey key)
         {

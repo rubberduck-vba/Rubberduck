@@ -5,208 +5,352 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:refs="clr-namespace:Rubberduck.AddRemoveReferences"
              xmlns:local="clr-namespace:Rubberduck.UI.AddRemoveReferences"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="380" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance local:AddRemoveReferencesViewModel}">
     <UserControl.Resources>
         <BitmapImage x:Key="SearchIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/magnifier-medium.png" />
         <BitmapImage x:Key="BrowseIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder-open.png" />
-        <BitmapImage x:Key="LibraryIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectLibrary.png" />
+        <BitmapImage x:Key="LibraryIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/node-select-all.png" />
         <BitmapImage x:Key="VbaProjectIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
-        <BitmapImage x:Key="PriorityIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/edit-list-order.png" />
+        <BitmapImage x:Key="PinnedIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/pinned.png" />
+        <BitmapImage x:Key="RecentIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/clock-select.png" />
         <BitmapImage x:Key="MoveUpIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-090.png" />
         <BitmapImage x:Key="MoveDownIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-270.png" />
+        <BitmapImage x:Key="AddIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow.png" />
+        <BitmapImage x:Key="RemoveIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-180.png" />
 
         <local:ReferenceStatusImageSourceConverter x:Key="StatusToIcon" />
+        <converters:RemainingWidthConverter x:Key="RemainingWidth" />
+
         <Style x:Key="DialogButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="5,0" />
             <Setter Property="Height" Value="24" />
             <Setter Property="Padding" Value="10,0" />
         </Style>
+        <Style x:Key="PlaceHolder" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Grid>
+                            <TextBox Text="{Binding Path=Text,
+                                                RelativeSource={RelativeSource TemplatedParent}, 
+                                                Mode=TwoWay,
+                                                UpdateSourceTrigger=PropertyChanged}"
+                                     x:Name="textSource" 
+                                     Background="Transparent" 
+                                     Panel.ZIndex="2" />
+                            <TextBox Text="{TemplateBinding Tag}" Background="{TemplateBinding Background}" Panel.ZIndex="1">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}">
+                                        <Setter Property="Foreground" Value="Transparent"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Path=Text, Source={x:Reference textSource}}" Value="">
+                                                <Setter Property="Foreground" Value="LightGray"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style TargetType="{x:Type TabItem}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border x:Name="PART_Border" Background="{TemplateBinding Background}" BorderThickness="0,0,0,2" BorderBrush="Transparent" Margin="2">
+                            <ContentPresenter ContentSource="Header" Margin="2" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="PART_Border" Property="BorderBrush" Value="Blue" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style  TargetType="{x:Type TabControl}">
+            <Setter Property="OverridesDefaultStyle" Value="True" />
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabControl}">
+                        <Grid KeyboardNavigation.TabNavigation="Local">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TabPanel 
+                                Name="HeaderPanel"
+                                Grid.Row="0"
+                                Panel.ZIndex="1" 
+                                Margin="0,0,4,-1" 
+                                IsItemsHost="True"
+                                KeyboardNavigation.TabIndex="1"
+                                Background="Transparent" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="False" />
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="SelectableText" TargetType="{x:Type TextBox}">
+            <Setter Property="Margin" Value="2" />
+            <Setter Property="Foreground" Value ="{x:Static SystemColors.GrayTextBrush}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="TextWrapping" Value="NoWrap" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style x:Key="BorderStyle" TargetType="{x:Type Border}">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
+            <Setter Property="Background" Value="{x:Static SystemColors.ControlBrush}" />
+            <Setter Property="Padding" Value="2" />
+        </Style>
     </UserControl.Resources>
-    <Grid>
+    <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Dock="Top" Background="{x:Static SystemColors.WindowBrush}">
-            <Label DockPanel.Dock="Top" Content="Add/Remove References" FontWeight="Bold" />
-            <TextBlock DockPanel.Dock="Top" Text="Select COM libraries and VBA projects to add or remove." Margin="10,0,0,10" />
+            <Label DockPanel.Dock="Top" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Caption}" FontWeight="Bold" />
+            <TextBlock DockPanel.Dock="Top" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_SubCaption}" Margin="10,0,0,10" />
         </DockPanel>
-
         <Border Grid.Row="1" Background="{x:Static SystemColors.ControlLightBrush}">
-            <TabControl Margin="5">
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Margin="2,0" Source="{StaticResource LibraryIcon}" />
-                            <TextBlock Margin="2,0">COM</TextBlock>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ControlLightBrush}" Margin="5">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Border Grid.Row="0"
+            <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ControlLightBrush}" Margin="5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TabControl Grid.Row="0" SelectedValue="{Binding SelectedFilter}" SelectedValuePath="Tag">
+                        <TabItem IsSelected="True" Tag="ComTypes">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource LibraryIcon}" />
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_TypeLibs}" Margin="5,0,10,0" />
+                                </StackPanel>
+                            </TabItem.Header>
+                        </TabItem>
+                        <TabItem Tag="Projects">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource VbaProjectIcon}" />
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Projects}" Margin="5,0,10,0" />
+                                </StackPanel>
+                            </TabItem.Header>
+                        </TabItem>
+                        <TabItem Tag="Pinned">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource PinnedIcon}" />
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Pinned}" Margin="5,0,10,0" />
+                                </StackPanel>
+                            </TabItem.Header>
+                        </TabItem>
+                        <TabItem Tag="Recent">
+                            <TabItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{StaticResource RecentIcon}" />
+                                    <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Recent}" Margin="5,0,10,0" />
+                                </StackPanel>
+                            </TabItem.Header>
+                        </TabItem>
+                    </TabControl>
+                    <Border Grid.Row="1"
                                     Background="{x:Static SystemColors.ControlBrush}"
                                     BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" 
                                     BorderThickness="1" 
                                     Margin="10,10,10,0" 
                                     Padding="2">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="20" />
-                                        <ColumnDefinition Width="20" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0" />
-                                    <Border Grid.Column="1" Margin="2">
-                                        <Image Source="{StaticResource SearchIcon}" />
-                                    </Border>
-                                    <Button Grid.Column="2">
-                                        <Image Margin="2,0" Source="{StaticResource BrowseIcon}" />
-                                    </Button>
-                                </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="20" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource PlaceHolder}">
+                                        <Setter Property="Height" Value="20"></Setter>
+                                        <Setter Property="Tag" Value="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_SearchPlaceholder}" />
+                                        <Setter Property="Text" Value="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
+                                    </Style>
+                                </TextBox.Style>
+                            </TextBox>
+                            <Border Grid.Column="1" Margin="2">
+                                <Image Source="{StaticResource SearchIcon}" />
                             </Border>
-                            <ListView Grid.Row="1" Margin="10,10,10,5"
-                                      ItemsSource="{Binding ComLibraries}"
-                                      SelectedItem="{Binding SelectedLibrary}"
-                                      HorizontalContentAlignment="Stretch">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate DataType="refs:ReferenceModel">
-                                        <Grid Margin="2,0,2,0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="20" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="50" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="20" />
-                                            </Grid.ColumnDefinitions>
-                                            <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" Margin="2,0" />
-                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0" />
-                                            <TextBlock Grid.Column="2" Text="{Binding Version}" Margin="2,0" />
-                                            <Image Grid.Column="3" Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <Border Grid.Row="2"
-                                    DockPanel.Dock="Bottom" 
-                                    BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" 
-                                    Background="{x:Static SystemColors.ControlBrush}"
-                                    BorderThickness="1" 
-                                    Margin="10,0,10,10" Padding="2">
-                                <Border BorderThickness="1"
-                                        BorderBrush="{x:Static SystemColors.ActiveBorderBrush}"
-                                        Background="{x:Static SystemColors.ControlLightBrush}"
-                                        Padding="2">
-                                    <TextBlock Foreground="{x:Static SystemColors.GrayTextBrush}" Text="{Binding SelectedLibrary.FullPath}" />
-                                </Border>
-                            </Border>
+                            <Button Grid.Column="2" Command="{Binding BrowseCommand}">
+                                <Image Margin="2,0" Source="{StaticResource BrowseIcon}" />
+                            </Button>
                         </Grid>
                     </Border>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Margin="2,0" Source="{StaticResource VbaProjectIcon}" />
-                            <TextBlock Margin="2,0">VBA</TextBlock>
-                        </StackPanel>
-                    </TabItem.Header>
-                    <Border BorderThickness="1" BorderBrush="{x:Static SystemColors.ControlLightBrush}" Margin="5">
-                        <DockPanel>
-                            <Border DockPanel.Dock="Top"
-                                    Background="{x:Static SystemColors.ControlBrush}"
-                                    BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" 
-                                    BorderThickness="1" 
-                                    Margin="10,10,10,0" 
-                                    Padding="2">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="20" />
-                                        <ColumnDefinition Width="20" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox Grid.Column="0" />
-                                    <Border Grid.Column="1" Margin="2">
-                                        <Image Source="{StaticResource SearchIcon}" />
-                                    </Border>
-                                    <Button Grid.Column="2" Command="{Binding BrowseCommand}">
-                                        <Image Margin="2,0" Source="{StaticResource BrowseIcon}" />
-                                    </Button>
-                                </Grid>
-                            </Border>
-                            <ListView Margin="10"
-                                      ItemsSource="{Binding VbaProjects}"
-                                      SelectedItem="{Binding SelectedProject}"
-                                      HorizontalContentAlignment="Stretch">
+                    <Grid Grid.Row="2" Margin="10,10,10,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0">
+                            <ListView Name="LibrarySelect" SelectedItem="{Binding SelectedLibrary, Mode=TwoWay}" ItemsSource="{Binding AvailableReferences}" HorizontalContentAlignment="Stretch">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Height" Value="20" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="refs:ReferenceModel">
-                                        <Grid Margin="2,0,2,0">
+                                        <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="20" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="*" />
-                                                <ColumnDefinition Width="20" />
+                                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Converter={StaticResource RemainingWidth}}" />
+                                                <ColumnDefinition Width="50" />
                                             </Grid.ColumnDefinitions>
-                                            <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" Margin="2,0" />
-                                            <TextBlock Grid.Column="1" Text="{Binding Name}" Margin="2,0" />
-                                            <TextBlock Grid.Column="2" Text="{Binding Description}" Margin="2,0" />
-                                            <TextBlock Grid.Column="3" Text="{Binding FullPath}" Margin="2,0" />
-                                            <Image Grid.Column="4" Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
+                                            <Button Grid.Column="0" 
+                                                    Width="16" Height="16"
+                                                    Background="Transparent"
+                                                    BorderBrush="Transparent"
+                                                    Command="{Binding DataContext.PinLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
+                                                <Image Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
+                                            </Button>
+                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0">
+                                                <TextBlock.InputBindings>
+                                                    <MouseBinding MouseAction="LeftDoubleClick"  
+                                                                  Command="{Binding DataContext.AddCommand, UpdateSourceTrigger=PropertyChanged, ElementName=LibrarySelect}" />
+                                                </TextBlock.InputBindings>
+                                            </TextBlock>
+                                            <TextBlock Grid.Column="2" Text="{Binding Version}" Margin="2,0" />
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-                        </DockPanel>
-                    </Border>
-                </TabItem>
-                <TabItem>
-                    <TabItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Margin="2,0" Source="{StaticResource PriorityIcon}" />
-                            <TextBlock Margin="2,0">Priority</TextBlock>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <Button Command="{Binding AddCommand}" Width="40" Height="20" Padding="0" Margin="0,1">
+                                <Image Margin="5,0" Source="{StaticResource AddIcon}" />
+                            </Button>
+                            <Button Command="{Binding RemoveCommand}" Width="40" Height="20" Padding="0" Margin="0,1">
+                                <Image Margin="5,0" Source="{StaticResource RemoveIcon}" />
+                            </Button>
                         </StackPanel>
-                    </TabItem.Header>
-                    <Border Margin="5" BorderThickness="1" BorderBrush="{x:Static SystemColors.ControlLightBrush}">
-                        <DockPanel>
-                            <ListView Margin="10"
-                                      ItemsSource="{Binding ComLibraries}"
-                                      HorizontalContentAlignment="Stretch">
+                        <Border Grid.Column="2">
+                            <ListView Name="ProjectSelect" SelectedItem="{Binding SelectedReference, Mode=TwoWay}" ItemsSource="{Binding ProjectReferences}" HorizontalContentAlignment="Stretch">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="Height" Value="20" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
                                 <ListView.ItemTemplate>
                                     <DataTemplate DataType="refs:ReferenceModel">
-                                        <Grid Margin="2,0,2,0">
+                                        <Grid>
                                             <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="20" />
+                                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Converter={StaticResource RemainingWidth}}" />
                                                 <ColumnDefinition Width="50" />
-                                                <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="20" />
                                                 <ColumnDefinition Width="20" />
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="{Binding Name}" Margin="2,0" />
-                                            <TextBlock Grid.Column="1" Text="{Binding Version}" Margin="2,0" />
-                                            <TextBlock Grid.Column="2" Text="{Binding Description}" Margin="2,0" />
-                                            <Button Grid.Column="3" Margin="1"
+                                            <Button Grid.Column="0" 
+                                                    Width="16" Height="16"
+                                                    Background="Transparent"
+                                                    BorderBrush="Transparent"
+                                                    Command="{Binding DataContext.PinReferenceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
+                                                <Image Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
+                                            </Button>
+                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0">
+                                                <TextBlock.InputBindings>
+                                                    <MouseBinding MouseAction="LeftDoubleClick"  
+                                                                  Command="{Binding DataContext.RemoveCommand, UpdateSourceTrigger=PropertyChanged, ElementName=ProjectSelect}" />
+                                                </TextBlock.InputBindings>
+                                            </TextBlock>
+                                            <TextBlock Grid.Column="2" Text="{Binding Version}" Margin="2,0" />
+                                            <Button Name="MoveUpButton"
+                                                    Grid.Column="3" 
+                                                    Margin="1"
                                                     Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
                                                 <Image Source="{StaticResource MoveUpIcon}" />
                                             </Button>
-                                            <Button Grid.Column="4" Margin="1"
+                                            <Button Name="MoveDownButton"
+                                                    Grid.Column="4" 
+                                                    Margin="1"
                                                     Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
                                                 <Image Source="{StaticResource MoveDownIcon}" />
                                             </Button>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-                        </DockPanel>
+                        </Border>
+                    </Grid>
+                    <Border Style="{StaticResource BorderStyle}" Grid.Row="3" Margin="10,0,10,0">
+                        <Border Style="{StaticResource BorderStyle}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="100" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Row="0" Grid.Column="0" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.Description, Mode=OneWay}" />
+                                <Label Grid.Row="0" Grid.Column="1"  
+                                       Foreground="{x:Static SystemColors.GrayTextBrush}" 
+                                       VerticalAlignment="Center" 
+                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Version}" />
+                                <TextBox Grid.Row="0" Grid.Column="2" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.Version, Mode=OneWay}" />
+                                <Label Grid.Row="0" Grid.Column="3"  
+                                       Foreground="{x:Static SystemColors.GrayTextBrush}" 
+                                       VerticalAlignment="Center" 
+                                       Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Locale}" />
+                                <TextBox Grid.Row="0" Grid.Column="4" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.LocaleName, Mode=OneWay}" />
+                                <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" Style="{StaticResource SelectableText}" Text="{Binding CurrentSelection.FullPath, Mode=OneWay}"  />
+                            </Grid>
+                        </Border>
                     </Border>
-                </TabItem>
-            </TabControl>
+                </Grid>
+            </Border>
         </Border>
 
         <Border Grid.Row="2" Background="{x:Static SystemColors.ControlDarkBrush}" Grid.IsSharedSizeScope="True">
@@ -216,9 +360,9 @@
                     <ColumnDefinition SharedSizeGroup="DialogButtons" MinWidth="100" />
                     <ColumnDefinition SharedSizeGroup="DialogButtons" MinWidth="100" />
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=OK}" />
-                <Button Grid.Column="1" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=CancelButtonText}" />
-                <Button Grid.Column="2" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.UI.RubberduckUI, Key=ApplyButtonText}" />
+                <Button Grid.Column="0" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}" />
+                <Button Grid.Column="1" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}" />
+                <Button Grid.Column="2" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ApplyButtonText}" />
             </Grid>
         </Border>
     </Grid>

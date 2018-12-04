@@ -13,8 +13,19 @@
     <Resource Include="**\*.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Icons\Fugue\arrow-180.png" />
+    <None Remove="Icons\Fugue\clock-select.png" />
+    <None Remove="Icons\Fugue\exclamation-pinned.png" />
+    <None Remove="Icons\Fugue\lock-pinned.png" />
+    <None Remove="Icons\Fugue\pinned.png" />
+    <None Remove="Icons\Fugue\plus-circle-pinned.png" />
+    <None Remove="Icons\Fugue\tick-circle-pinned.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Remove="Resources\BrokenReference.png" />
+    <Resource Remove="Resources\lock.png" />
     <Resource Remove="Resources\LockedReference.png" />
     <Resource Remove="Resources\ObjectAssembly.bmp" />
+    <Resource Remove="Resources\PinnedReference.png" />
   </ItemGroup>
 </Project>

@@ -134,7 +134,18 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("AllReferences_NoneFound", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Apply.
+        /// </summary>
+        public static string ApplyButtonText
+        {
+            get
+            {
+                return ResourceManager.GetString("ApplyButtonText", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -243,7 +254,31 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("Change", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap clock_select
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("clock_select", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap clock_select_pinned
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("clock_select_pinned", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to By module.
         /// </summary>
@@ -1093,7 +1128,19 @@ namespace Rubberduck.Resources {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap exclamation_pinned
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("exclamation_pinned", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Choose a folder to export the source of {0} to:.
         /// </summary>
@@ -2081,7 +2128,19 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("LoadConfigError", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap lock_pinned
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("lock_pinned", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Make ActiveSheet reference explicit.
         /// </summary>
@@ -2253,7 +2312,19 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("Online", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap padlock
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("padlock", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Parameter.
         /// </summary>
@@ -2442,7 +2513,43 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("Passed", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pinned
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("pinned", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap plus_circle
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("plus_circle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap plus_circle_pinned
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("plus_circle_pinned", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Preview.
         /// </summary>
@@ -2549,7 +2656,183 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("RefactorRename_TargetNotUserDefinedError", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Could not add reference.
+        /// </summary>
+        public static string References_AddFailedCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("References_AddFailedCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Browse for reference.
+        /// </summary>
+        public static string References_BrowseCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ActiveX Controls (*.ocx)|*.ocx.
+        /// </summary>
+        public static string References_BrowseFilterActiveX
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterActiveX", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All files (*.*)|*.*.
+        /// </summary>
+        public static string References_BrowseFilterAllFiles
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterAllFiles", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Microsoft Excel Files (*.xlsm;*.xlam;*.xls;*.xla)|*.xlsm;*.xlam;*.xls;*.xla.
+        /// </summary>
+        public static string References_BrowseFilterExcel
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterExcel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Executable Files (*.exe;*.dll)|*.exe;*.dll.
+        /// </summary>
+        public static string References_BrowseFilterExecutable
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterExecutable", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type Libraries (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll.
+        /// </summary>
+        public static string References_BrowseFilterTypes
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterTypes", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add/Remove References.
+        /// </summary>
+        public static string References_Caption
+        {
+            get
+            {
+                return ResourceManager.GetString("References_Caption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Locale:.
+        /// </summary>
+        public static string References_Locale
+        {
+            get
+            {
+                return ResourceManager.GetString("References_Locale", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pinned.
+        /// </summary>
+        public static string References_Pinned
+        {
+            get
+            {
+                return ResourceManager.GetString("References_Pinned", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Projects.
+        /// </summary>
+        public static string References_Projects
+        {
+            get
+            {
+                return ResourceManager.GetString("References_Projects", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Recent.
+        /// </summary>
+        public static string References_Recent
+        {
+            get
+            {
+                return ResourceManager.GetString("References_Recent", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search for reference....
+        /// </summary>
+        public static string References_SearchPlaceholder
+        {
+            get
+            {
+                return ResourceManager.GetString("References_SearchPlaceholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Select type libraries and VB projects to add or remove..
+        /// </summary>
+        public static string References_SubCaption
+        {
+            get
+            {
+                return ResourceManager.GetString("References_SubCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type Libraries.
+        /// </summary>
+        public static string References_TypeLibs
+        {
+            get
+            {
+                return ResourceManager.GetString("References_TypeLibs", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Version:.
+        /// </summary>
+        public static string References_Version
+        {
+            get
+            {
+                return ResourceManager.GetString("References_Version", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
@@ -3228,7 +3511,19 @@ namespace Rubberduck.Resources {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap tick_circle_pinned
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("tick_circle_pinned", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Todo Explorer.
         /// </summary>

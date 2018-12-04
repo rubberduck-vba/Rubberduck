@@ -1,61 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Text;
-using System.Threading.Tasks;
-using NLog;
-using Rubberduck.AddRemoveReferences;
+﻿using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.AddRemoveReferences;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using AddRemoveReferencesViewModel = Rubberduck.UI.AddRemoveReferences.AddRemoveReferencesViewModel;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class AddRemoveReferencesCommand : CommandBase
     {
         private readonly IVBE _vbe;
+        private readonly RubberduckParserState _state;
+        private readonly IAddRemoveReferencesPresenterFactory _factory;
 
-        public AddRemoveReferencesCommand(IVBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public AddRemoveReferencesCommand(IVBE vbe, RubberduckParserState state, IAddRemoveReferencesPresenterFactory factory) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
+            _state = state;
+            _factory = factory;
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (parameter is CodeExplorerItemViewModel vm)
+            if (parameter is CodeExplorerItemViewModel explorerItem)
             {
-                var project = GetDeclaration(vm)?.Project;
-                if (project == null)
+                if (!(Declaration.GetProjectParent(GetDeclaration(explorerItem)) is ProjectDeclaration project))
                 {
                     return; 
                 }
 
-                var refs = new List<ReferenceModel>();
-                using (var references = project.References)
-                {
-                    var priority = 1;
-                    foreach (var reference in references)
-                    {
-                        refs.Add(new ReferenceModel(reference, priority++));
-                        reference.Dispose();
-                    }
-                }
-
-                var finder = new RegisteredLibraryFinderService(true);
-                refs.AddRange(finder.FindRegisteredLibraries());
-
-                using (var dialog = new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(refs)))
-                {
-                    dialog.ShowDialog();
-                }
-                
+                var dialog = _factory.Create(project);
+                dialog.Show();
             }
-
-
         }
 
         protected override bool EvaluateCanExecute(object parameter)

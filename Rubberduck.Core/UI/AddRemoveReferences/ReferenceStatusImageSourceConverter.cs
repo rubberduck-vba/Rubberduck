@@ -13,24 +13,24 @@ namespace Rubberduck.UI.AddRemoveReferences
         private readonly IDictionary<ReferenceStatus, ImageSource> _icons =
             new Dictionary<ReferenceStatus, ImageSource>
             {
-                { ReferenceStatus.BuiltIn, ToImageSource(Resources.RubberduckUI.tick_circle) },
+                { ReferenceStatus.None, null },
+                { ReferenceStatus.Pinned , ToImageSource(Resources.RubberduckUI.pinned) },
+                { ReferenceStatus.Recent, ToImageSource(Resources.RubberduckUI.clock_select) },
+                { ReferenceStatus.Recent | ReferenceStatus.Pinned, ToImageSource(Resources.RubberduckUI.clock_select_pinned) },
+                { ReferenceStatus.BuiltIn, ToImageSource(Resources.RubberduckUI.padlock) },
                 { ReferenceStatus.Broken, ToImageSource(Resources.RubberduckUI.exclamation) },
                 { ReferenceStatus.Loaded, ToImageSource(Resources.RubberduckUI.tick_circle) },
-                { ReferenceStatus.Removed, ToImageSource(Resources.RubberduckUI.cross_circle) }
+                { ReferenceStatus.Added, ToImageSource(Resources.RubberduckUI.plus_circle) },
+                { ReferenceStatus.BuiltIn | ReferenceStatus.Pinned, ToImageSource(Resources.RubberduckUI.lock_pinned) },
+                { ReferenceStatus.Broken | ReferenceStatus.Pinned, ToImageSource(Resources.RubberduckUI.exclamation_pinned) },
+                { ReferenceStatus.Loaded | ReferenceStatus.Pinned, ToImageSource(Resources.RubberduckUI.tick_circle_pinned) },
+                { ReferenceStatus.Added | ReferenceStatus.Pinned, ToImageSource(Resources.RubberduckUI.plus_circle_pinned) }
             };
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return _icons.First(); // todo fix this: wrecks the xaml designer otherwise
-
-            if (value == null) { return null; }
-            if (value.GetType() != typeof(ReferenceStatus))
-            {
-                throw new ArgumentException("value must be a ReferenceStatus");
-            }
-
-            var status = (ReferenceStatus)value;
-            return _icons[status];
+            if (value == null || value.GetType() != typeof(ReferenceStatus)) { return null; }
+            return _icons[(ReferenceStatus)value];
         }
     }
 }

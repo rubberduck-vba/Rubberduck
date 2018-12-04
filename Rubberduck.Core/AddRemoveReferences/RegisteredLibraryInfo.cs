@@ -1,12 +1,33 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.AddRemoveReferences
 {
+    public struct RegisteredLibraryKey
+    {
+        public Guid Guid { get; }
+        public int Major { get; }
+        public int Minor { get; }
+
+        public RegisteredLibraryKey(Guid guid, int major, int minor)
+        {
+            Guid = guid;
+            Major = major;
+            Minor = minor;
+        }
+    }
+
     public class RegisteredLibraryInfo : IReferenceInfo
     {
+        private static readonly Dictionary<int, string> NativeLocaleNames = new Dictionary<int, string>
+        {
+            { 0, "Standard" }
+        };
+
+        public RegisteredLibraryKey UniqueId { get; }
         public string Name { get; set; }
         public Guid Guid { get; set; }
         public string Description { get; set; }
@@ -14,6 +35,31 @@ namespace Rubberduck.AddRemoveReferences
         public string FullPath => string.IsNullOrEmpty(FullPath32) || Has64BitVersion && Environment.Is64BitProcess ? FullPath64 : FullPath32;
         public int Major { get; set; }
         public int Minor { get; set; }
+        public int LocaleId { get; set; }
+
+        public string LocaleName
+        {
+            get
+            {
+                if (NativeLocaleNames.ContainsKey(LocaleId))
+                {
+                    return NativeLocaleNames[LocaleId];
+                }
+
+                try
+                {
+                    var name = CultureInfo.GetCultureInfo(LocaleId).NativeName;
+                    NativeLocaleNames.Add(LocaleId, name);
+                    return name;
+                }
+                catch
+                {
+                    NativeLocaleNames.Add(LocaleId, "Standard");
+                    return "Standard";
+                }
+            }
+        }
+
         public LIBFLAGS Flags { get; set; }
 
         private string FullPath32 { get; }
@@ -21,7 +67,9 @@ namespace Rubberduck.AddRemoveReferences
         public bool Has32BitVersion => !string.IsNullOrEmpty(FullPath32);
         public bool Has64BitVersion => !string.IsNullOrEmpty(FullPath64);
 
-        public RegisteredLibraryInfo(Guid guid, string name, string version, string path32, string path64)
+        public int? Priority => null;
+
+        public RegisteredLibraryInfo(Guid guid, string description, string version, string path32, string path64)
         {
             Guid = guid;
 
@@ -32,12 +80,13 @@ namespace Rubberduck.AddRemoveReferences
                 Minor = int.TryParse(majorMinor[1], NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out var minor) ? minor : 0;
             }
 
-            FullPath32 = path32;
-            FullPath64 = path64;
+            FullPath32 = path32 ?? string.Empty;
+            FullPath64 = path64 ?? string.Empty;
 
-            Name = !string.IsNullOrEmpty(name) ? name : Path.GetFileNameWithoutExtension(FullPath);
+            Description = !string.IsNullOrEmpty(description) ? description : Path.GetFileNameWithoutExtension(FullPath);
+            UniqueId = new RegisteredLibraryKey(guid, Major, Minor);
         }
 
-        public override string ToString() => Name;
+        public override string ToString() => Description;
     }
 }

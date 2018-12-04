@@ -24,24 +24,22 @@ namespace Rubberduck.Navigation.CodeExplorer
         public override BitmapImage CollapsedIcon => GetIcon();
         public override BitmapImage ExpandedIcon => GetIcon();
 
-        public int Priority => _reference.Priority;
+        public int? Priority => _reference.Priority;
         public bool Locked => _reference.IsBuiltIn;
 
         private BitmapImage GetIcon()
         {
-            switch (_reference.Status)
+            if (_reference.Status.HasFlag(ReferenceStatus.Broken))
             {
-                case ReferenceStatus.None:
-                case ReferenceStatus.Loaded:
-                    return _reference.IsBuiltIn ? GetImageSource(CodeExplorerUI.LockedReference) : GetImageSource(CodeExplorerUI.Reference);
-                case ReferenceStatus.BuiltIn:
-                    return GetImageSource(CodeExplorerUI.ObjectLibrary);
-                case ReferenceStatus.Broken:
-                case ReferenceStatus.Removed:
-                    return GetImageSource(CodeExplorerUI.BrokenReference);
-                default:
-                    throw new ArgumentOutOfRangeException();
+                GetImageSource(CodeExplorerUI.BrokenReference);
             }
+
+            if (_reference.Status == ReferenceStatus.None || _reference.Status.HasFlag(ReferenceStatus.Loaded))
+            {
+                return _reference.IsBuiltIn ? GetImageSource(CodeExplorerUI.LockedReference) : GetImageSource(CodeExplorerUI.Reference);
+            }
+
+            return GetImageSource(CodeExplorerUI.ObjectLibrary);
         }
     }
 }

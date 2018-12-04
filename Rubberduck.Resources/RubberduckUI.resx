@@ -1298,4 +1298,88 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="References" xml:space="preserve">
     <value>References</value>
   </data>
+  <data name="padlock" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\lock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BrokenReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\BrokenReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LockedReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources\LockedReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="clock_select" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\clock-select.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_select_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\clock-select-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="exclamation_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\exclamation-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lock_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\lock-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="plus_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\plus-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="plus_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\plus-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tick_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\tick-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="References_AddFailedCaption" xml:space="preserve">
+    <value>Could not add reference</value>
+  </data>
+  <data name="References_BrowseCaption" xml:space="preserve">
+    <value>Browse for reference</value>
+  </data>
+  <data name="References_BrowseFilterActiveX" xml:space="preserve">
+    <value>ActiveX Controls (*.ocx)|*.ocx</value>
+  </data>
+  <data name="References_BrowseFilterAllFiles" xml:space="preserve">
+    <value>All files (*.*)|*.*</value>
+  </data>
+  <data name="References_BrowseFilterExcel" xml:space="preserve">
+    <value>Microsoft Excel Files (*.xlsm;*.xlam;*.xls;*.xla)|*.xlsm;*.xlam;*.xls;*.xla</value>
+  </data>
+  <data name="References_BrowseFilterExecutable" xml:space="preserve">
+    <value>Executable Files (*.exe;*.dll)|*.exe;*.dll</value>
+  </data>
+  <data name="References_BrowseFilterTypes" xml:space="preserve">
+    <value>Type Libraries (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
+  </data>
+  <data name="References_Caption" xml:space="preserve">
+    <value>Add/Remove References</value>
+  </data>
+  <data name="References_Locale" xml:space="preserve">
+    <value>Locale:</value>
+  </data>
+  <data name="References_Pinned" xml:space="preserve">
+    <value>Pinned</value>
+  </data>
+  <data name="References_Projects" xml:space="preserve">
+    <value>Projects</value>
+  </data>
+  <data name="References_Recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="References_SearchPlaceholder" xml:space="preserve">
+    <value>Search for reference...</value>
+  </data>
+  <data name="References_SubCaption" xml:space="preserve">
+    <value>Select type libraries and VB projects to add or remove.</value>
+  </data>
+  <data name="References_TypeLibs" xml:space="preserve">
+    <value>Type Libraries</value>
+  </data>
+  <data name="References_Version" xml:space="preserve">
+    <value>Version:</value>
+  </data>
 </root>

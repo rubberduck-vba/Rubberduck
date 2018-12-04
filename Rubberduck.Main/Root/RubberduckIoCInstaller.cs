@@ -9,6 +9,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using Rubberduck.AddRemoveReferences;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
@@ -52,6 +53,7 @@ using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
+using Rubberduck.UI.AddRemoveReferences;
 
 namespace Rubberduck.Root
 {
@@ -121,6 +123,13 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IVBEInteraction>()
                 .ImplementedBy<VBEInteraction>()
+                .LifestyleSingleton());
+
+            container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
+                .ImplementedBy<AddRemoveReferencesPresenterFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IRegisteredLibraryFinderService>()
+                .ImplementedBy<RegisteredLibraryFinderService>()
                 .LifestyleSingleton());
 
             RegisterRefactoringDialogs(container);
