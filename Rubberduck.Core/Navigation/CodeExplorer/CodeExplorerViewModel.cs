@@ -317,7 +317,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
                     grouping,
-                    _vbe)).ToList();
+                    _vbe,
+                    true)).ToList();
 
             UpdateNodes(Projects, newProjects);
             
