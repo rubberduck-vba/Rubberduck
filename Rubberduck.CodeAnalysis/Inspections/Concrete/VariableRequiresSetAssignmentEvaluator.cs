@@ -96,8 +96,9 @@ namespace Rubberduck.Inspections
             var project = Declaration.GetProjectParent(reference.ParentScoping);
             var module = Declaration.GetModuleParent(reference.ParentScoping);
 
+            //Covers the case of a single variable on the RHS of the assignment.
             var simpleName = expression.GetDescendent<VBAParser.SimpleNameExprContext>();
-            if (simpleName != null)
+            if (simpleName != null && simpleName.GetText() == expression.GetText())
             {
                 return declarationFinderProvider.DeclarationFinder.MatchName(simpleName.identifier().GetText())
                     .Any(d => AccessibilityCheck.IsAccessible(project, module, reference.ParentScoping, d) && d.IsObject);

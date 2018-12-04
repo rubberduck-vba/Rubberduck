@@ -485,6 +485,24 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void ObjectVariableNotSet_ComplexExpressionOnRHSWithMemberAccess_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub Test()
+    Dim foo As Variant
+    Dim bar As Collection
+    Set bar = New Collection
+    bar.Add ""x"", ""x""
+    foo = ""Test"" & bar.Item(""x"")
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, new[]{"VBA.4.2"});
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_LSetOnUDT_ReturnsNoResult()
         {
 
