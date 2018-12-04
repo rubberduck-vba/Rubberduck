@@ -649,6 +649,16 @@ namespace Rubberduck.Parsing.VBA
             _moduleStates[module].SetComments(new List<CommentNode>(comments));
         }
 
+        public IReadOnlyCollection<CommentNode> GetModuleComments(QualifiedModuleName module)
+        {
+            if (!_moduleStates.TryGetValue(module, out var moduleState))
+            {
+                return new List<CommentNode>();
+            }
+
+            return moduleState.Comments;
+        }
+
         public List<IAnnotation> AllAnnotations
         {
             get

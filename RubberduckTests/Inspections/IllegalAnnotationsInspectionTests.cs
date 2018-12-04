@@ -784,6 +784,31 @@ End Sub
 
         [Test]
         [Category("Inspections")]
+        public void GeneralAnnotationOnNonDeclarationNonIdentifier_NoResult()
+        {
+            const string inputCode = @"
+Option Explicit
+'@Ignore OptionBase
+Option Base 1
+
+Public foo As Long
+
+Public Sub Test2()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         [Ignore("We cannot really test this because we currently do not have a pure IdentifierReferenceAnnotation.")]
         public void IdentifierReferenceAnnotationDoesNotEndMemberAnnotationSection()
         {

@@ -24,7 +24,8 @@ namespace Rubberduck.Inspections.Concrete
             var identifierReferences = State.DeclarationFinder.AllIdentifierReferences().ToList();
             var annotations = State.AllAnnotations;
 
-            var illegalAnnotations = UnboundAnnotations(annotations, userDeclarations, identifierReferences);
+            var illegalAnnotations = UnboundAnnotations(annotations, userDeclarations, identifierReferences)
+                .Where(annotation => !annotation.AnnotationType.HasFlag(AnnotationType.GeneralAnnotation));
 
             return illegalAnnotations.Select(annotation => 
                 new QualifiedContextInspectionResult(
