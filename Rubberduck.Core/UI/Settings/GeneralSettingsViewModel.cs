@@ -172,6 +172,15 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        public bool SetDpiUnawareEnabled
+        {
+            get
+            {
+                var osVersion = _operatingSystem.GetOSVersion();
+                return osVersion != null && osVersion >= WindowsVersion.Windows81;
+            }
+        }
+
         private bool SynchronizeVBESettings()
         {
             if (!_messageBox.ConfirmYesNo(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,

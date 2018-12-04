@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Castle.Windsor;
 using NLog;
+using Rubberduck.Common.WinAPI;
 using Rubberduck.Root;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Registration;
@@ -164,7 +165,7 @@ namespace Rubberduck
                 {
                     if (_initialSettings.SetDpiUnaware)
                     {
-                        SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
+                        SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
                     }
                 }
                 catch (Exception)
@@ -310,16 +311,6 @@ namespace Rubberduck
                     _isInitialized = false;
                 }
             }
-        }
-
-        [DllImport("SHCore.dll", SetLastError = true)]
-        private static extern bool SetProcessDpiAwareness(PROCESS_DPI_AWARENESS awareness);
-
-        private enum PROCESS_DPI_AWARENESS
-        {
-            Process_DPI_Unaware = 0,
-            Process_System_DPI_Aware = 1,
-            Process_Per_Monitor_DPI_Aware = 2
         }
     }
 }
