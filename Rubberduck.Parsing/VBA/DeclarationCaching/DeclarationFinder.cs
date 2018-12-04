@@ -503,7 +503,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         private IEnumerable<Declaration> FindEvents(Declaration module)
         {
-            Debug.Assert(module != null);
+            if (module is null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
 
             var members = Members(module.QualifiedName.QualifiedModuleName);
             return members == null 
@@ -541,19 +544,26 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 return null;
             }
 
-            var callStmt = argExpression?.GetAncestor<VBAParser.CallStmtContext>();
-            var procedureName = callStmt?.GetDescendent<VBAParser.LExpressionContext>()
-                                         .GetDescendents<VBAParser.IdentifierContext>()
-                                         .LastOrDefault()?.GetText();
-            if (procedureName == null)
+            var callStmt = argExpression.GetAncestor<VBAParser.CallStmtContext>();
+
+            var identifier = callStmt?
+                .GetDescendent<VBAParser.LExpressionContext>()
+                .GetDescendents<VBAParser.IdentifierContext>()
+                .LastOrDefault();
+
+            if (identifier == null)
             {
                 // if we don't know what we're calling, we can't dig any further
                 return null;
             }
 
-            var procedure = MatchName(procedureName)
-                .Where(p => AccessibilityCheck.IsAccessible(enclosingProcedure, p))
-                .SingleOrDefault(p => !p.DeclarationType.HasFlag(DeclarationType.Property) || p.DeclarationType.HasFlag(DeclarationType.PropertyGet));
+            var selection = new QualifiedSelection(enclosingProcedure.QualifiedModuleName, identifier.GetSelection());
+            if (!_referencesBySelection.TryGetValue(selection, out var matches))
+            {
+                return null;
+            }
+
+            var procedure = matches.SingleOrDefault()?.Declaration;
             if (procedure?.ParentScopeDeclaration is ClassModuleDeclaration)
             {
                 // we can't know that the member is on the class' default interface

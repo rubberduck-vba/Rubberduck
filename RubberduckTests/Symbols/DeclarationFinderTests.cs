@@ -10,6 +10,8 @@ using System.Threading;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime;
 using Rubberduck.Common;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 
 namespace RubberduckTests.Symbols
 {
@@ -1211,6 +1213,44 @@ End Sub";
                     actual.DeclarationType);
             }
         }
+
+        [Test]
+        [Category("Resolver")]
+        public void FindParameterFromArgument_WorksWithMultipleScopes()
+        {
+            var module1 =
+@"Public Sub Foo(arg As Variant)
+End Sub";
+
+            var module2 =
+@"Private Sub Foo(expected As Variant)
+End Sub
+
+Public Sub Bar()
+    Dim fooBar As Variant
+    Foo fooBar
+End Sub
+";
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("UnderTest", ProjectProtection.Unprotected)
+                .AddComponent("Module1", ComponentType.StandardModule, module1, new Selection(1, 1))
+                .AddComponent("Module2", ComponentType.StandardModule, module2, new Selection(1, 1))
+                .AddProjectToVbeBuilder()
+                .Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var declarations = state.DeclarationFinder.AllDeclarations.ToList();
+                var expected = declarations.FirstOrDefault(decl => decl.IdentifierName.Equals("expected"));
+
+                var enclosing = declarations.FirstOrDefault(decl => decl.IdentifierName.Equals("Bar"));
+                var context = enclosing?.Context.GetDescendent<VBAParser.ArgumentExpressionContext>();
+                var actual = state.DeclarationFinder.FindParameterFromArgument(context, enclosing);
+
+                Assert.AreEqual(expected, actual);
+            }
+        }
+
 
         [Category("Resolver")]
         [Category("Interfaces")]
