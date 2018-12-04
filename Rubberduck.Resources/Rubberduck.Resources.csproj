@@ -30,11 +30,4 @@
     <None Remove="Icons\Fugue\plus-circle-pinned.png" />
     <None Remove="Icons\Fugue\tick-circle-pinned.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Resource Remove="Resources\BrokenReference.png" />
-    <Resource Remove="Resources\lock.png" />
-    <Resource Remove="Resources\LockedReference.png" />
-    <Resource Remove="Resources\ObjectAssembly.bmp" />
-    <Resource Remove="Resources\PinnedReference.png" />
-  </ItemGroup>
 </Project>
