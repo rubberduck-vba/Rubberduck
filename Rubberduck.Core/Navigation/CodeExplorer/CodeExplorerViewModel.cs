@@ -561,6 +561,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public ExportAllCommand ExportAllCommand { get; set; }
         public CommandBase RemoveCommand { get; }
         public PrintCommand PrintCommand { get; set; }
+        public AddRemoveReferencesCommand AddRemoveReferencesCommand { get; set; }
 
         private readonly RemoveCommand _externalRemoveCommand;
 
