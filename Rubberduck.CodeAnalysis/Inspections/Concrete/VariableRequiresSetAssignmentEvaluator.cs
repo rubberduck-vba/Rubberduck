@@ -4,6 +4,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using System.Diagnostics;
 using System.Linq;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections
 {
@@ -100,10 +101,14 @@ namespace Rubberduck.Inspections
             var simpleName = expression.GetDescendent<VBAParser.SimpleNameExprContext>();
             if (simpleName != null && simpleName.GetText() == expression.GetText())
             {
-                return declarationFinderProvider.DeclarationFinder.MatchName(simpleName.identifier().GetText())
-                    .Any(d => AccessibilityCheck.IsAccessible(project, module, reference.ParentScoping, d) && d.IsObject);
+                var qualifiedIdentifierSelection = new QualifiedSelection(module.QualifiedModuleName,
+                    simpleName.identifier().GetSelection());
+                return declarationFinderProvider.DeclarationFinder.IdentifierReferences(qualifiedIdentifierSelection)
+                    .Any(identifierReference => identifierReference.Declaration.IsObject 
+                                                && simpleName.identifier().GetText() == identifierReference.Declaration.IdentifierName);
             }
 
+            //todo: Use code path analysis to ensure that we are really picking up the last assignment to the RHS.
             // is the reference referring to something else in scope that's a object?
             return declarationFinderProvider.DeclarationFinder.MatchName(expression.GetText())
                 .Any(decl => (decl.DeclarationType.HasFlag(DeclarationType.ClassModule) || Tokens.Object.Equals(decl.AsTypeName))

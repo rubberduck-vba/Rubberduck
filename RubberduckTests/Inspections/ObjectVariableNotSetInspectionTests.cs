@@ -503,6 +503,25 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void ObjectVariableNotSet_SinlgeRHSVariableCaseRespectsDeclarationShadowing()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
+Private bar As Collection
+
+Private Sub Test()
+    Dim foo As Variant
+    Dim bar As Long
+    bar = 42
+    foo = bar
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, new[] { "VBA.4.2" });
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_LSetOnUDT_ReturnsNoResult()
         {
 
