@@ -2,10 +2,13 @@
 
 namespace Rubberduck.Common.WinAPI
 {
+    /// <summary>
+    /// Native functions from SHCore.dll
+    /// </summary>
     public static class SHCore
     {
         /// <summary>
-        /// Sets the DPI awerness level of the current process.
+        /// Sets the DPI awareness level of the current process.
         /// </summary>
         /// <param name="awareness">DPI awareness level.</param>
         /// <returns>HRESULT of S_OK, E_INVALIDARG or E_ACCESSDENIED.</returns>
