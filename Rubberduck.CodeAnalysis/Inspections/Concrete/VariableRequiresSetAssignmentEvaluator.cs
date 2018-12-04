@@ -59,7 +59,7 @@ namespace Rubberduck.Inspections
                 }
                 var parameters = (classModule.DefaultMember as IParameterizedDeclaration)?.Parameters;
                 // assign declaration is an object without a default parameterless (or with all parameters optional) member - LHS needs a 'Set' keyword.
-                return parameters != null && parameters.All(p => p.IsOptional);
+                return parameters != null && parameters.Any(p => !p.IsOptional);
             }
 
             // assigned declaration is a variant. we need to know about the RHS of the assignment.           

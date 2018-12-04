@@ -157,19 +157,6 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsResult()
-        {
-            var expectResultCount = 1;
-            var input =
-@"
-Private Sub TestSub(ByRef testParam As Variant, target As Range)
-    testParam = target
-End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedBaseType_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -180,24 +167,6 @@ Private Sub Workbook_Open()
     target = ""A1""
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenObjectVariableNotSet_ReturnsResult()
-        {
-            var expectResultCount = 1;
-            var input =
-@"
-Private Sub Workbook_Open()
-    
-    Dim target As Range
-    target = Range(""A1"")
-    
-    target.Value = ""forgot something?""
-
-End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
         [Test]
@@ -490,7 +459,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_SinlgeRHSVariableCaseRespectsDeclarationShadowing()
+        public void ObjectVariableNotSet_SingleRHSVariableCaseRespectsDeclarationShadowing()
         {
 
             var expectResultCount = 0;
@@ -505,6 +474,82 @@ Private Sub Test()
     foo = bar
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_SingleRHSVariableCaseRespectsDefaultMembers()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Range
+    Dim bar As Variant    
+    bar = foo
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_SingleRHSVariableCaseIdentifiesDefaultMembersNotReturningAnObject()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Recordset
+    Dim bar As Variant    
+    bar = foo
+End Sub";
+            //The default member of Recordset is Fields, which is an object.
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_AssignmentToVarirableWithDefaultMemberReturningAnObject_OneResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Recordset
+    Dim bar As Variant    
+    foo = bar
+End Sub";
+            //The default member of Recordset is Fields, which is an object.
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_NewExprWithNonObjectDefaultMember_NoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Variant  
+    foo = New Connection
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_NewExprWithObjectOnlyDefaultMember_OneResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Variant  
+    foo = New Recordset
+End Sub";
+            //The default member of Recordset is Fields, which is an object.
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
         }
 
         [Test]

@@ -62,21 +62,13 @@ End Sub
         {
             var inputCode =
                 @"
-Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) As Range
-    If source Is Nothing Then
-        CombineRanges = toCombine 'no inspection result (but there should be one!)
-    Else
-        CombineRanges = Union(source, toCombine) 'no inspection result (but there should be one!)
-    End If
+Private Function ReturnObject(ByVal source As Object) As Object
+    ReturnObject = source
 End Function";
             var expectedCode =
                 @"
-Private Function CombineRanges(ByVal source As Range, ByVal toCombine As Range) As Range
-    If source Is Nothing Then
-        Set CombineRanges = toCombine 'no inspection result (but there should be one!)
-    Else
-        Set CombineRanges = Union(source, toCombine) 'no inspection result (but there should be one!)
-    End If
+Private Function ReturnObject(ByVal source As Object) As Object
+    Set ReturnObject = source
 End Function";
 
             var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new ObjectVariableNotSetInspection(state));
