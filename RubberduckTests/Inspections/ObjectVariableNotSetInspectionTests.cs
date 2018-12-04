@@ -157,19 +157,6 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsResult()
-        {
-            var expectResultCount = 1;
-            var input =
-@"
-Private Sub TestSub(ByRef testParam As Variant)
-    testParam = Range(""A1:C1"")
-End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsResult()
         {
             var expectResultCount = 1;
@@ -498,7 +485,7 @@ Private Sub Test()
     bar.Add ""x"", ""x""
     foo = ""Test"" & bar.Item(""x"")
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, new[]{"VBA.4.2"});
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2");
         }
 
         [Test]
@@ -517,7 +504,7 @@ Private Sub Test()
     bar = 42
     foo = bar
 End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, new[] { "VBA.4.2" });
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
         }
 
         [Test]
