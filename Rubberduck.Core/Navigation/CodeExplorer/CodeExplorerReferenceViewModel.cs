@@ -8,7 +8,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerReferenceViewModel : CodeExplorerItemViewModel
     {
-        private ReferenceModel _reference;
+        private readonly ReferenceModel _reference;
 
         public CodeExplorerReferenceViewModel(CodeExplorerReferenceFolderViewModel parent, ReferenceModel reference)
         {
@@ -34,12 +34,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 GetImageSource(CodeExplorerUI.BrokenReference);
             }
 
-            if (_reference.Status == ReferenceStatus.None || _reference.Status.HasFlag(ReferenceStatus.Loaded))
-            {
-                return _reference.IsBuiltIn ? GetImageSource(CodeExplorerUI.LockedReference) : GetImageSource(CodeExplorerUI.Reference);
-            }
-
-            return GetImageSource(CodeExplorerUI.ObjectLibrary);
+            return _reference.IsBuiltIn ? GetImageSource(CodeExplorerUI.LockedReference) : GetImageSource(CodeExplorerUI.Reference);
         }
     }
 }
