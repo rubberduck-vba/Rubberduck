@@ -4,21 +4,11 @@ namespace Rubberduck.Common
 {
     public struct WindowsVersion : IComparable<WindowsVersion>
     {
-        public static WindowsVersion Windows10_1809 = new WindowsVersion(10, 0, 17763);
-        public static WindowsVersion Windows10_1803 = new WindowsVersion(10, 0, 17134);
-        public static WindowsVersion Windows10_1709 = new WindowsVersion(10, 0, 16299);
-        public static WindowsVersion Windows10_1703 = new WindowsVersion(10, 0, 15063);
-        public static WindowsVersion Windows10_1607 = new WindowsVersion(10, 0, 14393);
-        public static WindowsVersion Windows10_1511 = new WindowsVersion(10, 0, 10586);
         public static WindowsVersion Windows10 = new WindowsVersion(10, 0, 10240);
-        public static WindowsVersion Windows81_U1 = new WindowsVersion(6, 3, 9600);
         public static WindowsVersion Windows81 = new WindowsVersion(6, 3, 9200);
         public static WindowsVersion Windows8 = new WindowsVersion(6, 2, 9200);
         public static WindowsVersion Windows7_SP1 = new WindowsVersion(6, 1, 7601);
-        public static WindowsVersion Windows7 = new WindowsVersion(6, 1, 7600);
         public static WindowsVersion WindowsVista_SP2 = new WindowsVersion(6, 0, 6002);
-        public static WindowsVersion WindowsVista_SP1 = new WindowsVersion(6, 0, 6001);
-        public static WindowsVersion WindowsVista = new WindowsVersion(6, 0, 6000);
 
         public WindowsVersion(int major, int minor, int build)
         {
