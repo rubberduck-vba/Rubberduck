@@ -126,17 +126,11 @@
   <data name="TodoExplorer_LineNumber" xml:space="preserve">
     <value>Ligne</value>
   </data>
-  <data name="TodoSettings_Caption" xml:space="preserve">
-    <value>Marqueurs "TODO"</value>
-  </data>
   <data name="TodoSettings_TokenLabel" xml:space="preserve">
     <value>Texte:</value>
   </data>
   <data name="TodoSettings_TokenListLabel" xml:space="preserve">
     <value>Liste:</value>
-  </data>
-  <data name="TodoSettings_TextLabel" xml:space="preserve">
-    <value>Texte:</value>
   </data>
   <data name="TodoSettings_Text" xml:space="preserve">
     <value>Texte</value>

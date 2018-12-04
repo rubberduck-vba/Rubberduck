@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
@@ -34,7 +35,8 @@ namespace Rubberduck.Inspections.Concrete
             var unassigned = (from function in functions
                              let isUdt = IsReturningUserDefinedType(function)
                              let inScopeRefs = function.References.Where(r => r.ParentScoping.Equals(function))
-                             where (!isUdt && (!inScopeRefs.Any(r => r.IsAssignment)))
+                             where (!isUdt && (!inScopeRefs.Any(r => r.IsAssignment) && 
+                                               !inScopeRefs.Any(reference => IsAssignedByRefArgument(function, reference))))
                                 || (isUdt && !IsUserDefinedTypeAssigned(function))
                              select function)
                              .ToList();
@@ -44,6 +46,17 @@ namespace Rubberduck.Inspections.Concrete
                     new DeclarationInspectionResult(this,
                                          string.Format(InspectionResults.NonReturningFunctionInspection, issue.IdentifierName),
                                          issue));
+        }
+
+        private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference)
+        {
+            var argExpression = reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>();
+            var parameter = State.DeclarationFinder.FindParameterFromArgument(argExpression, enclosingProcedure);
+
+            // note: not recursive, by design.
+            return parameter != null
+                   && (parameter.IsImplicitByRef || parameter.IsByRef)
+                   && parameter.References.Any(r => r.IsAssignment);
         }
 
         private bool IsReturningUserDefinedType(Declaration member)

@@ -117,63 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AutoCompleteClosingBraceDescription" xml:space="preserve">
-    <value>Schließe geschweifte Klammern '{'</value>
-  </data>
-  <data name="AutoCompleteClosingBracketDescription" xml:space="preserve">
-    <value>Schließe eckige Klammern '['</value>
-  </data>
-  <data name="AutoCompleteClosingParentheseDescription" xml:space="preserve">
-    <value>Schließe Klammern '('</value>
-  </data>
-  <data name="AutoCompleteClosingStringDescription" xml:space="preserve">
-    <value>Schließe String-Zeichenketten '"'</value>
-  </data>
-  <data name="AutoCompleteDoBlockDescription" xml:space="preserve">
-    <value>Schließe 'Do [Until|While]...Loop' Blöcke</value>
-  </data>
-  <data name="AutoCompleteEnumBlockDescription" xml:space="preserve">
-    <value>Schließe 'Enum' Blöcke</value>
-  </data>
-  <data name="AutoCompleteForBlockDescription" xml:space="preserve">
-    <value>Schließe 'For [Each]...Next' Blöcke</value>
-  </data>
-  <data name="AutoCompleteIfBlockDescription" xml:space="preserve">
-    <value>Schließe 'If' Blöcke</value>
-  </data>
-  <data name="AutoCompleteOnErrorResumeNextBlockDescription" xml:space="preserve">
-    <value>Behandele 'On Error Resume Next...GoTo 0' als Block</value>
-  </data>
-  <data name="AutoCompletePrecompilerIfBlockDescription" xml:space="preserve">
-    <value>Schließe Precompiler '#If' Blöcke</value>
-  </data>
-  <data name="AutoCompleteSelectBlockDescription" xml:space="preserve">
-    <value>Schließe 'Select' Blöcke</value>
-  </data>
-  <data name="AutoCompleteTypeBlockDescription" xml:space="preserve">
-    <value>Schließe 'Type' Blöcke</value>
-  </data>
-  <data name="AutoCompleteWhileBlockDescription" xml:space="preserve">
-    <value>Schließe 'While...Wend' Blöcke</value>
-  </data>
-  <data name="AutoCompleteWithBlockDescription" xml:space="preserve">
-    <value>Schließe 'With' Blöcke</value>
-  </data>
-  <data name="AutoCompleteSubBlockDescription" xml:space="preserve">
-    <value>Überschreibe 'Sub' Vervollständigung der VBE</value>
-  </data>
-  <data name="AutoCompleteFunctionBlockDescription" xml:space="preserve">
-    <value>Überschreibe 'Function' Vervollständigung der VBE</value>
-  </data>
-  <data name="AutoCompletePropertyBlockDescription" xml:space="preserve">
-    <value>Überschreibe 'Property' Vervollständigung der VBE</value>
-  </data>
-  <data name="HandleTabKey" xml:space="preserve">
-    <value>Vervollständige Blöcke mit TAB</value>
-  </data>
-  <data name="HandleEnterKey" xml:space="preserve">
-    <value>Vervollständige Blöcke mit ENTER</value>
-  </data>
   <data name="PageHeader" xml:space="preserve">
     <value>Einstellungen der automatischen Vervollständigung</value>
   </data>
@@ -182,5 +125,35 @@
   </data>
   <data name="EnableSmartConcat" xml:space="preserve">
     <value>Aktiviere intelligente Verkettung</value>
+  </data>
+  <data name="CompleteBlockOnTab" xml:space="preserve">
+    <value>Blöcke mit TAB automatisch vervollständigen</value>
+  </data>
+  <data name="CompleteBlockOnEnter" xml:space="preserve">
+    <value>Blöcke mit RETURN automatisch vervollständigen</value>
+  </data>
+  <data name="BlockCompletion" xml:space="preserve">
+    <value>Blockvervollständigung</value>
+  </data>
+  <data name="ConcatVbNewLine" xml:space="preserve">
+    <value>Durch Ctrl+RETURN mit 'vbNewLine' konkatenieren.</value>
+  </data>
+  <data name="EnableAutocompleteLabel" xml:space="preserve">
+    <value>Autovervollständigung aktivieren</value>
+  </data>
+  <data name="EnableBlockCompletion" xml:space="preserve">
+    <value>Blockvervollständigung aktivieren</value>
+  </data>
+  <data name="EnableSelfClosingPairs" xml:space="preserve">
+    <value>Selbstschließende Paare aktivieren</value>
+  </data>
+  <data name="SelfClosingPairs" xml:space="preserve">
+    <value>Selbstschließende Paare</value>
+  </data>
+  <data name="SmartConcat" xml:space="preserve">
+    <value>Intelligentes Konkatenieren</value>
+  </data>
+  <data name="MaxConcatLines" xml:space="preserve">
+    <value>Maximale Zeilenanzahl</value>
   </data>
 </root>

@@ -423,7 +423,7 @@ namespace Rubberduck.Parsing.VBA
             if (AllUserDeclarations.Any())
             {
                 var projectId = module.ProjectId;
-                IVBProject project = GetProject(projectId);
+                var project = GetProject(projectId);
 
                 if (project == null)
                 {
@@ -647,6 +647,16 @@ namespace Rubberduck.Parsing.VBA
         public void SetModuleComments(QualifiedModuleName module, IEnumerable<CommentNode> comments)
         {
             _moduleStates[module].SetComments(new List<CommentNode>(comments));
+        }
+
+        public IReadOnlyCollection<CommentNode> GetModuleComments(QualifiedModuleName module)
+        {
+            if (!_moduleStates.TryGetValue(module, out var moduleState))
+            {
+                return new List<CommentNode>();
+            }
+
+            return moduleState.Comments;
         }
 
         public List<IAnnotation> AllAnnotations

@@ -65,13 +65,9 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
                 .GroupBy(declaration => declaration.ProjectId)
                 .ToList();
 
-            if (userDeclarations.Any(
-                    grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
-            {
-                return;
-            }
-
-            var newProjects = userDeclarations.Select(grouping =>
+            var newProjects = userDeclarations
+                .Where(grouping => grouping.Any(declaration => declaration.DeclarationType == DeclarationType.Project))
+                .Select(grouping =>
                 new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
                     grouping,

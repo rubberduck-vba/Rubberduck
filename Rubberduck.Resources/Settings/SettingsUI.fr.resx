@@ -174,9 +174,6 @@
   <data name="SelectAll" xml:space="preserve">
     <value>Tous</value>
   </data>
-  <data name="EnableAutocompleteLabel" xml:space="preserve">
-    <value>Activer cette fonctionnalité, malgré qu'elle est incomplète et peut se comporter étrangement.</value>
-  </data>
   <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
     <value>Charger les paramètres généraux</value>
   </data>
@@ -215,5 +212,14 @@
   </data>
   <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
     <value>Fichiers XML (.xml)|*.xml|Configuration de Rubberduck|*.config</value>
+  </data>
+  <data name="DialogCaption_LoadAutocompletionSettings" xml:space="preserve">
+    <value>Charger les paramètres d'autocomplétion</value>
+  </data>
+  <data name="DialogCaption_SaveAutocompletionSettings" xml:space="preserve">
+    <value>Enregistrer les paramètres d'autocomplétion</value>
+  </data>
+  <data name="PageHeader_AutoCompleteSettings" xml:space="preserve">
+    <value>Autocomplétion</value>
   </data>
 </root>

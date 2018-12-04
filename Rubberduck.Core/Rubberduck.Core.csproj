@@ -12,7 +12,7 @@
     <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <!-- Give a fixed version to not blow XAML generated code to smithereens -->
-    <AssemblyVersion>2.2</AssemblyVersion>
+    <AssemblyVersion>2.3.0</AssemblyVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
@@ -95,4 +95,21 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
+
+  <!-- BEGIN WINDOWS FORMS WORKAROUND SECTION -->
+  <ItemGroup>
+    <Compile Update="**\*Window.cs" SubType="Form" />
+    <Compile Update="**\*Dialog.cs" SubType="Form" />
+    <Compile Update="**\SettingsForm.cs" SubType="Form" />
+    <Compile Update="**\SimpleListControl.cs" SubType="Form" />
+    <Compile Update="**\Splash.cs" SubType="Form" />
+    <Compile Update="**\*.Designer.cs">
+      <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="UI\**\*.resx">
+      <DependentUpon>%(Filename).cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <!-- END WINDOWS FORMS WORKAROUND SECTION -->
+
 </Project>

@@ -125,13 +125,13 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
         private IVBProject GetProject()
         {
-            using (var activeProject = _vbe.ActiveVBProject)
+            //No using because the wrapper gets returned potentially. 
+            var activeProject = _vbe.ActiveVBProject;
+            if (!activeProject.IsWrappingNullReference)
             {
-                if (!activeProject.IsWrappingNullReference)
-                {
-                    return activeProject;
-                }
+                return activeProject;
             }
+            activeProject.Dispose();
             
             using (var projects = _vbe.VBProjects)
             {
@@ -143,10 +143,13 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
+            bool canExecute;
             using (var project = GetProject())
             {
-                return project != null && !project.IsWrappingNullReference && CanExecuteCode(project);
+                canExecute = project != null && !project.IsWrappingNullReference && CanExecuteCode(project);
             }
+
+            return canExecute;
         }
         
         private bool CanExecuteCode(IVBProject project)

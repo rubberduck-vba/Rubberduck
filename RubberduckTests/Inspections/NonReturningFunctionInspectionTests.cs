@@ -148,6 +148,130 @@ End Function";
 
         [Test]
         [Category("Inspections")]
+        public void NonReturningFunction_ReturnsResult_GivenParenthesizedByRefAssignment()
+        {
+            const string inputCode = @"
+Public Function Foo() As Boolean
+    ByRefAssign (Foo)
+End Function
+
+Public Sub ByRefAssign(ByRef a As Boolean)
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new NonReturningFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void NonReturningFunction_NoResult_GivenByRefAssignment_WithMemberAccess()
+        {
+            const string inputCode = @"
+Public Function Foo() As Boolean
+    TestModule1.ByRefAssign False, Foo
+End Function
+
+Public Sub ByRefAssign(ByVal v As Boolean, ByRef a As Boolean)
+    a = v
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new NonReturningFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void NonReturningFunction_ReturnsResult_GivenUnassignedByRefAssignment_WithMemberAccess()
+        {
+            const string inputCode = @"
+Public Function Foo() As Boolean
+    TestModule1.ByRefAssign False, Foo
+End Function
+
+Public Sub ByRefAssign(ByVal v As Boolean, ByRef a As Boolean)
+    'nope, not assigned
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new NonReturningFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void NonReturningFunction_NoResult_GivenClassMemberCall()
+        {
+            const string code = @"
+Public Function Foo() As Boolean
+    With New Class1
+        .ByRefAssign Foo
+    End With
+End Function
+";
+            const string classCode = @"
+Public Sub ByRefAssign(ByRef b As Boolean)
+End Sub
+";
+            var builder = new MockVbeBuilder();
+            builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("TestModule1", ComponentType.StandardModule, code)
+                .AddComponent("Class1", ComponentType.ClassModule, classCode);
+            var vbe = builder.Build();
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new NonReturningFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void NonReturningFunction_NoResult_GivenByRefAssignment_WithNamedArgument()
+        {
+            const string inputCode = @"
+Public Function Foo() As Boolean
+    ByRefAssign b:=Foo
+End Function
+
+Public Sub ByRefAssign(Optional ByVal a As Long, Optional ByRef b As Boolean)
+    b = False
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new NonReturningFunctionInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void NonReturningFunction_ReturnsResult_InterfaceImplementation()
         {
             //Input

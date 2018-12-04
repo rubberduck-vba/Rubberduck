@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
 
             return declarations
                 .Where(d => d.References.Any() && !excludedDeclarations.Any(excl => DeclarationReferencesContainsReference(excl, d)))
-                .SelectMany(d => d.References)
+                .SelectMany(d => d.References.Where(r => !IsAssignedByRefArgument(r.ParentScoping, r)))
                 .Distinct()
                 .Where(r => !r.IsIgnoringInspectionResultFor(AnnotationName))
                 .Where(r => !r.Context.TryGetAncestor<VBAParser.RedimStmtContext>(out _) && !IsArraySubscriptAssignment(r))
@@ -49,6 +49,17 @@ namespace Rubberduck.Inspections.Concrete
                     string.Format(InspectionResults.UnassignedVariableUsageInspection, r.IdentifierName),
                     State,
                     r)).ToList();
+        }
+
+        private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference)
+        {
+            var argExpression = reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>();
+            var parameter = State.DeclarationFinder.FindParameterFromArgument(argExpression, enclosingProcedure);
+
+            // note: not recursive, by design.
+            return parameter != null
+                   && (parameter.IsImplicitByRef || parameter.IsByRef)
+                   && parameter.References.Any(r => r.IsAssignment);
         }
 
         private static bool IsArraySubscriptAssignment(IdentifierReference reference)

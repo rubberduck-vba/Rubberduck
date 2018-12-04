@@ -246,4 +246,19 @@
   <data name="AddStepOneQuickFix" xml:space="preserve">
     <value>Step hinzufügen</value>
   </data>
+  <data name="UseTypedFunctionQuickFix" xml:space="preserve">
+    <value>'{0}' zu '{1}' ändern</value>
+  </data>
+  <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
+    <value>Das statisch erreichbare Tabellenblatt mit Codenamen referenzieren</value>
+  </data>
+  <data name="RemoveDuplicatedAnnotationQuickFix" xml:space="preserve">
+    <value>Duplizierte Annotation entfernen</value>
+  </data>
+  <data name="RemoveLocalErrorQuickFix" xml:space="preserve">
+    <value>'On Local Error' durch 'On Error' ersetzen</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentQuickFix" xml:space="preserve">
+    <value>'IsMissing'-Aufruf in Prüfung eines Standardwerts umschreiben.</value>
+  </data>
 </root>

@@ -153,9 +153,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Deklarování více proměnných v té samé instrukci je legální, ale nemělo by se to používat často. Zvažte deklaraci proměnných blíže k jejich použití, v jedné instrukci na jednu deklaraci.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Rubberduck používá v kódu modulu pouze první '@Folder' anotaci; zvažte odstranění nadbytečných.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Zde se jedná nejspíše o bug. Návratná hodnota funkce nebo property getteru musí být přidělena před jejím skončením, jinak program nebude pracovat s očekávanými výsledky. Jestliže nemá funkce smysluplnou návratnou hodnotu, zvažte místo toho její deklaraci jako proceduru 'Sub'.</value>
   </data>

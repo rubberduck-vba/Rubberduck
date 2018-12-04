@@ -117,63 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AutoCompleteClosingBraceDescription" xml:space="preserve">
-    <value>Close curly braces '{'</value>
-  </data>
-  <data name="AutoCompleteClosingBracketDescription" xml:space="preserve">
-    <value>Close square brackets '['</value>
-  </data>
-  <data name="AutoCompleteClosingParentheseDescription" xml:space="preserve">
-    <value>Close parentheses '('</value>
-  </data>
-  <data name="AutoCompleteClosingStringDescription" xml:space="preserve">
-    <value>Close string literals '"'</value>
-  </data>
-  <data name="AutoCompleteDoBlockDescription" xml:space="preserve">
-    <value>Close 'Do [Until|While]...Loop' loop blocks</value>
-  </data>
-  <data name="AutoCompleteEnumBlockDescription" xml:space="preserve">
-    <value>Close 'Enum' blocks</value>
-  </data>
-  <data name="AutoCompleteForBlockDescription" xml:space="preserve">
-    <value>Close 'For [Each]...Next' loop blocks</value>
-  </data>
-  <data name="AutoCompleteIfBlockDescription" xml:space="preserve">
-    <value>Close 'If' blocks</value>
-  </data>
-  <data name="AutoCompleteOnErrorResumeNextBlockDescription" xml:space="preserve">
-    <value>Treat 'On Error Resume Next...GoTo 0' as a block</value>
-  </data>
-  <data name="AutoCompletePrecompilerIfBlockDescription" xml:space="preserve">
-    <value>Close precompiler '#If' blocks</value>
-  </data>
-  <data name="AutoCompleteSelectBlockDescription" xml:space="preserve">
-    <value>Close 'Select' blocks</value>
-  </data>
-  <data name="AutoCompleteTypeBlockDescription" xml:space="preserve">
-    <value>Close 'Type' blocks</value>
-  </data>
-  <data name="AutoCompleteWhileBlockDescription" xml:space="preserve">
-    <value>Close 'While...Wend' loop blocks</value>
-  </data>
-  <data name="AutoCompleteWithBlockDescription" xml:space="preserve">
-    <value>Close 'With' blocks</value>
-  </data>
-  <data name="AutoCompleteSubBlockDescription" xml:space="preserve">
-    <value>Override 'Sub' member block completion</value>
-  </data>
-  <data name="AutoCompleteFunctionBlockDescription" xml:space="preserve">
-    <value>Override 'Function' member block completion</value>
-  </data>
-  <data name="AutoCompletePropertyBlockDescription" xml:space="preserve">
-    <value>Override 'Property' member block completion</value>
-  </data>
-  <data name="HandleTabKey" xml:space="preserve">
-    <value>Autocomplete blocks on TAB</value>
-  </data>
-  <data name="HandleEnterKey" xml:space="preserve">
-    <value>Autocomplete blocks on ENTER</value>
-  </data>
   <data name="PageHeader" xml:space="preserve">
     <value>Autocompletion Settings</value>
   </data>

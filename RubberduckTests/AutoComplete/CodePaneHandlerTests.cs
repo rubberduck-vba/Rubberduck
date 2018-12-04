@@ -65,6 +65,20 @@ namespace RubberduckTests.AutoComplete
 
         [Test]
         [Category("AutoComplete")]
+        public void GivenPrintToken_PrettifiedCaretIsAtLastCharacter()
+        {
+            var original = "debug.? dosomething|".ToCodeString();
+            var prettified = "Debug.Print DoSomething".ToCodeString();
+            var expected = "Debug.Print DoSomething|".ToCodeString();
+
+            var sut = InitializeSut(original, prettified, out var module, out _);
+            var actual = new TestCodeString(sut.Prettify(module.Object, original));
+
+            Assert.AreEqual(expected, actual);
+        }
+
+    [Test]
+        [Category("AutoComplete")]
         public void GivenExtraWhitespace_PrettifiedCaretStillAtSameToken()
         {
             var original = "MsgBox      (\"test|\")".ToCodeString();

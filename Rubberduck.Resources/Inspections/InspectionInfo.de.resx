@@ -153,9 +153,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Die Deklaration von mehren Variablen in der gleichen Codezeile ist erlaubt, sollte aber sparsam eingesetzt werden. Erwäge die Variablendeklartion in der Nähe der Nutzung als separate Anweisung pro Deklaration.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Rubberduck nutzt nur die erste '@Folder'-Annotation innerhalb eines Code-Moduls. Entferne die Überzähligen.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Hier könnte ein Fehler vorliegen. Der Rückgabewert einer Funktion oder Eigenschaft wird nicht zugewiesen. Dies kann zu unvorhersehbaren Verhalten des Codes führen. Wenn die Funktion keinen sinnvollen Rückgabewert hat, sollte sie in eine 'Sub'-Routine umgeschrieben werden.</value>
   </data>
@@ -327,5 +324,38 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Excel already defines a globally scoped object variable with this reference. Consider using the sheet's 'CodeName' property.</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Dieser Member ist als '@Obsolete' markiert. Er sollte nicht länger verwendet werden: eine bessere Alternative müsste existieren.</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Windows-Implementierungen von Visual Basic unterstützen nur die StdCall Aufrufkonvention. Die CDecl Aufrufkonvention wird nur von Macintosh-Versionen von VBA unterstützt. Dieses Schlüsselwort unter Windows zu verwenden, wird zum Laufzeitfehler 49 - 'Falsche DLL-Aufrufkonvention' führen. Falls diese Prozedur nur auf Macintosh-Hostanwendungen verwendet werden soll, sollte sie bedingt kompiliert werden.</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Eine Annotation wurde mehrmals spezifiziert, obwohl sie nur einmal spezifiziert werden soll.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Module ohne '@Folder'-Annotation können im Code Explorer nicht in gesonderte Gruppen unterschieden werden.</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>Die 'On Local Error'-Direktive existiert nur, um Kompatibilität zu vorigen Versionen von Visual Basic zu wahren. Alle Fehler werden unabhängig von der 'On Local Error'-Direktive als lokale Fehler behandelt. Die Verwendung dieser Direktive vermittelt irrtümlich den Eindruck, es existierten unterschiedliche Fehlerbehandlungstypen.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>'IsMissing' ist nur dafür gedacht, auf optionalen Argumenten aufgerufen zu werden und wird nur bei Variant-Argumenten ohne Standardwert korrekte Ergebnisse liefern. Jegliche andere Verwendung wird 'False' zurückliefern.</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>'IsMissing' ist nur dafür gedacht, auf Argumenten der umgebenden Prozedur aufgerufen zu werden. Beinahe jegliche andere Verwendung wird 'False' zurückgeben. Einen anderen Ausdruck an diese Funktion zu übergeben ist äquvalent zu 'VarType({Ausdruck}) = vbError', und kann in seltenen Fällen zum Absturz der Hostanwendung führen.</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Eine Zuweisung wird direkt überschrieben oder nie referenziert.</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Ein Klassenmodul, das Member mit Unterstrichen im Namen beinhaltet, kann nicht von anderen Klassen implementiert werden. Der Unterstrich ist als Trennzeichen zwischen Interface-/Objektname und dem Namen des implementierten Members definiert. Ein Unterstrich im Membernamen verwirrt den Übersetzer, der eine Übersetzung des Projektes dann verweigert. Die 'PascalCase'-Namenskonvention erlaubt, Unterstriche in Membernamen zu vermeiden.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Eine Prozedur, die ein Objekt zurückgibt, kann 'Nothing' zurückgeben. Dies wird bei darauffolgenden Memberzugriff zum Laufzeitfehler 91 - 'Objektblockvariable oder With-Blockvariable nicht festgelegt' führen. Prüfen sie mit 'Is Nothing' nach dem 'Set', um einen Laufzeitfehler auszuschließen.</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Funktionen, die für EXCEL als benutzerdefinierte Funktionen sichtbar sind, werden einen '#REF!'-Fehler erzeugen, wenn sie in einem Arbeitsblatt verwendet werden, in dem ihr Name dem einer korrekten Zellreferenz entspricht. Wenn die Funktion als benutzerdefinierte Funktion gedacht ist, muss sie umbenannt werden. Wenn die Funktion nicht als benutzerdefinierte Funktion gedacht ist, sollte sie 'Private' deklariert oder aus einem Standardmodul herausgenommen werden.</value>
   </data>
 </root>

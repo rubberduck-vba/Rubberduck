@@ -163,7 +163,7 @@ End Sub";
             var input =
 @"
 Private Sub TestSub(ByRef testParam As Variant)
-    testParam = Range(""A1:C1"")    
+    testParam = Range(""A1:C1"")
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
@@ -196,7 +196,6 @@ End Sub";
         }
 
         [Test]
-        [Ignore("Broken by COM collector fix, is failing case for default member resolution.  See #4037")]
         [Category("Inspections")]
         public void ObjectVariableNotSet_GivenObjectVariableNotSet_ReturnsResult()
         {
@@ -215,7 +214,6 @@ End Sub";
         }
 
         [Test]
-        [Ignore("Broken by COM collector fix, is failing case for default member resolution. See #4037")]
         [Category("Inspections")]
         public void ObjectVariableNotSet_GivenObjectVariableNotSet_Ignored_DoesNotReturnResult()
         {
@@ -235,7 +233,6 @@ End Sub";
         }
 
         [Test]
-        [Ignore("Broken by COM collector fix, is failing case for default member resolution. See #4037")]
         [Category("Inspections")]
         public void ObjectVariableNotSet_GivenSetObjectVariable_ReturnsNoResult()
         {

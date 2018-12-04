@@ -76,7 +76,8 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "Splash";
-            this.ShowIcon = false;
+            this.ShowIcon = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

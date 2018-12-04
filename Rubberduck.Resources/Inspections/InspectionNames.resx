@@ -328,7 +328,7 @@
     <value>Member marked as '@Obsolete' is used</value>
   </data>
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
-    <value>Use of obsolete 'CDecl' calling convention</value>
+    <value>Use of 'CDecl' calling convention on Windows</value>
   </data>
   <data name="DuplicatedAnnotationInspection" xml:space="preserve">
     <value>Annotation is duplicated</value>

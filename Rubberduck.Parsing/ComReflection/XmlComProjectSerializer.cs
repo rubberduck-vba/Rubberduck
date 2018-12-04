@@ -3,14 +3,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Xml;
+using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.ComReflection
 {
     public class XmlComProjectSerializer : IComProjectSerializationProvider
     {
-        public static readonly string DefaultSerializationPath =
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck", "Declarations");
+        public readonly string DefaultSerializationPath;
+
+        public XmlComProjectSerializer(IPersistancePathProvider pathProvider)
+        {
+            DefaultSerializationPath = pathProvider.DataFolderPath("Declarations");
+        }
 
         private static readonly XmlReaderSettings ReaderSettings = new XmlReaderSettings
         {
