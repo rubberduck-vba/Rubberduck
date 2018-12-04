@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
+using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.ComManagement;
@@ -44,6 +45,8 @@ namespace Rubberduck.Parsing.ComReflection
 
         public void RefreshUserComProjects(IReadOnlyCollection<string> projectIdsToReload)
         {
+            var parsingStageTimer = ParsingStageTimer.StartNew();
+
             RemoveNoLongerExistingProjects();
             RemoveProjects(projectIdsToReload);
             var loadTask = _uiDispatcher.StartTask(() =>
@@ -52,6 +55,9 @@ namespace Rubberduck.Parsing.ComReflection
                 AddLockedProjects();
             });
             loadTask.Wait();
+
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Loaded ComProjects for user projects in {0}ms.");
         }
 
         private void RemoveNoLongerExistingProjects()
