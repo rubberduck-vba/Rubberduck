@@ -249,19 +249,19 @@ namespace Rubberduck.Deployment.Build
 
         private void CompileWithTlbExp(DllFileParameters parameters)
         {
-            var command = $"{NetToolsDir}tlbexp.exe \"{parameters.SourceDll}\" /win32 /out:\"{parameters.SourceTlb32}\"";
+            var command = $"\"{NetToolsDir}tlbexp.exe\" \"{parameters.SourceDll}\" /win32 /out:\"{parameters.SourceTlb32}\"";
             ExecuteTask(command);
 
-            command = $"{NetToolsDir}tlbexp.exe \"{parameters.SourceDll}\" /win64 /out:\"{parameters.SourceTlb64}\"";
+            command = $"\"{NetToolsDir}tlbexp.exe\" \"{parameters.SourceDll}\" /win64 /out:\"{parameters.SourceTlb64}\"";
             ExecuteTask(command);
         }
 
         private void HarvestMetadataWithWixToFile(DllFileParameters parameters)
         {
-            var command = $"{WixToolsDir}heat.exe file \"{parameters.SourceDll}\" -out \"{parameters.DllXml}\"";
+            var command = $"\"{WixToolsDir}heat.exe\" file \"{parameters.SourceDll}\" -out \"{parameters.DllXml}\"";
             ExecuteTask(command);
 
-            command = $"{WixToolsDir}heat.exe file \"{parameters.SourceTlb32}\" -out \"{parameters.TlbXml}\"";
+            command = $"\"{WixToolsDir}heat.exe\" file \"{parameters.SourceTlb32}\" -out \"{parameters.TlbXml}\"";
             ExecuteTask(command);
         }
 
