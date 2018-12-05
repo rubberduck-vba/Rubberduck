@@ -1295,4 +1295,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="TodoMarkerTodo" xml:space="preserve">
     <value>TODO</value>
   </data>
+  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
+    <value>Set DPI Unaware</value>
+  </data>
 </root>
