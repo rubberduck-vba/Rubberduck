@@ -132,9 +132,6 @@
   <data name="OptionExplicitInspection" xml:space="preserve">
     <value>V '{0}' není specifikováno 'Option Explicit'</value>
   </data>
-  <data name="EmptyStringLiteralInspection_Duplicate[1]" xml:space="preserve">
-    <value>Je preferováno použití 'vbNullString' místo prázdného znaku řetězce ""</value>
-  </data>
   <data name="VariableNotAssignedInspection" xml:space="preserve">
     <value>Proměnná '{0}' není přidělena</value>
   </data>
@@ -185,9 +182,6 @@
   </data>
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
     <value>Přesunout proměnnou '{0}' v modulu do menšího rozsahu.</value>
-  </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>'{0}' má více jak jednu '@Folder' anotaci.</value>
   </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
     <value>Procedura '{0}' může být napsána jako funkce.</value>

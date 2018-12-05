@@ -5,42 +5,38 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class ChangeProcedureToFunctionQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public ChangeProcedureToFunctionQuickFix(RubberduckParserState state)
+        public ChangeProcedureToFunctionQuickFix()
             : base(typeof(ProcedureCanBeWrittenAsFunctionInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var parameterizedDeclaration = (IParameterizedDeclaration) result.Target;
-            var arg = parameterizedDeclaration.Parameters.Cast<ParameterDeclaration>().First(p => p.IsByRef || p.IsImplicitByRef);
+            var arg = parameterizedDeclaration.Parameters.First(p => p.IsByRef || p.IsImplicitByRef);
             var argIndex = parameterizedDeclaration.Parameters.ToList().IndexOf(arg);
             
-            UpdateSignature(result.Target, arg);
+            UpdateSignature(result.Target, arg, rewriteSession);
             foreach (var reference in result.Target.References)
             {
-                UpdateCall(reference, argIndex);
+                UpdateCall(reference, argIndex, rewriteSession);
             }
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.ProcedureShouldBeFunctionInspectionQuickFix;
 
-        private void UpdateSignature(Declaration target, ParameterDeclaration arg)
+        private void UpdateSignature(Declaration target, ParameterDeclaration arg, IRewriteSession rewriteSession)
         {
             var subStmt = (VBAParser.SubStmtContext) target.Context;
             var argContext = (VBAParser.ArgContext)arg.Context;
 
-            var rewriter = _state.GetRewriter(target);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
             rewriter.Replace(subStmt.SUB(), Tokens.Function);
             rewriter.Replace(subStmt.END_SUB(), "End Function");
@@ -60,9 +56,9 @@ namespace Rubberduck.Inspections.QuickFixes
             rewriter.InsertBefore(subStmt.END_SUB().Symbol.TokenIndex, returnStmt);
         }
 
-        private void UpdateCall(IdentifierReference reference, int argIndex)
+        private void UpdateCall(IdentifierReference reference, int argIndex, IRewriteSession rewriteSession)
         {
-            var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(reference.QualifiedModuleName);
             var callStmtContext = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
             var argListContext = callStmtContext.GetChild<VBAParser.ArgumentListContext>();
 

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
   <PropertyGroup>
     <AssemblyName>Rubberduck.Parsing</AssemblyName>
     <Title>Rubberduck.Parsing</Title>
@@ -25,7 +25,7 @@
     <Antlr4 Include="Grammar\VBAParser.g4">
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
     </Antlr4>
-    <Antlr4 Include="PreProcessing\*.g4">
+    <Antlr4 Include="Preprocessing\*.g4">
       <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
     </Antlr4>
   </ItemGroup>

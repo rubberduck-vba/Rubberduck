@@ -232,6 +232,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Function is hidden by Excel cell reference.
+        /// </summary>
+        public static string ExcelUdfNameIsValidCellReferenceInspection {
+            get {
+                return ResourceManager.GetString("ExcelUdfNameIsValidCellReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Function return value is never used.
         /// </summary>
         public static string FunctionReturnValueNotUsedInspection {
@@ -687,6 +696,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UndeclaredVariableInspection {
             get {
                 return ResourceManager.GetString("UndeclaredVariableInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Underscore in public class module member.
+        /// </summary>
+        public static string UnderscoreInPublicClassModuleMemberInspection {
+            get {
+                return ResourceManager.GetString("UnderscoreInPublicClassModuleMemberInspection", resourceCulture);
             }
         }
         

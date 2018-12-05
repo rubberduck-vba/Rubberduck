@@ -180,8 +180,15 @@ namespace Rubberduck.UI.Command
                     new NavigateCodeEventArgs(declaration.QualifiedName.QualifiedModuleName, declaration.Selection),
                     GetModuleLine(declaration.QualifiedName.QualifiedModuleName, declaration.Selection.StartLine)));
 
+            var accessor = target.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
+                         : target.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"
+                         : target.DeclarationType.HasFlag(DeclarationType.PropertySet) ? "(set)"
+                         : string.Empty;
+
+            var tabCaption = $"{target.IdentifierName} {accessor}".Trim();
+
             var viewModel = new SearchResultsViewModel(_navigateCommand,
-                string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, target.IdentifierName), target, results);
+                string.Format(RubberduckUI.SearchResults_AllImplementationsTabFormat, tabCaption), target, results);
 
             return viewModel;
         }
@@ -210,10 +217,23 @@ namespace Rubberduck.UI.Command
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
             }
+            _isDisposed = true;
         }
     }
 }

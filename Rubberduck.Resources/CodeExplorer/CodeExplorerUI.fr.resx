@@ -231,4 +231,34 @@
   <data name="CodeExplorer_Add" xml:space="preserve">
     <value>Ajouter...</value>
   </data>
+  <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
+    <value>Ressources</value>
+  </data>
+  <data name="ExportBeforeRemove_Caption" xml:space="preserve">
+    <value>Exporter?</value>
+  </data>
+  <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
+    <value>Voulez-vous exporter le module '{0}' avant de le supprimer?</value>
+  </data>
+  <data name="CodeExplorer_AddMDIFormText" xml:space="preserve">
+    <value>Formulaire MDI (.frm)</value>
+  </data>
+  <data name="CodeExplorer_AddPropertyPageText" xml:space="preserve">
+    <value>Page de propriété (.pag)</value>
+  </data>
+  <data name="CodeExplorer_AddUserControlText" xml:space="preserve">
+    <value>Contrôle Utilisateur (.ctl)</value>
+  </data>
+  <data name="CodeExplorer_AddUserDocumentText" xml:space="preserve">
+    <value>Document Utilisateur (.dob)</value>
+  </data>
+  <data name="CodeExplorer_AddVBFormText" xml:space="preserve">
+    <value>Formulaire (.frm)</value>
+  </data>
+  <data name="CodeExplorer_Rename" xml:space="preserve">
+    <value>Renommer</value>
+  </data>
+  <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
+    <value>Lancer au démarrage</value>
+  </data>
 </root>

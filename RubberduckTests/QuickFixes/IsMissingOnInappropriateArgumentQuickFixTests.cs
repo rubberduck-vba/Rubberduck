@@ -3,14 +3,17 @@ using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Inspections;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class IsMissingOnInappropriateArgumentQuickFixTests
+    public class IsMissingOnInappropriateArgumentQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
@@ -432,23 +435,24 @@ End Sub
 
         private string ArrangeAndApplyQuickFix(string code)
         {
+            return ApplyQuickFixToFirstInspectionResult(code, state => new IsMissingOnInappropriateArgumentInspection(state));
+        }
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new IsMissingOnInappropriateArgumentQuickFix(state);
+        }
+
+        protected override IVBE TestVbe(string code, out IVBComponent component)
+        {
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", "TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, code)
                 .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents.FirstOrDefault();
-
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new IsMissingOnInappropriateArgumentInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new IsMissingOnInappropriateArgumentQuickFix(state).Fix(inspectionResults.First());
-                return state.GetRewriter(component).GetText();
-            }
+            component = project.Object.VBComponents.First();
+            return vbe.Object;
         }
     }
 }

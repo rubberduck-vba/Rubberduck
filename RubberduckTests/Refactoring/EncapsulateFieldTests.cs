@@ -40,9 +40,10 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-
+            
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -58,12 +59,13 @@ End Property
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -92,9 +94,10 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-
+            
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -110,12 +113,12 @@ End Property
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -141,9 +144,10 @@ Public Property Set Name(ByVal value As Variant)
     Set fizz = value
 End Property
 ";
-
+            
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -159,12 +163,12 @@ End Property
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -186,9 +190,10 @@ Public Property Get Name() As Variant
     Name = fizz
 End Property
 ";
-
+            
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -204,12 +209,13 @@ End Property
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -249,9 +255,10 @@ End Sub
 Function Bar() As Integer
     Bar = 0
 End Function";
-
+            
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -267,12 +274,13 @@ End Function";
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -318,9 +326,10 @@ End Property
 
 Property Set Foo(ByVal vall As Variant)
 End Property";
-
+            
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -336,12 +345,13 @@ End Property";
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -369,9 +379,10 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-
+            
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -387,12 +398,13 @@ End Property
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -432,7 +444,8 @@ End Property
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -449,11 +462,12 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -485,7 +499,8 @@ End Property
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -502,11 +517,12 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -538,7 +554,8 @@ End Property
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -555,11 +572,12 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -587,7 +605,8 @@ End Property
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -604,11 +623,12 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -652,7 +672,8 @@ Sub Bar(ByVal name As Integer)
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -669,11 +690,12 @@ End Sub";
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(model.TargetDeclaration);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -737,7 +759,8 @@ End Sub";
             var component = project.Object.VBComponents[0];
             vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
@@ -755,8 +778,8 @@ End Sub";
 
                 //SetupFactory
                 var factory = SetupFactory(model);
-                
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode1 = module1.Content();
@@ -764,12 +787,6 @@ End Sub";
 
                 Assert.AreEqual(expectedCode1, actualCode1);
                 Assert.AreEqual(expectedCode2, actualCode2);
-
-                var rewriter1 = state.GetRewriter(module1.Parent);
-                Assert.AreEqual(expectedCode1, rewriter1.GetText());
-
-                var rewriter2 = state.GetRewriter(module2.Parent);
-                Assert.AreEqual(expectedCode2, rewriter2.GetText());
             }
         }
 
@@ -797,9 +814,9 @@ End Property
 ";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var model = new EncapsulateFieldModel(state, qualifiedSelection)
@@ -814,11 +831,11 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(expectedCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -832,7 +849,8 @@ End Property
                 @"Private fizz As Variant";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var vbeWrapper = vbe.Object;
@@ -840,11 +858,11 @@ End Property
                 factory.Setup(f => f.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(It.IsAny<EncapsulateFieldModel>()))
                     .Returns(() => null); // resolves ambiguous method overload
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbeWrapper, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbeWrapper, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor();
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(inputCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(inputCode, actualCode);
             }
         }
 
@@ -859,7 +877,8 @@ End Property
             var selection = new Selection(1, 1);
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -867,11 +886,11 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(null);
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object);
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
                 refactoring.Refactor(qualifiedSelection);
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(inputCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(inputCode, actualCode);
             }
         }
 

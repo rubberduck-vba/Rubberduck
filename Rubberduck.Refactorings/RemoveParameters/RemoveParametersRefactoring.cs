@@ -20,13 +20,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory _factory;
+        private readonly IRewritingManager _rewritingManager;
         private RemoveParametersModel _model;
-        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
 
-        public RemoveParametersRefactoring(RubberduckParserState state, IVBE vbe, IRefactoringPresenterFactory factory)
+        public RemoveParametersRefactoring(RubberduckParserState state, IVBE vbe, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
         {
             _state = state;
             _vbe = vbe;
+            _rewritingManager = rewritingManager;
             _factory = factory;
         }
 
@@ -131,16 +132,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new NullReferenceException("Parameter is null");
             }
 
-            AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration);
-            AdjustSignatures();
+            var rewritingSession = _rewritingManager.CheckOutCodePaneSession();
 
-            foreach (var rewriter in _rewriters)
-            {
-                rewriter.Rewrite();
-            }
+            AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration, rewritingSession);
+            AdjustSignatures(rewritingSession);
+
+            rewritingSession.TryRewrite();
         }
 
-        private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method)
+        private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method, IRewriteSession rewriteSession)
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
@@ -176,14 +176,13 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     continue;
                 }
 
-                RemoveCallArguments(argumentList, reference.QualifiedModuleName);
+                RemoveCallArguments(argumentList, reference.QualifiedModuleName, rewriteSession);
             }
         }
 
-        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, QualifiedModuleName module)
+        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, QualifiedModuleName module, IRewriteSession rewriteSession)
         {
-            var rewriter = _model.State.GetRewriter(module);
-            _rewriters.Add(rewriter);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
 
             var usesNamedArguments = false;
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
@@ -202,7 +201,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     var index = i == 0 ? 0 : argList.children.IndexOf(args[i - 1]) + 1;
                     for (var j = index; j < argList.children.Count; j++)
                     {
-                        rewriter.Remove((dynamic)argList.children[j]);
+                        rewriter.Remove(argList.children[j]);
                     }
                     break;
                 }
@@ -229,7 +228,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             RemoveTrailingComma(rewriter, argList, usesNamedArguments);
         }
 
-        private void AdjustSignatures()
+        private void AdjustSignatures(IRewriteSession rewriteSession)
         {
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
             if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
@@ -237,19 +236,19 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 var setter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertySet);
                 if (setter != null)
                 {
-                    RemoveSignatureParameters(setter);
-                    AdjustReferences(setter.References, setter);
+                    RemoveSignatureParameters(setter, rewriteSession);
+                    AdjustReferences(setter.References, setter, rewriteSession);
                 }
 
                 var letter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
-                    RemoveSignatureParameters(letter);
-                    AdjustReferences(letter.References, letter);
+                    RemoveSignatureParameters(letter, rewriteSession);
+                    AdjustReferences(letter.References, letter, rewriteSession);
                 }
             }
 
-            RemoveSignatureParameters(_model.TargetDeclaration);
+            RemoveSignatureParameters(_model.TargetDeclaration, rewriteSession);
 
             var eventImplementations = _model.Declarations
                 .Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
@@ -257,8 +256,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             foreach (var eventImplementation in eventImplementations)
             {
-                AdjustReferences(eventImplementation.References, eventImplementation);
-                RemoveSignatureParameters(eventImplementation);
+                AdjustReferences(eventImplementation.References, eventImplementation, rewriteSession);
+                RemoveSignatureParameters(eventImplementation, rewriteSession);
             }
 
             var interfaceImplementations = _model.State.DeclarationFinder.FindAllInterfaceImplementingMembers().Where(item =>
@@ -268,8 +267,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustReferences(interfaceImplentation.References, interfaceImplentation);
-                RemoveSignatureParameters(interfaceImplentation);
+                AdjustReferences(interfaceImplentation.References, interfaceImplentation, rewriteSession);
+                RemoveSignatureParameters(interfaceImplentation, rewriteSession);
             }
         }
 
@@ -280,9 +279,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 && item.DeclarationType == declarationType);
         }
 
-        private void RemoveSignatureParameters(Declaration target)
+        private void RemoveSignatureParameters(Declaration target, IRewriteSession rewriteSession)
         {
-            var rewriter = _model.State.GetRewriter(target);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
             var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
             
@@ -292,7 +291,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             RemoveTrailingComma(rewriter);
-            _rewriters.Add(rewriter);
         }
 
         //Issue 4319.  If there are 3 or more arguments and the user elects to remove 2 or more of

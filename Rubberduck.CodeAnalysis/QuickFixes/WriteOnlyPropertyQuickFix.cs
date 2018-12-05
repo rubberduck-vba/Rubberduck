@@ -4,24 +4,20 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class WriteOnlyPropertyQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public WriteOnlyPropertyQuickFix(RubberduckParserState state)
+        public WriteOnlyPropertyQuickFix()
             : base(typeof(WriteOnlyPropertyInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var parameters = ((IParameterizedDeclaration) result.Target).Parameters.Cast<ParameterDeclaration>().ToList();
+            var parameters = ((IParameterizedDeclaration) result.Target).Parameters.ToList();
 
             var signatureParams = parameters.Except(new[] {parameters.Last()}).Select(GetParamText);
 
@@ -31,7 +27,7 @@ namespace Rubberduck.Inspections.QuickFixes
                                             parameters.Last().AsTypeName,
                                             Environment.NewLine);
 
-            var rewriter = _state.GetRewriter(result.Target);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
             rewriter.InsertBefore(result.Target.Context.Start.TokenIndex, propertyGet);
         }
 

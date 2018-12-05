@@ -78,11 +78,11 @@ namespace RubberduckTests.Refactoring.Rename
             
             var activeIndex = renameTMDs.FindIndex(tmd => tmd.Input_WithFauxCursor != string.Empty);
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs, activeIndex);
-            
-            tdo.ParserState = MockParser.CreateAndParse(tdo.VBE);
+            tdo.AdditionalSetup?.Invoke(tdo);
+            (tdo.ParserState, tdo.RewritingManager) = MockParser.CreateAndParseWithRewritingManager(tdo.VBE);
 
             CreateQualifiedSelectionForTestCase(tdo);
-            tdo.RenameModel = new RenameModel(tdo.ParserState, tdo.QualifiedSelection) { NewName = tdo.NewName };
+            tdo.RenameModel = new RenameModel(tdo.ParserState.DeclarationFinder, tdo.QualifiedSelection) { NewName = tdo.NewName };
             Assert.IsTrue(tdo.RenameModel.Target.IdentifierName.Contains(tdo.OriginalName)
                 , $"Target aquired ({tdo.RenameModel.Target.IdentifierName} does not equal name specified ({tdo.OriginalName}) in the test");
 
@@ -98,7 +98,7 @@ namespace RubberduckTests.Refactoring.Rename
                 return presenter;
             }, out var creator);
 
-            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState);
+            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState, tdo.ParserState.ProjectsProvider, tdo.RewritingManager);
         }
 
         private static void AddTestModuleDefinition(RenameTestsDataObject tdo, RenameTestModuleDefinition inputOutput)
@@ -148,9 +148,9 @@ namespace RubberduckTests.Refactoring.Rename
             {
                 if (inputOutput.CheckExpectedEqualsActual)
                 {
-                    var rewriter = tdo.ParserState.GetRewriter(RetrieveComponent(tdo, inputOutput.ModuleName).CodeModule.Parent);
+                    var codeModule = RetrieveComponent(tdo, inputOutput.ModuleName).CodeModule;
                     var expected = inputOutput.Expected;
-                    var actual = rewriter.GetText();
+                    var actual = codeModule.Content();
                     Assert.AreEqual(expected, actual);
                 }
             }
@@ -198,10 +198,17 @@ namespace RubberduckTests.Refactoring.Rename
             Assert.Inconclusive($"Unable to find target '{RenameTests.FAUX_CURSOR}' in { tdo.SelectionModuleName} content.");
         }
 
-        private static IVBE BuildProject(string projectName, List<RenameTestModuleDefinition> testComponents, int activeIndex)
+        private static IVBE BuildProject(string projectName, List<RenameTestModuleDefinition> testComponents, int activeIndex, bool useLibraries = false)
         {
             var builder = new MockVbeBuilder();
             var enclosingProjectBuilder = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected);
+
+            if (useLibraries)
+            {
+                enclosingProjectBuilder.AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true);
+                enclosingProjectBuilder.AddReference("EXCEL", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true);
+            }
+
             foreach (var comp in testComponents)
             {
                 if (comp.ModuleType == ComponentType.UserForm)

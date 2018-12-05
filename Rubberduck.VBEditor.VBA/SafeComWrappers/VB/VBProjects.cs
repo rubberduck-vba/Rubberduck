@@ -9,7 +9,7 @@ using VB = Microsoft.Vbe.Interop;
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBProjects : SafeEventedComWrapper<VB.VBProjects, VB._dispVBProjectsEvents>, IVBProjects, VB._dispVBProjectsEvents
+    public sealed class VBProjects : SafeEventedComWrapper<VB.VBProjects, VB._dispVBProjectsEvents>, IVBProjects, VB._dispVBProjectsEvents
     {
         public VBProjects(VB.VBProjects target, bool rewrapping = false)
         :base(target, rewrapping)
@@ -78,6 +78,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 : HashCode.Compute(Target);
         }
 
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
+
         #region Events
 
         public event EventHandler<ProjectEventArgs> ProjectAdded;
@@ -96,23 +98,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         void VB._dispVBProjectsEvents.ItemRenamed([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject,
             [MarshalAs(UnmanagedType.BStr), In] string OldName)
         {
-            var project = new VBProject(VBProject);
-
-            if (!IsInDesignMode() || VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+            using (var project = new VBProject(VBProject))
             {
-                project.Dispose();
-                return;
-            }
+                if (!IsInDesignMode() || VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+                {
+                    return;
+                }
 
-            var projectId = project.ProjectId;
+                var projectId = project.ProjectId;
 
-            var handler = ProjectRenamed;
-            if (handler == null || projectId == null)
-            {
-                project.Dispose();
-                return;
+                if (projectId == null)
+                {
+                    return;
+                }
+
+                var handler = ProjectRenamed;
+                handler?.Invoke(this, new ProjectRenamedEventArgs(projectId, project.Name, OldName));
             }
-            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project.Name, OldName));
         }
 
         public event EventHandler<ProjectEventArgs> ProjectActivated;

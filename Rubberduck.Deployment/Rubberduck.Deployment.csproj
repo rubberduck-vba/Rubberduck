@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
   <PropertyGroup>
     <Product>Rubberduck.Deployment</Product>
     <Copyright>Copyright © 2018</Copyright>
@@ -17,7 +17,10 @@
     <None Include="BuildRegistryScript.ps1" />
     <None Include="Licenses\License.rtf" />
     <None Include="PreInnoSetupConfiguration.ps1" />
+    
+    <!-- EasyHook nuget may be not be within the solution so we need to check different places. The PreserveNewest should hopefully avoid repetitive (but harmless) copying -->
     <Content Include="..\packages\EasyHook.2.7.6684\content\net40\**" CopyToPublishDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
+    <Content Include="$(USERPROFILE)\.nuget\packages\easyHook\2.7.6684\content\net40\**" CopyToPublishDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rubberduck.API\Rubberduck.API.csproj" />
@@ -28,6 +31,11 @@
     <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
     <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj" />
     <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="EasyHook" Version="2.7.6684">
+      <CopyToOutputDirectory>content/net40/*</CopyToOutputDirectory>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="olewoo">

@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly IHostApplication _hostApp;
-        private readonly AnnotationService _annotationService;
+        private readonly IdentifierAnnotationService _identifierAnnotationService;
         private IDictionary<string, List<Declaration>> _declarationsByName;
         private IDictionary<QualifiedModuleName, List<Declaration>> _declarations;
         private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
@@ -68,7 +68,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             _newUndeclared = new ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>>(new Dictionary<QualifiedMemberName, ConcurrentBag<Declaration>>());
             _newUnresolved = new ConcurrentBag<UnboundMemberDeclaration>(new List<UnboundMemberDeclaration>());
 
-            _annotationService = new AnnotationService(this);
+            _identifierAnnotationService = new IdentifierAnnotationService(this);
 
             var collectionConstructionActions = CollectionConstructionActions(declarations, annotations, unresolvedMemberDeclarations);
             ExecuteCollectionConstructionActions(collectionConstructionActions);
@@ -503,7 +503,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         private IEnumerable<Declaration> FindEvents(Declaration module)
         {
-            Debug.Assert(module != null);
+            if (module is null)
+            {
+                return Enumerable.Empty<Declaration>();
+            }
 
             var members = Members(module.QualifiedName.QualifiedModuleName);
             return members == null 
@@ -529,6 +532,71 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return _declarationsByName.TryGetValue(normalizedName, out var result) 
                 ? result 
                 : Enumerable.Empty<Declaration>();
+        }
+
+        public ParameterDeclaration FindParameterFromArgument(VBAParser.ArgumentExpressionContext argExpression, Declaration enclosingProcedure)
+        {
+            if (argExpression  == null || 
+                argExpression.GetDescendent<VBAParser.ParenthesizedExprContext>() != null || 
+                argExpression.BYVAL() != null)
+            {
+                // not an argument, or argument is parenthesized and thus passed ByVal
+                return null;
+            }
+
+            var callStmt = argExpression.GetAncestor<VBAParser.CallStmtContext>();
+
+            var identifier = callStmt?
+                .GetDescendent<VBAParser.LExpressionContext>()
+                .GetDescendents<VBAParser.IdentifierContext>()
+                .LastOrDefault();
+
+            if (identifier == null)
+            {
+                // if we don't know what we're calling, we can't dig any further
+                return null;
+            }
+
+            var selection = new QualifiedSelection(enclosingProcedure.QualifiedModuleName, identifier.GetSelection());
+            if (!_referencesBySelection.TryGetValue(selection, out var matches))
+            {
+                return null;
+            }
+
+            var procedure = matches.SingleOrDefault()?.Declaration;
+            if (procedure?.ParentScopeDeclaration is ClassModuleDeclaration)
+            {
+                // we can't know that the member is on the class' default interface
+                return null;
+            }
+
+            var parameters = Parameters(procedure);
+
+            ParameterDeclaration parameter;
+            var namedArg = argExpression.GetAncestor<VBAParser.NamedArgumentContext>();
+            if (namedArg != null)
+            {
+                // argument is named: we're lucky
+                var parameterName = namedArg.unrestrictedIdentifier().GetText();
+                parameter = parameters.SingleOrDefault(p => p.IdentifierName == parameterName);
+            }
+            else
+            {
+                // argument is positional: work out its index
+                var argList = callStmt.GetDescendent<VBAParser.ArgumentListContext>();
+                var args = argList.GetDescendents<VBAParser.PositionalArgumentContext>().ToArray();
+
+                var parameterIndex = args
+                    .Select((param, index) => param.GetDescendent<VBAParser.ArgumentExpressionContext>() == argExpression ? (param, index) : (null, -1))
+                    .SingleOrDefault(item => item.param != null).index;
+
+                parameter = parameters
+                    .OrderBy(p => p.Selection)
+                    .Select((param, index) => (param, index))
+                    .SingleOrDefault(item => item.index == parameterIndex).param;
+            }
+
+            return parameter;
         }
 
         private string ToNormalizedName(string name)
@@ -746,7 +814,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public Declaration OnUndeclaredVariable(Declaration enclosingProcedure, string identifierName, ParserRuleContext context)
         {
-            var annotations = _annotationService.FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line);
+            var annotations = _identifierAnnotationService.FindAnnotations(enclosingProcedure.QualifiedName.QualifiedModuleName, context.Start.Line);
             var undeclaredLocal =
                 new Declaration(
                     new QualifiedMemberName(enclosingProcedure.QualifiedName.QualifiedModuleName, identifierName),
@@ -801,7 +869,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             }
 
             var identifier = context.GetChild<VBAParser.UnrestrictedIdentifierContext>(0);
-            var annotations = _annotationService.FindAnnotations(parentDeclaration.QualifiedName.QualifiedModuleName, context.Start.Line);
+            var annotations = _identifierAnnotationService.FindAnnotations(parentDeclaration.QualifiedName.QualifiedModuleName, context.Start.Line);
 
             var declaration = new UnboundMemberDeclaration(parentDeclaration, identifier,
                 (context is VBAParser.MemberAccessExprContext) ? (ParserRuleContext)context.children[0] : withExpression.Context, 
@@ -1034,12 +1102,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
             if (IsEnumOrUDTMemberDeclaration(renameTarget)) 
             {
-                var memberMatches = identifierMatches.Where(idm =>
+                return identifierMatches.Where(idm =>
                     IsEnumOrUDTMemberDeclaration(idm) && idm.ParentDeclaration == renameTarget.ParentDeclaration);
-                if (memberMatches.Any())
-                {
-                    return memberMatches;
-                }
             }
 
             identifierMatches = identifierMatches.Where(nc => !IsEnumOrUDTMemberDeclaration(nc));

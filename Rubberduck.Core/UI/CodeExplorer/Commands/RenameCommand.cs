@@ -2,6 +2,7 @@ using System;
 using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
@@ -16,13 +17,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly RubberduckParserState _state;
         private readonly IRefactoringPresenterFactory _factory;
         private readonly IMessageBox _msgBox;
+        private readonly IRewritingManager _rewritingManager;
 
-        public RenameCommand(IVBE vbe, RubberduckParserState state,
-            IMessageBox msgBox, IRefactoringPresenterFactory factory) : base(LogManager.GetCurrentClassLogger())
+        public RenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
-            _factory = factory;
+            _rewritingManager = rewritingManager;
             _msgBox = msgBox;
         }
 
@@ -33,7 +34,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            var refactoring = new RenameRefactoring(_vbe, _factory, _msgBox, _state);
+            var refactoring = new RenameRefactoring(_vbe, _factory, _msgBox, _state, _state.ProjectsProvider, _rewritingManager);
             refactoring.Refactor(((ICodeExplorerDeclarationViewModel)parameter).Declaration);
         }
     }

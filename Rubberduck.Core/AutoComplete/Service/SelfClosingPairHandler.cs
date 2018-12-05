@@ -10,6 +10,8 @@ namespace Rubberduck.AutoComplete.Service
 {
     public class SelfClosingPairHandler : AutoCompleteHandlerBase
     {
+        private const int MaximumLines = 25;
+
         private readonly IReadOnlyList<SelfClosingPair> _selfClosingPairs;
         private readonly IDictionary<char, SelfClosingPair> _scpInputLookup;
         private readonly SelfClosingPairCompletionService _scpService;
@@ -41,6 +43,12 @@ namespace Rubberduck.AutoComplete.Service
             }
 
             var original = CodePaneHandler.GetCurrentLogicalLine(e.Module);
+            if (original == null || original.Lines.Length == MaximumLines)
+            {
+                // selection spans more than a single logical line, or
+                // logical line somehow spans more than the maximum number of physical lines in a logical line of code (25).
+                return false;
+            }
 
             if (pair != null)
             {
@@ -58,11 +66,11 @@ namespace Rubberduck.AutoComplete.Service
                         break;
                     }
                 }
+            }
 
-                if (result == null)
-                {
-                    return false;
-                }
+            if (result == null)
+            {
+                return false;
             }
 
             var snippetPosition = new Selection(result.SnippetPosition.StartLine, 1, result.SnippetPosition.EndLine, 1);
@@ -74,6 +82,13 @@ namespace Rubberduck.AutoComplete.Service
 
         private bool HandleInternal(AutoCompleteEventArgs e, CodeString original, SelfClosingPair pair, out CodeString result)
         {
+            if (!original.CaretPosition.IsSingleCharacter)
+            {
+                // todo: WrapSelection?
+                result = null;
+                return false;
+            }
+
             var isPresent = original.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}");
 
             if (!_scpService.Execute(pair, original, e.Character, out result))
@@ -94,21 +109,28 @@ namespace Rubberduck.AutoComplete.Service
                 return false;
             }
 
-            result = CodePaneHandler.Prettify(e.Module, result);
+            var reprettified = CodePaneHandler.Prettify(e.Module, result);
+            if (pair.OpeningChar == '(' && e.Character == pair.OpeningChar && !reprettified.Equals(result))
+            {
+                // VBE eats it. bail out but don't swallow the keypress.
+                e.Handled = false;
+                result = null;
+                return false;
+            }
 
-            var currentLine = result.Lines[result.CaretPosition.StartLine];
+            var currentLine = reprettified.Lines[reprettified.CaretPosition.StartLine];
             if (!string.IsNullOrWhiteSpace(currentLine) &&
                 currentLine.EndsWith(" ") &&
-                result.CaretPosition.StartColumn == currentLine.Length)
+                reprettified.CaretPosition.StartColumn == currentLine.Length)
             {
-                result = result.ReplaceLine(result.CaretPosition.StartLine, currentLine.TrimEnd());
+                result = reprettified.ReplaceLine(reprettified.CaretPosition.StartLine, currentLine.TrimEnd());
             }
 
             if (pair.OpeningChar == '(' && 
                 e.Character == pair.OpeningChar &&
                 !result.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}"))
             {
-                // VBE eats it. bail out but still swallow the keypress, since we've already re-prettified.
+                // VBE eats it. bail out but still swallow the keypress.
                 e.Handled = true;
                 result = null;
                 return false;

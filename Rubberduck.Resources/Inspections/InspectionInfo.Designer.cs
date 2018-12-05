@@ -232,6 +232,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Functions that are visible to Excel as User-Defined Functions will return a &apos;#REF&apos; error when used on a Worksheet if they match the name of a valid cell reference. If the function is intended to be used as a UDF, it must be renamed. If the function is not intended to be used as a UDF, it should be scoped as &apos;Private&apos; or moved out of a standard Module..
+        /// </summary>
+        public static string ExcelUdfNameIsValidCellReferenceInspection {
+            get {
+                return ResourceManager.GetString("ExcelUdfNameIsValidCellReferenceInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A member is written as a function, but used as a procedure. Unless the function is recursive, consider converting the &apos;Function&apos; into a &apos;Sub&apos;. If the function is recursive, none of its external callers are using the returned value..
         /// </summary>
         public static string FunctionReturnValueNotUsedInspection {
@@ -687,6 +696,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string UndeclaredVariableInspection {
             get {
                 return ResourceManager.GetString("UndeclaredVariableInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A class module that contains members with underscores cannot be implemented by other classes. The underscore is used as a separator between the interface/object name and the implemented member name: having an underscore in the member name confuses the compiler, which then refuses to compile the project. Avoid underscores in public member names by following a &apos;PascalCase&apos; naming convention..
+        /// </summary>
+        public static string UnderscoreInPublicClassModuleMemberInspection {
+            get {
+                return ResourceManager.GetString("UnderscoreInPublicClassModuleMemberInspection", resourceCulture);
             }
         }
         

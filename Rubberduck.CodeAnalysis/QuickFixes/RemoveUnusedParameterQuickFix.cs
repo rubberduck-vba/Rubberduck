@@ -1,6 +1,7 @@
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
@@ -13,25 +14,28 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IRefactoringPresenterFactory _factory;
+        private readonly IRewritingManager _rewritingManager;
 
-        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory)
+        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
             : base(typeof(ParameterNotUsedInspection))
         {
             _vbe = vbe;
             _state = state;
             _factory = factory;
+            _rewritingManager = rewritingManager;
         }
 
-        public override void Fix(IInspectionResult result)
+        //The rewriteSession is optional since it is not used in this particular quickfix because it is a refactoring quickfix.
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
-            var refactoring = new RemoveParametersRefactoring(_state, _vbe, _factory);
+            var refactoring = new RemoveParametersRefactoring(_state, _vbe, _factory, _rewritingManager);
             refactoring.QuickFix(_state, result.QualifiedSelection);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveUnusedParameterQuickFix;
 
-        public override bool CanFixInProcedure => true;
-        public override bool CanFixInModule => true;
-        public override bool CanFixInProject => true;
+        public override bool CanFixInProcedure => false;
+        public override bool CanFixInModule => false;
+        public override bool CanFixInProject => false;
     }
 }

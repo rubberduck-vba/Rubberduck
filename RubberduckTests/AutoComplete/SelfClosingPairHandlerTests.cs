@@ -100,8 +100,30 @@ namespace RubberduckTests.AutoComplete
             var info = new SelfClosingPairTestInfo(original, input, rePrettified);
 
             Assert.IsFalse(Run(info));
-            Assert.IsNull(info.Result);
             Assert.IsTrue(info.Args.Handled);
+        }
+
+        [Test]
+        public void GivenOpeningParenthesisOnCallStatement_ReturnsFalseAndLetsKeypressThrough()
+        {
+            var input = '(';
+            var original = "Call DoSomething|".ToCodeString();
+            var rePrettified = "Call DoSomething|".ToCodeString();
+            var info = new SelfClosingPairTestInfo(original, input, rePrettified);
+
+            Assert.IsFalse(Run(info));
+            Assert.IsFalse(info.Args.Handled);
+        }
+        [Test]
+        public void GivenBackspaceOnMatchedPair_DeletesMatchingTokens()
+        {
+            var input = '\b';
+            var original = "foo = DateSerial(Year(|))".ToCodeString();
+            var rePrettified = "foo = DateSerial(Year|)".ToCodeString();
+            var info = new SelfClosingPairTestInfo(original, input, rePrettified);
+
+            Assert.IsTrue(Run(info));
+            Assert.IsNotNull(info.Result);
         }
     }
 }

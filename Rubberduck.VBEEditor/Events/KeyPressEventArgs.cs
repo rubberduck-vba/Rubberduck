@@ -4,7 +4,7 @@ using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.VBEditor.Events
 {
-    public class KeyPressEventArgs
+    public class KeyPressEventArgs : EventArgs
     {
         public KeyPressEventArgs(IntPtr hwnd, IntPtr wParam, IntPtr lParam, bool keydown = false)
         {
@@ -30,8 +30,7 @@ namespace Rubberduck.VBEditor.Events
                 }
             }
             else
-            {
-                
+            {              
                 Character = (char)wParam;
             }
         }

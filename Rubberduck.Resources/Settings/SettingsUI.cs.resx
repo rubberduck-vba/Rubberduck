@@ -177,4 +177,43 @@
   <data name="PageHeader_AutoCompleteSettings" xml:space="preserve">
     <value>Nastavení Aplikace</value>
   </data>
+  <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
+    <value>Načíst Obecná Nastaení</value>
+  </data>
+  <data name="DialogCaption_LoadIndenterSettings" xml:space="preserve">
+    <value>Načíst Nastavení Odsazovače</value>
+  </data>
+  <data name="DialogCaption_LoadInspectionSettings" xml:space="preserve">
+    <value>Načíst Nastavení Inspekcí</value>
+  </data>
+  <data name="DialogCaption_LoadToDoSettings" xml:space="preserve">
+    <value>Načíst Nastavení ToDo</value>
+  </data>
+  <data name="DialogCaption_LoadUnitTestSettings" xml:space="preserve">
+    <value>Načíst Nastavení Unit Testů</value>
+  </data>
+  <data name="DialogCaption_LoadWindowSettings" xml:space="preserve">
+    <value>Načíst Nastavení Okna</value>
+  </data>
+  <data name="DialogCaption_SaveGeneralSettings" xml:space="preserve">
+    <value>Uložit Obecná Nastavení</value>
+  </data>
+  <data name="DialogCaption_SaveIndenterSettings" xml:space="preserve">
+    <value>Uložit Nastavení Odsazovače</value>
+  </data>
+  <data name="DialogCaption_SaveInspectionSettings" xml:space="preserve">
+    <value>Uložit Nastavení Inspekcí</value>
+  </data>
+  <data name="DialogCaption_SaveToDoSettings" xml:space="preserve">
+    <value>Uložit Nastavení ToDo</value>
+  </data>
+  <data name="DialogCaption_SaveUnitTestSettings" xml:space="preserve">
+    <value>Uložit Nastavení Unit Testů</value>
+  </data>
+  <data name="DialogCaption_SaveWindowSettings" xml:space="preserve">
+    <value>Uložit Nastavení Okna</value>
+  </data>
+  <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
+    <value>XML soubor (.xml)'|*.xml|Rubberduck config soubor|*.config</value>
+  </data>
 </root>

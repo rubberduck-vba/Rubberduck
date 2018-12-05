@@ -1,5 +1,6 @@
 ﻿using System;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.VBERuntime;
 
 namespace Rubberduck.VBEditor.VbeRuntime
 {
@@ -37,6 +38,8 @@ namespace Rubberduck.VBEditor.VbeRuntime
                     return new VbeNativeApi7();
                 case DllVersion.Vbe6:
                     return new VbeNativeApi6();
+                case DllVersion.Vb98:
+                    return new Vb6NativeApi();
                 default:
                     return DetermineVersion();
             }
@@ -44,29 +47,21 @@ namespace Rubberduck.VBEditor.VbeRuntime
 
         private static IVbeNativeApi DetermineVersion()
         {
-            IVbeNativeApi runtime;
-            try
-            {
-                runtime = new VbeNativeApi7();
-                runtime.GetTimer();
-                _version = DllVersion.Vbe7;
-            }
-            catch
+            foreach (var type in new[] {typeof(VbeNativeApi7), typeof(VbeNativeApi6), typeof(Vb6NativeApi)})
             {
                 try
                 {
-                    runtime = new VbeNativeApi6();
+                    var runtime = (IVbeNativeApi)Activator.CreateInstance(type);
                     runtime.GetTimer();
-                    _version = DllVersion.Vbe6;
+                    return runtime;
                 }
                 catch
                 {
-                    // we shouldn't be here.... Rubberduck is a VBA add-in, so how the heck could it have loaded without a VBE dll?!?
-                    throw new InvalidOperationException("Cannot execute DoEvents; the VBE dll could not be located.");
+                    // ignored
                 }
             }
-
-            return _version != DllVersion.Unknown ? runtime : null;
+            // we shouldn't be here.... Rubberduck is a VBE add-in, so how the heck could it have loaded without a runtime dll?!?
+            throw new InvalidOperationException("Cannot execute library function; the VBE dll could not be located.");
         }
 
         public string DllName => _runtime.DllName;

@@ -1,16 +1,13 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.Parsing.Inspections;
-using RubberduckTests.Inspections;
-using RubberduckTests.Mocks;
-using System.Linq;
-using System.Threading;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class RemoveStepOneQuickFixTests
+    public class RemoveStepOneQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
@@ -28,7 +25,8 @@ End Sub";
     Next
 End Sub";
 
-            TestStepOneQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new StepOneIsRedundantInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -51,20 +49,14 @@ End Sub";
     Next
 End Sub";
 
-            TestStepOneQuickFix(expectedCode, inputCode);
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new StepOneIsRedundantInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
-        private void TestStepOneQuickFix(string expectedCode, string inputCode)
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var state = MockParser.CreateAndParse(vbe.Object);
-
-            var inspection = new StepOneIsRedundantInspection(state) { Severity = CodeInspectionSeverity.Warning };
-            var inspector = InspectionsHelper.GetInspector(inspection);
-            var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-            new RemoveStepOneQuickFix(state).Fix(inspectionResults.First());
-            Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
+            return new RemoveStepOneQuickFix();
         }
     }
 }

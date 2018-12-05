@@ -2,15 +2,13 @@
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.Rename
 {
     public class RenameModel
     {
-        private readonly IList<Declaration> _declarations;
-        public IEnumerable<Declaration> Declarations => _declarations;
-
         private Declaration _target;
         public Declaration Target
         {
@@ -19,24 +17,20 @@ namespace Rubberduck.Refactorings.Rename
         }
 
         public QualifiedSelection Selection { get; }
-
-        public RubberduckParserState State { get; }
+        
 
         public string NewName { get; set; }
 
-        public RenameModel(RubberduckParserState state, QualifiedSelection selection)
+        public RenameModel(DeclarationFinder declarationFinder, QualifiedSelection selection)
         {
-            State = state;
-            _declarations = state.AllDeclarations.ToList();
             Selection = selection;
 
-            AcquireTarget(out _target, Selection);
+            AcquireTarget(out _target, declarationFinder, Selection);
         }
 
-        private void AcquireTarget(out Declaration target, QualifiedSelection selection)
+        private void AcquireTarget(out Declaration target, DeclarationFinder declarationFinder, QualifiedSelection selection)
         {
-            target = _declarations
-                .Where(item => item.IsUserDefined)
+            target = declarationFinder.AllUserDeclarations
                 .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
         }
     }

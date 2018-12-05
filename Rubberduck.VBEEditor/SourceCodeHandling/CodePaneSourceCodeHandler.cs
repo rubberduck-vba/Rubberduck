@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
 {
@@ -53,8 +55,15 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
         public void SubstituteCode(ICodeModule module, CodeString newCode)
         {
-            module.DeleteLines(newCode.SnippetPosition);
-            module.InsertLines(newCode.SnippetPosition.StartLine, newCode.Code);
+            try
+            {
+                module.DeleteLines(newCode.SnippetPosition);
+                module.InsertLines(newCode.SnippetPosition.StartLine, newCode.Code);
+            }
+            catch
+            {
+                Debug.Assert(false, "too many line continuations. we shouldn't even be here.");
+            }
         }
 
         public void SubstituteCode(QualifiedModuleName module, CodeString newCode)
@@ -90,14 +99,19 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
         {
             var originalCode = original.Code.Replace("\r", string.Empty).Split('\n');
             var originalPosition = original.CaretPosition.StartColumn;
+            var isAtLastCharacter = originalPosition == original.CaretLine.Length;
+
             var originalNonWhitespaceCharacters = 0;
-            var isAllWhitespace = true;
-            for (var i = 0; i <= Math.Min(originalPosition - 1, originalCode[original.CaretPosition.StartLine].Length - 1); i++)
+            var isAllWhitespace = !isAtLastCharacter;
+            if (!isAtLastCharacter)
             {
-                if (originalCode[original.CaretPosition.StartLine][i] != ' ')
+                for (var i = 0; i <= Math.Min(originalPosition - 1, original.CaretLine.Length - 1); i++)
                 {
-                    originalNonWhitespaceCharacters++;
-                    isAllWhitespace = false;
+                    if (originalCode[original.CaretPosition.StartLine][i] != ' ')
+                    {
+                        originalNonWhitespaceCharacters++;
+                        isAllWhitespace = false;
+                    }
                 }
             }
 
@@ -112,18 +126,25 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
             var prettifiedNonWhitespaceCharacters = 0;
             var prettifiedCaretCharIndex = 0;
-            for (var i = 0; i < prettifiedCode[original.CaretPosition.StartLine].Length; i++)
+            if (!isAtLastCharacter)
             {
-                if (prettifiedCode[original.CaretPosition.StartLine][i] != ' ')
+                for (var i = 0; i < prettifiedCode[original.CaretPosition.StartLine].Length; i++)
                 {
-                    prettifiedNonWhitespaceCharacters++;
-                    if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters 
-                        || i == prettifiedCode[original.CaretPosition.StartLine].Length - 1)
+                    if (prettifiedCode[original.CaretPosition.StartLine][i] != ' ')
                     {
-                        prettifiedCaretCharIndex = i;
-                        break;
+                        prettifiedNonWhitespaceCharacters++;
+                        if (prettifiedNonWhitespaceCharacters == originalNonWhitespaceCharacters
+                            || i == prettifiedCode[original.CaretPosition.StartLine].Length - 1)
+                        {
+                            prettifiedCaretCharIndex = i;
+                            break;
+                        }
                     }
                 }
+            }
+            else
+            {
+                prettifiedCaretCharIndex = prettifiedCode[original.CaretPosition.StartLine].Length;
             }
 
             var prettifiedPosition = new Selection(
@@ -165,42 +186,52 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             return result;
         }
 
+        private const string LineContinuation = " _";
+
         public CodeString GetCurrentLogicalLine(ICodeModule module)
         {
-            const string lineContinuation = " _";
-
             Selection pSelection;
             using (var pane = module.CodePane)
             {
                 pSelection = pane.Selection;
             }
 
-            var currentLineIndex = pSelection.StartLine;
-            var currentLine = module.GetLines(currentLineIndex, 1);
+            var selectedContent = module.GetLines(pSelection.StartLine, pSelection.LineCount);
+            var selectedLines = selectedContent.Replace("\r", string.Empty).Split('\n');
+            var currentLine = selectedLines[0];
 
-            var caretLine = (currentLineIndex, currentLine);
-            var lines = new List<(int Line, string Content)> {caretLine};
+            var caretStartLine = (pSelection.StartLine, currentLine);
+            var lines = new List<(int pLine, string Content)> {caretStartLine};
 
-            while (currentLineIndex >= 1)
+            // selection line may not be the only physical line in the complete logical line; accounts for line continuations.
+            InsertPhysicalLinesAboveSelectionStart(lines, module, pSelection.StartLine);
+            AppendPhysicalLinesBelowSelectionStart(lines, module, pSelection.StartLine, currentLine);
+
+            var logicalLine = string.Join("\r\n", lines.Select(e => e.Content));
+
+            var zCaretLine = lines.IndexOf(caretStartLine);
+            var zCaretColumn = pSelection.StartColumn - 1;
+            var caretPosition = new Selection(
+                zCaretLine, zCaretColumn, zCaretLine + pSelection.LineCount - 1, pSelection.EndColumn - 1);
+
+            var pStartLine = lines[0].pLine;
+            var pEndLine = lines[lines.Count - 1].pLine;
+            var snippetPosition = new Selection(pStartLine, 1, pEndLine, 1);
+
+            if (pStartLine > pSelection.StartLine || pEndLine > pSelection.EndLine)
             {
-                currentLineIndex--;
-                if (currentLineIndex >= 1)
-                {
-                    currentLine = module.GetLines(currentLineIndex, 1);
-                    if (currentLine.EndsWith(lineContinuation))
-                    {
-                        lines.Insert(0, (currentLineIndex, currentLine));
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
+                // selection spans more than a single logical line
+                return null;
             }
 
-            currentLineIndex = pSelection.StartLine;
-            currentLine = caretLine.currentLine;
-            while (currentLineIndex <= module.CountOfLines && currentLine.EndsWith(lineContinuation))
+            var result = new CodeString(logicalLine, caretPosition, snippetPosition);
+            return result;
+        }
+
+        private void AppendPhysicalLinesBelowSelectionStart(ICollection<(int Line, string Content)> lines, ICodeModule module, int currentLineIndex, string currentLine)
+        {
+            // assumes caret line is already in the list.
+            while (currentLineIndex <= module.CountOfLines && currentLine.EndsWith(LineContinuation))
             {
                 currentLineIndex++;
                 if (currentLineIndex <= module.CountOfLines)
@@ -213,21 +244,27 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                     break;
                 }
             }
+        }
 
-            var logicalLine = string.Join("\r\n", lines.Select(e => e.Content));
-            var zCaretLine = lines.IndexOf(caretLine);
-            var zCaretColumn = pSelection.StartColumn - 1;
-
-            var startLine = lines[0].Line;
-            var endLine = lines[lines.Count - 1].Line;
-
-            var result = new CodeString(
-                logicalLine,
-                new Selection(zCaretLine, zCaretColumn),
-                new Selection(startLine, 1, endLine, 1));
-
-            return result;
-
+        private void InsertPhysicalLinesAboveSelectionStart(IList<(int Line, string Content)> lines, ICodeModule module, int currentLineIndex)
+        {
+            // assumes caret line is already in the list.
+            while (currentLineIndex >= 1)
+            {
+                currentLineIndex--;
+                if (currentLineIndex >= 1)
+                {
+                    var currentLine = module.GetLines(currentLineIndex, 1);
+                    if (currentLine.EndsWith(LineContinuation))
+                    {
+                        lines.Insert(0, (currentLineIndex, currentLine));
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
         }
 
         public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
@@ -246,7 +283,8 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
         public Selection GetSelection(QualifiedModuleName module)
         {
-            using (var component = _projectsProvider.Component(module))
+            var component = _projectsProvider.Component(module);
+
             using (var codeModule = component.CodeModule)
             using (var pane = codeModule.CodePane)
             {

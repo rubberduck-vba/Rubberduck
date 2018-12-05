@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Interaction;
 using static RubberduckTests.Refactoring.Rename.RenameTestExecution;
+using System;
+using Rubberduck.Parsing.Rewriter;
 
 namespace RubberduckTests.Refactoring.Rename
 {
@@ -21,10 +23,12 @@ namespace RubberduckTests.Refactoring.Rename
             OriginalName = selection;
             ModuleTestSetupDefs = new List<RenameTestModuleDefinition>();
             RenameRefactoringUnderTest = null;
+            UseLibraries = false;
         }
 
         public IVBE VBE { get; set; }
         public RubberduckParserState ParserState { get; set; }
+        public IRewritingManager RewritingManager { get; set; }
         public string ProjectName { get; set; }
         public string NewName { get; set; }
         public string SelectionModuleName { get; set; }
@@ -37,6 +41,8 @@ namespace RubberduckTests.Refactoring.Rename
         public List<RenameTestModuleDefinition> ModuleTestSetupDefs { get; set; }
         public string OriginalName { get; set; }
         public RenameRefactoring RenameRefactoringUnderTest { get; set; }
+        public Action<RenameTestsDataObject> AdditionalSetup { get; set; }
+        public bool UseLibraries { get; set; }
     }
     
 }

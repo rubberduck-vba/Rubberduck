@@ -1,104 +1,69 @@
-﻿using System.Linq;
-using NUnit.Framework;
-using RubberduckTests.Mocks;
-using System.Threading;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Inspections;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class RemoveOptionBaseStatementQuickFixTests
+    public class RemoveOptionBaseStatementQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
         public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement()
         {
-            var inputCode = "Option Base 0";
-            var expectedCode = string.Empty;
+            const string inputCode = "Option Base 0";
+            const string expectedCode = "";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new RedundantOptionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new RedundantOptionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
         [Category("QuickFixes")]
         public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_MultipleLines()
         {
-            var inputCode =
-                @"Option _
+            const string inputCode = @"Option _
 Base _
 0";
 
-            var expectedCode = string.Empty;
+            const string expectedCode = "";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new RedundantOptionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new RedundantOptionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
         [Category("QuickFixes")]
         public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_InstructionSeparator()
         {
-            var inputCode = "Option Explicit: Option Base 0: Option Base 1";
+            const string inputCode = "Option Explicit: Option Base 0: Option Base 1";
 
-            var expectedCode = "Option Explicit: : Option Base 1";
+            const string expectedCode = "Option Explicit: : Option Base 1";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new RedundantOptionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new RedundantOptionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
         [Category("QuickFixes")]
         public void OptionBaseZeroStatement_QuickFixWorks_RemoveStatement_InstructionSeparatorAndMultipleLines()
         {
-            var inputCode =
-                @"Option Explicit: Option _
+            const string inputCode = @"Option Explicit: Option _
 Base _
 0: Option Base 1";
 
-            var expectedCode = "Option Explicit: : Option Base 1";
+            const string expectedCode = "Option Explicit: : Option Base 1";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var inspection = new RedundantOptionInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new RemoveOptionBaseStatementQuickFix(state).Fix(inspectionResults.First());
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new RedundantOptionInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
+
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new RemoveOptionBaseStatementQuickFix();
+        }
     }
 }

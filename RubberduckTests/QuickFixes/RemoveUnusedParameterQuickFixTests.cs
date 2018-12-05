@@ -4,9 +4,7 @@ using NUnit.Framework;
 using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using Rubberduck.UI;
 using RubberduckTests.Mocks;
-using Rubberduck.Interaction;
 using Rubberduck.Refactorings;
 
 namespace RubberduckTests.QuickFixes
@@ -29,13 +27,15 @@ Private Sub Foo()
 End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using(var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
                 var inspection = new ParameterNotUsedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
-
-                new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IRefactoringPresenterFactory>().Object).Fix(
-                    inspectionResults.First());
+                var rewriteSession = rewritingManager.CheckOutCodePaneSession();
+                
+                new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IRefactoringPresenterFactory>().Object, rewritingManager)
+                    .Fix(inspectionResults.First(), rewriteSession);
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }

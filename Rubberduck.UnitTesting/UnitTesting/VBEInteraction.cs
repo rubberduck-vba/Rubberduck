@@ -67,37 +67,51 @@ namespace Rubberduck.UnitTesting
             if (project == null || project.IsWrappingNullReference) { return; }
             var libFolder = IntPtr.Size == 8 ? "win64" : "win32";
             const string libGuid = RubberduckGuid.RubberduckTypeLibGuid;
-            var pathKey = Registry.ClassesRoot.OpenSubKey($@"TypeLib\{{{libGuid}}}\{_rubberduckVersion.Major}.{_rubberduckVersion.Minor}\0\{libFolder}");
+            var pathKey = Registry.ClassesRoot.OpenSubKey(
+                $@"TypeLib\{{{libGuid}}}\{_rubberduckVersion.Major}.{_rubberduckVersion.Minor}\0\{libFolder}");
 
-            var referencePath = pathKey?.GetValue(string.Empty, string.Empty) as string;
-            string name = null;
-
-            if (!string.IsNullOrWhiteSpace(referencePath))
+            if (pathKey != null)
             {
-                var tlbKey =
-                    Registry.ClassesRoot.OpenSubKey($@"TypeLib\{{{libGuid}}}\{_rubberduckVersion.Major}.{_rubberduckVersion.Minor}");
+                var referencePath = pathKey.GetValue(string.Empty, string.Empty) as string;
+                string name = null;
 
-                name = tlbKey?.GetValue(string.Empty, string.Empty) as string;
-            }
-
-            if (string.IsNullOrWhiteSpace(referencePath) || string.IsNullOrWhiteSpace(name))
-            {
-                throw new InvalidOperationException("Cannot locate the tlb in the registry or the entry may be corrupted. Therefore early binding is not possible");
-            }
-
-            using (var references = project.References)
-            {
-                var reference = FindReferenceByName(references, name);
-                if (reference != null)
+                if (!string.IsNullOrWhiteSpace(referencePath))
                 {
-                    references.Remove(reference);
-                    reference.Dispose();
+                    var tlbKey =
+                        Registry.ClassesRoot.OpenSubKey(
+                            $@"TypeLib\{{{libGuid}}}\{_rubberduckVersion.Major}.{_rubberduckVersion.Minor}");
+
+                    if(tlbKey != null)
+                    {
+                        name = tlbKey.GetValue(string.Empty, string.Empty) as string;
+                        tlbKey.Dispose();
+                    }
                 }
 
-                if (!ReferenceWithPathExists(references, referencePath))
+                if (string.IsNullOrWhiteSpace(referencePath) || string.IsNullOrWhiteSpace(name))
                 {
-                    references.AddFromFile(referencePath);
+                    throw new InvalidOperationException(
+                        "Cannot locate the tlb in the registry or the entry may be corrupted. Therefore early binding is not possible");
                 }
+
+                using (var references = project.References)
+                {
+                    var reference = FindReferenceByName(references, name);
+                    if (reference != null)
+                    {
+                        references.Remove(reference);
+                        reference.Dispose();
+                    }
+
+                    if (!ReferenceWithPathExists(references, referencePath))
+                    {
+                        // AddFromFile returns a new wrapped reference so we must 
+                        // ensure it is disposed properly.
+                        using (references.AddFromFile(referencePath)) { }
+                    }
+                }
+
+                pathKey.Dispose();
             }
         }
 

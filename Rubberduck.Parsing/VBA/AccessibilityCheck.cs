@@ -5,14 +5,20 @@ namespace Rubberduck.Parsing.VBA
 {
     public static class AccessibilityCheck
     {
-        public static bool IsAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration callee)
+        public static bool IsAccessible(Declaration callingParent, Declaration callee)
         {
-            return callee != null 
-                    && (callee.DeclarationType.HasFlag(DeclarationType.Project) 
-                        || (callee.DeclarationType.HasFlag(DeclarationType.Module) && IsModuleAccessible(callingProject, callingModule, callee))
-                        || (!callee.DeclarationType.HasFlag(DeclarationType.Module) && IsMemberAccessible(callingProject, callingModule, callingParent, callee)));
+            var callingModule = callingParent.ParentScopeDeclaration;
+            var callingProject = callingModule.ParentDeclaration;
+            return IsAccessible(callingProject, callingModule, callingParent, callee);
         }
 
+        public static bool IsAccessible(Declaration callingProject, Declaration callingModule, Declaration callingParent, Declaration callee)
+        {
+            return callee != null
+                   && (callee.DeclarationType.HasFlag(DeclarationType.Project)
+                       || (callee.DeclarationType.HasFlag(DeclarationType.Module) && IsModuleAccessible(callingProject, callingModule, callee))
+                       || (!callee.DeclarationType.HasFlag(DeclarationType.Module) && IsMemberAccessible(callingProject, callingModule, callingParent, callee)));
+        }
 
         public static bool IsModuleAccessible(Declaration callingProject, Declaration callingModule, Declaration calleeModule)
         {

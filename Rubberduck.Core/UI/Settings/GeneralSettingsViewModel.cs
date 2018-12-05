@@ -10,6 +10,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.VbeRuntime.Settings;
 using Rubberduck.Resources;
+using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -157,6 +158,29 @@ namespace Rubberduck.UI.Settings
             }
         }
 
+        private bool _setDpiUnaware;
+        public bool SetDpiUnaware
+        {
+            get => _setDpiUnaware;
+            set
+            {
+                if (_setDpiUnaware != value)
+                {
+                    _setDpiUnaware = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public bool SetDpiUnawareEnabled
+        {
+            get
+            {
+                var osVersion = _operatingSystem.GetOSVersion();
+                return osVersion != null && osVersion >= WindowsVersion.Windows81;
+            }
+        }
+
         private bool SynchronizeVBESettings()
         {
             if (!_messageBox.ConfirmYesNo(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
@@ -242,6 +266,7 @@ namespace Rubberduck.UI.Settings
                 CanShowSplash = ShowSplashAtStartup,
                 CanCheckVersion = CheckVersionAtStartup,
                 CompileBeforeParse = CompileBeforeParse,
+                SetDpiUnaware =  SetDpiUnaware,
                 IsSmartIndenterPrompted = _indenterPrompted,
                 IsAutoSaveEnabled = AutoSaveEnabled,
                 AutoSavePeriod = AutoSavePeriod,
@@ -258,6 +283,7 @@ namespace Rubberduck.UI.Settings
             ShowSplashAtStartup = general.CanShowSplash;
             CheckVersionAtStartup = general.CanCheckVersion;
             CompileBeforeParse = general.CompileBeforeParse;
+            SetDpiUnaware = general.SetDpiUnaware;
             _indenterPrompted = general.IsSmartIndenterPrompted;
             AutoSaveEnabled = general.IsAutoSaveEnabled;
             AutoSavePeriod = general.AutoSavePeriod;
@@ -275,8 +301,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new OpenFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_LoadGeneralSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_LoadGeneralSettings
             })
             {
                 dialog.ShowDialog();
@@ -295,8 +321,8 @@ namespace Rubberduck.UI.Settings
         {
             using (var dialog = new SaveFileDialog
             {
-                Filter = RubberduckUI.DialogMask_XmlFilesOnly,
-                Title = RubberduckUI.DialogCaption_SaveGeneralSettings
+                Filter = SettingsUI.DialogMask_XmlFilesOnly,
+                Title = SettingsUI.DialogCaption_SaveGeneralSettings
             })
             {
                 dialog.ShowDialog();

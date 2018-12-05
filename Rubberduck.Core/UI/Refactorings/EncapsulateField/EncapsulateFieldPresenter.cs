@@ -37,9 +37,9 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
 
             Model.PropertyName = ViewModel.PropertyName;
-            Model.ImplementLetSetterType = ViewModel.CanHaveLet;
-            Model.ImplementSetSetterType = ViewModel.CanHaveSet;
-            Model.CanImplementLet = ViewModel.CanHaveSet && !ViewModel.CanHaveSet;
+            Model.ImplementLetSetterType = ViewModel.IsLetSelected;
+            Model.ImplementSetSetterType = ViewModel.IsSetSelected;
+            Model.CanImplementLet = ViewModel.CanHaveLet;
 
             Model.ParameterName = ViewModel.ParameterName;
             return Model;

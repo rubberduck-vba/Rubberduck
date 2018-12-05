@@ -175,4 +175,13 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
     <value>Vous nous retrouvez également ici:</value>
   </data>
+  <data name="AboutWindow_FoundAnIssue" xml:space="preserve">
+    <value>Un problème?</value>
+  </data>
+  <data name="AboutWindow_HelpImproveRubberduck" xml:space="preserve">
+    <value>Aidez-nous à améliorer Rubberduck!</value>
+  </data>
+  <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
+    <value>Rapporter un problème</value>
+  </data>
 </root>

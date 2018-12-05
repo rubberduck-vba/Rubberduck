@@ -15,6 +15,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Common;
 using Rubberduck.UI.Refactorings;
 using RubberduckTests.Refactoring.MockIoC;
+using Rubberduck.Parsing.Rewriter;
 
 using static RubberduckTests.Refactoring.Rename.RenameTestExecution;
 
@@ -523,7 +524,6 @@ End Function"
                     @"Private Function Fo|o() As Boolean
     Foo = True
 End Function
-
 Private Sub Goo()
     Dim var1 As Boolean
     var1 = Foo()
@@ -532,12 +532,45 @@ End Sub",
                     @"Private Function Hoo() As Boolean
     Hoo = True
 End Function
-
 Private Sub Goo()
     Dim var1 As Boolean
     var1 = Hoo()
 End Sub"
             };
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameVariableWithBracketedExpressionInModule()
+        {
+            var tdo = new RenameTestsDataObject(selection: "Foo", newName: "Hoo");
+            var inputOutput = new RenameTestModuleDefinition("TestModule1", ComponentType.Document)
+            {
+                Input =
+                    @"Private Fo|o() As Long
+
+Public Sub Derp()
+  [Something].Clear
+End Sub",
+                Expected =
+                    @"Private Hoo() As Long
+
+Public Sub Derp()
+  [Something].Clear
+End Sub"
+            };
+
+            tdo.UseLibraries = true;
+            tdo.AdditionalSetup = t =>
+            {
+                var hostApp = new Mock<IHostApplication>();
+                hostApp.Setup(x => x.ApplicationName).Returns("EXCEL");
+                var mock = Mock.Get(tdo.VBE);
+                mock.Setup(x => x.HostApplication()).Returns(hostApp.Object);
+            };
+
             PerformExpectedVersusActualRenameTests(tdo, inputOutput);
         }
 
@@ -1860,7 +1893,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, "Class1", ComponentType.ClassModule, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -1869,8 +1903,8 @@ End Sub";
                 msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
-                var model = new RenameModel(state, qualifiedSelection) { NewName = newName };
-                model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
+                var model = new RenameModel(state.DeclarationFinder, qualifiedSelection) { NewName = newName };
+                model.Target = state.DeclarationFinder.AllUserDeclarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "Class1");
                 var presenter = new Mock<IRenamePresenter>();
                 var factory = GetFactoryMock(m => {
                     presenter.Setup(p => p.Model).Returns(m);
@@ -1883,7 +1917,7 @@ End Sub";
                     return presenter;
                     }, out var creator);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -1907,15 +1941,16 @@ End Sub";
                 .AddProjectToVbeBuilder()
                 .Build();
 
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var msgbox = new Mock<IMessageBox>();
                 msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
-                var model = new RenameModel(state, default(QualifiedSelection)) { NewName = newName };
-                model.Target = model.Declarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
+                var model = new RenameModel(state.DeclarationFinder, default(QualifiedSelection)) { NewName = newName };
+                model.Target = state.DeclarationFinder.AllUserDeclarations.First(i => i.DeclarationType == DeclarationType.Project && i.IsUserDefined);
                 var presenter = new Mock<IRenamePresenter>();
                 var factory = GetFactoryMock(m => {
                     presenter.Setup(p => p.Model).Returns(m);
@@ -1928,7 +1963,7 @@ End Sub";
                     return presenter;
                 }, out var creator);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreEqual(newName, vbe.Object.VBProjects[0].Name);
@@ -2385,7 +2420,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var projectName = "Test";
             var vbe = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, major: 4, minor: 1, isBuiltIn: true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, major: 4, minor: 2, isBuiltIn: true)
                 .AddComponent("MyClass", ComponentType.ClassModule, classInputOutput.Input)
                 .AddComponent("Usage", ComponentType.StandardModule, usageInputOutput.Input)
                 .AddProjectToVbeBuilder()
@@ -2402,39 +2437,40 @@ End Sub
             tdo.MsgBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_DoesNotWarnForUDTMember_Issue4349()
+        public void RenameRefactoring_DoesNotWarnForUDTMember()
         {
-            var tdo = new RenameTestsDataObject(selection: "VS", newName: "verySatisfiedResponses");
+            var tdo = new RenameTestsDataObject(selection: "VS", newName: "VerySatisfiedResponses");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
             {
                 Input =
 @"Private Type TMonthScoreInfo
-            verySatisfiedResponses As Long
+            VerySatisfiedResponses As Long
         End Type
 
         Private monthScoreInfo As TMonthScoreInfo
 
         Public Property Get V|S() As Long
-            VS = monthScoreInfo.verySatisfiedResponses
+            VS = monthScoreInfo.VerySatisfiedResponses
         End Property
         Public Property Let VS(ByVal theVal As Long)
-            monthScoreInfo.verySatisfiedResponses = theVal
+            monthScoreInfo.VerySatisfiedResponses = theVal
         End Property",
                 Expected =
 @"Private Type TMonthScoreInfo
-            verySatisfiedResponses As Long
+            VerySatisfiedResponses As Long
         End Type
 
         Private monthScoreInfo As TMonthScoreInfo
 
-        Public Property Get verySatisfiedResponses() As Long
-            verySatisfiedResponses = monthScoreInfo.verySatisfiedResponses
+        Public Property Get VerySatisfiedResponses() As Long
+            VerySatisfiedResponses = monthScoreInfo.VerySatisfiedResponses
         End Property
-        Public Property Let verySatisfiedResponses(ByVal theVal As Long)
-            monthScoreInfo.verySatisfiedResponses = theVal
+        Public Property Let VerySatisfiedResponses(ByVal theVal As Long)
+            monthScoreInfo.VerySatisfiedResponses = theVal
         End Property"
             };
 
@@ -2442,10 +2478,11 @@ End Sub
             tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
         }
 
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void RenameRefactoring_DoesNotWarnForEnumMember_Issue4349()
+        public void RenameRefactoring_DoesNotWarnForEnumMember()
         {
             var tdo = new RenameTestsDataObject(selection: "VerySatisfiedID", newName: "VerySatisfiedResponse");
             var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
@@ -2457,7 +2494,7 @@ End Sub
         End Enum
 
         Public Property Get V|erySatisfiedID() As Long
-            VS = MonthScoreTypes.VerySatisfiedResponse
+            VerySatisfiedID = MonthScoreTypes.VerySatisfiedResponse
         End Property",
                 Expected =
 @"Private Enum MonthScoreTypes
@@ -2466,7 +2503,40 @@ End Sub
         End Enum
 
         Public Property Get VerySatisfiedResponse() As Long
-            VS = MonthScoreTypes.VerySatisfiedResponse
+            VerySatisfiedResponse = MonthScoreTypes.VerySatisfiedResponse
+        End Property",
+            };
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput);
+            tdo.MsgBox.Verify(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+        }
+
+        //Issue: https://github.com/rubberduck-vba/Rubberduck/issues/4349
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void RenameRefactoring_DoesNotWarnForMember()
+        {
+            var tdo = new RenameTestsDataObject(selection: "VerySatisfiedResponse", newName: "VerySatisfiedID");
+            var inputOutput = new RenameTestModuleDefinition("Module1", ComponentType.StandardModule)
+            {
+                Input =
+@"Private Enum MonthScoreTypes
+            VerySa|tisfiedResponse
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get VerySatisfiedID() As Long
+            VerySatisfiedID = MonthScoreTypes.VerySatisfiedResponse
+        End Property",
+                Expected =
+@"Private Enum MonthScoreTypes
+            VerySatisfiedID
+            VeryDissatisfiedResponse
+        End Enum
+
+        Public Property Get VerySatisfiedID() As Long
+            VerySatisfiedID = MonthScoreTypes.VerySatisfiedID
         End Property",
             };
 
@@ -2515,7 +2585,8 @@ End Sub";
 
             IVBComponent component;
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var codePaneMock = new Mock<ICodePane>();
@@ -2530,11 +2601,11 @@ End Sub";
                     return null;
                 }, out var creator);
 
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, null, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, null, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor();
 
-                var rewriter = state.GetRewriter(component);
-                Assert.AreEqual(inputCode, rewriter.GetText());
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(inputCode, actualCode);
             }
         }
 
@@ -2555,7 +2626,7 @@ End Sub";
                 codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
                 codePaneMock.Setup(c => c.Selection);
                 vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
-                var model = new RenameModel(state, new QualifiedSelection(component.QualifiedModuleName, Selection.Empty));
+                var model = new RenameModel(state.DeclarationFinder, new QualifiedSelection(component.QualifiedModuleName, Selection.Empty));
 
                 Assert.AreEqual(null, model.Target);
             }
@@ -2611,7 +2682,7 @@ End Sub";
             {
                 var declaration = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
                     .Where(d => d.IdentifierName.Equals(selected)).First();
-                var renameModel = new RenameModel(state, declaration.QualifiedSelection);
+                var renameModel = new RenameModel(state.DeclarationFinder, declaration.QualifiedSelection);
                 var renameViewModel = new RenameViewModel(state, renameModel);
                 renameViewModel.Target = renameModel.Target;
                 renameViewModel.NewName = newName;
@@ -2635,7 +2706,8 @@ End Property";
             var selection = new Selection(3, 27, 3, 27);
             
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, "ClassModule1", ComponentType.ClassModule, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
@@ -2644,8 +2716,8 @@ End Property";
                 msgbox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
 
                 var vbeWrapper = vbe.Object;
-                var model = new RenameModel(state, qualifiedSelection) { NewName = newName };
-                model.Target = model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "ClassModule1");
+                var model = new RenameModel(state.DeclarationFinder, qualifiedSelection) { NewName = newName };
+                model.Target = state.DeclarationFinder.AllUserDeclarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ClassModule && i.IdentifierName == "ClassModule1");
                 var presenter = new Mock<IRenamePresenter>();
                 var factory = GetFactoryMock(m => {
                     presenter.Setup(p => p.Model).Returns(m);
@@ -2657,7 +2729,7 @@ End Property";
                         .Returns(m);
                     return presenter;
                 }, out var creator);
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state);
+                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);

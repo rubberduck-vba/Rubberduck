@@ -6,25 +6,26 @@ using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
-    public class AccessSheetUsingCodeNameQuickFix : QuickFixBase
+    public sealed class AccessSheetUsingCodeNameQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public AccessSheetUsingCodeNameQuickFix(RubberduckParserState state)
+        public AccessSheetUsingCodeNameQuickFix(IDeclarationFinderProvider declarationFinderProvider)
             : base(typeof(SheetAccessedUsingStringInspection))
         {
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             var referenceResult = (IdentifierReferenceInspectionResult)result;
 
-            var rewriter = _state.GetRewriter(referenceResult.QualifiedName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(referenceResult.QualifiedName);
 
             var setStatement = referenceResult.Context.GetAncestor<VBAParser.SetStmtContext>();
             var isArgument = referenceResult.Context.GetAncestor<VBAParser.ArgumentContext>() != null;
@@ -36,14 +37,14 @@ namespace Rubberduck.Inspections.QuickFixes
                 var indexExprContext = referenceResult.Context.Parent.Parent as VBAParser.IndexExprContext ??
                                        referenceResult.Context.Parent as VBAParser.IndexExprContext;
 
-                rewriter.Replace(indexExprContext, referenceResult.Properties.CodeName);
+                rewriter.Replace(indexExprContext, (string)referenceResult.Properties.CodeName);
             }
             else
             {
                 // Sheet assigned to variable
 
                 var sheetVariableName = setStatement.lExpression().GetText();
-                var sheetDeclaration = _state.DeclarationFinder.MatchName(sheetVariableName)
+                var sheetDeclaration = _declarationFinderProvider.DeclarationFinder.MatchName(sheetVariableName)
                     .First(declaration =>
                     {
                         var moduleBodyElement = declaration.Context.GetAncestor<VBAParser.ModuleBodyElementContext>();
@@ -71,7 +72,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 foreach (var reference in sheetDeclaration.References)
                 {
-                    rewriter.Replace(reference.Context, referenceResult.Properties.CodeName);
+                    rewriter.Replace(reference.Context, (string)referenceResult.Properties.CodeName);
                 }
 
                 rewriter.Remove(setStatement);

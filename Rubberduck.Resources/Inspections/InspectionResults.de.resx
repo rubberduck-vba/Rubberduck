@@ -123,9 +123,6 @@
   <data name="MoveFieldCloserToUsageInspection" xml:space="preserve">
     <value>Veringere die den Geltungsbereich der Modulvariable '{0}'.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>'{0}' hat mehr als eine '@Folder'-Annotation</value>
-  </data>
   <data name="ProcedureCanBeWrittenAsFunctionInspection" xml:space="preserve">
     <value>Prozedur '{0}' kann als Funktion geschrieben werden.</value>
     <comment>{0} Procedure name</comment>
@@ -334,5 +331,47 @@
   </data>
   <data name="StepIsNotSpecifiedInspection" xml:space="preserve">
     <value>Step ist nicht angegeben</value>
+  </data>
+  <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
+    <value>Statisch erreichbares Tabellenblatt kann mit dem Code-Namen referenziert werden.</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Erwägen Sie, den Aufruf von '{0}' zu ersetzen. {1}</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>'{0}' wurde mit der unter Windows nicht erlaubten 'CDecl'-Aufrufkonvention deklariert.</value>
+  </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Unerreichbar: Case-Klausel enthält unzulässige Bereichsdefinition(en).</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>Unerreichbar: Case-Klausel wird einen Laufzeitfehler 6 - 'Überlauf' erzeugen.</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Annotation '{0}' wurde mehrfach spezifiziert.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Das Modul '{0}' hat keine '@Folder'-Annotation.</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>'On Local Error'-Direktive erkannt.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>'IsMissing' wird mit dem übergebenen Argument immer 'False' zurückliefern.</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>'IsMissing' wird ein Ausdruck übergeben, der kein Argument der umgebenden Prozedur ist.</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Eine Zuweisung wird sofort überschrieben oder nie gelesen.</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Der öffentliche Membername '{0}' enthält einen Unterstrich.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Das Ergebnis des Aufrufs von '{0}' wird nie auf 'Nothing' überprüft.</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>'{0}' wird von einem EXCEL-Zellverweis verdeckt.</value>
   </data>
 </root>

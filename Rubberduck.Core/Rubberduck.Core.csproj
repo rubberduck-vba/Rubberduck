@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
   <PropertyGroup>
     <RootNamespace>Rubberduck</RootNamespace>
     <AssemblyName>Rubberduck.Core</AssemblyName>
@@ -12,7 +12,7 @@
     <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <!-- Give a fixed version to not blow XAML generated code to smithereens -->
-    <AssemblyVersion>2.2</AssemblyVersion>
+    <AssemblyVersion>2.3.0</AssemblyVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
@@ -29,6 +29,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -81,7 +82,20 @@
       <Version>2.0.20525</Version>
     </PackageReference>
   </ItemGroup>
-  
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
   <!-- BEGIN WINDOWS FORMS WORKAROUND SECTION -->
   <ItemGroup>
     <Compile Update="**\*Window.cs" SubType="Form" />
@@ -97,39 +111,5 @@
     </EmbeddedResource>
   </ItemGroup>
   <!-- END WINDOWS FORMS WORKAROUND SECTION -->
-
-  <!--BEGIN XAML WORKAROUND SECTION -->
-  <ItemGroup>
-    <Page Include="**\*.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Compile Update="**\*.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>%(Filename)</DependentUpon>
-    </Compile>
-    <!-- Resources -->
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-      <AutoGen>true</AutoGen>
-      <DesignTime>true</DesignTime>
-    </Compile>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <Generator>ResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-    <!-- Settings -->
-    <Compile Update="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <!-- END XAML WORKAROUND SECTION -->
 
 </Project>

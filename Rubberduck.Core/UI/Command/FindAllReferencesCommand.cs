@@ -169,9 +169,17 @@ namespace Rubberduck.UI.Command
                     reference.ParentNonScoping,
                     new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection),
                     GetModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine)));
-            
+
+            var accessor = declaration.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
+                         : declaration.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"
+                         : declaration.DeclarationType.HasFlag(DeclarationType.PropertySet) ? "(set)"
+                         : string.Empty;
+
+            var tabCaption = $"{declaration.IdentifierName} {accessor}".Trim();
+
+
             var viewModel = new SearchResultsViewModel(_navigateCommand,
-                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, declaration.IdentifierName), declaration, results);
+                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, tabCaption), declaration, results);
 
             return viewModel;
         }
@@ -224,32 +232,47 @@ namespace Rubberduck.UI.Command
             {
                 projectId = activeProject.ProjectId;
             }
-            var component = _vbe.SelectedVBComponent;
 
-            if (component?.HasDesigner ?? false)
+            using (var component = _vbe.SelectedVBComponent)
             {
-                DeclarationType selectedType;
-                string selectedName;
-                using (var selectedControls = component.SelectedControls)
+                if (component?.HasDesigner ?? false)
                 {
-                    var selectedCount = selectedControls.Count;
-                    if (selectedCount > 1)
+                    DeclarationType selectedType;
+                    string selectedName;
+                    using (var selectedControls = component.SelectedControls)
                     {
-                        return null;
+                        var selectedCount = selectedControls.Count;
+                        if (selectedCount > 1)
+                        {
+                            return null;
+                        }
+
+                        (selectedType, selectedName) = GetSelectedName(component, selectedControls, selectedCount);
                     }
 
-                    // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                    (selectedType, selectedName) = selectedCount == 0
-                        ? (DeclarationType.ClassModule, component.Name)
-                        : (DeclarationType.Control, selectedControls[0].Name);
+                    return _state.DeclarationFinder
+                        .MatchName(selectedName)
+                        .SingleOrDefault(m => m.ProjectId == projectId
+                                              && m.DeclarationType.HasFlag(selectedType)
+                                              && m.ComponentName == component.Name);
                 }
-                return _state.DeclarationFinder
-                    .MatchName(selectedName)
-                    .SingleOrDefault(m => m.ProjectId == projectId
-                        && m.DeclarationType.HasFlag(selectedType)
-                        && m.ComponentName == component.Name);                
+
+                return null;
             }
-            return null;
+        }
+
+        private static (DeclarationType, string Name) GetSelectedName(IVBComponent component, IControls selectedControls, int selectedCount)
+        {
+            // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+            if (selectedCount == 0)
+            {
+                return (DeclarationType.ClassModule, component.Name);
+            }
+
+            using (var firstSelectedControl = selectedControls[0])
+            {
+                return (DeclarationType.Control, firstSelectedControl.Name);
+            }
         }
 
         private Declaration FindFormDesignerTarget(QualifiedModuleName qualifiedModuleName)
@@ -269,13 +292,25 @@ namespace Rubberduck.UI.Command
             return null;
         }
 
-
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
             }
+            _isDisposed = true;
         }
     }
 }

@@ -125,12 +125,12 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
         private IVBProject GetProject()
         {
+            //No using because the wrapper gets returned potentially. 
             var activeProject = _vbe.ActiveVBProject;
             if (!activeProject.IsWrappingNullReference)
             {
                 return activeProject;
             }
-
             activeProject.Dispose();
             
             using (var projects = _vbe.VBProjects)
@@ -143,10 +143,13 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
+            bool canExecute;
             using (var project = GetProject())
             {
-                return project != null && !project.IsWrappingNullReference && CanExecuteCode(project);
+                canExecute = project != null && !project.IsWrappingNullReference && CanExecuteCode(project);
             }
+
+            return canExecute;
         }
         
         private bool CanExecuteCode(IVBProject project)
@@ -158,100 +161,115 @@ namespace Rubberduck.UI.UnitTesting.Commands
         {
             var parameterIsModuleDeclaration = parameter is ProceduralModuleDeclaration || parameter is ClassModuleDeclaration;
 
-            using (var project = parameter as IVBProject ??
-                                 (parameterIsModuleDeclaration ? ((Declaration) parameter).Project : GetProject()))
+            switch(parameter)
             {
-                if (project == null || project.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                var settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
-
-                if (settings.BindingMode == BindingMode.EarlyBinding)
-                {
-                    // FIXME: Push the actual adding of TestModules into UnitTesting, which sidesteps VBEInteraction being inaccessble here
-                    _interaction.EnsureProjectReferencesUnitTesting(project);
-                }
-
-                try
-                {
-                    using (var components = project.VBComponents)
+                case IVBProject project:
+                    ExecuteInternal(project, null);
+                    break;
+                case Declaration declaration when parameterIsModuleDeclaration:
+                    ExecuteInternal(declaration.Project, declaration);
+                    break;
+                default:
+                    using (var project = GetProject())
                     {
-                        using (var component = components.Add(ComponentType.StandardModule))
+                        ExecuteInternal(project, null);
+                    }
+                    break;
+            }
+        }
+
+        private void ExecuteInternal(IVBProject project, Declaration projectDeclaration)
+        {
+            if (project == null || project.IsWrappingNullReference)
+            {
+                return;
+            }
+
+            var settings = _configLoader.LoadConfiguration().UserSettings.UnitTestSettings;
+
+            if (settings.BindingMode == BindingMode.EarlyBinding)
+            {
+                // FIXME: Push the actual adding of TestModules into UnitTesting, which sidesteps VBEInteraction being inaccessble here
+                _interaction.EnsureProjectReferencesUnitTesting(project);
+            }
+
+            try
+            {
+                using (var components = project.VBComponents)
+                {
+                    using (var component = components.Add(ComponentType.StandardModule))
+                    {
+                        using (var module = component.CodeModule)
                         {
-                            using (var module = component.CodeModule)
+                            component.Name = GetNextTestModuleName(project);
+
+                            var hasOptionExplicit = false;
+                            if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
                             {
-                                component.Name = GetNextTestModuleName(project);
-
-                                var hasOptionExplicit = false;
-                                if (module.CountOfLines > 0 && module.CountOfDeclarationLines > 0)
-                                {
-                                    hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines)
-                                        .Contains("Option Explicit");
-                                }
-
-                                var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
-                                    "Option Private Module\r\n\r\n");
-
-                                if (parameterIsModuleDeclaration)
-                                {
-                                    var moduleCodeBuilder = new StringBuilder();
-                                    var declarationsToStub = GetDeclarationsToStub((Declaration) parameter);
-
-                                    foreach (var declaration in declarationsToStub)
-                                    {
-                                        var name = string.Empty;
-
-                                        switch (declaration.DeclarationType)
-                                        {
-                                            case DeclarationType.Procedure:
-                                            case DeclarationType.Function:
-                                                name = declaration.IdentifierName;
-                                                break;
-                                            case DeclarationType.PropertyGet:
-                                                name = $"Get{declaration.IdentifierName}";
-                                                break;
-                                            case DeclarationType.PropertyLet:
-                                                name = $"Let{declaration.IdentifierName}";
-                                                break;
-                                            case DeclarationType.PropertySet:
-                                                name = $"Set{declaration.IdentifierName}";
-                                                break;
-                                        }
-
-                                        var stub = AddTestMethodCommand.TestMethodTemplate.Replace(
-                                            AddTestMethodCommand.NamePlaceholder, $"{name}_Test");
-                                        moduleCodeBuilder.AppendLine(stub);
-                                    }
-
-                                    module.AddFromString(options + GetTestModule(settings) + moduleCodeBuilder);
-                                }
-                                else
-                                {
-                                    var defaultTestMethod = settings.DefaultTestStubInNewModule
-                                        ? AddTestMethodCommand.TestMethodTemplate.Replace(
-                                            AddTestMethodCommand.NamePlaceholder,
-                                            "TestMethod1")
-                                        : string.Empty;
-
-                                    module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
-                                }
+                                hasOptionExplicit = module.GetLines(1, module.CountOfDeclarationLines)
+                                    .Contains("Option Explicit");
                             }
 
-                            component.Activate();
+                            var options = string.Concat(hasOptionExplicit ? string.Empty : "Option Explicit\r\n",
+                                "Option Private Module\r\n\r\n");
+
+                            if (projectDeclaration != null)
+                            {
+                                var moduleCodeBuilder = new StringBuilder();
+                                var declarationsToStub = GetDeclarationsToStub(projectDeclaration);
+
+                                foreach (var declaration in declarationsToStub)
+                                {
+                                    var name = string.Empty;
+
+                                    switch (declaration.DeclarationType)
+                                    {
+                                        case DeclarationType.Procedure:
+                                        case DeclarationType.Function:
+                                            name = declaration.IdentifierName;
+                                            break;
+                                        case DeclarationType.PropertyGet:
+                                            name = $"Get{declaration.IdentifierName}";
+                                            break;
+                                        case DeclarationType.PropertyLet:
+                                            name = $"Let{declaration.IdentifierName}";
+                                            break;
+                                        case DeclarationType.PropertySet:
+                                            name = $"Set{declaration.IdentifierName}";
+                                            break;
+                                    }
+
+                                    var stub = AddTestMethodCommand.TestMethodTemplate.Replace(
+                                        AddTestMethodCommand.NamePlaceholder, $"{name}_Test");
+                                    moduleCodeBuilder.AppendLine(stub);
+                                }
+
+                                module.AddFromString(options + GetTestModule(settings) + moduleCodeBuilder);
+                            }
+                            else
+                            {
+                                var defaultTestMethod = settings.DefaultTestStubInNewModule
+                                    ? AddTestMethodCommand.TestMethodTemplate.Replace(
+                                        AddTestMethodCommand.NamePlaceholder,
+                                        "TestMethod1")
+                                    : string.Empty;
+
+                                module.AddFromString(options + GetTestModule(settings) + defaultTestMethod);
+                            }
                         }
+
+                        component.Activate();
                     }
                 }
-                catch (Exception ex)
-                {
-                    _messageBox.Message(TestExplorer.Command_AddTestModule_Error);
-                    Logger.Warn("Unable to add test module. An exception was thrown.");
-                    Logger.Warn(ex);
-                }
-
-                _state.OnParseRequested(this);
             }
+            catch (Exception ex)
+            {
+                _messageBox.Message(TestExplorer.Command_AddTestModule_Error);
+                Logger.Warn("Unable to add test module. An exception was thrown.");
+                Logger.Warn(ex);
+            }
+
+            _state.OnParseRequested(this);
         }
 
         // FIXME push this into Rubberduck.UnitTesting assembly

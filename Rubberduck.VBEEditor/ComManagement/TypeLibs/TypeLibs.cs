@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// VBEReferences collection, and CompileProject method.
     /// Can also be cast to ComTypes.ITypeLib for raw access to the underlying type library
     /// </remarks>
-    public class TypeLibWrapper : ITypeLibWrapper
+    public sealed class TypeLibWrapper : ITypeLibWrapper
     {
         private DisposableList<TypeInfoWrapper> _typeInfosWrapped;
         private readonly bool _wrappedObjectIsWeakReference;
@@ -218,10 +218,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public TypeInfoWrapper GetSafeTypeInfoByIndex(int index)
         {
-            IntPtr typeInfoPtr = IntPtr.Zero;
             // We cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
-            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfo(index, out typeInfoPtr);
+            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfo(index, out var typeInfoPtr);
             var outVal = new TypeInfoWrapper(typeInfoPtr);
+            _typeInfosWrapped?.Dispose();
             _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
             _typeInfosWrapped.Add(outVal);
             return outVal;
@@ -252,7 +252,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             if (!HasVBEExtensions)
             {
-                throw new ArgumentException("This TypeLib does not represent a VBE project, so we cannot compile it");
+                throw new InvalidOperationException("This TypeLib does not represent a VBE project, so we cannot compile it");
             }
 
             try
@@ -266,7 +266,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 if (e.HResult != (int)KnownComHResults.E_VBA_COMPILEERROR)
                 {
                     // this is for debug purposes, to see if the compiler ever returns other errors on failure
-                    throw new ArgumentException("Unrecognised VBE compiler error: \n" + e.ToString());
+                    throw new InvalidOperationException("Unrecognised VBE compiler error: \n" + e.ToString());
                 }
 #endif
                 return false;
@@ -283,7 +283,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (!HasVBEExtensions)
                 {
-                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                    throw new InvalidOperationException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
                 }
 
                 return target_IVBEProject.GetConditionalCompilationArgs();
@@ -293,7 +293,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (!HasVBEExtensions)
                 {
-                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                    throw new InvalidOperationException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
                 }
 
                 target_IVBEProject.SetConditionalCompilationArgs(value);
@@ -310,7 +310,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (!HasVBEExtensions)
                 {
-                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                    throw new InvalidOperationException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
                 }
 
                 string args = target_IVBEProject.GetConditionalCompilationArgs();
@@ -330,7 +330,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 if (!HasVBEExtensions)
                 {
-                    throw new ArgumentException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
+                    throw new InvalidOperationException("This ITypeLib is not hosted by the VBE, so does not support ConditionalCompilationArguments");
                 }
 
                 var rawArgsString = string.Join(" : ", value.Select(x => x.Key + " = " + x.Value));
@@ -382,13 +382,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         // so we cast to our IVBETypeLib interface in order to work with the raw IntPtr for aggregation
         void ComTypes.ITypeLib.GetTypeInfoOfGuid(ref Guid guid, out ComTypes.ITypeInfo ppTInfo)
         {
-            IntPtr typeInfoPtr = IntPtr.Zero;
-            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfoOfGuid(guid, out typeInfoPtr);
-            var outVal = new TypeInfoWrapper(typeInfoPtr);  // takes ownership of the COM reference
-            ppTInfo = outVal;
+            ((ITypeLib_Ptrs)target_ITypeLib).GetTypeInfoOfGuid(guid, out var typeInfoPtr);
+            using (var outVal = new TypeInfoWrapper(typeInfoPtr)) // takes ownership of the COM reference
+            {
+                ppTInfo = outVal;
 
-            _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
-            _typeInfosWrapped.Add(outVal);
+                _typeInfosWrapped?.Dispose();
+                _typeInfosWrapped = _typeInfosWrapped ?? new DisposableList<TypeInfoWrapper>();
+                _typeInfosWrapped.Add(outVal);
+            }
         }
         void ComTypes.ITypeLib.GetTypeInfo(int index, out ComTypes.ITypeInfo ppTI)
             => ppTI = GetSafeTypeInfoByIndex(index);   // We have to wrap the ITypeInfo returned by GetTypeInfo
@@ -413,7 +415,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// An enumerable class for iterating over the double linked list of ITypeLibs provided by the VBE 
     /// </summary>
-    public class VBETypeLibsIterator : IEnumerable<TypeLibWrapper>, IEnumerator<TypeLibWrapper>
+    public sealed class VBETypeLibsIterator : IEnumerable<TypeLibWrapper>, IEnumerator<TypeLibWrapper>
     {
         private IntPtr _currentTypeLibPtr;
         private VBETypeLibObj _currentTypeLibStruct;
@@ -472,7 +474,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     ///   Make sure you call VBETypeLibsAccessor.Dispose() as soon as you have done what you need to do with it.
     ///   Once control returns back to the VBE, you must assume that all the ITypeLib/ITypeInfo pointers are now invalid.
     /// </remarks>
-    public class VBETypeLibsAccessor : DisposableList<TypeLibWrapper>, IDisposable
+    public class VBETypeLibsAccessor : DisposableList<TypeLibWrapper>
     {
         public VBETypeLibsAccessor(IVBE ide)
         {
@@ -534,5 +536,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
             return retVal;
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

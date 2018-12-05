@@ -80,7 +80,7 @@ namespace Rubberduck.Parsing.ComReflection
                 info.GetRefTypeInfo(href, out ITypeInfo implemented);
 
                 implemented.GetTypeAttr(out IntPtr attribPtr);
-                using (DisposalActionContainer.Create(attribPtr, info.ReleaseTypeAttr))
+                using (DisposalActionContainer.Create(attribPtr, implemented.ReleaseTypeAttr))
                 {
                     var attribs = Marshal.PtrToStructure<TYPEATTR>(attribPtr);
 
