@@ -109,8 +109,16 @@
              SkipNonexistentProjects="false"
              StopOnFirstFailure="true"
              UnloadProjectsOnCompletion="true"
+             UseResultsCache="false"
+             RebaseOutputs="true"
+             Targets="Restore"/>
+    <MSBuild Projects="@(MetaProjects)"
+             BuildInParallel="false"
+             ContinueOnError="false"
+             SkipNonexistentProjects="false"
+             StopOnFirstFailure="true"
+             UnloadProjectsOnCompletion="true"
              UseResultsCache="false" 
-             RunEachTargetSeparately=""
              RebaseOutputs="true"/>
     <Message Text="Built the meta projects" Importance="high" />
   </Target>
