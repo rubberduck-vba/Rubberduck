@@ -1178,7 +1178,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         }
 
         /// <summary>
-        /// Gets all identifier references in the specified module.
+        /// Gets all identifier references with the specified selection.
         /// </summary>
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedSelection selection)
         {
