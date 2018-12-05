@@ -626,7 +626,8 @@
                 <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByOutcome}}"
                                            SelectedItem="{Binding SelectedTest}"
                                            ShowGroupingItemCount="True"
-                                           Visibility="{Binding GroupByOutcome, Converter={StaticResource BoolToVisibility}}">
+                                           Visibility="{Binding GroupByOutcome, Converter={StaticResource BoolToVisibility}}"
+                                           IsVisibleChanged="ResultsGroupingGrid_IsVisibleChanged">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
@@ -645,7 +646,8 @@
                 <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByModule}}"
                                            SelectedItem="{Binding SelectedTest}"
                                            ShowGroupingItemCount="True"
-                                           Visibility="{Binding GroupByLocation, Converter={StaticResource BoolToVisibility}}">
+                                           Visibility="{Binding GroupByLocation, Converter={StaticResource BoolToVisibility}}"
+                                           IsVisibleChanged="ResultsGroupingGrid_IsVisibleChanged">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
@@ -664,7 +666,8 @@
                 <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByCategory}}"
                                            SelectedItem="{Binding SelectedTest}"
                                            ShowGroupingItemCount="True"
-                                           Visibility="{Binding GroupByCategory, Converter={StaticResource BoolToVisibility}}">
+                                           Visibility="{Binding GroupByCategory, Converter={StaticResource BoolToVisibility}}"
+                                           IsVisibleChanged="ResultsGroupingGrid_IsVisibleChanged">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
