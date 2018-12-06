@@ -18,6 +18,7 @@ namespace Rubberduck.Settings
         int AutoSavePeriod { get; set; }
         bool UserEditedLogLevel { get; set; }
         int MinimumLogLevel { get; set; }
+        bool SetDpiUnaware { get; set; }
         List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
         int RecentReferencesTracked { get; set; }
         List<string> RecentReferences { get; set; }
@@ -59,6 +60,8 @@ namespace Rubberduck.Settings
             }
         }
 
+        public bool SetDpiUnaware { get; set; }
+
         public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeatures>();
 
         public int RecentReferencesTracked { get; set; }
@@ -89,7 +92,8 @@ namespace Rubberduck.Settings
                    EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count &&
                    EnableExperimentalFeatures.All(other.EnableExperimentalFeatures.Contains) &&
                    RecentReferences.SequenceEqual(other.RecentReferences, StringComparer.OrdinalIgnoreCase) &&
-                   PinnedReferences.OrderBy(x => x).SequenceEqual(other.PinnedReferences.OrderBy(x => x), StringComparer.OrdinalIgnoreCase);
+                   PinnedReferences.OrderBy(x => x).SequenceEqual(other.PinnedReferences.OrderBy(x => x), StringComparer.OrdinalIgnoreCase) &&
+                   SetDpiUnaware == other.SetDpiUnaware;
         }
     }
 }

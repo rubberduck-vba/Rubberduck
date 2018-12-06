@@ -131,6 +131,8 @@
                               IsChecked="{Binding CheckVersionAtStartup}" />
                     <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_CompileBeforeParse}"
                               IsChecked="{Binding CompileBeforeParse}" />
+                    <CheckBox Margin="5,0,0,5" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_SetDpiUnaware}"
+                              IsEnabled="{Binding SetDpiUnawareEnabled}"  IsChecked="{Binding SetDpiUnaware}" />
                     <StackPanel Orientation="Horizontal"/>
 
                     <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_MinimumLogLevelLabel}" FontWeight="SemiBold" />
