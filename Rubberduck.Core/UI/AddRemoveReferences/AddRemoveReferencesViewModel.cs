@@ -4,13 +4,13 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 using System.Windows.Data;
+using System.Windows.Forms;
 using NLog;
 using Rubberduck.AddRemoveReferences;
-using Rubberduck.Interaction;
 using Rubberduck.Resources;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.AddRemoveReferences
@@ -25,15 +25,19 @@ namespace Rubberduck.UI.AddRemoveReferences
 
     public class AddRemoveReferencesViewModel : ViewModelBase
     {
-        private readonly IMessageBox _messageBox;
-        
+        public event EventHandler<DialogResult> OnWindowClosed;
+        private void CloseWindowOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
+        private void CloseWindowCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
+
+        private readonly List<(int?, ReferenceInfo)> _clean;
         private readonly ObservableCollection<ReferenceModel> _available;
         private readonly ObservableCollection<ReferenceModel> _project;
+        private readonly IReferenceReconciler _reconciler;
 
-        public AddRemoveReferencesViewModel(IAddRemoveReferencesModel model, IMessageBox messageBox)
+        public AddRemoveReferencesViewModel(IAddRemoveReferencesModel model, IReferenceReconciler reconciler)
         {
             Model = model;
-            _messageBox = messageBox;
+            _reconciler = reconciler;
 
             foreach (var reference in model.References
                 .Where(item => Model.Settings.PinnedReferences
@@ -54,6 +58,8 @@ namespace Rubberduck.UI.AddRemoveReferences
             _project = new ObservableCollection<ReferenceModel>(model.References
                 .Where(reference => reference.IsReferenced).OrderBy(reference => reference.Priority));
 
+            _clean = new List<(int?, ReferenceInfo)>(_project.Select(reference => (reference.Priority, reference.ToReferenceInfo())));
+
             AddCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteAddCommand);
             RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand);
             BrowseCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteBrowseCommand);
@@ -61,6 +67,10 @@ namespace Rubberduck.UI.AddRemoveReferences
             MoveDownCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteMoveDownCommand);
             PinLibraryCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecutePinLibraryCommand);
             PinReferenceCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecutePinReferenceCommand);
+           
+            OkCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseWindowOk());
+            CancelCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseWindowCancel());
+            ApplyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteApplyCommand);
         }
 
         public IAddRemoveReferencesModel Model { get; set; }
@@ -72,6 +82,9 @@ namespace Rubberduck.UI.AddRemoveReferences
         /// Prompts user for a .tlb, .dll, or .ocx file, and attempts to append it to <see cref="ProjectReferences"/>.
         /// </summary>
         public ICommand BrowseCommand { get; }
+
+        public CommandBase OkCommand { get; }
+        public CommandBase CancelCommand { get; }
 
         /// <summary>
         /// Applies all changes to project references.
@@ -101,6 +114,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
             SelectedLibrary.Priority = _project.Count + 1;
             _project.Add(SelectedLibrary);
+            EvaluateProjectDirty();
             ProjectReferences.Refresh();
             _available.Remove(SelectedLibrary);
         }
@@ -121,6 +135,8 @@ namespace Rubberduck.UI.AddRemoveReferences
             {
                 reference.Priority--;
             }
+
+            EvaluateProjectDirty();
             ProjectReferences.Refresh();
         }
      
@@ -150,36 +166,34 @@ namespace Rubberduck.UI.AddRemoveReferences
                 var existing = _available.FirstOrDefault(library =>
                     library.FullPath.Equals(dialog.FileName, StringComparison.OrdinalIgnoreCase));
 
-                var project = Model.Project.Project;
-                using (var references = project.References)
+                if (existing is null)
                 {
-                    try
-                    {
-                        using (var reference = references.AddFromFile(dialog.FileName))
-                        {
-                            if (reference is null)
-                            {
-                                return;
-                            }
-
-                            _project.Add(existing ?? new ReferenceModel(reference, _project.Count + 1));
-                            ProjectReferences.Refresh();
-                            if (existing is null)
-                            {
-                                return;
-                            }
-
-                            existing.Priority = _project.Count + 1;
-                            _available.Remove(existing);
-                            AvailableReferences.Refresh();
-                        }
-                    }
-                    catch (COMException ex)
-                    {
-                        _messageBox.NotifyWarn(ex.Message, RubberduckUI.References_AddFailedCaption);
-                    }
+                    var adding = _reconciler.GetLibraryInfoFromPath(dialog.FileName);
+                    adding.Priority = _project.Count + 1;
+                    Model.References.Add(adding);
+                    _project.Add(adding);
                 }
+                else
+                {
+                    _project.Add(existing);
+                    existing.Priority = _project.Count + 1;
+                    _available.Remove(existing);
+                    AvailableReferences.Refresh();
+                }
+                ProjectReferences.Refresh();
             }
+        }
+
+        private void ExecuteApplyCommand(object parameter)
+        {
+            var changed = _reconciler.ReconcileReferences(Model, _available.ToList());
+            foreach (var reference in changed.Where(reference => !_project.Contains(reference)).ToList())
+            {
+                _project.Add(reference);
+            }
+            
+            AvailableReferences.Refresh();
+            ProjectReferences.Refresh();
         }
 
         private void ExecuteMoveUpCommand(object parameter)
@@ -198,6 +212,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
             swap.Priority = SelectedReference.Priority;
             SelectedReference.Priority--;
+            EvaluateProjectDirty();
             ProjectReferences.Refresh();
         }
 
@@ -217,6 +232,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
             swap.Priority = SelectedReference.Priority;
             SelectedReference.Priority++;
+            EvaluateProjectDirty();
             ProjectReferences.Refresh();
         }
 
@@ -341,6 +357,23 @@ namespace Rubberduck.UI.AddRemoveReferences
                 _library = value;
                 CurrentSelection = _library;
             }
+        }
+
+        private bool _dirty;
+        public bool IsProjectDirty
+        {
+            get => _dirty;
+            set
+            {
+                _dirty = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void EvaluateProjectDirty()
+        {
+            var selected = _project.Select(reference => (reference.Priority, reference.ToReferenceInfo())).ToList();
+            IsProjectDirty = selected.Count != _clean.Count || !_clean.All(selected.Contains);
         }
     }
 }

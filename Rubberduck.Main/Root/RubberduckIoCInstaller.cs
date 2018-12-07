@@ -124,13 +124,6 @@ namespace Rubberduck.Root
                 .ImplementedBy<VBEInteraction>()
                 .LifestyleSingleton());
 
-            container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
-                .ImplementedBy<AddRemoveReferencesPresenterFactory>()
-                .LifestyleSingleton());
-            container.Register(Component.For<IRegisteredLibraryFinderService>()
-                .ImplementedBy<RegisteredLibraryFinderService>()
-                .LifestyleSingleton());
-
             RegisterRefactoringDialogs(container);
 
             container.Register(Component.For<ISearchResultsWindowViewModel>()
@@ -296,6 +289,9 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IRewriteSessionFactory>()
                 .ImplementedBy<RewriteSessionFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
+                .ImplementedBy<AddRemoveReferencesPresenterFactory>()
                 .LifestyleSingleton());
         }
 

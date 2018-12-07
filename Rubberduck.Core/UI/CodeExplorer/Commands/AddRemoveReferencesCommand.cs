@@ -1,4 +1,5 @@
 ﻿using NLog;
+using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -13,12 +14,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IAddRemoveReferencesPresenterFactory _factory;
+        private readonly IReferenceReconciler _reconciler;
 
-        public AddRemoveReferencesCommand(IVBE vbe, RubberduckParserState state, IAddRemoveReferencesPresenterFactory factory) : base(LogManager.GetCurrentClassLogger())
+        public AddRemoveReferencesCommand(IVBE vbe, 
+            RubberduckParserState state, 
+            IAddRemoveReferencesPresenterFactory factory,
+            IReferenceReconciler reconciler) 
+            : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
             _factory = factory;
+            _reconciler = reconciler;
         }
 
         protected override void OnExecute(object parameter)
@@ -31,7 +38,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
 
                 var dialog = _factory.Create(project);
-                dialog.Show();
+                var model = dialog.Show();
+                if (model is null)
+                {
+                    return;
+                }
+
+                _reconciler.ReconcileReferences(model);
             }
         }
 

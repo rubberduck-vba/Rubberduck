@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Rubberduck.AddRemoveReferences;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -27,19 +26,19 @@ namespace Rubberduck.UI.AddRemoveReferences
         private readonly RubberduckParserState _state;
         private readonly IConfigProvider<GeneralSettings> _settings;
         private readonly IRegisteredLibraryFinderService _finder;
-        private readonly IMessageBox _messageBox;
+        private readonly IReferenceReconciler _reconciler;
 
         public AddRemoveReferencesPresenterFactory(IVBE vbe,
             RubberduckParserState state,
             IConfigProvider<GeneralSettings> generalSettingsProvider, 
             IRegisteredLibraryFinderService finder,
-            IMessageBox messageBox)
+            IReferenceReconciler reconciler)
         {
             _vbe = vbe;
             _state = state;
             _settings = generalSettingsProvider;
             _finder = finder;
-            _messageBox = messageBox;
+            _reconciler = reconciler;
         }
 
         public AddRemoveReferencesPresenter Create(ProjectDeclaration project)
@@ -95,7 +94,7 @@ namespace Rubberduck.UI.AddRemoveReferences
             var settings = _settings.Create();
             var model = new AddRemoveReferencesModel(project, models.Values, settings);
 
-            return new AddRemoveReferencesPresenter(new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _messageBox)));         
+            return new AddRemoveReferencesPresenter(new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _reconciler)));         
         }
 
         public AddRemoveReferencesPresenter Create()

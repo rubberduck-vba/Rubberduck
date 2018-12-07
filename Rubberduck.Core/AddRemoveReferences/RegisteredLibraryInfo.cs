@@ -20,7 +20,7 @@ namespace Rubberduck.AddRemoveReferences
         }
     }
 
-    public class RegisteredLibraryInfo : IReferenceInfo
+    public class RegisteredLibraryInfo
     {
         private static readonly Dictionary<int, string> NativeLocaleNames = new Dictionary<int, string>
         {

@@ -2,9 +2,13 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.Parsing.ComReflection;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.AddRemoveReferences
 {
@@ -34,7 +38,7 @@ namespace Rubberduck.AddRemoveReferences
             LocaleName = info.LocaleName;
             IsBuiltIn = false;
             Type = ReferenceKind.TypeLibrary;
-            Flags = info.Flags;
+            Flags = (TypeLibTypeFlags)info.Flags;
             IsRegistered = true;
         }
 
@@ -61,6 +65,30 @@ namespace Rubberduck.AddRemoveReferences
             Type = reference.Type;
         }
 
+        public ReferenceModel(ITypeLib reference)
+        {
+            var documentation = new ComDocumentation(reference, -1);
+            Name = documentation.Name;
+            Description = documentation.DocString;
+
+            reference.GetLibAttr(out var attributes);
+            using (DisposalActionContainer.Create(attributes, reference.ReleaseTLibAttr))
+            {
+                var typeAttr = Marshal.PtrToStructure<System.Runtime.InteropServices.ComTypes.TYPELIBATTR>(attributes);
+
+                Major = typeAttr.wMajorVerNum;
+                Minor = typeAttr.wMinorVerNum;
+                Flags = (TypeLibTypeFlags)typeAttr.wLibFlags;
+                Guid = typeAttr.guid;
+            }
+        }
+
+        public ReferenceModel(string path)
+        {
+            FullPath = path;
+            Name = Path.GetFileName(path);
+        }
+
         private bool _pinned;
         public bool IsPinned
         {
@@ -73,9 +101,9 @@ namespace Rubberduck.AddRemoveReferences
         }
 
         public bool IsRecent { get; set; }
-
         public bool IsRegistered { get; set; }
         public bool IsReferenced { get; set; }
+
         public int? Priority { get; set; }
         
         public string Name { get; }
@@ -86,7 +114,7 @@ namespace Rubberduck.AddRemoveReferences
 
         public bool IsBuiltIn { get; }
         public bool IsBroken { get; }
-        public LIBFLAGS Flags { get; }
+        public TypeLibTypeFlags Flags { get; set;  }
         public ReferenceKind Type { get; }
 
         private string FullPath32 { get; }
@@ -117,6 +145,11 @@ namespace Rubberduck.AddRemoveReferences
 
                 return status | (IsReferenced ? ReferenceStatus.Loaded : ReferenceStatus.Added);
             }
+        }
+
+        public ReferenceInfo ToReferenceInfo()
+        {
+            return new ReferenceInfo(Guid, Name, FullPath, Major, Minor);
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

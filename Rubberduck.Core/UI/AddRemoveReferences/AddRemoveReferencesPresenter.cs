@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Parsing.Symbols;
@@ -40,6 +39,10 @@ namespace Rubberduck.UI.AddRemoveReferences
             _view.ViewModel.Model = Model;
 
             _view.ShowDialog();
+            if (_view.DialogResult != DialogResult.OK)
+            {
+                return null;
+            }
 
             Model.NewReferences = _view.ViewModel.ProjectReferences.SourceCollection.OfType<ReferenceModel>().ToList(); 
             return Model;

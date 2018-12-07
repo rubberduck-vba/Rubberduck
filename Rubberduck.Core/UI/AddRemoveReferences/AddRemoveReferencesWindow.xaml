@@ -360,9 +360,18 @@
                     <ColumnDefinition SharedSizeGroup="DialogButtons" MinWidth="100" />
                     <ColumnDefinition SharedSizeGroup="DialogButtons" MinWidth="100" />
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}" />
-                <Button Grid.Column="1" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}" />
-                <Button Grid.Column="2" Style="{StaticResource DialogButtonStyle}" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ApplyButtonText}" />
+                <Button Grid.Column="0" Style="{StaticResource DialogButtonStyle}" 
+                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=OK}" 
+                        IsDefault="True"
+                        Command="{Binding OkCommand}" />
+                <Button Grid.Column="1" Style="{StaticResource DialogButtonStyle}" 
+                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CancelButtonText}" 
+                        IsCancel="True"
+                        Command="{Binding CancelCommand}" />
+                <Button Grid.Column="2" Style="{StaticResource DialogButtonStyle}" 
+                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ApplyButtonText}" 
+                        IsEnabled="{Binding IsProjectDirty}"
+                        Command="{Binding ApplyCommand}"/>
             </Grid>
         </Border>
     </Grid>
