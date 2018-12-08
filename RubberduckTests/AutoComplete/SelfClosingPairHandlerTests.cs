@@ -73,9 +73,11 @@ namespace RubberduckTests.AutoComplete
             var input = '"';
             var original = @"Err.Raise 5, _
      |".ToCodeString();
+            var prettified = @"Err.Raise 5, _
+|".ToCodeString();
             var rePrettified = @"Err.Raise 5, _
     ""|""".ToCodeString();
-            var info = new SelfClosingPairTestInfo(original, input, rePrettified);
+            var info = new SelfClosingPairTestInfo(original, prettified, input, rePrettified);
 
             Assert.IsTrue(Run(info));
             Assert.IsTrue(info.Args.Handled);
