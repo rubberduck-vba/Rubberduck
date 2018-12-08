@@ -135,13 +135,30 @@ namespace Rubberduck.AutoComplete.Service
 
             foreach (var handler in _handlers)
             {
+                if (TryHandle(e, handler))
+                {
+                    return;
+                }
+            }
+        }
+
+        private bool TryHandle(AutoCompleteEventArgs e, AutoCompleteHandlerBase handler)
+        {
+            try
+            {
                 if (!handler.Handle(e, _settings, out _))
                 {
-                    continue;
+                    return false;
                 }
 
                 e.Handled = true;
-                return;
+                return true;
+
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return false;
             }
         }
 
