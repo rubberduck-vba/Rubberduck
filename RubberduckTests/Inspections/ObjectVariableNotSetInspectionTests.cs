@@ -13,6 +13,19 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
+        public void ObjectVariableNotSet_NotResultForBoolean()
+        {
+            var expectedResultCount = 0;
+            var input = @"
+Public Property Get Something() As Boolean
+    Something = True
+End Property
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectedResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()
         {
             var expectResultCount = 0;
