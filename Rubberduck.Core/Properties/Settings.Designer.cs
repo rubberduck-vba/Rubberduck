@@ -12,7 +12,7 @@ namespace Rubberduck.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -329,137 +329,126 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\r\n          <CodeInspectionSettings xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-i" +
-            "nstance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n            <CodeInspect" +
-            "ions>\r\n              <CodeInspection Name=\"BooleanAssignedInIfElseInspection\" Se" +
-            "verity=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n      " +
-            "        <CodeInspection Name=\"ObsoleteErrorSyntaxInspection\" Severity=\"Suggestio" +
-            "n\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name" +
-            "=\"StopKeywordInspection\" Severity=\"Suggestion\" InspectionType=\"CodeQualityIssues" +
-            "\" />\r\n              <CodeInspection Name=\"UnhandledOnErrorResumeNextInspection\" " +
-            "Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeIns" +
-            "pection Name=\"EmptyStringLiteralInspection\" Severity=\"Warning\" InspectionType=\"L" +
-            "anguageOpportunities\" />\r\n              <CodeInspection Name=\"ImplicitByRefModif" +
-            "ierInspection\" Severity=\"Hint\" InspectionType=\"CodeQualityIssues\" />\r\n          " +
-            "    <CodeInspection Name=\"MissingAttributeInspection\" Severity=\"Warning\" Inspect" +
-            "ionType=\"RubberduckOpportunities\" />\r\n              <CodeInspection Name=\"Functi" +
-            "onReturnValueNotUsedInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIs" +
-            "sues\" />\r\n              <CodeInspection Name=\"IllegalAnnotationInspection\" Sever" +
-            "ity=\"Error\" InspectionType=\"RubberduckOpportunities\" />\r\n              <CodeInsp" +
-            "ection Name=\"RedundantByRefModifierInspection\" Severity=\"DoNotShow\" InspectionTy" +
-            "pe=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"MissingAnnotation" +
-            "ArgumentInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n    " +
-            "          <CodeInspection Name=\"ModuleScopeDimKeywordInspection\" Severity=\"Sugge" +
-            "stion\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection " +
-            "Name=\"MultilineParameterInspection\" Severity=\"Suggestion\" InspectionType=\"Mainta" +
-            "inabilityAndReadabilityIssues\" />\r\n              <CodeInspection Name=\"MultipleD" +
-            "eclarationsInspection\" Severity=\"Warning\" InspectionType=\"MaintainabilityAndRead" +
-            "abilityIssues\" />\r\n              <CodeInspection Name=\"ObsoleteCallStatementInsp" +
-            "ection\" Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n       " +
-            "       <CodeInspection Name=\"ObsoleteCommentSyntaxInspection\" Severity=\"Suggesti" +
-            "on\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Nam" +
-            "e=\"ObsoleteLetStatementInspection\" Severity=\"Suggestion\" InspectionType=\"Languag" +
-            "eOpportunities\" />\r\n              <CodeInspection Name=\"OptionBaseInspection\" Se" +
-            "verity=\"Hint\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n         " +
-            "     <CodeInspection Name=\"RedundantOptionInspection\" Severity=\"Hint\" Inspection" +
-            "Type=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"OptionExpli" +
-            "citInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n         " +
-            "     <CodeInspection Name=\"ProcedureCanBeWrittenAsFunctionInspection\" Severity=\"" +
-            "Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspec" +
-            "tion Name=\"ApplicationWorksheetFunctionInspection\" Severity=\"Suggestion\" Inspect" +
-            "ionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"AssignedByVa" +
-            "lParameterInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n" +
-            "              <CodeInspection Name=\"EmptyModuleInspection\" Severity=\"Hint\" Inspe" +
-            "ctionType=\"MaintainabilityAndReadabilityIssues\" />\r\n              <CodeInspectio" +
-            "n Name=\"LineLabelNotUsedInspection\" Severity=\"Warning\" InspectionType=\"CodeQuali" +
-            "tyIssues\" />\r\n              <CodeInspection Name=\"IntegerDataTypeInspection\" Sev" +
-            "erity=\"Hint\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspectio" +
-            "n Name=\"ShadowedDeclarationInspection\" Severity=\"DoNotShow\" InspectionType=\"Code" +
-            "QualityIssues\" />\r\n              <CodeInspection Name=\"ConstantNotUsedInspection" +
-            "\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeI" +
-            "nspection Name=\"DefaultProjectNameInspection\" Severity=\"Suggestion\" InspectionTy" +
-            "pe=\"MaintainabilityAndReadabilityIssues\" />\r\n              <CodeInspection Name=" +
-            "\"EmptyCaseBlockInspection\" Severity=\"Warning\" InspectionType=\"MaintainabilityAnd" +
-            "ReadabilityIssues\" />\r\n              <CodeInspection Name=\"EmptyDoWhileBlockInsp" +
-            "ection\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadabilityIssue" +
-            "s\" />\r\n              <CodeInspection Name=\"EmptyElseBlockInspection\" Severity=\"W" +
-            "arning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n              <" +
-            "CodeInspection Name=\"EmptyForEachBlockInspection\" Severity=\"Warning\" InspectionT" +
-            "ype=\"MaintainabilityAndReadabilityIssues\" />\r\n              <CodeInspection Name" +
-            "=\"EmptyForLoopBlockInspection\" Severity=\"Warning\" InspectionType=\"Maintainabilit" +
-            "yAndReadabilityIssues\" />\r\n              <CodeInspection Name=\"EmptyIfBlockInspe" +
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<CodeInspectionSettings xmlns:xsi=\"http:" +
+            "//www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchem" +
+            "a\">\r\n  <CodeInspections>\r\n    <CodeInspection Name=\"BooleanAssignedInIfElseInspe" +
             "ction\" Severity=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" /" +
-            ">\r\n              <CodeInspection Name=\"EmptyWhileWendBlockInspection\" Severity=\"" +
-            "Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n              " +
-            "<CodeInspection Name=\"EncapsulatePublicFieldInspection\" Severity=\"Suggestion\" In" +
-            "spectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n              <CodeInspec" +
-            "tion Name=\"HostSpecificExpressionInspection\" Severity=\"Warning\" InspectionType=\"" +
-            "LanguageOpportunities\" />\r\n              <CodeInspection Name=\"HungarianNotation" +
-            "Inspection\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadabilityI" +
-            "ssues\" />\r\n              <CodeInspection Name=\"ImplicitActiveSheetReferenceInspe" +
-            "ction\" Severity=\"Warning\" InspectionType=\"LanguageOpportunities\" />\r\n           " +
-            "   <CodeInspection Name=\"ImplicitActiveWorkbookReferenceInspection\" Severity=\"Wa" +
-            "rning\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection " +
-            "Name=\"ImplicitDefaultMemberAssignmentInspection\" Severity=\"Suggestion\" Inspectio" +
-            "nType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"ImplicitPu" +
-            "blicMemberInspection\" Severity=\"Hint\" InspectionType=\"LanguageOpportunities\" />\r" +
-            "\n              <CodeInspection Name=\"ImplicitVariantReturnTypeInspection\" Severi" +
-            "ty=\"Hint\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspecti" +
-            "on Name=\"MemberNotOnInterfaceInspection\" Severity=\"Warning\" InspectionType=\"Code" +
-            "QualityIssues\" />\r\n              <CodeInspection Name=\"MoveFieldCloserToUsageIns" +
-            "pection\" Severity=\"Hint\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />" +
-            "\r\n              <CodeInspection Name=\"NonReturningFunctionInspection\" Severity=\"" +
-            "Error\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name" +
-            "=\"ObjectVariableNotSetInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIs" +
-            "sues\" />\r\n              <CodeInspection Name=\"ObsoleteGlobalInspection\" Severity" +
-            "=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInsp" +
-            "ection Name=\"ObsoleteTypeHintInspection\" Severity=\"Suggestion\" InspectionType=\"L" +
-            "anguageOpportunities\" />\r\n              <CodeInspection Name=\"ParameterCanBeByVa" +
-            "lInspection\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadability" +
-            "Issues\" />\r\n              <CodeInspection Name=\"ParameterNotUsedInspection\" Seve" +
-            "rity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspect" +
-            "ion Name=\"ProcedureNotUsedInspection\" Severity=\"Warning\" InspectionType=\"CodeQua" +
-            "lityIssues\" />\r\n              <CodeInspection Name=\"SelfAssignedDeclarationInspe" +
-            "ction\" Severity=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n            " +
-            "  <CodeInspection Name=\"UnassignedVariableUsageInspection\" Severity=\"Error\" Insp" +
-            "ectionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"Undeclare" +
-            "dVariableInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n   " +
-            "           <CodeInspection Name=\"UntypedFunctionUsageInspection\" Severity=\"Hint\"" +
-            " InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"" +
-            "UseMeaningfulNameInspection\" Severity=\"Suggestion\" InspectionType=\"Maintainabili" +
-            "tyAndReadabilityIssues\" />\r\n              <CodeInspection Name=\"VariableNotAssig" +
-            "nedInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n       " +
-            "       <CodeInspection Name=\"VariableNotUsedInspection\" Severity=\"Warning\" Inspe" +
-            "ctionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"VariableTy" +
-            "peNotDeclaredInspection\" Severity=\"Warning\" InspectionType=\"LanguageOpportunitie" +
-            "s\" />\r\n              <CodeInspection Name=\"WriteOnlyPropertyInspection\" Severity" +
-            "=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspecti" +
-            "on Name=\"DefTypeStatementInspection\" Severity=\"Suggestion\" InspectionType=\"Langu" +
-            "ageOpportunities\" />\r\n              <CodeInspection Name=\"StepIsNotSpecifiedInsp" +
-            "ection\" Severity=\"DoNotShow\" InspectionType=\"LanguageOpportunities\" />\r\n        " +
-            "      <CodeInspection Name=\"StepOneIsRedundantInspection\" Severity=\"Hint\" Inspec" +
-            "tionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"SheetAc" +
-            "cessedUsingStringInspection\" Severity=\"Suggestion\" InspectionType=\"LanguageOppor" +
-            "tunities\" />\r\n              <CodeInspection Name=\"ObsoleteMemberUsageInspection\"" +
-            " Severity=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n   " +
-            "           <CodeInspection Name=\"ObsoleteCallingConventionInspection\" Severity=\"" +
-            "Warning\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Na" +
-            "me=\"DuplicatedAnnotationInspection\" Severity=\"Error\" InspectionType=\"RubberduckO" +
-            "pportunities\" />\r\n              <CodeInspection Name=\"ModuleWithoutFolderInspect" +
-            "ion\" Severity=\"Suggestion\" InspectionType=\"RubberduckOpportunities\" />\r\n        " +
-            "      <CodeInspection Name=\"OnLocalErrorInspection\" Severity=\"Suggestion\" Inspec" +
-            "tionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"IsMissi" +
-            "ngOnInappropriateArgumentInspection\" Severity=\"Warning\" InspectionType=\"CodeQual" +
-            "ityIssues\" />\r\n              <CodeInspection Name=\"IsMissingWithNonArgumentParam" +
-            "eterInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n      " +
-            "        <CodeInspection Name=\"AssignmentNotUsedInspection\" Severity=\"Suggestion\"" +
-            " InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"Unde" +
-            "rscoreInPublicClassModuleMemberInspection\" Severity=\"Warning\" InspectionType=\"Co" +
-            "deQualityIssues\" />\r\n              <CodeInspection Name=\"ExcelUdfNameIsValidCell" +
-            "ReferenceInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n " +
-            "           </CodeInspections>\r\n            <WhitelistedIdentifiers />\r\n         " +
-            "   <RunInspectionsOnSuccessfulParse>true</RunInspectionsOnSuccessfulParse>\r\n    " +
-            "      </CodeInspectionSettings>\r\n        ")]
+            ">\r\n    <CodeInspection Name=\"ObsoleteErrorSyntaxInspection\" Severity=\"Suggestion" +
+            "\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"StopKeywo" +
+            "rdInspection\" Severity=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n    <" +
+            "CodeInspection Name=\"UnhandledOnErrorResumeNextInspection\" Severity=\"Warning\" In" +
+            "spectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"EmptyStringLitera" +
+            "lInspection\" Severity=\"Warning\" InspectionType=\"LanguageOpportunities\" />\r\n    <" +
+            "CodeInspection Name=\"ImplicitByRefModifierInspection\" Severity=\"Hint\" Inspection" +
+            "Type=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"FunctionReturnValueNotUse" +
+            "dInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <Code" +
+            "Inspection Name=\"IllegalAnnotationInspection\" Severity=\"Error\" InspectionType=\"R" +
+            "ubberduckOpportunities\" />\r\n    <CodeInspection Name=\"RedundantByRefModifierInsp" +
+            "ection\" Severity=\"DoNotShow\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeIns" +
+            "pection Name=\"MissingAnnotationArgumentInspection\" Severity=\"Error\" InspectionTy" +
+            "pe=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"ModuleScopeDimKeywordInspec" +
+            "tion\" Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <Code" +
+            "Inspection Name=\"MultilineParameterInspection\" Severity=\"Suggestion\" InspectionT" +
+            "ype=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"Multiple" +
+            "DeclarationsInspection\" Severity=\"Warning\" InspectionType=\"MaintainabilityAndRea" +
+            "dabilityIssues\" />\r\n    <CodeInspection Name=\"ObsoleteCallStatementInspection\" S" +
+            "everity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspect" +
+            "ion Name=\"ObsoleteCommentSyntaxInspection\" Severity=\"Suggestion\" InspectionType=" +
+            "\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"ObsoleteLetStatementInspec" +
+            "tion\" Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <Code" +
+            "Inspection Name=\"OptionBaseInspection\" Severity=\"Hint\" InspectionType=\"Maintaina" +
+            "bilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"RedundantOptionInspect" +
+            "ion\" Severity=\"Hint\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspect" +
+            "ion Name=\"OptionExplicitInspection\" Severity=\"Error\" InspectionType=\"CodeQuality" +
+            "Issues\" />\r\n    <CodeInspection Name=\"ProcedureCanBeWrittenAsFunctionInspection\"" +
+            " Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspe" +
+            "ction Name=\"ApplicationWorksheetFunctionInspection\" Severity=\"Suggestion\" Inspec" +
+            "tionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"AssignedByValParamete" +
+            "rInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <Code" +
+            "Inspection Name=\"EmptyModuleInspection\" Severity=\"Hint\" InspectionType=\"Maintain" +
+            "abilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"LineLabelNotUsedInspe" +
+            "ction\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspec" +
+            "tion Name=\"IntegerDataTypeInspection\" Severity=\"Hint\" InspectionType=\"CodeQualit" +
+            "yIssues\" />\r\n    <CodeInspection Name=\"ShadowedDeclarationInspection\" Severity=\"" +
+            "DoNotShow\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"Cons" +
+            "tantNotUsedInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r" +
+            "\n    <CodeInspection Name=\"DefaultProjectNameInspection\" Severity=\"Suggestion\" I" +
+            "nspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspection Name" +
+            "=\"EmptyCaseBlockInspection\" Severity=\"Warning\" InspectionType=\"MaintainabilityAn" +
+            "dReadabilityIssues\" />\r\n    <CodeInspection Name=\"EmptyDoWhileBlockInspection\" S" +
+            "everity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n  " +
+            "  <CodeInspection Name=\"EmptyElseBlockInspection\" Severity=\"Warning\" InspectionT" +
+            "ype=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"EmptyFor" +
+            "EachBlockInspection\" Severity=\"Warning\" InspectionType=\"MaintainabilityAndReadab" +
+            "ilityIssues\" />\r\n    <CodeInspection Name=\"EmptyForLoopBlockInspection\" Severity" +
+            "=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeIns" +
+            "pection Name=\"EmptyIfBlockInspection\" Severity=\"Warning\" InspectionType=\"Maintai" +
+            "nabilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"EmptyWhileWendBlockI" +
+            "nspection\" Severity=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssue" +
+            "s\" />\r\n    <CodeInspection Name=\"EncapsulatePublicFieldInspection\" Severity=\"Sug" +
+            "gestion\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspe" +
+            "ction Name=\"HostSpecificExpressionInspection\" Severity=\"Warning\" InspectionType=" +
+            "\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"HungarianNotationInspectio" +
+            "n\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />" +
+            "\r\n    <CodeInspection Name=\"ImplicitActiveSheetReferenceInspection\" Severity=\"Wa" +
+            "rning\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"Impl" +
+            "icitActiveWorkbookReferenceInspection\" Severity=\"Warning\" InspectionType=\"Langua" +
+            "geOpportunities\" />\r\n    <CodeInspection Name=\"ImplicitDefaultMemberAssignmentIn" +
+            "spection\" Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <" +
+            "CodeInspection Name=\"ImplicitPublicMemberInspection\" Severity=\"Hint\" InspectionT" +
+            "ype=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"ImplicitVariantReturnT" +
+            "ypeInspection\" Severity=\"Hint\" InspectionType=\"LanguageOpportunities\" />\r\n    <C" +
+            "odeInspection Name=\"MemberNotOnInterfaceInspection\" Severity=\"Warning\" Inspectio" +
+            "nType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"MoveFieldCloserToUsageIn" +
+            "spection\" Severity=\"Hint\" InspectionType=\"MaintainabilityAndReadabilityIssues\" /" +
+            ">\r\n    <CodeInspection Name=\"NonReturningFunctionInspection\" Severity=\"Error\" In" +
+            "spectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"ObjectVariableNot" +
+            "SetInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n    <Code" +
+            "Inspection Name=\"ObsoleteGlobalInspection\" Severity=\"Suggestion\" InspectionType=" +
+            "\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"ObsoleteTypeHintInspection" +
+            "\" Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInsp" +
+            "ection Name=\"ParameterCanBeByValInspection\" Severity=\"Suggestion\" InspectionType" +
+            "=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"ParameterNo" +
+            "tUsedInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <" +
+            "CodeInspection Name=\"ProcedureNotUsedInspection\" Severity=\"Warning\" InspectionTy" +
+            "pe=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"SelfAssignedDeclarationInsp" +
+            "ection\" Severity=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeIn" +
+            "spection Name=\"UnassignedVariableUsageInspection\" Severity=\"Error\" InspectionTyp" +
+            "e=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"UndeclaredVariableInspection" +
+            "\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Na" +
+            "me=\"UntypedFunctionUsageInspection\" Severity=\"Hint\" InspectionType=\"LanguageOppo" +
+            "rtunities\" />\r\n    <CodeInspection Name=\"UseMeaningfulNameInspection\" Severity=\"" +
+            "Suggestion\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeIn" +
+            "spection Name=\"VariableNotAssignedInspection\" Severity=\"Warning\" InspectionType=" +
+            "\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"VariableNotUsedInspection\" Sev" +
+            "erity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=" +
+            "\"VariableTypeNotDeclaredInspection\" Severity=\"Warning\" InspectionType=\"LanguageO" +
+            "pportunities\" />\r\n    <CodeInspection Name=\"WriteOnlyPropertyInspection\" Severit" +
+            "y=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"" +
+            "DefTypeStatementInspection\" Severity=\"Suggestion\" InspectionType=\"LanguageOpport" +
+            "unities\" />\r\n    <CodeInspection Name=\"StepIsNotSpecifiedInspection\" Severity=\"D" +
+            "oNotShow\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"S" +
+            "tepOneIsRedundantInspection\" Severity=\"Hint\" InspectionType=\"LanguageOpportuniti" +
+            "es\" />\r\n    <CodeInspection Name=\"SheetAccessedUsingStringInspection\" Severity=\"" +
+            "Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=" +
+            "\"ObsoleteMemberUsageInspection\" Severity=\"Warning\" InspectionType=\"Maintainabili" +
+            "tyAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"ObsoleteCallingConventionI" +
+            "nspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeIn" +
+            "spection Name=\"DuplicatedAnnotationInspection\" Severity=\"Error\" InspectionType=\"" +
+            "RubberduckOpportunities\" />\r\n    <CodeInspection Name=\"ModuleWithoutFolderInspec" +
+            "tion\" Severity=\"Suggestion\" InspectionType=\"RubberduckOpportunities\" />\r\n    <Co" +
+            "deInspection Name=\"OnLocalErrorInspection\" Severity=\"Suggestion\" InspectionType=" +
+            "\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"IsMissingOnInappropriateAr" +
+            "gumentInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    " +
+            "<CodeInspection Name=\"IsMissingWithNonArgumentParameterInspection\" Severity=\"War" +
+            "ning\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"Assignmen" +
+            "tNotUsedInspection\" Severity=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r" +
+            "\n    <CodeInspection Name=\"UnderscoreInPublicClassModuleMemberInspection\" Severi" +
+            "ty=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"Ex" +
+            "celUdfNameIsValidCellReferenceInspection\" Severity=\"Warning\" InspectionType=\"Cod" +
+            "eQualityIssues\" />\r\n  </CodeInspections>\r\n  <WhitelistedIdentifiers />\r\n  <RunIn" +
+            "spectionsOnSuccessfulParse>true</RunInspectionsOnSuccessfulParse>\r\n</CodeInspect" +
+            "ionSettings>")]
         public global::Rubberduck.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));
