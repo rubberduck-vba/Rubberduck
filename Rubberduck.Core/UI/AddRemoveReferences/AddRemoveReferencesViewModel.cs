@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Data;
 using System.Windows.Forms;
 using NLog;
@@ -25,6 +26,51 @@ namespace Rubberduck.UI.AddRemoveReferences
 
     public class AddRemoveReferencesViewModel : ViewModelBase
     {
+        private static readonly Dictionary<string, string[]> HostFileFilters = new Dictionary<string, string[]>
+        {
+            { "EXCEL.EXE", new [] {"xlsm","xlam","xls","xla"} },
+            { "WINWORD.EXE", new [] {"docm","dotm","doc","dot"} },
+            { "MSACCESS.EXE", new [] {"accdb","mdb","mda","mde","accde"} },
+            { "POWERPNT.EXE", new [] {"ppam","ppa"} },
+            // TODO
+            //{ "OUTLOOK.EXE", new [] {"?"} },
+            //{ "WINPROJ.EXE",  new [] {"?"} },
+            //{ "MSPUB.EXE",  new [] {"?"} },
+            //{ "VISIO.EXE",  new [] {"?"} },
+            //{ "ACAD.EXE",  new [] {"?"} },
+            //{ "CORELDRW.EXE",  new [] {"?"} }
+        };
+
+        private static readonly Dictionary<string, string> HostFilters = new Dictionary<string, string>
+        {
+            { "EXCEL.EXE", string.Format(RubberduckUI.References_BrowseFilterExcel, string.Join(";", HostFileFilters["EXCEL.EXE"].Select(_ => $"*.{_}"))) },
+            { "WINWORD.EXE", string.Format(RubberduckUI.References_BrowseFilterWord, string.Join(";", HostFileFilters["WINWORD.EXE"].Select(_ => $"*.{_}"))) }, 
+            { "MSACCESS.EXE", string.Format(RubberduckUI.References_BrowseFilterAccess, string.Join(";", HostFileFilters["MSACCESS.EXE"].Select(_ => $"*.{_}"))) },
+            { "POWERPNT.EXE", string.Format(RubberduckUI.References_BrowseFilterPowerPoint, string.Join(";", HostFileFilters["POWERPNT.EXE"].Select(_ => $"*.{_}"))) },
+        };
+
+        private static readonly List<string> FileFilters = new List<string>
+        {
+            RubberduckUI.References_BrowseFilterExecutable,
+            RubberduckUI.References_BrowseFilterTypes,
+            RubberduckUI.References_BrowseFilterActiveX,
+            RubberduckUI.References_BrowseFilterAllFiles,
+        };
+
+        private static bool HostHasProjects { get; }
+
+        static AddRemoveReferencesViewModel()
+        {
+            var host = Path.GetFileName(Application.ExecutablePath).ToUpperInvariant();
+            if (!HostFilters.ContainsKey(host))
+            {
+                return;
+            }
+
+            HostHasProjects = true;
+            FileFilters.Insert(0, HostFilters[host]);
+        }
+
         public event EventHandler<DialogResult> OnWindowClosed;
         private void CloseWindowOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
         private void CloseWindowCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
@@ -38,20 +84,6 @@ namespace Rubberduck.UI.AddRemoveReferences
         {
             Model = model;
             _reconciler = reconciler;
-
-            foreach (var reference in model.References
-                .Where(item => Model.Settings.PinnedReferences
-                    .Contains(item.Type == ReferenceKind.TypeLibrary ? item.Guid.ToString() : item.FullPath)))
-            {
-                reference.IsPinned = true;
-            }
-
-            foreach (var reference in model.References
-                .Where(item => Model.Settings.RecentReferences
-                    .Contains(item.Type == ReferenceKind.TypeLibrary ? item.Guid.ToString() : item.FullPath)))
-            {
-                reference.IsRecent = true;
-            }
 
             _available = new ObservableCollection<ReferenceModel>(model.References
                 .Where(reference => !reference.IsReferenced).OrderBy(reference => reference.Description));
@@ -74,6 +106,8 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         public IAddRemoveReferencesModel Model { get; set; }
+
+        public bool ProjectsVisible => HostHasProjects;
 
         public ICommand AddCommand { get; }
 
@@ -139,16 +173,7 @@ namespace Rubberduck.UI.AddRemoveReferences
             EvaluateProjectDirty();
             ProjectReferences.Refresh();
         }
-     
-        private static readonly List<string> FileFilters = new List<string>
-        {
-            RubberduckUI.References_BrowseFilterExecutable,
-            RubberduckUI.References_BrowseFilterExcel,
-            RubberduckUI.References_BrowseFilterTypes,
-            RubberduckUI.References_BrowseFilterActiveX,
-            RubberduckUI.References_BrowseFilterAllFiles,
-        };
-
+        
         private void ExecuteBrowseCommand(object parameter)
         {
             using (var dialog = new OpenFileDialog
@@ -169,6 +194,11 @@ namespace Rubberduck.UI.AddRemoveReferences
                 if (existing is null)
                 {
                     var adding = _reconciler.GetLibraryInfoFromPath(dialog.FileName);
+                    if (adding is null)
+                    {
+                        return;
+                    }
+
                     adding.Priority = _project.Count + 1;
                     Model.References.Add(adding);
                     _project.Add(adding);

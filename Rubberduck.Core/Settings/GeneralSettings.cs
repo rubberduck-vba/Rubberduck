@@ -20,9 +20,6 @@ namespace Rubberduck.Settings
         int MinimumLogLevel { get; set; }
         bool SetDpiUnaware { get; set; }
         List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
-        int RecentReferencesTracked { get; set; }
-        List<string> RecentReferences { get; set; }
-        List<string> PinnedReferences { get; set; }
     }
 
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
@@ -64,10 +61,6 @@ namespace Rubberduck.Settings
 
         public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeatures>();
 
-        public int RecentReferencesTracked { get; set; }
-        public List<string> RecentReferences { get; set; }
-        public List<string> PinnedReferences { get; set; }
-
         public GeneralSettings()
         {
             //Enforce non-default default value for members
@@ -87,12 +80,9 @@ namespace Rubberduck.Settings
                    IsAutoSaveEnabled == other.IsAutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&
                    UserEditedLogLevel == other.UserEditedLogLevel &&
-                   MinimumLogLevel == other.MinimumLogLevel &&
-                   RecentReferencesTracked == other.RecentReferencesTracked &&
+                   MinimumLogLevel == other.MinimumLogLevel &&                   
                    EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count &&
                    EnableExperimentalFeatures.All(other.EnableExperimentalFeatures.Contains) &&
-                   RecentReferences.SequenceEqual(other.RecentReferences, StringComparer.OrdinalIgnoreCase) &&
-                   PinnedReferences.OrderBy(x => x).SequenceEqual(other.PinnedReferences.OrderBy(x => x), StringComparer.OrdinalIgnoreCase) &&
                    SetDpiUnaware == other.SetDpiUnaware;
         }
     }

@@ -1,10 +1,15 @@
 ﻿using System;
+using System.Runtime.Serialization;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
+// ReSharper disable NonReadonlyMemberInGetHashCode
 namespace Rubberduck.VBEditor
 {
-    public readonly struct ReferenceInfo
+    [DataContract]
+    public struct ReferenceInfo
     {
+        public static ReferenceInfo Empty => new ReferenceInfo(Guid.Empty, string.Empty, string.Empty, 0, 0);
+
         public ReferenceInfo(Guid guid, string name, string fullPath, int major, int minor)
         {
             Guid = guid;
@@ -15,18 +20,28 @@ namespace Rubberduck.VBEditor
         }
 
         public ReferenceInfo(IReference reference)
-        :this(string.IsNullOrEmpty(reference.Guid) ? Guid.Empty : Guid.Parse(reference.Guid),
-            reference.Name, 
-            reference.FullPath, 
-            reference.Major, 
-            reference.Minor)
-        {}
+        {
+            Guid = Guid.TryParse(reference.Guid, out var guid) ? guid : Guid.Empty;
+            Name = reference.Name;
+            FullPath = reference.FullPath;
+            Major = reference.Major;
+            Minor = reference.Minor;
+        }
 
-        public Guid Guid { get; }
-        public string Name { get; }
-        public string FullPath { get; }
-        public int Major { get; }
-        public int Minor { get; }
+        [DataMember(IsRequired = true)]
+        public Guid Guid { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public string Name { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public string FullPath { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public int Major { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public int Minor { get; private set; }
 
         public override int GetHashCode()
         {

@@ -2680,6 +2680,17 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Microsoft Access Databases({0})|{0}.
+        /// </summary>
+        public static string References_BrowseFilterAccess
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterAccess", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to ActiveX Controls (*.ocx)|*.ocx.
         /// </summary>
         public static string References_BrowseFilterActiveX
@@ -2702,7 +2713,7 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Microsoft Excel Files (*.xlsm;*.xlam;*.xls;*.xla)|*.xlsm;*.xlam;*.xls;*.xla.
+        ///   Looks up a localized string similar to Microsoft Excel Files ({0})|{0}.
         /// </summary>
         public static string References_BrowseFilterExcel
         {
@@ -2724,6 +2735,17 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to PowerPoint Addin Files({0})|{0}.
+        /// </summary>
+        public static string References_BrowseFilterPowerPoint
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterPowerPoint", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Type Libraries (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll.
         /// </summary>
         public static string References_BrowseFilterTypes
@@ -2731,6 +2753,17 @@ namespace Rubberduck.Resources {
             get
             {
                 return ResourceManager.GetString("References_BrowseFilterTypes", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Word Documents({0})|{0}.
+        /// </summary>
+        public static string References_BrowseFilterWord
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterWord", resourceCulture);
             }
         }
 

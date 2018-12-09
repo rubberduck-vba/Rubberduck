@@ -24,19 +24,19 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IConfigProvider<GeneralSettings> _settings;
+        private readonly IConfigProvider<ReferenceSettings> _settings;
         private readonly IRegisteredLibraryFinderService _finder;
         private readonly IReferenceReconciler _reconciler;
 
         public AddRemoveReferencesPresenterFactory(IVBE vbe,
             RubberduckParserState state,
-            IConfigProvider<GeneralSettings> generalSettingsProvider, 
+            IConfigProvider<ReferenceSettings> settingsProvider, 
             IRegisteredLibraryFinderService finder,
             IReferenceReconciler reconciler)
         {
             _vbe = vbe;
             _state = state;
-            _settings = generalSettingsProvider;
+            _settings = settingsProvider;
             _finder = finder;
             _reconciler = reconciler;
         }
@@ -70,7 +70,9 @@ namespace Rubberduck.UI.AddRemoveReferences
                 var priority = 1;
                 foreach (var reference in references)
                 {
-                    var libraryId = new RegisteredLibraryKey(new Guid(reference.Guid), reference.Major, reference.Minor);
+                    var guid = Guid.TryParse(reference.Guid, out var result) ? result : Guid.Empty;
+                    var libraryId = new RegisteredLibraryKey(guid, reference.Major, reference.Minor);
+
                     if (refs.ContainsKey(libraryId))
                     {
                         // TODO: If for some reason the VBA reference is broken, we could technically use this to repair it. Just a thought...

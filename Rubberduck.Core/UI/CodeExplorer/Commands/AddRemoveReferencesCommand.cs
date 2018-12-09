@@ -45,6 +45,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
 
                 _reconciler.ReconcileReferences(model);
+                _state.OnParseRequested(this);
             }
         }
 

@@ -223,6 +223,10 @@ namespace Rubberduck.Root
                 .ImplementedBy(typeof(XmlPersistanceService<>))
                 .LifestyleSingleton());
 
+            container.Register(Component.For(typeof(IPersistanceService<ReferenceSettings>), typeof(IFilePersistanceService<>))
+                .ImplementedBy(typeof(XmlContractPersistanceService<>))
+                .LifestyleSingleton());
+
             container.Register(Component.For<IConfigProvider<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
                 .LifestyleSingleton());

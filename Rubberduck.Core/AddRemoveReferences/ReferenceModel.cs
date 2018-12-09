@@ -15,8 +15,24 @@ namespace Rubberduck.AddRemoveReferences
     public class ReferenceModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        
+        private ReferenceModel()
+        {
+            _info = new Lazy<ReferenceInfo>(GenerateInfo);
+        }
 
-        public ReferenceModel(IVBProject project, int priority)
+        public ReferenceModel(ReferenceInfo info, bool recent = false, bool pinned = false) : this()
+        {
+            Guid = info.Guid;
+            Name = info.Name;
+            FullPath = info.FullPath;
+            Major = info.Major;
+            Minor = info.Minor;
+            IsRecent = recent;
+            IsPinned = pinned;
+        }
+
+        public ReferenceModel(IVBProject project, int priority) : this()
         {
             Name = project.Name ?? string.Empty;
             Priority = priority;
@@ -24,10 +40,10 @@ namespace Rubberduck.AddRemoveReferences
             Description = project.Description ?? string.Empty;
             FullPath = project.FileName ?? string.Empty;
             IsBuiltIn = false;
-            Type = ReferenceKind.Project;
+            Type = ReferenceKind.Project;            
         }
 
-        public ReferenceModel(RegisteredLibraryInfo info)
+        public ReferenceModel(RegisteredLibraryInfo info) : this()
         {
             Name = info.Name ?? string.Empty;
             Guid = info.Guid;
@@ -50,11 +66,11 @@ namespace Rubberduck.AddRemoveReferences
             IsReferenced = true;
         }
 
-        public ReferenceModel(IReference reference, int priority)
+        public ReferenceModel(IReference reference, int priority) : this()
         {
             Priority = priority;
             Name = reference.Name;
-            Guid = new Guid(reference.Guid);
+            Guid = Guid.TryParse(reference.Guid, out var guid) ? guid : Guid.Empty;
             Description = string.IsNullOrEmpty(reference.Description) ? Path.GetFileNameWithoutExtension(reference.FullPath) : reference.Description;
             Major = reference.Major;
             Minor = reference.Minor;
@@ -65,7 +81,7 @@ namespace Rubberduck.AddRemoveReferences
             Type = reference.Type;
         }
 
-        public ReferenceModel(ITypeLib reference)
+        public ReferenceModel(ITypeLib reference) : this()
         {
             var documentation = new ComDocumentation(reference, -1);
             Name = documentation.Name;
@@ -83,10 +99,21 @@ namespace Rubberduck.AddRemoveReferences
             }
         }
 
-        public ReferenceModel(string path)
+        public ReferenceModel(string path, bool broken = false) : this()
         {
             FullPath = path;
-            Name = Path.GetFileName(path);
+            try
+            {
+                Name = Path.GetFileName(path);
+                Description = Name;
+            }
+            catch
+            {
+                // Yeah, that's probably busted.
+                IsBroken = true;
+            }
+            
+            IsBroken = broken;
         }
 
         private bool _pinned;
@@ -106,19 +133,19 @@ namespace Rubberduck.AddRemoveReferences
 
         public int? Priority { get; set; }
         
-        public string Name { get; }
+        public string Name { get; } = string.Empty;
         public Guid Guid { get; }
-        public string Description { get; }
-        public string FullPath { get; }
-        public string LocaleName { get; }
+        public string Description { get; } = string.Empty;
+        public string FullPath { get; } = string.Empty;
+        public string LocaleName { get; } = string.Empty;
 
         public bool IsBuiltIn { get; }
         public bool IsBroken { get; }
         public TypeLibTypeFlags Flags { get; set;  }
         public ReferenceKind Type { get; }
 
-        private string FullPath32 { get; }
-        private string FullPath64 { get; }
+        private string FullPath32 { get; } = string.Empty;
+        private string FullPath64 { get; } = string.Empty;
         public int Major { get; set; }
         public int Minor { get; set; }
         public string Version => $"{Major}.{Minor}";
@@ -147,9 +174,17 @@ namespace Rubberduck.AddRemoveReferences
             }
         }
 
-        public ReferenceInfo ToReferenceInfo()
+        private readonly Lazy<ReferenceInfo> _info;
+        private ReferenceInfo GenerateInfo() => new ReferenceInfo(Guid, Name, FullPath, Major, Minor);
+        public ReferenceInfo ToReferenceInfo() => _info.Value;
+
+        public bool Matches(ReferenceInfo info)
         {
-            return new ReferenceInfo(Guid, Name, FullPath, Major, Minor);
+            return Major == info.Major && Minor == info.Minor &&
+                   FullPath.Equals(info.FullPath, StringComparison.OrdinalIgnoreCase) ||
+                   FullPath32.Equals(info.FullPath, StringComparison.OrdinalIgnoreCase) ||
+                   FullPath64.Equals(info.FullPath, StringComparison.OrdinalIgnoreCase) ||
+                   Guid.Equals(info.Guid);
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

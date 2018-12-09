@@ -149,7 +149,7 @@
                                 </StackPanel>
                             </TabItem.Header>
                         </TabItem>
-                        <TabItem Tag="Projects">
+                        <TabItem Tag="Projects" Visibility="{Binding ProjectsVisible}">
                             <TabItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource VbaProjectIcon}" />
