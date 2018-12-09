@@ -13,12 +13,12 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_NotResultForBoolean()
+        public void ObjectVariableNotSet_NotResultForNonObjectPropertyGetWithObjectArgument()
         {
             var expectedResultCount = 0;
             var input = @"
-Public Property Get Something() As Boolean
-    Something = True
+Public Property Get Foo(ByVal bar As Object) As Boolean
+    Foo = True
 End Property
 ";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectedResultCount);
