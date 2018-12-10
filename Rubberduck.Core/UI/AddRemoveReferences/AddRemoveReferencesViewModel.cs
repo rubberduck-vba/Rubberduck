@@ -26,7 +26,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
     public class AddRemoveReferencesViewModel : ViewModelBase
     {
-        private static readonly Dictionary<string, string[]> HostFileFilters = new Dictionary<string, string[]>
+        public static readonly Dictionary<string, string[]> HostFileFilters = new Dictionary<string, string[]>
         {
             { "EXCEL.EXE", new [] {"xlsm","xlam","xls","xla"} },
             { "WINWORD.EXE", new [] {"docm","dotm","doc","dot"} },
@@ -57,7 +57,7 @@ namespace Rubberduck.UI.AddRemoveReferences
             RubberduckUI.References_BrowseFilterAllFiles,
         };
 
-        private static bool HostHasProjects { get; }
+        public static bool HostHasProjects { get; }
 
         static AddRemoveReferencesViewModel()
         {

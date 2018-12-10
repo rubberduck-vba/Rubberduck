@@ -183,6 +183,9 @@
   <data name="PageHeader_InspectionSettings" xml:space="preserve">
     <value>Code Inspection Settings</value>
   </data>
+  <data name="PageHeader_ReferenceSettings" xml:space="preserve">
+    <value>Reference Settings</value>
+  </data>
   <data name="PageHeader_TodoSettings" xml:space="preserve">
     <value>Todo Settings</value>
   </data>
@@ -203,6 +206,9 @@
   </data>
   <data name="PageInstructions_InspectionSettings" xml:space="preserve">
     <value>Configure inspection severity. Use "DoNotShow" to disable an inspection.</value>
+  </data>
+  <data name="PageInstructions_ReferenceSettings" xml:space="preserve">
+    <value>Configure settings for adding and removing references.</value>
   </data>
   <data name="PageInstructions_TodoSettings" xml:space="preserve">
     <value>Configure markers to be recognized in comments.</value>

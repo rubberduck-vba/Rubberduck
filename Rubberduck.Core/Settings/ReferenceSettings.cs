@@ -10,12 +10,17 @@ namespace Rubberduck.Settings
     public interface IReferenceSettings
     {
         int RecentReferencesTracked { get; set; }
+        bool FixBrokenReferences { get; set; }
+        bool AddToRecentOnReferenceEvents { get; set; }
+        List<string> ProjectPaths { get; set; }
         List<ReferenceInfo> GetRecentReferencesForHost(string host);
         void UpdateRecentReferencesForHost(string host, List<ReferenceInfo> references);
         List<ReferenceInfo> GetPinnedReferencesForHost(string host);
         void UpdatePinnedReferencesForHost(string host, List<ReferenceInfo> references);
         void PinReference(ReferenceInfo reference, string host = null);
         void TrackUsage(ReferenceInfo reference, string host = null);
+        bool IsPinnedProject(string filePath, string host);
+        bool IsRecentProject(string filePath, string host);
     }
 
     [DataContract]
@@ -23,6 +28,8 @@ namespace Rubberduck.Settings
     [KnownType(typeof(ReferenceUsage))]
     public class ReferenceSettings : IReferenceSettings, IEquatable<ReferenceSettings>
     {
+        public const int RecentTrackingLimit = 50;
+
         [DataMember(IsRequired = true)]
         [XmlElement(ElementName = "RecentReferences")]
         private List<HostUsages> _recent;
@@ -34,19 +41,42 @@ namespace Rubberduck.Settings
         [OnDeserialized]
         private void DeserializationLoad(StreamingContext context)
         {
-            RecentProjectReferences = _recent.ToDictionary(usage => usage.Host, usage => usage.Usages);
+            RecentProjectReferences = _recent.Take(RecentTrackingLimit).ToDictionary(usage => usage.Host, usage => usage.Usages);
             PinnedProjectReferences = _pinned.ToDictionary(usage => usage.Host, usage => usage.Pins);
         }
 
         [OnSerializing]
         private void SerializationPrep(StreamingContext context)
         {
-            _recent = new List<HostUsages>(RecentProjectReferences.Select(recent => new HostUsages(recent.Key, recent.Value)));
+            _recent = new List<HostUsages>(RecentProjectReferences.Select(recent => new HostUsages(recent.Key, recent.Value)).Take(RecentTrackingLimit));
             _pinned = new List<HostPins>(PinnedProjectReferences.Select(recent => new HostPins(recent.Key, recent.Value)));
+        }
+
+        public ReferenceSettings() { }
+
+        public ReferenceSettings(ReferenceSettings other)
+        {
+            RecentReferencesTracked = other.RecentReferencesTracked;
+            FixBrokenReferences = other.FixBrokenReferences;
+            AddToRecentOnReferenceEvents = other.AddToRecentOnReferenceEvents;
+            ProjectPaths = new List<string>(other.ProjectPaths);
+            other.SerializationPrep(new StreamingContext(StreamingContextStates.All));
+            _recent = other._recent;
+            _pinned = other._pinned;
+            DeserializationLoad(new StreamingContext(StreamingContextStates.All));
         }
 
         [DataMember(IsRequired = true)]
         public int RecentReferencesTracked { get; set; }
+
+        [DataMember(IsRequired = true)]
+        public bool FixBrokenReferences { get; set; }
+
+        [DataMember(IsRequired = true)]
+        public bool AddToRecentOnReferenceEvents { get; set; }
+
+        [DataMember(IsRequired = true)]
+        public List<string> ProjectPaths { get; set; } = new List<string>();
 
         [DataMember(IsRequired = true)]
         protected List<ReferenceUsage> RecentLibraryReferences { get; private set; } = new List<ReferenceUsage>();
@@ -74,6 +104,24 @@ namespace Rubberduck.Settings
             {
                 PinnedProjectReferences[key].Add(reference);
             }
+        }
+
+        public bool IsPinnedProject(string filePath, string host)
+        {
+            var key = host.ToUpperInvariant();
+            return PinnedProjectReferences.ContainsKey(key) && 
+                   PinnedProjectReferences[key]
+                       .Select(pin => pin.FullPath)
+                       .Contains(filePath, StringComparer.OrdinalIgnoreCase);
+        }
+
+        public bool IsRecentProject(string filePath, string host)
+        {
+            var key = host.ToUpperInvariant();
+            return RecentProjectReferences.ContainsKey(key) &&
+                   RecentProjectReferences[key]
+                       .Select(usage => usage.Reference.FullPath)
+                       .Contains(filePath, StringComparer.OrdinalIgnoreCase);
         }
 
         public void TrackUsage(ReferenceInfo reference, string host = null)

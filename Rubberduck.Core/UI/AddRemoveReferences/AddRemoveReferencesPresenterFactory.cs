@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using NLog;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Parsing.Symbols;
@@ -8,6 +10,8 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.AddRemoveReferences
@@ -95,8 +99,60 @@ namespace Rubberduck.UI.AddRemoveReferences
 
             var settings = _settings.Create();
             var model = new AddRemoveReferencesModel(project, models.Values, settings);
+            if (AddRemoveReferencesViewModel.HostHasProjects)
+            {
+                model.References.AddRange(GetUserProjectFolderModels(model.Settings).Where(proj =>
+                    !model.References.Any(item =>
+                        item.FullPath.Equals(proj.FullPath, StringComparison.OrdinalIgnoreCase))));
+            }
 
             return new AddRemoveReferencesPresenter(new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _reconciler)));         
+        }
+
+        private IEnumerable<ReferenceModel> GetUserProjectFolderModels(IReferenceSettings settings)
+        {
+            var host = Path.GetFileName(Application.ExecutablePath).ToUpperInvariant();
+            if (!AddRemoveReferencesViewModel.HostFileFilters.ContainsKey(host))
+            {
+                return Enumerable.Empty<ReferenceModel>();
+            }
+
+            var filter = AddRemoveReferencesViewModel.HostFileFilters[host].Select(ext => $".{ext}").ToList();
+            var projects = new List<ReferenceModel>();
+            
+            foreach (var path in settings.ProjectPaths.Where(Directory.Exists))
+            {
+                try
+                {
+                    foreach (var fullPath in Directory.EnumerateFiles(path))
+                    {
+                        try
+                        {
+                            if (!filter.Contains(Path.GetExtension(fullPath)))
+                            {
+                                continue;                               
+                            }
+                            var file = Path.GetFileName(fullPath);
+
+                            projects.Add(new ReferenceModel(
+                                new ReferenceInfo(Guid.Empty, file, fullPath, 0, 0),
+                                ReferenceKind.Project, 
+                                settings.IsRecentProject(fullPath, host),
+                                settings.IsPinnedProject(fullPath, host)));
+                        }
+                        catch
+                        {
+                            // 'Ignored
+                        }
+                    }
+                }
+                catch
+                {
+                    _logger.Info("User project directory in reference settings does not exist.");
+                }
+            }
+
+            return projects;
         }
 
         public AddRemoveReferencesPresenter Create()

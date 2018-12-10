@@ -21,15 +21,17 @@ namespace Rubberduck.AddRemoveReferences
             _info = new Lazy<ReferenceInfo>(GenerateInfo);
         }
 
-        public ReferenceModel(ReferenceInfo info, bool recent = false, bool pinned = false) : this()
+        public ReferenceModel(ReferenceInfo info, ReferenceKind type, bool recent = false, bool pinned = false) : this()
         {
             Guid = info.Guid;
             Name = info.Name;
+            Description = Name;
             FullPath = info.FullPath;
             Major = info.Major;
             Minor = info.Minor;
             IsRecent = recent;
             IsPinned = pinned;
+            Type = type;
         }
 
         public ReferenceModel(IVBProject project, int priority) : this()
@@ -37,7 +39,7 @@ namespace Rubberduck.AddRemoveReferences
             Name = project.Name ?? string.Empty;
             Priority = priority;
             Guid = Guid.Empty;
-            Description = project.Description ?? string.Empty;
+            Description = project.Description ?? project.Name;
             FullPath = project.FileName ?? string.Empty;
             IsBuiltIn = false;
             Type = ReferenceKind.Project;            

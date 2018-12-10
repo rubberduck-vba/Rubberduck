@@ -1407,4 +1407,19 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Word Documents({0})|{0}</value>
     <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
   </data>
+  <data name="ReferenceSettings_FixBroken" xml:space="preserve">
+    <value>Attempt to fix broken references</value>
+  </data>
+  <data name="ReferenceSettings_FolderDialogHeader" xml:space="preserve">
+    <value>Browse for project folder</value>
+  </data>
+  <data name="ReferenceSettings_FoldersHeader" xml:space="preserve">
+    <value>Project Directories</value>
+  </data>
+  <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
+    <value>Recent references tracked:</value>
+  </data>
+  <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
+    <value>Track references not added by Rubberduck</value>
+  </data>
 </root>

@@ -2658,6 +2658,61 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Track references not added by Rubberduck.
+        /// </summary>
+        public static string ReferenceSettings_TrackHostReferences
+        {
+            get
+            {
+                return ResourceManager.GetString("ReferenceSettings_TrackHostReferences", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Recent references tracked:.
+        /// </summary>
+        public static string ReferenceSettings_RecentTracked
+        {
+            get
+            {
+                return ResourceManager.GetString("ReferenceSettings_RecentTracked", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Attempt to fix broken references.
+        /// </summary>
+        public static string ReferenceSettings_FixBroken
+        {
+            get
+            {
+                return ResourceManager.GetString("ReferenceSettings_FixBroken", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Project Directories.
+        /// </summary>
+        public static string ReferenceSettings_FoldersHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ReferenceSettings_FoldersHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Browse for project folder
+        /// </summary>
+        public static string ReferenceSettings_FolderDialogHeader
+        {
+            get
+            {
+                return ResourceManager.GetString("ReferenceSettings_FolderDialogHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Could not add reference.
         /// </summary>
         public static string References_AddFailedCaption
