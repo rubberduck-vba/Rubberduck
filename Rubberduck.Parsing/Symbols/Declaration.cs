@@ -358,13 +358,13 @@ namespace Rubberduck.Parsing.Symbols
                 {
                     return true;
                 }
-                
-                var result = !(AsTypeIsBaseType || 
-                         IsArray || 
-                         DeclarationType.HasFlag(DeclarationType.UserDefinedType) || 
-                         DeclarationType.HasFlag(DeclarationType.Enumeration));
 
-                return result;
+                var isIntrinsic = AsTypeIsBaseType
+                                  || IsArray
+                                  || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
+                                  || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.Enumeration) ?? false);
+
+                return !isIntrinsic;
             }
         }
 
