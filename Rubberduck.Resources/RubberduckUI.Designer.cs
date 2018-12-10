@@ -2790,6 +2790,17 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Outlook VBA Files ({0})|{0}.
+        /// </summary>
+        public static string References_BrowseFilterOutlook
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterOutlook", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to PowerPoint Addin Files({0})|{0}.
         /// </summary>
         public static string References_BrowseFilterPowerPoint
@@ -2801,6 +2812,17 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Publisher Files ({0}|{0}.
+        /// </summary>
+        public static string References_BrowseFilterPublisher
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterPublisher", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Type Libraries (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll.
         /// </summary>
         public static string References_BrowseFilterTypes
@@ -2808,6 +2830,17 @@ namespace Rubberduck.Resources {
             get
             {
                 return ResourceManager.GetString("References_BrowseFilterTypes", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All Visio Files ({0})|{0}.
+        /// </summary>
+        public static string References_BrowseFilterVisio
+        {
+            get
+            {
+                return ResourceManager.GetString("References_BrowseFilterVisio", resourceCulture);
             }
         }
 

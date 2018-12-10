@@ -1,22 +1,38 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 using Rubberduck.Resources.Registration;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Events;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Settings
 {
-    public class ReferenceConfigProvider : IConfigProvider<ReferenceSettings>
+    public class ReferenceConfigProvider : IConfigProvider<ReferenceSettings>, IDisposable
     {
+        private static readonly string HostApplication = Path.GetFileName(Application.ExecutablePath).ToUpperInvariant();
+
         private readonly IPersistanceService<ReferenceSettings> _persister;
         private readonly IEnvironmentProvider _environment;
+        private readonly IVBEEvents _events;
+        private bool _listening;
 
-        public ReferenceConfigProvider(IPersistanceService<ReferenceSettings> persister, IEnvironmentProvider environment)
+        public ReferenceConfigProvider(IPersistanceService<ReferenceSettings> persister, IEnvironmentProvider environment, IVBEEvents events)
         {
             _persister = persister;
             _environment = environment;
+            _events = events;
+
+            
+            var settings = Create();
+            _listening = settings.AddToRecentOnReferenceEvents;
+            if (_listening)
+            {
+                _events.ProjectReferenceAdded += ReferenceAddedHandler;
+            }
         }
 
         public ReferenceSettings Create()
@@ -63,7 +79,53 @@ namespace Rubberduck.Settings
 
         public void Save(ReferenceSettings settings)
         {
+            if (_listening && !settings.AddToRecentOnReferenceEvents)
+            {
+                _events.ProjectReferenceAdded -= ReferenceAddedHandler;
+                _listening = false;
+            }
+
+            if (_listening && !settings.AddToRecentOnReferenceEvents)
+            {
+                _events.ProjectReferenceAdded += ReferenceAddedHandler;
+                _listening = true;
+            }
+
             _persister.Save(settings);
+        }
+
+        private void ReferenceAddedHandler(object sender, ReferenceEventArgs e)
+        {
+            if (e is null || e.Reference.Equals(ReferenceInfo.Empty))
+            {
+                return;
+            }
+
+            var settings = Create();
+            settings.TrackUsage(e.Reference, e.Type == ReferenceKind.Project ? HostApplication : null);
+            _persister.Save(settings);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _disposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing && _listening)
+            {
+                _events.ProjectReferenceAdded -= ReferenceAddedHandler;
+            }
+
+            _disposed = true;
         }
     }
 }

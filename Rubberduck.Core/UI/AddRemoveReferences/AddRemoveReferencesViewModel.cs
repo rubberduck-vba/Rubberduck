@@ -32,11 +32,11 @@ namespace Rubberduck.UI.AddRemoveReferences
             { "WINWORD.EXE", new [] {"docm","dotm","doc","dot"} },
             { "MSACCESS.EXE", new [] {"accdb","mdb","mda","mde","accde"} },
             { "POWERPNT.EXE", new [] {"ppam","ppa"} },
-            // TODO
-            //{ "OUTLOOK.EXE", new [] {"?"} },
+            { "OUTLOOK.EXE", new [] {"otm"} },
+            { "MSPUB.EXE",  new [] {"pub"} },
+            { "VISIO.EXE",  new [] {"vsd","vdx","vss","vst","vtx","vsw","vdw","vsdx","vsdm"} },
+            // TODO           
             //{ "WINPROJ.EXE",  new [] {"?"} },
-            //{ "MSPUB.EXE",  new [] {"?"} },
-            //{ "VISIO.EXE",  new [] {"?"} },
             //{ "ACAD.EXE",  new [] {"?"} },
             //{ "CORELDRW.EXE",  new [] {"?"} }
         };
@@ -47,6 +47,9 @@ namespace Rubberduck.UI.AddRemoveReferences
             { "WINWORD.EXE", string.Format(RubberduckUI.References_BrowseFilterWord, string.Join(";", HostFileFilters["WINWORD.EXE"].Select(_ => $"*.{_}"))) }, 
             { "MSACCESS.EXE", string.Format(RubberduckUI.References_BrowseFilterAccess, string.Join(";", HostFileFilters["MSACCESS.EXE"].Select(_ => $"*.{_}"))) },
             { "POWERPNT.EXE", string.Format(RubberduckUI.References_BrowseFilterPowerPoint, string.Join(";", HostFileFilters["POWERPNT.EXE"].Select(_ => $"*.{_}"))) },
+            { "OUTLOOK.EXE", string.Format(RubberduckUI.References_BrowseFilterOutlook, string.Join(";", HostFileFilters["OUTLOOK.EXE"].Select(_ => $"*.{_}"))) },
+            { "MSPUB.EXE", string.Format(RubberduckUI.References_BrowseFilterOutlook, string.Join(";", HostFileFilters["MSPUB.EXE"].Select(_ => $"*.{_}"))) },
+            { "VISIO.EXE", string.Format(RubberduckUI.References_BrowseFilterVisio, string.Join(";", HostFileFilters["VISIO.EXE"].Select(_ => $"*.{_}"))) },
         };
 
         private static readonly List<string> FileFilters = new List<string>

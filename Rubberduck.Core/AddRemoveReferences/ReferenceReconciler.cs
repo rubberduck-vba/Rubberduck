@@ -14,7 +14,7 @@ namespace Rubberduck.AddRemoveReferences
 {
     public interface IReferenceReconciler
     {
-        void ReconcileReferences(IAddRemoveReferencesModel model);
+        List<ReferenceModel> ReconcileReferences(IAddRemoveReferencesModel model);
         List<ReferenceModel> ReconcileReferences(IAddRemoveReferencesModel model, List<ReferenceModel> allReferences);
         ReferenceModel TryAddReference(IVBProject project, string path);
         ReferenceModel TryAddReference(IVBProject project, ReferenceModel reference);
@@ -35,14 +35,14 @@ namespace Rubberduck.AddRemoveReferences
             _tlbProvider = tlbProvider;
         }
 
-        public void ReconcileReferences(IAddRemoveReferencesModel model)
+        public List<ReferenceModel> ReconcileReferences(IAddRemoveReferencesModel model)
         {
             if (model?.NewReferences is null || !model.NewReferences.Any())
             {
-                return;
+                return null;
             }
 
-            ReconcileReferences(model, model.NewReferences.ToList());
+            return ReconcileReferences(model, model.NewReferences.ToList());
         }
 
         //TODO test for simple adds.

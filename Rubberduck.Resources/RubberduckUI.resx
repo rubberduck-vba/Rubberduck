@@ -1422,4 +1422,16 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
     <value>Track references not added by Rubberduck</value>
   </data>
+  <data name="References_BrowseFilterOutlook" xml:space="preserve">
+    <value>Outlook VBA Files ({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterPublisher" xml:space="preserve">
+    <value>Publisher Files ({0}|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterVisio" xml:space="preserve">
+    <value>All Visio Files ({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
 </root>
