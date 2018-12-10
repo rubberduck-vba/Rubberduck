@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Moq;
 using Rubberduck.VBEditor;
@@ -12,12 +13,13 @@ namespace RubberduckTests.Mocks
     /// <summary>
     /// Builds a mock <see cref="IVBE"/>.
     /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1001")] //CA1001 is complaining about RubberduckTests.Mocks.Windows, which doesn't need to be disposed in this context.
     public class MockVbeBuilder
     {
         public const string TestProjectName = "TestProject1";
         public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
-        private readonly Mock<IVBEEvents> _vbeEvents;
+        private readonly Mock<IVBEEvents> _vbeEvents;     
 
         #region standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
         public static readonly string LibraryPathVBA = @"C:\PROGRA~1\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked
@@ -151,7 +153,7 @@ namespace RubberduckTests.Mocks
 
             if (referenceStdLibs)
             {
-                builder.AddReference("VBA", LibraryPathVBA, 4, 1, true);
+                builder.AddReference("VBA", LibraryPathVBA, 4, 2, true);
             }
 
             var project = builder.Build();
@@ -170,12 +172,20 @@ namespace RubberduckTests.Mocks
         /// </summary>
         public static Mock<IVBE> BuildFromStdModules(params (string name, string content)[] modules)
         {
+            return BuildFromModules(modules.Select(tpl => (tpl.name, tpl.content, ComponentType.StandardModule)).ToArray());
+        }
+
+        /// <summary>
+        /// Builds a mock VBE containing one project with multiple modules.
+        /// </summary>
+        public static Mock<IVBE> BuildFromModules(params (string name, string content, ComponentType componentType)[] modules)
+        {
             var vbeBuilder = new MockVbeBuilder();
 
             var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
             foreach (var module in modules)
             {
-                builder.AddComponent(module.name, ComponentType.StandardModule, module.content);
+                builder.AddComponent(module.name, module.componentType, module.content);
             }
 
             var project = builder.Build();

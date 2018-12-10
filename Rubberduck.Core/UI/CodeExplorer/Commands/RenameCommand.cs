@@ -44,7 +44,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+
             _view?.Dispose();
+            _isDisposed = true;
         }
     }
 }

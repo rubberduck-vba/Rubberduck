@@ -7,7 +7,7 @@ using VB = Microsoft.Vbe.Interop.VB6;
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 {
-    public class References : SafeEventedComWrapper<VB.References, VB._dispReferencesEvents>, IReferences, VB._dispReferencesEvents
+    public sealed class References : SafeEventedComWrapper<VB.References, VB._dispReferencesEvents>, IReferences, VB._dispReferencesEvents
     {
         public References(VB.References target, bool rewrapping = false) 
             : base(target, rewrapping)
@@ -91,5 +91,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

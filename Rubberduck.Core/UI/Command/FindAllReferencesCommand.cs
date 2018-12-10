@@ -292,13 +292,25 @@ namespace Rubberduck.UI.Command
             return null;
         }
 
-
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
             }
+            _isDisposed = true;
         }
     }
 }

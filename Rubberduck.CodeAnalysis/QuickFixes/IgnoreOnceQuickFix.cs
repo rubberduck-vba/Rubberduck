@@ -1,15 +1,17 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
@@ -29,98 +31,109 @@ namespace Rubberduck.Inspections.QuickFixes
 
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
-            var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
-
-            int annotationLine;
-            //TODO: Make this use the parse tree instead of the code module.
-            var component = _state.ProjectsProvider.Component(result.QualifiedSelection.QualifiedName);
-            using (var module = component.CodeModule)
+            if (result.Target?.DeclarationType.HasFlag(DeclarationType.Module) ?? false)
             {
-                annotationLine = result.QualifiedSelection.Selection.StartLine;
-                while (annotationLine != 1 && module.GetLines(annotationLine - 1, 1).EndsWith(" _"))
-                {
-                    annotationLine--;
-                }
-            }
-
-            RuleContext treeRoot = result.Context;
-            while (treeRoot.Parent != null)
-            {
-                treeRoot = treeRoot.Parent;
-            }
-
-            var listener = new CommentOrAnnotationListener();
-            ParseTreeWalker.Default.Walk(listener, treeRoot);
-            var commentContext = listener.Contexts.LastOrDefault(i => i.Stop.TokenIndex <= result.Context.Start.TokenIndex);
-            var commented = commentContext?.Stop.Line + 1 == annotationLine;
-
-            var rewriter = rewriteSession.CheckOutModuleRewriter(result.QualifiedSelection.QualifiedName);
-
-            if (commented)
-            {
-                var annotation = commentContext.annotationList()?.annotation(0);
-                if (annotation != null && annotation.GetText().StartsWith("Ignore"))
-                {
-                    rewriter.InsertAfter(annotation.annotationName().Stop.TokenIndex, $" {result.Inspection.AnnotationName},");
-                }
-                else
-                {
-                    var indent = new string(Enumerable.Repeat(' ', commentContext.Start.Column).ToArray());
-                    rewriter.InsertAfter(commentContext.Stop.TokenIndex, $"{indent}{annotationText}{Environment.NewLine}");
-                }
+                FixModule(result, rewriteSession);
             }
             else
             {
-                int insertIndex;
-
-                // this value is used when the annotation should be on line 1--we need to insert before token index 0
-                if (annotationLine == 1)
-                {
-                    insertIndex = 0;
-                    annotationText += Environment.NewLine;
-                }
-                else
-                {
-                    var eol = new EndOfLineListener();
-                    ParseTreeWalker.Default.Walk(eol, treeRoot);
-
-                    // we subtract 2 here to get the insertion index to A) account for VBE's one-based indexing
-                    // and B) to get the newline token that introduces that line
-                    var eolContext = eol.Contexts.OrderBy(o => o.Start.TokenIndex).ElementAt(annotationLine - 2);
-                    insertIndex = eolContext.Start.TokenIndex;
-
-                    annotationText = Environment.NewLine + annotationText;
-                }
-
-                rewriter.InsertBefore(insertIndex, annotationText);
+                FixNonModule(result, rewriteSession);
             }
+        }
+
+        private void FixNonModule(IInspectionResult result, IRewriteSession rewriteSession)
+        {
+            int insertionIndex;
+            string insertText;
+            var annotationText = $"'@Ignore {result.Inspection.AnnotationName}";
+
+            var module = result.QualifiedSelection.QualifiedName;
+            var parseTree = _state.GetParseTree(module, CodeKind.CodePaneCode);
+            var eolListener = new EndOfLineListener();
+            ParseTreeWalker.Default.Walk(eolListener, parseTree);
+            var previousEol = eolListener.Contexts
+                .OrderBy(eol => eol.Start.TokenIndex)
+                .LastOrDefault(eol => eol.Start.Line < result.QualifiedSelection.Selection.StartLine);
+
+            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
+
+            if (previousEol == null)
+            {
+                // The context to get annotated is on the first line; we need to insert before token index 0.
+                insertionIndex = 0;
+                insertText = annotationText + Environment.NewLine;
+                rewriter.InsertBefore(insertionIndex, insertText);
+                return;
+            }
+
+            var commentContext = previousEol.commentOrAnnotation();
+            if (commentContext == null)
+            {
+                insertionIndex = previousEol.Start.TokenIndex;
+                var indent = WhitespaceAfter(previousEol);
+                insertText = $"{Environment.NewLine}{indent}{annotationText}";
+                rewriter.InsertBefore(insertionIndex, insertText);
+                return;
+            }
+
+            var ignoreAnnotation = commentContext.annotationList()?.annotation()
+                .FirstOrDefault(annotationContext => annotationContext.annotationName().GetText() == AnnotationType.Ignore.ToString());
+            if (ignoreAnnotation == null)
+            {
+                insertionIndex = commentContext.Stop.TokenIndex;
+                var indent = WhitespaceAfter(previousEol);
+                insertText = $"{indent}{annotationText}{Environment.NewLine}";
+                rewriter.InsertAfter(insertionIndex, insertText);
+                return;
+            }
+
+            insertionIndex = ignoreAnnotation.annotationName().Stop.TokenIndex;
+            insertText = $" {result.Inspection.AnnotationName},";
+            rewriter.InsertAfter(insertionIndex, insertText);
+        }
+
+        private static string WhitespaceAfter(VBAParser.EndOfLineContext endOfLine)
+        {
+            var individualEndOfStatement = (VBAParser.IndividualNonEOFEndOfStatementContext) endOfLine.Parent;
+            var whiteSpaceOnNextLine = individualEndOfStatement.whiteSpace(0);
+            return whiteSpaceOnNextLine != null
+                ? whiteSpaceOnNextLine.GetText()
+                : string.Empty;
+        }
+
+        private void FixModule(IInspectionResult result, IRewriteSession rewriteSession)
+        {
+            var module = result.QualifiedSelection.QualifiedName;
+            var moduleAnnotations = _state.GetModuleAnnotations(module);
+            var firstIgnoreModuleAnnotation = moduleAnnotations
+                .Where(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule)
+                .OrderBy(annotation => annotation.Context.Start.TokenIndex)
+                .FirstOrDefault();
+
+            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
+
+            int insertionIndex;
+            string insertText;
+
+            if (firstIgnoreModuleAnnotation == null)
+            {
+                insertionIndex = 0;
+                insertText = $"'@IgnoreModule {result.Inspection.AnnotationName}{Environment.NewLine}";
+                rewriter.InsertBefore(insertionIndex, insertText);
+                return;
+            }
+
+            insertionIndex = firstIgnoreModuleAnnotation.Context.annotationName().Stop.TokenIndex;
+            insertText = $" {result.Inspection.AnnotationName},";
+            rewriter.InsertAfter(insertionIndex, insertText);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.IgnoreOnce;
 
-        private class CommentOrAnnotationListener : VBAParserBaseListener
-        {
-            private readonly IList<VBAParser.CommentOrAnnotationContext> _contexts = new List<VBAParser.CommentOrAnnotationContext>();
-            public IEnumerable<VBAParser.CommentOrAnnotationContext> Contexts => _contexts;
-
-            public override void ExitCommentOrAnnotation([NotNull] VBAParser.CommentOrAnnotationContext context)
-            {
-                _contexts.Add(context);
-            }
-        }
-
         private class EndOfLineListener : VBAParserBaseListener
         {
-            private readonly IList<ParserRuleContext> _contexts = new List<ParserRuleContext>();
-            public IEnumerable<ParserRuleContext> Contexts => _contexts;
-
-            public override void ExitWhiteSpace([NotNull] VBAParser.WhiteSpaceContext context)
-            {
-                if (context.GetText().Contains(Environment.NewLine))
-                {
-                    _contexts.Add(context);
-                }
-            }
+            private readonly IList<VBAParser.EndOfLineContext> _contexts = new List<VBAParser.EndOfLineContext>();
+            public IEnumerable<VBAParser.EndOfLineContext> Contexts => _contexts;
 
             public override void ExitEndOfLine([NotNull] VBAParser.EndOfLineContext context)
             {

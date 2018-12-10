@@ -7,7 +7,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace RubberduckTests.Mocks
 {
-    public class Windows : SafeComWrapper<object>, IWindows, ICollection<IWindow>
+    public sealed class Windows : SafeComWrapper<object>, IWindows, ICollection<IWindow>
     {
         private readonly IList<IWindow> _windows = new List<IWindow>();
         
@@ -84,10 +84,6 @@ namespace RubberduckTests.Mocks
             return _windows.GetEnumerator();
         }
 
-        //public override void Release(bool final = false)
-        //{
-        //}
-
         public override bool Equals(ISafeComWrapper<object> other)
         {
             return IsEqualIfNull(other) || (other != null && ReferenceEquals(other.Target, Target));
@@ -110,8 +106,8 @@ namespace RubberduckTests.Mocks
             return result.Object;
         }
 
-        public void ReleaseDockableHosts()
-        {
-        }
+        public void ReleaseDockableHosts() { }
+
+        protected override void Dispose(bool disposing) { }
     }
 }

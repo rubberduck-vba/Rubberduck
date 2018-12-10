@@ -135,18 +135,48 @@ namespace Rubberduck.AutoComplete.Service
 
             foreach (var handler in _handlers)
             {
+                if (TryHandle(e, handler))
+                {
+                    return;
+                }
+            }
+        }
+
+        private bool TryHandle(AutoCompleteEventArgs e, AutoCompleteHandlerBase handler)
+        {
+            try
+            {
                 if (!handler.Handle(e, _settings, out _))
                 {
-                    continue;
+                    return false;
                 }
 
                 e.Handled = true;
-                return;
+                return true;
+
+            }
+            catch (Exception exception)
+            {
+                Logger.Error(exception);
+                return false;
             }
         }
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+            _isDisposed = true;
+
             Disable();
             if (_configService != null)
             {

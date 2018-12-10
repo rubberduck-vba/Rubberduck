@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Rubberduck.VBEditor.WindowsApi
 {
-    public static class User32
+    internal static class User32
     {
         #region WinEvents
 
@@ -34,7 +34,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <param name="processId">This is actually an out parameter in the API, but we don't care about it. Should always be IntPtr.Zero.</param>
         /// <returns>Unmanaged thread ID</returns>
         [DllImport("user32.dll")]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr processId);
+        internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, IntPtr processId);
 
         /// <summary>
         /// Retrieves the identifier of the thread that created the specified window and, optionally, 
@@ -45,7 +45,7 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// If this parameter is not NULL, GetWindowThreadProcessId copies the identifier of the process to the variable; otherwise, it does not.</param>
         /// <returns>The return value is the identifier of the thread that created the window.</returns>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+        internal static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
         /// <summary>
         /// Retrieves a handle to the foreground window (the window with which the user is currently working). 
@@ -54,15 +54,15 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <returns>The return value is a handle to the foreground window. 
         /// The foreground window can be NULL in certain circumstances, such as when a window is losing activation.</returns>
         [DllImport("user32.dll")]
-        public static extern IntPtr GetForegroundWindow();
+        internal static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
-        public static extern IntPtr GetActiveWindow();
+        internal static extern IntPtr GetActiveWindow();
 
         [DllImport("user32.dll")]
-        public static extern IntPtr GetFocus();
+        internal static extern IntPtr GetFocus();
 
-        public const int MaxGetClassNameBufferSize = 255;
+        internal const int MaxGetClassNameBufferSize = 255;
 
         /// <summary>
         /// Gets the underlying class name for a window handle.
@@ -72,8 +72,8 @@ namespace Rubberduck.VBEditor.WindowsApi
         /// <param name="lpClassName">Buffer for returning the class name.</param>
         /// <param name="nMaxCount">Buffer size in characters, including the null terminator.</param>
         /// <returns>The length of the returned class name (without the null terminator), zero on error.</returns>
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
+        internal static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
         /// <summary>   Gets the parent window of this item. </summary>
         ///

@@ -84,5 +84,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

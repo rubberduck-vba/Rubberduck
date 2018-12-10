@@ -205,6 +205,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 return activePane.GetQualifiedSelection();
             }
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }
 

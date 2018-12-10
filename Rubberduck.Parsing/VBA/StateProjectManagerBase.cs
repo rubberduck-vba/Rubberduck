@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.VBA
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
 
-        public StateProjectManagerBase(
+        protected StateProjectManagerBase(
             RubberduckParserState state,
             IVBE vbe)
         {

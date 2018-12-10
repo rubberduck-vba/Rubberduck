@@ -64,7 +64,7 @@ namespace RubberduckTests.Mocks
             var compilationsArgumentsCache = new CompilationArgumentsCache(compilationArgumentsProvider);
 
             var path = serializedComProjectsPath ??
-                       Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "TestFiles", "Resolver");
+                       Path.Combine(Path.GetDirectoryName(Assembly.GetAssembly(typeof(MockParser)).Location), "Testfiles", "Resolver");
             var preprocessorErrorListenerFactory = new PreprocessingParseErrorListenerFactory();
             var preprocessorParser = new VBAPreprocessorParser(preprocessorErrorListenerFactory, preprocessorErrorListenerFactory);
             var preprocessor = new VBAPreprocessor(preprocessorParser, compilationsArgumentsCache);
