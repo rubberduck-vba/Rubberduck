@@ -15,8 +15,8 @@ If you like this project and would like to thank its contributors, you are welco
 
 [nextBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/next?svg=true
 [masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
-
-[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/rubberduck-vba/Rubberduck.svg)](http://isitmaintained.com/project/rubberduck-vba/Rubberduck "Percentage of issues still open")
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/Rubberduck-vba/rubberduck "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/Rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/Rubberduck-vba/rubberduck "Percentage of issues still open")
 
 > **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
 > devs@rubberduckvba.com  
