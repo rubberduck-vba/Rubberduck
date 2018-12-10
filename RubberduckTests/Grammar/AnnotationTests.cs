@@ -127,6 +127,15 @@ namespace RubberduckTests.Grammar
         [Category("Grammar")]
         [Category("Annotations")]
         [Test]
+        public void ModuleDescriptionAnnotation_TypeIsModuleDescription()
+        {
+            var annotation = new ModuleDescriptionAnnotation(new QualifiedSelection(), null, null);
+            Assert.AreEqual(AnnotationType.ModuleDescription, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
         public void DefaultMemberAnnotation_TypeIsDefaultMember()
         {
             var annotation = new DefaultMemberAnnotation(new QualifiedSelection(), null, new[] { "param" });
