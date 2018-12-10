@@ -12,7 +12,7 @@ namespace Rubberduck.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -25,441 +25,127 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>R</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>true</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>CodePaneRefactorRenameCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_CodePaneRefactorRenameCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_CodePaneRefactorRenameCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>F</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>true</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>RefactorEncapsulateFieldCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_RefactorEncapsulateFieldCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_RefactorEncapsulateFieldCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>M</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>true</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>RefactorExtractMethodCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_RefactorExtractMethodCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_RefactorExtractMethodCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>C</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>true</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>RefactorMoveCloserToUsageCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_RefactorMoveCloserToUsageCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_RefactorMoveCloserToUsageCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>R</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>false</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>CodeExplorerCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_CodeExplorerCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_CodeExplorerCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>E</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>true</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>ExportAllCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_ExportAllCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_ExportAllCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>T</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>false</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>FindSymbolCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_FindSymbolCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_FindSymbolCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>M</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>false</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>IndentCurrentModuleCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_IndentCurrentModuleCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_IndentCurrentModuleCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>P</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>false</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>IndentCurrentProcedureCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_IndentCurrentProcedureCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_IndentCurrentProcedureCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>I</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>true</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>InspectionResultsCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_InspectionResultsCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_InspectionResultsCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>`</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>false</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>ReparseCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_ReparseCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_ReparseCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Key1>T</Key1>
-            <IsEnabled>true</IsEnabled>
-            <HasShiftModifier>true</HasShiftModifier>
-            <HasAltModifier>false</HasAltModifier>
-            <HasCtrlModifier>true</HasCtrlModifier>
-            <CommandTypeName>TestExplorerCommand</CommandTypeName>
-          </HotkeySetting>
-        ")]
-        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_TestExplorerCommand {
-            get {
-                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_TestExplorerCommand"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\r\n          <ToDoMarker xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xml" +
-            "ns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"TODO\" />\r\n        ")]
-        public global::Rubberduck.Settings.ToDoMarker ToDoMarker_ToDo {
-            get {
-                return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_ToDo"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\r\n          <ToDoMarker xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xml" +
-            "ns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"NOTE\" />\r\n        ")]
-        public global::Rubberduck.Settings.ToDoMarker ToDoMarker_Note {
-            get {
-                return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_Note"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\r\n          <ToDoMarker xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xml" +
-            "ns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"BUG\" />\r\n        ")]
-        public global::Rubberduck.Settings.ToDoMarker ToDoMarker_Bug {
-            get {
-                return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_Bug"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <WindowSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <CodeExplorerVisibleOnStartup>false</CodeExplorerVisibleOnStartup>
-            <CodeInspectionsVisibleOnStartup>false</CodeInspectionsVisibleOnStartup>
-            <TestExplorerVisibleOnStartup>false</TestExplorerVisibleOnStartup>
-            <TodoExplorerVisibleOnStartup>false</TodoExplorerVisibleOnStartup>
-            <CodeExplorer_SortByName>true</CodeExplorer_SortByName>
-            <CodeExplorer_SortByCodeOrder>false</CodeExplorer_SortByCodeOrder>
-            <CodeExplorer_GroupByType>false</CodeExplorer_GroupByType>
-          </WindowSettings>
-        ")]
-        public global::Rubberduck.Settings.WindowSettings WindowSettings {
-            get {
-                return ((global::Rubberduck.Settings.WindowSettings)(this["WindowSettings"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <UnitTestSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <BindingMode>LateBinding</BindingMode>
-            <AssertMode>StrictAssert</AssertMode>
-            <ModuleInit>true</ModuleInit>
-            <MethodInit>true</MethodInit>
-            <DefaultTestStubInNewModule>false</DefaultTestStubInNewModule>
-          </UnitTestSettings>
-        ")]
-        public global::Rubberduck.Settings.UnitTestSettings UnitTestSettings {
-            get {
-                return ((global::Rubberduck.Settings.UnitTestSettings)(this["UnitTestSettings"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <GeneralSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
-            <Language Code=""en-US"" />
-            <CanShowSplash>true</CanShowSplash>
-            <CanCheckVersion>true</CanCheckVersion>
-            <CompileBeforeParse>true</CompileBeforeParse>
-            <IsSmartIndenterPrompted>false</IsSmartIndenterPrompted>
-            <IsAutoSaveEnabled>false</IsAutoSaveEnabled>
-            <AutoSavePeriod>10</AutoSavePeriod>
-            <UserEditedLogLevel>false</UserEditedLogLevel>
-            <MinimumLogLevel>0</MinimumLogLevel>
-            <EnableExperimentalFeatures />
-          </GeneralSettings>
-        ")]
-        public global::Rubberduck.Settings.GeneralSettings GeneralSettings {
-            get {
-                return ((global::Rubberduck.Settings.GeneralSettings)(this["GeneralSettings"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\r\n          <CodeInspectionSettings xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-i" +
-            "nstance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\r\n            <CodeInspect" +
-            "ions>\r\n              <CodeInspection Name=\"BooleanAssignedInIfElseInspection\" Se" +
-            "verity=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n      " +
-            "        <CodeInspection Name=\"ObsoleteErrorSyntaxInspection\" Severity=\"Suggestio" +
-            "n\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name" +
-            "=\"StopKeywordInspection\" Severity=\"Suggestion\" InspectionType=\"CodeQualityIssues" +
-            "\" />\r\n              <CodeInspection Name=\"UnhandledOnErrorResumeNextInspection\" " +
-            "Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeIns" +
-            "pection Name=\"EmptyStringLiteralInspection\" Severity=\"Warning\" InspectionType=\"L" +
-            "anguageOpportunities\" />\r\n              <CodeInspection Name=\"ImplicitByRefModif" +
-            "ierInspection\" Severity=\"Hint\" InspectionType=\"CodeQualityIssues\" />\r\n          " +
-            "    <CodeInspection Name=\"MissingAttributeInspection\" Severity=\"Warning\" Inspect" +
-            "ionType=\"RubberduckOpportunities\" />\r\n              <CodeInspection Name=\"Functi" +
-            "onReturnValueNotUsedInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIs" +
-            "sues\" />\r\n              <CodeInspection Name=\"IllegalAnnotationInspection\" Sever" +
-            "ity=\"Error\" InspectionType=\"RubberduckOpportunities\" />\r\n              <CodeInsp" +
-            "ection Name=\"RedundantByRefModifierInspection\" Severity=\"DoNotShow\" InspectionTy" +
-            "pe=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"MissingAnnotation" +
-            "ArgumentInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n    " +
-            "          <CodeInspection Name=\"ModuleScopeDimKeywordInspection\" Severity=\"Sugge" +
-            "stion\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection " +
-            "Name=\"MultilineParameterInspection\" Severity=\"Suggestion\" InspectionType=\"Mainta" +
-            "inabilityAndReadabilityIssues\" />\r\n              <CodeInspection Name=\"MultipleD" +
-            "eclarationsInspection\" Severity=\"Warning\" InspectionType=\"MaintainabilityAndRead" +
-            "abilityIssues\" />\r\n              <CodeInspection Name=\"ObsoleteCallStatementInsp" +
-            "ection\" Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n       " +
-            "       <CodeInspection Name=\"ObsoleteCommentSyntaxInspection\" Severity=\"Suggesti" +
-            "on\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Nam" +
-            "e=\"ObsoleteLetStatementInspection\" Severity=\"Suggestion\" InspectionType=\"Languag" +
-            "eOpportunities\" />\r\n              <CodeInspection Name=\"OptionBaseInspection\" Se" +
-            "verity=\"Hint\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n         " +
-            "     <CodeInspection Name=\"RedundantOptionInspection\" Severity=\"Hint\" Inspection" +
-            "Type=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"OptionExpli" +
-            "citInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n         " +
-            "     <CodeInspection Name=\"ProcedureCanBeWrittenAsFunctionInspection\" Severity=\"" +
-            "Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspec" +
-            "tion Name=\"ApplicationWorksheetFunctionInspection\" Severity=\"Suggestion\" Inspect" +
-            "ionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"AssignedByVa" +
-            "lParameterInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n" +
-            "              <CodeInspection Name=\"EmptyModuleInspection\" Severity=\"Hint\" Inspe" +
-            "ctionType=\"MaintainabilityAndReadabilityIssues\" />\r\n              <CodeInspectio" +
-            "n Name=\"LineLabelNotUsedInspection\" Severity=\"Warning\" InspectionType=\"CodeQuali" +
-            "tyIssues\" />\r\n              <CodeInspection Name=\"IntegerDataTypeInspection\" Sev" +
-            "erity=\"Hint\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspectio" +
-            "n Name=\"ShadowedDeclarationInspection\" Severity=\"DoNotShow\" InspectionType=\"Code" +
-            "QualityIssues\" />\r\n              <CodeInspection Name=\"ConstantNotUsedInspection" +
-            "\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeI" +
-            "nspection Name=\"DefaultProjectNameInspection\" Severity=\"Suggestion\" InspectionTy" +
-            "pe=\"MaintainabilityAndReadabilityIssues\" />\r\n              <CodeInspection Name=" +
-            "\"EmptyCaseBlockInspection\" Severity=\"Warning\" InspectionType=\"MaintainabilityAnd" +
-            "ReadabilityIssues\" />\r\n              <CodeInspection Name=\"EmptyDoWhileBlockInsp" +
-            "ection\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadabilityIssue" +
-            "s\" />\r\n              <CodeInspection Name=\"EmptyElseBlockInspection\" Severity=\"W" +
-            "arning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n              <" +
-            "CodeInspection Name=\"EmptyForEachBlockInspection\" Severity=\"Warning\" InspectionT" +
-            "ype=\"MaintainabilityAndReadabilityIssues\" />\r\n              <CodeInspection Name" +
-            "=\"EmptyForLoopBlockInspection\" Severity=\"Warning\" InspectionType=\"Maintainabilit" +
-            "yAndReadabilityIssues\" />\r\n              <CodeInspection Name=\"EmptyIfBlockInspe" +
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<CodeInspectionSettings xmlns:xsi=\"http:" +
+            "//www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchem" +
+            "a\">\r\n  <CodeInspections>\r\n    <CodeInspection Name=\"BooleanAssignedInIfElseInspe" +
             "ction\" Severity=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" /" +
-            ">\r\n              <CodeInspection Name=\"EmptyWhileWendBlockInspection\" Severity=\"" +
-            "Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n              " +
-            "<CodeInspection Name=\"EncapsulatePublicFieldInspection\" Severity=\"Suggestion\" In" +
-            "spectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n              <CodeInspec" +
-            "tion Name=\"HostSpecificExpressionInspection\" Severity=\"Warning\" InspectionType=\"" +
-            "LanguageOpportunities\" />\r\n              <CodeInspection Name=\"HungarianNotation" +
-            "Inspection\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadabilityI" +
-            "ssues\" />\r\n              <CodeInspection Name=\"ImplicitActiveSheetReferenceInspe" +
-            "ction\" Severity=\"Warning\" InspectionType=\"LanguageOpportunities\" />\r\n           " +
-            "   <CodeInspection Name=\"ImplicitActiveWorkbookReferenceInspection\" Severity=\"Wa" +
-            "rning\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection " +
-            "Name=\"ImplicitDefaultMemberAssignmentInspection\" Severity=\"Suggestion\" Inspectio" +
-            "nType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"ImplicitPu" +
-            "blicMemberInspection\" Severity=\"Hint\" InspectionType=\"LanguageOpportunities\" />\r" +
-            "\n              <CodeInspection Name=\"ImplicitVariantReturnTypeInspection\" Severi" +
-            "ty=\"Hint\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspecti" +
-            "on Name=\"MemberNotOnInterfaceInspection\" Severity=\"Warning\" InspectionType=\"Code" +
-            "QualityIssues\" />\r\n              <CodeInspection Name=\"MoveFieldCloserToUsageIns" +
-            "pection\" Severity=\"Hint\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />" +
-            "\r\n              <CodeInspection Name=\"NonReturningFunctionInspection\" Severity=\"" +
-            "Error\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name" +
-            "=\"ObjectVariableNotSetInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIs" +
-            "sues\" />\r\n              <CodeInspection Name=\"ObsoleteGlobalInspection\" Severity" +
-            "=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInsp" +
-            "ection Name=\"ObsoleteTypeHintInspection\" Severity=\"Suggestion\" InspectionType=\"L" +
-            "anguageOpportunities\" />\r\n              <CodeInspection Name=\"ParameterCanBeByVa" +
-            "lInspection\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadability" +
-            "Issues\" />\r\n              <CodeInspection Name=\"ParameterNotUsedInspection\" Seve" +
-            "rity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspect" +
-            "ion Name=\"ProcedureNotUsedInspection\" Severity=\"Warning\" InspectionType=\"CodeQua" +
-            "lityIssues\" />\r\n              <CodeInspection Name=\"SelfAssignedDeclarationInspe" +
-            "ction\" Severity=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n            " +
-            "  <CodeInspection Name=\"UnassignedVariableUsageInspection\" Severity=\"Error\" Insp" +
-            "ectionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"Undeclare" +
-            "dVariableInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n   " +
-            "           <CodeInspection Name=\"UntypedFunctionUsageInspection\" Severity=\"Hint\"" +
-            " InspectionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"" +
-            "UseMeaningfulNameInspection\" Severity=\"Suggestion\" InspectionType=\"Maintainabili" +
-            "tyAndReadabilityIssues\" />\r\n              <CodeInspection Name=\"VariableNotAssig" +
-            "nedInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n       " +
-            "       <CodeInspection Name=\"VariableNotUsedInspection\" Severity=\"Warning\" Inspe" +
-            "ctionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"VariableTy" +
-            "peNotDeclaredInspection\" Severity=\"Warning\" InspectionType=\"LanguageOpportunitie" +
-            "s\" />\r\n              <CodeInspection Name=\"WriteOnlyPropertyInspection\" Severity" +
-            "=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspecti" +
-            "on Name=\"DefTypeStatementInspection\" Severity=\"Suggestion\" InspectionType=\"Langu" +
-            "ageOpportunities\" />\r\n              <CodeInspection Name=\"StepIsNotSpecifiedInsp" +
-            "ection\" Severity=\"DoNotShow\" InspectionType=\"LanguageOpportunities\" />\r\n        " +
-            "      <CodeInspection Name=\"StepOneIsRedundantInspection\" Severity=\"Hint\" Inspec" +
-            "tionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"SheetAc" +
-            "cessedUsingStringInspection\" Severity=\"Suggestion\" InspectionType=\"LanguageOppor" +
-            "tunities\" />\r\n              <CodeInspection Name=\"ObsoleteMemberUsageInspection\"" +
-            " Severity=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n   " +
-            "           <CodeInspection Name=\"ObsoleteCallingConventionInspection\" Severity=\"" +
-            "Warning\" InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Na" +
-            "me=\"DuplicatedAnnotationInspection\" Severity=\"Error\" InspectionType=\"RubberduckO" +
-            "pportunities\" />\r\n              <CodeInspection Name=\"ModuleWithoutFolderInspect" +
-            "ion\" Severity=\"Suggestion\" InspectionType=\"RubberduckOpportunities\" />\r\n        " +
-            "      <CodeInspection Name=\"OnLocalErrorInspection\" Severity=\"Suggestion\" Inspec" +
-            "tionType=\"LanguageOpportunities\" />\r\n              <CodeInspection Name=\"IsMissi" +
-            "ngOnInappropriateArgumentInspection\" Severity=\"Warning\" InspectionType=\"CodeQual" +
-            "ityIssues\" />\r\n              <CodeInspection Name=\"IsMissingWithNonArgumentParam" +
-            "eterInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n      " +
-            "        <CodeInspection Name=\"AssignmentNotUsedInspection\" Severity=\"Suggestion\"" +
-            " InspectionType=\"CodeQualityIssues\" />\r\n              <CodeInspection Name=\"Unde" +
-            "rscoreInPublicClassModuleMemberInspection\" Severity=\"Warning\" InspectionType=\"Co" +
-            "deQualityIssues\" />\r\n              <CodeInspection Name=\"ExcelUdfNameIsValidCell" +
-            "ReferenceInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n " +
-            "           </CodeInspections>\r\n            <WhitelistedIdentifiers />\r\n         " +
-            "   <RunInspectionsOnSuccessfulParse>true</RunInspectionsOnSuccessfulParse>\r\n    " +
-            "      </CodeInspectionSettings>\r\n        ")]
+            ">\r\n    <CodeInspection Name=\"ObsoleteErrorSyntaxInspection\" Severity=\"Suggestion" +
+            "\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"StopKeywo" +
+            "rdInspection\" Severity=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n    <" +
+            "CodeInspection Name=\"UnhandledOnErrorResumeNextInspection\" Severity=\"Warning\" In" +
+            "spectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"EmptyStringLitera" +
+            "lInspection\" Severity=\"Warning\" InspectionType=\"LanguageOpportunities\" />\r\n    <" +
+            "CodeInspection Name=\"ImplicitByRefModifierInspection\" Severity=\"Hint\" Inspection" +
+            "Type=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"FunctionReturnValueNotUse" +
+            "dInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <Code" +
+            "Inspection Name=\"IllegalAnnotationInspection\" Severity=\"Error\" InspectionType=\"R" +
+            "ubberduckOpportunities\" />\r\n    <CodeInspection Name=\"RedundantByRefModifierInsp" +
+            "ection\" Severity=\"DoNotShow\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeIns" +
+            "pection Name=\"MissingAttributeInspection\" Severity=\"DoNotShow\" InspectionType=\"R" +
+            "ubberduckOpportunities\" />\r\n    <CodeInspection Name=\"MissingAnnotationArgumentI" +
+            "nspection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInsp" +
+            "ection Name=\"ModuleScopeDimKeywordInspection\" Severity=\"Suggestion\" InspectionTy" +
+            "pe=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"MultilineParameterInspe" +
+            "ction\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadabilityIssues" +
+            "\" />\r\n    <CodeInspection Name=\"MultipleDeclarationsInspection\" Severity=\"Warnin" +
+            "g\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspection " +
+            "Name=\"ObsoleteCallStatementInspection\" Severity=\"Suggestion\" InspectionType=\"Lan" +
+            "guageOpportunities\" />\r\n    <CodeInspection Name=\"ObsoleteCommentSyntaxInspectio" +
+            "n\" Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeIns" +
+            "pection Name=\"ObsoleteLetStatementInspection\" Severity=\"Suggestion\" InspectionTy" +
+            "pe=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"OptionBaseInspection\" S" +
+            "everity=\"Hint\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <Cod" +
+            "eInspection Name=\"RedundantOptionInspection\" Severity=\"Hint\" InspectionType=\"Lan" +
+            "guageOpportunities\" />\r\n    <CodeInspection Name=\"OptionExplicitInspection\" Seve" +
+            "rity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"Pr" +
+            "ocedureCanBeWrittenAsFunctionInspection\" Severity=\"Suggestion\" InspectionType=\"L" +
+            "anguageOpportunities\" />\r\n    <CodeInspection Name=\"ApplicationWorksheetFunction" +
+            "Inspection\" Severity=\"Suggestion\" InspectionType=\"CodeQualityIssues\" />\r\n    <Co" +
+            "deInspection Name=\"AssignedByValParameterInspection\" Severity=\"Warning\" Inspecti" +
+            "onType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"EmptyModuleInspection\" " +
+            "Severity=\"Hint\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <Co" +
+            "deInspection Name=\"LineLabelNotUsedInspection\" Severity=\"Warning\" InspectionType" +
+            "=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"IntegerDataTypeInspection\" Se" +
+            "verity=\"Hint\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"S" +
+            "hadowedDeclarationInspection\" Severity=\"DoNotShow\" InspectionType=\"CodeQualityIs" +
+            "sues\" />\r\n    <CodeInspection Name=\"ConstantNotUsedInspection\" Severity=\"Warning" +
+            "\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"DefaultProjec" +
+            "tNameInspection\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadabi" +
+            "lityIssues\" />\r\n    <CodeInspection Name=\"EmptyCaseBlockInspection\" Severity=\"Wa" +
+            "rning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspect" +
+            "ion Name=\"EmptyDoWhileBlockInspection\" Severity=\"Suggestion\" InspectionType=\"Mai" +
+            "ntainabilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"EmptyElseBlockIn" +
+            "spection\" Severity=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues" +
+            "\" />\r\n    <CodeInspection Name=\"EmptyForEachBlockInspection\" Severity=\"Warning\" " +
+            "InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspection Nam" +
+            "e=\"EmptyForLoopBlockInspection\" Severity=\"Warning\" InspectionType=\"Maintainabili" +
+            "tyAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"EmptyIfBlockInspection\" Se" +
+            "verity=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <C" +
+            "odeInspection Name=\"EmptyWhileWendBlockInspection\" Severity=\"Warning\" Inspection" +
+            "Type=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"Encapsu" +
+            "latePublicFieldInspection\" Severity=\"Suggestion\" InspectionType=\"Maintainability" +
+            "AndReadabilityIssues\" />\r\n    <CodeInspection Name=\"HostSpecificExpressionInspec" +
+            "tion\" Severity=\"Warning\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeIns" +
+            "pection Name=\"HungarianNotationInspection\" Severity=\"Suggestion\" InspectionType=" +
+            "\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"ImplicitActi" +
+            "veSheetReferenceInspection\" Severity=\"Warning\" InspectionType=\"LanguageOpportuni" +
+            "ties\" />\r\n    <CodeInspection Name=\"ImplicitActiveWorkbookReferenceInspection\" S" +
+            "everity=\"Warning\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection" +
+            " Name=\"ImplicitDefaultMemberAssignmentInspection\" Severity=\"Suggestion\" Inspecti" +
+            "onType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"ImplicitPublicMembe" +
+            "rInspection\" Severity=\"Hint\" InspectionType=\"LanguageOpportunities\" />\r\n    <Cod" +
+            "eInspection Name=\"ImplicitVariantReturnTypeInspection\" Severity=\"Hint\" Inspectio" +
+            "nType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"MemberNotOnInterface" +
+            "Inspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeI" +
+            "nspection Name=\"MoveFieldCloserToUsageInspection\" Severity=\"Hint\" InspectionType" +
+            "=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"NonReturnin" +
+            "gFunctionInspection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n   " +
+            " <CodeInspection Name=\"ObjectVariableNotSetInspection\" Severity=\"Error\" Inspecti" +
+            "onType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"ObsoleteGlobalInspectio" +
+            "n\" Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeIns" +
+            "pection Name=\"ObsoleteTypeHintInspection\" Severity=\"Suggestion\" InspectionType=\"" +
+            "LanguageOpportunities\" />\r\n    <CodeInspection Name=\"ParameterCanBeByValInspecti" +
+            "on\" Severity=\"Suggestion\" InspectionType=\"MaintainabilityAndReadabilityIssues\" /" +
+            ">\r\n    <CodeInspection Name=\"ParameterNotUsedInspection\" Severity=\"Warning\" Insp" +
+            "ectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"ProcedureNotUsedIns" +
+            "pection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInsp" +
+            "ection Name=\"SelfAssignedDeclarationInspection\" Severity=\"Suggestion\" Inspection" +
+            "Type=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"UnassignedVariableUsageIn" +
+            "spection\" Severity=\"Error\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspe" +
+            "ction Name=\"UndeclaredVariableInspection\" Severity=\"Error\" InspectionType=\"CodeQ" +
+            "ualityIssues\" />\r\n    <CodeInspection Name=\"UntypedFunctionUsageInspection\" Seve" +
+            "rity=\"Hint\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=" +
+            "\"UseMeaningfulNameInspection\" Severity=\"Suggestion\" InspectionType=\"Maintainabil" +
+            "ityAndReadabilityIssues\" />\r\n    <CodeInspection Name=\"VariableNotAssignedInspec" +
+            "tion\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspect" +
+            "ion Name=\"VariableNotUsedInspection\" Severity=\"Warning\" InspectionType=\"CodeQual" +
+            "ityIssues\" />\r\n    <CodeInspection Name=\"VariableTypeNotDeclaredInspection\" Seve" +
+            "rity=\"Warning\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Na" +
+            "me=\"WriteOnlyPropertyInspection\" Severity=\"Suggestion\" InspectionType=\"CodeQuali" +
+            "tyIssues\" />\r\n    <CodeInspection Name=\"DefTypeStatementInspection\" Severity=\"Su" +
+            "ggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"S" +
+            "tepIsNotSpecifiedInspection\" Severity=\"DoNotShow\" InspectionType=\"LanguageOpport" +
+            "unities\" />\r\n    <CodeInspection Name=\"StepOneIsRedundantInspection\" Severity=\"H" +
+            "int\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeInspection Name=\"SheetA" +
+            "ccessedUsingStringInspection\" Severity=\"Suggestion\" InspectionType=\"LanguageOppo" +
+            "rtunities\" />\r\n    <CodeInspection Name=\"ObsoleteMemberUsageInspection\" Severity" +
+            "=\"Warning\" InspectionType=\"MaintainabilityAndReadabilityIssues\" />\r\n    <CodeIns" +
+            "pection Name=\"ObsoleteCallingConventionInspection\" Severity=\"Warning\" Inspection" +
+            "Type=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"DuplicatedAnnotationInspe" +
+            "ction\" Severity=\"Error\" InspectionType=\"RubberduckOpportunities\" />\r\n    <CodeIn" +
+            "spection Name=\"ModuleWithoutFolderInspection\" Severity=\"Suggestion\" InspectionTy" +
+            "pe=\"RubberduckOpportunities\" />\r\n    <CodeInspection Name=\"OnLocalErrorInspectio" +
+            "n\" Severity=\"Suggestion\" InspectionType=\"LanguageOpportunities\" />\r\n    <CodeIns" +
+            "pection Name=\"IsMissingOnInappropriateArgumentInspection\" Severity=\"Warning\" Ins" +
+            "pectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"IsMissingWithNonAr" +
+            "gumentParameterInspection\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\"" +
+            " />\r\n    <CodeInspection Name=\"AssignmentNotUsedInspection\" Severity=\"Suggestion" +
+            "\" InspectionType=\"CodeQualityIssues\" />\r\n    <CodeInspection Name=\"UnderscoreInP" +
+            "ublicClassModuleMemberInspection\" Severity=\"Warning\" InspectionType=\"CodeQuality" +
+            "Issues\" />\r\n    <CodeInspection Name=\"ExcelUdfNameIsValidCellReferenceInspection" +
+            "\" Severity=\"Warning\" InspectionType=\"CodeQualityIssues\" />\r\n  </CodeInspections>" +
+            "\r\n  <WhitelistedIdentifiers />\r\n  <RunInspectionsOnSuccessfulParse>true</RunInsp" +
+            "ectionsOnSuccessfulParse>\r\n</CodeInspectionSettings>")]
         public global::Rubberduck.Settings.CodeInspectionSettings CodeInspectionSettings {
             get {
                 return ((global::Rubberduck.Settings.CodeInspectionSettings)(this["CodeInspectionSettings"]));
@@ -468,16 +154,308 @@ namespace Rubberduck.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute(@"
-          <AutoCompleteSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" IsEnabled=""false"">
-            <SmartConcat IsEnabled=""false"">
-              <ConcatVbNewLineModifier>None</ConcatVbNewLineModifier>
-              <ConcatMaxLines>25</ConcatMaxLines>
-            </SmartConcat>
-            <SelfClosingPairs IsEnabled=""false"" />
-            <BlockCompletion IsEnabled=""false"" CompleteOnEnter=""false"" CompleteOnTab=""false"" />
-          </AutoCompleteSettings>
-        ")]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>R</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>true</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>CodePaneRefactorRenameCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_CodePaneRefactorRenameCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_CodePaneRefactorRenameCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>F</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>true</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>RefactorEncapsulateFieldCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_RefactorEncapsulateFieldCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_RefactorEncapsulateFieldCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>M</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>true</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>RefactorExtractMethodCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_RefactorExtractMethodCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_RefactorExtractMethodCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>C</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>true</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>RefactorMoveCloserToUsageCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_RefactorMoveCloserToUsageCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_RefactorMoveCloserToUsageCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>R</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>false</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>CodeExplorerCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_CodeExplorerCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_CodeExplorerCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>E</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>true</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>ExportAllCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_ExportAllCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_ExportAllCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>T</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>false</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>FindSymbolCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_FindSymbolCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_FindSymbolCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>M</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>false</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>IndentCurrentModuleCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_IndentCurrentModuleCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_IndentCurrentModuleCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>P</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>false</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>IndentCurrentProcedureCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_IndentCurrentProcedureCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_IndentCurrentProcedureCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>I</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>true</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>InspectionResultsCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_InspectionResultsCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_InspectionResultsCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>`</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>false</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>ReparseCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_ReparseCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_ReparseCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<HotkeySetting xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Key1>T</Key1>
+  <IsEnabled>true</IsEnabled>
+  <HasShiftModifier>true</HasShiftModifier>
+  <HasAltModifier>false</HasAltModifier>
+  <HasCtrlModifier>true</HasCtrlModifier>
+  <CommandTypeName>TestExplorerCommand</CommandTypeName>
+</HotkeySetting>")]
+        public global::Rubberduck.Settings.HotkeySetting DefaultHotkey_TestExplorerCommand {
+            get {
+                return ((global::Rubberduck.Settings.HotkeySetting)(this["DefaultHotkey_TestExplorerCommand"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoMarker xmlns:xsi=\"http://www.w3.org" +
+            "/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"TOD" +
+            "O\" />")]
+        public global::Rubberduck.Settings.ToDoMarker ToDoMarker_ToDo {
+            get {
+                return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_ToDo"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoMarker xmlns:xsi=\"http://www.w3.org" +
+            "/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"NOT" +
+            "E\" />")]
+        public global::Rubberduck.Settings.ToDoMarker ToDoMarker_Note {
+            get {
+                return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_Note"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ToDoMarker xmlns:xsi=\"http://www.w3.org" +
+            "/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" Text=\"BUG" +
+            "\" />")]
+        public global::Rubberduck.Settings.ToDoMarker ToDoMarker_Bug {
+            get {
+                return ((global::Rubberduck.Settings.ToDoMarker)(this["ToDoMarker_Bug"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<WindowSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <CodeExplorerVisibleOnStartup>false</CodeExplorerVisibleOnStartup>
+  <CodeInspectionsVisibleOnStartup>false</CodeInspectionsVisibleOnStartup>
+  <TestExplorerVisibleOnStartup>false</TestExplorerVisibleOnStartup>
+  <TodoExplorerVisibleOnStartup>false</TodoExplorerVisibleOnStartup>
+  <CodeExplorer_SortByName>true</CodeExplorer_SortByName>
+  <CodeExplorer_SortByCodeOrder>false</CodeExplorer_SortByCodeOrder>
+  <CodeExplorer_GroupByType>false</CodeExplorer_GroupByType>
+</WindowSettings>")]
+        public global::Rubberduck.Settings.WindowSettings WindowSettings {
+            get {
+                return ((global::Rubberduck.Settings.WindowSettings)(this["WindowSettings"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<UnitTestSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <BindingMode>LateBinding</BindingMode>
+  <AssertMode>StrictAssert</AssertMode>
+  <ModuleInit>true</ModuleInit>
+  <MethodInit>true</MethodInit>
+  <DefaultTestStubInNewModule>false</DefaultTestStubInNewModule>
+</UnitTestSettings>")]
+        public global::Rubberduck.Settings.UnitTestSettings UnitTestSettings {
+            get {
+                return ((global::Rubberduck.Settings.UnitTestSettings)(this["UnitTestSettings"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<GeneralSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"">
+  <Language Code=""en-US"" />
+  <CanShowSplash>true</CanShowSplash>
+  <CanCheckVersion>true</CanCheckVersion>
+  <CompileBeforeParse>true</CompileBeforeParse>
+  <IsSmartIndenterPrompted>false</IsSmartIndenterPrompted>
+  <IsAutoSaveEnabled>false</IsAutoSaveEnabled>
+  <AutoSavePeriod>10</AutoSavePeriod>
+  <UserEditedLogLevel>false</UserEditedLogLevel>
+  <MinimumLogLevel>0</MinimumLogLevel>
+  <SetDpiUnaware>false</SetDpiUnaware>
+  <EnableExperimentalFeatures />
+</GeneralSettings>")]
+        public global::Rubberduck.Settings.GeneralSettings GeneralSettings {
+            get {
+                return ((global::Rubberduck.Settings.GeneralSettings)(this["GeneralSettings"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute(@"<?xml version=""1.0"" encoding=""utf-16""?>
+<AutoCompleteSettings xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" IsEnabled=""false"">
+  <SmartConcat IsEnabled=""false"">
+    <ConcatVbNewLineModifier>None</ConcatVbNewLineModifier>
+    <ConcatMaxLines>25</ConcatMaxLines>
+  </SmartConcat>
+  <SelfClosingPairs IsEnabled=""false"" />
+  <BlockCompletion IsEnabled=""false"" CompleteOnEnter=""false"" CompleteOnTab=""false"" />
+</AutoCompleteSettings>")]
         public global::Rubberduck.Settings.AutoCompleteSettings AutoCompleteSettings {
             get {
                 return ((global::Rubberduck.Settings.AutoCompleteSettings)(this["AutoCompleteSettings"]));

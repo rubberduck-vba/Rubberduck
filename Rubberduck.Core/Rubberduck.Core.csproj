@@ -110,6 +110,13 @@
       <DependentUpon>%(Filename).cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
   <!-- END WINDOWS FORMS WORKAROUND SECTION -->
 
 </Project>
