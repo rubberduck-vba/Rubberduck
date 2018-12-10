@@ -1348,7 +1348,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>Type Libraries (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
   </data>
   <data name="References_Caption" xml:space="preserve">
-    <value>Add/Remove References</value>
+    <value>Add/Remove References...</value>
   </data>
   <data name="References_Locale" xml:space="preserve">
     <value>Locale:</value>

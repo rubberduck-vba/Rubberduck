@@ -285,6 +285,7 @@
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Rename}"
                                   Command="{Binding RenameCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
+                            <Separator />
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Caption}"
                                       Command="{Binding AddRemoveReferencesCommand}"
                                       CommandParameter="{Binding SelectedItem}">
@@ -292,8 +293,6 @@
                                     <Image Source="{StaticResource AddRemoveReferencesImage}" />
                                 </MenuItem.Icon>
                             </MenuItem>
-                            <Separator />
-                            <Separator />
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SetAsStartupProject}"
                                       Command="{Binding SetAsStartupProjectCommand}"
                                       CommandParameter="{Binding SelectedItem}"  

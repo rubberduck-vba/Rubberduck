@@ -501,7 +501,8 @@ namespace Rubberduck.Root
                 typeof(ProjectExplorerRefactorRenameCommandMenuItem),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
-                typeof(FindAllImplementationsCommandMenuItem)
+                typeof(FindAllImplementationsCommandMenuItem),
+                typeof(ProjectExplorerAddRemoveReferencesCommandMenuItem)
             };
         }
 
@@ -605,7 +606,8 @@ namespace Rubberduck.Root
                 typeof(RegexAssistantCommandMenuItem),
                 typeof(ToDoExplorerCommandMenuItem),
                 typeof(CodeMetricsCommandMenuItem),
-                typeof(ExportAllCommandMenuItem)
+                typeof(ExportAllCommandMenuItem),
+                typeof(ToolMenuAddRemoveReferencesCommandMenuItem)
             };
             
             return items.ToArray();
