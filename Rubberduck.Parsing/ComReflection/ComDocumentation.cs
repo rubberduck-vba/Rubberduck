@@ -7,6 +7,7 @@ namespace Rubberduck.Parsing.ComReflection
     public class ComDocumentation
     {
         public const int LibraryIndex = -1;
+
         [DataMember(IsRequired = true)]
         public string Name { get; private set; }
 

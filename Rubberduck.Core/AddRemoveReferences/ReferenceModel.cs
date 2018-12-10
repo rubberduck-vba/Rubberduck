@@ -83,7 +83,7 @@ namespace Rubberduck.AddRemoveReferences
 
         public ReferenceModel(ITypeLib reference) : this()
         {
-            var documentation = new ComDocumentation(reference, -1);
+            var documentation = new ComDocumentation(reference, ComDocumentation.LibraryIndex);
             Name = documentation.Name;
             Description = documentation.DocString;
 
@@ -111,6 +111,7 @@ namespace Rubberduck.AddRemoveReferences
             {
                 // Yeah, that's probably busted.
                 IsBroken = true;
+                return;
             }
             
             IsBroken = broken;

@@ -28,7 +28,7 @@ namespace Rubberduck.Settings
                 RecentReferencesTracked = 20
             };
 
-            var version = Assembly.GetEntryAssembly().GetName().Version;
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
             defaults.PinReference(new ReferenceInfo(new Guid(RubberduckGuid.RubberduckTypeLibGuid), string.Empty, string.Empty, version.Major, version.Minor));
             defaults.PinReference(new ReferenceInfo(new Guid(RubberduckGuid.RubberduckApiTypeLibGuid), string.Empty, string.Empty, version.Major, version.Minor));
 

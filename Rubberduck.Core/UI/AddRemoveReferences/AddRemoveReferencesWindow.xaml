@@ -23,6 +23,7 @@
         <BitmapImage x:Key="RemoveIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-180.png" />
 
         <local:ReferenceStatusImageSourceConverter x:Key="StatusToIcon" />
+        <local:PriorityButtonVisibilityConverter x:Key="PriorityButtonVisibility" />
         <converters:RemainingWidthConverter x:Key="RemainingWidth" />
 
         <Style x:Key="DialogButtonStyle" TargetType="Button">
@@ -136,7 +137,6 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
@@ -174,42 +174,51 @@
                             </TabItem.Header>
                         </TabItem>
                     </TabControl>
-                    <Border Grid.Row="1"
-                                    Background="{x:Static SystemColors.ControlBrush}"
-                                    BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" 
-                                    BorderThickness="1" 
-                                    Margin="10,10,10,0" 
-                                    Padding="2">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="20" />
-                                <ColumnDefinition Width="20" />
-                            </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0">
-                                <TextBox.Style>
-                                    <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource PlaceHolder}">
-                                        <Setter Property="Height" Value="20"></Setter>
-                                        <Setter Property="Tag" Value="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_SearchPlaceholder}" />
-                                        <Setter Property="Text" Value="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
-                            <Border Grid.Column="1" Margin="2">
-                                <Image Source="{StaticResource SearchIcon}" />
-                            </Border>
-                            <Button Grid.Column="2" Command="{Binding BrowseCommand}">
-                                <Image Margin="2,0" Source="{StaticResource BrowseIcon}" />
-                            </Button>
-                        </Grid>
-                    </Border>
-                    <Grid Grid.Row="2" Margin="10,10,10,5">
+                    <Button Grid.Row="0" Height="24" Background="{x:Static SystemColors.ControlBrush}" Margin="0,0,10,0"
+                            BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" Width="100" HorizontalAlignment="Right"
+                            Command="{Binding BrowseCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Margin="0,0,5,0" Height="16" Source="{StaticResource BrowseIcon}" />
+                            <TextBlock Background="Transparent" Text="Browse..."></TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Grid Grid.Row="1" Margin="10,10,10,5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="50" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <Border Grid.Row="0" Grid.Column="0"
+                                Background="{x:Static SystemColors.ControlBrush}"
+                                BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" 
+                                BorderThickness="1" 
+                                Margin="0,5" 
+                                Padding="2">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="20" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0">
+                                    <TextBox.Style>
+                                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource PlaceHolder}">
+                                            <Setter Property="Height" Value="20" />
+                                            <Setter Property="Width" Value="Auto" />
+                                            <Setter Property="Tag" Value="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_SearchPlaceholder}" />
+                                            <Setter Property="Text" Value="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                                <Border Grid.Column="1" Margin="2" Width="16" Height="16">
+                                    <Image Source="{StaticResource SearchIcon}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Row="1" Grid.Column="0">
                             <ListView Name="LibrarySelect" SelectedItem="{Binding SelectedLibrary, Mode=TwoWay}" ItemsSource="{Binding AvailableReferences}" HorizontalContentAlignment="Stretch">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
@@ -243,7 +252,7 @@
                                 </ListView.ItemTemplate>
                             </ListView>
                         </Border>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
                             <Button Command="{Binding AddCommand}" Width="40" Height="20" Padding="0" Margin="0,1">
                                 <Image Margin="5,0" Source="{StaticResource AddIcon}" />
                             </Button>
@@ -251,7 +260,7 @@
                                 <Image Margin="5,0" Source="{StaticResource RemoveIcon}" />
                             </Button>
                         </StackPanel>
-                        <Border Grid.Column="2">
+                        <Border Grid.Row="1" Grid.Column="2">
                             <ListView Name="ProjectSelect" SelectedItem="{Binding SelectedReference, Mode=TwoWay}" ItemsSource="{Binding ProjectReferences}" HorizontalContentAlignment="Stretch">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
@@ -290,7 +299,17 @@
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <MultiBinding Converter="{StaticResource PriorityButtonVisibility}" ConverterParameter="Up">
+                                                                        <MultiBinding.Bindings>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="IsSelected" />
+                                                                            <Binding ElementName="ProjectSelect" Path="Items.Count"/>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="DataContext"/>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}" Path="DataContext.BuiltInReferenceCount"/>
+                                                                        </MultiBinding.Bindings>
+                                                                    </MultiBinding>
+                                                                </DataTrigger.Binding>
                                                                 <Setter Property="Visibility" Value="Visible"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -306,7 +325,17 @@
                                                     <Style TargetType="{x:Type Button}">
                                                         <Setter Property="Visibility" Value="Collapsed"/>
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}},Path=IsSelected}" Value="True">
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <MultiBinding Converter="{StaticResource PriorityButtonVisibility}" ConverterParameter="Down">
+                                                                        <MultiBinding.Bindings>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="IsSelected" />
+                                                                            <Binding ElementName="ProjectSelect" Path="Items.Count"/>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="DataContext"/>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}" Path="DataContext.BuiltInReferenceCount"/>
+                                                                        </MultiBinding.Bindings>
+                                                                    </MultiBinding>
+                                                                </DataTrigger.Binding>
                                                                 <Setter Property="Visibility" Value="Visible"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -320,7 +349,7 @@
                             </ListView>
                         </Border>
                     </Grid>
-                    <Border Style="{StaticResource BorderStyle}" Grid.Row="3" Margin="10,0,10,0">
+                    <Border Style="{StaticResource BorderStyle}" Grid.Row="2" Margin="10,0,10,0">
                         <Border Style="{StaticResource BorderStyle}">
                             <Grid>
                                 <Grid.RowDefinitions>

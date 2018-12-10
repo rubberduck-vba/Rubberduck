@@ -92,6 +92,8 @@ namespace Rubberduck.UI.AddRemoveReferences
 
             _clean = new List<(int?, ReferenceInfo)>(_project.Select(reference => (reference.Priority, reference.ToReferenceInfo())));
 
+            BuiltInReferenceCount = _project.Count(reference => reference.IsBuiltIn);
+
             AddCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteAddCommand);
             RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand);
             BrowseCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteBrowseCommand);
@@ -108,6 +110,8 @@ namespace Rubberduck.UI.AddRemoveReferences
         public IAddRemoveReferencesModel Model { get; set; }
 
         public bool ProjectsVisible => HostHasProjects;
+
+        public int BuiltInReferenceCount { get; }
 
         public ICommand AddCommand { get; }
 
