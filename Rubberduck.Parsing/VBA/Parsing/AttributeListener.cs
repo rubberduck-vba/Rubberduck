@@ -171,13 +171,6 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
         private static void AddOrUpdateAttribute(Attributes attributes, string attributeName, VBAParser.AttributeStmtContext context)
         {
-            var attribute = attributes.SingleOrDefault(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase));
-            if (attribute != null)
-            {
-                attribute.AddContext(context);
-                return;
-            }
-
             attributes.Add(new AttributeNode(context));
         }
     }

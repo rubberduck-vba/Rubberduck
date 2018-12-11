@@ -4,6 +4,7 @@ using System.Linq;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -22,44 +23,23 @@ namespace Rubberduck.Parsing.Symbols
     public class AttributeNode : IEquatable<AttributeNode>
     {
         private readonly IList<string> _values;
-        private readonly HashSet<VBAParser.AttributeStmtContext> _contexts = new HashSet<VBAParser.AttributeStmtContext>();
 
         public AttributeNode(VBAParser.AttributeStmtContext context)
         {
-            _contexts.Add(context);
+            Context = context;
             Name = context?.attributeName().GetText() ?? string.Empty;
             _values = context?.attributeValue().Select(a => a.GetText()).ToList() ?? new List<string>();
         }
 
-        public AttributeNode(string name, IEnumerable<string> values)
+        public AttributeNode(string attributeName, IEnumerable<string> values)
         {
-            Name = name;
+            Name = attributeName;
             _values = values.ToList();
         }
 
-        public IReadOnlyCollection<VBAParser.AttributeStmtContext> Contexts => _contexts;
+        public VBAParser.AttributeStmtContext Context { get; }
 
         public string Name { get; }
-    
-        public void AddValue(string value)
-        {
-            _values.Add(value);
-        }
-
-        public void AddContext(VBAParser.AttributeStmtContext context)
-        {
-            if (context == null || !Name.Equals(context.attributeName().GetText(), StringComparison.OrdinalIgnoreCase))
-            {
-                return;
-            }
-
-            _contexts.Add(context);
-            var values = context.attributeValue().Select(e => e.GetText().Replace("\"", string.Empty)).ToList();
-            foreach (var value in values.Where(v => !HasValue(v)))
-            {
-                AddValue(value);
-            }
-        }
 
         public IReadOnlyCollection<string> Values => _values.AsReadOnly();
 
@@ -70,7 +50,9 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool Equals(AttributeNode other)
         {
-            return other != null && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+            return other != null 
+                   && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) 
+                   && _values.Equals(other.Values);
         }
 
         public override bool Equals(object obj)
@@ -80,7 +62,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public override int GetHashCode()
         {
-            return Name.GetHashCode();
+            return HashCode.Compute(_values.Concat(new []{Name.ToUpperInvariant()}));
         }
     }
 
@@ -236,7 +218,7 @@ namespace Rubberduck.Parsing.Symbols
         /// <summary>
         /// Corresponds to *not* having the TYPEFLAG_FNONEXTENSIBLE flag set (which is the default for VBA).
         /// </summary>
-        public void AddExtensibledClassAttribute()
+        public void AddExtensibleClassAttribute()
         {
             Add(new AttributeNode("VB_Customizable", new[] { "True" }));
         }
@@ -245,6 +227,21 @@ namespace Rubberduck.Parsing.Symbols
         {
             attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Customizable", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
             return attribute != null;
+        }
+
+        public bool HasAttribute(string attribute)
+        {
+            return this.Any(attributeNode => attributeNode.Name.Equals(attribute, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public IEnumerable<AttributeNode> AttributeNodes(string attribute)
+        {
+            return this.Where(attributeNode => attributeNode.Name.Equals(attribute, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public IEnumerable<VBAParser.AttributeStmtContext> AttributeContexts(string attribute)
+        {
+            return this.Where(attributeNode => attributeNode.Name.Equals(attribute, StringComparison.OrdinalIgnoreCase)).Select(node => node.Context);
         }
     }
 }
