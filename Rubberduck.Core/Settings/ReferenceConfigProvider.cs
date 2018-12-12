@@ -29,7 +29,7 @@ namespace Rubberduck.Settings
             
             var settings = Create();
             _listening = settings.AddToRecentOnReferenceEvents;
-            if (_listening)
+            if (_listening && _events != null)
             {
                 _events.ProjectReferenceAdded += ReferenceAddedHandler;
             }
@@ -52,13 +52,13 @@ namespace Rubberduck.Settings
             defaults.PinReference(new ReferenceInfo(new Guid(RubberduckGuid.RubberduckTypeLibGuid), string.Empty, string.Empty, version.Major, version.Minor));
             defaults.PinReference(new ReferenceInfo(new Guid(RubberduckGuid.RubberduckApiTypeLibGuid), string.Empty, string.Empty, version.Major, version.Minor));
 
-            var documents = _environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var documents = _environment?.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if (!string.IsNullOrEmpty(documents))
             {
                 defaults.ProjectPaths.Add(documents);
             }
 
-            var appdata = _environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            var appdata = _environment?.GetFolderPath(Environment.SpecialFolder.ApplicationData);
             if (!string.IsNullOrEmpty(documents))
             {
                 var addins = Path.Combine(appdata, "Microsoft", "AddIns");
@@ -79,13 +79,13 @@ namespace Rubberduck.Settings
 
         public void Save(ReferenceSettings settings)
         {
-            if (_listening && !settings.AddToRecentOnReferenceEvents)
+            if (_listening && _events != null && !settings.AddToRecentOnReferenceEvents)
             {
                 _events.ProjectReferenceAdded -= ReferenceAddedHandler;
                 _listening = false;
             }
 
-            if (_listening && !settings.AddToRecentOnReferenceEvents)
+            if (_listening && _events != null && !settings.AddToRecentOnReferenceEvents)
             {
                 _events.ProjectReferenceAdded += ReferenceAddedHandler;
                 _listening = true;

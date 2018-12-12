@@ -61,13 +61,21 @@ namespace Rubberduck.Settings
             AddToRecentOnReferenceEvents = other.AddToRecentOnReferenceEvents;
             ProjectPaths = new List<string>(other.ProjectPaths);
             other.SerializationPrep(new StreamingContext(StreamingContextStates.All));
-            _recent = other._recent;
-            _pinned = other._pinned;
+            _recent = other._recent.Select(use => new HostUsages(use)).ToList();
+            RecentLibraryReferences = other.RecentLibraryReferences.ToList();
+            _pinned = other._pinned.Select(pin => new HostPins(pin)).ToList();
+            PinnedLibraryReferences = other.PinnedLibraryReferences.ToList();
             DeserializationLoad(new StreamingContext(StreamingContextStates.All));
         }
 
+        private int _tracked;
+
         [DataMember(IsRequired = true)]
-        public int RecentReferencesTracked { get; set; }
+        public int RecentReferencesTracked
+        {
+            get => _tracked;
+            set => _tracked = value < 0 ? 0 : Math.Min(value, RecentTrackingLimit);
+        }
 
         [DataMember(IsRequired = true)]
         public bool FixBrokenReferences { get; set; }
@@ -128,7 +136,8 @@ namespace Rubberduck.Settings
         {
             var use = new ReferenceUsage(reference);
             if (string.IsNullOrEmpty(host))
-            {
+            { 
+                RecentLibraryReferences.RemoveAll(usage => usage.Matches(reference));
                 RecentLibraryReferences.Add(use);
                 RecentLibraryReferences = RecentLibraryReferences
                     .OrderByDescending(usage => usage.Timestamp)
@@ -154,12 +163,20 @@ namespace Rubberduck.Settings
                 .Take(RecentReferencesTracked).ToList();
         }
 
+        // This is so close to damned near impossible that I was tempted to hard code it false, but it's useful for testing.
         public bool Equals(ReferenceSettings other)
         {
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
             if (other is null || 
-                RecentReferencesTracked != other.RecentReferencesTracked || 
-                !PinnedLibraryReferences.OrderBy(_ => _).SequenceEqual(other.PinnedLibraryReferences.OrderBy(_ => _)) ||
-                !RecentLibraryReferences.OrderBy(_ => _).SequenceEqual(other.RecentLibraryReferences.OrderBy(_ => _)))
+                RecentReferencesTracked != other.RecentReferencesTracked ||
+                PinnedLibraryReferences.Count != other.PinnedLibraryReferences.Count ||
+                RecentLibraryReferences.Count != other.RecentLibraryReferences.Count ||
+                PinnedLibraryReferences.Any(pin => !other.PinnedLibraryReferences.Any(lib => lib.Equals(pin))) ||
+                RecentLibraryReferences.Any(recent => !other.RecentLibraryReferences.Any(lib => lib.Equals(recent))))
             {
                 return false;
             }
@@ -167,7 +184,9 @@ namespace Rubberduck.Settings
             foreach (var host in PinnedProjectReferences)
             {
                 if (!other.PinnedProjectReferences.ContainsKey(host.Key) ||
-                    !host.Value.OrderBy(_ => _).SequenceEqual(other.PinnedProjectReferences[host.Key].OrderBy(_ => _)))
+                    !(other.PinnedProjectReferences[host.Key] is List<ReferenceInfo> otherHost) ||
+                    otherHost.Count != host.Value.Count ||
+                    host.Value.Any(pin => !otherHost.Any(lib => lib.Equals(pin))))
                 {
                     return false;
                 }
@@ -176,8 +195,9 @@ namespace Rubberduck.Settings
             foreach (var host in RecentProjectReferences)
             {
                 if (!other.RecentProjectReferences.ContainsKey(host.Key) ||
-                    !host.Value.OrderBy(usage => usage.Timestamp).Select(usage => usage.Reference)
-                        .SequenceEqual(other.RecentProjectReferences[host.Key].OrderBy(usage => usage.Timestamp).Select(usage => usage.Reference)))
+                    !(other.RecentProjectReferences[host.Key] is List<ReferenceUsage> otherHost) ||
+                    otherHost.Count != host.Value.Count ||
+                    host.Value.Any(pin => !otherHost.Any(lib => lib.Reference.Equals(pin.Reference) && lib.Timestamp.Equals(pin.Timestamp))))
                 {
                     return false;
                 }
@@ -188,7 +208,7 @@ namespace Rubberduck.Settings
 
         public List<ReferenceInfo> GetPinnedReferencesForHost(string host)
         {
-            var key = host.ToUpperInvariant();
+            var key = host?.ToUpperInvariant() ?? string.Empty;
             return PinnedLibraryReferences.Union(PinnedProjectReferences.ContainsKey(key)
                 ? PinnedProjectReferences[key].ToList()
                 : new List<ReferenceInfo>()).ToList();
@@ -196,7 +216,7 @@ namespace Rubberduck.Settings
 
         public List<ReferenceInfo> GetRecentReferencesForHost(string host)
         {
-            var key = host.ToUpperInvariant();
+            var key = host?.ToUpperInvariant() ?? string.Empty;
             return RecentLibraryReferences
                 .Concat(RecentProjectReferences.ContainsKey(key)
                     ? RecentProjectReferences[key]
@@ -207,6 +227,14 @@ namespace Rubberduck.Settings
 
         public void UpdatePinnedReferencesForHost(string host, List<ReferenceInfo> pinned)
         {
+            var key = host?.ToUpperInvariant() ?? string.Empty;
+
+            PinnedLibraryReferences.Clear();
+            if (PinnedProjectReferences.ContainsKey(key))
+            {
+                PinnedProjectReferences.Remove(key);
+            }
+            
             foreach (var reference in pinned)
             {
                 PinReference(reference, reference.Guid.Equals(Guid.Empty) ? host : string.Empty);
@@ -229,16 +257,19 @@ namespace Rubberduck.Settings
             public ReferenceInfo Reference { get; protected set; }
 
             [DataMember(IsRequired = true)]
-            public DateTime Timestamp { get; protected set; } = DateTime.Now;
+            public DateTime Timestamp { get; protected set; }
 
             public ReferenceUsage(ReferenceInfo reference)
             {
                 Reference = reference;
+                Timestamp = DateTime.Now;
             }
 
             public bool Matches(ReferenceInfo other)
             {
                 return Reference.FullPath.Equals(other.FullPath, StringComparison.OrdinalIgnoreCase) ||
+                       !Reference.Guid.Equals(Guid.Empty) &&
+                       !other.Guid.Equals(Guid.Empty) &&
                        Reference.Guid.Equals(other.Guid) &&
                        Reference.Major == other.Major &&
                        Reference.Minor == other.Minor;
@@ -256,6 +287,12 @@ namespace Rubberduck.Settings
                 Host = host;
                 Usages = usages;
             }
+
+            public HostUsages(HostUsages other)
+            {
+                Host = other.Host;
+                Usages = other.Usages.ToList();
+            }
         }
 
         [DataContract]
@@ -268,6 +305,12 @@ namespace Rubberduck.Settings
             {
                 Host = host;
                 Pins = usages;
+            }
+
+            public HostPins(HostPins other)
+            {
+                Host = other.Host;
+                Pins = other.Pins.ToList();
             }
         }
     }

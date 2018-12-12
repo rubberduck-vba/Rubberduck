@@ -3,8 +3,16 @@ using System.Runtime.Serialization;
 
 namespace Rubberduck.Parsing.ComReflection
 {
+    public interface IComDocumentation
+    {
+        string Name { get; }
+        string DocString { get; }
+        string HelpFile { get; }
+        int HelpContext { get; }
+    }
+
     [DataContract]
-    public class ComDocumentation
+    public class ComDocumentation : IComDocumentation
     {
         public const int LibraryIndex = -1;
 

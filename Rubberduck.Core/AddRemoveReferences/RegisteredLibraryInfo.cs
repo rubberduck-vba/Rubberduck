@@ -24,7 +24,7 @@ namespace Rubberduck.AddRemoveReferences
     {
         private static readonly Dictionary<int, string> NativeLocaleNames = new Dictionary<int, string>
         {
-            { 0, "Standard" }
+            { 0, Resources.RubberduckUI.References_DefaultLocale }
         };
 
         public RegisteredLibraryKey UniqueId { get; }
@@ -54,8 +54,8 @@ namespace Rubberduck.AddRemoveReferences
                 }
                 catch
                 {
-                    NativeLocaleNames.Add(LocaleId, "Standard");
-                    return "Standard";
+                    NativeLocaleNames.Add(LocaleId, Resources.RubberduckUI.References_DefaultLocale);
+                    return Resources.RubberduckUI.References_DefaultLocale;
                 }
             }
         }

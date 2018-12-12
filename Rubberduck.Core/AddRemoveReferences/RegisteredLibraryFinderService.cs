@@ -6,15 +6,6 @@ using Microsoft.Win32;
 
 namespace Rubberduck.AddRemoveReferences
 {
-    public static class RegistryKeyExtensions
-    {
-        public static string GetKeyName(this RegistryKey key)
-        {
-            var name = key?.Name;
-            return name?.Substring(name.LastIndexOf(@"\", StringComparison.InvariantCultureIgnoreCase) + 1) ?? string.Empty;
-        }
-    }
-
     public interface IRegisteredLibraryFinderService
     {
         IEnumerable<RegisteredLibraryInfo> FindRegisteredLibraries();
@@ -95,6 +86,15 @@ namespace Rubberduck.AddRemoveReferences
                     }
                 }
             }
+        }
+    }
+
+    public static class RegistryKeyExtensions
+    {
+        public static string GetKeyName(this RegistryKey key)
+        {
+            var name = key?.Name;
+            return name?.Substring(name.LastIndexOf(@"\", StringComparison.InvariantCultureIgnoreCase) + 1) ?? string.Empty;
         }
     }
 }

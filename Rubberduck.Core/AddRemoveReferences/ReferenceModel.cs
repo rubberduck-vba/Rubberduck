@@ -83,22 +83,18 @@ namespace Rubberduck.AddRemoveReferences
             Type = reference.Type;
         }
 
-        public ReferenceModel(ITypeLib reference) : this()
+        public ReferenceModel(string path, ITypeLib reference, IComLibraryProvider provider) : this()
         {
-            var documentation = new ComDocumentation(reference, ComDocumentation.LibraryIndex);
+            FullPath = path;
+
+            var documentation = provider.GetComDocumentation(reference);
             Name = documentation.Name;
             Description = documentation.DocString;
 
-            reference.GetLibAttr(out var attributes);
-            using (DisposalActionContainer.Create(attributes, reference.ReleaseTLibAttr))
-            {
-                var typeAttr = Marshal.PtrToStructure<System.Runtime.InteropServices.ComTypes.TYPELIBATTR>(attributes);
-
-                Major = typeAttr.wMajorVerNum;
-                Minor = typeAttr.wMinorVerNum;
-                Flags = (TypeLibTypeFlags)typeAttr.wLibFlags;
-                Guid = typeAttr.guid;
-            }
+            var info = provider.GetReferenceInfo(reference, Name, path);
+            Guid = info.Guid;
+            Major = info.Major;
+            Minor = info.Minor; 
         }
 
         public ReferenceModel(string path, bool broken = false) : this()
@@ -106,7 +102,7 @@ namespace Rubberduck.AddRemoveReferences
             FullPath = path;
             try
             {
-                Name = Path.GetFileName(path);
+                Name = Path.GetFileName(path) ?? path;
                 Description = Name;
             }
             catch
@@ -139,10 +135,10 @@ namespace Rubberduck.AddRemoveReferences
         public string Name { get; } = string.Empty;
         public Guid Guid { get; }
         public string Description { get; } = string.Empty;
-        public string FullPath { get; } = string.Empty;
+        public string FullPath { get; }
         public string LocaleName { get; } = string.Empty;
 
-        public bool IsBuiltIn { get; }
+        public bool IsBuiltIn { get; set; }
         public bool IsBroken { get; }
         public TypeLibTypeFlags Flags { get; set;  }
         public ReferenceKind Type { get; }

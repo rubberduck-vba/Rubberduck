@@ -1434,4 +1434,8 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>All Visio Files ({0})|{0}</value>
     <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
   </data>
+  <data name="References_DefaultLocale" xml:space="preserve">
+    <value>Standard</value>
+    <comment>Displayed as LCID description when locale is not specified.</comment>
+  </data>
 </root>

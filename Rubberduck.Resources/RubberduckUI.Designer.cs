@@ -2867,6 +2867,17 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Standard.
+        /// </summary>
+        public static string References_DefaultLocale
+        {
+            get
+            {
+                return ResourceManager.GetString("References_DefaultLocale", resourceCulture);
+            }
+        }
+      
+        /// <summary>
         ///   Looks up a localized string similar to Locale:.
         /// </summary>
         public static string References_Locale

@@ -24,22 +24,27 @@ namespace Rubberduck.AddRemoveReferences
 
     public class ReferenceReconciler : IReferenceReconciler
     {
+        public static readonly List<string> TypeLibraryExtensions = new List<string> { ".olb", ".tlb", ".dll", ".ocx", ".exe" };
+
         private readonly IMessageBox _messageBox;
         private readonly IConfigProvider<ReferenceSettings> _settings;
-        private readonly IComLibraryProvider _tlbProvider;
+        private readonly IComLibraryProvider _libraryProvider;
 
-        public ReferenceReconciler(IMessageBox messageBox, IConfigProvider<ReferenceSettings> settings, IComLibraryProvider tlbProvider)
+        public ReferenceReconciler(
+            IMessageBox messageBox, 
+            IConfigProvider<ReferenceSettings> settings, 
+            IComLibraryProvider libraryProvider)
         {
             _messageBox = messageBox;
             _settings = settings;
-            _tlbProvider = tlbProvider;
+            _libraryProvider = libraryProvider;
         }
 
         public List<ReferenceModel> ReconcileReferences(IAddRemoveReferencesModel model)
         {
             if (model?.NewReferences is null || !model.NewReferences.Any())
             {
-                return null;
+                return new List<ReferenceModel>();
             }
 
             return ReconcileReferences(model, model.NewReferences.ToList());
@@ -83,8 +88,6 @@ namespace Rubberduck.AddRemoveReferences
             return output;
         }
 
-        private static readonly List<string> InterestingExtensions = new List<string> { ".olb", ".tlb", ".dll", ".ocx", ".exe" };
-
         public ReferenceModel GetLibraryInfoFromPath(string path)
         {
             try
@@ -96,9 +99,10 @@ namespace Rubberduck.AddRemoveReferences
                 }
 
                 // LoadTypeLibrary will attempt to open files in the host, so only attempt on possible COM servers.
-                if (InterestingExtensions.Contains(extension))
+                if (TypeLibraryExtensions.Contains(extension))
                 {
-                    return new ReferenceModel(_tlbProvider.LoadTypeLibrary(path));
+                    var type = _libraryProvider.LoadTypeLibrary(path);
+                    return new ReferenceModel(path, type, _libraryProvider);
                 }
                 return new ReferenceModel(path);
             }
