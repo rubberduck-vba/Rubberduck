@@ -41,7 +41,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public string Name { get; }
 
-        public IReadOnlyCollection<string> Values => _values.AsReadOnly();
+        //The order of the values matters for some attributes, e.g. VB_Ext_Key.
+        public IReadOnlyList<string> Values => _values.AsReadOnly();
 
         public bool HasValue(string value)
         {
@@ -52,7 +53,7 @@ namespace Rubberduck.Parsing.Symbols
         {
             return other != null 
                    && string.Equals(Name, other.Name, StringComparison.OrdinalIgnoreCase) 
-                   && _values.Equals(other.Values);
+                   && _values.SequenceEqual(other.Values);
         }
 
         public override bool Equals(object obj)
