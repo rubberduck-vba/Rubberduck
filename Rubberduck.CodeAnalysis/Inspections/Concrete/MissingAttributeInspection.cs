@@ -42,7 +42,9 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool MissesCorrespondingAttribute(Declaration declaration, IAnnotation annotation)
         {
-            return !declaration.Attributes.HasAttributeFor(annotation.AnnotationType);
+            return declaration.DeclarationType.HasFlag(DeclarationType.Module)
+                ? !declaration.Attributes.HasAttributeFor(annotation.AnnotationType)
+                : !declaration.Attributes.HasAttributeFor(annotation.AnnotationType, declaration.IdentifierName);
         }
     }
 }
