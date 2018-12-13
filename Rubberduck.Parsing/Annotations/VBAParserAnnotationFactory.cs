@@ -50,7 +50,7 @@ namespace Rubberduck.Parsing.Annotations
                 return parameters;
             }
 
-        private IAnnotation CreateAnnotation(string annotationName, List<string> parameters,
+        private IAnnotation CreateAnnotation(string annotationName, IReadOnlyList<string> parameters,
             QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context)
         {
             if (_creators.TryGetValue(annotationName.ToUpperInvariant(), out var annotationClrType))

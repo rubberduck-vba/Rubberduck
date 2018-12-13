@@ -75,30 +75,40 @@ namespace Rubberduck.Parsing.Symbols
     /// </remarks>
     public class Attributes : HashSet<AttributeNode>
     {
-        public bool HasAttributeFor(AnnotationType annotationType, string memberName = null)
+        public bool HasAttributeFor(IAttributeAnnotation annotation, string memberName = null)
         {
-            if (!annotationType.HasFlag(AnnotationType.Attribute))
+            if (!annotation.AnnotationType.HasFlag(AnnotationType.Attribute))
             {
                 return false;
             }
 
-            var name = "VB_" + annotationType;
+            var attributeName = memberName != null
+                ? $"{memberName}.{annotation.Attribute}"
+                : annotation.Attribute;
 
-            if (annotationType.HasFlag(AnnotationType.MemberAnnotation))
+            //VB_Ext_Key annotation depend on the defined key for identity.
+            if (annotation.Attribute.Equals("VB_Ext_Key", StringComparison.OrdinalIgnoreCase))
             {
-                //Debug.Assert(memberName != null);
-                return this.Any(a => a.Name.Equals($"{memberName}{name}", StringComparison.OrdinalIgnoreCase));
+                return this.Any(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase) 
+                                     && a.Values[0] == annotation.AttributeValues[0]);
             }
 
-            if (annotationType.HasFlag(AnnotationType.ModuleAnnotation))
+            return this.Any(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public bool HasAttributeWithMatchingValueFor(IAttributeAnnotation annotation, string memberName = null)
+        {
+            if (!annotation.AnnotationType.HasFlag(AnnotationType.Attribute))
             {
-                //Debug.Assert(memberName == null);
-                return this
-                    .Any(a => a.Name.Equals(name, StringComparison.OrdinalIgnoreCase)
-                           && a.Values.Any(v => v.Equals("True", StringComparison.OrdinalIgnoreCase)));
+                return false;
             }
 
-            return false;
+            var attributeName = memberName != null
+                ? $"{memberName}.{annotation.Attribute}"
+                : annotation.Attribute;
+
+            return this.Any(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase)
+                                 && a.Values.SequenceEqual(annotation.AttributeValues));
         }
 
         /// <summary>

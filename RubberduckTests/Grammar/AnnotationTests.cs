@@ -120,7 +120,7 @@ namespace RubberduckTests.Grammar
         [Test]
         public void DescriptionAnnotation_TypeIsDescription()
         {
-            var annotation = new DescriptionAnnotation(new QualifiedSelection(), null, null);
+            var annotation = new DescriptionAnnotation(new QualifiedSelection(), null, new[] { "Desc"});
             Assert.AreEqual(AnnotationType.Description, annotation.AnnotationType);
         }
 
@@ -129,7 +129,7 @@ namespace RubberduckTests.Grammar
         [Test]
         public void ModuleDescriptionAnnotation_TypeIsModuleDescription()
         {
-            var annotation = new ModuleDescriptionAnnotation(new QualifiedSelection(), null, null);
+            var annotation = new ModuleDescriptionAnnotation(new QualifiedSelection(), null, new[] { "Desc" });
             Assert.AreEqual(AnnotationType.ModuleDescription, annotation.AnnotationType);
         }
 

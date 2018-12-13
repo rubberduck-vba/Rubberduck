@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
             var results = new List<DeclarationInspectionResult>();
             foreach (var declaration in declarationsWithAttributeAnnotations)
             {
-                foreach(var annotation in declaration.Annotations.Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.Attribute)))
+                foreach(var annotation in declaration.Annotations.OfType<IAttributeAnnotation>())
                 {
                     if (MissesCorrespondingAttribute(declaration, annotation))
                     {
@@ -40,11 +40,11 @@ namespace Rubberduck.Inspections.Concrete
             return results;
         }
 
-        private static bool MissesCorrespondingAttribute(Declaration declaration, IAnnotation annotation)
+        private static bool MissesCorrespondingAttribute(Declaration declaration, IAttributeAnnotation annotation)
         {
             return declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                ? !declaration.Attributes.HasAttributeFor(annotation.AnnotationType)
-                : !declaration.Attributes.HasAttributeFor(annotation.AnnotationType, declaration.IdentifierName);
+                ? !declaration.Attributes.HasAttributeFor(annotation)
+                : !declaration.Attributes.HasAttributeFor(annotation, declaration.IdentifierName);
         }
     }
 }
