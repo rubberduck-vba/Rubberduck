@@ -31,18 +31,21 @@ namespace Rubberduck.UI.AddRemoveReferences
         private readonly IConfigProvider<ReferenceSettings> _settings;
         private readonly IRegisteredLibraryFinderService _finder;
         private readonly IReferenceReconciler _reconciler;
+        private readonly IFileSystemBrowserFactory _browser;
 
         public AddRemoveReferencesPresenterFactory(IVBE vbe,
             RubberduckParserState state,
             IConfigProvider<ReferenceSettings> settingsProvider, 
             IRegisteredLibraryFinderService finder,
-            IReferenceReconciler reconciler)
+            IReferenceReconciler reconciler,
+            IFileSystemBrowserFactory browser)
         {
             _vbe = vbe;
             _state = state;
             _settings = settingsProvider;
             _finder = finder;
             _reconciler = reconciler;
+            _browser = browser;
         }
 
         public AddRemoveReferencesPresenter Create(ProjectDeclaration project)
@@ -106,7 +109,7 @@ namespace Rubberduck.UI.AddRemoveReferences
                         item.FullPath.Equals(proj.FullPath, StringComparison.OrdinalIgnoreCase))));
             }
 
-            return new AddRemoveReferencesPresenter(new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _reconciler)));         
+            return new AddRemoveReferencesPresenter(new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _reconciler, _browser)));         
         }
 
         private IEnumerable<ReferenceModel> GetUserProjectFolderModels(IReferenceSettings settings)

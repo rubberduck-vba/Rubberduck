@@ -274,7 +274,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<ICodePaneHandler>()
                 .ImplementedBy<CodePaneSourceCodeHandler>()
                 .LifestyleSingleton());
-            container.Register(Component.For<IFolderBrowserFactory>()
+            container.Register(Component.For<IFileSystemBrowserFactory>()
                 .ImplementedBy<DialogFactory>()
                 .LifestyleSingleton());
             container.Register(Component.For<IModuleRewriterFactory>()

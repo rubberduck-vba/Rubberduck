@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
+using System.Windows.Forms;
 using Moq;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Interaction;
@@ -10,6 +11,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Registration;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.UI;
 using Rubberduck.UI.AddRemoveReferences;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -50,7 +52,7 @@ namespace RubberduckTests.AddRemoveReferences
                     new ReferenceInfo(new Guid(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, (byte)info), $"Recent{info}", $@"C:\Windows\System32\recent{info}.dll", 1, 0))
                 .ToList();
 
-        public static List<ReferenceModel> MockedReferencesList => new List<ReferenceModel>
+        public static List<ReferenceModel> DummyReferencesList => new List<ReferenceModel>
         {
             new ReferenceModel(new ReferenceInfo(VbaGuid, "VBA", @"C:\Shortcut\VBE7.DLL", 4, 2), ReferenceKind.TypeLibrary) {IsBuiltIn = true, IsReferenced = true, Priority = 1 },
             new ReferenceModel(new ReferenceInfo(ExcelGuid, "Excel", @"C:\Office\EXCEL.EXE", 15, 0), ReferenceKind.TypeLibrary) {IsBuiltIn = true, IsReferenced = true, Priority = 2},
@@ -105,6 +107,11 @@ namespace RubberduckTests.AddRemoveReferences
             return output;
         }
 
+        public static ReferenceReconciler ArrangeReferenceReconciler(ReferenceSettings settings = null)
+        {
+            return ArrangeReferenceReconciler(settings, out _, out _);
+        }
+
         public static ReferenceReconciler ArrangeReferenceReconciler(
             ReferenceSettings settings,
             out Mock<IMessageBox> messageBox,
@@ -152,12 +159,12 @@ namespace RubberduckTests.AddRemoveReferences
             return model;
         }
 
-        public static Mock<IAddRemoveReferencesModel> ArrangeParsedAddRemoveReferencesModel(
-            List<ReferenceModel> input,
-            List<ReferenceModel> output, 
-            List<ReferenceModel> registered, 
-            out Mock<IReferences> references,
-            out MockProjectBuilder projectBuilder)
+        public static ProjectDeclaration ArrangeMocksAndGetProject()
+        {
+            return ArrangeMocksAndGetProject(out _, out _);
+        }
+
+        public static ProjectDeclaration ArrangeMocksAndGetProject(out MockProjectBuilder projectBuilder, out Mock<IReferences> references)
         {
             var builder = new MockVbeBuilder();
 
@@ -167,19 +174,104 @@ namespace RubberduckTests.AddRemoveReferences
             references = projectBuilder
                 .AddReference("VBA", @"C:\Shortcut\VBE7.DLL", 4, 2, true)
                 .AddReference("Excel", @"C:\Office\EXCEL.EXE", 15, 0, true)
-                .AddReference("ReferenceOne", @"C:\Libs\reference1.dll", 1, 1)
-                .AddReference("ReferenceTwo", @"C:\Libs\reference2.dll", 2, 2)
+                .AddReference("Library One", @"C:\Libs\library1.dll", 1, 1)
+                .AddReference("Library Two", @"C:\Libs\library2.dll", 2, 2)
                 .GetMockedReferences(out _);
 
             builder.AddProject(projectBuilder.Build());
 
             var parser = MockParser.CreateAndParse(builder.Build().Object);
-            var declaration = parser.AllUserDeclarations.OfType<ProjectDeclaration>().Single();
+            return parser.AllUserDeclarations.OfType<ProjectDeclaration>().Single();
+        }
+
+        public static Mock<IAddRemoveReferencesModel> ArrangeParsedAddRemoveReferencesModel(
+            List<ReferenceModel> input,
+            List<ReferenceModel> output, 
+            List<ReferenceModel> registered, 
+            out Mock<IReferences> references,
+            out MockProjectBuilder projectBuilder)
+        {
+            var declaration = ArrangeMocksAndGetProject(out projectBuilder, out references);
 
             var model = ArrangeAddRemoveReferencesModel(input, output, GetDefaultReferenceSettings());
             model.Setup(m => m.Project).Returns(declaration);
 
             return model;
+        }
+
+        public static AddRemoveReferencesViewModel ArrangeViewModel()
+        {
+            return ArrangeViewModel(out _, out _, out _);
+        }
+
+        public static AddRemoveReferencesViewModel ArrangeViewModel(
+            out List<ReferenceModel> allReferences,
+            out List<ReferenceModel> projectReferences,
+            out Mock<IFileSystemBrowserFactory> browserFactory,
+            bool addHostProjects = false)
+        {
+            return ArrangeViewModel(out allReferences, out projectReferences, out browserFactory, out _, addHostProjects);
+        }
+
+        public static AddRemoveReferencesViewModel ArrangeViewModel(
+            out Mock<IFileSystemBrowserFactory> browserFactory,
+            out Mock<IComLibraryProvider> libraryProvider,
+            bool addHostProjects = false)
+        {
+            return ArrangeViewModel(out _, out _, out browserFactory, out libraryProvider, addHostProjects);
+        }
+
+        public static AddRemoveReferencesViewModel ArrangeViewModel(
+            out List<ReferenceModel> allReferences, 
+            out List<ReferenceModel> projectReferences, 
+            out Mock<IFileSystemBrowserFactory> browserFactory,
+            out Mock<IComLibraryProvider> libraryProvider,
+            bool addHostProjects = false)
+        {
+            var registered = LibraryReferenceInfoList.Select(reference => new ReferenceModel(reference, ReferenceKind.TypeLibrary)).ToList();
+
+            var declaration = ArrangeMocksAndGetProject(out _, out var references);
+            var settings = GetNonDefaultReferenceSettings();
+
+            var priority = 1;
+            projectReferences = references.Object.Select(item => new ReferenceModel(item, priority++) { IsRegistered = true }).ToList();
+
+            allReferences = registered.ToList();
+            var pinnedLibrary = registered.First();
+            pinnedLibrary.IsPinned = true;
+            pinnedLibrary.IsRecent = true;
+
+            allReferences.AddRange(projectReferences.Where(proj => !registered.Any(item =>
+                    item.FullPath.Equals(proj.FullPath, StringComparison.OrdinalIgnoreCase))));
+
+            if (addHostProjects) //RecentProjectReferenceInfoList
+            {
+                var projects = RecentProjectReferenceInfoList.Select(project => new ReferenceModel(project, ReferenceKind.Project)).ToList();
+                var pinnedProject = projects.First();
+                pinnedProject.IsPinned = true;
+                pinnedProject.IsRecent = true;
+
+                allReferences.AddRange(projects);
+            }
+
+            var model = new AddRemoveReferencesModel(declaration, allReferences, settings);
+            var reconciler = ArrangeReferenceReconciler(settings, out _, out libraryProvider);
+            browserFactory = new Mock<IFileSystemBrowserFactory>();
+
+            return new AddRemoveReferencesViewModel(model, reconciler, browserFactory.Object);
+        }
+
+        public static void SetupMockedOpenDialog(this Mock<IFileSystemBrowserFactory> factory, string filename, DialogResult result)
+        {
+            factory.SetupMockedOpenDialog(filename, result, out _);
+        }
+
+        public static void SetupMockedOpenDialog(this Mock<IFileSystemBrowserFactory> factory, string filename, DialogResult result, out Mock<IOpenFileDialog> dialog)
+        {
+            dialog = new Mock<IOpenFileDialog>();
+            dialog.Setup(m => m.FileName).Returns(filename);
+            dialog.Setup(m => m.ShowDialog()).Returns(result);
+            factory.Setup(m => m.CreateOpenFileDialog()).Returns(dialog.Object);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Rubberduck.UI.Settings
             IMessageBox messageBox, 
             IVbeSettings vbeSettings,
             IConfigProvider<ReferenceSettings> referencesProvider,
-            IFolderBrowserFactory browserFactory,
+            IFileSystemBrowserFactory browserFactory,
             SettingsViews activeView = SettingsViews.GeneralSettings) : this()
         {
             var config = configService.LoadConfiguration();

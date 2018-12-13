@@ -22,7 +22,7 @@ namespace RubberduckTests.AddRemoveReferences
         {
             const string path = @"C:\Users\Rubberduck\Documents\Book1.xlsm";
 
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
             var model = reconciler.GetLibraryInfoFromPath(path);
 
             Assert.AreEqual(path, model.FullPath);
@@ -65,7 +65,7 @@ namespace RubberduckTests.AddRemoveReferences
         {
             const string path = @"C:\Users\Rubberduck\Documents\Book1";
 
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
             var model = reconciler.GetLibraryInfoFromPath(path);
 
             Assert.IsNull(model);
@@ -117,7 +117,7 @@ namespace RubberduckTests.AddRemoveReferences
         public void UpdateSettings_UpdatesRecentLibrariesBasedOnFlag(bool updating)
         {
             var settings = AddRemoveReferencesSetup.GetNonDefaultReferenceSettings();
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings);
 
             var input = settings.GetRecentReferencesForHost(null).Select(info =>
                 new ReferenceModel(info, ReferenceKind.TypeLibrary) { IsRecent = true }).ToList();
@@ -143,7 +143,7 @@ namespace RubberduckTests.AddRemoveReferences
         public void UpdateSettings_UpdatesRecentProjectsBasedOnFlag(bool updating)
         {
             var settings = AddRemoveReferencesSetup.GetNonDefaultReferenceSettings();
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings);
 
             var input = settings.GetRecentReferencesForHost("EXCEL.EXE").Select(info =>
                 new ReferenceModel(info, ReferenceKind.Project) { IsRecent = true }).ToList();
@@ -167,7 +167,7 @@ namespace RubberduckTests.AddRemoveReferences
         public void UpdateSettings_AddsPinnedLibraries()
         {
             var settings = AddRemoveReferencesSetup.GetDefaultReferenceSettings();
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings);
 
             var input = settings.GetPinnedReferencesForHost(null).Select(info =>
                 new ReferenceModel(info, ReferenceKind.TypeLibrary) {IsPinned = true}).ToList();
@@ -191,7 +191,7 @@ namespace RubberduckTests.AddRemoveReferences
         public void UpdateSettings_RemovesPinnedLibraries()
         {
             var settings = AddRemoveReferencesSetup.GetDefaultReferenceSettings();
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings);
 
             var input = settings.GetPinnedReferencesForHost(null).Select(info =>
                 new ReferenceModel(info, ReferenceKind.TypeLibrary) { IsPinned = true }).ToList();
@@ -215,7 +215,7 @@ namespace RubberduckTests.AddRemoveReferences
         {
             const string file = @"C:\Windows\System32\reference.dll";
 
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
             var references = AddRemoveReferencesSetup.GetReferencesMock(out var project, out _);
 
             reconciler.TryAddReference(project.Object, file);
@@ -229,7 +229,7 @@ namespace RubberduckTests.AddRemoveReferences
         {
             const string file = @"C:\Windows\System32\reference.dll";
 
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
             var references = AddRemoveReferencesSetup.GetReferencesMock(out var project, out _);
             references.Setup(m => m.AddFromFile(file)).Throws(new COMException());
 
@@ -260,7 +260,7 @@ namespace RubberduckTests.AddRemoveReferences
         {
             const string file = @"C:\Windows\System32\reference.dll";
 
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
             var references = AddRemoveReferencesSetup.GetReferencesMock(out var project, out var builder);
 
             var returned = builder.CreateReferenceMock("Reference", file, 1, 1, false).Object;
@@ -276,7 +276,7 @@ namespace RubberduckTests.AddRemoveReferences
         public void TryAddReferenceReferenceModel_ReturnedReferenceIsRecent()
         {
             var input = new ReferenceModel(DummyReferenceInfo, 0);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
             AddRemoveReferencesSetup.GetReferencesMock(out var project, out _);
 
             var model = reconciler.TryAddReference(project.Object, input);
@@ -289,7 +289,7 @@ namespace RubberduckTests.AddRemoveReferences
         public void TryAddReferenceReferenceModel_ReturnedReferenceIsLastPriority()
         {
             var input = new ReferenceModel(DummyReferenceInfo, 0);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
             var references = AddRemoveReferencesSetup.GetReferencesMock(out var project, out _).Object;
 
             var priority = reconciler.TryAddReference(project.Object, input).Priority;
@@ -319,7 +319,7 @@ namespace RubberduckTests.AddRemoveReferences
         {
             var input = new ReferenceModel(DummyReferenceInfo, 0);
 
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
             var references = AddRemoveReferencesSetup.GetReferencesMock(out var project, out _);
             references.Setup(m => m.AddFromFile(input.FullPath)).Throws(new COMException());
 
@@ -333,7 +333,7 @@ namespace RubberduckTests.AddRemoveReferences
         public void ReconcileReferences_ReturnsEmptyWithoutNewReferences()
         {
             var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(null, null, null, out _, out _);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
 
             var output = reconciler.ReconcileReferences(model.Object);
 
@@ -345,7 +345,7 @@ namespace RubberduckTests.AddRemoveReferences
         public void ReconcileReferencesOverload_ReturnsEmptyWithoutNewReferences()
         {
             var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(null, null, null, out _, out _);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
             var output = reconciler.ReconcileReferences(model.Object, null);
 
             Assert.IsEmpty(output);
@@ -359,7 +359,7 @@ namespace RubberduckTests.AddRemoveReferences
                 .Select(reference => new ReferenceModel(reference, ReferenceKind.TypeLibrary)).ToList();
 
             var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(null, newReferences, null, out _, out _);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
 
             var pinned = newReferences.First();
             pinned.IsPinned = true;
@@ -378,7 +378,7 @@ namespace RubberduckTests.AddRemoveReferences
                 .Select(reference => new ReferenceModel(reference, ReferenceKind.TypeLibrary)).ToList();
 
             var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(newReferences, newReferences, newReferences, out var references, out var builder);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
 
             var priority = references.Object.Count;
             foreach (var item in newReferences)
@@ -397,9 +397,9 @@ namespace RubberduckTests.AddRemoveReferences
         [Category("AddRemoveReferences")]
         public void ReconcileReferences_RemoveNotCalledOnBuiltIn()
         {
-            var registered = AddRemoveReferencesSetup.MockedReferencesList;
+            var registered = AddRemoveReferencesSetup.DummyReferencesList;
             var model = AddRemoveReferencesSetup.ArrangeParsedAddRemoveReferencesModel(registered, registered, registered, out var references, out _);
-            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(null, out _, out _);
+            var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler();
 
             var vba = references.Object.First(lib => lib.Name.Equals("VBA"));
             var excel = references.Object.First(lib => lib.Name.Equals("Excel"));

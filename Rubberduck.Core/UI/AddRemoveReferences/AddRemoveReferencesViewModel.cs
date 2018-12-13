@@ -82,11 +82,13 @@ namespace Rubberduck.UI.AddRemoveReferences
         private readonly ObservableCollection<ReferenceModel> _available;
         private readonly ObservableCollection<ReferenceModel> _project;
         private readonly IReferenceReconciler _reconciler;
+        private readonly IFileSystemBrowserFactory _browser;
 
-        public AddRemoveReferencesViewModel(IAddRemoveReferencesModel model, IReferenceReconciler reconciler)
+        public AddRemoveReferencesViewModel(IAddRemoveReferencesModel model, IReferenceReconciler reconciler, IFileSystemBrowserFactory browser)
         {
             Model = model;
             _reconciler = reconciler;
+            _browser = browser;
 
             _available = new ObservableCollection<ReferenceModel>(model.References
                 .Where(reference => !reference.IsReferenced).OrderBy(reference => reference.Description));
@@ -110,25 +112,48 @@ namespace Rubberduck.UI.AddRemoveReferences
             ApplyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteApplyCommand);
         }
 
+        /// <summary>
+        /// The IAddRemoveReferencesModel for the view.
+        /// </summary>
         public IAddRemoveReferencesModel Model { get; set; }
 
+        /// <summary>
+        /// Hides the projects filter if the host does not support them. Statically set.
+        /// </summary>
         public bool ProjectsVisible => HostHasProjects;
 
+        /// <summary>
+        /// The number of built-in (locked) references of the project.
+        /// </summary>
         public int BuiltInReferenceCount { get; }
 
+        /// <summary>
+        /// Adds a reference to the project.
+        /// </summary>
         public ICommand AddCommand { get; }
 
-        public ICommand RemoveCommand { get; }
         /// <summary>
-        /// Prompts user for a .tlb, .dll, or .ocx file, and attempts to append it to <see cref="ProjectReferences"/>.
+        /// Removes a reference from the project and makes it "available".
+        /// </summary>
+        public ICommand RemoveCommand { get; }
+
+        /// <summary>
+        /// Prompts the user to browse for a reference.
         /// </summary>
         public ICommand BrowseCommand { get; }
 
+        /// <summary>
+        /// Closes the dialog and indicates changes are to be saved.
+        /// </summary>
         public CommandBase OkCommand { get; }
+
+        /// <summary>
+        /// Closes the dialog and indicates changes are not to be saved.
+        /// </summary>
         public CommandBase CancelCommand { get; }
 
         /// <summary>
-        /// Applies all changes to project references.
+        /// Applies any changes without closing the dialog.
         /// </summary>
         public ICommand ApplyCommand { get; }
 
@@ -142,10 +167,20 @@ namespace Rubberduck.UI.AddRemoveReferences
         /// </summary>
         public ICommand MoveDownCommand { get; }
 
+        /// <summary>
+        /// Pins the selected reference from the available list.
+        /// </summary>
         public ICommand PinLibraryCommand { get; }
 
+        /// <summary>
+        /// Pins the selected reference from the referenced list.
+        /// </summary>
         public ICommand PinReferenceCommand { get; }
 
+        /// <summary>
+        /// Delegate for AddCommand.
+        /// </summary>
+        /// <param name="parameter">Ignored</param>
         private void ExecuteAddCommand(object parameter)
         {
             if (SelectedLibrary == null)
@@ -158,8 +193,13 @@ namespace Rubberduck.UI.AddRemoveReferences
             EvaluateProjectDirty();
             ProjectReferences.Refresh();
             _available.Remove(SelectedLibrary);
+            AvailableReferences.Refresh();
         }
 
+        /// <summary>
+        /// Delegate for RemoveCommand.
+        /// </summary>
+        /// <param name="parameter">Ignored</param>
         private void ExecuteRemoveCommand(object parameter)
         {
             if (SelectedReference == null)
@@ -179,18 +219,21 @@ namespace Rubberduck.UI.AddRemoveReferences
 
             EvaluateProjectDirty();
             ProjectReferences.Refresh();
+            AvailableReferences.Refresh();
         }
-        
+
+        /// <summary>
+        /// Delegate for BrowseCommand.
+        /// </summary>
+        /// <param name="parameter">Ignored</param>
         private void ExecuteBrowseCommand(object parameter)
         {
-            using (var dialog = new OpenFileDialog
+            using (var dialog = _browser.CreateOpenFileDialog())
             {
-                Filter = string.Join("|", FileFilters),
-                Title = RubberduckUI.References_BrowseCaption
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName))
+                dialog.Filter = string.Join("|", FileFilters);
+                dialog.Title = RubberduckUI.References_BrowseCaption;
+                var result = dialog.ShowDialog();
+                if (result != DialogResult.OK || string.IsNullOrEmpty(dialog.FileName))
                 {
                     return;
                 }
@@ -221,6 +264,10 @@ namespace Rubberduck.UI.AddRemoveReferences
             }
         }
 
+        /// <summary>
+        /// Delegate for ApplyCommand.
+        /// </summary>
+        /// <param name="parameter">Ignored</param>
         private void ExecuteApplyCommand(object parameter)
         {
             var changed = _reconciler.ReconcileReferences(Model, _available.ToList());
@@ -233,6 +280,10 @@ namespace Rubberduck.UI.AddRemoveReferences
             ProjectReferences.Refresh();
         }
 
+        /// <summary>
+        /// Delegate for MoveUpCommand.
+        /// </summary>
+        /// <param name="parameter">Ignored</param>
         private void ExecuteMoveUpCommand(object parameter)
         {
             if (SelectedReference == null || SelectedReference.IsBuiltIn || SelectedReference.Priority == 1)
@@ -253,6 +304,10 @@ namespace Rubberduck.UI.AddRemoveReferences
             ProjectReferences.Refresh();
         }
 
+        /// <summary>
+        /// Delegate for MoveDownCommand.
+        /// </summary>
+        /// <param name="parameter">Ignored</param>
         private void ExecuteMoveDownCommand(object parameter)
         {
             if (SelectedReference == null || SelectedReference.IsBuiltIn || SelectedReference.Priority == _project.Count)
@@ -273,6 +328,10 @@ namespace Rubberduck.UI.AddRemoveReferences
             ProjectReferences.Refresh();
         }
 
+        /// <summary>
+        /// Delegate for PinLibraryCommand.
+        /// </summary>
+        /// <param name="parameter">Ignored</param>
         private void ExecutePinLibraryCommand(object parameter)
         {
             if (SelectedLibrary == null)
@@ -283,9 +342,13 @@ namespace Rubberduck.UI.AddRemoveReferences
             AvailableReferences.Refresh();
         }
 
+        /// <summary>
+        /// Delegate for PinReferenceCommand.
+        /// </summary>
+        /// <param name="parameter">Ignored</param>
         private void ExecutePinReferenceCommand(object parameter)
         {
-            if (SelectedReference == null || SelectedReference.IsBuiltIn)
+            if (SelectedReference == null)
             {
                 return;
             }
@@ -293,6 +356,9 @@ namespace Rubberduck.UI.AddRemoveReferences
             ProjectReferences.Refresh();
         }
 
+        /// <summary>
+        /// Ordered collection of the project's currently selected references.
+        /// </summary>
         public ICollectionView ProjectReferences
         {
             get
@@ -303,6 +369,9 @@ namespace Rubberduck.UI.AddRemoveReferences
             }
         }
 
+        /// <summary>
+        /// Collection of references not currently selected for the project, filtered by the current filter.
+        /// </summary>
         public ICollectionView AvailableReferences
         {
             get
@@ -314,16 +383,29 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         private string _filter;
+
+        /// <summary>
+        /// The currently selected filter. Should be a member of ReferenceFilter.
+        /// </summary>
         public string SelectedFilter
         {
             get => _filter;
             set
             {
+                if (!Enum.TryParse<ReferenceFilter>(value, out _))
+                {
+                    return;
+                } 
                 _filter = value;
                 AvailableReferences.Refresh();
             }
         }
 
+        /// <summary>
+        /// Applies selected filter and any search term to CollectionViewSource.
+        /// </summary>
+        /// <param name="reference">The ReferenceModel to test.</param>
+        /// <returns>Returns true if the passed reference is included in the filtered result.</returns>
         private bool Filter(ReferenceModel reference)
         {
             var filtered = false;
@@ -353,6 +435,10 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         private string _search = string.Empty;
+
+        /// <summary>
+        /// Search term for filtering AvailableReferences.
+        /// </summary>
         public string Search
         {
             get => _search;
@@ -364,6 +450,10 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         private ReferenceModel _selection;
+
+        /// <summary>
+        /// The currently selected Reference in the focused list.
+        /// </summary>
         public ReferenceModel CurrentSelection
         {
             get => _selection;
@@ -375,6 +465,10 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         private ReferenceModel _reference;
+
+        /// <summary>
+        /// The currently selected Reference for the project.
+        /// </summary>
         public ReferenceModel SelectedReference
         {
             get => _reference;
@@ -386,6 +480,10 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         private ReferenceModel _library;
+
+        /// <summary>
+        /// The currently selected available (not included in the project) Reference.
+        /// </summary>
         public ReferenceModel SelectedLibrary
         {
             get => _library;
@@ -397,6 +495,10 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         private bool _dirty;
+
+        /// <summary>
+        /// Indicated whether any changes were made to the project's references.
+        /// </summary>
         public bool IsProjectDirty
         {
             get => _dirty;
@@ -407,6 +509,9 @@ namespace Rubberduck.UI.AddRemoveReferences
             }
         }
 
+        /// <summary>
+        /// Tests to see if any changes have been made to the project and sets IsProjectDirty to the appropriate value.
+        /// </summary>
         private void EvaluateProjectDirty()
         {
             var selected = _project.Select(reference => (reference.Priority, reference.ToReferenceInfo())).ToList();

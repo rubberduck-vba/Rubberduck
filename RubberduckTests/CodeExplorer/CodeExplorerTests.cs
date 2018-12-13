@@ -1266,7 +1266,7 @@ End Sub";
             private readonly Mock<IConfigProvider<WindowSettings>> _windowSettingsProvider = new Mock<IConfigProvider<WindowSettings>>();
             private readonly Mock<ConfigurationLoader> _configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             private readonly Mock<IVBEInteraction> _interaction = new Mock<IVBEInteraction>();
-            private readonly Mock<IFolderBrowserFactory> _browserFactory = new Mock<IFolderBrowserFactory>();
+            private readonly Mock<IFileSystemBrowserFactory> _browserFactory = new Mock<IFileSystemBrowserFactory>();
 
             private MockedCodeExplorer()
             {

@@ -14,11 +14,11 @@ namespace Rubberduck.UI.Settings
     public class AddRemoveReferencesUserSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
     {
         private readonly IConfigProvider<ReferenceSettings> _provider;
-        private readonly IFolderBrowserFactory _browserFactory;
+        private readonly IFileSystemBrowserFactory _browserFactory;
         private readonly ReferenceSettings _clean;
 
 
-        public AddRemoveReferencesUserSettingsViewModel(IConfigProvider<ReferenceSettings> provider, IFolderBrowserFactory browserFactory)
+        public AddRemoveReferencesUserSettingsViewModel(IConfigProvider<ReferenceSettings> provider, IFileSystemBrowserFactory browserFactory)
         {
             _provider = provider;
             _browserFactory = browserFactory;
