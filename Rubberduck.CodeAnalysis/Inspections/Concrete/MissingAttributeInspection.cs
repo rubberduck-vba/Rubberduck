@@ -42,6 +42,10 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool MissesCorrespondingAttribute(Declaration declaration, IAttributeAnnotation annotation)
         {
+            if (string.IsNullOrEmpty(annotation.Attribute))
+            {
+                return false;
+            }
             return declaration.DeclarationType.HasFlag(DeclarationType.Module)
                 ? !declaration.Attributes.HasAttributeFor(annotation)
                 : !declaration.Attributes.HasAttributeFor(annotation, declaration.IdentifierName);

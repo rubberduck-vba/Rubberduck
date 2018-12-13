@@ -118,6 +118,24 @@ namespace RubberduckTests.Grammar
         [Category("Grammar")]
         [Category("Annotations")]
         [Test]
+        public void ModuleAttributeAnnotation_TypeIsModuleAttribute()
+        {
+            var annotation = new ModuleAttributeAnnotation(new QualifiedSelection(), null, new[] { "Attribute", "Value" });
+            Assert.AreEqual(AnnotationType.ModuleAttribute, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void MemberAttributeAnnotation_TypeIsMemberAttribute()
+        {
+            var annotation = new MemberAttributeAnnotation(new QualifiedSelection(), null, new[] { "Attribute", "Value" });
+            Assert.AreEqual(AnnotationType.MemberAttribute, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
         public void DescriptionAnnotation_TypeIsDescription()
         {
             var annotation = new DescriptionAnnotation(new QualifiedSelection(), null, new[] { "Desc"});
