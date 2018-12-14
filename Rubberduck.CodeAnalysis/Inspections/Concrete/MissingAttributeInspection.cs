@@ -32,7 +32,12 @@ namespace Rubberduck.Inspections.Concrete
                     {
                         var description = string.Format(InspectionResults.MissingAttributeInspection, declaration.IdentifierName,
                             annotation.AnnotationType.ToString());
-                        results.Add(new DeclarationInspectionResult(this, description, declaration, new QualifiedContext(declaration.QualifiedModuleName, annotation.Context), annotation));
+
+                        var result = new DeclarationInspectionResult(this, description, declaration,
+                            new QualifiedContext(declaration.QualifiedModuleName, annotation.Context));
+                        result.Properties.Annotation = annotation;
+
+                        results.Add(result);
                     }
                 }
             }
