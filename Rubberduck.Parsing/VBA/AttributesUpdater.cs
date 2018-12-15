@@ -51,8 +51,6 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
-            var codeToInsert = $"{Environment.NewLine}Attribute {attribute} ={AttributeValuesText(values)}";
-
             var rewriter = rewriteSession.CheckOutModuleRewriter(declaration.QualifiedModuleName);
             if (declaration.DeclarationType.HasFlag(DeclarationType.Module))
             {
@@ -61,11 +59,22 @@ namespace Rubberduck.Parsing.VBA
                     .Where(moduleAttributes => moduleAttributes.attributeStmt() != null)
                     .SelectMany(moduleAttributes => moduleAttributes.attributeStmt())
                     .OrderBy(moduleAttribute => moduleAttribute.stop.TokenIndex)
-                    .Last();
-                rewriter.InsertAfter(lastModuleAttribute.stop.TokenIndex, codeToInsert);
+                    .LastOrDefault();
+                if (lastModuleAttribute == null)
+                {
+                    //This should never happen for a real module.
+                    var codeToInsert = $"Attribute {attribute} ={AttributeValuesText(values)}{Environment.NewLine}";
+                    rewriter.InsertBefore(0, codeToInsert);
+                }
+                else
+                {
+                    var codeToInsert = $"{Environment.NewLine}Attribute {attribute} ={AttributeValuesText(values)}";
+                    rewriter.InsertAfter(lastModuleAttribute.stop.TokenIndex, codeToInsert);
+                }  
             }
             else
             {
+                var codeToInsert = $"{Environment.NewLine}Attribute {attribute} ={AttributeValuesText(values)}";
                 rewriter.InsertAfter(declaration.AttributesPassContext.Stop.TokenIndex, codeToInsert);
             }
         }

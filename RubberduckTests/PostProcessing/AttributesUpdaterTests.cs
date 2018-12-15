@@ -214,6 +214,43 @@ End Sub
 
         [Test]
         [Category("AttributesUpdater")]
+        //Should never happen in a real module.
+        public void AddAttributeAddsModuleAttributeAtTopOfModuleIfThereAreNoModuleAttributesYet()
+        {
+            const string inputCode =
+                @"Public Sub Foo(bar As String)
+    bar = vbNullString
+End Sub
+";
+
+            const string expectedCode =
+                @"Attribute VB_Exposed = False
+Public Sub Foo(bar As String)
+    bar = vbNullString
+End Sub
+";
+            var attributeToAdd = "VB_Exposed";
+            var attributeValues = new List<string> { "False" };
+
+            string actualCode;
+            var (component, rewriteSession, state) = TestSetup(inputCode);
+            using (state)
+            {
+                var moduleDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ProceduralModule)
+                    .First();
+                var attributesUpdater = new AttributesUpdater(state);
+
+                attributesUpdater.AddAttribute(rewriteSession, moduleDeclaration, attributeToAdd, attributeValues);
+                rewriteSession.TryRewrite();
+
+                actualCode = component.CodeModule.Content();
+            }
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("AttributesUpdater")]
         public void AddAttributeDoesNotAddAttributeAlreadyThere()
         {
             const string inputCode =
