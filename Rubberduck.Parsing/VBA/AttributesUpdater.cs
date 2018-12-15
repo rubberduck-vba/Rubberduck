@@ -74,8 +74,18 @@ namespace Rubberduck.Parsing.VBA
             }
             else
             {
-                var codeToInsert = $"{Environment.NewLine}Attribute {attribute} ={AttributeValuesText(values)}";
-                rewriter.InsertAfter(declaration.AttributesPassContext.Stop.TokenIndex, codeToInsert);
+                ParserRuleContext attributesContext = declaration.AttributesPassContext;
+                var firstEndOfLineInMember = attributesContext.GetDescendent<VBAParser.EndOfLineContext>();
+                if (firstEndOfLineInMember == null)
+                {
+                    var codeToInsert = $"{Environment.NewLine}Attribute {attribute} ={AttributeValuesText(values)}";
+                    rewriter.InsertAfter(declaration.AttributesPassContext.Stop.TokenIndex, codeToInsert);
+                }
+                else
+                {
+                    var codeToInsert = $"Attribute {attribute} ={AttributeValuesText(values)}{Environment.NewLine}";
+                    rewriter.InsertAfter(firstEndOfLineInMember.Stop.TokenIndex, codeToInsert);
+                }
             }
         }
 

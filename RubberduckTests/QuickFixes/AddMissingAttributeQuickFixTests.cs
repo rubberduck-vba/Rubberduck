@@ -44,9 +44,9 @@ End Sub";
             const string expectedCode =
                 @"'@MemberAttribute VB_Description, ""Desc""
 Public Sub Foo()
+Attribute Foo.VB_Description = ""Desc""
     Const const1 As Integer = 9
-End Sub
-Attribute Foo.VB_Description = ""Desc""";
+End Sub";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MissingAttributeInspection(state), CodeKind.AttributesCode);
             Assert.AreEqual(expectedCode, actualCode);
@@ -86,9 +86,9 @@ End Sub";
             const string expectedCode =
                 @"'@MemberAttribute VB_Ext_Key, ""Key"", ""Value""
 Public Sub Foo()
+Attribute Foo.VB_Ext_Key = ""Key"", ""Value""
     Const const1 As Integer = 9
-End Sub
-Attribute Foo.VB_Ext_Key = ""Key"", ""Value""";
+End Sub";
 
             var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MissingAttributeInspection(state), CodeKind.AttributesCode);
             Assert.AreEqual(expectedCode, actualCode);

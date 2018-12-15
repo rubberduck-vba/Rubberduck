@@ -14,7 +14,7 @@ namespace RubberduckTests.PostProcessing
     {
         [Test]
         [Category("AttributesUpdater")]
-        public void AddAttributeAddsMemberAttributeBelowMember()
+        public void AddAttributeAddsMemberAttributeBelowFirstLineOfMember()
         {
             const string inputCode =
                 @"VERSION 1.0 CLASS
@@ -36,12 +36,56 @@ END
 Attribute VB_Name = ""ClassKeys""
 Attribute VB_GlobalNameSpace = False
 Public Sub Foo(bar As String)
+Attribute Foo.VB_Description = ""The MyFunc Description""
     bar = vbNullString
 End Sub
-Attribute Foo.VB_Description = ""The MyFunc Description""
 ";
             var attributeToAdd = "Foo.VB_Description";
             var attributeValues = new List<string> {"\"The MyFunc Description\""};
+
+            string actualCode;
+            var (component, rewriteSession, state) = TestSetup(inputCode);
+            using (state)
+            {
+                var fooDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.Procedure)
+                    .First(decl => decl.IdentifierName == "Foo");
+                var attributesUpdater = new AttributesUpdater(state);
+
+                attributesUpdater.AddAttribute(rewriteSession, fooDeclaration, attributeToAdd, attributeValues);
+                rewriteSession.TryRewrite();
+
+                actualCode = component.CodeModule.Content();
+            }
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("AttributesUpdater")]
+        public void AddAttributeAddsMemberAttributeBelowOneLineMember()
+        {
+            const string inputCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+Public Sub Foo(bar As String) : bar = vbNullString : End Sub
+";
+
+            const string expectedCode =
+                @"VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = ""ClassKeys""
+Attribute VB_GlobalNameSpace = False
+Public Sub Foo(bar As String) : bar = vbNullString : End Sub
+Attribute Foo.VB_Description = ""The MyFunc Description""
+";
+            var attributeToAdd = "Foo.VB_Description";
+            var attributeValues = new List<string> { "\"The MyFunc Description\"" };
 
             string actualCode;
             var (component, rewriteSession, state) = TestSetup(inputCode);
@@ -84,10 +128,10 @@ END
 Attribute VB_Name = ""ClassKeys""
 Attribute VB_GlobalNameSpace = False
 Public Sub Foo(bar As String)
-    bar = vbNullString
-End Sub
 Attribute Foo.VB_Description = ""The MyFunc Description""
 Attribute Foo.VB_HelpID = 2
+    bar = vbNullString
+End Sub
 ";
             var firstAttributeToAdd = "Foo.VB_Description";
             var firstAttributeValues = new List<string> { "\"The MyFunc Description\"" };
