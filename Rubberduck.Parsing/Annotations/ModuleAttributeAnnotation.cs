@@ -8,9 +8,9 @@ namespace Rubberduck.Parsing.Annotations
     public class ModuleAttributeAnnotation : AttributeAnnotationBase
     {
         public ModuleAttributeAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IReadOnlyList<string> paramaters) 
-        :base(AnnotationType.ModuleAttribute, qualifiedSelection, context, paramaters.Skip(1).ToList())
+        :base(AnnotationType.ModuleAttribute, qualifiedSelection, context, paramaters?.Skip(1).ToList())
         {
-            Attribute = paramaters.FirstOrDefault();
+            Attribute = paramaters?.FirstOrDefault() ?? string.Empty;
         }
 
         public override string Attribute { get; }

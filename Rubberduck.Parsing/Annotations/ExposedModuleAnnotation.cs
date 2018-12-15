@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class ExposedModuleAnnotation : AttributeAnnotationBase
     {
         public ExposedModuleAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.Exposed, qualifiedSelection, context, new List<string> { "True" })
+            : base(AnnotationType.Exposed, qualifiedSelection, context, new List<string> { Tokens.True })
         {
             
         }

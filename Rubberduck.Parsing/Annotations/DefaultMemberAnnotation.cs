@@ -13,7 +13,7 @@ namespace Rubberduck.Parsing.Annotations
         public DefaultMemberAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
             : base(AnnotationType.DefaultMember, qualifiedSelection, context, new List<string> { "0" })
         {
-            Description = parameters.FirstOrDefault();
+            Description = parameters?.FirstOrDefault() ?? string.Empty;
         }
 
         public string Description { get; }

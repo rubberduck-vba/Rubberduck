@@ -11,7 +11,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class DescriptionAnnotation : AttributeAnnotationBase
     {
         public DescriptionAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.Description, qualifiedSelection, context, parameters.Take(1).ToList())
+            : base(AnnotationType.Description, qualifiedSelection, context, parameters?.Take(1).ToList())
         {
             Description = AttributeValues?.FirstOrDefault();
             if ((Description?.StartsWith("\"") ?? false) && Description.EndsWith("\""))

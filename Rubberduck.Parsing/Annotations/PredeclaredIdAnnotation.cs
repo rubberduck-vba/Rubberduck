@@ -10,7 +10,7 @@ namespace Rubberduck.Parsing.Annotations
     public sealed class PredeclaredIdAnnotation : AttributeAnnotationBase
     {
         public PredeclaredIdAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.PredeclaredId, qualifiedSelection, context, new List<string>{"True"})
+            : base(AnnotationType.PredeclaredId, qualifiedSelection, context, new List<string>{Tokens.True})
         {}
 
         public override string Attribute => "VB_PredeclaredId";

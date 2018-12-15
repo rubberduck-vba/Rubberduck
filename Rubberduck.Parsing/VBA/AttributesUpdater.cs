@@ -63,12 +63,12 @@ namespace Rubberduck.Parsing.VBA
                 if (lastModuleAttribute == null)
                 {
                     //This should never happen for a real module.
-                    var codeToInsert = $"Attribute {attribute} ={AttributeValuesText(values)}{Environment.NewLine}";
+                    var codeToInsert = $"Attribute {attribute} = {AttributeValuesText(values)}{Environment.NewLine}";
                     rewriter.InsertBefore(0, codeToInsert);
                 }
                 else
                 {
-                    var codeToInsert = $"{Environment.NewLine}Attribute {attribute} ={AttributeValuesText(values)}";
+                    var codeToInsert = $"{Environment.NewLine}Attribute {attribute} = {AttributeValuesText(values)}";
                     rewriter.InsertAfter(lastModuleAttribute.stop.TokenIndex, codeToInsert);
                 }  
             }
@@ -78,12 +78,12 @@ namespace Rubberduck.Parsing.VBA
                 var firstEndOfLineInMember = attributesContext.GetDescendent<VBAParser.EndOfLineContext>();
                 if (firstEndOfLineInMember == null)
                 {
-                    var codeToInsert = $"{Environment.NewLine}Attribute {attribute} ={AttributeValuesText(values)}";
+                    var codeToInsert = $"{Environment.NewLine}Attribute {attribute} = {AttributeValuesText(values)}";
                     rewriter.InsertAfter(declaration.AttributesPassContext.Stop.TokenIndex, codeToInsert);
                 }
                 else
                 {
-                    var codeToInsert = $"Attribute {attribute} ={AttributeValuesText(values)}{Environment.NewLine}";
+                    var codeToInsert = $"Attribute {attribute} = {AttributeValuesText(values)}{Environment.NewLine}";
                     rewriter.InsertAfter(firstEndOfLineInMember.Stop.TokenIndex, codeToInsert);
                 }
             }
@@ -91,14 +91,7 @@ namespace Rubberduck.Parsing.VBA
 
         private static string AttributeValuesText(IEnumerable<string> attributeValues)
         {
-            var builder = new StringBuilder();
-            foreach (var attributeValue in attributeValues)
-            {
-                builder.Append($" {attributeValue},");
-            }
-            //Remove trailing comma.
-            builder.Length--;
-            return builder.ToString();
+            return string.Join(", ", attributeValues);
         }
 
         public void RemoveAttribute(IRewriteSession rewriteSession, Declaration declaration, string attribute, IReadOnlyList<string> values = null)
@@ -168,7 +161,7 @@ namespace Rubberduck.Parsing.VBA
             var statementContext = nodeToUpdate.Context;
             var firstIndexToReplace = statementContext.EQ().Symbol.TokenIndex + 1;
             var lastIndexToReplace = statementContext.stop.TokenIndex;
-            var replacementText = AttributeValuesText(values);
+            var replacementText = $" {AttributeValuesText(values)}";
 
             rewriter.Replace(new Interval(firstIndexToReplace, lastIndexToReplace), replacementText);
         }

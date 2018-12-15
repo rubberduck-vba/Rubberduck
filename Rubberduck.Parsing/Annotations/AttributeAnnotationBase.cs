@@ -9,7 +9,7 @@ namespace Rubberduck.Parsing.Annotations
         protected AttributeAnnotationBase(AnnotationType annotationType, QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IReadOnlyList<string> attributeValues) 
         :base(annotationType, qualifiedSelection, context)
         {
-            AttributeValues = attributeValues;
+            AttributeValues = attributeValues ?? new List<string>();
         }
 
         public abstract string Attribute { get; }
