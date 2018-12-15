@@ -126,13 +126,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddHiddenMemberAttribute(string identifierName)
         {
-            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"40"}));
+            Add(new AttributeNode(identifierName + ".VB_MemberFlags", new[] {"40"}));
         }
 
         public bool HasHiddenMemberAttribute(string identifierName, out AttributeNode attribute)
         {
             attribute = this.SingleOrDefault(a => a.HasValue("40")
-                && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+                && a.Name.Equals($"{identifierName}.VB_MemberFlags", StringComparison.OrdinalIgnoreCase));
             return attribute != null;
         }
 

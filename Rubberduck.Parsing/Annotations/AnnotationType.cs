@@ -5,6 +5,7 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Member names are 
     /// </summary>
+    [Flags]
     public enum AnnotationType
     {
         /// <summary>
