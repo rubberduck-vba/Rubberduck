@@ -34,8 +34,7 @@ namespace Rubberduck.Inspections.Concrete
                         var description = string.Format(InspectionResults.AttributeValueOutOfSyncInspection, 
                             annotation.Attribute, 
                             string.Join(", ", attributeValues), 
-                            annotation.AnnotationType, 
-                            string.Join(", ", annotation.AttributeValues));
+                            annotation.AnnotationType);
 
                         var result = new DeclarationInspectionResult(this, description, declaration,
                             new QualifiedContext(declaration.QualifiedModuleName, annotation.Context));
