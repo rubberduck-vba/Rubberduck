@@ -767,7 +767,17 @@ namespace Rubberduck.Resources {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap cross_script {
+            get {
+                object obj = ResourceManager.GetObject("cross_script", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to runtime expression.
         /// </summary>
@@ -2142,6 +2152,16 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap magnifier_medium {
+            get {
+                object obj = ResourceManager.GetObject("magnifier_medium", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Make ActiveSheet reference explicit.
         /// </summary>
         public static string MakeActiveSheetReferenceExplicit {
@@ -2856,13 +2876,24 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Add/Remove References.
+        ///   Looks up a localized string similar to Add/Remove References....
         /// </summary>
         public static string References_Caption
         {
             get
             {
                 return ResourceManager.GetString("References_Caption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add/Remove References - {0}.
+        /// </summary>
+        public static string References_CaptionTemplate
+        {
+            get
+            {
+                return ResourceManager.GetString("References_CaptionTemplate", resourceCulture);
             }
         }
 
@@ -2898,7 +2929,7 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("References_Pinned", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Projects.
         /// </summary>

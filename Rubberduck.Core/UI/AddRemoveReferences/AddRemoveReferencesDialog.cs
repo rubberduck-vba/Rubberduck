@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 using Rubberduck.UI.Refactorings;
 
 namespace Rubberduck.UI.AddRemoveReferences
@@ -9,7 +10,14 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         public AddRemoveReferencesDialog()
         {
-            InitializeComponent();           
+            InitializeComponent();
+            MinimumSize= new Size(600, 380);
+        }
+
+        public sealed override Size MinimumSize
+        {
+            get => base.MinimumSize;
+            set => base.MinimumSize = value;
         }
 
         public AddRemoveReferencesDialog(AddRemoveReferencesViewModel viewModel) : this()

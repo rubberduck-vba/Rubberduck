@@ -21,13 +21,4 @@
       <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).resx</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <None Remove="Icons\Fugue\arrow-180.png" />
-    <None Remove="Icons\Fugue\clock-select.png" />
-    <None Remove="Icons\Fugue\exclamation-pinned.png" />
-    <None Remove="Icons\Fugue\lock-pinned.png" />
-    <None Remove="Icons\Fugue\pinned.png" />
-    <None Remove="Icons\Fugue\plus-circle-pinned.png" />
-    <None Remove="Icons\Fugue\tick-circle-pinned.png" />
-  </ItemGroup>
 </Project>

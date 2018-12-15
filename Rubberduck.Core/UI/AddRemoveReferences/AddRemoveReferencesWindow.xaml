@@ -7,11 +7,11 @@
              xmlns:local="clr-namespace:Rubberduck.UI.AddRemoveReferences"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="380" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance local:AddRemoveReferencesViewModel}">
     <UserControl.Resources>
-        <BitmapImage x:Key="SearchIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/magnifier-medium.png" />
         <BitmapImage x:Key="BrowseIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder-open.png" />
         <BitmapImage x:Key="LibraryIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/node-select-all.png" />
         <BitmapImage x:Key="VbaProjectIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
@@ -24,7 +24,8 @@
 
         <local:ReferenceStatusImageSourceConverter x:Key="StatusToIcon" />
         <local:PriorityButtonVisibilityConverter x:Key="PriorityButtonVisibility" />
-        <converters:RemainingWidthConverter x:Key="RemainingWidth" />
+        <local:SearchImageSourceConverter x:Key="SearchToIcon" />
+        <converters:BoolToHiddenVisibilityConverter x:Key="ProjectVisibilityConverter" />
 
         <Style x:Key="DialogButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="5,0" />
@@ -129,7 +130,7 @@
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <DockPanel Grid.Row="0" Dock="Top" Background="{x:Static SystemColors.WindowBrush}">
-            <Label DockPanel.Dock="Top" Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Caption}" FontWeight="Bold" />
+            <Label DockPanel.Dock="Top" Content="{Binding ProjectCaption}" FontWeight="Bold" />
             <TextBlock DockPanel.Dock="Top" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_SubCaption}" Margin="10,0,0,10" />
         </DockPanel>
         <Border Grid.Row="1" Background="{x:Static SystemColors.ControlLightBrush}">
@@ -149,7 +150,7 @@
                                 </StackPanel>
                             </TabItem.Header>
                         </TabItem>
-                        <TabItem Tag="Projects" Visibility="{Binding ProjectsVisible}">
+                        <TabItem Tag="Projects" Visibility="{Binding ProjectsHidden, Converter={StaticResource ProjectVisibilityConverter}}">
                             <TabItem.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <Image Source="{StaticResource VbaProjectIcon}" />
@@ -203,7 +204,7 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="20" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox Grid.Column="0">
+                                <TextBox Name="SearchBox" Grid.Column="0">
                                     <TextBox.Style>
                                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource PlaceHolder}">
                                             <Setter Property="Height" Value="20" />
@@ -213,13 +214,22 @@
                                         </Style>
                                     </TextBox.Style>
                                 </TextBox>
-                                <Border Grid.Column="1" Margin="2" Width="16" Height="16">
-                                    <Image Source="{StaticResource SearchIcon}" />
-                                </Border>
+                                <Button Name="SearchButton"  Grid.Column="1" Command="{Binding ClearSearchCommand}" 
+                                        BorderBrush="{x:Static SystemColors.ControlLightBrush}"
+                                        Background="Transparent"
+                                        Width="20" Height="20" Padding="0" Margin="0,1"
+                                        controls:EventFocusAttachment.ElementToFocus="{Binding ElementName=SearchBox}">
+                                    <Image Margin="2" Width="16" Height="16" 
+                                           Source="{Binding Search, Converter={StaticResource SearchToIcon}, UpdateSourceTrigger=PropertyChanged}" />
+                                </Button>
                             </Grid>
                         </Border>
                         <Border Grid.Row="1" Grid.Column="0">
-                            <ListView Name="LibrarySelect" SelectedItem="{Binding SelectedLibrary, Mode=TwoWay}" ItemsSource="{Binding AvailableReferences}" HorizontalContentAlignment="Stretch">
+                            <ListView Name="LibrarySelect" SelectedItem="{Binding SelectedLibrary, Mode=TwoWay}" 
+                                      SelectionMode="Single"
+                                      ItemsSource="{Binding AvailableReferences}" 
+                                      HorizontalContentAlignment="Stretch"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Height" Value="20" />
@@ -230,7 +240,7 @@
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="20" />
-                                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Converter={StaticResource RemainingWidth}}" />
+                                                <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="50" />
                                             </Grid.ColumnDefinitions>
                                             <Button Grid.Column="0" 
@@ -238,9 +248,15 @@
                                                     Background="Transparent"
                                                     BorderBrush="Transparent"
                                                     Command="{Binding DataContext.PinLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
+                                                <i:Interaction.Behaviors>
+                                                    <controls:BindableListItemDrillThroughBehavior />
+                                                </i:Interaction.Behaviors>
                                                 <Image Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
                                             </Button>
-                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0">
+                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0" TextTrimming="CharacterEllipsis">
+                                                <i:Interaction.Behaviors>
+                                                    <controls:BindableListItemDrillThroughBehavior />
+                                                </i:Interaction.Behaviors>
                                                 <TextBlock.InputBindings>
                                                     <MouseBinding MouseAction="LeftDoubleClick"  
                                                                   Command="{Binding DataContext.AddCommand, UpdateSourceTrigger=PropertyChanged, ElementName=LibrarySelect}" />
@@ -261,7 +277,12 @@
                             </Button>
                         </StackPanel>
                         <Border Grid.Row="1" Grid.Column="2">
-                            <ListView Name="ProjectSelect" SelectedItem="{Binding SelectedReference, Mode=TwoWay}" ItemsSource="{Binding ProjectReferences}" HorizontalContentAlignment="Stretch">
+                            <ListView Name="ProjectSelect" 
+                                      SelectedItem="{Binding SelectedReference, Mode=TwoWay}" 
+                                      SelectionMode="Single"
+                                      ItemsSource="{Binding ProjectReferences, NotifyOnTargetUpdated=True}" 
+                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                      HorizontalContentAlignment="Stretch">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Height" Value="20" />
@@ -272,7 +293,7 @@
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="20" />
-                                                <ColumnDefinition Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=ListView}, Converter={StaticResource RemainingWidth}}" />
+                                                <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="50" />
                                                 <ColumnDefinition Width="20" />
                                                 <ColumnDefinition Width="20" />
@@ -283,8 +304,14 @@
                                                     BorderBrush="Transparent"
                                                     Command="{Binding DataContext.PinReferenceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
                                                 <Image Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
+                                                <i:Interaction.Behaviors>
+                                                    <controls:BindableListItemDrillThroughBehavior />
+                                                </i:Interaction.Behaviors>
                                             </Button>
-                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0">
+                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0" TextTrimming="CharacterEllipsis">
+                                                <i:Interaction.Behaviors>
+                                                    <controls:BindableListItemDrillThroughBehavior />
+                                                </i:Interaction.Behaviors>
                                                 <TextBlock.InputBindings>
                                                     <MouseBinding MouseAction="LeftDoubleClick"  
                                                                   Command="{Binding DataContext.RemoveCommand, UpdateSourceTrigger=PropertyChanged, ElementName=ProjectSelect}" />

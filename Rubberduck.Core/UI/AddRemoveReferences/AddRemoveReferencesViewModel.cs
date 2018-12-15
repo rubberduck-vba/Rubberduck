@@ -101,6 +101,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
             AddCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteAddCommand);
             RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand);
+            ClearSearchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteClearSearchCommand);
             BrowseCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteBrowseCommand);
             MoveUpCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteMoveUpCommand);
             MoveDownCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteMoveDownCommand);
@@ -112,6 +113,10 @@ namespace Rubberduck.UI.AddRemoveReferences
             ApplyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteApplyCommand);
         }
 
+        public string ProjectCaption => string.IsNullOrEmpty(Model?.Project?.IdentifierName)
+            ? RubberduckUI.References_Caption
+            : string.Format(RubberduckUI.References_CaptionTemplate, Model.Project.IdentifierName);
+
         /// <summary>
         /// The IAddRemoveReferencesModel for the view.
         /// </summary>
@@ -120,7 +125,7 @@ namespace Rubberduck.UI.AddRemoveReferences
         /// <summary>
         /// Hides the projects filter if the host does not support them. Statically set.
         /// </summary>
-        public bool ProjectsVisible => HostHasProjects;
+        public bool ProjectsHidden => !HostHasProjects;
 
         /// <summary>
         /// The number of built-in (locked) references of the project.
@@ -136,6 +141,11 @@ namespace Rubberduck.UI.AddRemoveReferences
         /// Removes a reference from the project and makes it "available".
         /// </summary>
         public ICommand RemoveCommand { get; }
+
+        /// <summary>
+        /// Clears the search textbox.
+        /// </summary>
+        public ICommand ClearSearchCommand { get; }
 
         /// <summary>
         /// Prompts the user to browse for a reference.
@@ -220,6 +230,18 @@ namespace Rubberduck.UI.AddRemoveReferences
             EvaluateProjectDirty();
             ProjectReferences.Refresh();
             AvailableReferences.Refresh();
+        }
+
+        /// <summary>
+        /// Delegate for ClearSearchCommand.
+        /// </summary>
+        /// <param name="parameter">Ignored</param>
+        private void ExecuteClearSearchCommand(object parameter)
+        {
+            if (!string.IsNullOrEmpty(Search))
+            {
+                Search = string.Empty;
+            }
         }
 
         /// <summary>
@@ -445,6 +467,7 @@ namespace Rubberduck.UI.AddRemoveReferences
             set
             {
                 _search = value;
+                OnPropertyChanged();
                 AvailableReferences.Refresh();
             }
         }
