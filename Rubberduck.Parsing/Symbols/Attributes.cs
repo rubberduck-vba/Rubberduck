@@ -141,8 +141,8 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool HasHiddenMemberAttribute(string identifierName, out AttributeNode attribute)
         {
-            attribute = this.SingleOrDefault(a => a.HasValue("-4") &&
-                a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+            attribute = this.SingleOrDefault(a => a.HasValue("40")
+                && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
             return attribute != null;
         }
 
@@ -158,6 +158,13 @@ namespace Rubberduck.Parsing.Symbols
         public void AddEvaluateMemberAttribute(string identifierName)
         {
             Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] { "-5" }));
+        }
+
+        public bool HasEvaluateMemberAttribute(string identifierName, out AttributeNode attribute)
+        {
+            attribute = this.SingleOrDefault(a => a.HasValue("-5")
+                                                  && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+            return attribute != null;
         }
 
         public void AddMemberDescriptionAttribute(string identifierName, string description)
@@ -176,7 +183,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public void AddPredeclaredIdTypeAttribute()
         {
-            Add(new AttributeNode("VB_PredeclaredId", new[] {"True"}));
+            Add(new AttributeNode("VB_PredeclaredId", new[] {Tokens.True}));
         }
 
         public AttributeNode PredeclaredIdAttribute
@@ -197,7 +204,7 @@ namespace Rubberduck.Parsing.Symbols
 
         public bool HasPredeclaredIdAttribute(out AttributeNode attribute)
         {
-            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_PredeclaredId", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
+            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_PredeclaredId", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True));
             return attribute != null;
         }
 
@@ -206,23 +213,23 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public void AddGlobalClassAttribute()
         {
-            Add(new AttributeNode("VB_GlobalNamespace", new[] {"True"}));
+            Add(new AttributeNode("VB_GlobalNamespace", new[] {Tokens.True}));
         }
 
         public bool HasGlobalAttribute(out AttributeNode attribute)
         {
-            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_GlobalNamespace", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
+            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_GlobalNamespace", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True));
             return attribute != null;
         }
 
         public void AddExposedClassAttribute()
         {
-            Add(new AttributeNode("VB_Exposed", new[] { "True" }));
+            Add(new AttributeNode("VB_Exposed", new[] { Tokens.True }));
         }
 
         public bool HasExposedAttribute(out AttributeNode attribute)
         {
-            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Exposed", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
+            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Exposed", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True));
             return attribute != null;
         }
 
@@ -231,12 +238,12 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public void AddExtensibleClassAttribute()
         {
-            Add(new AttributeNode("VB_Customizable", new[] { "True" }));
+            Add(new AttributeNode("VB_Customizable", new[] { Tokens.True }));
         }
 
         public bool HasExtensibleAttribute(out AttributeNode attribute)
         {
-            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Customizable", StringComparison.OrdinalIgnoreCase) && a.HasValue("True"));
+            attribute = this.SingleOrDefault(a => a.Name.Equals("VB_Customizable", StringComparison.OrdinalIgnoreCase) && a.HasValue(Tokens.True));
             return attribute != null;
         }
 
