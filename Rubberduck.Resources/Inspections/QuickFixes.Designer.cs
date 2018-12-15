@@ -74,8 +74,7 @@ namespace Rubberduck.Resources.Inspections {
         /// </summary>
         public static string AddMissingAttributeQuickFix
         {
-            get
-            {
+            get {
                 return ResourceManager.GetString("AddMissingAttributeQuickFix", resourceCulture);
             }
         }
@@ -88,7 +87,17 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("AddStepOneQuickFix", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add explicit &apos;Step&apos; clause.
+        /// </summary>
+        public static string AdjustAttributeValuesQuickFix
+        {
+            get {
+                return ResourceManager.GetString("AdjustAttributeValuesQuickFix", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Use early-bound Application.WorksheetFunction method..
         /// </summary>

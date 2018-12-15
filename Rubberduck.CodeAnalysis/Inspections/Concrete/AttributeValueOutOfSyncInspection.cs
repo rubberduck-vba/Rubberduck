@@ -31,8 +31,11 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (HasDifferingAttributeValues(declaration, annotation, out var attributeValues))
                     {
-                        var description = string.Format(InspectionResults.AttributeValueOutOfSyncInspection, declaration.IdentifierName,
-                            annotation.Attribute, string.Join(", ", annotation.AttributeValues), string.Join(", ", attributeValues));
+                        var description = string.Format(InspectionResults.AttributeValueOutOfSyncInspection, 
+                            annotation.Attribute, 
+                            string.Join(", ", attributeValues), 
+                            annotation.AnnotationType, 
+                            string.Join(", ", annotation.AttributeValues));
 
                         var result = new DeclarationInspectionResult(this, description, declaration,
                             new QualifiedContext(declaration.QualifiedModuleName, annotation.Context));

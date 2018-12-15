@@ -262,6 +262,9 @@
     <value>'IsMissing'-Aufruf in Prüfung eines Standardwerts umschreiben.</value>
   </data>
   <data name="AddMissingAttributeQuickFix" xml:space="preserve">
-    <value>Füge das fehlende Attribut hinzu.</value>
+    <value>Fehlendes Attribut hinzufügen</value>
+  </data>
+  <data name="AdjustAttributeValuesQuickFix" xml:space="preserve">
+    <value>Attributwert(e) anpassen</value>
   </data>
 </root>
