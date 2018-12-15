@@ -18,9 +18,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Interaction;
-using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UnitTesting;
 
@@ -1294,9 +1292,6 @@ End Sub";
 
             public MockedCodeExplorer(string code) : this(ProjectType.HostProject, ComponentType.StandardModule, code) { }
 
-            //public MockedCodeExplorer(ProjectType projectType, ComponentType componentType = ComponentType.StandardModule, string code = "")
-            //    : this(projectType, new[] { componentType }, new[] { code }) { }
-
             public MockedCodeExplorer(ProjectType projectType, ComponentType componentType = ComponentType.StandardModule, string code = "") : this()
             {
                 var builder = new MockVbeBuilder();
@@ -1308,22 +1303,7 @@ End Sub";
                 VbProject = project.Build();
                 Vbe = builder.AddProject(VbProject).Build();
 
-                var projectRepository = new ProjectsRepository(Vbe.Object);
-
-                State = new RubberduckParserState(Vbe.Object, projectRepository, new DeclarationFinderFactory(), MockVbeEvents.CreateMockVbeEvents(Vbe).Object);
-
-                var removeCommand = new RemoveCommand(SaveDialog.Object, MessageBox.Object, State.ProjectsProvider);
-
-                ViewModel = new CodeExplorerViewModel(new FolderHelper(State, Vbe.Object), State, removeCommand,
-                    _generalSettingsProvider.Object, _windowSettingsProvider.Object, _uiDispatcher.Object, Vbe.Object, null);
-
-                var parser = MockParser.Create(Vbe.Object, State, projectRepository);
-                parser.Parse(new CancellationTokenSource());
-
-                if (parser.State.Status >= ParserState.Error)
-                {
-                    Assert.Inconclusive("Parser Error");
-                }
+                SetupViewModelAndParse();
             }
 
             public MockedCodeExplorer(ProjectType projectType,
@@ -1338,10 +1318,6 @@ End Sub";
                 var builder = new MockVbeBuilder();
                 var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected, projectType);
 
-                VbComponents = project.MockVBComponents;               
-                VbProject = project.Build();
-                Vbe = builder.AddProject(VbProject).Build();
-
                 for (var index = 0; index < componentTypes.Count; index++)
                 {
                     var item = componentTypes[index];
@@ -1355,11 +1331,20 @@ End Sub";
                     }
                 }
 
+                VbComponents = project.MockVBComponents;
                 VbComponent = project.MockComponents.First();
+                VbProject = project.Build();
+                Vbe = builder.AddProject(VbProject).Build();
 
-                var projectRepository = new ProjectsRepository(Vbe.Object);
+                SetupViewModelAndParse();
 
-                State = new RubberduckParserState(Vbe.Object, projectRepository, new DeclarationFinderFactory(), MockVbeEvents.CreateMockVbeEvents(Vbe).Object);
+                VbProject.SetupGet(m => m.VBComponents.Count).Returns(componentTypes.Count);
+            }
+
+            private void SetupViewModelAndParse()
+            {
+                var parser = MockParser.Create(Vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(Vbe));
+                State = parser.State;
 
                 var removeCommand = new RemoveCommand(SaveDialog.Object, MessageBox.Object, State.ProjectsProvider);
 
@@ -1367,20 +1352,16 @@ End Sub";
                     _generalSettingsProvider.Object,
                     _windowSettingsProvider.Object, _uiDispatcher.Object, Vbe.Object, null);
 
-
-                var parser = MockParser.Create(Vbe.Object, State, projectRepository);
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error)
                 {
                     Assert.Inconclusive("Parser Error");
                 }
-
-                VbProject.SetupGet(m => m.VBComponents.Count).Returns(componentTypes.Count);
             }
 
-            public RubberduckParserState State { get; }
+            public RubberduckParserState State { get; set; }
             public Mock<IVBE> Vbe { get; }
-            public CodeExplorerViewModel ViewModel { get; }
+            public CodeExplorerViewModel ViewModel { get; set; }
             public Mock<IVBProject> VbProject { get; }
             public Mock<IVBComponents> VbComponents { get; }
             public Mock<IVBComponent> VbComponent { get; }
