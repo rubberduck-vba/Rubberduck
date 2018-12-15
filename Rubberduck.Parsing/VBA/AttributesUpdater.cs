@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -15,6 +14,8 @@ namespace Rubberduck.Parsing.VBA
     public class AttributesUpdater : IAttributesUpdater
     {
         private readonly IParseTreeProvider _parseTreeProvider;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
 
         public AttributesUpdater(IParseTreeProvider parseTreeProvider)
         {
@@ -24,11 +25,28 @@ namespace Rubberduck.Parsing.VBA
 
         public void AddAttribute(IRewriteSession rewriteSession, Declaration declaration, string attribute, IReadOnlyList<string> values)
         {
-            Debug.Assert(rewriteSession.TargetCodeKind == CodeKind.AttributesCode);
+            if (string.IsNullOrEmpty(attribute))
+            {
+                return;
+            }
 
             //Attributes must have at least one value.
             if (values == null || !values.Any())
             {
+                return;
+            }
+
+            if (declaration == null)
+            {
+                _logger.Warn("Tried to add an attribute to a declaration that is null.");
+                _logger.Trace($"Tried to add attribute {attribute} with values {AttributeValuesText(values)} to a declaration that is null.");
+                return;
+            }
+
+            if (rewriteSession.TargetCodeKind != CodeKind.AttributesCode)
+            {
+                _logger.Warn($"Tried to add an attribute with a rewriter not suitable for attributes. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to add attribute {attribute} with values {AttributeValuesText(values)} to {declaration.QualifiedModuleName} using a rewriter not suitable for attributes.");
                 return;
             }
 
@@ -74,7 +92,7 @@ namespace Rubberduck.Parsing.VBA
             }
             else
             {
-                ParserRuleContext attributesContext = declaration.AttributesPassContext;
+                var attributesContext = declaration.AttributesPassContext;
                 var firstEndOfLineInMember = attributesContext.GetDescendent<VBAParser.EndOfLineContext>();
                 if (firstEndOfLineInMember == null)
                 {
@@ -96,7 +114,24 @@ namespace Rubberduck.Parsing.VBA
 
         public void RemoveAttribute(IRewriteSession rewriteSession, Declaration declaration, string attribute, IReadOnlyList<string> values = null)
         {
-            Debug.Assert(rewriteSession.TargetCodeKind == CodeKind.AttributesCode);
+            if (string.IsNullOrEmpty(attribute))
+            {
+                return;
+            }
+
+            if (declaration == null)
+            {
+                _logger.Warn("Tried to remove an attribute from a declaration that is null.");
+                _logger.Trace($"Tried to remove attribute {attribute} {(values != null ? $"with values {AttributeValuesText(values)} " : string.Empty)}from a declaration that is null.");
+                return;
+            }
+
+            if (rewriteSession.TargetCodeKind != CodeKind.AttributesCode)
+            {
+                _logger.Warn($"Tried to remove an attribute with a rewriter not suitable for attributes. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to remove attribute {attribute} {(values != null ? $"with values {AttributeValuesText(values)} " : string.Empty)}from {declaration.QualifiedModuleName} using a rewriter not suitable for attributes.");
+                return;
+            }
 
             var attributeNodes = ApplicableAttributeNodes(declaration, attribute, values);
 
@@ -140,7 +175,30 @@ namespace Rubberduck.Parsing.VBA
 
         public void UpdateAttribute(IRewriteSession rewriteSession, Declaration declaration, string attribute, IReadOnlyList<string> newValues, IReadOnlyList<string> oldValues = null)
         {
-            Debug.Assert(rewriteSession.TargetCodeKind == CodeKind.AttributesCode);
+            if (string.IsNullOrEmpty(attribute))
+            {
+                return;
+            }
+
+            //Attributes must have at least one value.
+            if (newValues == null || !newValues.Any())
+            {
+                return;
+            }
+
+            if (declaration == null)
+            {
+                _logger.Warn("Tried to updtae an attribute on a declaration that is null.");
+                _logger.Trace($"Tried to update values for attribute {attribute} {(oldValues != null ? $"with values {AttributeValuesText(oldValues)} " : string.Empty)}on a declaration that is null.");
+                return;
+            }
+
+            if (rewriteSession.TargetCodeKind != CodeKind.AttributesCode)
+            {
+                _logger.Warn($"Tried to update an attribute with a rewriter not suitable for attributes. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to update values for attribute {attribute} {(oldValues != null ? $"with values {AttributeValuesText(oldValues)} " : string.Empty)}on {declaration.QualifiedModuleName} to {AttributeValuesText(oldValues)} using a rewriter not suitable for attributes.");
+                return;
+            }
 
             var attributeNodes = ApplicableAttributeNodes(declaration, attribute, oldValues);
 
