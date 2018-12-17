@@ -68,7 +68,18 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("AccessSheetUsingCodeNameQuickFix", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refer to statically accessible sheet by its code name.
+        /// </summary>
+        public static string AddMissingAttributeQuickFix
+        {
+            get
+            {
+                return ResourceManager.GetString("AddMissingAttributeQuickFix", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Add explicit &apos;Step&apos; clause.
         /// </summary>

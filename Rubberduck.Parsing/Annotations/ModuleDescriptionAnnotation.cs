@@ -6,12 +6,12 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Parsing.Annotations
 {
     /// <summary>
-    /// Used for specifying a member's <c>VB_Description</c> attribute.
+    /// Used for specifying a module's <c>VB_Description</c> attribute.
     /// </summary>
-    public sealed class DescriptionAnnotation : AttributeAnnotationBase
+    public sealed class ModuleDescriptionAnnotation : AttributeAnnotationBase
     {
-        public DescriptionAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.Description, qualifiedSelection, context, parameters?.Take(1).ToList())
+        public ModuleDescriptionAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> attributeValues)
+            : base(AnnotationType.ModuleDescription, qualifiedSelection, context, attributeValues?.Take(1).ToList())
         {
             Description = AttributeValues?.FirstOrDefault();
             if ((Description?.StartsWith("\"") ?? false) && Description.EndsWith("\""))
@@ -22,6 +22,7 @@ namespace Rubberduck.Parsing.Annotations
         }
 
         public string Description { get; }
+
         public override string Attribute => "VB_Description";
     }
 }

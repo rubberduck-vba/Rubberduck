@@ -1010,7 +1010,7 @@ namespace Rubberduck.Parsing.VBA
             if (_moduleStates.TryGetValue(key, out var moduleState))
             {
                 // existing/modified
-                return moduleState.IsNew || GetModuleContentHash(key) != moduleState.ModuleContentHashCode;
+                return moduleState.IsNew || moduleState.IsMarkedAsModified || GetModuleContentHash(key) != moduleState.ModuleContentHashCode;
             }
 
             // new
@@ -1021,6 +1021,14 @@ namespace Rubberduck.Parsing.VBA
         {
             var component = ProjectsProvider.Component(module);
             return QualifiedModuleName.GetContentHash(component);
+        }
+
+        public void MarkAsModified(QualifiedModuleName module)
+        {
+            if (_moduleStates.TryGetValue(module, out var moduleState))
+            {
+                moduleState.MarkAsModified();
+            }
         }
 
         public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
