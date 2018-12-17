@@ -52,8 +52,8 @@ namespace Rubberduck.Inspections.Concrete
         private static bool HasDifferingAttributeValues(Declaration declaration, IAttributeAnnotation annotation, out IReadOnlyList<string> attributeValues)
         {
             var attributeNodes = declaration.DeclarationType.HasFlag(DeclarationType.Module)
-                                    ? declaration.Attributes.AttributeNodesFor(annotation).ToList()
-                                    : declaration.Attributes.AttributeNodesFor(annotation, declaration.IdentifierName).ToList();
+                                    ? declaration.Attributes.AttributeNodesFor(annotation)
+                                    : declaration.Attributes.AttributeNodesFor(annotation, declaration.IdentifierName);
 
             foreach (var attributeNode in attributeNodes)
             {
