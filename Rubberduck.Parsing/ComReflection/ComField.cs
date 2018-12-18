@@ -118,7 +118,7 @@ namespace Rubberduck.Parsing.ComReflection
                             _enumGuid = attribs.guid;
                         }
                         IsReferenceType = ReferenceTypeKinds.Contains(attribs.typekind);
-                        _valueType = new ComDocumentation(refTypeInfo, -1).Name;
+                        _valueType = new ComDocumentation(refTypeInfo, ComDocumentation.LibraryIndex).Name;
                     }
                 }
                 catch (COMException) { }

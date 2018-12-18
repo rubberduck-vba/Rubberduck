@@ -25,7 +25,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (parameter == null)
+            if (parameter == null || parameter is CodeExplorerReferenceFolderViewModel || parameter is CodeExplorerReferenceViewModel)
             {
                 return false;
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.Events
 {
@@ -14,6 +15,8 @@ namespace Rubberduck.VBEditor.Events
         event EventHandler<ComponentEventArgs> ComponentSelected;
         event EventHandler<ComponentEventArgs> ComponentActivated;
         event EventHandler<ComponentEventArgs> ComponentReloaded;
+        event EventHandler<ReferenceEventArgs> ProjectReferenceAdded;
+        event EventHandler<ReferenceEventArgs> ProjectReferenceRemoved;
         event EventHandler EventsTerminated;
     }
 }

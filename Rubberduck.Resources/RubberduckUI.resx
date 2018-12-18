@@ -1206,40 +1206,40 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="AddClass" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\AddClass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\custom\png\addclass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="AddForm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\AddForm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\custom\png\addform.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="AddModule" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\AddModule.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\custom\png\addmodule.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="arrow_circle_double" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\arrow-circle-double.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\fugue\arrow-circle-double.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="light_bulb_code" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\light-bulb-code.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\fugue\light-bulb-code.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="ProjectForm" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Custom\PNG\ProjectForm.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\custom\png\projectform.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Splash" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Splash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>splash.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="cross_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\fugue\cross-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="exclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\fugue\exclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="minus_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\minus-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\fugue\minus-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="question_white" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\question-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\fugue\question-white.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="tick_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>Icons\Fugue\tick-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+    <value>icons\fugue\tick-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="Add" xml:space="preserve">
     <value>Add</value>
@@ -1286,6 +1286,94 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Empty line handling:</value>
   </data>
+  <data name="References" xml:space="preserve">
+    <value>References</value>
+  </data>
+  <data name="padlock" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\lock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BrokenReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Custom\PNG\BrokenReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LockedReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Custom\PNG\LockedReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="clock_select" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\clock-select.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_select_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\clock-select-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="exclamation_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\exclamation-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lock_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\lock-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="plus_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\plus-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="plus_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\plus-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tick_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\tick-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="References_AddFailedCaption" xml:space="preserve">
+    <value>Could not add reference</value>
+  </data>
+  <data name="References_BrowseCaption" xml:space="preserve">
+    <value>Browse for reference</value>
+  </data>
+  <data name="References_BrowseFilterActiveX" xml:space="preserve">
+    <value>ActiveX Controls (*.ocx)|*.ocx</value>
+  </data>
+  <data name="References_BrowseFilterAllFiles" xml:space="preserve">
+    <value>All files (*.*)|*.*</value>
+  </data>
+  <data name="References_BrowseFilterExcel" xml:space="preserve">
+    <value>Microsoft Excel Files ({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterExecutable" xml:space="preserve">
+    <value>Executable Files (*.exe;*.dll)|*.exe;*.dll</value>
+  </data>
+  <data name="References_BrowseFilterTypes" xml:space="preserve">
+    <value>Type Libraries (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
+  </data>
+  <data name="References_Caption" xml:space="preserve">
+    <value>Add/Remove References...</value>
+  </data>
+  <data name="References_Locale" xml:space="preserve">
+    <value>Locale:</value>
+  </data>
+  <data name="References_Pinned" xml:space="preserve">
+    <value>Pinned</value>
+  </data>
+  <data name="References_Projects" xml:space="preserve">
+    <value>Projects</value>
+  </data>
+  <data name="References_Recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="References_SearchPlaceholder" xml:space="preserve">
+    <value>Search for reference...</value>
+  </data>
+  <data name="References_SubCaption" xml:space="preserve">
+    <value>Select type libraries and VB projects to add or remove.</value>
+  </data>
+  <data name="References_TypeLibs" xml:space="preserve">
+    <value>Type Libraries</value>
+  </data>
+  <data name="References_Version" xml:space="preserve">
+    <value>Version:</value>
+  </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG</value>
   </data>
@@ -1295,7 +1383,69 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="TodoMarkerTodo" xml:space="preserve">
     <value>TODO</value>
   </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>TODO Explorer</value>
+  </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
     <value>Set DPI Unaware</value>
+  </data>
+  <data name="References_BrowseFilterAccess" xml:space="preserve">
+    <value>Microsoft Access Databases({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterPowerPoint" xml:space="preserve">
+    <value>PowerPoint Addin Files({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterWord" xml:space="preserve">
+    <value>Word Documents({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="ReferenceSettings_FixBroken" xml:space="preserve">
+    <value>Attempt to fix broken references</value>
+  </data>
+  <data name="ReferenceSettings_FolderDialogHeader" xml:space="preserve">
+    <value>Browse for project folder</value>
+  </data>
+  <data name="ReferenceSettings_FoldersHeader" xml:space="preserve">
+    <value>Project Directories</value>
+  </data>
+  <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
+    <value>Recent references tracked:</value>
+  </data>
+  <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
+    <value>Track references not added by Rubberduck</value>
+  </data>
+  <data name="References_BrowseFilterOutlook" xml:space="preserve">
+    <value>Outlook VBA Files ({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterPublisher" xml:space="preserve">
+    <value>Publisher Files ({0}|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterVisio" xml:space="preserve">
+    <value>All Visio Files ({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_DefaultLocale" xml:space="preserve">
+    <value>Standard</value>
+    <comment>Displayed as LCID description when locale is not specified.</comment>
+  </data>
+  <data name="cross_script" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\cross-script.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="magnifier_medium" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\magnifier-medium.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="References_CaptionTemplate" xml:space="preserve">
+    <value>Add/Remove References - {0}</value>
+    <comment>{0} = Project name</comment>
   </data>
 </root>
