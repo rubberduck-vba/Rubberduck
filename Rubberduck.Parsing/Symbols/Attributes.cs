@@ -77,9 +77,14 @@ namespace Rubberduck.Parsing.Symbols
     {
         public bool HasAttributeFor(IAttributeAnnotation annotation, string memberName = null)
         {
+            return AttributeNodesFor(annotation, memberName).Any();
+        }
+
+        public IEnumerable<AttributeNode> AttributeNodesFor(IAttributeAnnotation annotation, string memberName = null)
+        {
             if (!annotation.AnnotationType.HasFlag(AnnotationType.Attribute))
             {
-                return false;
+                return Enumerable.Empty<AttributeNode>();
             }
 
             var attributeName = memberName != null
@@ -89,26 +94,11 @@ namespace Rubberduck.Parsing.Symbols
             //VB_Ext_Key annotation depend on the defined key for identity.
             if (annotation.Attribute.Equals("VB_Ext_Key", StringComparison.OrdinalIgnoreCase))
             {
-                return this.Any(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase) 
+                return this.Where(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase)
                                      && a.Values[0] == annotation.AttributeValues[0]);
             }
 
-            return this.Any(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public bool HasAttributeWithMatchingValueFor(IAttributeAnnotation annotation, string memberName = null)
-        {
-            if (!annotation.AnnotationType.HasFlag(AnnotationType.Attribute))
-            {
-                return false;
-            }
-
-            var attributeName = memberName != null
-                ? $"{memberName}.{annotation.Attribute}"
-                : annotation.Attribute;
-
-            return this.Any(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase)
-                                 && a.Values.SequenceEqual(annotation.AttributeValues));
+            return this.Where(a => a.Name.Equals(attributeName, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
@@ -136,13 +126,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public void AddHiddenMemberAttribute(string identifierName)
         {
-            Add(new AttributeNode(identifierName + ".VB_UserMemId", new[] {"40"}));
+            Add(new AttributeNode(identifierName + ".VB_MemberFlags", new[] {"40"}));
         }
 
         public bool HasHiddenMemberAttribute(string identifierName, out AttributeNode attribute)
         {
             attribute = this.SingleOrDefault(a => a.HasValue("40")
-                && a.Name.Equals($"{identifierName}.VB_UserMemId", StringComparison.OrdinalIgnoreCase));
+                && a.Name.Equals($"{identifierName}.VB_MemberFlags", StringComparison.OrdinalIgnoreCase));
             return attribute != null;
         }
 

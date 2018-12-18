@@ -358,4 +358,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Funktionen, die für EXCEL als benutzerdefinierte Funktionen sichtbar sind, werden einen '#REF!'-Fehler erzeugen, wenn sie in einem Arbeitsblatt verwendet werden, in dem ihr Name dem einer korrekten Zellreferenz entspricht. Wenn die Funktion als benutzerdefinierte Funktion gedacht ist, muss sie umbenannt werden. Wenn die Funktion nicht als benutzerdefinierte Funktion gedacht ist, sollte sie 'Private' deklariert oder aus einem Standardmodul herausgenommen werden.</value>
   </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Eine Rubberduck-Annotation wurde für ein Modul oder Element festgelegt, aber das zugehörige Attribut hat einen anderen Wert. Die Modul-Attribute und Annotationen sollten synchronisiert werden.</value>
+  </data>
 </root>
