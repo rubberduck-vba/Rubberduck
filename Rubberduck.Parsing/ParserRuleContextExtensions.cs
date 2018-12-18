@@ -222,6 +222,25 @@ namespace Rubberduck.Parsing
         }
 
         /// <summary>
+        /// Returns the endOfStatementContext's first endOfLine context.
+        /// </summary>
+        public static VBAParser.EndOfLineContext GetFirstEndOfLine(this VBAParser.EndOfStatementContext endOfStatement)
+        {
+            //This dedicated method exists for performance reasons on hot-paths.
+            var individualEndOfStatements = endOfStatement.individualNonEOFEndOfStatement();
+            foreach (var individualEndOfStatement in individualEndOfStatements)
+            {
+                var endOfLine = individualEndOfStatement.endOfLine();
+                if (endOfLine != null)
+                {
+                    return endOfLine;
+                }
+            }
+            //The only remaining alternative is whitespace followed by an EOF.
+            return null;
+        }
+
+        /// <summary>
         /// Determines if the context's module declares or defaults to 
         /// Option Compare Binary 
         /// </summary>

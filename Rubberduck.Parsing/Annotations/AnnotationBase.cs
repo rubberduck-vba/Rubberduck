@@ -36,7 +36,7 @@ namespace Rubberduck.Parsing.Annotations
             //Annotations on the same line as non-whitespace statements do not scope to anything.
             if (enclosingEndOfStatement.Start.TokenIndex != 0)
             {
-                var firstEndOfLine = enclosingEndOfStatement.GetDescendent<VBAParser.EndOfLineContext>();
+                var firstEndOfLine = enclosingEndOfStatement.GetFirstEndOfLine();
                 var parentEndOfLine = Context.GetAncestor<VBAParser.EndOfLineContext>();
                 if (firstEndOfLine.Equals(parentEndOfLine))
                 {
