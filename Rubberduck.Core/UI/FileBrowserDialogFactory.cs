@@ -1,7 +1,11 @@
 ﻿namespace Rubberduck.UI
 {
-    public interface IFolderBrowserFactory
+    public interface IFileSystemBrowserFactory
     {
+        IOpenFileDialog CreateOpenFileDialog();
+
+        ISaveFileDialog CreateSaveFileDialog();
+
         IFolderBrowser CreateFolderBrowser(string description);
 
         IFolderBrowser CreateFolderBrowser(string description, bool showNewFolderButton);
@@ -10,7 +14,7 @@
             string rootFolder);
     }
 
-    public class DialogFactory : IFolderBrowserFactory
+    public class DialogFactory : IFileSystemBrowserFactory
     {
         private readonly IEnvironmentProvider _environment;
         private readonly bool _oldSchool;
@@ -47,6 +51,16 @@
             return !_oldSchool
                 ? new ModernFolderBrowser(_environment, description, showNewFolderButton, rootFolder) as IFolderBrowser
                 : new FolderBrowser(_environment, description, showNewFolderButton, rootFolder);
+        }
+
+        public IOpenFileDialog CreateOpenFileDialog()
+        {
+            return new OpenFileDialog();
+        }
+
+        public ISaveFileDialog CreateSaveFileDialog()
+        {
+            return new SaveFileDialog();
         }
     }
 }

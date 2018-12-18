@@ -59,7 +59,16 @@ namespace Rubberduck.Resources.Menus {
                 resourceCulture = value;
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add/Remove References....
+        /// </summary>
+        public static string AddRemoveReferences {
+            get {
+                return ResourceManager.GetString("AddRemoveReferences", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to &amp;Find all references....
         /// </summary>

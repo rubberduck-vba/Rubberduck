@@ -357,4 +357,7 @@
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Funktion wird von EXCEL-Zellreferenz verdeckt</value>
   </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Wert stimmt nicht überein zwischen Attribut und Annotation</value>
+  </data>
 </root>

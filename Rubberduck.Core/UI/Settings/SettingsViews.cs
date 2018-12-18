@@ -8,6 +8,7 @@
         UnitTestSettings,
         IndenterSettings,
         AutoCompleteSettings,
-        WindowSettings
+        WindowSettings,
+        ReferenceSettings
     }
 }
