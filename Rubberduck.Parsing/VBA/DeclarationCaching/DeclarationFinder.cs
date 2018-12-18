@@ -28,7 +28,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private readonly ConcurrentDictionary<QualifiedMemberName, ConcurrentBag<Declaration>> _newUndeclared;
         private readonly ConcurrentBag<UnboundMemberDeclaration> _newUnresolved;
         private List<UnboundMemberDeclaration> _unresolved;
-        private IDictionary<QualifiedModuleName, List<IAnnotation>> _annotations;
+        private IDictionary<(QualifiedModuleName module, int annotatedLine), List<IAnnotation>> _annotations;
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
         private IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
@@ -92,7 +92,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                         .ToList(),
                 () =>
                     _annotations = annotations
-                        .GroupBy(node => node.QualifiedSelection.QualifiedName)
+                        .Where(a => a.AnnotatedLine.HasValue)
+                        .GroupBy(a => (a.QualifiedSelection.QualifiedName, a.AnnotatedLine.Value))
                         .ToDictionary(),
                 () =>
                     _declarations = declarations
@@ -489,9 +490,9 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : Enumerable.Empty<Declaration>();
         }
 
-        public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module)
+        public IEnumerable<IAnnotation> FindAnnotations(QualifiedModuleName module, int annotatedLine)
         {
-            return _annotations.TryGetValue(module, out var result) 
+            return _annotations.TryGetValue((module, annotatedLine), out var result) 
                 ? result 
                 : Enumerable.Empty<IAnnotation>();
         }
