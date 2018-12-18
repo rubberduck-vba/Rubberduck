@@ -243,9 +243,9 @@ namespace Rubberduck.Parsing.VBA.ComReferenceLoading
             var projects = _projectsProvider.Projects();
             foreach (var (projectId, project) in projects)
             {
-                if (TryGetFullPath(project, out var fullPath) && !string.IsNullOrEmpty(fullPath))
+                if (TryGetFullPath(project, out var fullPath))
                 {
-                    var projectName = project.Name;
+                    var projectName = !string.IsNullOrEmpty(fullPath) ? project.Name : $"UnsavedProject{projectId}";
                     _projectIdsByFilePathAndProjectName.Add((projectName, fullPath), projectId);
                 }
             }

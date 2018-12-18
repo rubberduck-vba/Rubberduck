@@ -5233,7 +5233,7 @@ End Sub";
             referencedProjectBuilder.AddComponent(referencedComponentName, referencedComponentComponentType, referencedComponentCode);
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty, 0, 0).Build();
+            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, $@"C:\{referencedProjectName}.xlsm", 0, 0).Build();
             builder.AddProject(userProject);
 
             return builder;
