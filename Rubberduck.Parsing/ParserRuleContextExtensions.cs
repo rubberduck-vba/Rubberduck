@@ -197,8 +197,31 @@ namespace Rubberduck.Parsing
         /// </summary>
         public static TContext GetDescendent<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
         {
-            var descendents = GetDescendents<TContext>(context);
-            return descendents.OrderBy(descendent => descendent.Start.TokenIndex).FirstOrDefault();
+            if (context?.children == null)
+            {
+                return null;
+            }
+
+            foreach (var child in context.children)
+            {
+                if (child == null)
+                {
+                    continue;
+                }
+
+                if (child is TContext match)
+                {
+                    return match;
+                }
+                
+                var childResult = (child as ParserRuleContext)?.GetDescendent<TContext>();
+                if (childResult != null)
+                {
+                    return childResult;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -228,6 +251,12 @@ namespace Rubberduck.Parsing
         {
             //This dedicated method exists for performance reasons on hot-paths.
             var individualEndOfStatements = endOfStatement.individualNonEOFEndOfStatement();
+
+            if (individualEndOfStatements == null)
+            {
+                return null;
+            }
+
             foreach (var individualEndOfStatement in individualEndOfStatements)
             {
                 var endOfLine = individualEndOfStatement.endOfLine();
