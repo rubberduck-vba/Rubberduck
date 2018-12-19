@@ -55,61 +55,83 @@ namespace Rubberduck.UI.AddRemoveReferences
                 return null;
             }
 
-            var refs = new Dictionary<RegisteredLibraryKey, RegisteredLibraryInfo>();
-            // Iterating the returned libraries here instead of just .ToDictionary() using because we can't trust that the registry doesn't contain errors.
-            foreach (var reference in _finder.FindRegisteredLibraries())
-            {
-                if (refs.ContainsKey(reference.UniqueId))
-                {
-                    _logger.Warn($"Duplicate registry definition for {reference.Guid} version {reference.Version}.");
-                    continue;
-                }
-                refs.Add(reference.UniqueId, reference);
-            }
+            AddRemoveReferencesModel model = null;
 
-            var models = new Dictionary<RegisteredLibraryKey, ReferenceModel>();
-            using (var references = project.Project?.References)
+            try
             {
-                if (references is null)
-                {
-                    return null;
-                }
-                var priority = 1;
-                foreach (var reference in references)
-                {
-                    var guid = Guid.TryParse(reference.Guid, out var result) ? result : Guid.Empty;
-                    var libraryId = new RegisteredLibraryKey(guid, reference.Major, reference.Minor);
+                Cursor.Current = Cursors.WaitCursor;
 
-                    if (refs.ContainsKey(libraryId))
+                var refs = new Dictionary<RegisteredLibraryKey, RegisteredLibraryInfo>();
+                // Iterating the returned libraries here instead of just .ToDictionary() using because we can't trust that the registry doesn't contain errors.
+                foreach (var reference in _finder.FindRegisteredLibraries())
+                {
+                    if (refs.ContainsKey(reference.UniqueId))
                     {
+                        _logger.Warn(
+                            $"Duplicate registry definition for {reference.Guid} version {reference.Version}.");
+                        continue;
+                    }
+
+                    refs.Add(reference.UniqueId, reference);
+                }
+
+                var models = new Dictionary<RegisteredLibraryKey, ReferenceModel>();
+                using (var references = project.Project?.References)
+                {
+                    if (references is null)
+                    {
+                        return null;
+                    }
+
+                    var priority = 1;
+                    foreach (var reference in references)
+                    {
+                        var guid = Guid.TryParse(reference.Guid, out var result) ? result : Guid.Empty;
+                        var libraryId = new RegisteredLibraryKey(guid, reference.Major, reference.Minor);
+
                         // TODO: If for some reason the VBA reference is broken, we could technically use this to repair it. Just a thought...
-                        models.Add(libraryId, new ReferenceModel(refs[libraryId], reference, priority++));
+                        var adding = refs.ContainsKey(libraryId)
+                            ? new ReferenceModel(refs[libraryId], reference, priority++)
+                            : new ReferenceModel(reference, priority++);
+
+                        adding.IsUsed = adding.IsBuiltIn ||
+                                        _state.DeclarationFinder.IsReferenceUsedInProject(project,
+                                            adding.ToReferenceInfo());
+
+                        models.Add(libraryId, adding);
+                        reference.Dispose();
                     }
-                    else // These should all be either VBA projects or irreparably broken.
-                    {
-                        models.Add(libraryId, new ReferenceModel(reference, priority++));
-                    }
-                    reference.Dispose();
+                }
+
+                foreach (var reference in refs.Where(library =>
+                    (_use64BitPaths || library.Value.Has32BitVersion) &&
+                    !models.ContainsKey(library.Key)))
+                {
+                    models.Add(reference.Key, new ReferenceModel(reference.Value));
+                }
+
+                var settings = _settings.Create();
+                model = new AddRemoveReferencesModel(project, models.Values, settings);
+                if (AddRemoveReferencesViewModel.HostHasProjects)
+                {
+                    model.References.AddRange(GetUserProjectFolderModels(model.Settings).Where(proj =>
+                        !model.References.Any(item =>
+                            item.FullPath.Equals(proj.FullPath, StringComparison.OrdinalIgnoreCase))));
                 }
             }
-
-            foreach (var reference in refs.Where(library =>
-                (_use64BitPaths || library.Value.Has32BitVersion) &&
-                !models.ContainsKey(library.Key)))
+            catch (Exception ex)
             {
-                models.Add(reference.Key, new ReferenceModel(reference.Value));
+                _logger.Warn(ex, "Unexpected exception attempting to create AddRemoveReferencesModel.");
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
             }
 
-            var settings = _settings.Create();
-            var model = new AddRemoveReferencesModel(project, models.Values, settings);
-            if (AddRemoveReferencesViewModel.HostHasProjects)
-            {
-                model.References.AddRange(GetUserProjectFolderModels(model.Settings).Where(proj =>
-                    !model.References.Any(item =>
-                        item.FullPath.Equals(proj.FullPath, StringComparison.OrdinalIgnoreCase))));
-            }
-
-            return new AddRemoveReferencesPresenter(new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _reconciler, _browser)));         
+            return (model != null)
+                ? new AddRemoveReferencesPresenter(
+                    new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _reconciler, _browser)))
+                : null;                 
         }
 
         private IEnumerable<ReferenceModel> GetUserProjectFolderModels(IReferenceSettings settings)
