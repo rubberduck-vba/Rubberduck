@@ -10,18 +10,17 @@ namespace Rubberduck.UI.AddRemoveReferences
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values is null || 
-                values.Length != 4 || 
-                !(bool)values[0] ||                                 //IsSelected
-                !(values[2] is ReferenceModel reference) ||         //DataContext
+                values.Length != 3 || 
+                !(values[1] is ReferenceModel reference) ||         //DataContext
                 reference.IsBuiltIn ||
                 !(parameter is string direction))
             {
                 return false;
             }
 
-            var position = reference.Priority;                      //ProjectSelect.SelectedIndex
-            var items = (int)values[1];                             //ProjectSelect.Items.Count
-            var builtIn = (int)values[3];                           //AddRemoveReferencesWindow.DataContext.BuiltInReferenceCount
+            var position = reference.Priority;                      
+            var items = (int)values[0];                             //ProjectSelect.Items.Count
+            var builtIn = (int)values[2];                           //AddRemoveReferencesWindow.DataContext.BuiltInReferenceCount
 
             if (direction.Equals("Up"))
             {

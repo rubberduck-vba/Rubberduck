@@ -8,22 +8,24 @@
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" 
              d:DesignHeight="380" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance local:AddRemoveReferencesViewModel}">
     <UserControl.Resources>
+        <system:Int32 x:Key="ToolTipDelay">2000</system:Int32>
+
         <BitmapImage x:Key="BrowseIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder-open.png" />
         <BitmapImage x:Key="LibraryIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/node-select-all.png" />
         <BitmapImage x:Key="VbaProjectIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
         <BitmapImage x:Key="PinnedIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/pinned.png" />
         <BitmapImage x:Key="RecentIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/clock-select.png" />
-        <BitmapImage x:Key="MoveUpIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-090.png" />
-        <BitmapImage x:Key="MoveDownIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-270.png" />
         <BitmapImage x:Key="AddIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow.png" />
         <BitmapImage x:Key="RemoveIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-180.png" />
 
         <local:ReferenceStatusImageSourceConverter x:Key="StatusToIcon" />
         <local:PriorityButtonVisibilityConverter x:Key="PriorityButtonVisibility" />
+        <local:PriorityButtonImageSourceConverter x:Key="PriorityButtonIcon" />
         <converters:SearchImageSourceConverter x:Key="SearchToIcon" />
         <converters:BooleanToNonDimmedBrushConverter x:Key="BooleanToNonDimmed" />
         <converters:BoolToHiddenVisibilityConverter x:Key="ProjectVisibilityConverter" />
@@ -248,7 +250,8 @@
                                                     Width="16" Height="16"
                                                     Background="Transparent"
                                                     BorderBrush="Transparent"
-                                                    Command="{Binding DataContext.PinLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
+                                                    Command="{Binding DataContext.PinLibraryCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
+                                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_PinToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                                 <i:Interaction.Behaviors>
                                                     <controls:BindableListItemDrillThroughBehavior />
                                                 </i:Interaction.Behaviors>
@@ -270,10 +273,14 @@
                             </ListView>
                         </Border>
                         <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
-                            <Button Command="{Binding AddCommand}" Width="40" Height="20" Padding="0" Margin="0,1">
+                            <Button Command="{Binding AddCommand}" Width="40" Height="20" Padding="0" Margin="0,1"
+                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_AddToolTip}"
+                                    ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                 <Image Margin="5,0" Source="{StaticResource AddIcon}" />
                             </Button>
-                            <Button Command="{Binding RemoveCommand}" Width="40" Height="20" Padding="0" Margin="0,1">
+                            <Button Command="{Binding RemoveCommand}" Width="40" Height="20" Padding="0" Margin="0,1"
+                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_RemoveToolTip}"
+                                    ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                 <Image Margin="5,0" Source="{StaticResource RemoveIcon}" />
                             </Button>
                         </StackPanel>
@@ -294,22 +301,114 @@
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="20" />
+                                                <ColumnDefinition Width="20" />
+                                                <ColumnDefinition Width="20" />
                                                 <ColumnDefinition Width="*" />
                                                 <ColumnDefinition Width="50" />
-                                                <ColumnDefinition Width="20" />
-                                                <ColumnDefinition Width="20" />
                                             </Grid.ColumnDefinitions>
-                                            <Button Grid.Column="0" 
-                                                    Width="16" Height="16"
-                                                    Background="Transparent"
-                                                    BorderBrush="Transparent"
-                                                    Command="{Binding DataContext.PinReferenceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
+                                            <Button Name="MoveUpButton" Grid.Column="0" Margin="1" Background="Transparent" BorderBrush="LightGray"
+                                                    Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
+                                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_MoveUpToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}" >
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <MultiBinding Converter="{StaticResource PriorityButtonVisibility}" ConverterParameter="Up">
+                                                                        <MultiBinding.Bindings>
+                                                                            <Binding ElementName="ProjectSelect" Path="Items.Count"/>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="DataContext"/>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}" Path="DataContext.BuiltInReferenceCount"/>
+                                                                        </MultiBinding.Bindings>
+                                                                    </MultiBinding>
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                <Image>
+                                                    <Image.Style>
+                                                        <Style TargetType="{x:Type Image}">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="True">
+                                                                    <DataTrigger.Binding>
+                                                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="IsMouseOver"/>
+                                                                    </DataTrigger.Binding>
+                                                                    <Setter Property="IsEnabled" Value="True" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                    <Image.Source>
+                                                        <MultiBinding Converter="{StaticResource PriorityButtonIcon}" ConverterParameter="Up" NotifyOnSourceUpdated="True" Mode="OneWay">
+                                                            <Binding RelativeSource="{RelativeSource Self}" Path="IsEnabled" />
+                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="DataContext"/>
+                                                        </MultiBinding>
+                                                    </Image.Source>
+                                                </Image>
+                                                <i:Interaction.Behaviors>
+                                                    <controls:BindableListItemDrillThroughBehavior />
+                                                </i:Interaction.Behaviors>
+                                            </Button>
+                                            <Button Name="MoveDownButton" Grid.Column="1" Margin="1" Background="Transparent" BorderBrush="LightGray"
+                                                Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
+                                                ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_MoveDownToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
+                                                <Button.Style>
+                                                    <Style TargetType="{x:Type Button}">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Value="True">
+                                                                <DataTrigger.Binding>
+                                                                    <MultiBinding Converter="{StaticResource PriorityButtonVisibility}" ConverterParameter="Down">
+                                                                        <MultiBinding.Bindings>
+                                                                            <Binding ElementName="ProjectSelect" Path="Items.Count"/>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="DataContext"/>
+                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}" Path="DataContext.BuiltInReferenceCount"/>
+                                                                        </MultiBinding.Bindings>
+                                                                    </MultiBinding>
+                                                                </DataTrigger.Binding>
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                                <Image>
+                                                    <Image.Style>
+                                                        <Style TargetType="{x:Type Image}">
+                                                            <Setter Property="IsEnabled" Value="False" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="True">
+                                                                    <DataTrigger.Binding>
+                                                                        <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="IsMouseOver"/>
+                                                                    </DataTrigger.Binding>
+                                                                    <Setter Property="IsEnabled" Value="True" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Image.Style>
+                                                    <Image.Source>
+                                                        <MultiBinding Converter="{StaticResource PriorityButtonIcon}" ConverterParameter="Down" NotifyOnSourceUpdated="True" Mode="OneWay">
+                                                            <Binding RelativeSource="{RelativeSource Self}" Path="IsEnabled" />
+                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="DataContext"/>
+                                                        </MultiBinding>
+                                                    </Image.Source>
+                                                </Image>
+                                                <i:Interaction.Behaviors>
+                                                    <controls:BindableListItemDrillThroughBehavior />
+                                                </i:Interaction.Behaviors>
+                                            </Button>
+                                            <Button Grid.Column="2" Width="16" Height="16" Background="Transparent" BorderBrush="Transparent"
+                                                    Command="{Binding DataContext.PinReferenceCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}"
+                                                    ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_PinToolTip}" ToolTipService.InitialShowDelay="{StaticResource ToolTipDelay}">
                                                 <Image Source="{Binding Status, Converter={StaticResource StatusToIcon}}" />
                                                 <i:Interaction.Behaviors>
                                                     <controls:BindableListItemDrillThroughBehavior />
                                                 </i:Interaction.Behaviors>
                                             </Button>
-                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0" TextTrimming="CharacterEllipsis"
+                                            <TextBlock Grid.Column="3" Text="{Binding Description}" Margin="2,0" TextTrimming="CharacterEllipsis"
                                                        Foreground="{Binding IsUsed, Converter={StaticResource BooleanToNonDimmed}}">
                                                 <i:Interaction.Behaviors>
                                                     <controls:BindableListItemDrillThroughBehavior />
@@ -319,59 +418,7 @@
                                                                   Command="{Binding DataContext.RemoveCommand, UpdateSourceTrigger=PropertyChanged, ElementName=ProjectSelect}" />
                                                 </TextBlock.InputBindings>
                                             </TextBlock>
-                                            <TextBlock Grid.Column="2" Text="{Binding Version}" Margin="2,0" />
-                                            <Button Name="MoveUpButton"
-                                                    Grid.Column="3" 
-                                                    Margin="1"
-                                                    Command="{Binding DataContext.MoveUpCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
-                                                <Button.Style>
-                                                    <Style TargetType="{x:Type Button}">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Value="True">
-                                                                <DataTrigger.Binding>
-                                                                    <MultiBinding Converter="{StaticResource PriorityButtonVisibility}" ConverterParameter="Up">
-                                                                        <MultiBinding.Bindings>
-                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="IsSelected" />
-                                                                            <Binding ElementName="ProjectSelect" Path="Items.Count"/>
-                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="DataContext"/>
-                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}" Path="DataContext.BuiltInReferenceCount"/>
-                                                                        </MultiBinding.Bindings>
-                                                                    </MultiBinding>
-                                                                </DataTrigger.Binding>
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
-                                                <Image Source="{StaticResource MoveUpIcon}" />
-                                            </Button>
-                                            <Button Name="MoveDownButton"
-                                                    Grid.Column="4" 
-                                                    Margin="1"
-                                                    Command="{Binding DataContext.MoveDownCommand, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}}">
-                                                <Button.Style>
-                                                    <Style TargetType="{x:Type Button}">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                        <Style.Triggers>
-                                                            <DataTrigger Value="True">
-                                                                <DataTrigger.Binding>
-                                                                    <MultiBinding Converter="{StaticResource PriorityButtonVisibility}" ConverterParameter="Down">
-                                                                        <MultiBinding.Bindings>
-                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="IsSelected" />
-                                                                            <Binding ElementName="ProjectSelect" Path="Items.Count"/>
-                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}" Path="DataContext"/>
-                                                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type local:AddRemoveReferencesWindow}}" Path="DataContext.BuiltInReferenceCount"/>
-                                                                        </MultiBinding.Bindings>
-                                                                    </MultiBinding>
-                                                                </DataTrigger.Binding>
-                                                                <Setter Property="Visibility" Value="Visible"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Button.Style>
-                                                <Image Source="{StaticResource MoveDownIcon}" />
-                                            </Button>
+                                            <TextBlock Grid.Column="4" Text="{Binding Version}" Margin="2,0" Foreground="{Binding IsUsed, Converter={StaticResource BooleanToNonDimmed}}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
