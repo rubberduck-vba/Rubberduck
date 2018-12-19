@@ -8,7 +8,6 @@ using Rubberduck.Parsing.ComReflection;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.AddRemoveReferences
 {
@@ -129,6 +128,7 @@ namespace Rubberduck.AddRemoveReferences
         public bool IsRecent { get; set; }
         public bool IsRegistered { get; set; }
         public bool IsReferenced { get; set; }
+        public bool IsUsed { get; set; }
 
         public int? Priority { get; set; }
         

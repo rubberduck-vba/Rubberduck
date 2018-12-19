@@ -24,7 +24,8 @@
 
         <local:ReferenceStatusImageSourceConverter x:Key="StatusToIcon" />
         <local:PriorityButtonVisibilityConverter x:Key="PriorityButtonVisibility" />
-        <local:SearchImageSourceConverter x:Key="SearchToIcon" />
+        <converters:SearchImageSourceConverter x:Key="SearchToIcon" />
+        <converters:BooleanToNonDimmedBrushConverter x:Key="BooleanToNonDimmed" />
         <converters:BoolToHiddenVisibilityConverter x:Key="ProjectVisibilityConverter" />
 
         <Style x:Key="DialogButtonStyle" TargetType="Button">
@@ -308,7 +309,8 @@
                                                     <controls:BindableListItemDrillThroughBehavior />
                                                 </i:Interaction.Behaviors>
                                             </Button>
-                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0" TextTrimming="CharacterEllipsis">
+                                            <TextBlock Grid.Column="1" Text="{Binding Description}" Margin="2,0" TextTrimming="CharacterEllipsis"
+                                                       Foreground="{Binding IsUsed, Converter={StaticResource BooleanToNonDimmed}}">
                                                 <i:Interaction.Behaviors>
                                                     <controls:BindableListItemDrillThroughBehavior />
                                                 </i:Interaction.Behaviors>

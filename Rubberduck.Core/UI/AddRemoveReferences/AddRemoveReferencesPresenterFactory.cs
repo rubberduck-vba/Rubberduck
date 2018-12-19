@@ -55,6 +55,8 @@ namespace Rubberduck.UI.AddRemoveReferences
                 return null;
             }
 
+            Cursor.Current = Cursors.WaitCursor;
+
             var refs = new Dictionary<RegisteredLibraryKey, RegisteredLibraryInfo>();
             // Iterating the returned libraries here instead of just .ToDictionary() using because we can't trust that the registry doesn't contain errors.
             foreach (var reference in _finder.FindRegisteredLibraries())
@@ -80,15 +82,14 @@ namespace Rubberduck.UI.AddRemoveReferences
                     var guid = Guid.TryParse(reference.Guid, out var result) ? result : Guid.Empty;
                     var libraryId = new RegisteredLibraryKey(guid, reference.Major, reference.Minor);
 
-                    if (refs.ContainsKey(libraryId))
-                    {
-                        // TODO: If for some reason the VBA reference is broken, we could technically use this to repair it. Just a thought...
-                        models.Add(libraryId, new ReferenceModel(refs[libraryId], reference, priority++));
-                    }
-                    else // These should all be either VBA projects or irreparably broken.
-                    {
-                        models.Add(libraryId, new ReferenceModel(reference, priority++));
-                    }
+                    // TODO: If for some reason the VBA reference is broken, we could technically use this to repair it. Just a thought...
+                    var adding = refs.ContainsKey(libraryId) 
+                        ? new ReferenceModel(refs[libraryId], reference, priority++)   
+                        : new ReferenceModel(reference, priority++);
+
+                    adding.IsUsed = adding.IsBuiltIn || _state.DeclarationFinder.IsReferenceUsedInProject(project, adding.ToReferenceInfo());
+
+                    models.Add(libraryId, adding);
                     reference.Dispose();
                 }
             }
@@ -108,6 +109,8 @@ namespace Rubberduck.UI.AddRemoveReferences
                     !model.References.Any(item =>
                         item.FullPath.Equals(proj.FullPath, StringComparison.OrdinalIgnoreCase))));
             }
+
+            Cursor.Current = Cursors.Default;
 
             return new AddRemoveReferencesPresenter(new AddRemoveReferencesDialog(new AddRemoveReferencesViewModel(model, _reconciler, _browser)));         
         }
