@@ -3319,7 +3319,7 @@ End Enum");
         [Test]
         [Category("Inspections")]
         public void
-            ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberOfPublicEnumerationInReferencedProject()
+        ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberOfPublicEnumerationInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
@@ -5178,9 +5178,9 @@ End Sub";
                 .ToDictionary(group => group.Key, group => group.Count());
         }
 
-        private MockProjectBuilder CreateUserProject(MockVbeBuilder builder, string projectName = ProjectName)
+        private MockProjectBuilder CreateUserProject(MockVbeBuilder builder, string projectName = ProjectName, string projectPath = "")
         {
-            return builder.ProjectBuilder(projectName, ProjectProtection.Unprotected)
+            return builder.ProjectBuilder(projectName, projectPath, ProjectProtection.Unprotected)
                 .AddComponent(ProceduralModuleName, ComponentType.StandardModule, _moduleCode)
                 .AddComponent(ClassModuleName, ComponentType.ClassModule, $"Public Event {EventName}()")
                 .AddComponent(UserFormName, ComponentType.UserForm, "")
@@ -5198,7 +5198,10 @@ End Sub";
             }
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty, 0, 0).Build();
+
+            var project = string.IsNullOrEmpty(referencedProjectName) ? "Irrelevant" : referencedProjectName;
+            var path = $@"C:\{project}.xlsm";
+            var userProject = CreateUserProject(builder, userProjectName, path).AddReference(project, path, 0, 0).Build();
             builder.AddProject(userProject);
 
             return builder;
@@ -5233,7 +5236,10 @@ End Sub";
             referencedProjectBuilder.AddComponent(referencedComponentName, referencedComponentComponentType, referencedComponentCode);
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, $@"C:\{referencedProjectName}.xlsm", 0, 0).Build();
+
+            var project = string.IsNullOrEmpty(referencedProjectName) ? "Irrelevant" : referencedProjectName;
+            var path = $@"C:\{project}.xlsm";
+            var userProject = CreateUserProject(builder, userProjectName, path).AddReference(project, path, 0, 0).Build();
             builder.AddProject(userProject);
 
             return builder;
