@@ -1153,6 +1153,39 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 && candidateModule.DeclarationType.HasFlag(DeclarationType.ProceduralModule);
         }
 
+        public bool IsReferenceUsedInProject(ProjectDeclaration project, ReferenceInfo reference, bool checkForward = false)
+        {
+            if (project == null || string.IsNullOrEmpty(reference.FullPath))
+            {
+                return false;
+            }
+
+            var referenceProject = reference.Guid.Equals(Guid.Empty)
+                ? UserDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>().FirstOrDefault(proj =>
+                    proj.QualifiedModuleName.ProjectPath.Equals(reference.FullPath, StringComparison.OrdinalIgnoreCase))
+                : BuiltInDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>().FirstOrDefault(proj =>
+                    proj.Guid.Equals(reference.Guid) && proj.MajorVersion == reference.Major &&
+                    proj.MinorVersion == reference.Minor);
+
+            if (referenceProject == null ||         // Can't locate the project for the reference - assume it is used to avoid false negatives.
+                IdentifierReferences().Any(item =>
+                item.Key.ProjectId == project.ProjectId && item.Value.Any(usage =>
+                    ReferenceEquals(Declaration.GetProjectParent(usage.Declaration), project))))
+            {
+                return true;
+            }
+
+            if (!checkForward)
+            {
+                return false;
+            }
+
+            // OK, no direct references - check indirect references in built-in libraries (i.e. Excel forward references Office)
+            return !referenceProject.IsUserDefined && AllBuiltInDeclarations.Any(declaration =>
+                       declaration.AsTypeDeclaration != null &&
+                       declaration.AsTypeDeclaration.QualifiedModuleName.ProjectId.Equals(referenceProject.ProjectId));
+        }
+
         private bool UsesScopeResolution(RuleContext ruleContext)
         {
             return (ruleContext is VBAParser.WithMemberAccessExprContext)

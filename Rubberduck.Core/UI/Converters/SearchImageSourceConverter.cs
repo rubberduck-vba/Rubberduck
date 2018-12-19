@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Media;
-using ImageSourceConverter = Rubberduck.UI.Converters.ImageSourceConverter;
 
-namespace Rubberduck.UI.AddRemoveReferences
+namespace Rubberduck.UI.Converters
 {
     public class SearchImageSourceConverter : ImageSourceConverter
     {

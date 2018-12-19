@@ -115,7 +115,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         public string ProjectCaption => string.IsNullOrEmpty(Model?.Project?.IdentifierName)
             ? RubberduckUI.References_Caption
-            : string.Format(RubberduckUI.References_CaptionTemplate, Model.Project.IdentifierName);
+            : string.Format(RubberduckUI.References_CaptionTemplate, Model.Project.ProjectDisplayName);
 
         /// <summary>
         /// The IAddRemoveReferencesModel for the view.
@@ -212,7 +212,7 @@ namespace Rubberduck.UI.AddRemoveReferences
         /// <param name="parameter">Ignored</param>
         private void ExecuteRemoveCommand(object parameter)
         {
-            if (SelectedReference == null)
+            if (SelectedReference == null || SelectedReference.IsBuiltIn)
             {
                 return;
             }
