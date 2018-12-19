@@ -13,13 +13,11 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
+    public class CodeExplorerComponentViewModel : CodeExplorerItemViewModel
     {
-        public Declaration Declaration { get; }
-
         public override CodeExplorerItemViewModel Parent { get; }
 
-        private static readonly DeclarationType[] MemberTypes =
+        public static readonly DeclarationType[] MemberTypes =
         {
             DeclarationType.Constant, 
             DeclarationType.Enumeration, 
@@ -32,18 +30,13 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.PropertyLet, 
             DeclarationType.PropertySet, 
             DeclarationType.UserDefinedType, 
-            DeclarationType.Variable, 
+            DeclarationType.Variable
         };
 
-        private readonly IProjectsProvider _projectsProvider;
-        private readonly IVBE _vbe;
-
-        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider, IVBE vbe)
+        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider, IVBE vbe) 
+            : base(declaration)
         {
             Parent = parent;
-            Declaration = declaration;
-            _projectsProvider = projectsProvider;
-            _vbe = vbe;
 
             _icon = Icons.ContainsKey(DeclarationType) 
                 ? Icons[DeclarationType]
@@ -69,7 +62,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                     case ComponentType.Document:
                         var parenthesizedName = string.Empty;
                         var state = DocumentState.Inaccessible;
-                        using (var app = _vbe.HostApplication())
+                        using (var app = vbe.HostApplication())
                         {
                             if (app != null)
                             {
@@ -79,7 +72,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                             }
                         }
                         
-                        if (state == DocumentState.DesignView && ContainsBuiltinDocumentPropertiesProperty())
+                        if (state == DocumentState.DesignView && ContainsBuiltinDocumentPropertiesProperty(projectsProvider))
                         {
                             CodeExplorerItemViewModel node = this;
                             while (node.Parent != null)
@@ -87,7 +80,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                                 node = node.Parent;
                             }
 
-                            ((CodeExplorerProjectViewModel) node).SetParenthesizedName(parenthesizedName);
+                            if (node is CodeExplorerProjectViewModel projectNode)
+                            {
+                                projectNode.SetParenthesizedName(parenthesizedName);
+                            }
                         }
                         else
                         {
@@ -118,9 +114,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private bool ContainsBuiltinDocumentPropertiesProperty()
+        private bool ContainsBuiltinDocumentPropertiesProperty(IProjectsProvider projectsProvider)
         {
-            var component = _projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName);
+            var component = projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName);
             using (var properties = component.Properties)
             {
                 foreach (var property in properties)
@@ -152,8 +148,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 OnPropertyChanged();
-                OnPropertyChanged("CollapsedIcon");
+                // ReSharper disable ExplicitCallerInfoArgument
+                OnPropertyChanged("CollapsedIcon");               
                 OnPropertyChanged("ExpandedIcon");
+                // ReSharper restore ExplicitCallerInfoArgument
             }
         }
 

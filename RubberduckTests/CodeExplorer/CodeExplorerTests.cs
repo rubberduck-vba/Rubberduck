@@ -1171,8 +1171,7 @@ End Sub
                 var clsNode = folder.Items.Single(s => s.Name == "ClassModule");
 
                 // this tests the logic I wrote to place docs above cls modules even though the parser calls them both cls modules
-                Assert.AreEqual(((ICodeExplorerDeclarationViewModel)clsNode).Declaration.DeclarationType,
-                    ((ICodeExplorerDeclarationViewModel)docNode).Declaration.DeclarationType);
+                Assert.AreEqual(clsNode.Declaration.DeclarationType, docNode.Declaration.DeclarationType);
 
                 Assert.AreEqual(-1, new CompareByType().Compare(docNode, clsNode));
             }
@@ -1264,7 +1263,6 @@ End Sub";
             private readonly Mock<IConfigProvider<WindowSettings>> _windowSettingsProvider = new Mock<IConfigProvider<WindowSettings>>();
             private readonly Mock<ConfigurationLoader> _configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
             private readonly Mock<IVBEInteraction> _interaction = new Mock<IVBEInteraction>();
-            private readonly Mock<IFileSystemBrowserFactory> _browserFactory = new Mock<IFileSystemBrowserFactory>();
 
             private MockedCodeExplorer()
             {
@@ -1285,7 +1283,11 @@ End Sub";
                 OpenDialog.Setup(o => o.CheckFileExists);
 
                 FolderBrowser = new Mock<IFolderBrowser>();
-                _browserFactory
+
+                BrowserFactory = new Mock<IFileSystemBrowserFactory>();
+                BrowserFactory.Setup(m => m.CreateSaveFileDialog()).Returns(SaveDialog.Object);
+                BrowserFactory.Setup(m => m.CreateOpenFileDialog()).Returns(OpenDialog.Object);
+                BrowserFactory
                     .Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true,
                         @"C:\Users\Rubberduck\Documents\Subfolder")).Returns(FolderBrowser.Object);
             }
@@ -1346,11 +1348,11 @@ End Sub";
                 var parser = MockParser.Create(Vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(Vbe));
                 State = parser.State;
 
-                var removeCommand = new RemoveCommand(SaveDialog.Object, MessageBox.Object, State.ProjectsProvider);
+                var removeCommand = new RemoveCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider);
 
-                ViewModel = new CodeExplorerViewModel(new FolderHelper(State, Vbe.Object), State, removeCommand,
+                ViewModel = new CodeExplorerViewModel(new FolderHelper(State, Vbe.Object), State, removeCommand, 
                     _generalSettingsProvider.Object,
-                    _windowSettingsProvider.Object, _uiDispatcher.Object, Vbe.Object, null);
+                    _windowSettingsProvider.Object, _uiDispatcher.Object, Vbe.Object, null, null);
 
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error)
@@ -1365,6 +1367,7 @@ End Sub";
             public Mock<IVBProject> VbProject { get; }
             public Mock<IVBComponents> VbComponents { get; }
             public Mock<IVBComponent> VbComponent { get; }
+            public Mock<IFileSystemBrowserFactory> BrowserFactory { get; }
             public Mock<ISaveFileDialog> SaveDialog { get; }
             public Mock<IOpenFileDialog> OpenDialog { get; }
             public Mock<IFolderBrowser> FolderBrowser { get; }
@@ -1374,7 +1377,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementAddStdModuleCommand()
             {
-                ViewModel.AddStdModuleCommand = new AddStdModuleCommand(new AddComponentCommand(Vbe.Object));
+                ViewModel.AddStdModuleCommand = new AddStdModuleCommand(Vbe.Object);
                 return this;
             }
 
@@ -1389,7 +1392,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementAddClassModuleCommand()
             {
-                ViewModel.AddClassModuleCommand = new AddClassModuleCommand(new AddComponentCommand(Vbe.Object));
+                ViewModel.AddClassModuleCommand = new AddClassModuleCommand(Vbe.Object);
                 return this;
             }
 
@@ -1404,7 +1407,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementAddUserFormCommand()
             {
-                ViewModel.AddUserFormCommand = new AddUserFormCommand(new AddComponentCommand(Vbe.Object));
+                ViewModel.AddUserFormCommand = new AddUserFormCommand(Vbe.Object);
                 return this;
             }
 
@@ -1419,7 +1422,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementAddVbFormCommand()
             {
-                ViewModel.AddVBFormCommand = new AddVBFormCommand(new AddComponentCommand(Vbe.Object));
+                ViewModel.AddVBFormCommand = new AddVBFormCommand(Vbe.Object);
                 return this;
             }
 
@@ -1434,7 +1437,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementAddMdiFormCommand()
             {
-                ViewModel.AddMDIFormCommand = new AddMDIFormCommand(Vbe.Object, new AddComponentCommand(Vbe.Object));
+                ViewModel.AddMDIFormCommand = new AddMDIFormCommand(Vbe.Object);
                 return this;
             }
 
@@ -1449,7 +1452,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementAddUserControlCommand()
             {
-                ViewModel.AddUserControlCommand = new AddUserControlCommand(new AddComponentCommand(Vbe.Object));
+                ViewModel.AddUserControlCommand = new AddUserControlCommand(Vbe.Object);
                 return this;
             }
 
@@ -1464,7 +1467,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementAddPropertyPageCommand()
             {
-                ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(new AddComponentCommand(Vbe.Object));
+                ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(Vbe.Object);
                 return this;
             }
 
@@ -1479,7 +1482,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementAddUserDocumentCommand()
             {
-                ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(new AddComponentCommand(Vbe.Object));
+                ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(Vbe.Object);
                 return this;
             }
 
@@ -1494,7 +1497,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementAddTestModuleCommand()
             {
-                ViewModel.AddTestModuleCommand = new AddTestModuleCommand(Vbe.Object, State, _configLoader.Object, MessageBox.Object, _interaction.Object);
+                ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, _configLoader.Object, MessageBox.Object, _interaction.Object);
                 return this;
             }
 
@@ -1525,7 +1528,7 @@ End Sub";
 
             public void ExecuteImportCommand()
             {
-                ViewModel.ImportCommand = new ImportCommand(Vbe.Object, OpenDialog.Object);
+                ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object);
                 ViewModel.ImportCommand.Execute(ViewModel.SelectedItem);
             }
 
@@ -1540,7 +1543,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementExportAllCommand()
             {
-                ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, _browserFactory.Object);
+                ViewModel.ExportAllCommand = new ExportAllCommand(Vbe.Object, BrowserFactory.Object);
                 return this;
             }
 
@@ -1555,7 +1558,7 @@ End Sub";
 
             public MockedCodeExplorer ImplementExportCommand()
             {
-                ViewModel.ExportCommand = new ExportCommand(SaveDialog.Object, State.ProjectsProvider);
+                ViewModel.ExportCommand = new ExportCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider);
                 return this;
             }
 

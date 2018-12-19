@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
+using Rubberduck.Navigation.CodeExplorer;
 
 namespace Rubberduck.UI.Controls
 {
@@ -21,16 +22,50 @@ namespace Rubberduck.UI.Controls
 
         private static void OnSelectedItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            if (e.NewValue is TreeViewItem item)
+            if (!(e.NewValue is CodeExplorerItemViewModel node) || 
+                !(sender is BindableSelectedItemBehavior binding))
             {
-                item.SetValue(TreeViewItem.IsSelectedProperty, true);
+                return;
             }
+
+            var item = FindTreeViewItemFromData(binding.AssociatedObject, node);
+            if (item == null)
+            {
+                return;
+            }
+
+            item.BringIntoView();
+            item.Focus();
+            item.IsSelected = true;
+        }
+
+        private static TreeViewItem FindTreeViewItemFromData(ItemsControl items, object node)
+        {
+            if (items.ItemContainerGenerator.ContainerFromItem(node) is TreeViewItem item)
+            {
+                return item;
+            }
+
+            foreach (var container in items.Items)
+            {
+                if (!(items.ItemContainerGenerator.ContainerFromItem(container) is TreeViewItem subItem))
+                {
+                    continue;
+                }
+
+                item = FindTreeViewItemFromData(subItem, node);
+
+                if (item != null)
+                {
+                    return item;
+                }
+            }
+            return null;
         }
 
         protected override void OnAttached()
         {
             base.OnAttached();
-
             AssociatedObject.SelectedItemChanged += OnTreeViewSelectedItemChanged;
         }
 

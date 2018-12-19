@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows.Media.Imaging;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Resources.CodeExplorer;
@@ -6,35 +7,43 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerReferenceViewModel : CodeExplorerItemViewModel
+    public sealed class CodeExplorerReferenceViewModel : CodeExplorerItemViewModel
     {
-        private readonly ReferenceModel _reference;
-
-        public CodeExplorerReferenceViewModel(CodeExplorerReferenceFolderViewModel parent, ReferenceModel reference)
+        public CodeExplorerReferenceViewModel(CodeExplorerReferenceFolderViewModel parent, ReferenceModel reference) : base(parent?.Declaration)
         {
             Parent = parent;
-            _reference = reference;
+            Reference = reference;
+            IsDimmed = !Reference.IsUsed;
         }
 
-        public override string NameWithSignature => $"{_reference.Name} ({_reference.Version})";
-        public override string Name => _reference.Description + Environment.NewLine + _reference.FullPath;
+        public override string NameWithSignature => $"{Reference.Name} ({Path.GetFileName(Reference.FullPath)} {Reference.Version})";
+
+        public override string Name => Reference.Name;
+
+        public override string ToolTip => Reference.Description;
+
         public override CodeExplorerItemViewModel Parent { get; }
+
         public override QualifiedSelection? QualifiedSelection => null;
 
         public override BitmapImage CollapsedIcon => GetIcon();
+
         public override BitmapImage ExpandedIcon => GetIcon();
 
-        public int? Priority => _reference.Priority;
-        public bool Locked => _reference.IsBuiltIn;
+        public ReferenceModel Reference { get; }
+
+        public int? Priority => Reference.Priority;
+
+        public bool Locked => Reference.IsBuiltIn;
 
         private BitmapImage GetIcon()
         {
-            if (_reference.Status.HasFlag(ReferenceStatus.Broken))
+            if (Reference.Status.HasFlag(ReferenceStatus.Broken))
             {
                 GetImageSource(CodeExplorerUI.BrokenReference);
             }
 
-            return _reference.IsBuiltIn ? GetImageSource(CodeExplorerUI.LockedReference) : GetImageSource(CodeExplorerUI.Reference);
+            return Reference.IsBuiltIn ? GetImageSource(CodeExplorerUI.LockedReference) : GetImageSource(CodeExplorerUI.Reference);
         }
     }
 }

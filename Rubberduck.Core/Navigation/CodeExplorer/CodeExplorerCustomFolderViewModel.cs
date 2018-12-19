@@ -16,13 +16,19 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.ClassModule, 
             DeclarationType.Document, 
             DeclarationType.ProceduralModule, 
-            DeclarationType.UserForm, 
+            DeclarationType.UserForm
         };
 
         private readonly IProjectsProvider _projectsProvider;
         private readonly IVBE _vbe;
 
-        public CodeExplorerCustomFolderViewModel(CodeExplorerItemViewModel parent, string name, string fullPath, IProjectsProvider projectsProvider, IVBE vbe)
+        public CodeExplorerCustomFolderViewModel(
+            CodeExplorerItemViewModel parent, 
+            string name, 
+            string fullPath, 
+            IProjectsProvider projectsProvider, 
+            IVBE vbe, 
+            Declaration declaration = null) : base(declaration ?? parent?.Declaration)
         {
             _parent = parent;
             _projectsProvider = projectsProvider;
@@ -30,7 +36,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             FullPath = fullPath;
             Name = name.Replace("\"", string.Empty);
-            FolderAttribute = string.Format("@Folder(\"{0}\")", fullPath.Replace("\"", string.Empty));
+            FolderAttribute = $"@Folder(\"{fullPath.Replace("\"", string.Empty)}\")";
 
             CollapsedIcon = GetImageSource(Resources.CodeExplorer.CodeExplorerUI.FolderClosed);
             ExpandedIcon = GetImageSource(Resources.CodeExplorer.CodeExplorerUI.FolderOpen);

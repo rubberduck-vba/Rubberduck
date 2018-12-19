@@ -16,7 +16,7 @@ namespace Rubberduck.UI.CodeExplorer
         }
 
         private CodeExplorerViewModel ViewModel => DataContext as CodeExplorerViewModel;
-        
+
         private void TreeView_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (ViewModel != null && ViewModel.OpenCommand.CanExecute(ViewModel.SelectedItem))

@@ -8,7 +8,6 @@ namespace Rubberduck.Navigation.Folders
 {
     public class FolderHelper
     {
-        private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
 
         private static readonly DeclarationType[] ComponentTypes =
@@ -21,19 +20,21 @@ namespace Rubberduck.Navigation.Folders
 
         public FolderHelper(RubberduckParserState state, IVBE vbe)
         {
-            _state = state;
+            State = state;
             _vbe = vbe;
         }
+
+        public RubberduckParserState State { get; }
 
         public CodeExplorerCustomFolderViewModel GetFolderTree(Declaration declaration = null)
         {
             var delimiter = GetDelimiter();
 
-            var root = new CodeExplorerCustomFolderViewModel(null, string.Empty, string.Empty, _state.ProjectsProvider, _vbe);
+            var root = new CodeExplorerCustomFolderViewModel(null, string.Empty, string.Empty, State.ProjectsProvider, _vbe, declaration);
 
             var items = declaration == null
-                ? _state.AllUserDeclarations.ToList()
-                : _state.AllUserDeclarations.Where(d => d.ProjectId == declaration.ProjectId).ToList();
+                ? State.AllUserDeclarations.ToList()
+                : State.AllUserDeclarations.Where(d => d.ProjectId == declaration.ProjectId).ToList();
 
             var folders = items.Where(item => ComponentTypes.Contains(item.DeclarationType))
                 .Select(item => item.CustomFolder.Replace("\"", string.Empty))
@@ -52,7 +53,7 @@ namespace Rubberduck.Navigation.Folders
                     var node = currentNode.Items.FirstOrDefault(i => i.Name == section);
                     if (node == null)
                     {
-                        node = new CodeExplorerCustomFolderViewModel(currentNode, section, fullPath, _state.ProjectsProvider, _vbe);
+                        node = new CodeExplorerCustomFolderViewModel(currentNode, section, fullPath, State.ProjectsProvider, _vbe);
                         currentNode.AddChild(node);
                     }
 

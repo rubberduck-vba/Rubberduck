@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -12,14 +13,14 @@ using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
+    public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel
     {
-        public Declaration Declaration { get; }
+        public RubberduckParserState State { get; }
 
         private readonly CodeExplorerCustomFolderViewModel _folderTree;
         private readonly IVBE _vbe;
 
-        private static readonly DeclarationType[] ComponentTypes =
+        public static readonly DeclarationType[] ComponentTypes =
         {
             DeclarationType.ClassModule, 
             DeclarationType.Document, 
@@ -27,9 +28,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserForm, 
         };
 
-        public CodeExplorerProjectViewModel(FolderHelper folderHelper, Declaration declaration, IEnumerable<Declaration> declarations, IVBE vbe, bool references = false)
+        public CodeExplorerProjectViewModel(FolderHelper folderHelper, Declaration declaration, IEnumerable<Declaration> declarations, IVBE vbe, bool references = false) : base(declaration)
         {
-            Declaration = declaration;
+            State = folderHelper.State;
             _name = Declaration.IdentifierName;
             IsExpanded = true;
             _folderTree = folderHelper.GetFolderTree(declaration);
@@ -40,7 +41,14 @@ namespace Rubberduck.Navigation.CodeExplorer
                 Items = new List<CodeExplorerItemViewModel>();
                 if (references)
                 {
-                    Items.Add(new CodeExplorerReferenceFolderViewModel(this));
+                    foreach (var type in Enum.GetValues(typeof(ReferenceKind)).Cast<ReferenceKind>())
+                    {
+                        var referenced = new CodeExplorerReferenceFolderViewModel(this, type);
+                        if (referenced.Items.Any())
+                        {
+                            Items.Add(referenced);
+                        }                       
+                    }                  
                 }
 
                 FillFolders(declarations.ToList());
@@ -77,7 +85,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        private bool CanAddNodesToTree(CodeExplorerCustomFolderViewModel tree, List<Declaration> items, IGrouping<string, Declaration> grouping)
+        private bool CanAddNodesToTree(CodeExplorerItemViewModel tree, IEnumerable<Declaration> items, IGrouping<string, Declaration> grouping)
         {
             foreach (var folder in tree.Items.OfType<CodeExplorerCustomFolderViewModel>())
             {

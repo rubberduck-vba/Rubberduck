@@ -248,7 +248,16 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_ExportAll", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Font Size.
+        /// </summary>
+        public static string CodeExplorer_FontSizeToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_FontSizeToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Find All Implementations....
         /// </summary>
@@ -284,7 +293,16 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_Indent", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Library References.
+        /// </summary>
+        public static string CodeExplorer_LibraryReferences {
+            get {
+                return ResourceManager.GetString("CodeExplorer_LibraryReferences", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Na&amp;vigate.
         /// </summary>
@@ -347,7 +365,17 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_Print", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Project References.
+        /// </summary>
+        public static string CodeExplorer_ProjectReferences {
+            get {
+                return ResourceManager.GetString("CodeExplorer_ProjectReferences", resourceCulture);
+            }
+        }
         
+
         /// <summary>
         ///   Looks up a localized string similar to R&amp;efresh.
         /// </summary>
@@ -393,6 +421,15 @@ namespace Rubberduck.Resources.CodeExplorer {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Search....
+        /// </summary>
+        public static string CodeExplorer_SearchPlaceholder {
+            get {
+                return ResourceManager.GetString("CodeExplorer_SearchPlaceholder", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Set as start up.
         /// </summary>
@@ -464,7 +501,16 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_SortStyle_ByType", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sync with code pane.
+        /// </summary>
+        public static string CodeExplorer_SyncCodePaneToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_SyncCodePaneToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
@@ -570,7 +616,16 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("ExportBeforeRemove_Prompt", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Error exporting &apos;{0}&apos;.
+        /// </summary>
+        public static string ExportError_Caption {
+            get {
+                return ResourceManager.GetString("ExportError_Caption", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -870,6 +925,15 @@ namespace Rubberduck.Resources.CodeExplorer {
             {
                 object obj = ResourceManager.GetObject("Reference", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Error removing &apos;{0}&apos;.
+        /// </summary>
+        public static string RemoveError_Caption {
+            get {
+                return ResourceManager.GetString("RemoveError_Caption", resourceCulture);
             }
         }
 

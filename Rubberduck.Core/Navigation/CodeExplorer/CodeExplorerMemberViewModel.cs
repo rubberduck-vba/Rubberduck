@@ -11,11 +11,9 @@ using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
+    public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel
     {
-        public Declaration Declaration { get; }
-
-        private static readonly DeclarationType[] SubMemberTypes =
+        public static readonly DeclarationType[] SubMemberTypes =
         {
             DeclarationType.EnumerationMember, 
             DeclarationType.UserDefinedTypeMember            
@@ -59,11 +57,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                 { Tuple.Create(DeclarationType.Variable, Accessibility.Public ), GetImageSource(resx.ObjectField)},
             };
 
-        public CodeExplorerMemberViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations)
+        public CodeExplorerMemberViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations) : base(declaration)
         {
             Parent = parent;
 
-            Declaration = declaration;
             if (declarations != null)
             {
                 Items = declarations.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(declaration))
@@ -104,7 +101,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public override CodeExplorerItemViewModel Parent { get; }
 
-        private string _signature = null;
+        private string _signature;
         public override string NameWithSignature
         {
             get
@@ -169,8 +166,10 @@ namespace Rubberduck.Navigation.CodeExplorer
         public void ParentComponentHasError()
         {
             _icon = GetImageSource(resx.exclamation);
-            OnPropertyChanged("CollapsedIcon");
+            // ReSharper disable ExplicitCallerInfoArgument
+            OnPropertyChanged("CollapsedIcon");           
             OnPropertyChanged("ExpandedIcon");
+            // ReSharper restore ExplicitCallerInfoArgument
         }
 
         private BitmapImage _icon;

@@ -7,12 +7,13 @@
     <Product>Rubberduck.Core</Product>
     <Copyright>Copyright © 2014-2018</Copyright>
     <ProjectGuid>{A1587EAC-7B54-407E-853F-4C7493D0323E}</ProjectGuid>
-    <DocumentationFile>bin\Debug\Rubberduck.Core.xml</DocumentationFile>
+    <DocumentationFile>C:\Rubberduck\Rubberduck.Core\Rubberduck.Core.xml</DocumentationFile>
     <!-- Disable "Missing XML documentation" warning (CS1591) -->
     <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <!-- Give a fixed version to not blow XAML generated code to smithereens -->
     <AssemblyVersion>2.3.0</AssemblyVersion>
+    <AutoGenerateBindingRedirects>True</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
@@ -21,6 +22,9 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DocumentationFile>bin\Debug\Rubberduck.XML</DocumentationFile>
     <DebugType>full</DebugType>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <NoWarn>1701;1702;1591;4011;1001</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Infralution.Localization.Wpf">
