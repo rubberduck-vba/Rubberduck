@@ -198,7 +198,7 @@ namespace Rubberduck.Parsing
         public static TContext GetDescendent<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
         {
             var descendents = GetDescendents<TContext>(context);
-            return descendents.FirstOrDefault();
+            return descendents.OrderBy(descendent => descendent.Start.TokenIndex).FirstOrDefault();
         }
 
         /// <summary>

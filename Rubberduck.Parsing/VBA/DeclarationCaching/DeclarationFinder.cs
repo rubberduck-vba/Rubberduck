@@ -1211,6 +1211,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         }
 
         /// <summary>
+        /// Gets all identifier references with the specified selection.
+        /// </summary>
+        public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedSelection selection)
+        {
+            return _referencesBySelection.TryGetValue(selection, out var value)
+                ? value
+                : Enumerable.Empty<IdentifierReference>();
+        }
+
+        /// <summary>
         /// Gets all identifier references in the specified member.
         /// </summary>
         public IEnumerable<IdentifierReference> IdentifierReferences(QualifiedMemberName member)

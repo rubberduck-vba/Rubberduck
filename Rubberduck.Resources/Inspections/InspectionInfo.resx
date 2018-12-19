@@ -358,4 +358,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Functions that are visible to Excel as User-Defined Functions will return a '#REF!' error when used on a Worksheet if they match the name of a valid cell reference. If the function is intended to be used as a UDF, it must be renamed. If the function is not intended to be used as a UDF, it should be scoped as 'Private' or moved out of a standard Module.</value>
   </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute has a different value. Module attributes and annotations need to be synchronized.</value>
+  </data>
 </root>

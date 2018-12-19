@@ -389,4 +389,8 @@
     <value>'{0}' is hidden by a valid Excel cell reference.</value>
     <comment>{0} Function name</comment>
   </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>The attribute value(s) for attribute {0} ({1}) are out of sync with the {2} annotation. </value>
+    <comment>{0} attribute name, {1} attribute values, {2} annotation name</comment>
+  </data>
 </root>

@@ -374,4 +374,7 @@
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>'{0}' wird von einem EXCEL-Zellverweis verdeckt.</value>
   </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Die Wert(e) des {0}-Attributs ({1}) passen nicht zur {2}-Annotation.</value>
+  </data>
 </root>

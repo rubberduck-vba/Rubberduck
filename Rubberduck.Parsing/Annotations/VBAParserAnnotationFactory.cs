@@ -30,6 +30,9 @@ namespace Rubberduck.Parsing.Annotations
             _creators.Add(AnnotationType.Enumerator.ToString().ToUpperInvariant(), typeof(EnumeratorMemberAnnotation));
             _creators.Add(AnnotationType.Exposed.ToString().ToUpperInvariant(), typeof (ExposedModuleAnnotation));
             _creators.Add(AnnotationType.Obsolete.ToString().ToUpperInvariant(), typeof(ObsoleteAnnotation));
+            _creators.Add(AnnotationType.ModuleAttribute.ToString().ToUpperInvariant(), typeof(ModuleAttributeAnnotation));
+            _creators.Add(AnnotationType.MemberAttribute.ToString().ToUpperInvariant(), typeof(MemberAttributeAnnotation));
+            _creators.Add(AnnotationType.ModuleDescription.ToString().ToUpperInvariant(), typeof(ModuleDescriptionAnnotation));
         }
 
         public IAnnotation Create(VBAParser.AnnotationContext context, QualifiedSelection qualifiedSelection)
@@ -50,7 +53,7 @@ namespace Rubberduck.Parsing.Annotations
                 return parameters;
             }
 
-        private IAnnotation CreateAnnotation(string annotationName, List<string> parameters,
+        private IAnnotation CreateAnnotation(string annotationName, IReadOnlyList<string> parameters,
             QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context)
         {
             if (_creators.TryGetValue(annotationName.ToUpperInvariant(), out var annotationClrType))

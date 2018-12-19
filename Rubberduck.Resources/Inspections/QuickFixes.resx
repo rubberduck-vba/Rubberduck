@@ -261,4 +261,10 @@
   <data name="IsMissingOnInappropriateArgumentQuickFix" xml:space="preserve">
     <value>Change 'IsMissing' call to test for default value.</value>
   </data>
+  <data name="AddMissingAttributeQuickFix" xml:space="preserve">
+    <value>Add missing attribute</value>
+  </data>
+  <data name="AdjustAttributeValuesQuickFix" xml:space="preserve">
+    <value>Adjust attribute value(s)</value>
+  </data>
 </root>
