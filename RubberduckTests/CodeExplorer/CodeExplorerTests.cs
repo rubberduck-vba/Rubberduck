@@ -1352,7 +1352,10 @@ End Sub";
 
                 ViewModel = new CodeExplorerViewModel(new FolderHelper(State, Vbe.Object), State, removeCommand, 
                     _generalSettingsProvider.Object,
-                    _windowSettingsProvider.Object, _uiDispatcher.Object, Vbe.Object, null, null);
+                    _windowSettingsProvider.Object, 
+                    _uiDispatcher.Object, Vbe.Object, 
+                    null,
+                    new CodeExplorerSyncProvider(Vbe.Object, State));
 
                 parser.Parse(new CancellationTokenSource());
                 if (parser.State.Status >= ParserState.Error)
