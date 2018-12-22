@@ -8,7 +8,21 @@ namespace Rubberduck.UI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new InvalidOperationException();
+            if (!(value is double size) ||
+                !(parameter is IConvertible input))
+            {
+                return false;
+            }
+
+            try
+            {
+                // ReSharper disable once CompareOfFloatsByEqualityOperator - these are hard coded values.
+                return System.Convert.ToDouble(input) == size;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

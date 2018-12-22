@@ -8,7 +8,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public abstract class CodeExplorerItemViewModel : ViewModelBase //, ICodeExplorerDeclarationViewModel
+    public abstract class CodeExplorerItemViewModel : ViewModelBase
     {
         protected CodeExplorerItemViewModel(Declaration declaration)
         {
@@ -69,6 +69,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 OnPropertyChanged();
             }
         }
+
+        public virtual bool IsObsolete => false;
 
         public Declaration Declaration { get; }
 

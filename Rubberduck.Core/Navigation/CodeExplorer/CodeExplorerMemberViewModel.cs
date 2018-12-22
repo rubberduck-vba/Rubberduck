@@ -176,7 +176,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public override BitmapImage CollapsedIcon => _icon;
         public override BitmapImage ExpandedIcon => _icon;
 
-        public bool IsObsolete =>
+        public override bool IsObsolete =>
             Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.Obsolete);
     }
 }

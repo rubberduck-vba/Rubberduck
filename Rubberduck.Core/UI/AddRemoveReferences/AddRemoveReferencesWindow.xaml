@@ -46,11 +46,13 @@
                                                 UpdateSourceTrigger=PropertyChanged}"
                                      x:Name="textSource" 
                                      Background="Transparent" 
-                                     Panel.ZIndex="2" />
+                                     Panel.ZIndex="2" 
+                                     VerticalContentAlignment="Center" />
                             <TextBox Text="{TemplateBinding Tag}" Background="{TemplateBinding Background}" Panel.ZIndex="1">
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}">
                                         <Setter Property="Foreground" Value="Transparent"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=Text, Source={x:Reference textSource}}" Value="">
                                                 <Setter Property="Foreground" Value="LightGray"/>

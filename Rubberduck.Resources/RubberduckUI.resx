@@ -1481,4 +1481,13 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="References_RemoveToolTip" xml:space="preserve">
     <value>Remove from project</value>
   </data>
+  <data name="AllReferences_NoneFoundReference" xml:space="preserve">
+    <value>No references were found for project reference '{0}'.</value>
+  </data>
+  <data name="AllReferences_PerformanceWarning" xml:space="preserve">
+    <value>Search for reference '{0}' returned {1} uses. Displaying the references may negatively impact performance. Continue?</value>
+  </data>
+  <data name="PerformanceWarningCaption" xml:space="preserve">
+    <value>Performance Warning</value>
+  </data>
 </root>
