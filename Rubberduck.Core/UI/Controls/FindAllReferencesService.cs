@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Rubberduck.Interaction;
@@ -78,6 +79,43 @@ namespace Rubberduck.UI.Controls
             }
         }
 
+        public void FindAllReferences(Declaration declaration, ReferenceInfo reference)
+        {
+            if (_state.Status != ParserState.Ready ||
+                !(declaration is ProjectDeclaration project))
+            {
+                return;
+            }
+
+            var usages = _state.DeclarationFinder.FindAllReferenceUsesInProject(project, reference, out var referenceProject);
+            if (!usages.Any())
+            {
+                _messageBox.NotifyWarn(string.Format(RubberduckUI.AllReferences_NoneFoundReference, referenceProject.IdentifierName), RubberduckUI.Rubberduck);
+                return;
+            }
+
+            if (usages.Count > 1000 &&
+                !_messageBox.ConfirmYesNo(string.Format(RubberduckUI.AllReferences_PerformanceWarning, referenceProject.IdentifierName, usages.Count),
+                    RubberduckUI.PerformanceWarningCaption))
+            {
+                return;
+            }
+
+            var viewModel = CreateViewModel(project, referenceProject, usages);
+            _viewModel.AddTab(viewModel);
+            _viewModel.SelectedTab = viewModel;
+
+            try
+            {
+                var presenter = _presenterService.Presenter(_viewModel);
+                presenter.Show();
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e);
+            }
+        }
+
         private string GetModuleLine(QualifiedModuleName module, int line)
         {
             var component = _state.ProjectsProvider.Component(module);
@@ -85,6 +123,19 @@ namespace Rubberduck.UI.Controls
             {
                 return codeModule.GetLines(line, 1).Trim();
             }
+        }
+
+        private SearchResultsViewModel CreateViewModel(ProjectDeclaration project, ProjectDeclaration reference, IEnumerable<IdentifierReference> usages)
+        {
+            var results = usages.Select(usage =>
+                new SearchResultItem(usage.ParentNonScoping,
+                    new NavigateCodeEventArgs(usage.QualifiedModuleName, usage.Selection),
+                    GetModuleLine(usage.QualifiedModuleName, usage.Selection.StartLine)));
+
+            var viewModel = new SearchResultsViewModel(_navigateCommand,
+                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, reference.IdentifierName), project, results);
+
+            return viewModel;
         }
 
         private SearchResultsViewModel CreateViewModel(Declaration declaration)

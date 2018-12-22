@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
@@ -10,6 +11,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly Type[] ApplicableNodes =
         {
+            typeof(CodeExplorerReferenceViewModel),
             typeof(CodeExplorerProjectViewModel),
             typeof(CodeExplorerComponentViewModel),
             typeof(CodeExplorerMemberViewModel)
@@ -33,6 +35,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
+            if (parameter is CodeExplorerReferenceViewModel reference)
+            {
+                if (!(reference.Reference is ReferenceModel model))
+                {
+                    return;
+                }
+                _finder.FindAllReferences(node.Declaration, model.ToReferenceInfo());
+                return;
+            }
+
             _finder.FindAllReferences(node.Declaration);
         }
 
@@ -42,6 +54,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             return base.EvaluateCanExecute(parameter) && 
                    ((CodeExplorerItemViewModel)parameter).Declaration != null &&
+                   (!(parameter is CodeExplorerReferenceViewModel reference) || !reference.IsDimmed) &&
                    _state.Status == ParserState.Ready;
         }
     }
