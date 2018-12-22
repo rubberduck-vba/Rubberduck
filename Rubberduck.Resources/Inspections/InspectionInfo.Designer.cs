@@ -411,7 +411,17 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
+        /// </summary>
+        public static string MissingMemberAnnotationInspection
+        {
+            get {
+                return ResourceManager.GetString("MissingMemberAnnotationInspection", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Public&apos; keyword can only be used at module level; its counterpart &apos;Private&apos; can also only be used at module level. &apos;Dim&apos; however, can be used to declare both procedure and module scope variables. For consistency, it would be preferable to reserve &apos;Dim&apos; for locals, and thus to use &apos;Private&apos; instead of &apos;Dim&apos; at module level..
         /// </summary>

@@ -360,4 +360,7 @@
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
     <value>Wert stimmt nicht überein zwischen Attribut und Annotation</value>
   </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Fehlende Elementannotation</value>
+  </data>
 </root>

@@ -361,4 +361,7 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
     <value>Eine Rubberduck-Annotation wurde für ein Modul oder Element festgelegt, aber das zugehörige Attribut hat einen anderen Wert. Die Modul-Attribute und Annotationen sollten synchronisiert werden.</value>
   </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Elementattribute werden von der VBE nicht angezeigt. Durch das hinzufügen einer Annotation werden diese Attribute deutlicher. Außerdem kann Rubberduck die Annotationen und Attribute synchronisieren.</value>
+  </data>
 </root>

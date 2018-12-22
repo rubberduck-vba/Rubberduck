@@ -360,4 +360,7 @@
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
     <value>Value does not match between attribute and annotation</value>
   </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Missing member annotation</value>
+  </data>
 </root>

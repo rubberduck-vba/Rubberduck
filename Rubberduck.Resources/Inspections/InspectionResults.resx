@@ -393,4 +393,8 @@
     <value>The attribute value(s) for attribute {0} ({1}) are out of sync with the {2} annotation. </value>
     <comment>{0} attribute name, {1} attribute values, {2} annotation name</comment>
   </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Member '{0}' has a '{1}' attribute with value(s) '{2}', but no corresponding annotation.</value>
+    <comment>{0} member; {1} specified attribute; {2} specified values</comment>
+  </data>
 </root>

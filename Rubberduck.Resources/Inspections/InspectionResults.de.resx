@@ -377,4 +377,7 @@
   <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
     <value>Die Wert(e) des {0}-Attributs ({1}) passen nicht zur {2}-Annotation.</value>
   </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Element '{0}' hat ein '{1}' Attribut mit Wert(en) '{2}', aber keine zugehörige Annotation.</value>
+  </data>
 </root>
