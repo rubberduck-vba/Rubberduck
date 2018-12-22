@@ -395,15 +395,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
-        /// </summary>
-        public static string MissingAnnotationInspection {
-            get {
-                return ResourceManager.GetString("MissingAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn&apos;t present. Module attributes and annotations need to be synchronized..
         /// </summary>
         public static string MissingAttributeInspection {
@@ -419,6 +410,16 @@ namespace Rubberduck.Resources.Inspections {
         {
             get {
                 return ResourceManager.GetString("MissingMemberAnnotationInspection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
+        /// </summary>
+        public static string MissingModuleAnnotationInspection
+        {
+            get {
+                return ResourceManager.GetString("MissingModuleAnnotationInspection", resourceCulture);
             }
         }
 
