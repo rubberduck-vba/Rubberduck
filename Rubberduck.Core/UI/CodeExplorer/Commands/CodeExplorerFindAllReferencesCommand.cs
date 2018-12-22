@@ -41,7 +41,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 {
                     return;
                 }
-                _finder.FindAllReferences(node.Declaration, model.ToReferenceInfo());
+                _finder.FindAllReferences(node.Parent.Declaration, model.ToReferenceInfo());
                 return;
             }
 

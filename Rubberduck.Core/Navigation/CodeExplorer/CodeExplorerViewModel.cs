@@ -318,6 +318,28 @@ namespace Rubberduck.Navigation.CodeExplorer
                 Projects = new ObservableCollection<CodeExplorerItemViewModel>();
             }
 
+            if (e.State == ParserState.Ready)
+            {
+                // Finished up resolving references, so we can now update the reference nodes.
+                var referenceFolders = Projects.SelectMany(node => node.Items.OfType<CodeExplorerReferenceFolderViewModel>());
+                foreach (var library in referenceFolders.SelectMany(folder => folder.Items).OfType<CodeExplorerReferenceViewModel>())
+                {
+                    var reference = library.Reference;
+                    if (reference == null)
+                    {
+                        continue;
+                    }
+
+                    reference.IsUsed = reference.IsBuiltIn ||
+                                       _state.DeclarationFinder.IsReferenceUsedInProject(
+                                           library.Parent?.Declaration as ProjectDeclaration,
+                                           reference.ToReferenceInfo());
+                    library.IsDimmed = !reference.IsUsed;
+                }
+
+                return;
+            }
+
             IsBusy = _state.Status != ParserState.Pending && _state.Status <= ParserState.ResolvedDeclarations;
 
             if (e.State != ParserState.ResolvedDeclarations)
