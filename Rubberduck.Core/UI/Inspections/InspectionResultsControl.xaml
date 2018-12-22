@@ -235,12 +235,12 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Image Style="{StaticResource IconMargin}" VerticalAlignment="Top" Grid.Column="0"
-                           Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
-                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Inspection.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
+                           Source="{Binding SelectedSeverity, Converter={StaticResource SeverityIconConverter}}"/>
+                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedDescription}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </Grid>
 
-                <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
-                <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
+                <TextBlock Margin="4" Text="{Binding SelectedMeta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
+                <TextBlock Margin="8" Text="{Binding SelectedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
 
                 <WrapPanel>
                     <controls:LinkButton Margin="4"

@@ -17,6 +17,7 @@ namespace Rubberduck.UI.Inspections
         private static readonly IDictionary<CodeInspectionSeverity,ImageSource> Icons = 
             new Dictionary<CodeInspectionSeverity, ImageSource>
             {
+                { CodeInspectionSeverity.DoNotShow, null },
                 { CodeInspectionSeverity.Hint, ToImageSource(InspectionsUI.information_white) },
                 { CodeInspectionSeverity.Suggestion, ToImageSource(InspectionsUI.information) },
                 { CodeInspectionSeverity.Warning, ToImageSource(InspectionsUI.exclamation) },
