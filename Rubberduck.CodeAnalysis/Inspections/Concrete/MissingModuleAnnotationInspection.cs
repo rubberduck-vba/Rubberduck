@@ -11,7 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers;
 
-namespace Rubberduck.Inspections.Inspections.Concrete
+namespace Rubberduck.Inspections.Concrete
 {
     public sealed class MissingModuleAnnotationInspection : InspectionBase
     {
