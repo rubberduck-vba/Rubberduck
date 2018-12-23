@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
                         var description = string.Format(InspectionResults.MissingMemberAnnotationInspection,
                             declaration.IdentifierName,
                             attribute.Name,
-                            attribute.Values);
+                            string.Join(", ", attribute.Values));
 
                         var result = new DeclarationInspectionResult(this, description, declaration,
                             new QualifiedContext(declaration.QualifiedModuleName, declaration.Context));
