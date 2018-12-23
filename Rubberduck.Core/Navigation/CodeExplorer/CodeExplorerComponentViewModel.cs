@@ -168,8 +168,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             $"{_name}{(IsPredeclared ? " (Predeclared)" : string.Empty)}";
 
         private bool IsPredeclared => Declaration != null &&
-                                      Declaration.Attributes.HasPredeclaredIdAttribute(out _) &&
-                                      Declaration.IsUserDefined;
+                                      DeclarationType == DeclarationType.ClassModule &&
+                                      Declaration.Attributes.HasPredeclaredIdAttribute(out _);
 
         public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
 
@@ -238,6 +238,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             if (Icons.ContainsKey(DeclarationType))
             {
                 _icon = Icons[DeclarationType];
+                return;
             }
 
             _icon = OopsIcon;
