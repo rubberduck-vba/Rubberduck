@@ -37,10 +37,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             : base(declaration)
         {
             Parent = parent;
-
-            _icon = Icons.ContainsKey(DeclarationType) 
-                ? Icons[DeclarationType]
-                : GetImageSource(CodeExplorerUI.status_offline);
+            SetIcon();
 
             Items = declarations.GroupBy(item => item.Scope).SelectMany(grouping =>
                             grouping.Where(item => item.ParentDeclaration != null
@@ -166,8 +163,13 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly string _name;
         public override string Name => _name;
-  
-        public override string NameWithSignature => _name;
+
+        public override string NameWithSignature =>
+            $"{_name}{(IsPredeclared ? " (Predeclared)" : string.Empty)}";
+
+        private bool IsPredeclared => Declaration != null &&
+                                      Declaration.Attributes.HasPredeclaredIdAttribute(out _) &&
+                                      Declaration.IsUserDefined;
 
         public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
 
@@ -206,6 +208,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        private static readonly BitmapImage PredeclaredIcon = GetImageSource(CodeExplorerUI.ObjectClassPredeclared);
+        private static readonly BitmapImage OopsIcon = GetImageSource(CodeExplorerUI.status_offline);
+
         private static readonly IDictionary<DeclarationType,BitmapImage> Icons = new Dictionary<DeclarationType, BitmapImage>
         {
             { DeclarationType.ClassModule, GetImageSource(CodeExplorerUI.ObjectClass) },
@@ -221,6 +226,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             { DeclarationType.ResFile, GetImageSource(CodeExplorerUI.document_block)},
             { DeclarationType.RelatedDocument, GetImageSource(CodeExplorerUI.document_import)}
         };
+
+        private void SetIcon()
+        {
+            if (IsPredeclared)
+            {
+                _icon = PredeclaredIcon;
+                return;
+            }
+
+            if (Icons.ContainsKey(DeclarationType))
+            {
+                _icon = Icons[DeclarationType];
+            }
+
+            _icon = OopsIcon;
+        }
 
         private BitmapImage _icon;
         public override BitmapImage CollapsedIcon => _icon;
