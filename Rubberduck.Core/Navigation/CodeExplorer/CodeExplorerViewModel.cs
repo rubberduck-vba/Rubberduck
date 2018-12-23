@@ -681,7 +681,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public RenameCommand RenameCommand { get; set; }
         public IndentCommand IndenterCommand { get; set; }
         public CodeExplorerFindAllReferencesCommand FindAllReferencesCommand { get; set; }
-        public FindAllImplementationsCommand FindAllImplementationsCommand { get; set; }
+        public CodeExplorerFindAllImplementationsCommand FindAllImplementationsCommand { get; set; }
         public CommandBase CollapseAllSubnodesCommand { get; }
         public CopyResultsCommand CopyResultsCommand { get; set; }
         public CommandBase ExpandAllSubnodesCommand { get; }

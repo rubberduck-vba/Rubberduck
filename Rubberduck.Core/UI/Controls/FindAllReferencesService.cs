@@ -12,7 +12,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Controls
 {
-    public class FindAllReferencesService
+    public class FindAllReferencesService : IDisposable
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly INavigateCommand _navigateCommand;
@@ -38,9 +38,10 @@ namespace Rubberduck.UI.Controls
 
         private void _state_StateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State != ParserState.Ready) { return; }
-
-            if (_viewModel == null) { return; }
+            if (e.State != ParserState.Ready || _viewModel == null)
+            {
+                return;
+            }
 
             _uiDispatcher.InvokeAsync(UpdateTab);
         }
