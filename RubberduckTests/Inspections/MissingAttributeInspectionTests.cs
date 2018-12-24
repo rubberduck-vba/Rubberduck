@@ -4,6 +4,7 @@ using System.Threading;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -36,6 +37,20 @@ End Sub";
 
             var inspectionResults = InspectionResults(inputCode);
             Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ModuleAttributeAnnotationWithoutAttributeInDocumentModuleDoesNotReturnResult()
+        {
+            const string inputCode =
+                @"'@ModuleAttribute VB_Description, ""Desc""
+Public Sub Foo()
+    Const const1 As Integer = 9
+End Sub";
+
+            var inspectionResults = InspectionResults(inputCode, ComponentType.Document);
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [Test]
@@ -109,6 +124,20 @@ End Sub";
 
             var inspectionResults = InspectionResults(inputCode);
             Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAttributeAnnotationWithoutAttributeInDomcumentModuleDoesNotReturnResult()
+        {
+            const string inputCode =
+                @"'@MemberAttribute VB_Description, ""Desc""
+Public Sub Foo()
+    Const const1 As Integer = 9
+End Sub";
+
+            var inspectionResults = InspectionResults(inputCode, ComponentType.Document);
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [Test]
@@ -345,9 +374,9 @@ End Sub";
         }
 
 
-        private IEnumerable<IInspectionResult> InspectionResults(string inputCode)
+        private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, componentType, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new MissingAttributeInspection(state);

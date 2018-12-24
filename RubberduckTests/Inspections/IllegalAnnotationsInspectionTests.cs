@@ -948,6 +948,45 @@ Implements IWorkbookData
 
         [Test]
         [Category("Inspections")]
+        public void ModuleAttributeAnnotationInDocumentReturnsResult()
+        {
+            const string inputCode = @"
+'@ModuleAttribute VB_Description, ""Desc""
+
+";
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.Document, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAttributeAnnotationInDocumentReturnsResult()
+        {
+            const string inputCode = @"
+'@MemberAttribute VB_Description, ""Desc""
+Public Sub Foo()
+End Sub
+";
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.Document, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new IllegalAnnotationInspection(state);
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void InspectionName()
         {
             const string inspectionName = "IllegalAnnotationInspection";

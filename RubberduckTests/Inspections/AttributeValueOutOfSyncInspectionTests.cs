@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -37,6 +38,21 @@ End Sub";
 
             var inspectionResults = InspectionResults(inputCode);
             Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ModuleAttributeWithOtherValueInDocumentModuleDoesNotReturnResult()
+        {
+            const string inputCode =
+                @"Attribute VB_Exposed = False
+'@ModuleAttribute VB_Exposed, True
+Public Sub Foo()
+    Const const1 As Integer = 9
+End Sub";
+
+            var inspectionResults = InspectionResults(inputCode, ComponentType.Document);
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [Test]
@@ -112,6 +128,21 @@ End Sub";
 
             var inspectionResults = InspectionResults(inputCode);
             Assert.AreEqual(1, inspectionResults.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void MemberAttributeWithOtherValueInDocumentModuleDoesNotReturnResult()
+        {
+            const string inputCode =
+                @"'@MemberAttribute VB_UserMemId, -4
+Public Sub Foo()
+Attribute Foo.VB_UserMemId = 40
+    Const const1 As Integer = 9
+End Sub";
+
+            var inspectionResults = InspectionResults(inputCode, ComponentType.Document);
+            Assert.AreEqual(0, inspectionResults.Count());
         }
 
         [Test]
@@ -193,9 +224,9 @@ End Sub";
             Assert.AreEqual("40", inspectionResult.Properties.AttributeValues[0]);
         }
 
-        private IEnumerable<IInspectionResult> InspectionResults(string inputCode)
+        private IEnumerable<IInspectionResult> InspectionResults(string inputCode, ComponentType componentType = ComponentType.StandardModule)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, componentType, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
                 var inspection = new AttributeValueOutOfSyncInspection(state);

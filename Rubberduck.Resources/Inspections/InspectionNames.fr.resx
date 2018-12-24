@@ -267,9 +267,6 @@
   <data name="ImplicitByRefModifierInspection" xml:space="preserve">
     <value>Paramètre ByRef implicite</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Annotation manquante</value>
-  </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Annotation illégale</value>
   </data>

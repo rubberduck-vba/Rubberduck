@@ -413,15 +413,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
-        /// </summary>
-        public static string MissingAnnotationInspection {
-            get {
-                return ResourceManager.GetString("MissingAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; annotation, but no corresponding attribute..
         /// </summary>
         public static string MissingAttributeInspection {
@@ -429,7 +420,27 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
+        /// </summary>
+        public static string MissingMemberAnnotationInspection
+        {
+            get {
+                return ResourceManager.GetString("MissingMemberAnnotationInspection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
+        /// </summary>
+        public static string MissingModuleAnnotationInspection
+        {
+            get {
+                return ResourceManager.GetString("MissingModuleAnnotationInspection", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Module-level variable &apos;{0}&apos; is declared with the &apos;Dim&apos; keyword..
         /// </summary>

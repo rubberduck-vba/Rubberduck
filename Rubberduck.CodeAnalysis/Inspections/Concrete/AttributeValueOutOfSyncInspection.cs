@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
             var declarationsWithAttributeAnnotations = State.DeclarationFinder.AllUserDeclarations
                 .Where(declaration => declaration.Annotations.Any(annotation => annotation.AnnotationType.HasFlag(AnnotationType.Attribute)));
             var results = new List<DeclarationInspectionResult>();
-            foreach (var declaration in declarationsWithAttributeAnnotations)
+            foreach (var declaration in declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document))
             {
                 foreach (var annotation in declaration.Annotations.OfType<IAttributeAnnotation>())
                 {
@@ -39,6 +40,7 @@ namespace Rubberduck.Inspections.Concrete
                         var result = new DeclarationInspectionResult(this, description, declaration,
                             new QualifiedContext(declaration.QualifiedModuleName, annotation.Context));
                         result.Properties.Annotation = annotation;
+                        result.Properties.AttributeName = annotation.Attribute;
                         result.Properties.AttributeValues = attributeValues;
 
                         results.Add(result);
