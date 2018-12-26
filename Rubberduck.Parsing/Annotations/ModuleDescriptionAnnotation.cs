@@ -8,7 +8,7 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Used for specifying a module's <c>VB_Description</c> attribute.
     /// </summary>
-    public sealed class ModuleDescriptionAnnotation : AttributeAnnotationBase
+    public sealed class ModuleDescriptionAnnotation : FlexibleAttributeValueAnnotationBase
     {
         public ModuleDescriptionAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> attributeValues)
             : base(AnnotationType.ModuleDescription, qualifiedSelection, context, attributeValues?.Take(1).ToList())
@@ -22,7 +22,5 @@ namespace Rubberduck.Parsing.Annotations
         }
 
         public string Description { get; }
-
-        public override string Attribute => "VB_Description";
     }
 }
