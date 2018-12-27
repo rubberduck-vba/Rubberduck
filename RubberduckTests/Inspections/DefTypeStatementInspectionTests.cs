@@ -107,7 +107,7 @@ End Function";
         public void DefType_AllDefTypeAreIgnored()
         {
             const string inputCode =
-@"'@Ignore DefTypeStatement
+@"'@IgnoreModule DefTypeStatement
 DefBool A
 DefByte B
 DefInt C

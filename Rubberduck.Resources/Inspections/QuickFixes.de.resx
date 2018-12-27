@@ -267,4 +267,7 @@
   <data name="AdjustAttributeValuesQuickFix" xml:space="preserve">
     <value>Attributwert(e) anpassen</value>
   </data>
+  <data name="RemoveAttributeQuickFix" xml:space="preserve">
+    <value>Attribut entfernen</value>
+  </data>
 </root>

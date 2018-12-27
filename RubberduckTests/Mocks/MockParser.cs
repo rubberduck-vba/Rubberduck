@@ -46,7 +46,6 @@ namespace RubberduckTests.Mocks
 
         public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, string serializedComProjectsPath = null, Mock<IVBEEvents> vbeEvents = null)
         {
-            //var vbeEvents = MockVbeEvents.CreateMockVbeEvents(new Mock<IVBE>());
             var declarationFinderFactory = new DeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(vbe);
             var state = new RubberduckParserState(vbe, projectRepository, declarationFinderFactory, vbeEvents?.Object ?? MockVbeEvents.CreateMockVbeEvents(new Mock<IVBE>()).Object);

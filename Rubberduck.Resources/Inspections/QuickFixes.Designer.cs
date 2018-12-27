@@ -277,7 +277,17 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("RedundantByRefModifierQuickFix", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove comment.
+        /// </summary>
+        public static string RemoveAttributeQuickFix
+        {
+            get {
+                return ResourceManager.GetString("RemoveAttributeQuickFix", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Remove comment.
         /// </summary>

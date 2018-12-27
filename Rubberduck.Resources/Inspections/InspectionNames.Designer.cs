@@ -395,15 +395,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing annotation.
-        /// </summary>
-        public static string MissingAnnotationInspection {
-            get {
-                return ResourceManager.GetString("MissingAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Missing attribute.
         /// </summary>
         public static string MissingAttributeInspection {
@@ -411,7 +402,28 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Missing annotation.
+        /// </summary>
+        public static string MissingMemberAnnotationInspection
+        {
+            get {
+                return ResourceManager.GetString("MissingMemberAnnotationInspection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Missing annotation.
+        /// </summary>
+        public static string MissingModuleAnnotationInspection
+        {
+            get
+            {
+                return ResourceManager.GetString("MissingModuleAnnotationInspection", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Use of &apos;Dim&apos; keyword at module level.
         /// </summary>
