@@ -22,6 +22,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             MoveParameterUpCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterUp((Parameter)param));
             MoveParameterDownCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterDown((Parameter)param));
             _messageBox = messageBox;
+            _parameters = new ObservableCollection<Parameter>(model.Parameters);
 
             model.ConfirmReorderParameter += ConfirmReorderParameterHandler;
         }
@@ -33,6 +34,11 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         public RubberduckParserState State { get; }
 
+        private void UpdateModelParameters()
+        {
+            Model.Parameters = _parameters.ToList();
+        }
+
         private ObservableCollection<Parameter> _parameters;
         public ObservableCollection<Parameter> Parameters
         {
@@ -40,6 +46,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             set
             {
                 _parameters = value;
+                UpdateModelParameters();
                 OnPropertyChanged();
             }
         }
@@ -48,7 +55,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         {
             get
             {
-                // if there is only one parameter, we remove it without displaying the UI; this gets called anyway as part of the initialization process
+                // if there is only one parameter, we reorder it without displaying the UI; this gets called anyway as part of the initialization process
                 if (Parameters == null)
                 {
                     return string.Empty;
@@ -171,7 +178,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 var currentIndex = Parameters.IndexOf(parameter);
                 Parameters.Move(currentIndex, currentIndex - 1);
-                
+                UpdateModelParameters();
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
@@ -182,7 +189,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             {
                 var currentIndex = Parameters.IndexOf(parameter);
                 Parameters.Move(currentIndex, currentIndex + 1);
-                
+                UpdateModelParameters();
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }

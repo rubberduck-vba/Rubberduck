@@ -7,7 +7,7 @@ using Rubberduck.Refactorings.ReorderParameters;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
-    internal class ReorderParametersPresenter : RefactoringPresenterBase<ReorderParametersModel, ReorderParametersDialog, ReorderParametersView, ReorderParametersViewModel>, IReorderParametersPresenter
+    public class ReorderParametersPresenter : RefactoringPresenterBase<ReorderParametersModel, IRefactoringDialog<ReorderParametersModel, IRefactoringView<ReorderParametersModel>, IRefactoringViewModel<ReorderParametersModel>>, IRefactoringView<ReorderParametersModel>, IRefactoringViewModel<ReorderParametersModel>>, IReorderParametersPresenter
     {
         private readonly IMessageBox _messageBox;
 
@@ -28,15 +28,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 return null;
             }
 
-            ViewModel.Parameters = new ObservableCollection<Parameter>(Model.Parameters);
-
             base.Show();
             if (DialogResult != RefactoringDialogResult.Execute)
             {
                 return null;
             }
 
-            Model.Parameters = ViewModel.Parameters.ToList();
             return Model;
         }
     }
