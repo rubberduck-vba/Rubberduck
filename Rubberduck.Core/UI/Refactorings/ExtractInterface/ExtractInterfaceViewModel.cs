@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Refactorings.ExtractInterface;
 
 namespace Rubberduck.UI.Refactorings
 {
@@ -22,23 +22,14 @@ namespace Rubberduck.UI.Refactorings
                 .Where(moduleDeclaration => moduleDeclaration.ProjectId == Model.TargetDeclaration.ProjectId)
                 .Select(module => module.ComponentName)
                 .ToList();
-            _members = Model.Members.Select(m => m.ToViewModel()).ToList();
-            UpdateModelMembers();
         }
 
-        private void UpdateModelMembers()
+        public ObservableCollection<InterfaceMember> Members
         {
-            Model.Members = _members.Where(m => m.IsSelected).Select(vm => vm.ToModel()).ToList();
-        }
-
-        private List<InterfaceMemberViewModel> _members;
-        public List<InterfaceMemberViewModel> Members
-        {
-            get => _members;
+            get => Model.Members;
             set
             {
-                _members = value;
-                UpdateModelMembers();
+                Model.Members = value;
                 OnPropertyChanged();
             }
         }
@@ -76,7 +67,7 @@ namespace Rubberduck.UI.Refactorings
             {
                 item.IsSelected = value;
             }
-            UpdateModelMembers();
+            OnPropertyChanged(nameof(Members));
         }
 
         public CommandBase SelectAllCommand { get; }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Rubberduck.Interaction;
@@ -175,12 +174,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private void AddInterfaceMembersToClass(IModuleRewriter rewriter)
         {
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _model.State, _messageBox, _rewritingManager);
-            implementInterfaceRefactoring.Refactor(_model.Members.Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);
+            implementInterfaceRefactoring.Refactor(_model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);
         }
 
         private string GetInterfaceModuleBody()
         {
-            return string.Join(Environment.NewLine, _model.Members.Select(m => m.Body));
+            return string.Join(Environment.NewLine, _model.SelectedMembers.Select(m => m.Body));
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
 using NUnit.Framework;
@@ -250,7 +251,8 @@ End Function
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                model.Members = model.Members.Where(member => !member.FullMemberSignature.Contains("Property")).ToList();
+                model.Members = new ObservableCollection<InterfaceMember>(model.Members
+                    .Where(member => !member.FullMemberSignature.Contains("Property")).ToList());
 
                 //SetupFactory
                 var factory = SetupFactory(model);
@@ -392,7 +394,7 @@ End Sub
 
                 //Specify Params to remove
                 var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                model.Members = new[]{ model.Members.ElementAt(0) }.ToList();
+                model.Members = new ObservableCollection<InterfaceMember>(new[] {model.Members.ElementAt(0)}.ToList());
 
                 //SetupFactory
                 var factory = SetupFactory(model);
