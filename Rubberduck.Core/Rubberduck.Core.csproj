@@ -12,7 +12,7 @@
     <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <!-- Give a fixed version to not blow XAML generated code to smithereens -->
-    <AssemblyVersion>2.3.0</AssemblyVersion>
+    <AssemblyVersion>2.3.1</AssemblyVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
@@ -66,6 +66,7 @@
     <PackageReference Include="EasyHook">
       <Version>2.7.6684</Version>
     </PackageReference>
+    <PackageReference Include="gong-wpf-dragdrop" Version="1.1.0" />
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.8.4</Version>
     </PackageReference>
@@ -109,6 +110,13 @@
     <EmbeddedResource Update="UI\**\*.resx">
       <DependentUpon>%(Filename).cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <!-- END WINDOWS FORMS WORKAROUND SECTION -->
 

@@ -9,6 +9,7 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using Rubberduck.AddRemoveReferences;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
@@ -51,6 +52,7 @@ using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
+using Rubberduck.UI.AddRemoveReferences;
 
 namespace Rubberduck.Root
 {
@@ -127,7 +129,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<SearchResultPresenterInstanceManager>()
                 .LifestyleSingleton());
 
-            RefactoringDialogRefactor(container);
+            RegisterRefactoringDialogs(container);
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
 
@@ -219,6 +221,10 @@ namespace Rubberduck.Root
                 .ImplementedBy(typeof(XmlPersistanceService<>))
                 .LifestyleSingleton());
 
+            container.Register(Component.For(typeof(IPersistanceService<ReferenceSettings>), typeof(IFilePersistanceService<>))
+                .ImplementedBy(typeof(XmlContractPersistanceService<>))
+                .LifestyleSingleton());
+
             container.Register(Component.For<IConfigProvider<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
                 .LifestyleSingleton());
@@ -266,7 +272,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<ICodePaneHandler>()
                 .ImplementedBy<CodePaneSourceCodeHandler>()
                 .LifestyleSingleton());
-            container.Register(Component.For<IFolderBrowserFactory>()
+            container.Register(Component.For<IFileSystemBrowserFactory>()
                 .ImplementedBy<DialogFactory>()
                 .LifestyleSingleton());
             container.Register(Component.For<IModuleRewriterFactory>()
@@ -285,6 +291,9 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IRewriteSessionFactory>()
                 .ImplementedBy<RewriteSessionFactory>()
+                .LifestyleSingleton());
+            container.Register(Component.For<IAddRemoveReferencesPresenterFactory>()
+                .ImplementedBy<AddRemoveReferencesPresenterFactory>()
                 .LifestyleSingleton());
         }
 
@@ -490,7 +499,8 @@ namespace Rubberduck.Root
                 typeof(ProjectExplorerRefactorRenameCommandMenuItem),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
-                typeof(FindAllImplementationsCommandMenuItem)
+                typeof(FindAllImplementationsCommandMenuItem),
+                typeof(ProjectExplorerAddRemoveReferencesCommandMenuItem)
             };
         }
 
@@ -594,13 +604,14 @@ namespace Rubberduck.Root
                 typeof(RegexAssistantCommandMenuItem),
                 typeof(ToDoExplorerCommandMenuItem),
                 typeof(CodeMetricsCommandMenuItem),
-                typeof(ExportAllCommandMenuItem)
+                typeof(ExportAllCommandMenuItem),
+                typeof(ToolMenuAddRemoveReferencesCommandMenuItem)
             };
             
             return items.ToArray();
         }
 
-        private void RefactoringDialogRefactor(IWindsorContainer container)
+        private void RegisterRefactoringDialogs(IWindsorContainer container)
         {
             container.Register(Types
                 .FromAssemblyInThisApplication()

@@ -229,6 +229,12 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
+        public Mock<IReferences> GetMockedReferences(out Mock<IVBProject> project)
+        {
+            project = Build();
+            return _vbReferences;
+        }
+
         private Mock<IReferences> CreateReferencesMock()
         {
             var result = new Mock<IReferences>();
@@ -244,7 +250,7 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<IReference> CreateReferenceMock(string name, string filePath, int major, int minor, bool isBuiltIn = true)
+        public Mock<IReference> CreateReferenceMock(string name, string filePath, int major, int minor, bool isBuiltIn = true)
         {
             var result = new Mock<IReference>();
 

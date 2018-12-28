@@ -266,9 +266,6 @@
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>'{0}' hat keine Auswirkung.</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Modul oder Element '{0}' hat ein '{1}' Attribut, aber keine zugehörige Annotation.</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Modul oder Element '{0}' hat eine '{1}' Annotation, aber das zugehörige Attribut fehlt.</value>
   </data>
@@ -373,5 +370,14 @@
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>'{0}' wird von einem EXCEL-Zellverweis verdeckt.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Die Wert(e) des {0}-Attributs ({1}) passen nicht zur {2}-Annotation.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Element '{0}' hat ein '{1}' Attribut mit Wert(en) '{2}', aber keine zugehörige Annotation.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Modul '{0}' hat ein '{1}' Attribut mit Wert(en) '{2}', aber keine zugehörige Annotation.</value>
   </data>
 </root>

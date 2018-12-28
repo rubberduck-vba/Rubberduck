@@ -260,10 +260,6 @@
     <value>Annotation '{0}' is illegal in this context.</value>
     <comment>{0} annotation name</comment>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Module or member '{0}' has a '{1}' attribute, but no corresponding annotation.</value>
-    <comment>{0} module/member; {1} specified attribute</comment>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Module or member '{0}' has a '{1}' annotation, but no corresponding attribute.</value>
     <comment>{0} module/member; {1} specified annotation</comment>
@@ -388,5 +384,17 @@
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>'{0}' is hidden by a valid Excel cell reference.</value>
     <comment>{0} Function name</comment>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>The attribute value(s) for attribute {0} ({1}) are out of sync with the {2} annotation. </value>
+    <comment>{0} attribute name, {1} attribute values, {2} annotation name</comment>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Member '{0}' has a '{1}' attribute with value(s) '{2}', but no corresponding annotation.</value>
+    <comment>{0} member; {1} specified attribute; {2} specified values</comment>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Module '{0}' has a '{1}' attribute with value(s) '{2}', but no corresponding annotation.</value>
+    <comment>{0} module; {1} specified attribute; {2} specified values</comment>
   </data>
 </root>

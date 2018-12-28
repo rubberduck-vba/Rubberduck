@@ -7,6 +7,6 @@
         Implicit = 3,
         Public = 4,
         Global = 5,
-        Static = 6,
+        Static = 6
     }
 }

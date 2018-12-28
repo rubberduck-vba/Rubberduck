@@ -1,7 +1,11 @@
-﻿using Rubberduck.Parsing.Annotations;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Binding;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
 // ReSharper disable UnusedParameter.Local  - calls are dynamic, so the signatures need to match.
@@ -10,11 +14,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 {
     public sealed class BoundExpressionVisitor
     {
-        private readonly IdentifierAnnotationService _identifierAnnotationService;
+        private readonly DeclarationFinder _declarationFinder;
 
-        public BoundExpressionVisitor(IdentifierAnnotationService identifierAnnotationService)
+        public BoundExpressionVisitor(DeclarationFinder declarationFinder)
         {
-            _identifierAnnotationService = identifierAnnotationService;
+            _declarationFinder = declarationFinder;
         }
 
         public void AddIdentifierReferences(
@@ -73,10 +77,16 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 identifier,
                 callee,
                 callSiteContext.GetSelection(),
-                _identifierAnnotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment);
+        }
+
+        private IEnumerable<IAnnotation> FindIdentifierAnnotations(QualifiedModuleName module, int line)
+        {
+            return _declarationFinder.FindAnnotations(module, line)
+                .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.IdentifierAnnotation));
         }
 
         private void Visit(
@@ -103,7 +113,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                     identifier,
                     callee,
                     callSiteContext.GetSelection(),
-                    _identifierAnnotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                    FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
                     isAssignmentTarget,
                     hasExplicitLetStatement,
                     isSetAssignment);
@@ -140,7 +150,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                         identifier,
                         callee,
                         callSiteContext.GetSelection(),
-                        _identifierAnnotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                        FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
                         isSetAssignment);
                 }
             }
@@ -254,7 +264,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
                 identifier,
                 callee,
                 callSiteContext.GetSelection(),
-                _identifierAnnotationService.FindAnnotations(module, callSiteContext.GetSelection().StartLine),
+                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
                 isAssignmentTarget,
                 hasExplicitLetStatement,
                 isSetAssignment);

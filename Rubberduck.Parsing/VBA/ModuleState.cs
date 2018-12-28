@@ -27,6 +27,8 @@ namespace Rubberduck.Parsing.VBA
         public IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> MembersAllowingAttributes { get; private set; }
 
         public bool IsNew { get; private set; }
+        public bool IsMarkedAsModified { get; private set; }
+
 
         public ModuleState(ConcurrentDictionary<Declaration, byte> declarations)
         {
@@ -42,6 +44,7 @@ namespace Rubberduck.Parsing.VBA
             MembersAllowingAttributes = new Dictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext>();
 
             IsNew = true;
+            IsMarkedAsModified = false;
             State = ParserState.Pending;
         }
 
@@ -146,6 +149,11 @@ namespace Rubberduck.Parsing.VBA
         {
             AttributesTokenStream = attributesTokenStream;
             return this;
+        }
+
+        public void MarkAsModified()
+        {
+            IsMarkedAsModified = true;
         }
 
         private bool _isDisposed;

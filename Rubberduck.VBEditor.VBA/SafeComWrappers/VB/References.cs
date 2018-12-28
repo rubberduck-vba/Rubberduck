@@ -7,7 +7,7 @@ using VB = Microsoft.Vbe.Interop;
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public sealed class References : SafeEventedComWrapper<VB.References, VB._dispReferencesEvents>, IReferences, VB._dispReferencesEvents
+    public sealed class References : SafeEventedComWrapper<VB.References, VB._dispReferences_Events>, IReferences, VB._dispReferences_Events
     {
         public References(VB.References target, bool rewrapping = false) 
             : base(target, rewrapping)
@@ -23,28 +23,20 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public IVBE VBE => new VBE(IsWrappingNullReference ? null : Target.VBE);
 
-        void VB._dispReferencesEvents.ItemRemoved(VB.Reference Reference)
+        void VB._dispReferences_Events.ItemRemoved(VB.Reference reference)
         {
-            var referenceWrapper = new Reference(Reference);
-            var handler = ItemRemoved;
-            if (handler == null)
+            using (var removing = new Reference(reference))
             {
-                referenceWrapper.Dispose();
-                return;
+                ItemRemoved?.Invoke(this, new ReferenceEventArgs(new ReferenceInfo(removing), removing.Type));
             }
-            handler.Invoke(this, new ReferenceEventArgs(referenceWrapper));
         }
 
-        void VB._dispReferencesEvents.ItemAdded(VB.Reference Reference)
+        void VB._dispReferences_Events.ItemAdded(VB.Reference reference)
         {
-            var referenceWrapper = new Reference(Reference);
-            var handler = ItemAdded;
-            if (handler == null)
+            using (var adding = new Reference(reference))
             {
-                referenceWrapper.Dispose();
-                return;
+                ItemAdded?.Invoke(this, new ReferenceEventArgs(new ReferenceInfo(adding), adding.Type));
             }
-            handler.Invoke(this, new ReferenceEventArgs(referenceWrapper));
         }
 
         public IReference this[object index] => new Reference(IsWrappingNullReference ? null : Target.Item(index));
