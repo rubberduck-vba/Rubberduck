@@ -129,7 +129,8 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<SearchResultPresenterInstanceManager>()
                 .LifestyleSingleton());
-            
+
+            RefactoringDialogRefactor(container);
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
 
@@ -600,6 +601,76 @@ namespace Rubberduck.Root
             };
             
             return items.ToArray();
+        }
+
+        private void RefactoringDialogRefactor(IWindsorContainer container)
+        {
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringView<>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringView<>));
+
+                    return face == null ? new[] { type } : new[] { type, face };
+                })
+            );
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringViewModel<>))
+                .LifestyleSingleton()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringViewModel<>));
+
+                    return face == null ? new[] { type } : new[] {type, face};
+                })
+            );
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringDialog<,,>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringDialog<,,>));
+
+                    if (face == null)
+                    {
+                        return new[] { type };
+                    }
+
+                    var model = face.GenericTypeArguments[0];
+
+                    var view = face.GenericTypeArguments[1];
+                    var interfaceView = view.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringView<>));
+
+                    if (interfaceView == null)
+                    {
+                        return new[] { type };
+                    }
+                    
+                    var viewModel = face.GenericTypeArguments[2];
+                    var interfaceViewModel = viewModel.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringViewModel<>));
+
+                    if (interfaceViewModel == null)
+                    {
+                        return new[] {type};
+                    }
+
+                    var closedFace = typeof(IRefactoringDialog<,,>).MakeGenericType(model, interfaceView, interfaceViewModel);
+
+                    return new[] { type, closedFace };
+                })
+            );
         }
 
         private void RegisterCommandMenuItems(IWindsorContainer container)

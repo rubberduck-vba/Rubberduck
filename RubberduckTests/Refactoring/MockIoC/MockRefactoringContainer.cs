@@ -85,11 +85,13 @@ namespace RubberduckTests.Refactoring.MockIoC
                 .LifestyleSingleton()
             );
 
+            /*
             container.Register(Component
                 .For(typeof(IRefactoringView<>))
                 .ImplementedBy(typeof(RefactoringViewStub<>))
                 .LifestyleSingleton()
             );
+            */
 
             container.Register(Component
                 .For(typeof(RenameViewModel), typeof(IRefactoringViewModel<RenameModel>))
