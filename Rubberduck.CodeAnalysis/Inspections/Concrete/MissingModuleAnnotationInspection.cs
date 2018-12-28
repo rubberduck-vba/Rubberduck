@@ -61,27 +61,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private static bool IsDefaultAttribute(Declaration declaration, AttributeNode attribute)
         {
-            switch (attribute.Name)
-            {
-                case "VB_Name":
-                    return true;
-                case "VB_GlobalNameSpace":
-                    return declaration.DeclarationType.HasFlag(DeclarationType.ClassModule) 
-                        && attribute.Values[0].Equals(Tokens.False);
-                case "VB_Exposed":
-                    return declaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                           && attribute.Values[0].Equals(Tokens.False);
-                case "VB_Creatable":
-                    return declaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
-                           && attribute.Values[0].Equals(Tokens.False);
-                case "VB_PredeclaredId":
-                    return (declaration.QualifiedModuleName.ComponentType == ComponentType.ClassModule
-                                && attribute.Values[0].Equals(Tokens.False))
-                            || (declaration.QualifiedModuleName.ComponentType == ComponentType.UserForm
-                                && attribute.Values[0].Equals(Tokens.True));
-                default:
-                    return false;
-            }
+            return Attributes.IsDefaultAttribute(declaration.QualifiedModuleName.ComponentType, attribute.Name, attribute.Values);
         }
 
         private static bool MissesCorrespondingModuleAnnotation(Declaration declaration, AttributeNode attribute)

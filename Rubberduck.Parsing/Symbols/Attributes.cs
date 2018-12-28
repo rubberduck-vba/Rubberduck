@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -75,6 +76,41 @@ namespace Rubberduck.Parsing.Symbols
     /// </remarks>
     public class Attributes : HashSet<AttributeNode>
     {
+        public static bool IsDefaultAttribute(ComponentType componentType, string attributeName, IReadOnlyList<string> attributeValues)
+        {
+            if (!ComponentsWithDefaultAttributes.Contains(componentType))
+            {
+                return false;
+            }
+
+            switch (attributeName)
+            {
+                case "VB_Name":
+                    return true;
+                case "VB_GlobalNameSpace":
+                    return (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
+                           && attributeValues[0].Equals(Tokens.False);
+                case "VB_Exposed":
+                    return (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
+                           && attributeValues[0].Equals(Tokens.False);
+                case "VB_Creatable":
+                    return (componentType == ComponentType.ClassModule || componentType == ComponentType.UserForm)
+                           && attributeValues[0].Equals(Tokens.False);
+                case "VB_PredeclaredId":
+                    return (componentType == ComponentType.ClassModule && attributeValues[0].Equals(Tokens.False))
+                           || (componentType == ComponentType.UserForm && attributeValues[0].Equals(Tokens.True));
+                default:
+                    return false;
+            }
+        }
+
+        private static readonly ICollection<ComponentType> ComponentsWithDefaultAttributes = new HashSet<ComponentType>
+        {
+            ComponentType.StandardModule,
+            ComponentType.ClassModule,
+            ComponentType.UserForm
+        };
+
         public bool HasAttributeFor(IAttributeAnnotation annotation, string memberName = null)
         {
             return AttributeNodesFor(annotation, memberName).Any();
