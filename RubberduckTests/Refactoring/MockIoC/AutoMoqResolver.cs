@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
 using Castle.Core;
 using Castle.Facilities.TypedFactory;
@@ -10,7 +9,6 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Context;
 using Moq;
 using Rubberduck.Refactorings;
-using Rubberduck.Refactorings.Rename;
 
 namespace RubberduckTests.Refactoring.MockIoC
 {
@@ -99,16 +97,7 @@ namespace RubberduckTests.Refactoring.MockIoC
                         };
 
                     var mock = (Mock) kernel.Resolve(mockType, mockArgs);
-                    /*
-                    var mock = (Mock<RefactoringDialogStub<RenameModel, IRefactoringView<RenameModel>,
-                        IRefactoringViewModel<RenameModel>>>) kernel.Resolve(mockType, mockArgs);
-                    mock.Setup(m => m.ShowDialog()).Callback(() =>
-                    {
-                        mock.Object.Model.NewName = "Goo"; 
-                    });
-                    */
                     mock.CallBase = true;
-
 
                     return mock.Object;
                 };
@@ -135,34 +124,6 @@ namespace RubberduckTests.Refactoring.MockIoC
                     return mock.Object;
                 };
             }
-            /*
-            if (componentType.GetGenericTypeDefinition() == typeof(IRefactoringViewModel<>))
-            {
-                return (kernel, rp) =>
-                {
-                    var modelType = componentType.GenericTypeArguments[0];
-                    var stubType =
-                        typeof(RefactoringViewModelStub<>).MakeGenericType(modelType);
-                    var mockType =
-                        typeof(Mock<>).MakeGenericType(stubType);
-
-                    var args = new object[additionalArguments.Count];
-                    additionalArguments.Values.CopyTo(args, 0);
-                    var mockArgs =
-                        new Dictionary<string, object>
-                        {
-                            {"behavior", MockBehavior.Default},
-                            {"args", args}
-                        };
-
-                    var mock = (Mock)kernel.Resolve(mockType, mockArgs);
-                    mock.CallBase = true;
-
-                    return mock.Object;
-                };
-            }
-            */
-
             return base.BuildFactoryComponent(method, componentName, componentType, additionalArguments);
         }
     }
