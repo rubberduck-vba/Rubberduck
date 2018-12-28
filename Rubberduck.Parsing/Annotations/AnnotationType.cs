@@ -70,7 +70,9 @@ namespace Rubberduck.Parsing.Annotations
         [FlexibleAttributeValueAnnotation("VB_Description", 1)]
         ModuleDescription = 1 << 19 | Attribute | ModuleAnnotation,
         ModuleAttribute = 1 << 20 | Attribute | ModuleAnnotation,
-        MemberAttribute = 1 << 21 | Attribute | MemberAnnotation | VariableAnnotation
+        MemberAttribute = 1 << 21 | Attribute | MemberAnnotation | VariableAnnotation,
+        [FlexibleAttributeValueAnnotation("VB_VarDescription", 1)]
+        VariableDescription = 1 << 13 | Attribute | VariableAnnotation
     }
 
     [AttributeUsage(AttributeTargets.Field)]
