@@ -630,7 +630,7 @@ namespace Rubberduck.Root
                 .FromAssemblyInThisApplication()
                 .IncludeNonPublicTypes()
                 .BasedOn(typeof(IRefactoringViewModel<>))
-                .LifestyleSingleton()
+                .LifestyleTransient()
                 .WithServiceSelect((type, types) =>
                 {
                     var face = type.GetInterfaces().FirstOrDefault(i =>
