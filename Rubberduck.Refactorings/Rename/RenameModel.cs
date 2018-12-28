@@ -13,7 +13,11 @@ namespace Rubberduck.Refactorings.Rename
         public Declaration Target
         {
             get => _target;
-            set => _target = value;
+            set
+            {
+                _target = value;
+                NewName = _target.IdentifierName;
+            }
         }
 
         public QualifiedSelection Selection { get; }
