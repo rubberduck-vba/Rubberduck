@@ -1493,6 +1493,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Set DPI Unaware.
+        /// </summary>
+        public static string GeneralSettings_SetDpiUnaware {
+            get {
+                return ResourceManager.GetString("GeneralSettings_SetDpiUnaware", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Log Folder.
         /// </summary>
         public static string GeneralSettings_ShowLogFolder {
@@ -3295,29 +3304,29 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TODO Explorer.
+        ///   Looks up a localized string similar to BUG.
         /// </summary>
-        public static string TodoSettings_Caption {
+        public static string TodoMarkerBug {
             get {
-                return ResourceManager.GetString("TodoSettings_Caption", resourceCulture);
+                return ResourceManager.GetString("TodoMarkerBug", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text.
+        ///   Looks up a localized string similar to NOTE.
         /// </summary>
-        public static string TodoSettings_Text {
+        public static string TodoMarkerNote {
             get {
-                return ResourceManager.GetString("TodoSettings_Text", resourceCulture);
+                return ResourceManager.GetString("TodoMarkerNote", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text:.
+        ///   Looks up a localized string similar to TODO.
         /// </summary>
-        public static string TodoSettings_TextLabel {
+        public static string TodoMarkerTodo {
             get {
-                return ResourceManager.GetString("TodoSettings_TextLabel", resourceCulture);
+                return ResourceManager.GetString("TodoMarkerTodo", resourceCulture);
             }
         }
         

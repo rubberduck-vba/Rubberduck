@@ -18,14 +18,13 @@ namespace Rubberduck.UI.Refactorings.Rename
             State = state;
         }
 
-        private Declaration _target;
         public Declaration Target
         {
-            get => _target;
+            get => Model.Target;
             set
             {
-                _target = value;
-                NewName = _target.IdentifierName;
+                Model.Target = value;
+                NewName = Model.Target.IdentifierName;
 
                 OnPropertyChanged(nameof(Instructions));
             }
@@ -45,13 +44,12 @@ namespace Rubberduck.UI.Refactorings.Rename
             }
         }
 
-        private string _newName;
         public string NewName
         {
-            get => _newName;
+            get => Model.NewName;
             set
             {
-                _newName = value;
+                Model.NewName = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidName));
             }
