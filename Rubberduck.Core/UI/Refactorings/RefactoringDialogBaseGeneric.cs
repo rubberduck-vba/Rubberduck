@@ -26,16 +26,8 @@ namespace Rubberduck.UI.Refactorings
         public new RefactoringDialogResult DialogResult { get; protected set; }
         public new virtual RefactoringDialogResult ShowDialog()
         {
+            // The return of ShowDialog is meaningless; we use the DialogResult which the commands set.
             var result = base.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK || result == System.Windows.Forms.DialogResult.Yes)
-            {
-                DialogResult = RefactoringDialogResult.Execute;
-            }
-            else
-            {
-                DialogResult = RefactoringDialogResult.Cancel;
-            }
-
             return DialogResult;
         }
 
