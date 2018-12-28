@@ -19,9 +19,9 @@ namespace Rubberduck.UI.Refactorings
             Dialog = _factory.CreateDialog<TModel, TView, TViewModel, TDialog>(model, view, viewModel);
         }
 
-        public TModel Model => Dialog.Model;
         public TDialog Dialog { get; }
-        public abstract TViewModel ViewModel { get; }
+        public TModel Model => Dialog.Model;
+        public TViewModel ViewModel => Dialog.ViewModel;
         public virtual RefactoringDialogResult DialogResult { get; protected set; }
 
         public virtual TModel Show()

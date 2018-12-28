@@ -14,11 +14,8 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
         public ReorderParametersPresenter(ReorderParametersModel model,
             IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : base(model, dialogFactory)
         {
-            ViewModel = dialogFactory.CreateViewModel<ReorderParametersModel, ReorderParametersViewModel>(model);
             _messageBox = messageBox;
         }
-
-        public override ReorderParametersViewModel ViewModel { get; }
 
         public override ReorderParametersModel Show()
         {

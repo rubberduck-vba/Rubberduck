@@ -13,11 +13,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
         public RemoveParametersPresenter(RemoveParametersModel model,
             IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : base(model, dialogFactory)
         {
-            ViewModel = dialogFactory.CreateViewModel<RemoveParametersModel, RemoveParametersViewModel>(model);
             _messageBox = messageBox;
         }
-
-        public override RemoveParametersViewModel ViewModel { get; }
 
         public override RemoveParametersModel Show()
         {
