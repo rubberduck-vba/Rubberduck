@@ -3,18 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Refactorings.ExtractInterface;
 
 namespace Rubberduck.UI.Refactorings
 {
-    internal class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
+    public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
         public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
         {
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
+
+            ComponentNames = Model.State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Module)
+                .Where(moduleDeclaration => moduleDeclaration.ProjectId == Model.TargetDeclaration.ProjectId)
+                .Select(module => module.ComponentName)
+                .ToList();
+            _members = Model.Members.Select(m => m.ToViewModel()).ToList();
+            UpdateModelMembers();
+        }
+
+        private void UpdateModelMembers()
+        {
+            Model.Members = _members.Where(m => m.IsSelected).Select(vm => vm.ToModel()).ToList();
         }
 
         private List<InterfaceMemberViewModel> _members;
@@ -24,19 +38,19 @@ namespace Rubberduck.UI.Refactorings
             set
             {
                 _members = value;
+                UpdateModelMembers();
                 OnPropertyChanged();
             }
         }
 
         public List<string> ComponentNames { get; set; }
 
-        private string _interfaceName;
         public string InterfaceName
         {
-            get => _interfaceName;
+            get => Model.InterfaceName;
             set
             {
-                _interfaceName = value;
+                Model.InterfaceName = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidInterfaceName));
             }
@@ -62,6 +76,7 @@ namespace Rubberduck.UI.Refactorings
             {
                 item.IsSelected = value;
             }
+            UpdateModelMembers();
         }
 
         public CommandBase SelectAllCommand { get; }

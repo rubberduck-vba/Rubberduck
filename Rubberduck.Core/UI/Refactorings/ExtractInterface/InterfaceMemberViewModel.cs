@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UI.Refactorings.ExtractInterface
 {
-    internal class InterfaceMemberViewModel : ViewModelBase 
+    public class InterfaceMemberViewModel : ViewModelBase 
     {
         public InterfaceMemberViewModel(InterfaceMember model)
         {
