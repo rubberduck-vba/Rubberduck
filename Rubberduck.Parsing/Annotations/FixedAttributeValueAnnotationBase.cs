@@ -25,7 +25,7 @@ namespace Rubberduck.Parsing.Annotations
             var type = annotationType.GetType();
             var name = Enum.GetName(type, annotationType);
             var flexibleAttributeValueAttributes = type.GetField(name).GetCustomAttributes(false)
-                .OfType<FixesAttributeValueAnnotationAttribute>().ToList();
+                .OfType<FixedAttributeValueAnnotationAttribute>().ToList();
 
             var attribute = flexibleAttributeValueAttributes.FirstOrDefault();
 

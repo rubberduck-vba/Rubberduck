@@ -58,13 +58,13 @@ namespace Rubberduck.Parsing.Annotations
         Interface = 1 << 19 | ModuleAnnotation,
         [FlexibleAttributeValueAnnotation("VB_Description", 1)]
         Description = 1 << 13 | Attribute | MemberAnnotation,
-        [FixesAttributeValueAnnotationAttribute("VB_UserMemId", "0")]
+        [FixedAttributeValueAnnotation("VB_UserMemId", "0")]
         DefaultMember = 1 << 14 | Attribute | MemberAnnotation,
-        [FixesAttributeValueAnnotationAttribute("VB_UserMemId", "-4")]
+        [FixedAttributeValueAnnotation("VB_UserMemId", "-4")]
         Enumerator = 1 << 15 | Attribute | MemberAnnotation,
-        [FixesAttributeValueAnnotationAttribute("VB_PredeclaredId", "True")]
+        [FixedAttributeValueAnnotation("VB_PredeclaredId", "True")]
         PredeclaredId = 1 << 16 | Attribute | ModuleAnnotation,
-        [FixesAttributeValueAnnotationAttribute("VB_Exposed", "True")]
+        [FixedAttributeValueAnnotation("VB_Exposed", "True")]
         Exposed = 1 << 17 | Attribute | ModuleAnnotation,
         Obsolete = 1 << 18 | MemberAnnotation | VariableAnnotation,
         [FlexibleAttributeValueAnnotation("VB_Description", 1)]
@@ -74,14 +74,14 @@ namespace Rubberduck.Parsing.Annotations
     }
 
     [AttributeUsage(AttributeTargets.Field)]
-    public class FixesAttributeValueAnnotationAttribute : Attribute
+    public class FixedAttributeValueAnnotationAttribute : Attribute
     {
         /// <summary>
         /// Enum value is associated with a VB_Attribute  with a fixed value.
         /// </summary>
         /// <param name="name">The name of the associated attribute.</param>
         /// <param name="value">If specified, constrains the association to a specific value.</param>
-        public FixesAttributeValueAnnotationAttribute(string name, params string[] values)
+        public FixedAttributeValueAnnotationAttribute(string name, params string[] values)
         {
             AttributeName = name;
             AttributeValues = values;
