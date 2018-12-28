@@ -52,7 +52,7 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -106,7 +106,7 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -156,7 +156,7 @@ End Property
                 {
                     ImplementLetSetterType = false,
                     ImplementSetSetterType = true,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -202,7 +202,7 @@ End Property
                 {
                     ImplementLetSetterType = false,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -267,7 +267,7 @@ End Function";
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -338,7 +338,7 @@ End Property";
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -391,7 +391,7 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -454,7 +454,7 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = true,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -509,7 +509,7 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -564,7 +564,7 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -615,7 +615,7 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -682,7 +682,7 @@ End Sub";
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -771,7 +771,7 @@ End Sub";
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -823,7 +823,7 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
@@ -891,6 +891,59 @@ End Property
 
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePublicField_OptionExplicit_NotMoved()
+        {
+            //Input
+            const string inputCode =
+                @"Option Explicit
+
+Public foo As String";
+            var selection = new Selection(3, 9);
+
+            //Expectation
+            const string expectedCode =
+                @"Option Explicit
+
+Private foo As String
+
+Public Property Get Name() As String
+    Name = foo
+End Property
+
+Public Property Let Name(ByVal value As String)
+    foo = value
+End Property
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
+            {
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                var model = new EncapsulateFieldModel(state, qualifiedSelection)
+                {
+                    ImplementLetSetterType = true,
+                    ImplementSetSetterType = false,
+                    //CanImplementLet = true,
+                    ParameterName = "value",
+                    PropertyName = "Name"
+                };
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
+
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
