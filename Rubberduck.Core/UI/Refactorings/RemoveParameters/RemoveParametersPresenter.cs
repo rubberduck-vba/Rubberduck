@@ -1,12 +1,11 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.RemoveParameters;
-using System.Linq;
 using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    internal class RemoveParametersPresenter : RefactoringPresenterBase<RemoveParametersModel, RemoveParametersDialog, RemoveParametersView, RemoveParametersViewModel>, IRemoveParametersPresenter
+    public class RemoveParametersPresenter : RefactoringPresenterBase<RemoveParametersModel, IRefactoringDialog<RemoveParametersModel, IRefactoringView<RemoveParametersModel>, IRefactoringViewModel<RemoveParametersModel>>, IRefactoringView<RemoveParametersModel>, IRefactoringViewModel<RemoveParametersModel>>, IRemoveParametersPresenter
     {
         private readonly IMessageBox _messageBox;
 
@@ -23,26 +22,19 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
                 return null;
             }
 
-            if (Model.Parameters.Count == 0)
+            switch (Model.Parameters.Count)
             {
-                var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, Model.TargetDeclaration.IdentifierName);
-                _messageBox.NotifyWarn(message, RubberduckUI.RemoveParamsDialog_TitleText);
-                return null;
+                case 0:
+                    var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, Model.TargetDeclaration.IdentifierName);
+                    _messageBox.NotifyWarn(message, RubberduckUI.RemoveParamsDialog_TitleText);
+                    return null;
+                case 1:
+                    Model.RemoveParameters = Model.Parameters;
+                    return Model;
+                default:
+                    base.Show();
+                    return DialogResult != RefactoringDialogResult.Execute ? null : Model;
             }
-
-            if (Model.Parameters.Count == 1)
-            {
-                return Model;
-            }
-
-            ViewModel.Parameters = Model.Parameters.Select(p => p.ToViewModel()).ToList();
-            Show();
-            if (DialogResult != RefactoringDialogResult.Execute)
-            {
-                return null;
-            }
-            Model.RemoveParameters = ViewModel.Parameters.Where(m => m.IsRemoved).Select(vm => vm.ToModel()).ToList();
-            return Model;
         }
     }
 }

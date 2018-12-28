@@ -23,6 +23,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((ParameterViewModel)param));
             _messageBox = messageBox;
             model.ConfirmRemoveParameter += ConfirmRemoveParameterHandler;
+
+            Parameters = model.Parameters.Select(p => p.ToViewModel()).ToList();
         }
 
         private void ConfirmRemoveParameterHandler(object sender, RefactoringConfirmEventArgs e)
@@ -32,6 +34,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         public RubberduckParserState State { get; }
 
+        private void UpdateModelParameters()
+        {
+            Model.RemoveParameters = Parameters.Where(m => m.IsRemoved).Select(vm => vm.ToModel()).ToList();
+        }
+
         private List<ParameterViewModel> _parameters;
         public List<ParameterViewModel> Parameters
         {
@@ -39,6 +46,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             set
             {
                 _parameters = value;
+                UpdateModelParameters();
                 OnPropertyChanged();
             }
         }
@@ -152,6 +160,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             if (parameter != null)
             {
                 parameter.IsRemoved = true;
+                UpdateModelParameters();
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
@@ -161,6 +170,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             if (parameter != null)
             {
                 parameter.IsRemoved = false;
+                UpdateModelParameters();
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
