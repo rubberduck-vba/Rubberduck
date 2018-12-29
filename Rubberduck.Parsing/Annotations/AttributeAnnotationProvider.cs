@@ -82,12 +82,12 @@ namespace Rubberduck.Parsing.Annotations
             return newList;
         }
 
-        public (AnnotationType annotationType, IReadOnlyList<string> values) MemberAttributeAnnotation(string attributeName, IReadOnlyList<string> attributeValues)
+        public (AnnotationType annotationType, IReadOnlyList<string> values) MemberAttributeAnnotation(string attributeBaseName, IReadOnlyList<string> attributeValues)
         {
             var nonModuleAnnotations = NonModuleAnnotations();
             return AttributeAnnotation(
                 nonModuleAnnotations,
-                attributeName,
+                attributeBaseName,
                 attributeValues,
                 AnnotationType.MemberAttribute);
         }
