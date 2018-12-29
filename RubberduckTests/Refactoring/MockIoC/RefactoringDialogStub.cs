@@ -1,6 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Moq;
-using Rubberduck.Refactorings;
+﻿using Rubberduck.Refactorings;
+using Rubberduck.UI.Refactorings;
 
 namespace RubberduckTests.Refactoring.MockIoC
 {
@@ -9,7 +8,7 @@ namespace RubberduckTests.Refactoring.MockIoC
         where TView : class, IRefactoringView<TModel>
         where TViewModel : class, IRefactoringViewModel<TModel>
     {
-        protected RefactoringDialogStub(TModel model, TView view, TViewModel viewModel)
+        protected RefactoringDialogStub(DialogData dialogData, TModel model, TView view, TViewModel viewModel)
         {
             Model = model;
             ViewModel = viewModel;

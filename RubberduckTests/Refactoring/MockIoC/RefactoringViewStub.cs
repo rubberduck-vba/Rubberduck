@@ -1,5 +1,4 @@
-﻿using System;
-using Rubberduck.Refactorings;
+﻿using Rubberduck.Refactorings;
 
 namespace RubberduckTests.Refactoring.MockIoC
 {
@@ -13,16 +12,5 @@ namespace RubberduckTests.Refactoring.MockIoC
 
         public virtual object DataContext { get; set; }
         public virtual TModel Model { get; set; }
-    }
-    
-    internal abstract class RefactoringViewModelStub<TModel> : IRefactoringViewModel<TModel>
-    {
-        protected RefactoringViewModelStub(TModel model)
-        {
-            Model = model;
-        }
-
-        public event EventHandler<RefactoringDialogResult> OnWindowClosed;
-        public TModel Model { get; }
     }
 }
