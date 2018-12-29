@@ -1,17 +1,14 @@
 ﻿using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
     public sealed class EncapsulateFieldDialog : RefactoringDialogBase<EncapsulateFieldModel, EncapsulateFieldView, EncapsulateFieldViewModel>
     {
         private bool _isExpanded;
-        protected override int MinWidth => 667;
-        protected override int MinHeight => _isExpanded ? 560 : 305;
+        private new int MinHeight => _isExpanded ? 560 : 305;
 
-        public EncapsulateFieldDialog(EncapsulateFieldModel model, EncapsulateFieldView view, EncapsulateFieldViewModel viewModel) : base(model, view, viewModel)
+        public EncapsulateFieldDialog(DialogData dialogData, EncapsulateFieldModel model, EncapsulateFieldView view, EncapsulateFieldViewModel viewModel) : base(dialogData, model, view, viewModel)
         {
-            Text = RubberduckUI.EncapsulateField_Caption;
             ViewModel.ExpansionStateChanged += Vm_ExpansionStateChanged;
         }
 

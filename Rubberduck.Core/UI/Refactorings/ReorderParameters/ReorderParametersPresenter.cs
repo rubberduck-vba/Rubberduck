@@ -1,18 +1,19 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
-using Rubberduck.Resources;
+﻿using Rubberduck.Resources;
 using Rubberduck.Interaction;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ReorderParameters;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
-    public class ReorderParametersPresenter : RefactoringPresenterBase<ReorderParametersModel, IRefactoringDialog<ReorderParametersModel, IRefactoringView<ReorderParametersModel>, IRefactoringViewModel<ReorderParametersModel>>, IRefactoringView<ReorderParametersModel>, IRefactoringViewModel<ReorderParametersModel>>, IReorderParametersPresenter
+    public class ReorderParametersPresenter : RefactoringPresenterBase<ReorderParametersModel>, IReorderParametersPresenter
     {
+        private static readonly DialogData DialogData =
+            DialogData.Create(RubberduckUI.ReorderParamsDialog_Caption, 395, 494);
         private readonly IMessageBox _messageBox;
 
         public ReorderParametersPresenter(ReorderParametersModel model,
-            IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : base(model, dialogFactory)
+            IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : 
+            base(DialogData,  model, dialogFactory)
         {
             _messageBox = messageBox;
         }

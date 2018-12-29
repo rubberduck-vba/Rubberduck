@@ -5,12 +5,14 @@ using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public class RemoveParametersPresenter : RefactoringPresenterBase<RemoveParametersModel, IRefactoringDialog<RemoveParametersModel, IRefactoringView<RemoveParametersModel>, IRefactoringViewModel<RemoveParametersModel>>, IRefactoringView<RemoveParametersModel>, IRefactoringViewModel<RemoveParametersModel>>, IRemoveParametersPresenter
+    public class RemoveParametersPresenter : RefactoringPresenterBase<RemoveParametersModel>, IRemoveParametersPresenter
     {
+        private static readonly DialogData DialogData = DialogData.Create(RubberduckUI.RemoveParamsDialog_Caption, 395, 494);
         private readonly IMessageBox _messageBox;
 
         public RemoveParametersPresenter(RemoveParametersModel model,
-            IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : base(model, dialogFactory)
+            IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : 
+            base(DialogData,  model, dialogFactory)
         {
             _messageBox = messageBox;
         }
