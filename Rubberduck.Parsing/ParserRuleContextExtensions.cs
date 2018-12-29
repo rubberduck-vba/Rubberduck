@@ -184,7 +184,7 @@ namespace Rubberduck.Parsing
         /// </summary>
         public static bool ContainsTokenIndex(this ParserRuleContext context, int tokenIndex)
         {
-            if (context == null)
+            if (context?.Stop == null)
             {
                 return false;
             }
@@ -302,7 +302,7 @@ namespace Rubberduck.Parsing
         /// </summary>
         public static IEnumerable<TContext> GetDescendentsContainingTokenIndex<TContext>(this ParserRuleContext context, int tokenIndex) where TContext : ParserRuleContext
         {
-            if (!context.ContainsTokenIndex(tokenIndex))
+            if (context == null || !context.ContainsTokenIndex(tokenIndex))
             {
                 return new List<TContext>();
             }

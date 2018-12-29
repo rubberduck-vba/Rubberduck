@@ -111,6 +111,18 @@ namespace Rubberduck.Parsing.Symbols
             ComponentType.UserForm
         };
 
+        public static string AttributeBaseName(string attributeName, string memberName)
+        {
+            return attributeName.StartsWith($"{memberName}.")
+                ? attributeName.Substring(memberName.Length + 1)
+                : attributeName;
+        }
+
+        public static string MemberAttributeName(string attributeBaseName, string memberName)
+        {
+            return $"{memberName}.{attributeBaseName}";
+        }
+
         public bool HasAttributeFor(IAttributeAnnotation annotation, string memberName = null)
         {
             return AttributeNodesFor(annotation, memberName).Any();
@@ -124,7 +136,7 @@ namespace Rubberduck.Parsing.Symbols
             }
 
             var attributeName = memberName != null
-                ? $"{memberName}.{annotation.Attribute}"
+                ? MemberAttributeName(annotation.Attribute, memberName)
                 : annotation.Attribute;
 
             //VB_Ext_Key annotation depend on the defined key for identity.

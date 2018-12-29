@@ -29,15 +29,13 @@ namespace Rubberduck.Inspections.QuickFixes
             IReadOnlyList<string> attributeValues = result.Properties.AttributeValues;
             var (annotationType, annotationValues) = declaration.DeclarationType.HasFlag(DeclarationType.Module)
                 ? _attributeAnnotationProvider.ModuleAttributeAnnotation(attributeName, attributeValues)
-                : _attributeAnnotationProvider.MemberAttributeAnnotation(AttributeBaseName(attributeName, declaration.IdentifierName), attributeValues);
+                : _attributeAnnotationProvider.MemberAttributeAnnotation(AttributeBaseName(attributeName, declaration), attributeValues);
             _annotationUpdater.AddAnnotation(rewriteSession, declaration, annotationType, annotationValues);
         }
 
-        private static string AttributeBaseName(string attributeName, string memberName)
+        private static string AttributeBaseName(string attributeName, Declaration declaration)
         {
-            return attributeName.StartsWith($"{memberName}.")
-                ? attributeName.Substring(memberName.Length + 1)
-                : attributeName;
+            return Attributes.AttributeBaseName(attributeName, declaration.IdentifierName);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.AddAttributeAnnotationQuickFix;

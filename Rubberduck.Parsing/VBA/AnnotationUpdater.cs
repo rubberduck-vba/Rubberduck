@@ -9,7 +9,6 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
