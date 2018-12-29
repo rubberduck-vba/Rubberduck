@@ -2,12 +2,31 @@
 
 namespace Rubberduck.UI.Refactorings
 {
+    public readonly struct DialogData
+    {
+        public string Caption { get; }
+        public int MinimumHeight { get; }
+        public int MinimumWidth { get; }
+
+        public DialogData(string caption, int minimumHeight, int minimumWidth)
+        {
+            Caption = caption;
+            MinimumHeight = minimumHeight;
+            MinimumWidth = minimumWidth;
+        }
+
+        public static DialogData Create(string caption, int minimumHeight, int minimumWidth)
+        {
+            return new DialogData(caption, minimumHeight, minimumWidth);
+        }
+    }
+
     public class RefactoringDialogBase<TModel, TView, TViewModel> : RefactoringDialogBase, IRefactoringDialog<TModel, TView, TViewModel>
         where TModel : class
-        where TView : System.Windows.Controls.UserControl, IRefactoringView<TModel>
+        where TView : class, IRefactoringView<TModel>
         where TViewModel : class, IRefactoringViewModel<TModel>
     {
-        public RefactoringDialogBase(TModel model, TView view, TViewModel viewModel) 
+        public RefactoringDialogBase(DialogData dialogData, TModel model, TView view, TViewModel viewModel) 
         {
             Model = model;
             ViewModel = viewModel;
@@ -16,7 +35,17 @@ namespace Rubberduck.UI.Refactorings
             View.DataContext = ViewModel;
             ViewModel.OnWindowClosed += ViewModel_OnWindowClosed;
 
-            UserControl = View;
+            MinHeight = dialogData.MinimumHeight;
+            MinWidth = dialogData.MinimumWidth;
+
+            // ReSharper disable once RedundantBaseQualifier
+            // We don't want virtual calls here so we need to explicitly call base.
+            base.Text = dialogData.Caption;
+
+            // Note that user control must be set after dialog data has been consumed to ensure
+            // correct sizing of the dialog
+            System.Diagnostics.Debug.Assert(View is System.Windows.Controls.UserControl);
+            UserControl = View as System.Windows.Controls.UserControl;
         }
 
         public TModel Model { get; }

@@ -5,8 +5,8 @@ namespace Rubberduck.UI.Refactorings
 {
     public partial class RefactoringDialogBase : Form
     {
-        protected virtual int MinWidth => 400;
-        protected virtual int MinHeight => 150;
+        protected int MinWidth;
+        protected int MinHeight;
 
         protected RefactoringDialogBase()
         {

@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Refactorings
             where TViewModel : class, IRefactoringViewModel<TModel>;
         void ReleaseViewModel(IRefactoringViewModel viewModel);
 
-        TDialog CreateDialog<TModel, TView, TViewModel, TDialog>(TModel model, TView view, TViewModel viewmodel)
+        TDialog CreateDialog<TModel, TView, TViewModel, TDialog>(DialogData dialogData, TModel model, TView view, TViewModel viewmodel)
             where TModel : class
             where TView : class, IRefactoringView<TModel>
             where TViewModel : class, IRefactoringViewModel<TModel>
