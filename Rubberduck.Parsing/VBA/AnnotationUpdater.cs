@@ -40,6 +40,12 @@ namespace Rubberduck.Parsing.VBA
             }
 
             var previousEndOfLine = PreviousEndOfLine(context.Context);
+            if (previousEndOfLine == null)
+            {
+                //We are on the first logical line, but not the first physical line.
+                return;
+            }
+
             if (context.Context.start.Line > previousEndOfLine.stop.Line + 1)
             {
                 _logger.Warn("Tried to add an annotation to a context not on the first physical line of a logical line.");

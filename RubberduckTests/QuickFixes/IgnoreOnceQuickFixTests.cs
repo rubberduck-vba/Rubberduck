@@ -321,6 +321,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Ignore("With the current annotation scoping rules, this test makes no sense since the Ignore annotation will not attach to the offending context.")]
         public void MultilineParameter_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -732,7 +733,7 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
+                new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
                 var actualCode = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
 
                 Assert.AreEqual(expectedCode, actualCode);
@@ -766,7 +767,7 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
+                new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
                 var actualCode = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
 
                 Assert.AreEqual(expectedCode, actualCode);
@@ -1063,7 +1064,7 @@ End Sub";
                 var resultToFix = inspectionResults.First();
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                var quickFix = new IgnoreOnceQuickFix(state, new[] {inspection});
+                var quickFix = new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] {inspection});
                 quickFix.Fix(resultToFix, rewriteSession);
 
                 return rewriteSession.CheckOutModuleRewriter(moduleName).GetText();
@@ -1139,7 +1140,7 @@ End Sub";
                 var inspectionResults = InspectionResults(inspection, state);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                var quickFix = new IgnoreOnceQuickFix(state, new[] { inspection });
+                var quickFix = new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] { inspection });
 
                 foreach (var resultToFix in inspectionResults)
                 {
