@@ -56,6 +56,32 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        public void KnownModuleAttributeWithoutAnnotationWhileOtherAttributeWithAnnotationPresent_QuickFixWorks()
+        {
+            const string inputCode =
+                @"Attribute VB_PredeclaredID = True
+Attribute VB_Exposed = True
+'@Exposed
+Public Sub Foo()
+    Const const1 As Integer = 9
+End Sub";
+            //The attribute not present in the code pane code in the VBE.
+            //So adding on top is OK.
+            const string expectedCode =
+                @"'@PredeclaredId
+Attribute VB_PredeclaredID = True
+Attribute VB_Exposed = True
+'@Exposed
+Public Sub Foo()
+    Const const1 As Integer = 9
+End Sub";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MissingModuleAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
         public void KnownMemberAttributeWithoutAnnotation_QuickFixWorks()
         {
             const string inputCode =
@@ -93,6 +119,31 @@ End Sub";
 '@MemberAttribute VB_Ext_Key, ""Key"", ""Value""
 Public Sub Foo()
 Attribute Foo.VB_Ext_Key = ""Key"", ""Value""
+    Const const1 As Integer = 9
+End Sub";
+
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new MissingMemberAnnotationInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void KnownMemberAttributeWithoutAnnotationWhileOtherAttributeWithAnnotationPresent_QuickFixWorks()
+        {
+            const string inputCode =
+                @"'@DefaultMember
+Public Sub Foo()
+Attribute Foo.VB_Description = ""Desc""
+Attribute Foo.VB_UserMemId = 0
+    Const const1 As Integer = 9
+End Sub";
+
+            const string expectedCode =
+                @"'@DefaultMember
+'@Description ""Desc""
+Public Sub Foo()
+Attribute Foo.VB_Description = ""Desc""
+Attribute Foo.VB_UserMemId = 0
     Const const1 As Integer = 9
 End Sub";
 
