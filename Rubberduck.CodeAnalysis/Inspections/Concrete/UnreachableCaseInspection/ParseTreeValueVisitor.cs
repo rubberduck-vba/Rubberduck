@@ -16,7 +16,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public interface ITestParseTreeVisitor
     {
-        bool IsVBStringConstantToLiteral(string token, out string literalValue);
+        bool IsVBStringConstant(string token, out string literalValue);
         bool IsNonPrintingControlCharacter(string token);
         void InjectValuedDeclarationEvaluator(Func<Declaration, (bool, string, string)> func);
     }
@@ -336,7 +336,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     expressionValue = ExpressionValue;
                     declaredTypeName = TypeName;
 
-                    if (IsVBStringConstantToLiteral(expressionValue, out string constLiteral))
+                    if (IsVBStringConstant(expressionValue, out string constLiteral))
                     {
                         declaredTypeName = Tokens.String;
                         expressionValue = constLiteral;
@@ -450,20 +450,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
-        public bool IsVBStringConstantToLiteral(string candidate, out string literal)
-        {
-            return _vbStringConstants.TryGetValue(candidate, out literal);
-        }
+        public bool IsVBStringConstant(string candidate, out string literal)
+            => _vbStringConstants.TryGetValue(candidate, out literal);
 
         public bool IsNonPrintingControlCharacter(string controlChar)
-        {
-            return controlChar != null && _vbStringConstants.ContainsValue(controlChar);
-        }
+            => controlChar != null && _vbStringConstants.ContainsValue(controlChar);
 
         public void InjectValuedDeclarationEvaluator( Func<Declaration, (bool, string, string)> func)
-        {
-            ValuedDeclarationEvaluator = func;
-        }
+            => ValuedDeclarationEvaluator = func;
 
         private void LoadEnumMemberValues()
         {

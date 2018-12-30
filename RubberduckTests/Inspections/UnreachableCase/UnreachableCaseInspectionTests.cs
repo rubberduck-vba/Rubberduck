@@ -2455,7 +2455,7 @@ End Sub
         public void UnreachableCaseInspection_VbStringConstantToLiteral_AreEqual(string constToken, string expected)
         {
             var parseTreeValueVisitor = new ParseTreeValueVisitor(null, new List<VBAParser.EnumerationStmtContext>(), null) as ITestParseTreeVisitor;
-            if (parseTreeValueVisitor.IsVBStringConstantToLiteral(constToken, out string literalValue))
+            if (parseTreeValueVisitor.IsVBStringConstant(constToken, out string literalValue))
             {
                 Assert.AreEqual(expected, literalValue);
                 return;
