@@ -166,8 +166,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }*/
 
-        
-        internal static TypeLibWrapper FromVBProject(IVBProject vbProject)
+        public static TypeLibWrapper FromVBProject(IVBProject vbProject)
         {
             using (var references = vbProject.References)
             {
