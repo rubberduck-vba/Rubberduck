@@ -743,7 +743,7 @@ End Sub
         {
             var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, componentType, out var component).Object;
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
-            return (component, rewritingManager.CheckOutAttributesSession(), state);
+            return (component, rewritingManager.CheckOutCodePaneSession(), state);
         }
     }
 }
