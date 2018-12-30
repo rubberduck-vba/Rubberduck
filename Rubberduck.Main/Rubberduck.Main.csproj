@@ -33,6 +33,7 @@
     <Content Include="Ducky.ico" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="CustomMarshalers" />
     <Reference Include="extensibility">
       <HintPath>$(MSBuildProgramFiles32)\Common Files\microsoft shared\MSEnv\PublicAssemblies\extensibility.dll</HintPath>
       <EmbedInteropTypes>true</EmbedInteropTypes>
@@ -77,6 +78,9 @@
     </PackageReference>
     <PackageReference Include="NLog.Schema">
       <Version>4.5.10</Version>
+    </PackageReference>
+    <PackageReference Include="Moq">
+      <Version>4.8.2</Version>
     </PackageReference>
   </ItemGroup>
 </Project>

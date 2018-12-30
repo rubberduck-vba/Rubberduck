@@ -13,11 +13,15 @@
         public const string IdentifierReferencesProgId = BaseNamespace + "IdentifierReferences";
         public const string ParserStateProgId = BaseNamespace + "ParserState";
         public const string ApiProviderProgId = BaseNamespace + "ApiProvider";
-
+        public const string MockProviderProgId = BaseNamespace + "MockProvider";
+        public const string ComMockProgId = BaseNamespace + "ComMock";
+        public const string MockArgumentDefinitionProgId = BaseNamespace + "MockArgumentDefinition";
+        public const string MockArgumentDefinitionsProgId = BaseNamespace + "MockArgumentDefinitions";
+        public const string MockArgumentCreatorProgId = BaseNamespace + "MockArgumentCreator";
         public const string AssertClassProgId = BaseNamespace + "AssertClass";
         public const string PermissiveAssertClassProgId = BaseNamespace + "PermissiveAssertClass";
         public const string FakesProviderProgId = BaseNamespace + "FakesProvider";
-
+        
         public const string DebugAddinObject = BaseNamespace + "VBETypeLibsAPI";
     }
 }

@@ -26,6 +26,16 @@
         public const string IFakeGuid = UnitTestingGuidspace + "DF" + GuidSuffix;
         public const string IVerifyGuid = UnitTestingGuidspace + "E0" + GuidSuffix;
         public const string IStubGuid = UnitTestingGuidspace + "E1" + GuidSuffix;
+        public const string IMockProviderGuid = UnitTestingGuidspace + "E2" + GuidSuffix;
+        public const string MockProviderGuid = UnitTestingGuidspace + "E3" + GuidSuffix;
+        public const string IComMockGuid = UnitTestingGuidspace + "E4" + GuidSuffix;
+        public const string ComMockGuid = UnitTestingGuidspace + "E5" + GuidSuffix;
+        public const string IMockArgumentDefinitionGuid = UnitTestingGuidspace + "E6" + GuidSuffix;
+        public const string MockArgumentDefinitionGuid = UnitTestingGuidspace + "E7" + GuidSuffix;
+        public const string IMockArgumentDefinitionsGuid = UnitTestingGuidspace + "E8" + GuidSuffix;
+        public const string MockArgumentDefinitionsGuid = UnitTestingGuidspace + "E9" + GuidSuffix;
+        public const string IMockArgumentCreator = UnitTestingGuidspace + "EA" + GuidSuffix;
+        public const string MockArgumentCreator = UnitTestingGuidspace + "EB" + GuidSuffix;
 
         // Rubberduck API Guids:
         private const string ApiGuidspace = "69E0F7";
@@ -48,6 +58,8 @@
         public const string DeclarationTypeGuid = RecordGuidspace + "23" + GuidSuffix;
         public const string AccessibilityGuid = RecordGuidspace + "24" + GuidSuffix;
         public const string ParserStateGuid = RecordGuidspace + "25" + GuidSuffix;
+        public const string MockArgumentRangeGuid = RecordGuidspace + "26" + GuidSuffix;
+        public const string MockArgumentTypeGuid = RecordGuidspace + "27" + GuidSuffix;
 
         // Debug Guids:
         private const string DebugGuidspace = "69E101";
