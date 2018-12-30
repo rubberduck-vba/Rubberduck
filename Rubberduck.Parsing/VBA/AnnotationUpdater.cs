@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -24,6 +25,13 @@ namespace Rubberduck.Parsing.VBA
             {
                 _logger.Warn("Tried to add an annotation to a context that is null.");
                 _logger.Trace($"Tried to add annotation {annotationType} with values {AnnotationValuesText(annotationValues)} to a context that is null.");
+                return;
+            }
+
+            if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
+            {
+                _logger.Warn($"Tried to add an annotation with a rewriter not suitable for annotationss. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to add annotation {annotationType} with values {AnnotationValuesText(annotationValues)} to {context.Context.GetText()} at {context.Context.GetSelection()} in module {context.ModuleName} using a rewriter not suitable for annotations.");
                 return;
             }
 
@@ -111,43 +119,64 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void AddModuleAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationType annotationType, IReadOnlyList<string> values)
+        private void AddModuleAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationType annotationType, IReadOnlyList<string> annotationValues)
         {
             if (!annotationType.HasFlag(AnnotationType.ModuleAnnotation))
             {
                 _logger.Warn("Tried to add an annotation without the module annotation flag to a module.");
-                _logger.Trace($"Tried to add the annotation {annotationType} with values {AnnotationValuesText(values)} to the module {declaration.QualifiedModuleName}.");
+                _logger.Trace($"Tried to add the annotation {annotationType} with values {AnnotationValuesText(annotationValues)} to the module {declaration.QualifiedModuleName}.");
                 return;
             }
 
-            var codeToAdd = $"{AnnotationText(annotationType, values)}{Environment.NewLine}";
+            if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
+            {
+                _logger.Warn($"Tried to add an annotation to a module with a rewriter not suitable for annotationss. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to add annotation {annotationType} with values {AnnotationValuesText(annotationValues)} to the module {declaration.QualifiedModuleName} using a rewriter not suitable for annotations.");
+                return;
+            }
+
+            var codeToAdd = $"{AnnotationText(annotationType, annotationValues)}{Environment.NewLine}";
 
             var rewriter = rewriteSession.CheckOutModuleRewriter(declaration.QualifiedModuleName);
             rewriter.InsertBefore(0, codeToAdd);
         }
 
-        private void AddVariableAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationType annotationType, IReadOnlyList<string> values)
+        private void AddVariableAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationType annotationType, IReadOnlyList<string> annotationValues)
         {
             if (!annotationType.HasFlag(AnnotationType.VariableAnnotation))
             {
                 _logger.Warn("Tried to add an annotation without the variable annotation flag to a variable declaration.");
-                _logger.Trace($"Tried to add the annotation {annotationType} with values {AnnotationValuesText(values)} to the variable declaration for {declaration.QualifiedName}.");
+                _logger.Trace($"Tried to add the annotation {annotationType} with values {AnnotationValuesText(annotationValues)} to the variable declaration for {declaration.QualifiedName}.");
                 return;
             }
 
-            AddAnnotation(rewriteSession, new QualifiedContext(declaration.QualifiedName, declaration.Context), annotationType, values);
+            if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
+            {
+                _logger.Warn($"Tried to add an annotation to a variable with a rewriter not suitable for annotationss. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to add annotation {annotationType} with values {AnnotationValuesText(annotationValues)} to the the variable {declaration.IdentifierName} at {declaration.Selection} in module {declaration.QualifiedModuleName} using a rewriter not suitable for annotations.");
+                return;
+            }
+
+            AddAnnotation(rewriteSession, new QualifiedContext(declaration.QualifiedName, declaration.Context), annotationType, annotationValues);
         }
 
-        private void AddMemberAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationType annotationType, IReadOnlyList<string> values)
+        private void AddMemberAnnotation(IRewriteSession rewriteSession, Declaration declaration, AnnotationType annotationType, IReadOnlyList<string> annotationValues)
         {
             if (!annotationType.HasFlag(AnnotationType.MemberAnnotation))
             {
                 _logger.Warn("Tried to add an annotation without the member annotation flag to a member declaration.");
-                _logger.Trace($"Tried to add the annotation {annotationType} with values {AnnotationValuesText(values)} to the member declaration for {declaration.QualifiedName}.");
+                _logger.Trace($"Tried to add the annotation {annotationType} with values {AnnotationValuesText(annotationValues)} to the member declaration for {declaration.QualifiedName}.");
                 return;
             }
 
-            AddAnnotation(rewriteSession, new QualifiedContext(declaration.QualifiedName, declaration.Context), annotationType, values);
+            if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
+            {
+                _logger.Warn($"Tried to add an annotation to a member with a rewriter not suitable for annotationss. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to add annotation {annotationType} with values {AnnotationValuesText(annotationValues)} to the the member {declaration.IdentifierName} at {declaration.Selection} in module {declaration.QualifiedModuleName} using a rewriter not suitable for annotations.");
+                return;
+            }
+
+            AddAnnotation(rewriteSession, new QualifiedContext(declaration.QualifiedName, declaration.Context), annotationType, annotationValues);
         }
 
 
@@ -170,6 +199,13 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
+            if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
+            {
+                _logger.Warn($"Tried to add an annotation to an identifier reference with a rewriter not suitable for annotationss. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to add annotation {annotationType} with values {AnnotationValuesText(annotationValues)} to the the identifier reference {reference.IdentifierName} at {reference.Selection} in module {reference.QualifiedModuleName} using a rewriter not suitable for annotations.");
+                return;
+            }
+
             AddAnnotation(rewriteSession, new QualifiedContext(reference.QualifiedModuleName, reference.Context), annotationType, annotationValues);
         }
 
@@ -178,6 +214,13 @@ namespace Rubberduck.Parsing.VBA
             if (annotation == null)
             {
                 _logger.Warn("Tried to remove an annotation that is null.");
+                return;
+            }
+
+            if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
+            {
+                _logger.Warn($"Tried to remove an annotation with a rewriter not suitable for annotationss. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to remove annotation {annotation.AnnotationType} at {annotation.QualifiedSelection.Selection} in module {annotation.QualifiedSelection.QualifiedName} using a rewriter not suitable for annotations.");
                 return;
             }
 
@@ -246,6 +289,12 @@ namespace Rubberduck.Parsing.VBA
                 return;
             }
 
+            if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
+            {
+                _logger.Warn($"Tried to remove multiple annotations with a rewriter not suitable for annotations. (target code kind = {rewriteSession.TargetCodeKind})");
+                return;
+            }
+
             var annotationsByAnnotationList = annotations.Distinct()
                 .GroupBy(annotation => new QualifiedContext(annotation.QualifiedSelection.QualifiedName, (ParserRuleContext)annotation.Context.Parent))
                 .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
@@ -284,6 +333,13 @@ namespace Rubberduck.Parsing.VBA
             {
                 _logger.Warn("Tried to replace an annotation that is null.");
                 _logger.Trace($"Tried to replace an annotation that is null with an annotation {newAnnotationType} with values {AnnotationValuesText(newAnnotationValues)}.");
+                return;
+            }
+
+            if (rewriteSession.TargetCodeKind != CodeKind.CodePaneCode)
+            {
+                _logger.Warn($"Tried to update an annotation with a rewriter not suitable for annotationss. (target code kind = {rewriteSession.TargetCodeKind})");
+                _logger.Trace($"Tried to update annotation {annotation.AnnotationType} at {annotation.QualifiedSelection.Selection} in module {annotation.QualifiedSelection.QualifiedName} with annotation {newAnnotationType} with values {AnnotationValuesText(newAnnotationValues)} using a rewriter not suitable for annotations.");
                 return;
             }
 
