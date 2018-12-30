@@ -155,7 +155,47 @@ namespace Rubberduck.Resources {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap arrow_090 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_090", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap arrow_090_dimmed {
+            get {
+                object obj = ResourceManager.GetObject("arrow_090_dimmed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap arrow_270 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_270", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap arrow_270_dimmed {
+            get {
+                object obj = ResourceManager.GetObject("arrow_270_dimmed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Variable names must begin with a letter..
         /// </summary>
@@ -984,7 +1024,17 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("EasterEgg_Continuator", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap edit_size {
+            get {
+                object obj = ResourceManager.GetObject("edit_size", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Ignore.
         /// </summary>
@@ -2323,7 +2373,7 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("OK_AllCaps", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Online.
         /// </summary>
@@ -2777,6 +2827,17 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Add to project.
+        /// </summary>
+        public static string References_AddToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("References_AddToolTip", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to All files (*.*)|*.*.
         /// </summary>
         public static string References_BrowseFilterAllFiles
@@ -2920,6 +2981,28 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Move down.
+        /// </summary>
+        public static string References_MoveDownToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("References_MoveDownToolTip", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Move up.
+        /// </summary>
+        public static string References_MoveUpToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("References_MoveUpToolTip", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Pinned.
         /// </summary>
         public static string References_Pinned
@@ -2929,7 +3012,18 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("References_Pinned", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Pin reference.
+        /// </summary>
+        public static string References_PinToolTip
+        {
+            get
+            {
+                return ResourceManager.GetString("References_PinToolTip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Projects.
         /// </summary>
@@ -3664,7 +3758,17 @@ namespace Rubberduck.Resources {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap SyncArrows {
+            get {
+                object obj = ResourceManager.GetObject("SyncArrows", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>

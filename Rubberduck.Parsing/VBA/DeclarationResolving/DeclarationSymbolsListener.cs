@@ -18,7 +18,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
         private Declaration _currentScopeDeclaration;
         private Declaration _parentDeclaration;
 
-        private readonly ICollection<IAnnotation> _annotations;
+        private readonly IDictionary<int, List<IAnnotation>> _annotations;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), Attributes> _attributes;
         private readonly IDictionary<(string scopeIdentifier, DeclarationType scopeType), ParserRuleContext> _membersAllowingAttributes;
 
@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
 
         public DeclarationSymbolsListener(
             Declaration moduleDeclaration,
-            ICollection<IAnnotation> annotations,
+            IDictionary<int, List<IAnnotation>> annotations,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),
             Attributes> attributes,
             IDictionary<(string scopeIdentifier, DeclarationType scopeType),
@@ -54,28 +54,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                 return null;
             }
 
-            var annotations = new List<IAnnotation>();
-
-            // VBE 1-based indexing
-            for (var currentLine = firstLine - 1; currentLine >= 1; currentLine--)
+            if (_annotations.TryGetValue(firstLine, out var scopedAnnotations))
             {
-                //Annotation sections end at the first line without an annotation with the specified flag or identifier annotation.
-                //Identifier annotations are treated in a special way because identifier references can appear on the same line as other constructs that can be annotated.
-                if (!_annotations.Any(annotation => annotation.QualifiedSelection.Selection.StartLine <= currentLine
-                                                    && annotation.QualifiedSelection.Selection.EndLine >= currentLine
-                                                    && (annotation.AnnotationType.HasFlag(annotationTypeFlag)
-                                                        || annotation.AnnotationType.HasFlag(AnnotationType.IdentifierAnnotation))))
-                {
-                    break;
-                }
-
-                var annotationsStartingOnCurrentLine = _annotations.Where(a => a.QualifiedSelection.Selection.StartLine == currentLine
-                                                                               && a.AnnotationType.HasFlag(annotationTypeFlag));
-
-                annotations.AddRange(annotationsStartingOnCurrentLine);
+                return scopedAnnotations.Where(annotation => annotation.AnnotationType.HasFlag(annotationTypeFlag));
             }
 
-            return annotations;
+            return Enumerable.Empty<IAnnotation>();
         }
 
         private IEnumerable<IAnnotation> FindVariableAnnotations(int firstVariableLine)
