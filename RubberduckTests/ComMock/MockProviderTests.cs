@@ -13,7 +13,7 @@ namespace RubberduckTests.ComMock
         public void MockProvider_Returns_ComMocked()
         {
             var provider = new MockProvider();
-            var mock = provider.Mock("Excel.Application");
+            var mock = provider.Mock("Scripting.FileSystemObject");
             var obj = mock.Object;
 
             Assert.IsInstanceOf<ComMocked>(obj);

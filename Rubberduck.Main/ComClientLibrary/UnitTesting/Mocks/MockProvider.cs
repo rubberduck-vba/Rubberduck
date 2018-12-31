@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -48,35 +49,44 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         private static extern int LoadTypeLib(string fileName, out ITypeLib typeLib);
 
         private readonly MockArgumentCreator _it = new MockArgumentCreator();
+        private static readonly ConcurrentDictionary<string, Type> typeCache = new ConcurrentDictionary<string, Type>();
 
         public IComMock Mock(string ProgId, string ProjectName = null)
         {
-            // In order to mock a COM type, we must acquire a Type. However,
-            // ProgId will only return the coclass, which itself is a collection
-            // of interfaces, so we must take additional steps to obtain the default
-            // interface rather than the class itself.
-            var classType = string.IsNullOrWhiteSpace(ProjectName)
-                ? Type.GetTypeFromProgID(ProgId)
-                : GetVbaType(ProgId, ProjectName);
-
-            if (classType == null)
+            var key = string.Concat(ProjectName, "::", ProgId);
+            if (!typeCache.TryGetValue(key, out var classType))
             {
-                throw new ArgumentOutOfRangeException(nameof(ProgId), $"The supplied {ProgId} was not found. The class may not be registered.");
-            }
+                // In order to mock a COM type, we must acquire a Type. However,
+                // ProgId will only return the coclass, which itself is a collection
+                // of interfaces, so we must take additional steps to obtain the default
+                // interface rather than the class itself.
+                classType = string.IsNullOrWhiteSpace(ProjectName)
+                    ? Type.GetTypeFromProgID(ProgId)
+                    : GetVbaType(ProgId, ProjectName);
 
-            if (classType.Name == "__ComObject")
-            {
-                if (TryGetTypeInfoFromProgId(ProgId, out var typeInfo))
+                if (classType == null)
                 {
-                    var pUnk = Marshal.GetIUnknownForObject(typeInfo);
-                    classType = Marshal.GetTypeForITypeInfo(pUnk);
-                    Marshal.Release(pUnk);
+                    throw new ArgumentOutOfRangeException(nameof(ProgId),
+                        $"The supplied {ProgId} was not found. The class may not be registered.");
+                }
 
-                    if (classType == null)
+                if (classType.Name == "__ComObject")
+                {
+                    if (TryGetTypeInfoFromProgId(ProgId, out var typeInfo))
                     {
-                        throw new ArgumentOutOfRangeException(nameof(ProgId), $"The supplied {ProgId} was found, but we could not acquire the required metadata on the type to mock it. The class may not support early-binding.");
+                        var pUnk = Marshal.GetIUnknownForObject(typeInfo);
+                        classType = Marshal.GetTypeForITypeInfo(pUnk);
+                        Marshal.Release(pUnk);
+
+                        if (classType == null)
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(ProgId),
+                                $"The supplied {ProgId} was found, but we could not acquire the required metadata on the type to mock it. The class may not support early-binding.");
+                        }
                     }
                 }
+
+                typeCache.TryAdd(key, classType);
             }
 
             var targetType = classType.IsInterface ? classType : GetComDefaultInterface(classType);
@@ -108,7 +118,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         {
             lib = null;
 
-            var clsidKey = Registry.ClassesRoot.OpenSubKey($"CLSID\\{clsid:B}");
+            var clsidKey = Registry.ClassesRoot.OpenSubKey($"CLSID\\{clsid.ToString("B")}");
             if (clsidKey == null)
             {
                 return false;
