@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Microsoft.Win32;
 using Moq;
 using Rubberduck.Resources.Registration;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
@@ -38,6 +41,12 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     ]
     public class MockProvider : IMockProvider
     {
+        [DllImport("ole32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = true)]
+        private static extern int CLSIDFromProgID(string lpszProgID, out Guid lpclsid);
+
+        [DllImport("oleaut32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = true)]
+        private static extern int LoadTypeLib(string fileName, out ITypeLib typeLib);
+
         private readonly MockArgumentCreator _it = new MockArgumentCreator();
 
         public IComMock Mock(string ProgId, string ProjectName = null)
@@ -52,7 +61,22 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
             if (classType == null)
             {
-                return null;
+                throw new ArgumentOutOfRangeException(nameof(ProgId), $"The supplied {ProgId} was not found. The class may not be registered.");
+            }
+
+            if (classType.Name == "__ComObject")
+            {
+                if (TryGetTypeInfoFromProgId(ProgId, out var typeInfo))
+                {
+                    var pUnk = Marshal.GetIUnknownForObject(typeInfo);
+                    classType = Marshal.GetTypeForITypeInfo(pUnk);
+                    Marshal.Release(pUnk);
+
+                    if (classType == null)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(ProgId), $"The supplied {ProgId} was found, but we could not acquire the required metadata on the type to mock it. The class may not support early-binding.");
+                    }
+                }
             }
 
             var targetType = classType.IsInterface ? classType : GetComDefaultInterface(classType);
@@ -61,6 +85,156 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             var mock = (Mock)Activator.CreateInstance(closedMockType);
 
             return new ComMock(mock, targetType, classType.GetInterfaces());
+        }
+
+        private static bool TryGetTypeInfoFromProgId(string progId, out ITypeInfo typeInfo)
+        {
+            typeInfo = null;
+            if (CLSIDFromProgID(progId, out var clsid) != 0)
+            {
+                return false;
+            }
+
+            if (!TryGetTypeLibFromCLSID(clsid, out var lib))
+            {
+                return false;
+            }
+
+            lib.GetTypeInfoOfGuid(ref clsid, out typeInfo);
+            return true;
+        }
+
+        private static bool TryGetTypeLibFromCLSID(Guid clsid, out ITypeLib lib)
+        {
+            lib = null;
+
+            var clsidKey = Registry.ClassesRoot.OpenSubKey($"CLSID\\{clsid:B}");
+            if (clsidKey == null)
+            {
+                return false;
+            }
+
+            if (!TryLoadTypeLibFromPath(TryGetTypeLibPath, clsidKey, out lib))
+            {
+                return true;
+            }
+
+            if (TryLoadTypeLibFromPath(TryGetInProcServerPath, clsidKey, out lib))
+            {
+                return true;
+            }
+
+            if (TryLoadTypeLibFromPath(TryGetLocalServerPath, clsidKey, out lib))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private delegate bool GetPathFunction(RegistryKey clsidKey, out string path);
+        private static bool TryLoadTypeLibFromPath(GetPathFunction getPathFunction, RegistryKey clsidKey, out ITypeLib lib)
+        {
+            lib = null;
+            if (!getPathFunction(clsidKey, out var path))
+            {
+                return false;
+            }
+
+            if (LoadTypeLib(path, out lib) == 0)
+            {
+                return true;
+            }
+
+            var file = Path.GetFileName(path);
+            return LoadTypeLib(file, out lib) == 0;
+        }
+
+        private static bool TryGetTypeLibPath(RegistryKey clsidKey, out string path)
+        {
+            path = null;
+
+            var clsidTypeLibKey = clsidKey.OpenSubKey("TypeLib");
+            if (clsidTypeLibKey == null)
+            {
+                return false;
+            }
+
+            var typeLibGuidValue = clsidTypeLibKey.GetValue(null);
+
+            var typeLibKey = Registry.ClassesRoot.OpenSubKey($"TypeLib\\{typeLibGuidValue}");
+            if (typeLibKey == null)
+            {
+                return false;
+            }
+
+            var versions = typeLibKey.GetSubKeyNames();
+            var versionDictionary = new Dictionary<Version, string>();
+            foreach (var version in versions)
+            {
+                if (Version.TryParse(version, out var v))
+                {
+                    versionDictionary.Add(v, version);
+                }
+            }
+
+            var latestVersion = versionDictionary
+                .OrderByDescending(x => x.Key.Major)
+                .ThenByDescending(x => x.Key.Minor)
+                .ThenByDescending(x => x.Key.Build)
+                .ThenByDescending(x => x.Key.Revision)
+                .FirstOrDefault().Value;
+
+            var typeLibVersionKey = typeLibKey.OpenSubKey(latestVersion);
+            if (typeLibVersionKey == null)
+            {
+                return false;
+            }
+
+            var flagKeys = typeLibVersionKey.GetSubKeyNames();
+            var flag = flagKeys.Contains("0") ? "0" : flagKeys.FirstOrDefault();
+            if (string.IsNullOrWhiteSpace(flag))
+            {
+                return false;
+            }
+
+            var typeLibFlagKey = typeLibVersionKey.OpenSubKey(flag);
+            var syskind = Environment.Is64BitProcess ? "win64" : "win32";
+
+            var typeLibKindKey = typeLibFlagKey.OpenSubKey(syskind);
+            if (typeLibKindKey == null)
+            {
+                return false;
+            }
+
+            path = typeLibKindKey.GetValue(null) as string;
+            return !string.IsNullOrWhiteSpace(path);
+        }
+
+        private static bool TryGetInProcServerPath(RegistryKey clsidKey, out string path)
+        {
+            var procServerKey = clsidKey.OpenSubKey("InprocServer32");
+            if (procServerKey != null)
+            {
+                path = procServerKey.GetValue(null) as string;
+                return true;
+            }
+
+            path = null;
+            return false;
+        }
+
+        private static bool TryGetLocalServerPath(RegistryKey clsidKey, out string path)
+        {
+            var localServerKey = clsidKey.OpenSubKey("LocalServer32");
+            if (localServerKey != null)
+            {
+                path = localServerKey.GetValue(null) as string;
+                return true;
+            }
+
+            path = null;
+            return false;
         }
 
         public MockArgumentCreator It() => _it;
