@@ -36,7 +36,9 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 }
                 else
                 {
-                    var type = _supportedTypes.SingleOrDefault(x => x.GUID == searchIid);
+                    // Apparently some COM objects have multiple interface implementations using same GUID
+                    // so first result should suffice to avoid exception when using single. 
+                    var type = _supportedTypes.FirstOrDefault(x => x.GUID == searchIid);
                     if (type != null)
                     {
                         result = Marshal.GetComInterfaceForObject(_target, type);
