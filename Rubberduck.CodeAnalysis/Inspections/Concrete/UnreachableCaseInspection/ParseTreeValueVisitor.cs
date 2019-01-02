@@ -16,8 +16,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
     public interface ITestParseTreeVisitor
     {
-        bool IsVBStringConstant(string token, out string literalValue);
-        bool IsNonPrintingControlCharacter(string token);
         void InjectValuedDeclarationEvaluator(Func<Declaration, (bool, string, string)> func);
     }
 
@@ -40,20 +38,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private IParseTreeValueFactory _inspValueFactory;
         private List<VBAParser.EnumerationStmtContext> _enumStmtContexts;
         private List<EnumMember> _enumMembers;
-
-        private static Dictionary<string, string> _vbStringConstants = new Dictionary<string, string>()
-        {
-            [Tokens.vbBack] = ((char)8).ToString(),
-            [Tokens.vbCr] = ((char)13).ToString(),
-            [Tokens.vbCrLf] = ((char)13).ToString() + ((char)10).ToString(),
-            [Tokens.vbLf] = ((char)10).ToString(),
-            [Tokens.vbFormFeed] = ((char)12).ToString(),
-            [Tokens.vbNewLine] = Environment.NewLine,
-            [Tokens.vbNullChar] = ((char)0).ToString(),
-            [Tokens.vbNullString] = null,
-            [Tokens.vbTab] =((char)9).ToString(),
-            [Tokens.vbVerticalTab] =((char)11).ToString(),
-        };
 
         public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, List<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
         {
@@ -291,6 +275,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return true;
             }
 
+            if (lExprContext.TryGetChildContext(out VBAParser.IndexExprContext idxExpr)
+                && ParseTreeValue.TryGetNonPrintingControlCharCompareToken(idxExpr.GetText(), out string comparableToken))
+            {
+                declaredTypeName = Tokens.String;
+                expressionValue = comparableToken;
+                return true;
+            }
+
             return false;
         }
 
@@ -336,14 +328,9 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     expressionValue = ExpressionValue;
                     declaredTypeName = TypeName;
 
-                    if (IsVBStringConstant(expressionValue, out string constLiteral))
+                    if (ParseTreeValue.TryGetNonPrintingControlCharCompareToken(expressionValue, out string resolvedValue))
                     {
-                        declaredTypeName = Tokens.String;
-                        expressionValue = constLiteral;
-                        return;
-                    }
-                    else if (IsNonPrintingControlCharacter(expressionValue))
-                    {
+                        expressionValue = resolvedValue;
                         declaredTypeName = Tokens.String;
                         return;
                     }
@@ -449,12 +436,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
             return false;
         }
-
-        public bool IsVBStringConstant(string candidate, out string literal)
-            => _vbStringConstants.TryGetValue(candidate, out literal);
-
-        public bool IsNonPrintingControlCharacter(string controlChar)
-            => controlChar != null && _vbStringConstants.ContainsValue(controlChar);
 
         public void InjectValuedDeclarationEvaluator( Func<Declaration, (bool, string, string)> func)
             => ValuedDeclarationEvaluator = func;

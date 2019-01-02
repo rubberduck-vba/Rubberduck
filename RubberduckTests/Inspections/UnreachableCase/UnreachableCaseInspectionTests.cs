@@ -2441,44 +2441,6 @@ End Sub
             Assert.AreEqual(expectedMsg, actualMsg);
         }
 
-        [TestCase("vbBack", "\b")]
-        [TestCase("vbCrLf", "\r\n")]
-        [TestCase("vbCr", "\r")]
-        [TestCase("vbLf", "\n")]
-        [TestCase("vbFormFeed", "\f")]
-        [TestCase("vbNewLine", "\r\n")]
-        [TestCase("vbNullChar", "\0")]
-        [TestCase("vbNullString", null)]
-        [TestCase("vbTab", "\t")]
-        [TestCase("vbVerticalTab", "\v")]
-        [Category("Inspections")]
-        public void UnreachableCaseInspection_VbStringConstantToLiteral_AreEqual(string constToken, string expected)
-        {
-            var parseTreeValueVisitor = new ParseTreeValueVisitor(null, new List<VBAParser.EnumerationStmtContext>(), null) as ITestParseTreeVisitor;
-            if (parseTreeValueVisitor.IsVBStringConstant(constToken, out string literalValue))
-            {
-                Assert.AreEqual(expected, literalValue);
-                return;
-            }
-            Assert.Fail($"TryConvertVBStringConstantToLiteral failed to convert {constToken}");
-        }
-
-        [TestCase("\r", true)]
-        [TestCase("\r\n", true)]
-        [TestCase("\b", true)]
-        [TestCase("\f", true)]
-        [TestCase("\0", true)]
-        [TestCase("\t", true)]
-        [TestCase("\v", true)]
-        [TestCase(null, false)]
-        [Category("Inspections")]
-        public void UnreachableCaseInspection_ControlCharToLiteral_AreEqual(string constToken, bool expected)
-        {
-            var parseTreeValueVisitor = new ParseTreeValueVisitor(null, new List<VBAParser.EnumerationStmtContext>(), null) as ITestParseTreeVisitor;
-            Assert.AreEqual(expected, parseTreeValueVisitor.IsNonPrintingControlCharacter(constToken));
-        }
-
-        //https://github.com/rubberduck-vba/Rubberduck/issues/4659        
         [Test]
         [Category("Inspections")]
         public void UnreachableCaseInspection_VbObjectErrorConstant()
@@ -2504,14 +2466,6 @@ Sub Example(value As Long)
     End Select
 End Sub
 ";
-            (bool IsType, string ExpressionValue, string TypeName) TestGetValuedDeclaration(Declaration declaration)
-            {
-                if (declaration.IdentifierName.Equals("vbObjectError"))
-                {
-                    return (true, "-2147221504", Tokens.Long);
-                }
-                return (false, null, null);
-            }
 
             var vbe = CreateStandardModuleProject(inputCode);
 
@@ -2533,26 +2487,81 @@ End Sub
         }
 
         //https://github.com/rubberduck-vba/Rubberduck/issues/4680
-        [Test]
-        [Ignore("Issue 4680")]
+        [TestCase("vbNewLine", "vbCr + vbLf")]
+        [TestCase("vbNewLine", "Chr(13) + Chr(10)")]
+        [TestCase("vbNewLine", "Chr$(13) + Chr$(10)")]
+        [TestCase("Chr(13) + Chr(10)", "Chr$(13) + Chr$(10)")]
+        [TestCase("vbCr + vbLf", "vbNewLine")]
+        [TestCase("vbCr + Chr(10)", "vbNewLine")]
+        [TestCase("Chr(13) + vbLf", "vbNewLine")]
+        [TestCase("Chr(0)", "vbNullChar")]
+        [TestCase("Chr$(0)", "vbNullChar")]
+        [TestCase("Chr(8)", "vbBack")]
+        [TestCase("Chr$(8)", "vbBack")]
+        [TestCase("Chr(12)", "vbFormFeed")]
+        [TestCase("Chr$(12)", "vbFormFeed")]
+        [TestCase("Chr(9)", "vbTab")]
+        [TestCase("Chr$(9)", "vbTab")]
+        [TestCase("Chr(11)", "vbVerticalTab")]
+        [TestCase("Chr$(11)", "vbVerticalTab")]
         [Category("Inspections")]
-        public void UnreachableCaseInspection_VbStringConstant()
+        public void UnreachableCaseInspection_NonPrintingControlConstants(string testCase, string equivalent)
         {
+            var expectedUnreachableCount = 1;
             string inputCode =
-@"
+$@"
 Sub Foo(value As String)
     Select Case value
-        Case ""Hello"" + vbNewLine + ""World""
-            MsgBox ""vbNewLine version""
-        Case ""Hello"" + vbCr + vbLf + ""World"" 'unreachable
-            MsgBox ""vbCr + vbLf version""
+        Case ""Hello"" + {testCase} + ""World""
+            MsgBox ""testCase version""
+        Case ""Hello"" + {equivalent} + ""World"" 'unreachable
+            MsgBox ""equivalent version""
         Case ""Reachable""
             MsgBox ""Reachable""
     End Select
 End Sub
 ";
-            (string expectedMsg, string actualMsg) = CheckActualResultsEqualsExpected(inputCode, unreachable: 1);
-            Assert.AreEqual(expectedMsg, actualMsg);
+            var vbe = CreateStandardModuleProject(inputCode);
+
+            IEnumerable<Rubberduck.Parsing.Inspections.Abstract.IInspectionResult> actualResults;
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new UnreachableCaseInspection(state);
+                var parseTreeValueVisitor = inspection.ParseTreeValueVisitor as ITestParseTreeVisitor;
+
+                parseTreeValueVisitor.InjectValuedDeclarationEvaluator(TestGetValuedDeclaration);
+
+                var inspector = InspectionsHelper.GetInspector(inspection);
+                actualResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
+            }
+
+            var actualUnreachable = actualResults.Where(ar => ar.Description.Equals(InspectionResults.UnreachableCaseInspection_Unreachable));
+
+            Assert.AreEqual(expectedUnreachableCount, actualUnreachable.Count());
+        }
+
+        private static Dictionary<string, (string, string)> _vbConstConversions = new Dictionary<string, (string, string)>()
+        {
+            ["vbNewLine"] = ("Chr$(13) & Chr$(10)", Tokens.String),
+            ["vbCr"] = ("Chr$(13)", Tokens.String),
+            ["vbLf"] = ("Chr$(10)", Tokens.String),
+            ["vbNullChar"] = ("Chr$(0)", Tokens.String),
+            ["vbBack"] = ("Chr$(8)", Tokens.String),
+            ["vbTab"] = ("Chr$(9)", Tokens.String),
+            ["vbVerticalTab"] = ("Chr$(11)", Tokens.String),
+            ["vbFormFeed"] = ("Chr$(12)", Tokens.String),
+            ["vbObjectError"] = ("-2147221504", Tokens.Long),
+        };
+
+        private static (bool IsType, string ExpressionValue, string TypeName) TestGetValuedDeclaration(Declaration declaration)
+        {
+            if (!_vbConstConversions.ContainsKey(declaration.IdentifierName))
+            {
+                return (false, null, null);
+            }
+
+            (string expressionValue, string typename) = _vbConstConversions[declaration.IdentifierName];
+            return (true, expressionValue , typename);
         }
 
         private static (string expectedMsg, string actualMsg) CheckActualResultsEqualsExpected(string inputCode, int unreachable = 0, int mismatch = 0, int caseElse = 0, int inherentlyUnreachable = 0, int overflow = 0)
