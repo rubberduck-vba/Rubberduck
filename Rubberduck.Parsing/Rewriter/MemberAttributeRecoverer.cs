@@ -98,13 +98,20 @@ namespace Rubberduck.Parsing.Rewriter
             }
 
             StopRecoveringAttributesOnNextParse();
-            CancelTheCurrentParse();
-           
+            
             var rewriteSession = _rewritingManager.CheckOutAttributesSession();
             foreach (var module in _attributesToRecover.Keys)
             {
                 RecoverAttributes(rewriteSession, module, _attributesToRecover[module]);
             }
+
+            if (!rewriteSession.CheckedOutModules.Any())
+            {
+                //There is nothing we can do.
+                return;
+            }
+
+            CancelTheCurrentParse();
 
             Task.Run(() => rewriteSession.TryRewrite());
 

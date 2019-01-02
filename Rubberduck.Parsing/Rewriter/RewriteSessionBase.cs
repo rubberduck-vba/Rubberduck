@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
@@ -25,6 +26,7 @@ namespace Rubberduck.Parsing.Rewriter
             _rewritingAllowed = rewritingAllowed;
         }
 
+        public IReadOnlyCollection<QualifiedModuleName> CheckedOutModules => CheckedOutModuleRewriters.Keys.ToHashSet();
 
         public IModuleRewriter CheckOutModuleRewriter(QualifiedModuleName module)
         {
