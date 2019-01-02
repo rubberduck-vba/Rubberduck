@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.VBEditor;
 
 namespace RubberduckTests.Rewriter
 {
@@ -177,10 +178,47 @@ namespace RubberduckTests.Rewriter
             }
         }
 
-        private IRewritingManager RewritingManager(out MockRewriteSessionFactory mockFactory)
+        [Test]
+        [Category("Rewriter")]
+        public void CallingTheRewritingAllowedCallbackFromAnActiveCodePaneSessionRequestMemberAttributeRecoveryForTheCheckedOutModules()
         {
+            var memberAttributeRecovererMock = new Mock<IMemberAttributeRecoverer>();
+            memberAttributeRecovererMock.Setup(m => m.RecoverCurrentMemberAttributesAfterNextParse(It.IsAny<IEnumerable<QualifiedModuleName>>()));
+
+            var rewritingManager = RewritingManager(out var mockFactory, memberAttributeRecovererMock.Object);
+            var codePaneSession = rewritingManager.CheckOutCodePaneSession();
+
+            var moduleToCheckOutRewriterFor = new QualifiedModuleName("project", "path", "module");
+            codePaneSession.CheckOutModuleRewriter(moduleToCheckOutRewriterFor);
+
+            codePaneSession.TryRewrite();
+
+            memberAttributeRecovererMock.Verify(m => m.RecoverCurrentMemberAttributesAfterNextParse(new HashSet<QualifiedModuleName>{ moduleToCheckOutRewriterFor }), Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void CallingTheRewritingAllowedCallbackFromAnActiveAttributesSessionDoesNotRequestMemberAttributeRecovery()
+        {
+            var memberAttributeRecovererMock = new Mock<IMemberAttributeRecoverer>();
+            memberAttributeRecovererMock.Setup(m => m.RecoverCurrentMemberAttributesAfterNextParse(It.IsAny<IEnumerable<QualifiedModuleName>>()));
+
+            var rewritingManager = RewritingManager(out var mockFactory, memberAttributeRecovererMock.Object);
+            var codePaneSession = rewritingManager.CheckOutAttributesSession();
+
+            var moduleToCheckOutRewriterFor = new QualifiedModuleName("project", "path", "module");
+            codePaneSession.CheckOutModuleRewriter(moduleToCheckOutRewriterFor);
+
+            codePaneSession.TryRewrite();
+
+            memberAttributeRecovererMock.Verify(m => m.RecoverCurrentMemberAttributesAfterNextParse(It.IsAny<IEnumerable<QualifiedModuleName>>()), Times.Never);
+        }
+
+        private IRewritingManager RewritingManager(out MockRewriteSessionFactory mockFactory, IMemberAttributeRecoverer memberAttributeRecoverer = null)
+        {
+            var recoverer = memberAttributeRecoverer ?? new Mock<IMemberAttributeRecoverer>().Object;
             mockFactory = new MockRewriteSessionFactory();
-            return new RewritingManager(mockFactory);
+            return new RewritingManager(mockFactory, recoverer);
         }
     }
 
@@ -214,6 +252,12 @@ namespace RubberduckTests.Rewriter
             mockSession.Setup(m => m.IsInvalidated).Returns(() => isInvalidated);
             mockSession.Setup(m => m.Invalidate()).Callback(() => isInvalidated = true);
             mockSession.Setup(m => m.TargetCodeKind).Returns(targetCodeKind);
+
+            var checkedOutModules = new HashSet<QualifiedModuleName>();
+            mockSession.Setup(m => m.CheckOutModuleRewriter(It.IsAny<QualifiedModuleName>()))
+                .Returns( (QualifiedModuleName module) => null)
+                .Callback((QualifiedModuleName module) => checkedOutModules.Add(module));
+            mockSession.Setup(m => m.CheckedOutModules).Returns(() => checkedOutModules);
 
             return mockSession;
         }

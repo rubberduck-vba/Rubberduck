@@ -8,14 +8,16 @@ namespace Rubberduck.Parsing.Rewriter
     {
         private readonly HashSet<IRewriteSession> _activeCodePaneSessions = new HashSet<IRewriteSession>();
         private readonly HashSet<IRewriteSession> _activeAttributesSessions = new HashSet<IRewriteSession>();
+        private readonly IMemberAttributeRecoverer _memberAttributeRecoverer;
 
         private readonly IRewriteSessionFactory _sessionFactory;
 
         private readonly object _invalidationLockObject = new object();
 
-        public RewritingManager(IRewriteSessionFactory sessionFactory)
+        public RewritingManager(IRewriteSessionFactory sessionFactory, IMemberAttributeRecoverer memberAttributeRecoverer)
         {
             _sessionFactory = sessionFactory;
+            _memberAttributeRecoverer = memberAttributeRecoverer;
         }
 
 
@@ -51,8 +53,17 @@ namespace Rubberduck.Parsing.Rewriter
                 }
 
                 InvalidateAllSessionsInternal();
+                if (rewriteSession.TargetCodeKind == CodeKind.CodePaneCode)
+                {
+                    RequestMemberAttributeRecovery(rewriteSession);
+                }
                 return true;
             }
+        }
+
+        private void RequestMemberAttributeRecovery(IRewriteSession rewriteSession)
+        {
+            _memberAttributeRecoverer.RecoverCurrentMemberAttributesAfterNextParse(rewriteSession.CheckedOutModules);
         }
 
         private bool IsCurrentlyActive(IRewriteSession rewriteSession)
