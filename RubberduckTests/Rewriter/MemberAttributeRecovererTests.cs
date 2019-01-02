@@ -144,9 +144,7 @@ End Function";
                 var declarationsForWhichToRemoveAttributes = state.DeclarationFinder.UserDeclarations(DeclarationType.Function);
                 RemoveAttributes(declarationsForWhichToRemoveAttributes, rewriteSession);
 
-                //We need the extra parse request because in the mocked setup attribute rewrites do not cause a reparse due to the lack of invoked component added handlers.
-                ExecuteAndWaitForParserState(state, () => rewriteSession.TryRewrite(), ParserState.Busy);
-                ExecuteAndWaitForParserState(state, () => state.OnParseRequested(this), ParserState.Ready);
+                ExecuteAndWaitForParserState(state, () => rewriteSession.TryRewrite(), ParserState.Ready);
             }
             var actualCode = component.CodeModule.Content();
             Assert.AreEqual(expectedCode, actualCode);
@@ -250,9 +248,7 @@ End Function";
                 var declarationsForWhichToRemoveAttributes = state.DeclarationFinder.UserDeclarations(DeclarationType.Function);
                 RemoveAttributes(declarationsForWhichToRemoveAttributes, rewriteSession);
 
-                //We need the extra parse request because in the mocked setup attribute rewrites do not cause a reparse due to the lack of invoked component added handlers.
-                ExecuteAndWaitForParserState(state, () => rewriteSession.TryRewrite(), ParserState.Busy);
-                ExecuteAndWaitForParserState(state, () => state.OnParseRequested(this), ParserState.Ready);
+                ExecuteAndWaitForParserState(state, () => rewriteSession.TryRewrite(), ParserState.Ready);
 
                 var actualCodeWithRecovery = state.ProjectsProvider.Component(recoveryModule).CodeModule.Content();
                 var actualCodeWithoutRecovery = state.ProjectsProvider.Component(noRecoveryModule).CodeModule.Content();
