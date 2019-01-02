@@ -6,6 +6,7 @@ using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
+using Rubberduck.Inspections.CodePathAnalysis.Nodes;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -30,7 +31,15 @@ namespace Rubberduck.Inspections.Concrete
             var nodes = new List<IdentifierReference>();
             foreach (var variable in variables)
             {
-                var tree = _walker.GenerateTree(variable.ParentScopeDeclaration.Context, variable);
+                var parentScopeDeclaration = variable.ParentScopeDeclaration;
+
+                if (parentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+                {
+                    continue;
+                }
+
+                var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
+
 
                 nodes.AddRange(tree.GetIdentifierReferences());
             }
