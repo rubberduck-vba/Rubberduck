@@ -13,8 +13,7 @@ namespace Rubberduck.Inspections.Concrete
     {
         public ModuleWithoutFolderInspection(RubberduckParserState state)
             : base(state)
-        {
-        }
+        {}
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
@@ -22,7 +21,9 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(w => w.Annotations.All(a => a.AnnotationType != AnnotationType.Folder))
                 .ToList();
 
-            return modulesWithoutFolderAnnotation.Select(declaration =>
+            return modulesWithoutFolderAnnotation
+                .Where(declaration => !IsIgnoringInspectionResultFor(declaration, AnnotationName))
+                .Select(declaration =>
                 new DeclarationInspectionResult(this, string.Format(InspectionResults.ModuleWithoutFolderInspection, declaration.IdentifierName), declaration));
         }
     }
