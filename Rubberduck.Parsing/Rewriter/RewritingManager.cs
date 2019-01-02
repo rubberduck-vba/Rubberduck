@@ -8,16 +8,17 @@ namespace Rubberduck.Parsing.Rewriter
     {
         private readonly HashSet<IRewriteSession> _activeCodePaneSessions = new HashSet<IRewriteSession>();
         private readonly HashSet<IRewriteSession> _activeAttributesSessions = new HashSet<IRewriteSession>();
-        private readonly IMemberAttributeRecoverer _memberAttributeRecoverer;
+        private readonly IMemberAttributeRecovererWithSettableRewritingManager _memberAttributeRecoverer;
 
         private readonly IRewriteSessionFactory _sessionFactory;
 
         private readonly object _invalidationLockObject = new object();
 
-        public RewritingManager(IRewriteSessionFactory sessionFactory, IMemberAttributeRecoverer memberAttributeRecoverer)
+        public RewritingManager(IRewriteSessionFactory sessionFactory, IMemberAttributeRecovererWithSettableRewritingManager memberAttributeRecoverer)
         {
             _sessionFactory = sessionFactory;
             _memberAttributeRecoverer = memberAttributeRecoverer;
+            _memberAttributeRecoverer.RewritingManager = this;
         }
 
 

@@ -10,7 +10,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public class MemberAttributeRecoverer : IMemberAttributeRecoverer
+    public class MemberAttributeRecoverer : IMemberAttributeRecovererWithSettableRewritingManager
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IParseManager _parseManager;

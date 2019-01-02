@@ -180,12 +180,23 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriter")]
+        public void OnCreatingTheRewritingManagerPropertyInjectsItselfIntoTheMemberAttributeRecoverer()
+        {
+            var memberAttributeRecovererMock = new Mock<IMemberAttributeRecovererWithSettableRewritingManager>();
+
+            var rewritingManager = RewritingManager(out _, memberAttributeRecovererMock.Object);
+
+            memberAttributeRecovererMock.VerifySet(m => m.RewritingManager = rewritingManager, Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriter")]
         public void CallingTheRewritingAllowedCallbackFromAnActiveCodePaneSessionRequestMemberAttributeRecoveryForTheCheckedOutModules()
         {
-            var memberAttributeRecovererMock = new Mock<IMemberAttributeRecoverer>();
+            var memberAttributeRecovererMock = new Mock<IMemberAttributeRecovererWithSettableRewritingManager>();
             memberAttributeRecovererMock.Setup(m => m.RecoverCurrentMemberAttributesAfterNextParse(It.IsAny<IEnumerable<QualifiedModuleName>>()));
 
-            var rewritingManager = RewritingManager(out var mockFactory, memberAttributeRecovererMock.Object);
+            var rewritingManager = RewritingManager(out _, memberAttributeRecovererMock.Object);
             var codePaneSession = rewritingManager.CheckOutCodePaneSession();
 
             var moduleToCheckOutRewriterFor = new QualifiedModuleName("project", "path", "module");
@@ -200,10 +211,10 @@ namespace RubberduckTests.Rewriter
         [Category("Rewriter")]
         public void CallingTheRewritingAllowedCallbackFromAnActiveAttributesSessionDoesNotRequestMemberAttributeRecovery()
         {
-            var memberAttributeRecovererMock = new Mock<IMemberAttributeRecoverer>();
+            var memberAttributeRecovererMock = new Mock<IMemberAttributeRecovererWithSettableRewritingManager>();
             memberAttributeRecovererMock.Setup(m => m.RecoverCurrentMemberAttributesAfterNextParse(It.IsAny<IEnumerable<QualifiedModuleName>>()));
 
-            var rewritingManager = RewritingManager(out var mockFactory, memberAttributeRecovererMock.Object);
+            var rewritingManager = RewritingManager(out _, memberAttributeRecovererMock.Object);
             var codePaneSession = rewritingManager.CheckOutAttributesSession();
 
             var moduleToCheckOutRewriterFor = new QualifiedModuleName("project", "path", "module");
@@ -214,9 +225,9 @@ namespace RubberduckTests.Rewriter
             memberAttributeRecovererMock.Verify(m => m.RecoverCurrentMemberAttributesAfterNextParse(It.IsAny<IEnumerable<QualifiedModuleName>>()), Times.Never);
         }
 
-        private IRewritingManager RewritingManager(out MockRewriteSessionFactory mockFactory, IMemberAttributeRecoverer memberAttributeRecoverer = null)
+        private IRewritingManager RewritingManager(out MockRewriteSessionFactory mockFactory, IMemberAttributeRecovererWithSettableRewritingManager memberAttributeRecoverer = null)
         {
-            var recoverer = memberAttributeRecoverer ?? new Mock<IMemberAttributeRecoverer>().Object;
+            var recoverer = memberAttributeRecoverer ?? new Mock<IMemberAttributeRecovererWithSettableRewritingManager>().Object;
             mockFactory = new MockRewriteSessionFactory();
             return new RewritingManager(mockFactory, recoverer);
         }

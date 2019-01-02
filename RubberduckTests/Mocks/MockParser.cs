@@ -134,7 +134,7 @@ namespace RubberduckTests.Mocks
                 attributesSourceCodeHandler);
             var rewriterProvider = new RewriterProvider(tokenStreamCache, moduleRewriterFactory);
             var rewriteSessionFactory = new RewriteSessionFactory(state, rewriterProvider);
-            var stubMembersAttributeRecoverer = new Mock<IMemberAttributeRecoverer>().Object;
+            var stubMembersAttributeRecoverer = new Mock<IMemberAttributeRecovererWithSettableRewritingManager>().Object;
             var rewritingManager = new RewritingManager(rewriteSessionFactory, stubMembersAttributeRecoverer); 
 
             var parser = new SynchronousParseCoordinator(
