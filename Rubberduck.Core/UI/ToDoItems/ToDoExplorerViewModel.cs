@@ -224,7 +224,7 @@ namespace Rubberduck.UI.ToDoItems
                 }
                 return _openTodoSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
                 {
-                    using (var window = _settingsFormFactory.Create())
+                    using (var window = _settingsFormFactory.Create(SettingsViews.TodoSettings))
                     {
                         window.ShowDialog();
                         _settingsFormFactory.Release(window);

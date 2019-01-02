@@ -8,6 +8,8 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
+
+        <BitmapImage x:Key="InvalidNameImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -35,7 +37,7 @@
                      VerticalContentAlignment="Center"
                      HorizontalAlignment="Stretch" />
             <Image Grid.Column="1"
-                   Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png"
+                   Source="{StaticResource InvalidNameImage}"
                    Height="16"
                    Margin="0,-8,-8,0"
                    HorizontalAlignment="Right"
