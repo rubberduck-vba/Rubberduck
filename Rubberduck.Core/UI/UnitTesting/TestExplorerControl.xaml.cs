@@ -85,11 +85,14 @@ namespace Rubberduck.UI.UnitTesting
                         _newGroupingGrid = groupingGrid;
                     else
                     {
-                        // copy column widths from previously visible grouping grid to ensure widths are consistent
-                        for (int columnIndex = 0; columnIndex < groupingGrid.Columns.Count; columnIndex++)
+                        if (!(_newGroupingGrid is null))
                         {
-                            // copy column widths from current now hidden columns to the new visible columns
-                            _newGroupingGrid.Columns[columnIndex].Width = groupingGrid.Columns[columnIndex].Width;
+                            // copy column widths from previously visible grouping grid to ensure widths are consistent
+                            for (int columnIndex = 0; columnIndex < groupingGrid.Columns.Count; columnIndex++)
+                            {
+                                // copy column widths from current now hidden columns to the new visible columns
+                                _newGroupingGrid.Columns[columnIndex].Width = groupingGrid.Columns[columnIndex].Width;
+                            }
                         }
                     }
                 }
