@@ -77,7 +77,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
     [
         ComVisible(true),
-        Guid(RubberduckGuid.IMockArgumentCreator),
+        Guid(RubberduckGuid.IMockArgumentCreatorGuid),
         InterfaceType(ComInterfaceType.InterfaceIsDual)
     ]
     public interface IMockArgumentCreator
@@ -92,7 +92,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
     [
         ComVisible(true),
-        Guid(RubberduckGuid.MockArgumentCreator),
+        Guid(RubberduckGuid.MockArgumentCreatorGuid),
         ProgId(RubberduckProgId.MockArgumentCreatorProgId),
         ClassInterface(ClassInterfaceType.None),
         ComDefaultInterface(typeof(IMockArgumentCreator))

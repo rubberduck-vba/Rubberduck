@@ -95,7 +95,6 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
             var closedMockType = typeof(Mock<>).MakeGenericType(targetType);
             var mock = (Mock)Activator.CreateInstance(closedMockType);
-
             return new ComMock(mock, targetType, classType.GetInterfaces());
         }
 
