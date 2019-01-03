@@ -329,7 +329,7 @@ namespace Rubberduck.UI.Inspections
 
         private void OpenSettings(object param)
         {
-            using (var window = _settingsFormFactory.Create())
+            using (var window = _settingsFormFactory.Create(SettingsViews.InspectionSettings))
             {
                 window.ShowDialog();
                 _settingsFormFactory.Release(window);

@@ -8,12 +8,12 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Used for specifying a member's <c>VB_Description</c> attribute.
     /// </summary>
-    public sealed class DescriptionAnnotation : AnnotationBase, IAttributeAnnotation
+    public sealed class DescriptionAnnotation : AttributeAnnotationBase
     {
         public DescriptionAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.Description, qualifiedSelection, context)
+            : base(AnnotationType.Description, qualifiedSelection, context, parameters?.Take(1).ToList())
         {
-            Description = parameters?.FirstOrDefault();
+            Description = AttributeValues?.FirstOrDefault();
             if ((Description?.StartsWith("\"") ?? false) && Description.EndsWith("\""))
             {
                 // strip surrounding double quotes
@@ -22,6 +22,6 @@ namespace Rubberduck.Parsing.Annotations
         }
 
         public string Description { get; }
-        public string Attribute => $"VB_Description = \"{Description.Replace("\"", "\"\"")}\"";
+        public override string Attribute => "VB_Description";
     }
 }

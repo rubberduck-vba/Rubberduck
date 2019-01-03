@@ -127,7 +127,7 @@ namespace Rubberduck.Parsing.ComReflection
             }
             if (module is IComTypeWithMembers members && members.IsExtensible)
             {
-                attributes.AddExtensibledClassAttribute();
+                attributes.AddExtensibleClassAttribute();
             }
             return attributes;
         }

@@ -25,6 +25,7 @@ namespace Rubberduck.UI.Settings
             SettingsView indenterSettings,
             SettingsView autoCompleteSettings,
             SettingsView windowSettings,
+            SettingsView referenceSettings,
             SettingsViews activeView = UI.Settings.SettingsViews.GeneralSettings)
         {
             _messageBox = messageBox;
@@ -33,7 +34,7 @@ namespace Rubberduck.UI.Settings
 
             SettingsViews = new ObservableCollection<SettingsView>
             {
-                generalSettings, todoSettings, inspectionSettings, unitTestSettings, indenterSettings, autoCompleteSettings, windowSettings
+                generalSettings, todoSettings, inspectionSettings, unitTestSettings, indenterSettings, autoCompleteSettings, windowSettings, referenceSettings
             };
 
             SelectedSettingsView = SettingsViews.First(v => v.View == activeView);

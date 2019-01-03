@@ -317,7 +317,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
                     grouping,
-                    _vbe)).ToList();
+                    _vbe,
+                    true)).ToList();
 
             UpdateNodes(Projects, newProjects);
             
@@ -560,6 +561,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public ExportAllCommand ExportAllCommand { get; set; }
         public CommandBase RemoveCommand { get; }
         public PrintCommand PrintCommand { get; set; }
+        public AddRemoveReferencesCommand AddRemoveReferencesCommand { get; set; }
 
         private readonly RemoveCommand _externalRemoveCommand;
 

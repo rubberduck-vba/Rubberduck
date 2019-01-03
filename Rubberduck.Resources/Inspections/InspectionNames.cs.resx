@@ -252,9 +252,6 @@
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Ilegální anotace</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Chybějící anotace</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Chybějící atribut</value>
   </data>

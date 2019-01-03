@@ -14,7 +14,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         event EventHandler<ValueResultEventArgs> OnValueResultCreated;
     }
 
-    public class ParseTreeValueVisitor : IParseTreeValueVisitor
+    public interface ITestParseTreeVisitor
+    {
+        void InjectValuedDeclarationEvaluator(Func<Declaration, (bool, string, string)> func);
+    }
+
+    public class ParseTreeValueVisitor : IParseTreeValueVisitor, ITestParseTreeVisitor
     {
         private class EnumMember
         {
@@ -41,8 +46,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             _contextValues = new ParseTreeVisitorResults();
             OnValueResultCreated += _contextValues.OnNewValueResult;
             _enumStmtContexts = allEnums;
-            _enumMembers = new List<EnumMember>();
-            LoadEnumMemberValues();
         }
 
         private Func<ParserRuleContext, (bool success, IdentifierReference idRef)> IdRefRetriever { set; get; } = null;
@@ -272,7 +275,39 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return true;
             }
 
+            if (lExprContext.TryGetChildContext(out VBAParser.IndexExprContext idxExpr)
+                && ParseTreeValue.TryGetNonPrintingControlCharCompareToken(idxExpr.GetText(), out string comparableToken))
+            {
+                declaredTypeName = Tokens.String;
+                expressionValue = comparableToken;
+                return true;
+            }
+
             return false;
+        }
+
+        private Func<Declaration, (bool, string, string)> _valueDeclarationEvaluator;
+        private Func<Declaration, (bool, string, string)> ValuedDeclarationEvaluator
+        {
+            set
+            {
+                _valueDeclarationEvaluator = value;
+            }
+            get
+            {
+                return _valueDeclarationEvaluator ?? GetValuedDeclaration;
+            }
+        }
+
+
+        private (bool IsType, string ExpressionValue, string TypeName) GetValuedDeclaration(Declaration declaration)
+        {
+            if (declaration is ValuedDeclaration valuedDeclaration)
+            {
+                var typeName = GetBaseTypeForDeclaration(declaration);
+                return (true, valuedDeclaration.Expression, typeName);
+            }
+            return (false, null, null);
         }
 
         private void GetContextValue(ParserRuleContext context, out string declaredTypeName, out string expressionValue)
@@ -286,6 +321,25 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 expressionValue = rangeClauseIdentifierReference.IdentifierName;
                 declaredTypeName = GetBaseTypeForDeclaration(declaration);
 
+                (bool IsValuedDeclaration, string ExpressionValue, string TypeName) = ValuedDeclarationEvaluator(declaration);
+
+                if( IsValuedDeclaration)
+                {
+                    expressionValue = ExpressionValue;
+                    declaredTypeName = TypeName;
+
+                    if (ParseTreeValue.TryGetNonPrintingControlCharCompareToken(expressionValue, out string resolvedValue))
+                    {
+                        expressionValue = resolvedValue;
+                        declaredTypeName = Tokens.String;
+                        return;
+                    }
+                    else if (long.TryParse(expressionValue, out _))
+                    {
+                        return;
+                    }
+                }
+
                 if (declaration.DeclarationType.HasFlag(DeclarationType.Constant))
                 {
                     expressionValue = GetConstantContextValueToken(declaration.Context);
@@ -296,12 +350,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     expressionValue = GetConstantContextValueToken(declaration.Context);
                     if (expressionValue.Equals(string.Empty))
                     {
-                        var enumValues = _enumMembers.Where(dt => dt.ConstantContext == declaration.Context);
-                        if (enumValues.Any())
+                        if (_enumMembers is null)
                         {
-                            var enumValue = enumValues.First();
-                            expressionValue = enumValue.Value.ToString();
+                            LoadEnumMemberValues();
                         }
+                        var enumValue = _enumMembers.SingleOrDefault(dt => dt.ConstantContext == declaration.Context);
+                        expressionValue = enumValue?.Value.ToString() ?? string.Empty;
                     }
                 }
             }
@@ -321,6 +375,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private string GetConstantContextValueToken(ParserRuleContext context)
         {
+            if (context is null)
+            {
+                return string.Empty;
+            }
+
             var declarationContextChildren = context.children.ToList();
             var equalsSymbolIndex = declarationContextChildren.FindIndex(ch => ch.Equals(context.GetToken(VBAParser.EQ, 0)));
 
@@ -378,8 +437,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return false;
         }
 
+        public void InjectValuedDeclarationEvaluator( Func<Declaration, (bool, string, string)> func)
+            => ValuedDeclarationEvaluator = func;
+
         private void LoadEnumMemberValues()
         {
+            _enumMembers = new List<EnumMember>();
             foreach (var enumStmt in _enumStmtContexts)
             {
                 long enumAssignedValue = -1;
@@ -390,6 +453,8 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                     var enumMember = new EnumMember(enumConstContext, enumAssignedValue);
                     if (enumMember.HasAssignment)
                     {
+                        Visit(enumMember.ConstantContext);
+
                         var valueText = GetConstantContextValueToken(enumMember.ConstantContext);
                         if (!valueText.Equals(string.Empty))
                         {
