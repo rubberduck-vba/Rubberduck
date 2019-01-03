@@ -34,8 +34,10 @@
         public const string MockArgumentDefinitionGuid = UnitTestingGuidspace + "E7" + GuidSuffix;
         public const string IMockArgumentDefinitionsGuid = UnitTestingGuidspace + "E8" + GuidSuffix;
         public const string MockArgumentDefinitionsGuid = UnitTestingGuidspace + "E9" + GuidSuffix;
-        public const string IMockArgumentCreator = UnitTestingGuidspace + "EA" + GuidSuffix;
-        public const string MockArgumentCreator = UnitTestingGuidspace + "EB" + GuidSuffix;
+        public const string IMockArgumentCreatorGuid = UnitTestingGuidspace + "EA" + GuidSuffix;
+        public const string MockArgumentCreatorGuid = UnitTestingGuidspace + "EB" + GuidSuffix;
+        public const string IComMockedGuid = UnitTestingGuidspace + "EC" + GuidSuffix;
+        public const string ComMockedGuid = UnitTestingGuidspace + "ED" + GuidSuffix;
 
         // Rubberduck API Guids:
         private const string ApiGuidspace = "69E0F7";

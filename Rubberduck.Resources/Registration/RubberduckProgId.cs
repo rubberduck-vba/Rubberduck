@@ -15,6 +15,7 @@
         public const string ApiProviderProgId = BaseNamespace + "ApiProvider";
         public const string MockProviderProgId = BaseNamespace + "MockProvider";
         public const string ComMockProgId = BaseNamespace + "ComMock";
+        public const string ComMockedProgId = BaseNamespace + "ComMocked";
         public const string MockArgumentDefinitionProgId = BaseNamespace + "MockArgumentDefinition";
         public const string MockArgumentDefinitionsProgId = BaseNamespace + "MockArgumentDefinitions";
         public const string MockArgumentCreatorProgId = BaseNamespace + "MockArgumentCreator";

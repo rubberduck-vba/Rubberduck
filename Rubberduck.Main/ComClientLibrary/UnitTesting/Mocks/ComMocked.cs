@@ -2,37 +2,50 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Moq;
 using NLog;
+using Rubberduck.Resources.Registration;
 
 namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 {
-    public class ComMocked : ICustomQueryInterface
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.IComMockedGuid),
+        InterfaceType(ComInterfaceType.InterfaceIsDual)
+    ]
+    public interface IComMocked : IMocked
+    {
+        new ComMock Mock { get; }
+    }
+
+    [
+        ComVisible(true),
+        Guid(RubberduckGuid.ComMockedGuid),
+        ProgId(RubberduckProgId.ComMockedProgId),
+        ClassInterface(ClassInterfaceType.None),
+        ComDefaultInterface(typeof(IComMocked))
+    ]
+    public class ComMocked : IComMocked, ICustomQueryInterface
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-        private readonly object _target;
         private readonly IEnumerable<Type> _supportedTypes;
 
-        internal ComMocked(object target, IEnumerable<Type> supportedTypes)
+        internal ComMocked(ComMock mock, IEnumerable<Type> supportedTypes)
         {
-            _target = target;
+            Mock = mock;
             _supportedTypes = supportedTypes;
         }
 
-        private static readonly Guid iidIDispatch = new Guid("{00020400-0000-0000-C000-000000000046}");
         public CustomQueryInterfaceResult GetInterface(ref Guid iid, out IntPtr ppv)
         {
             try
             {
                 var result = IntPtr.Zero;
-                var searchIid = iid;
+                var searchIid = iid; // Cannot use ref parameters directly in LINQ
 
-                if (iid == iidIDispatch)
+                if (iid == new Guid(RubberduckGuid.ComMockedGuid))
                 {
-                    // TODO: find a better way to get IDispatch - it is not possible to return
-                    // a IDispatch because it is in a object hierarchy where the parent object
-                    // is not COM visible. Returning IUnknown seems to work because of the happy
-                    // accident that the IDispatch's v-table usually follows IUnknown's v-table.
-                    result = Marshal.GetIUnknownForObject(_target);
+                    result = Marshal.GetIUnknownForObject(this);
                 }
                 else
                 {
@@ -41,7 +54,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                     var type = _supportedTypes.FirstOrDefault(x => x.GUID == searchIid);
                     if (type != null)
                     {
-                        result = Marshal.GetComInterfaceForObject(_target, type);
+                        result = Marshal.GetComInterfaceForObject(Mock.Mock.Object, type);
                     }
                 }
 
@@ -57,5 +70,9 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 return CustomQueryInterfaceResult.Failed;
             }
         }
+
+        public ComMock Mock { get; }
+
+        Mock IMocked.Mock => Mock.Mock;
     }
 }
