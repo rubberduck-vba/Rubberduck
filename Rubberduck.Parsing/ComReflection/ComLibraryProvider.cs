@@ -1,5 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Parsing.ComReflection
 {
@@ -37,6 +39,36 @@ namespace Rubberduck.Parsing.ComReflection
         {
             LoadTypeLibEx(libraryPath, REGKIND.REGKIND_NONE, out var typeLibrary);
             return typeLibrary;
+        }
+
+        public IComDocumentation GetComDocumentation(ITypeLib typelib)
+        {
+            try
+            {
+                return new ComDocumentation(typelib, ComDocumentation.LibraryIndex);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public ReferenceInfo GetReferenceInfo(ITypeLib typelib, string name, string path)
+        {
+            try
+            {
+                typelib.GetLibAttr(out var attributes);
+                using (DisposalActionContainer.Create(attributes, typelib.ReleaseTLibAttr))
+                {
+                    var typeAttr = Marshal.PtrToStructure<System.Runtime.InteropServices.ComTypes.TYPELIBATTR>(attributes);
+
+                    return new ReferenceInfo(typeAttr.guid, name, path, typeAttr.wMajorVerNum, typeAttr.wMinorVerNum);
+                }
+            }
+            catch
+            {
+                return ReferenceInfo.Empty;
+            }
         }
     }
 }

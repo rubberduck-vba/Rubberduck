@@ -13,7 +13,6 @@ using System.Linq;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Resources;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
@@ -33,8 +32,7 @@ namespace Rubberduck
         
         private Configuration _config;
 
-        public App(IVBE vbe, 
-            IMessageBox messageBox,
+        public App(IMessageBox messageBox,
             IGeneralConfigService configService,
             IAppMenu appMenus,
             IRubberduckHooks hooks,

@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Windows.Threading;
 using Castle.Windsor;
 using NLog;
+using Rubberduck.Common.WinAPI;
 using Rubberduck.Root;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Registration;
@@ -159,6 +160,17 @@ namespace Rubberduck
                 }
                 catch (CultureNotFoundException)
                 {
+                }
+                try
+                {
+                    if (_initialSettings.SetDpiUnaware)
+                    {
+                        SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
+                    }
+                }
+                catch (Exception)
+                {
+                    Debug.Assert(false, "Could not set DPI awareness.");
                 }
             }
             else

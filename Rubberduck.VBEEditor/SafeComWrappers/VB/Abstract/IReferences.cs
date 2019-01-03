@@ -2,7 +2,7 @@ using System;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
-    public interface IReferences : ISafeComWrapper, IComCollection<IReference>, IEquatable<IReferences>
+    public interface IReferences : ISafeEventedComWrapper, IComCollection<IReference>, IEquatable<IReferences>
     {
         event EventHandler<ReferenceEventArgs> ItemAdded;
         event EventHandler<ReferenceEventArgs> ItemRemoved;

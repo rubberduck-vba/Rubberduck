@@ -8,15 +8,15 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Used for specifying a member's <c>VB_UserMemId</c> attribute value.
     /// </summary>
-    public sealed class DefaultMemberAnnotation : AnnotationBase, IAttributeAnnotation
+    public sealed class DefaultMemberAnnotation : AttributeAnnotationBase
     {
         public DefaultMemberAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters)
-            : base(AnnotationType.DefaultMember, qualifiedSelection, context)
+            : base(AnnotationType.DefaultMember, qualifiedSelection, context, new List<string> { "0" })
         {
-            Description = parameters.FirstOrDefault();
+            Description = parameters?.FirstOrDefault() ?? string.Empty;
         }
 
         public string Description { get; }
-        public string Attribute => "VB_UserMemId = 0";
+        public override string Attribute => "VB_UserMemId";
     }
 }

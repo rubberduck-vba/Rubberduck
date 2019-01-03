@@ -1286,6 +1286,94 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Empty line handling:</value>
   </data>
+  <data name="References" xml:space="preserve">
+    <value>References</value>
+  </data>
+  <data name="padlock" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\lock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BrokenReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Custom\PNG\BrokenReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="LockedReference" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Custom\PNG\LockedReference.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="clock_select" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\clock-select.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="clock_select_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\clock-select-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="exclamation_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\exclamation-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="lock_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\lock-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="plus_circle" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\plus-circle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="plus_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\plus-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="tick_circle_pinned" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\tick-circle-pinned.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="References_AddFailedCaption" xml:space="preserve">
+    <value>Could not add reference</value>
+  </data>
+  <data name="References_BrowseCaption" xml:space="preserve">
+    <value>Browse for reference</value>
+  </data>
+  <data name="References_BrowseFilterActiveX" xml:space="preserve">
+    <value>ActiveX Controls (*.ocx)|*.ocx</value>
+  </data>
+  <data name="References_BrowseFilterAllFiles" xml:space="preserve">
+    <value>All files (*.*)|*.*</value>
+  </data>
+  <data name="References_BrowseFilterExcel" xml:space="preserve">
+    <value>Microsoft Excel Files ({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterExecutable" xml:space="preserve">
+    <value>Executable Files (*.exe;*.dll)|*.exe;*.dll</value>
+  </data>
+  <data name="References_BrowseFilterTypes" xml:space="preserve">
+    <value>Type Libraries (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
+  </data>
+  <data name="References_Caption" xml:space="preserve">
+    <value>Add/Remove References...</value>
+  </data>
+  <data name="References_Locale" xml:space="preserve">
+    <value>Locale:</value>
+  </data>
+  <data name="References_Pinned" xml:space="preserve">
+    <value>Pinned</value>
+  </data>
+  <data name="References_Projects" xml:space="preserve">
+    <value>Projects</value>
+  </data>
+  <data name="References_Recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="References_SearchPlaceholder" xml:space="preserve">
+    <value>Search for reference...</value>
+  </data>
+  <data name="References_SubCaption" xml:space="preserve">
+    <value>Select type libraries and VB projects to add or remove.</value>
+  </data>
+  <data name="References_TypeLibs" xml:space="preserve">
+    <value>Type Libraries</value>
+  </data>
+  <data name="References_Version" xml:space="preserve">
+    <value>Version:</value>
+  </data>
   <data name="TodoMarkerBug" xml:space="preserve">
     <value>BUG</value>
   </data>
@@ -1294,5 +1382,103 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="TodoMarkerTodo" xml:space="preserve">
     <value>TODO</value>
+  </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>TODO Explorer</value>
+  </data>
+  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
+    <value>Set DPI Unaware</value>
+  </data>
+  <data name="References_BrowseFilterAccess" xml:space="preserve">
+    <value>Microsoft Access Databases({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterPowerPoint" xml:space="preserve">
+    <value>PowerPoint Addin Files({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterWord" xml:space="preserve">
+    <value>Word Documents({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="ReferenceSettings_FixBroken" xml:space="preserve">
+    <value>Attempt to fix broken references</value>
+  </data>
+  <data name="ReferenceSettings_FolderDialogHeader" xml:space="preserve">
+    <value>Browse for project folder</value>
+  </data>
+  <data name="ReferenceSettings_FoldersHeader" xml:space="preserve">
+    <value>Project Directories</value>
+  </data>
+  <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
+    <value>Recent references tracked:</value>
+  </data>
+  <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
+    <value>Track references not added by Rubberduck</value>
+  </data>
+  <data name="References_BrowseFilterOutlook" xml:space="preserve">
+    <value>Outlook VBA Files ({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterPublisher" xml:space="preserve">
+    <value>Publisher Files ({0}|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_BrowseFilterVisio" xml:space="preserve">
+    <value>All Visio Files ({0})|{0}</value>
+    <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
+  </data>
+  <data name="References_DefaultLocale" xml:space="preserve">
+    <value>Standard</value>
+    <comment>Displayed as LCID description when locale is not specified.</comment>
+  </data>
+  <data name="cross_script" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\cross-script.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="magnifier_medium" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\magnifier-medium.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="References_CaptionTemplate" xml:space="preserve">
+    <value>Add/Remove References - {0}</value>
+    <comment>{0} = Project name</comment>
+  </data>
+  <data name="edit_size" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\edit-size.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="SyncArrows" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Custom\PNG\SyncArrows.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="arrow_090" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\arrow-090.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="arrow_090_dimmed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\arrow-090-dimmed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="arrow_270" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\arrow-270.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="arrow_270_dimmed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\arrow-270-dimmed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="References_AddToolTip" xml:space="preserve">
+    <value>Add to project</value>
+  </data>
+  <data name="References_MoveDownToolTip" xml:space="preserve">
+    <value>Move down</value>
+  </data>
+  <data name="References_MoveUpToolTip" xml:space="preserve">
+    <value>Move up</value>
+  </data>
+  <data name="References_PinToolTip" xml:space="preserve">
+    <value>Pin reference</value>
+  </data>
+  <data name="References_RemoveToolTip" xml:space="preserve">
+    <value>Remove from project</value>
   </data>
 </root>

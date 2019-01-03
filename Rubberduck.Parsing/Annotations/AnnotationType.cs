@@ -5,6 +5,7 @@ namespace Rubberduck.Parsing.Annotations
     /// <summary>
     /// Member names are 
     /// </summary>
+    [Flags]
     public enum AnnotationType
     {
         /// <summary>
@@ -64,7 +65,11 @@ namespace Rubberduck.Parsing.Annotations
         PredeclaredId = 1 << 16 | Attribute | ModuleAnnotation,
         [AttributeAnnotation("VB_Exposed", "True")]
         Exposed = 1 << 17 | Attribute | ModuleAnnotation,
-        Obsolete = 1 << 18 | MemberAnnotation | VariableAnnotation
+        Obsolete = 1 << 18 | MemberAnnotation | VariableAnnotation,
+        [AttributeAnnotation("VB_Description")]
+        ModuleDescription = 1 << 19 | Attribute | ModuleAnnotation,
+        ModuleAttribute = 1 << 20 | Attribute | ModuleAnnotation,
+        MemberAttribute = 1 << 21 | Attribute | MemberAnnotation | VariableAnnotation
     }
 
     [AttributeUsage(AttributeTargets.Field)]

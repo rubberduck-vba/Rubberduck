@@ -18,6 +18,7 @@ namespace Rubberduck.Settings
         int AutoSavePeriod { get; set; }
         bool UserEditedLogLevel { get; set; }
         int MinimumLogLevel { get; set; }
+        bool SetDpiUnaware { get; set; }
         List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
     }
 
@@ -56,6 +57,8 @@ namespace Rubberduck.Settings
             }
         }
 
+        public bool SetDpiUnaware { get; set; }
+
         public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeatures>();
 
         public GeneralSettings()
@@ -77,9 +80,10 @@ namespace Rubberduck.Settings
                    IsAutoSaveEnabled == other.IsAutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&
                    UserEditedLogLevel == other.UserEditedLogLevel &&
-                   MinimumLogLevel == other.MinimumLogLevel &&
-                   EnableExperimentalFeatures.All(a => other.EnableExperimentalFeatures.Contains(a)) &&
-                   EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count;
+                   MinimumLogLevel == other.MinimumLogLevel &&                   
+                   EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count &&
+                   EnableExperimentalFeatures.All(other.EnableExperimentalFeatures.Contains) &&
+                   SetDpiUnaware == other.SetDpiUnaware;
         }
     }
 }

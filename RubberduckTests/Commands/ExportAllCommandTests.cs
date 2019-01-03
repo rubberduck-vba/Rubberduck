@@ -29,7 +29,7 @@ namespace RubberduckTests.Commands
             vbe.SetupGet(m => m.ActiveVBProject.VBComponents.Count).Returns(1);
 
             var mockFolderBrowser = new Mock<IFolderBrowser>();
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
 
             var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
 
@@ -48,7 +48,7 @@ namespace RubberduckTests.Commands
             vbe.SetupGet(m => m.ActiveVBProject.VBComponents.Count).Returns(0);
 
             var mockFolderBrowser = new Mock<IFolderBrowser>();
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
 
             var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
 
@@ -68,7 +68,7 @@ namespace RubberduckTests.Commands
             project.SetupGet(m => m.VBComponents.Count).Returns(1);
 
             var mockFolderBrowser = new Mock<IFolderBrowser>();
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
 
             var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
 
@@ -87,7 +87,7 @@ namespace RubberduckTests.Commands
             vbe.SetupGet(m => m.ActiveVBProject.VBComponents.Count).Returns(0);
 
             var mockFolderBrowser = new Mock<IFolderBrowser>();
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
 
             var ExportAllCommand = new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object);
 
@@ -117,7 +117,7 @@ namespace RubberduckTests.Commands
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.OK);
 
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project.Setup(m => m.ExportSourceFiles(_path));
 
@@ -150,7 +150,7 @@ namespace RubberduckTests.Commands
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.OK);
 
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project.Setup(m => m.ExportSourceFiles(_path));
 
@@ -196,7 +196,7 @@ namespace RubberduckTests.Commands
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.OK);
 
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project2.Setup(m => m.ExportSourceFiles(_path));
 
@@ -243,7 +243,7 @@ namespace RubberduckTests.Commands
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.OK);
 
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project1.Setup(m => m.ExportSourceFiles(_path));
 
@@ -277,7 +277,7 @@ namespace RubberduckTests.Commands
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project.Setup(m => m.ExportSourceFiles(_path));
 
@@ -310,7 +310,7 @@ namespace RubberduckTests.Commands
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project.Setup(m => m.ExportSourceFiles(_path));
 
@@ -356,7 +356,7 @@ namespace RubberduckTests.Commands
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project2.Setup(m => m.ExportSourceFiles(_path));
 
@@ -403,7 +403,7 @@ namespace RubberduckTests.Commands
             mockFolderBrowser.Setup(m => m.SelectedPath).Returns(_path);
             mockFolderBrowser.Setup(m => m.ShowDialog()).Returns(DialogResult.Cancel);
 
-            var mockFolderBrowserFactory = new Mock<IFolderBrowserFactory>();
+            var mockFolderBrowserFactory = new Mock<IFileSystemBrowserFactory>();
             mockFolderBrowserFactory.Setup(m => m.CreateFolderBrowser(It.IsAny<string>(), true, _projectPath)).Returns(mockFolderBrowser.Object);
             project1.Setup(m => m.ExportSourceFiles(_path));
 

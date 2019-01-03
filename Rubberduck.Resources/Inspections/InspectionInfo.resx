@@ -253,9 +253,6 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level.</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn't present. Module attributes and annotations need to be synchronized.</value>
   </data>
@@ -357,5 +354,14 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Functions that are visible to Excel as User-Defined Functions will return a '#REF!' error when used on a Worksheet if they match the name of a valid cell reference. If the function is intended to be used as a UDF, it must be renamed. If the function is not intended to be used as a UDF, it should be scoped as 'Private' or moved out of a standard Module.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute has a different value. Module attributes and annotations need to be synchronized.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Module attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
   </data>
 </root>

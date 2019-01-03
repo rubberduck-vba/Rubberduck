@@ -247,9 +247,6 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="OptionBaseZeroInspection" xml:space="preserve">
     <value>Dies ist die Standardeinstellung, sie muss nicht spezifiziert werden.</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Modul- und Elementattribute werden von der VBE nicht angezeigt. Durch das hinzufügen einer Annotation werden diese Attribute deutlicher. Außerdem kann Rubberduck die Annotationen und Attribute synchronisieren.</value>
-  </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Eine Annotation für die Modulebene kann nicht verwendet werden, um Elemente zu annotieren; Eine Annotation für Elemente kann auf Modulebene nicht verwendet werden; Modul- und Elementannotationen sollten nur einmal spezifiziert werden.</value>
   </data>
@@ -357,5 +354,14 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Funktionen, die für EXCEL als benutzerdefinierte Funktionen sichtbar sind, werden einen '#REF!'-Fehler erzeugen, wenn sie in einem Arbeitsblatt verwendet werden, in dem ihr Name dem einer korrekten Zellreferenz entspricht. Wenn die Funktion als benutzerdefinierte Funktion gedacht ist, muss sie umbenannt werden. Wenn die Funktion nicht als benutzerdefinierte Funktion gedacht ist, sollte sie 'Private' deklariert oder aus einem Standardmodul herausgenommen werden.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Eine Rubberduck-Annotation wurde für ein Modul oder Element festgelegt, aber das zugehörige Attribut hat einen anderen Wert. Die Modul-Attribute und Annotationen sollten synchronisiert werden.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Elementattribute werden von der VBE nicht angezeigt. Durch das hinzufügen einer Annotation werden diese Attribute deutlicher. Außerdem kann Rubberduck die Annotationen und Attribute synchronisieren.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Modulattribute werden von der VBE nicht angezeigt. Durch das hinzufügen einer Annotation werden diese Attribute deutlicher. Außerdem kann Rubberduck die Annotationen und Attribute synchronisieren.</value>
   </data>
 </root>

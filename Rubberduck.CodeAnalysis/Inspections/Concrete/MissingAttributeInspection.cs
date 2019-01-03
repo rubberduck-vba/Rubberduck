@@ -1,87 +1,60 @@
 using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
-using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Resources.Inspections;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
     [CannotAnnotate]
-    public sealed class MissingAttributeInspection : ParseTreeInspectionBase
+    public sealed class MissingAttributeInspection : InspectionBase
     {
         public MissingAttributeInspection(RubberduckParserState state)
             : base(state)
-        {
-            Listener = new MissingMemberAttributeListener(state);
-        }
-
-        public override CodeKind TargetKindOfCode => CodeKind.AttributesCode;
-
-        public override IInspectionListener Listener { get; }
+        {}
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            return Listener.Contexts.Select(context =>
+            var declarationsWithAttributeAnnotations = State.DeclarationFinder.AllUserDeclarations
+                .Where(declaration => declaration.Annotations.Any(annotation => annotation.AnnotationType.HasFlag(AnnotationType.Attribute)));
+            var results = new List<DeclarationInspectionResult>();
+            foreach (var declaration in declarationsWithAttributeAnnotations.Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document))
             {
-                var name = string.Format(InspectionResults.MissingAttributeInspection, context.MemberName.MemberName,
-                    ((VBAParser.AnnotationContext) context.Context).annotationName().GetText());
-                return new QualifiedContextInspectionResult(this, name, context);
-            });
-        }
-
-        public class MissingMemberAttributeListener : ParseTreeListeners.AttributeAnnotationListener
-        {
-            public MissingMemberAttributeListener(RubberduckParserState state) : base(state) { }
-
-            public override void ExitAnnotation(VBAParser.AnnotationContext context)
-            {
-                var annotationType = context.AnnotationType;
-
-                if (!annotationType.HasFlag(AnnotationType.Attribute))
+                foreach(var annotation in declaration.Annotations.OfType<IAttributeAnnotation>())
                 {
-                    return;
-                }
-
-                var isMemberAnnotation = annotationType.HasFlag(AnnotationType.MemberAnnotation);
-                var isModuleScope = CurrentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module);
-
-                if (isModuleScope && !isMemberAnnotation)
-                {
-                    // module-level annotation
-                    var module = State.DeclarationFinder.UserDeclarations(DeclarationType.Module).Single(m => m.QualifiedName.QualifiedModuleName.Equals(CurrentModuleName));
-                    if (!module.Attributes.HasAttributeFor(context.AnnotationType))
+                    if (MissesCorrespondingAttribute(declaration, annotation))
                     {
-                        AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
-                    }
-                }
-                else if (isMemberAnnotation)
-                {
-                    // member-level annotation is above the context for the first member in the module..
-                    if (isModuleScope)
-                    {
-                        CurrentScopeDeclaration = FirstMember;
-                    }
+                        var description = string.Format(InspectionResults.MissingAttributeInspection, declaration.IdentifierName,
+                            annotation.AnnotationType.ToString());
 
-                    var member = Members.Value.Single(m => m.Key.Equals(CurrentScopeDeclaration.QualifiedName.MemberName));
-                    if (!member.Value.Attributes.HasAttributeFor(context.AnnotationType, member.Key))
-                    {
-                        AddContext(new QualifiedContext<ParserRuleContext>(CurrentModuleName, context));
+                        var result = new DeclarationInspectionResult(this, description, declaration,
+                            new QualifiedContext(declaration.QualifiedModuleName, annotation.Context));
+                        result.Properties.Annotation = annotation;
+
+                        results.Add(result);
                     }
-                }
-                else
-                {
-                    // annotation is illegal. ignore.
                 }
             }
+
+            return results;
+        }
+
+        private static bool MissesCorrespondingAttribute(Declaration declaration, IAttributeAnnotation annotation)
+        {
+            if (string.IsNullOrEmpty(annotation.Attribute))
+            {
+                return false;
+            }
+            return declaration.DeclarationType.HasFlag(DeclarationType.Module)
+                ? !declaration.Attributes.HasAttributeFor(annotation)
+                : !declaration.Attributes.HasAttributeFor(annotation, declaration.IdentifierName);
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Rubberduck.VBEditor.Events
         private static readonly object Lock = new object();
         private readonly IVBProjects _projects;
         private readonly Dictionary<string, IVBComponents> _components;
+        private readonly Dictionary<string, IReferences> _references;
 
         public static VBEEvents Initialize(IVBE vbe)
         {
@@ -43,6 +44,7 @@ namespace Rubberduck.VBEditor.Events
         private VBEEvents(IVBE vbe)
         {
             _components = new Dictionary<string, IVBComponents>();
+            _references = new Dictionary<string, IReferences>();
 
             if (_projects != null)
             {
@@ -60,12 +62,12 @@ namespace Rubberduck.VBEditor.Events
             using (project)
             {
                 {
-                    RegisterComponents(project);
+                    RegisterProjectHandlers(project);
                 }
             }
         }
 
-        private void RegisterComponents(string projectId, string projectName)
+        private void RegisterProjectHandlers(string projectId, string projectName)
         {
             IVBProject project = null;
             foreach (var item in _projects)
@@ -84,10 +86,10 @@ namespace Rubberduck.VBEditor.Events
                 return;
             }
 
-            RegisterComponents(project);
+            RegisterProjectHandlers(project);
         }
 
-        private void RegisterComponents(IVBProject project)
+        private void RegisterProjectHandlers(IVBProject project)
         {
             if (project.IsWrappingNullReference || project.Protection != ProjectProtection.Unprotected)
             {
@@ -106,9 +108,15 @@ namespace Rubberduck.VBEditor.Events
             components.ComponentActivated += ComponentActivatedHandler;
             components.ComponentSelected += ComponentSelectedHandler;
             components.ComponentReloaded += ComponentReloadedHandler;
+
+            var references = project.References;
+            _references.Add(project.ProjectId, references);
+            references.AttachEvents();
+            references.ItemAdded += ProjectReferenceAddedHandler;
+            references.ItemRemoved += ProjectReferenceRemovedHandler;
         }
 
-        private void UnregisterComponents(string projectId)
+        private void UnregisterProjectHandlers(string projectId)
         {
             if (!_components.ContainsKey(projectId))
             {
@@ -127,6 +135,14 @@ namespace Rubberduck.VBEditor.Events
 
                 _components.Remove(projectId);
             }
+
+            using (var references = _references[projectId])
+            {
+                references.ItemAdded -= ProjectReferenceAddedHandler;
+                references.ItemRemoved -= ProjectReferenceRemovedHandler;
+                references.DetachEvents();
+                _references.Remove(projectId);
+            }
         }
 
         public event EventHandler<ProjectEventArgs> ProjectAdded;
@@ -134,7 +150,7 @@ namespace Rubberduck.VBEditor.Events
         {
             if (!_components.ContainsKey(e.ProjectId))
             {
-                RegisterComponents(e.ProjectId, e.ProjectName);
+                RegisterProjectHandlers(e.ProjectId, e.ProjectName);
             }
             ProjectAdded?.Invoke(sender, e);
         }
@@ -142,7 +158,7 @@ namespace Rubberduck.VBEditor.Events
         public event EventHandler<ProjectEventArgs> ProjectRemoved;
         private void ProjectRemovedHandler(object sender, ProjectEventArgs e)
         {
-            UnregisterComponents(e.ProjectId);
+            UnregisterProjectHandlers(e.ProjectId);
             ProjectRemoved?.Invoke(sender, e);
         }
 
@@ -188,10 +204,25 @@ namespace Rubberduck.VBEditor.Events
             ComponentSelected?.Invoke(sender, e);
         }
 
-        public event EventHandler<ComponentEventArgs> ComponentReloaded; 
+        public event EventHandler<ComponentEventArgs> ComponentReloaded;
+        
         private void ComponentReloadedHandler(object sender, ComponentEventArgs e)
         {
             ComponentReloaded?.Invoke(sender, e);
+        }
+
+        public event EventHandler<ReferenceEventArgs> ProjectReferenceAdded;
+
+        private void ProjectReferenceAddedHandler(object sender, ReferenceEventArgs e)
+        {
+            ProjectReferenceAdded?.Invoke(sender, e);
+        }
+
+        public event EventHandler<ReferenceEventArgs> ProjectReferenceRemoved;
+
+        private void ProjectReferenceRemovedHandler(object sender, ReferenceEventArgs e)
+        {
+            ProjectReferenceRemoved?.Invoke(sender, e);
         }
 
         public event EventHandler EventsTerminated;
@@ -214,7 +245,7 @@ namespace Rubberduck.VBEditor.Events
                 var projectIds = _components.Keys.ToArray();
                 foreach (var projectid in projectIds)
                 {
-                    UnregisterComponents(projectid);
+                    UnregisterProjectHandlers(projectid);
                 }
                 
                 _projects.ProjectActivated -= ProjectActivatedHandler;

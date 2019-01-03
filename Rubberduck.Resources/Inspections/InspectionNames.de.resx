@@ -258,9 +258,6 @@
   <data name="ImplicitByRefModifierInspection" xml:space="preserve">
     <value>Implizite Referenzübergabe</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Fehlende Annotation</value>
-  </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Illegale Annotation</value>
   </data>
@@ -356,5 +353,14 @@
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Funktion wird von EXCEL-Zellreferenz verdeckt</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Wert stimmt nicht überein zwischen Attribut und Annotation</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Fehlende Elementannotation</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Fehlende Modulannotation</value>
   </data>
 </root>

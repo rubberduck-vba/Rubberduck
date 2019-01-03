@@ -11,6 +11,9 @@
         <reorderParameters:IndexIsNotZeroConverter x:Key="IndexIsNotZero" />
         <reorderParameters:IndexIsNotLastConverter x:Key="IndexIsNotLast" />
 
+        <BitmapImage x:Key="MoveUpImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-090.png" />
+        <BitmapImage x:Key="MoveDownImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-270.png" />
+
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -141,7 +144,7 @@
                         Command="{Binding MoveParameterUpCommand}"
                         CommandParameter="{Binding ElementName=ParameterGrid, Path=SelectedItem}">
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-090.png" Margin="0,0,5,0" />
+                        <Image Source="{StaticResource MoveUpImage}" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_MoveUpButtonText}" />
                     </StackPanel>
                 </Button>
@@ -165,7 +168,7 @@
                         </Style>
                     </Button.Style>
                     <StackPanel Orientation="Horizontal">
-                        <Image Height="10" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-270.png" Margin="0,0,5,0" />
+                        <Image Source="{StaticResource MoveDownImage}" />
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ReorderParamsDialog_MoveDownButtonText}" />
                     </StackPanel>
                 </Button>

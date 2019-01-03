@@ -40,12 +40,14 @@ namespace Rubberduck.Parsing.Symbols
         public ProjectDeclaration(ComProject project, QualifiedModuleName module)
             : this(module.QualifyMemberName(project.Name), project.Name, false, null)
         {
+            Guid = project.Guid;
             MajorVersion = project.MajorVersion;
             MinorVersion = project.MinorVersion;
         }
 
-        public long MajorVersion { get; set; }
-        public long MinorVersion { get; set; }
+        public Guid Guid { get; }
+        public long MajorVersion { get; }
+        public long MinorVersion { get; }
 
         public IReadOnlyList<ProjectReference> ProjectReferences
         {
