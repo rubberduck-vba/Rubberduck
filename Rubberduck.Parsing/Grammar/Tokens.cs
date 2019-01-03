@@ -190,9 +190,16 @@
         public static readonly string Until = "Until";
         public static readonly string Val = "Val";
         public static readonly string Variant = "Variant";
+        public static readonly string vbBack = "vbBack";
+        public static readonly string vbCr = "vbCr";
         public static readonly string vbCrLf = "vbCrLf";
+        public static readonly string vbFormFeed = "vbFormFeed";
+        public static readonly string vbLf = "vbLf";
         public static readonly string vbNewLine = "vbNewLine";
+        public static readonly string vbNullChar = "vbNullChar";
         public static readonly string vbNullString = "vbNullString";
+        public static readonly string vbTab = "vbTab";
+        public static readonly string vbVerticalTab = "vbVerticalTab";
         public static readonly string WeekDay = "WeekDay";
         public static readonly string Wend = "Wend";
         public static readonly string While = "While";
