@@ -36,14 +36,22 @@ namespace Rubberduck.Inspections.Concrete
                 .Concat(builtinHandlers)
                 .Concat(userDeclarations.Where(item => item.IsWithEvents)));
 
+            bool HasArgumentReferencesWithIsAssignmentFlagged(QualifiedContext<ParserRuleContext> context)
+                => contextLookup.TryGetValue(context.Context.GetChild<VBAParser.ArgContext>(), out Declaration decl)
+                    ? decl.References.Any(rf => rf.IsAssignment) : false;
+
+            Declaration GetSubStmtParentDeclaration(QualifiedContext<ParserRuleContext> context)
+                => contextLookup.TryGetValue((VBAParser.SubStmtContext)context.Context.Parent, out Declaration decl)
+                    ? decl : null;
+
             return Listener.Contexts
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext
-                                  && contextLookup[context.Context.GetChild<VBAParser.ArgContext>()].References
-                                      .Any(reference => reference.IsAssignment))
-                .Select(context => contextLookup[(VBAParser.SubStmtContext)context.Context.Parent])
-                .Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName) &&
-                               !ignored.Contains(decl) &&
-                               userDeclarations.Where(item => item.IsWithEvents)
+                                    && HasArgumentReferencesWithIsAssignmentFlagged(context))
+                .Select(context => GetSubStmtParentDeclaration(context))
+                .Where(decl => decl != null && 
+                                !IsIgnoringInspectionResultFor(decl, AnnotationName) &&
+                                !ignored.Contains(decl) &&
+                                userDeclarations.Where(item => item.IsWithEvents)
                                    .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
                                !builtinHandlers.Contains(decl))
                 .Select(result => new DeclarationInspectionResult(this,
