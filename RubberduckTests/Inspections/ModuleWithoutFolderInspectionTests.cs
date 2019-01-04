@@ -46,7 +46,7 @@ Option Explicit";
         [Category("Inspections")]
         public void Module_NonFolderAnnotation()
         {
-            const string inputCode = @"'@IgnoreModule
+            const string inputCode = @"'@PredeclaredId
 Option Explicit";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -56,6 +56,23 @@ Option Explicit";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void Module_NoFolderAnnotation_IgnoreWorks()
+        {
+            const string inputCode = @"'@IgnoreModule ModuleWithoutFolder
+Option Explicit";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ModuleWithoutFolderInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
             }
         }
     }
