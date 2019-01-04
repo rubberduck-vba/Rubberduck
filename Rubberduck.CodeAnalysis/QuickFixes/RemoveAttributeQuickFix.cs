@@ -14,7 +14,7 @@ namespace Rubberduck.Inspections.QuickFixes
         private readonly IAttributesUpdater _attributesUpdater;
 
         public RemoveAttributeQuickFix(IAttributesUpdater attributesUpdater)
-        :base(typeof(AttributeValueOutOfSyncInspection))
+        :base(typeof(MissingModuleAnnotationInspection), typeof(MissingMemberAnnotationInspection))
         {
             _attributesUpdater = attributesUpdater;
         }
