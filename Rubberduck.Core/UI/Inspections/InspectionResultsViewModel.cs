@@ -14,10 +14,11 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -383,6 +384,12 @@ namespace Rubberduck.UI.Inspections
             {
                 RefreshInspections(e.Token);
             }
+            else
+            {
+                //Todo: Find a way to get the actually modified modules in here.
+                var modifiedModules = _state.DeclarationFinder.AllModules.ToHashSet();
+                InvalidateStaleInspectionResults(modifiedModules);
+            }
         }
 
         private async void RefreshInspections(CancellationToken token)
@@ -440,6 +447,18 @@ namespace Rubberduck.UI.Inspections
 
             stopwatch.Stop();
             LogManager.GetCurrentClassLogger().Trace("Inspections loaded in {0}ms", stopwatch.ElapsedMilliseconds);
+        }
+
+        private void InvalidateStaleInspectionResults(ICollection<QualifiedModuleName> modifiedModules)
+        {
+            var staleResults = Results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
+            _uiDispatcher.Invoke(() =>
+            {
+                foreach (var staleResult in staleResults)
+                {
+                    Results.Remove(staleResult);
+                }
+            });
         }
 
         private void ExecuteQuickFixCommand(object parameter)
