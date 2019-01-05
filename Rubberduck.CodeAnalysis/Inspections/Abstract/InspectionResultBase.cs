@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Antlr4.Runtime;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Inspections;
@@ -38,6 +39,12 @@ namespace Rubberduck.Inspections.Abstract
         public ParserRuleContext Context { get; }
         public Declaration Target { get; }
         public dynamic Properties { get; }
+
+        public virtual bool ChangesInvalidateResult(ICollection<QualifiedModuleName> modifiedModules)
+        {
+            return modifiedModules.Contains(QualifiedName) 
+                   || Inspection.ChangesInvalidateResult(this, modifiedModules);
+        }
 
         /// <summary>
         /// Gets the information needed to select the target instruction in the VBE.
