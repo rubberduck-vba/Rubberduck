@@ -270,4 +270,13 @@
   <data name="RemoveAttributeQuickFix" xml:space="preserve">
     <value>Attribut entfernen</value>
   </data>
+  <data name="RemoveAnnotationQuickFix" xml:space="preserve">
+    <value>Annotation entfernen</value>
+  </data>
+  <data name="AdjustAttributeAnnotationQuickFix" xml:space="preserve">
+    <value>Attributannotation anpassen</value>
+  </data>
+  <data name="AddAttributeAnnotationQuickFix" xml:space="preserve">
+    <value>Attributannotation hinzufügen</value>
+  </data>
 </root>

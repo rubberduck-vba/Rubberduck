@@ -72,6 +72,16 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Looks up a localized string similar to Refer to statically accessible sheet by its code name.
         /// </summary>
+        public static string AddAttributeAnnotationQuickFix
+        {
+            get {
+                return ResourceManager.GetString("AddAttributeAnnotationQuickFix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refer to statically accessible sheet by its code name.
+        /// </summary>
         public static string AddMissingAttributeQuickFix
         {
             get {
@@ -85,6 +95,16 @@ namespace Rubberduck.Resources.Inspections {
         public static string AddStepOneQuickFix {
             get {
                 return ResourceManager.GetString("AddStepOneQuickFix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add explicit &apos;Step&apos; clause.
+        /// </summary>
+        public static string AdjustAttributeAnnotationQuickFix
+        {
+            get {
+                return ResourceManager.GetString("AdjustAttributeAnnotationQuickFix", resourceCulture);
             }
         }
 
@@ -275,6 +295,16 @@ namespace Rubberduck.Resources.Inspections {
         public static string RedundantByRefModifierQuickFix {
             get {
                 return ResourceManager.GetString("RedundantByRefModifierQuickFix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove comment.
+        /// </summary>
+        public static string RemoveAnnotationQuickFix
+        {
+            get {
+                return ResourceManager.GetString("RemoveAnnotationQuickFix", resourceCulture);
             }
         }
 
