@@ -279,4 +279,13 @@
   <data name="AddAttributeAnnotationQuickFix" xml:space="preserve">
     <value>Add attribute annotation</value>
   </data>
+  <data name="ApplyQuickFixesFailedMessage" xml:space="preserve">
+    <value>Failed to apply the quick fix.</value>
+  </data>
+  <data name="StaleModuleFailureReason" xml:space="preserve">
+    <value>An affected module has been modified since the last parse.</value>
+  </data>
+  <data name="ApplyQuickFixFailedCaption" xml:space="preserve">
+    <value>Quick Fix Application Failure</value>
+  </data>
 </root>
