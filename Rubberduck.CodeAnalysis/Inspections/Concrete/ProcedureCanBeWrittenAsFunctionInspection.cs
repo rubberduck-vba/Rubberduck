@@ -26,6 +26,11 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
+            if (Listener.Contexts.Count == 0)
+            {
+                return Enumerable.Empty<IInspectionResult>();
+            }
+
             var userDeclarations = UserDeclarations.ToList();
             var builtinHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
 
