@@ -26,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            if (Listener.Contexts.Count == 0)
+            if (!Listener.Contexts.Any())
             {
                 return Enumerable.Empty<IInspectionResult>();
             }
