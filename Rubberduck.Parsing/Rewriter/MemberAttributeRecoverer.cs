@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public class MemberAttributeRecoverer : IMemberAttributeRecovererWithSettableRewritingManager
+    public class MemberAttributeRecoverer : IMemberAttributeRecovererWithSettableRewritingManager, IDisposable
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IParseManager _parseManager;
@@ -191,6 +192,11 @@ namespace Rubberduck.Parsing.Rewriter
                     .Where(decl => !decl.DeclarationType.HasFlag(DeclarationType.Module)
                                    && decl.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module)));
             return declarationsByModule;
+        }
+
+        public void Dispose()
+        {
+            StopRecoveringAttributesOnNextParse();
         }
     }
 }
