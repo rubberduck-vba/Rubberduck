@@ -1404,7 +1404,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
   </data>
   <data name="References_BrowseFilterWord" xml:space="preserve">
-    <value>Word Documents({0})|{0}</value>
+    <value>Word Documents ({0})|{0}</value>
     <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
   </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
