@@ -41,14 +41,6 @@ namespace Rubberduck.Inspections.Concrete
                 .Concat(builtinHandlers)
                 .Concat(userDeclarations.Where(item => item.IsWithEvents)));
 
-            bool HasArgumentReferencesWithIsAssignmentFlagged(QualifiedContext<ParserRuleContext> context)
-                => contextLookup.TryGetValue(context.Context.GetChild<VBAParser.ArgContext>(), out Declaration decl)
-                    ? decl.References.Any(rf => rf.IsAssignment) : false;
-
-            Declaration GetSubStmtParentDeclaration(QualifiedContext<ParserRuleContext> context)
-                => contextLookup.TryGetValue((VBAParser.SubStmtContext)context.Context.Parent, out Declaration decl)
-                    ? decl : null;
-
             return Listener.Contexts
                 .Where(context => context.Context.Parent is VBAParser.SubStmtContext
                                     && HasArgumentReferencesWithIsAssignmentFlagged(context))
@@ -62,6 +54,20 @@ namespace Rubberduck.Inspections.Concrete
                 .Select(result => new DeclarationInspectionResult(this,
                     string.Format(InspectionResults.ProcedureCanBeWrittenAsFunctionInspection, result.IdentifierName),
                     result));
+
+            bool HasArgumentReferencesWithIsAssignmentFlagged(QualifiedContext<ParserRuleContext> context)
+            {
+                return contextLookup.TryGetValue(context.Context.GetChild<VBAParser.ArgContext>(), out Declaration decl)
+                    ? decl.References.Any(rf => rf.IsAssignment)
+                        : false;
+            }
+
+            Declaration GetSubStmtParentDeclaration(QualifiedContext<ParserRuleContext> context)
+            {
+                return contextLookup.TryGetValue(context.Context.Parent as VBAParser.SubStmtContext, out Declaration decl)
+                    ? decl
+                        : null;
+            }
         }
 
         public class SingleByRefParamArgListListener : VBAParserBaseListener, IInspectionListener
