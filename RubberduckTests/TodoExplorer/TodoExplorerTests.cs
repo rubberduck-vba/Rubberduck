@@ -168,6 +168,7 @@ namespace RubberduckTests.TodoExplorer
                 .Build();
 
             var vbe = builder.AddProject(project).Build();
+
             var parser = MockParser.Create(vbe.Object);
             using (var state = parser.State)
             {

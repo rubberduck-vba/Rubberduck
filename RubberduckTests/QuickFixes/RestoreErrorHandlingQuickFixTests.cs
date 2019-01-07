@@ -1,15 +1,13 @@
-﻿using System.Linq;
-using System.Threading;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
-using RubberduckTests.Inspections;
-using RubberduckTests.Mocks;
+using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
     [TestFixture]
-    public class RestoreErrorHandlingQuickFixTests
+    public class RestoreErrorHandlingQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
@@ -32,17 +30,8 @@ ErrorHandler:
     End If
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnhandledOnErrorResumeNextInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new RestoreErrorHandlingQuickFix(state).Fix(inspectionResults.First());
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UnhandledOnErrorResumeNextInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -66,17 +55,8 @@ ErrorHandler:
     End If
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnhandledOnErrorResumeNextInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new RestoreErrorHandlingQuickFix(state).Fix(inspectionResults.First());
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UnhandledOnErrorResumeNextInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -100,17 +80,8 @@ ErrorHandler:
     End If
 End Property";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnhandledOnErrorResumeNextInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new RestoreErrorHandlingQuickFix(state).Fix(inspectionResults.First());
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UnhandledOnErrorResumeNextInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -138,17 +109,8 @@ ErrorHandler1:
     End If
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnhandledOnErrorResumeNextInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var inspectionResults = inspector.FindIssuesAsync(state, CancellationToken.None).Result;
-
-                new RestoreErrorHandlingQuickFix(state).Fix(inspectionResults.First());
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToFirstInspectionResult(inputCode, state => new UnhandledOnErrorResumeNextInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -181,20 +143,8 @@ ErrorHandler:
     End If
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnhandledOnErrorResumeNextInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var quickFix = new RestoreErrorHandlingQuickFix(state);
-
-                foreach (var result in inspector.FindIssuesAsync(state, CancellationToken.None).Result)
-                {
-                    quickFix.Fix(result);
-                }
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new UnhandledOnErrorResumeNextInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -231,20 +181,8 @@ ErrorHandler2:
     End If
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnhandledOnErrorResumeNextInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var quickFix = new RestoreErrorHandlingQuickFix(state);
-
-                foreach (var result in inspector.FindIssuesAsync(state, CancellationToken.None).Result)
-                {
-                    quickFix.Fix(result);
-                }
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new UnhandledOnErrorResumeNextInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -283,20 +221,8 @@ ErrorHandler:
     End If
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnhandledOnErrorResumeNextInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var quickFix = new RestoreErrorHandlingQuickFix(state);
-
-                foreach (var result in inspector.FindIssuesAsync(state, CancellationToken.None).Result)
-                {
-                    quickFix.Fix(result);
-                }
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new UnhandledOnErrorResumeNextInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -324,20 +250,8 @@ ErrorHandler:
     End If
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnhandledOnErrorResumeNextInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var quickFix = new RestoreErrorHandlingQuickFix(state);
-
-                foreach (var result in inspector.FindIssuesAsync(state, CancellationToken.None).Result)
-                {
-                    quickFix.Fix(result);
-                }
-
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new UnhandledOnErrorResumeNextInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -365,20 +279,14 @@ ErrorHandler4:
     End If
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var inspection = new UnhandledOnErrorResumeNextInspection(state);
-                var inspector = InspectionsHelper.GetInspector(inspection);
-                var quickFix = new RestoreErrorHandlingQuickFix(state);
+            var actualCode = ApplyQuickFixToAllInspectionResults(inputCode, state => new UnhandledOnErrorResumeNextInspection(state));
+            Assert.AreEqual(expectedCode, actualCode);
+        }
 
-                foreach (var result in inspector.FindIssuesAsync(state, CancellationToken.None).Result)
-                {
-                    quickFix.Fix(result);
-                }
 
-                Assert.AreEqual(expectedCode, state.GetRewriter(component).GetText());
-            }
+        protected override IQuickFix QuickFix(RubberduckParserState state)
+        {
+            return new RestoreErrorHandlingQuickFix();
         }
     }
 }

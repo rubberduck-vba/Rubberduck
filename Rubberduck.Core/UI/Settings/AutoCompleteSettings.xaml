@@ -44,14 +44,17 @@
                 </MultiTrigger>
             </Style.Triggers>
         </Style>
-
+        <Style TargetType="ScrollViewer">
+            <Style.Setters>
+                <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
+            </Style.Setters>
+        </Style>
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
-            <RowDefinition Height="32" />
         </Grid.RowDefinitions>
-        <ScrollViewer Grid.Row="0">
+        <ScrollViewer x:Name="ScrollViewer" Grid.Row="0">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Label Background="DarkGray"
                        HorizontalContentAlignment="Stretch"
@@ -84,49 +87,65 @@
                         </StackPanel>
                     </DockPanel>
                 </Label>
-                <WrapPanel HorizontalAlignment="Center">
-                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnTab}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleTabKey}" />
-                    <CheckBox Margin="10,10" IsChecked="{Binding CompleteBlockOnEnter}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=HandleEnterKey}" />
-                    <CheckBox Margin="10,10" IsChecked="{Binding EnableSmartConcat}" HorizontalAlignment="Center" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableSmartConcat}" />
-                </WrapPanel>
-                <Border BorderBrush="DarkGray" BorderThickness="1" CornerRadius="2">
-                    <DataGrid Name="AutoCompleteSettingsGrid"
-                              ItemsSource="{Binding Settings}"
-                              AutoGenerateColumns="False"
-                              CanUserReorderColumns="False"
-                              IsReadOnly="False"
-                              SelectionMode="Single"
-                              CanUserAddRows="False"
-                              CanUserSortColumns="False"
-                              HorizontalGridLinesBrush="Transparent"
-                              VerticalGridLinesBrush="Transparent"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              ItemContainerStyle="{StaticResource PrettifyRow}"
-                              ColumnHeaderHeight="22"
-                              BorderThickness="0" Height="Auto" MinHeight="70">
-                        <DataGrid.CellStyle>
-                            <Style TargetType="{x:Type DataGridCell}">
-                                <Setter Property="BorderThickness" Value="0" />
-                                <Setter Property="VerticalAlignment" Value="Center" />
-                                <Setter Property="Background" Value="Transparent" />
-                            </Style>
-                        </DataGrid.CellStyle>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Width="Auto" Binding="{Binding Description}" IsReadOnly="True" />
-                            <DataGridCheckBoxColumn Width="*" Binding="{Binding IsEnabled, Mode=TwoWay}">
-                                <DataGridCheckBoxColumn.HeaderStyle>
-                                    <Style TargetType="DataGridColumnHeader">
-                                        <Setter Property="HorizontalContentAlignment" Value="Center" />
-                                    </Style>
-                                </DataGridCheckBoxColumn.HeaderStyle>
-                            </DataGridCheckBoxColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Border>
+                <CheckBox Margin="10,0" VerticalContentAlignment="Center" IsChecked="{Binding IsEnabled}">
+                    <Label Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableAutocompleteLabel}"/>
+                </CheckBox>
+
+                <Label Margin="10" 
+                       Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=SelfClosingPairs}"
+                       FontWeight="Bold" />
+                <CheckBox Margin="15,0,15,0" 
+                          IsEnabled="{Binding IsEnabled}"
+                          IsChecked="{Binding EnableSelfClosingPairs}" 
+                          Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableSelfClosingPairs}" />
+
+                <Label Margin="10" 
+                       Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=SmartConcat}"
+                       FontWeight="Bold" />
+                <CheckBox Margin="15,0,15,0" 
+                          IsEnabled="{Binding IsEnabled}"
+                          IsChecked="{Binding EnableSmartConcat}" 
+                          Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableSmartConcat}" />
+                <CheckBox Margin="15,0,15,0" 
+                          IsEnabled="{Binding EnableSmartConcat}"
+                          IsChecked="{Binding ConcatVbNewLine}" 
+                          Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=ConcatVbNewLine}" />
+
+                <Label Margin="15,0,15,0" Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=MaxConcatLines}" />
+                <StackPanel Orientation="Horizontal" Margin="15,0,15,0">
+                    <TextBox Margin="5,5,0,5" Height="24" Width="50" Text="{Binding ConcatMaxLines, Mode=TwoWay, StringFormat=\{0:D\}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" VerticalAlignment="Top" VerticalContentAlignment="Center" />
+                    <StackPanel Margin="0,5" >
+                        <Button Height="12" Width="20" Command="{Binding IncrementMaxConcatLinesCommand}">
+                            <TextBlock Text="▲" FontSize="10" Margin="0,-4,0,0"/>
+                        </Button>
+                        <Button Height="12" Width="20" Command="{Binding DecrementMaxConcatLinesCommand}">
+                            <TextBlock Text="▼" FontSize="10" Margin="0,-3,0,0"/>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+
+                <!--<controls:NumberPicker Margin="15,0,15,0" DataContext="{Binding Path=DataContext, Mode=OneWay, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type settings:AutoCompleteSettings}}}"
+                                       NumValue="{Binding Path=DataContext.ConcatMaxLines, RelativeSource={RelativeSource Self}, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                                       MinNumber="{Binding Path=DataContext.ConcatMaxLinesMinValue, RelativeSource={RelativeSource Self}}"
+                                       MaxNumber="{Binding Path=DataContext.ConcatMaxLinesMaxValue, RelativeSource={RelativeSource Self}}">
+                    
+                </controls:NumberPicker>-->
+                <Label Margin="10" 
+                       Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=BlockCompletion}"
+                       FontWeight="Bold" />
+                <CheckBox Margin="15,0,15,0" 
+                          IsEnabled="{Binding IsEnabled}"
+                          IsChecked="{Binding EnableBlockCompletion}" 
+                          Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=EnableBlockCompletion}" />
+                <CheckBox Margin="15,0,15,0" 
+                          IsEnabled="{Binding EnableBlockCompletion}"
+                          IsChecked="{Binding CompleteBlockOnEnter}" 
+                          Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=CompleteBlockOnEnter}" />
+                <CheckBox Margin="15,0,15,0" 
+                          IsEnabled="{Binding EnableBlockCompletion}"
+                          IsChecked="{Binding CompleteBlockOnTab}" 
+                          Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=CompleteBlockOnTab}" />
             </StackPanel>
         </ScrollViewer>
-        <CheckBox Grid.Row="1" HorizontalAlignment="Right" Margin="5"
-                  IsChecked="{Binding Path=SelectAll}" 
-                  Content="{Resx ResxName=Rubberduck.Resources.Settings.SettingsUI, Key=SelectAll}" />
     </Grid>
 </UserControl>

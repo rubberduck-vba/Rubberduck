@@ -2,7 +2,6 @@
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System;
 using System.Collections.Concurrent;
@@ -33,6 +32,7 @@ namespace Rubberduck.Parsing.Symbols
             Accessibility accessibility,
             DeclarationType declarationType,
             ParserRuleContext context,
+            ParserRuleContext attributesPassContext,
             Selection selection,
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
@@ -51,6 +51,7 @@ namespace Rubberduck.Parsing.Symbols
                 accessibility,
                 declarationType,
                 context,
+                attributesPassContext,
                 selection,
                 isArray,
                 asTypeContext,
@@ -88,6 +89,7 @@ namespace Rubberduck.Parsing.Symbols
                   accessibility,
                   declarationType,
                   null,
+                  null,
                   Selection.Home,
                   isArray,
                   asTypeContext,
@@ -107,6 +109,7 @@ namespace Rubberduck.Parsing.Symbols
             Accessibility accessibility,
             DeclarationType declarationType,
             ParserRuleContext context,
+            ParserRuleContext attributesPassContext,
             Selection selection,
             bool isArray,
             VBAParser.AsTypeClauseContext asTypeContext,
@@ -126,6 +129,7 @@ namespace Rubberduck.Parsing.Symbols
             DeclarationType = declarationType;
             Selection = selection;
             Context = context;
+            AttributesPassContext = attributesPassContext;
             IsUserDefined = isUserDefined;
             _annotations = annotations;
             _attributes = attributes ?? new Attributes();
@@ -159,6 +163,7 @@ namespace Rubberduck.Parsing.Symbols
             Accessibility.Global,
             DeclarationType.Enumeration,
             null,
+            null,
             Selection.Home,
             false,
             null,
@@ -178,6 +183,7 @@ namespace Rubberduck.Parsing.Symbols
                 Accessibility.Global,
                 DeclarationType.UserDefinedType,
                 null,
+                null,
                 Selection.Home,
                 false,
                 null,
@@ -195,6 +201,7 @@ namespace Rubberduck.Parsing.Symbols
                 false,
                 Accessibility.Global,
                 DeclarationType.EnumerationMember,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -214,6 +221,7 @@ namespace Rubberduck.Parsing.Symbols
                 false,
                 Accessibility.Global,
                 field.Type,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -282,11 +290,12 @@ namespace Rubberduck.Parsing.Symbols
         public QualifiedModuleName QualifiedModuleName => QualifiedName.QualifiedModuleName;
 
         public ParserRuleContext Context { get; }
+        public ParserRuleContext AttributesPassContext { get; }
 
-        private ConcurrentBag<IdentifierReference> _references = new ConcurrentBag<IdentifierReference>();
-        public IEnumerable<IdentifierReference> References => _references;
+        private ConcurrentDictionary<IdentifierReference, int> _references = new ConcurrentDictionary<IdentifierReference, int>();
+        public IEnumerable<IdentifierReference> References => _references.Keys;
 
-        private readonly IEnumerable<IAnnotation> _annotations;
+        protected IEnumerable<IAnnotation> _annotations;
         public IEnumerable<IAnnotation> Annotations => _annotations ?? new List<IAnnotation>();
 
         private readonly Attributes _attributes;
@@ -340,13 +349,24 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public bool IsEnumeratorMember => _attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
 
-        public virtual bool IsObject =>
-            AsTypeName == Tokens.Object || (
-                AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? 
-                    !AsTypeIsBaseType
-                    && !IsArray
-                    && !DeclarationType.HasFlag(DeclarationType.UserDefinedType)
-                    && !DeclarationType.HasFlag(DeclarationType.Enumeration));
+        public virtual bool IsObject
+        {
+            get
+            {
+                if (AsTypeName == Tokens.Object || 
+                    (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false))
+                {
+                    return true;
+                }
+
+                var isIntrinsic = AsTypeIsBaseType
+                                  || IsArray
+                                  || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
+                                  || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.Enumeration) ?? false);
+
+                return !isIntrinsic;
+            }
+        }
 
         public void AddReference(
             QualifiedModuleName module,
@@ -358,20 +378,36 @@ namespace Rubberduck.Parsing.Symbols
             Selection selection,
             IEnumerable<IAnnotation> annotations,
             bool isAssignmentTarget = false,
-            bool hasExplicitLetStatement = false)
+            bool hasExplicitLetStatement = false,
+            bool isSetAssigned = false
+            )
         {
-            _references.Add(
-                new IdentifierReference(
-                    module,
-                    scope,
-                    parent,
-                    identifier,
-                    selection,
-                    callSiteContext,
-                    callee,
-                    isAssignmentTarget,
-                    hasExplicitLetStatement,
-                    annotations));
+            var oldReference = _references.FirstOrDefault(r =>
+                r.Key.QualifiedModuleName == module &&
+                // ReSharper disable once PossibleUnintendedReferenceComparison
+                r.Key.ParentScoping == scope &&
+                // ReSharper disable once PossibleUnintendedReferenceComparison
+                r.Key.ParentNonScoping == parent &&
+                r.Key.IdentifierName == identifier &&
+                r.Key.Selection == selection);
+            if (oldReference.Key != null)
+            {
+                _references.TryRemove(oldReference.Key, out _);
+            }
+
+            var newReference = new IdentifierReference(
+                module,
+                scope,
+                parent,
+                identifier,
+                selection,
+                callSiteContext,
+                callee,
+                isAssignmentTarget,
+                hasExplicitLetStatement,
+                annotations,
+                isSetAssigned);
+            _references.AddOrUpdate(newReference, 1, (key, value) => 1);
         }
 
         /// <summary>
@@ -531,15 +567,18 @@ namespace Rubberduck.Parsing.Symbols
                         return "VBE";
                     case DeclarationType.ClassModule:
                     case DeclarationType.ProceduralModule:
-                        return QualifiedName.QualifiedModuleName.ToString();
+                        return QualifiedModuleName.ToString();
                     case DeclarationType.Procedure:
                     case DeclarationType.Function:
+                        return $"{QualifiedModuleName}.{IdentifierName}";
                     case DeclarationType.PropertyGet:
+                        return $"{QualifiedModuleName}.{IdentifierName}.Get";
                     case DeclarationType.PropertyLet:
+                        return $"{QualifiedModuleName}.{IdentifierName}.Let";
                     case DeclarationType.PropertySet:
-                        return QualifiedName.QualifiedModuleName + "." + IdentifierName;
+                        return $"{QualifiedModuleName}.{IdentifierName}.Set";
                     case DeclarationType.Event:
-                        return ParentScope + "." + IdentifierName;
+                        return $"{ParentScope}.{IdentifierName}";
                     default:
                         return ParentScope;
                 }
@@ -586,14 +625,13 @@ namespace Rubberduck.Parsing.Symbols
 
         public void ClearReferences()
         {
-            _references = new ConcurrentBag<IdentifierReference>();
+            _references = new ConcurrentDictionary<IdentifierReference, int>();
         }
 
         public void RemoveReferencesFrom(IReadOnlyCollection<QualifiedModuleName> modulesByWhichToRemoveReferences)
         {
-            //This gets replaced with a new ConcurrentBag because one cannot remove specific items from a ConcurrentBag.
-            //Moreover, changing to a ConcurrentDictionary<IdentifierReference,byte> breaks all sorts of tests, for some obscure reason. 
-            _references = new ConcurrentBag<IdentifierReference>(_references.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.QualifiedModuleName)));
+            _references = new ConcurrentDictionary<IdentifierReference, int>(_references.Where(reference => !modulesByWhichToRemoveReferences.Contains(reference.Key.QualifiedModuleName)));
         }
     }
 }
+

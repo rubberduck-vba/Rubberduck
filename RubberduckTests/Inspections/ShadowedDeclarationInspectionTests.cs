@@ -133,11 +133,11 @@ End Property";
             var userProjectBuilder = CreateUserProject(builder);
             foreach (var expectedResultCount in expectedResultCountsByDeclarationIdentifierName)
             {
-                var referencedProject = builder.ProjectBuilder(expectedResultCount.Key, ProjectProtection.Unprotected)
-                    .AddComponent("Foo" + expectedResultCount.Key, ComponentType.StandardModule, "")
+                var referencedProject = builder.ProjectBuilder(expectedResultCount.Key, "somePath", ProjectProtection.Unprotected)
+                    .AddComponent("Foo" + expectedResultCount.Key, ComponentType.StandardModule, string.Empty)
                     .Build();
                 builder.AddProject(referencedProject);
-                userProjectBuilder = userProjectBuilder.AddReference(expectedResultCount.Key, "");
+                userProjectBuilder = userProjectBuilder.AddReference(expectedResultCount.Key, "somePath", 0, 0);
             }
 
             var userProject = userProjectBuilder.Build();
@@ -3319,7 +3319,7 @@ End Enum");
         [Test]
         [Category("Inspections")]
         public void
-            ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberOfPublicEnumerationInReferencedProject()
+        ShadowedDeclaration_ReturnsCorrectResult_DeclarationsWithSameNameAsEnumerationMemberOfPublicEnumerationInReferencedProject()
         {
             var expectedResultCountsByDeclarationIdentifierName = new Dictionary<string, int>
             {
@@ -5046,7 +5046,7 @@ End Function");
             builder.AddProject(referencedProject);
             var userProject = builder.ProjectBuilder("Baz", ProjectProtection.Unprotected)
                 .AddComponent("Qux", ComponentType.ClassModule, $"Public Event E ({sameName} As String)")
-                .AddReference("Foo", "")
+                .AddReference("Foo", string.Empty, 0, 0)
                 .Build();
             builder.AddProject(userProject);
 
@@ -5125,7 +5125,7 @@ End Sub";
             builder.AddProject(referencedProject);
             var userProject = builder.ProjectBuilder("Baz", ProjectProtection.Unprotected)
                 .AddComponent("Qux", ComponentType.StandardModule, ignoredDeclarationCode)
-                .AddReference("Foo", string.Empty)
+                .AddReference("Foo", string.Empty, 0, 0)
                 .Build();
             builder.AddProject(userProject);
 
@@ -5178,9 +5178,9 @@ End Sub";
                 .ToDictionary(group => group.Key, group => group.Count());
         }
 
-        private MockProjectBuilder CreateUserProject(MockVbeBuilder builder, string projectName = ProjectName)
+        private MockProjectBuilder CreateUserProject(MockVbeBuilder builder, string projectName = ProjectName, string projectPath = "")
         {
-            return builder.ProjectBuilder(projectName, ProjectProtection.Unprotected)
+            return builder.ProjectBuilder(projectName, projectPath, ProjectProtection.Unprotected)
                 .AddComponent(ProceduralModuleName, ComponentType.StandardModule, _moduleCode)
                 .AddComponent(ClassModuleName, ComponentType.ClassModule, $"Public Event {EventName}()")
                 .AddComponent(UserFormName, ComponentType.UserForm, "")
@@ -5190,15 +5190,19 @@ End Sub";
         private MockVbeBuilder TestVbeWithUserProjectAndReferencedProjectWithComponentsOfOneType(string referencedProjectName, IEnumerable<string> testBaseNames, ComponentType referencedComponentsComponentType, Func<string, string> componentNameSelector, Func<string, string> componentCodeSelector, string userProjectName = ProjectName)
         {
             var builder = new MockVbeBuilder();
-            var referencedProjectBuilder = builder.ProjectBuilder(referencedProjectName, ProjectProtection.Unprotected);
+            var project = string.IsNullOrEmpty(referencedProjectName) ? "Irrelevant" : referencedProjectName;
+            var path = $@"C:\{project}.xlsm";
+            var referencedProjectBuilder = builder.ProjectBuilder(referencedProjectName, path, ProjectProtection.Unprotected);
 
             foreach (var baseName in testBaseNames)
             {
                 referencedProjectBuilder.AddComponent(componentNameSelector(baseName), referencedComponentsComponentType, componentCodeSelector(baseName));
             }
+
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty).Build();
+
+            var userProject = CreateUserProject(builder, userProjectName).AddReference(project, path, 0, 0).Build();
             builder.AddProject(userProject);
 
             return builder;
@@ -5228,12 +5232,16 @@ End Sub";
             string referencedComponentCode,
             string userProjectName = ProjectName)
         {
+            var project = string.IsNullOrEmpty(referencedProjectName) ? "Irrelevant" : referencedProjectName;
+            var path = $@"C:\{project}.xlsm";
+
             var builder = new MockVbeBuilder();
-            var referencedProjectBuilder = builder.ProjectBuilder(referencedProjectName, ProjectProtection.Unprotected);
+            var referencedProjectBuilder = builder.ProjectBuilder(referencedProjectName, path, ProjectProtection.Unprotected);
             referencedProjectBuilder.AddComponent(referencedComponentName, referencedComponentComponentType, referencedComponentCode);
             var referencedProject = referencedProjectBuilder.Build();
             builder.AddProject(referencedProject);
-            var userProject = CreateUserProject(builder, userProjectName).AddReference(referencedProjectName, string.Empty).Build();
+
+            var userProject = CreateUserProject(builder, userProjectName).AddReference(project, path, 0, 0).Build();
             builder.AddProject(userProject);
 
             return builder;

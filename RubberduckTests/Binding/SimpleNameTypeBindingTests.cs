@@ -16,7 +16,7 @@ namespace RubberduckTests.Binding
     {
         private const string BINDING_TARGET_NAME = "BindingTarget";
         private const string TEST_CLASS_NAME = "TestClass";
-        private static readonly string ReferencedProjectFilepath = string.Empty; // must be an empty string
+        private static readonly string ReferencedProjectFilepath = $@"C:\{TEST_CLASS_NAME}.xlsm";
 
         [Category("Binding")]
         [Test]
@@ -72,7 +72,7 @@ namespace RubberduckTests.Binding
             builder.AddProject(referencedProject);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, ReferencedProjectFilepath);
+            enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, ReferencedProjectFilepath, 0, 0);
             enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, "Public WithEvents anything As " + BINDING_TARGET_NAME);
             enclosingProjectBuilder.AddComponent("AnyModule", ComponentType.StandardModule, CreateEnumType(BINDING_TARGET_NAME));
             var enclosingProject = enclosingProjectBuilder.Build();
@@ -101,7 +101,7 @@ namespace RubberduckTests.Binding
             builder.AddProject(referencedProject);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("AnyProjectName", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, ReferencedProjectFilepath);
+            enclosingProjectBuilder.AddReference(REFERENCED_PROJECT_NAME, ReferencedProjectFilepath, 0, 0);
             enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, "Public WithEvents anything As " + BINDING_TARGET_NAME);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);
@@ -132,7 +132,7 @@ namespace RubberduckTests.Binding
             builder.AddProject(referencedProject);
 
             var enclosingProjectBuilder = builder.ProjectBuilder("Enclosing", ProjectProtection.Unprotected);
-            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath);
+            enclosingProjectBuilder.AddReference(referencedProjectName, ReferencedProjectFilepath, 0, 0);
             enclosingProjectBuilder.AddComponent(TEST_CLASS_NAME, ComponentType.ClassModule, enclosingCode);
             var enclosingProject = enclosingProjectBuilder.Build();
             builder.AddProject(enclosingProject);

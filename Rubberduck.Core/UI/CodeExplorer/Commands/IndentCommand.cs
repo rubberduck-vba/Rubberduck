@@ -6,10 +6,10 @@ using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class IndentCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
@@ -25,7 +25,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (parameter == null)
+            if (parameter == null || parameter is CodeExplorerReferenceFolderViewModel || parameter is CodeExplorerReferenceViewModel)
             {
                 return false;
             }

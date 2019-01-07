@@ -4,18 +4,14 @@ namespace Rubberduck.UI.Refactorings.ExtractInterface
 {
     internal class InterfaceMemberViewModel : ViewModelBase 
     {
-        private readonly InterfaceMember _wrapped;
-        internal InterfaceMember Wrapped { get => _wrapped; }
-
-
-        private bool _isSelected;
-        private InterfaceMember model;
-
         public InterfaceMemberViewModel(InterfaceMember model)
         {
-            this.model = model;
+            Wrapped = model;
         }
 
+        internal InterfaceMember Wrapped { get; }
+
+        private bool _isSelected;
         public bool IsSelected
         {
             get => _isSelected;
@@ -26,7 +22,7 @@ namespace Rubberduck.UI.Refactorings.ExtractInterface
             }
         }
 
-        public string FullMemberSignature { get => _wrapped.FullMemberSignature; }
+        public string FullMemberSignature => Wrapped?.FullMemberSignature;
     }
 
     internal static class ConversionExtensions

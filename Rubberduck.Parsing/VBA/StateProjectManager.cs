@@ -4,6 +4,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -21,19 +22,26 @@ namespace Rubberduck.Parsing.VBA
 
         public override IReadOnlyCollection<QualifiedModuleName> AllModules()
         {
-            var components = Projects.SelectMany(project => project.VBComponents);
-
             var options = new ParallelOptions();
             options.MaxDegreeOfParallelism = _maxDegreeOfQMNCreationParallelism;
 
             var modules = new ConcurrentBag<QualifiedModuleName>();
-            Parallel.ForEach(components,
-                options,
-                component =>
+            foreach (var project in Projects.Select(tpl => tpl.Project))
+            {
+                using (var components = project.VBComponents)
                 {
-                    modules.Add(new QualifiedModuleName(component));
+                    Parallel.ForEach(components,
+                        options,
+                        component =>
+                        {
+                            using (component)
+                            {
+                                modules.Add(component.QualifiedModuleName);
+                            }
+                        }
+                    );
                 }
-            );
+            }
 
             return modules.ToHashSet().AsReadOnly();
         }

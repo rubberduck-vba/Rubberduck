@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Resources;
 
 namespace Rubberduck.Inspections.Concrete
@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var interfaceImplementationMembers = UserDeclarations.FindInterfaceImplementationMembers().ToHashSet();
+            var interfaceImplementationMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers().ToHashSet();
 
             var excludeParameterMembers = State.DeclarationFinder.FindEventHandlers().ToHashSet();
             excludeParameterMembers.UnionWith(interfaceImplementationMembers);

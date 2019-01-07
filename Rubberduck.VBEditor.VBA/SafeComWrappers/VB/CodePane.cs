@@ -95,24 +95,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void ForceFocus()
         {
-            if (IsWrappingNullReference) return;
+            if (IsWrappingNullReference)
+            {
+                return;
+            }
+
             Show();
 
-            var window = VBE.MainWindow;
-            var mainWindowHandle = window.Handle();
-            var caption = Window.Caption;
-            var childWindowFinder = new ChildWindowFinder(caption);
-
-            NativeMethods.EnumChildWindows(mainWindowHandle, childWindowFinder.EnumWindowsProcToChildWindowByCaption);
-            var handle = childWindowFinder.ResultHandle;
-
-            if (handle != IntPtr.Zero)
+            using (var vbe = VBE)
+            using (var mainWindow = vbe.MainWindow)
+            using (var window = Window)
             {
-                NativeMethods.ActivateWindow(handle, mainWindowHandle);
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("CodePane.ForceFocus() failed to get a handle on the MainWindow.");
+                var mainWindowHandle = mainWindow.Handle();
+                var handle = mainWindow.Handle().FindChildWindow(window.Caption);
+
+                if (handle != IntPtr.Zero)
+                {
+                    NativeMethods.ActivateWindow(handle, mainWindowHandle);
+                }
+                else
+                {
+                    _logger.Debug(
+                        "CodePane.ForceFocus() failed to get a handle on the MainWindow.");
+                }
             }
         }
 
@@ -136,5 +141,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

@@ -153,9 +153,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Déclarer plusieurs variables dans la même instruction est légal, mais devrait être utilisé avec modération. Considérez déclarer les variables plus près de leur utilisation, dans une seule déclaration par instruction.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Rubberduck utilise seulement la première annotation '@Folder' dans un module; considérez supprimer les annotations superflues.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>Il s'agit possiblement d'un bogue. La valeur de retour d'une fonction ou d'un accesseur de propriété doit être assignée avant la sortie, sans quoi la fonction ne renverra pas de résultat. Si la fonction n'a aucune valeur de retour significative, considérez plutôt une procédure (Sub).</value>
   </data>
@@ -253,9 +250,6 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="ShadowedDeclarationInspection" xml:space="preserve">
     <value>Deux déclarations ont le même nom dans le même espace-nom: une seule d'entre elles peut être utilisée.</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Les attributs du module et de ses membres n'apparaissent pas dans l'éditeur. En ajoutant une annotation, vous rendez ces attributs plus explicite, et Rubberduck peut synchroniser annotations et attributs.</value>
-  </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Une annotation devant être spécifiée au niveau du module ne peut être utilisée pour annoter de membres; les annotations devant être spécifiées au niveau des membres du module, ne peuvent être utilisées au niveau du module; toutes les annotations ne devrait être spécifiées qu'une seule fois par module/membre.</value>
   </data>
@@ -327,5 +321,38 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Excel définit une variable objet globale avec cette référence. Considérez utiliser le nom de code ('CodeName') de la feuille.</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>Ce membre est marqué '@Obsolete'. Il ne devrait plus ètre utilisé, une approche alternative devrait exister.</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Visual Basic sous Windows supporte uniquement la convention d'appel StdCall. La convention CDecl n'est supportée seulement que sur Macintosh. L'utilisation de ce mot-clé sous Windows causera l'erreur d'exécution 49 "Bad DLL calling convention". Utiliser un bloc de compilation conditionelle si cette procédure doit s'exécuter sur un Mac.</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Une assignation est écrasée par une assignation subséquente, ou la valeur assignée n'est jamais utilisée.</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Une annotation à usage unique ne peut être spécifiée à plus d'un endroit dans un module.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Une procédure qui renvoie une référence à un objet peut renvoyer une référence nulle 'Nothing'. Ceci causerait l'erreur d'exécution 91 "Object variable or With block variable not set".</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Les fonctions qui sont visibles en tant que fonctions définies par l'utilisateur dans Excel, renverront une erreur '#REF!' lorsqu'utilisées dans une feuille de calcul si leur nom correspond à une référence de cellule valide. Si la fonction doit être utilisée comme fonction définie par l'utilisateur, elle doit être renommée. Sinon, sa visibilité devrait être réduite à 'Private', ou alors la fonction doit être déplacée vers un autre type de module.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>'IsMissing' ne doit être utilisé qu'avec un paramètre optionnel, et ne renverra de résultats corrects que si le type du paramètre est 'Variant'. Pour tout autre type, la fonction retournera 'False'.</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>'IsMissing' ne doit être utilisée qu'avec les paramètres de la procédure, tout autre usage renverra la valeur constante 'False'. Passer toute autre expression à cette fonction est l'équivalent de 'VarType({expression}) = vbError', ce qui dans de rares circonstances peut faire planter l'application hôte.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Les modules sans annotation '@Folder' ne peuvent être regroupés dans l'Explorateur de Code.</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>'On Local Error' subsiste pour fins de compatibilité avec d'anciennes versions de Visual Basic; toutes les erreurs sont locales. Utiliser ce mot-clé peut donner la fausse impression que plusieurs types d'erreurs et/ou de gestion d'erreurs existent, ce qui n'est pas le cas.</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Un module de classe qui contient un ou des membres dont le nom comporte un caractère de soulignement, ne peut être implémenté par d'autres classes. Ce caractère est utilisé par Visual Basic pour séparer le nom d'une interface et celui d'un membre de cette interface; la compilation échouera si le membre contient un caractère de soulignement.</value>
   </data>
 </root>

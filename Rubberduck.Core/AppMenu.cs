@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.VBA;
@@ -39,6 +38,7 @@ namespace Rubberduck
             {
                 menu.Initialize();
             }
+            EvaluateCanExecute(_parser.State);
         }
 
         public void OnSelectedDeclarationChange(object sender, DeclarationChangedEventArgs e)
@@ -63,6 +63,7 @@ namespace Rubberduck
         {
             _stateBar.Localize();
             _stateBar.SetStatusLabelCaption(_parser.State.Status);
+
             foreach (var menu in _menus)
             {
                 menu.Localize();
@@ -71,6 +72,19 @@ namespace Rubberduck
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+            _isDisposed = true;
+
             _parser.State.StateChanged -= OnParserStateChanged;
             _selectionService.SelectedDeclarationChanged -= OnSelectedDeclarationChange;
 

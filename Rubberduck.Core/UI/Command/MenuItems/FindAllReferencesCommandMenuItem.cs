@@ -5,7 +5,7 @@ using Rubberduck.UI.Command.MenuItems.ParentMenus;
     {
         public class FindAllReferencesCommandMenuItem : CommandMenuItemBase
         {
-            public FindAllReferencesCommandMenuItem(CommandBase command) 
+            public FindAllReferencesCommandMenuItem(FindAllReferencesCommand command) 
                 : base(command)
             {
             }

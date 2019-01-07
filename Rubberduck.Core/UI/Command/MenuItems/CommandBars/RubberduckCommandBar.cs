@@ -57,19 +57,17 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         private void OnSelectionChange(object sender, DeclarationChangedEventArgs e)
         {
-            var caption = e.ActivePane != null
-                ? _formatter.Format(e.ActivePane, e.Declaration)
-                : _formatter.Format(e.Declaration, e.MultipleControlsSelected);
-           
-            if (string.IsNullOrEmpty(caption) && e.VBComponent != null)
+            var caption = _formatter.Format(e.Declaration, e.MultipleControlsSelected);
+            if (string.IsNullOrEmpty(caption))
             {
-                //Fallback caption for selections in the Project window.
-                caption = $"{e.VBComponent.ParentProject.Name}.{e.VBComponent.Name} ({e.VBComponent.Type})";
+                //Fallback caption for selections in the Project window.                               
+                caption = e.FallbackCaption;
             }
 
             var refCount = e.Declaration?.References.Count() ?? 0;
             var description = e.Declaration?.DescriptionString ?? string.Empty;
-            SetContextSelectionCaption(caption, refCount, description);
+            //& renders the next character as if it was an accelerator.
+            SetContextSelectionCaption(caption?.Replace("&", "&&"), refCount, description);
             EvaluateCanExecute(_parser.State, e.Declaration);
         }
 
@@ -151,11 +149,25 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+
             _selectionService.SelectionChanged -= OnSelectionChange;
             _parser.State.StateChanged -= OnParserStateChanged;
             _parser.State.StatusMessageUpdate -= OnParserStatusMessageUpdate;
 
             RemoveCommandBar();
+
+            _isDisposed = true;
         }
     }
 

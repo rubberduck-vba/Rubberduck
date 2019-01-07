@@ -8,6 +8,8 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
 
 namespace Rubberduck.Parsing.Symbols
 {
@@ -21,7 +23,6 @@ namespace Rubberduck.Parsing.Symbols
         private Declaration _currentParent;
         private readonly BindingService _bindingService;
         private readonly BoundExpressionVisitor _boundExpressionVisitor;
-        private readonly AnnotationService _annotationService;
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public IdentifierReferenceResolver(QualifiedModuleName qualifiedModuleName, DeclarationFinder finder)
@@ -42,8 +43,7 @@ namespace Rubberduck.Parsing.Symbols
                 new DefaultBindingContext(_declarationFinder, typeBindingContext, procedurePointerBindingContext),
                 typeBindingContext,
                 procedurePointerBindingContext);
-            _annotationService = new AnnotationService(_declarationFinder);
-            _boundExpressionVisitor = new BoundExpressionVisitor(_annotationService);
+            _boundExpressionVisitor = new BoundExpressionVisitor(finder);
         }
 
         public void SetCurrentScope()
@@ -151,8 +151,14 @@ namespace Rubberduck.Parsing.Symbols
                     identifier,
                     callee,
                     callSiteContext.GetSelection(),
-                    _annotationService.FindAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
+                    FindIdentifierAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
             }
+        }
+
+        private IEnumerable<IAnnotation> FindIdentifierAnnotations(QualifiedModuleName module, int line)
+        {
+            return _declarationFinder.FindAnnotations(module, line)
+                .Where(annotation => annotation.AnnotationType.HasFlag(AnnotationType.IdentifierAnnotation));
         }
 
         private void ResolveDefault(
@@ -194,9 +200,21 @@ namespace Rubberduck.Parsing.Symbols
             {
                 var module = boundExpression.ReferencedDeclaration.AsTypeDeclaration;
                 var members = _declarationFinder.Members(module);
-                defaultMember = (IParameterizedDeclaration)members.FirstOrDefault(m => m is IParameterizedDeclaration && m.Attributes.HasDefaultMemberAttribute() && (isAssignmentTarget ? m.DeclarationType.HasFlag(DeclarationType.Procedure) : m.DeclarationType.HasFlag(DeclarationType.Function)));
+                defaultMember = (IParameterizedDeclaration) members.FirstOrDefault(member =>
+                    member is IParameterizedDeclaration && member.Attributes.HasDefaultMemberAttribute() 
+                        && (isAssignmentTarget
+                            ? member.DeclarationType.HasFlag(DeclarationType.Procedure)
+                            : member.DeclarationType.HasFlag(DeclarationType.Function)));
             }
-            _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent, isAssignmentTarget && (defaultMember == null || (!defaultMember.Parameters.Any() || defaultMember.Parameters.All(p => p.IsOptional)) || isSetAssignment), hasExplicitLetStatement);
+
+            _boundExpressionVisitor.AddIdentifierReferences(
+                boundExpression, 
+                _qualifiedModuleName, 
+                _currentScope,
+                _currentParent,
+                isAssignmentTarget && (defaultMember == null || isSetAssignment || defaultMember.Parameters.All(param => param.IsOptional)),
+                hasExplicitLetStatement, 
+                isSetAssignment);
         }
 
         private void ResolveType(ParserRuleContext expression)
@@ -204,10 +222,7 @@ namespace Rubberduck.Parsing.Symbols
             var boundExpression = _bindingService.ResolveType(_moduleDeclaration, _currentParent, expression);
             if (boundExpression.Classification == ExpressionClassification.ResolutionFailed)
             {
-                Logger.Warn(
-                   string.Format(
-                       "Type Context: Failed to resolve {0}. Binding as much as we can.",
-                       expression.GetText()));
+                Logger.Warn($"Type Context: Failed to resolve {expression.GetText()}. Binding as much as we can.");
             }
             _boundExpressionVisitor.AddIdentifierReferences(boundExpression, _qualifiedModuleName, _currentScope, _currentParent);
         }
@@ -366,8 +381,7 @@ namespace Rubberduck.Parsing.Symbols
                 context.lExpression(),
                 StatementResolutionContext.LetStatement,
                 true,
-                letStatement != null,
-                false);
+                letStatement != null);
             ResolveDefault(context.expression());
         }
 
@@ -413,14 +427,9 @@ namespace Rubberduck.Parsing.Symbols
 
         private void ResolveFileNumber(VBAParser.FileNumberContext fileNumber)
         {
-            if (fileNumber.markedFileNumber() != null)
-            {
-                ResolveDefault(fileNumber.markedFileNumber().expression());
-            }
-            else
-            {
-                ResolveDefault(fileNumber.unmarkedFileNumber().expression());
-            }
+            ResolveDefault(fileNumber.markedFileNumber() != null
+                ? fileNumber.markedFileNumber().expression()
+                : fileNumber.unmarkedFileNumber().expression());
         }
 
         public void Resolve(VBAParser.OpenStmtContext context)
@@ -596,9 +605,9 @@ namespace Rubberduck.Parsing.Symbols
             {
                 // Fixed-Length strings can have a constant-name as length that is a simple-name-expression that also has to be resolved.
                 var length = context.fieldLength();
-                if (context.fieldLength() != null && context.fieldLength().identifierValue() != null)
+                if (length?.identifierValue() != null)
                 {
-                    ResolveDefault(context.fieldLength().identifierValue());
+                    ResolveDefault(length.identifierValue());
                 }
                 return;
             }
@@ -708,7 +717,7 @@ namespace Rubberduck.Parsing.Symbols
                     identifier,
                     callee,
                     callSiteContext.GetSelection(),
-                    _annotationService.FindAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
+                    FindIdentifierAnnotations(_qualifiedModuleName, callSiteContext.GetSelection().StartLine));
             }
             if (context.eventArgumentList() == null)
             {
@@ -735,8 +744,10 @@ namespace Rubberduck.Parsing.Symbols
             {
                 ResolveDefault(expr);
             }
-            ResolveTuple(context.tuple(0));
-            ResolveTuple(context.tuple(1));
+            foreach (var tuple in context.tuple())
+            {
+                ResolveTuple(tuple);
+            }
         }
 
         public void Resolve(VBAParser.CircleSpecialFormContext context)
@@ -812,7 +823,7 @@ namespace Rubberduck.Parsing.Symbols
                 context.debugPrint().debugModule().GetText(),
                 debugModule,
                 context.debugPrint().debugModule().GetSelection(),
-                _annotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugModule().GetSelection().StartLine));
+                FindIdentifierAnnotations(_qualifiedModuleName, context.debugPrint().debugModule().GetSelection().StartLine));
             debugPrint.AddReference(
                 _qualifiedModuleName,
                 _currentScope,
@@ -821,7 +832,7 @@ namespace Rubberduck.Parsing.Symbols
                 context.debugPrint().debugPrintSub().GetText(),
                 debugPrint,
                 context.debugPrint().debugPrintSub().GetSelection(),
-                _annotationService.FindAnnotations(_qualifiedModuleName, context.debugPrint().debugPrintSub().GetSelection().StartLine));
+                FindIdentifierAnnotations(_qualifiedModuleName, context.debugPrint().debugPrintSub().GetSelection().StartLine));
             var outputList = context.outputList();
             if (outputList != null)
             {

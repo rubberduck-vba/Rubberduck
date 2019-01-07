@@ -9,7 +9,6 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class ImportCommand : CommandBase, IDisposable
     {
         private readonly IVBE _vbe;
@@ -122,10 +121,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public void Dispose()
         {
-            if (_openFileDialog != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
             {
-                _openFileDialog.Dispose();
+                return;
             }
+
+            _openFileDialog?.Dispose();
+            _isDisposed = true;
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Input;
 using NLog;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.UI.Command
 {
-    public interface INavigateCommand : ICommand { }
 
     /// <summary>
     /// A command that navigates to a specified selection, using a <see cref="NavigateCodeEventArgs"/> parameter.
@@ -31,7 +31,8 @@ namespace Rubberduck.UI.Command
 
             try
             {
-                using (var codeModule = _projectsProvider.Component(param.QualifiedName).CodeModule)
+                var component = _projectsProvider.Component(param.QualifiedName);
+                using (var codeModule = component.CodeModule)
                 {
                     using (var codePane = codeModule.CodePane)
                     {

@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -17,10 +16,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IList<Declaration> _declarations;
         private readonly IMessageBox _messageBox;
-
-        private readonly HashSet<IModuleRewriter> _rewriters = new HashSet<IModuleRewriter>();
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
         {
@@ -31,10 +29,12 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameterRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox)
+        public IntroduceParameterRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
         {
             _vbe = vbe;
             _state = state;
+            _rewritingManager = rewritingManager;
+            //TODO: Make this use the DeclarationFinder and inject an IDeclarationFinderProvider instead of the RubberduckParserState. (Does not affect the callers.)
             _declarations = state.AllDeclarations.ToList();
             _messageBox = messageBox;
         }
@@ -90,9 +90,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            var rewriter = _state.GetRewriter(target);
-            _rewriters.Add(rewriter);
-
             using (var pane = _vbe.ActiveCodePane)
             {
                 QualifiedSelection? oldSelection = null;
@@ -101,25 +98,31 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     oldSelection = pane.GetQualifiedSelection();
                 }
 
-                UpdateSignature(target);
+                var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+
+                var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
+                UpdateSignature(target, rewriteSession);
                 rewriter.Remove(target);
+
+                rewriteSession.TryRewrite();
 
                 if (oldSelection.HasValue && !pane.IsWrappingNullReference)
                 {
                     pane.Selection = oldSelection.Value.Selection;
                 }
             }
-
-            foreach (var tokenRewriter in _rewriters)
-            {
-                tokenRewriter.Rewrite();
-            }
         }
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
         {
-            var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
-            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
+            var functionDeclaration = (ModuleBodyElementDeclaration)_declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+
+            if (functionDeclaration == null || !functionDeclaration.IsInterfaceImplementation)
+            {
+                return true;
+            }
+
+            var interfaceImplementation = functionDeclaration.InterfaceMemberImplemented;
 
             if (interfaceImplementation == null)
             {
@@ -129,67 +132,54 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             var message = string.Format(RubberduckUI.IntroduceParameter_PromptIfTargetIsInterface,
                 functionDeclaration.IdentifierName, interfaceImplementation.ComponentName,
                 interfaceImplementation.IdentifierName);
+
             return _messageBox.Question(message, RubberduckUI.IntroduceParameter_Caption);
         }
 
-        private void UpdateSignature(Declaration targetVariable)
+        private void UpdateSignature(Declaration targetVariable, IRewriteSession rewriteSession)
         {
-            var functionDeclaration = _declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+            var functionDeclaration = (ModuleBodyElementDeclaration)_declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
             var proc = (dynamic) functionDeclaration.Context;
             var paramList = (VBAParser.ArgListContext) proc.argList();
-            var interfaceImplementation = GetInterfaceImplementation(functionDeclaration);
 
-            if (functionDeclaration.DeclarationType != DeclarationType.PropertyGet &&
-                functionDeclaration.DeclarationType != DeclarationType.PropertyLet &&
-                functionDeclaration.DeclarationType != DeclarationType.PropertySet)
+            if (functionDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                AddParameter(functionDeclaration, targetVariable, paramList);
-
-                if (interfaceImplementation == null)
-                {
-                    return;
-                }
+                UpdateProperties(functionDeclaration, targetVariable, rewriteSession);               
+            }
+            else
+            {
+                AddParameter(functionDeclaration, targetVariable, paramList, rewriteSession);
             }
 
-            if (functionDeclaration.DeclarationType == DeclarationType.PropertyGet ||
-                functionDeclaration.DeclarationType == DeclarationType.PropertyLet ||
-                functionDeclaration.DeclarationType == DeclarationType.PropertySet)
-            {
-                UpdateProperties(functionDeclaration, targetVariable);
-            }
+            var interfaceImplementation = functionDeclaration.InterfaceMemberImplemented;
 
             if (interfaceImplementation == null)
             {
                 return;
             }
 
-            UpdateSignature(interfaceImplementation, targetVariable);
+            UpdateSignature(interfaceImplementation, targetVariable, rewriteSession);
 
-            var interfaceImplementations = _declarations.FindInterfaceImplementationMembers()
-                .Where(item => item.ProjectId == interfaceImplementation.ProjectId
-                               &&
-                               item.IdentifierName ==
-                               $"{interfaceImplementation.ComponentName}_{interfaceImplementation.IdentifierName}"
-                               && !item.Equals(functionDeclaration));
+            var interfaceImplementations = _state.DeclarationFinder.FindInterfaceImplementationMembers(functionDeclaration.InterfaceMemberImplemented)
+                .Where(member => !ReferenceEquals(member, functionDeclaration));
 
             foreach (var implementation in interfaceImplementations)
             {
-                UpdateSignature(implementation, targetVariable);
+                UpdateSignature(implementation, targetVariable, rewriteSession);
             }
         }
 
-        private void UpdateSignature(Declaration targetMethod, Declaration targetVariable)
+        private void UpdateSignature(Declaration targetMethod, Declaration targetVariable, IRewriteSession rewriteSession)
         {
             var proc = (dynamic) targetMethod.Context;
             var paramList = (VBAParser.ArgListContext) proc.argList();
-            AddParameter(targetMethod, targetVariable, paramList);
+            AddParameter(targetMethod, targetVariable, paramList, rewriteSession);
         }
 
-        private void AddParameter(Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList)
+        private void AddParameter(Declaration targetMethod, Declaration targetVariable, VBAParser.ArgListContext paramList, IRewriteSession rewriteSession)
         {
-            var rewriter = _state.GetRewriter(targetMethod);
-            _rewriters.Add(rewriter);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(targetMethod.QualifiedModuleName);
 
             var argList = paramList.arg();
             var newParameter = $"{Tokens.ByVal} {targetVariable.IdentifierName} {Tokens.As} {targetVariable.AsTypeName}";
@@ -210,21 +200,21 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             }
         }
 
-        private void UpdateProperties(Declaration knownProperty, Declaration targetVariable)
+        private void UpdateProperties(Declaration knownProperty, Declaration targetVariable, IRewriteSession rewriteSession)
         {
             var propertyGet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyGet &&
-                    d.Scope == knownProperty.Scope &&
+                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName) &&
                     d.IdentifierName == knownProperty.IdentifierName);
 
             var propertyLet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertyLet &&
-                    d.Scope == knownProperty.Scope &&
+                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName) &&
                     d.IdentifierName == knownProperty.IdentifierName);
 
             var propertySet = _declarations.FirstOrDefault(d =>
                     d.DeclarationType == DeclarationType.PropertySet &&
-                    d.Scope == knownProperty.Scope &&
+                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName) &&
                     d.IdentifierName == knownProperty.IdentifierName);
 
             var properties = new List<Declaration>();
@@ -248,18 +238,8 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                     properties.OrderByDescending(o => o.Selection.StartLine)
                         .ThenByDescending(t => t.Selection.StartColumn))
             {
-                UpdateSignature(property, targetVariable);
+                UpdateSignature(property, targetVariable, rewriteSession);
             }
-        }
-
-        private Declaration GetInterfaceImplementation(Declaration target)
-        {
-            var interfaceImplementation = _declarations.FindInterfaceImplementationMembers().SingleOrDefault(m => m.Equals(target));
-
-            if (interfaceImplementation == null) { return null; }
-
-            var interfaceMember = _declarations.FindInterfaceMember(interfaceImplementation);
-            return interfaceMember;
         }
     }
 }

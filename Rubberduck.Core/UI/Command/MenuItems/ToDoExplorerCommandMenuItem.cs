@@ -4,7 +4,7 @@ namespace Rubberduck.UI.Command.MenuItems
 {
     public class ToDoExplorerCommandMenuItem : CommandMenuItemBase
     {
-        public ToDoExplorerCommandMenuItem(CommandBase command) 
+        public ToDoExplorerCommandMenuItem(ToDoExplorerCommand command) 
             : base(command)
         {
         }

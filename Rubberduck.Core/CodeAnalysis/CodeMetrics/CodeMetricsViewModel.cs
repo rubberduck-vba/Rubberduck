@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using Rubberduck.Navigation.CodeExplorer;
 using System.Windows;
 using Rubberduck.Navigation.Folders;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
@@ -16,13 +17,15 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
         private readonly RubberduckParserState _state;
         private readonly ICodeMetricsAnalyst _analyst;
         private readonly FolderHelper _folderHelper;
+        private readonly IVBE _vbe;
 
-        public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst, FolderHelper folderHelper)
+        public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst, FolderHelper folderHelper, IVBE vbe)
         {
             _state = state;
             _analyst = analyst;
             _folderHelper = folderHelper;
             _state.StateChanged += OnStateChanged;
+            _vbe = vbe;
         }
         
         private void OnStateChanged(object sender, ParserStateEventArgs e)
@@ -62,16 +65,13 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
                 .GroupBy(declaration => declaration.ProjectId)
                 .ToList();
 
-            if (userDeclarations.Any(
-                    grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
-            {
-                return;
-            }
-
-            var newProjects = userDeclarations.Select(grouping =>
+            var newProjects = userDeclarations
+                .Where(grouping => grouping.Any(declaration => declaration.DeclarationType == DeclarationType.Project))
+                .Select(grouping =>
                 new CodeExplorerProjectViewModel(_folderHelper,
                     grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
-                    grouping)).ToList();
+                    grouping,
+                    _vbe)).ToList();
 
             UpdateNodes(Projects, newProjects);
 
@@ -116,6 +116,19 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+            _isDisposed = true;
+
             _state.StateChanged -= OnStateChanged;
         }
 

@@ -5,6 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <BitmapImage x:Key="DoubleArrowImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
+    </UserControl.Resources>
 
     <Border Background="AliceBlue" DataContext="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext}">
         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" TextWrapping="WrapWithOverflow" TextAlignment="Center"
@@ -12,7 +15,7 @@
             <Run FontWeight="Bold" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=EmptyUIRefreshMessage_Title}"/><LineBreak/>
             <LineBreak/>
             <Button Command="{Binding RefreshCommand}" BorderThickness="0" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}">
-                <Image Height="16" Source="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" ClipToBounds="True" />
+                <Image Height="16" Source="{StaticResource DoubleArrowImage}" ClipToBounds="True" />
                 <Button.ToolTip>
                     <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Refresh}" />
                 </Button.ToolTip>

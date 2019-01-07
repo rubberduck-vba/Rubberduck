@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
@@ -10,6 +9,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Resources.CodeExplorer;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -36,13 +36,15 @@ namespace Rubberduck.Navigation.CodeExplorer
         };
 
         private readonly IProjectsProvider _projectsProvider;
+        private readonly IVBE _vbe;
 
-        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider)
+        public CodeExplorerComponentViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations, IProjectsProvider projectsProvider, IVBE vbe)
         {
             Parent = parent;
             Declaration = declaration;
             _projectsProvider = projectsProvider;
-            
+            _vbe = vbe;
+
             _icon = Icons.ContainsKey(DeclarationType) 
                 ? Icons[DeclarationType]
                 : GetImageSource(CodeExplorerUI.status_offline);
@@ -65,14 +67,19 @@ namespace Rubberduck.Navigation.CodeExplorer
                 switch (qualifiedModuleName.ComponentType)
                 {
                     case ComponentType.Document:
-                        var component = _projectsProvider.Component(qualifiedModuleName);
-                        string parenthesizedName;
-                        using (var properties = component.Properties)
+                        var parenthesizedName = string.Empty;
+                        var state = DocumentState.Inaccessible;
+                        using (var app = _vbe.HostApplication())
                         {
-                            parenthesizedName = properties["Name"].Value.ToString() ?? string.Empty;
+                            if (app != null)
+                            {
+                                var document = app.GetDocument(qualifiedModuleName);
+                                parenthesizedName = document?.DocumentName ?? string.Empty;
+                                state = document?.State ?? DocumentState.Inaccessible;
+                            }
                         }
-
-                        if (ContainsBuiltinDocumentPropertiesProperty())
+                        
+                        if (state == DocumentState.DesignView && ContainsBuiltinDocumentPropertiesProperty())
                         {
                             CodeExplorerItemViewModel node = this;
                             while (node.Parent != null)
@@ -84,7 +91,10 @@ namespace Rubberduck.Navigation.CodeExplorer
                         }
                         else
                         {
-                            _name += " (" + parenthesizedName + ")";
+                            if (!string.IsNullOrWhiteSpace(parenthesizedName))
+                            {
+                                _name += " (" + parenthesizedName + ")";
+                            }
                         }
                         break;
 
@@ -110,9 +120,19 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private bool ContainsBuiltinDocumentPropertiesProperty()
         {
-            using (var properties = _projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName).Properties)
+            var component = _projectsProvider.Component(Declaration.QualifiedName.QualifiedModuleName);
+            using (var properties = component.Properties)
             {
-                return properties.Any(item => item.Name == "BuiltinDocumentProperties");
+                foreach (var property in properties)
+                using(property)
+                {
+                    if (property.Name == "BuiltinDocumentProperties")
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
 
@@ -164,6 +184,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             { ComponentType.VBForm, DeclarationType.VbForm },
             { ComponentType.MDIForm, DeclarationType.MdiForm},
             { ComponentType.UserControl, DeclarationType.UserControl},
+            { ComponentType.DocObject, DeclarationType.DocObject},
             { ComponentType.ResFile, DeclarationType.ResFile},
             { ComponentType.RelatedDocument, DeclarationType.RelatedDocument},
             { ComponentType.PropPage, DeclarationType.PropPage},

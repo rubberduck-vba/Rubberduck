@@ -36,16 +36,19 @@ namespace Rubberduck.Inspections.Concrete
                 .Concat(builtinHandlers)
                 .Concat(userDeclarations.Where(item => item.IsWithEvents)));
 
-            return Listener.Contexts.Where(context => context.Context.Parent is VBAParser.SubStmtContext)
-                                   .Select(context => contextLookup[(VBAParser.SubStmtContext)context.Context.Parent])
-                                   .Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName) &&
-                                                  !ignored.Contains(decl) &&
-                                                  userDeclarations.Where(item => item.IsWithEvents)
-                                                                  .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
-                                                                  !builtinHandlers.Contains(decl))
-                                   .Select(result => new DeclarationInspectionResult(this,
-                                                             string.Format(InspectionResults.ProcedureCanBeWrittenAsFunctionInspection, result.IdentifierName),
-                                                             result));                   
+            return Listener.Contexts
+                .Where(context => context.Context.Parent is VBAParser.SubStmtContext
+                                  && contextLookup[context.Context.GetChild<VBAParser.ArgContext>()].References
+                                      .Any(reference => reference.IsAssignment))
+                .Select(context => contextLookup[(VBAParser.SubStmtContext)context.Context.Parent])
+                .Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName) &&
+                               !ignored.Contains(decl) &&
+                               userDeclarations.Where(item => item.IsWithEvents)
+                                   .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&
+                               !builtinHandlers.Contains(decl))
+                .Select(result => new DeclarationInspectionResult(this,
+                    string.Format(InspectionResults.ProcedureCanBeWrittenAsFunctionInspection, result.IdentifierName),
+                    result));
         }
 
         public class SingleByRefParamArgListListener : VBAParserBaseListener, IInspectionListener

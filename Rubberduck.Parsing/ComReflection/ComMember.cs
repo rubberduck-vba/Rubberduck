@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.Serialization;
 using Rubberduck.Parsing.Symbols;
 using ELEMDESC = System.Runtime.InteropServices.ComTypes.ELEMDESC;
 using FUNCDESC = System.Runtime.InteropServices.ComTypes.FUNCDESC;
@@ -24,21 +25,44 @@ namespace Rubberduck.Parsing.ComReflection
         Value = 0               //The default member for the object.
     }
 
-    [DebuggerDisplay("{MemberDeclaration}")]
+    [DataContract]
+    [KnownType(typeof(ComBase))]
+#if DEBUG
+    [DebuggerDisplay("{" + nameof(MemberDeclaration) + "}")]
+#endif
     public class ComMember : ComBase
     {
+        [DataMember(IsRequired = true)]
         public bool IsHidden { get; private set; }
-        public bool IsRestricted { get; private set; }
-        public bool ReturnsWithEventsObject { get; private set; }
-        public bool IsDefault { get; private set; }
-        public bool IsEnumerator { get; private set; }
-        //This member is called on an interface when a bracketed expression is dereferenced.
-        public bool IsEvaluateFunction { get; private set; }
-        public ComParameter ReturnType { get; private set; }
-        public List<ComParameter> Parameters { get; set; }
 
-        public ComMember(ITypeInfo info, FUNCDESC funcDesc) : base(info, funcDesc)
-        {                      
+        [DataMember(IsRequired = true)]
+        public bool IsRestricted { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool ReturnsWithEventsObject { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsDefault { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public bool IsEnumerator { get; private set; }
+
+        //This member is called on an interface when a bracketed expression is dereferenced.
+        [DataMember(IsRequired = true)]
+        public bool IsEvaluateFunction { get; private set; }
+
+        [DataMember(IsRequired = true)]
+        public ComParameter AsTypeName { get; private set; } = ComParameter.Void;
+
+        [DataMember(IsRequired = true)]
+        private List<ComParameter> _parameters = new List<ComParameter>();
+
+        //See https://docs.microsoft.com/en-us/windows/desktop/midl/retval
+        //"Parameters with the [retval] attribute are not displayed in user-oriented browsers."
+        public IEnumerable<ComParameter> Parameters => _parameters.Where(param => !param.IsReturnValue);
+
+        public ComMember(IComBase parent, ITypeInfo info, FUNCDESC funcDesc) : base(parent, info, funcDesc)
+        {
             LoadParameters(funcDesc, info);
             var flags = (FUNCFLAGS)funcDesc.wFuncFlags;
             IsHidden = flags.HasFlag(FUNCFLAGS.FUNCFLAG_FHIDDEN);
@@ -52,10 +76,12 @@ namespace Rubberduck.Parsing.ComReflection
 
         private void SetDeclarationType(FUNCDESC funcDesc, ITypeInfo info)
         {
+            var returnsHResult = (VarEnum)funcDesc.elemdescFunc.tdesc.vt == VarEnum.VT_HRESULT;
+            var returnsVoid = (VarEnum)funcDesc.elemdescFunc.tdesc.vt == VarEnum.VT_VOID;
+
             if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYGET))
             {
                 Type = DeclarationType.PropertyGet;
-
             }
             else if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUT))
             {
@@ -65,7 +91,7 @@ namespace Rubberduck.Parsing.ComReflection
             {
                 Type = DeclarationType.PropertySet;
             }
-            else if ((VarEnum)funcDesc.elemdescFunc.tdesc.vt == VarEnum.VT_VOID)
+            else if (returnsVoid || !_parameters.Any(param => param.IsReturnValue) && returnsHResult)
             {
                 Type = DeclarationType.Procedure;
             }
@@ -76,30 +102,48 @@ namespace Rubberduck.Parsing.ComReflection
 
             if (Type == DeclarationType.Function || Type == DeclarationType.PropertyGet)
             {
-                ReturnType = new ComParameter(funcDesc.elemdescFunc, info, string.Empty);
+                var returnType = new ComParameter(this, funcDesc.elemdescFunc, info, string.Empty);
+                if (!_parameters.Any())
+                {
+                    AsTypeName = returnType;
+                }
+                else
+                {
+                    var retval = _parameters.FirstOrDefault(x => x.IsReturnValue);
+                    AsTypeName = retval ?? returnType;
+                }
             }
         }
 
         private void LoadParameters(FUNCDESC funcDesc, ITypeInfo info)
         {
-            Parameters = new List<ComParameter>();
             var names = new string[255];
-            int count;
-            info.GetNames(Index, names, names.Length, out count);
+            info.GetNames(Index, names, names.Length, out _);
 
-            for (var index = 0; index < count - 1; index++)
+            for (var index = 0; index < funcDesc.cParams; index++)
             {
                 var paramPtr = new IntPtr(funcDesc.lprgelemdescParam.ToInt64() + Marshal.SizeOf(typeof(ELEMDESC)) * index);
-                var elemDesc = (ELEMDESC)Marshal.PtrToStructure(paramPtr, typeof(ELEMDESC));
-                var param = new ComParameter(elemDesc, info, names[index + 1] ?? $"{index}unnamedParameter");
-                Parameters.Add(param);
+                var elemDesc = Marshal.PtrToStructure<ELEMDESC>(paramPtr);
+                var param = new ComParameter(this, elemDesc, info, names[index + 1] ?? $"{index}unnamedParameter");
+                _parameters.Add(param);
             }
+
+            // See https://docs.microsoft.com/en-us/windows/desktop/midl/propput
+            // "A function that has the [propput] attribute must also have, as its last parameter, a parameter that has the [in] attribute."
+            if (funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUTREF) ||
+                funcDesc.invkind.HasFlag(INVOKEKIND.INVOKE_PROPERTYPUT))
+            {
+                AsTypeName = _parameters.Last();
+                _parameters = _parameters.Take(funcDesc.cParams - 1).ToList();
+                return;
+            }
+
             if (Parameters.Any() && funcDesc.cParamsOpt == -1)
             {
                 Parameters.Last().IsParamArray = true;
             }
         }
-
+#if DEBUG
         // ReSharper disable once UnusedMember.Local
         private string MemberDeclaration
         {
@@ -127,13 +171,9 @@ namespace Rubberduck.Parsing.ComReflection
                         type = "Event";
                         break;
                 }
-                return string.Format("{0} {1} {2}{3}{4}",
-                    IsHidden || IsRestricted ? "Private" : "Public",
-                    type,
-                    Name,
-                    ReturnType == null ? string.Empty : " As ",
-                    ReturnType == null ? string.Empty : ReturnType.TypeName);
+                return $"{(IsHidden || IsRestricted ? "Private" : "Public")} {type} {Name}{(AsTypeName == null ? string.Empty : $" As {AsTypeName.TypeName}")}";
             }
         }
+#endif
     }
 }

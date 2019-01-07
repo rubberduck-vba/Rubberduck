@@ -1,9 +1,6 @@
 extern alias Office_v8;
 using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using Microsoft.CSharp.RuntimeBinder;
 using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using MSO = Office_v8::Office;
@@ -12,21 +9,20 @@ using VB = Microsoft.Vbe.Interop.VB6;
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.Office8
 {
-    public class CommandBarButton : SafeRedirectedEventedComWrapper<MSO.CommandBarButton, VB.CommandBarEvents, VB._dispCommandBarControlEvents>, ICommandBarButton, VB._dispCommandBarControlEvents
+    public sealed class CommandBarButton : SafeRedirectedEventedComWrapper<MSO.CommandBarButton, VB.CommandBarEvents, VB._dispCommandBarControlEvents>, ICommandBarButton, VB._dispCommandBarControlEvents
     {
         private readonly CommandBarControl _control;
         private readonly IVBE _vbe;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public const bool AddCommandBarControlsTemporarily = false;        
 
         // Command bar click event is sourced from VBE.Events.CommandBarEvents[index]
         // where index is the command bar button COM object.
         public CommandBarButton(MSO.CommandBarButton target, IVBE vbe, bool rewrapping = false) 
-            : base(target, ((VB.VBE)vbe.HardReference).Events.CommandBarEvents[target], rewrapping)
+            : base(target, rewrapping)
         {
-            _control = new CommandBarControl(target, vbe, rewrapping);
+            _control = new CommandBarControl(target, vbe, true);
             _vbe = vbe;
-
         }
         
         private MSO.CommandBarButton Button => Target;
@@ -252,8 +248,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
                 lock (_eventLock)
                 {
                     _click += value;
-                    if (_click != null && _click.GetInvocationList().Length != 0)
+                    if (_click != null && _click.GetInvocationList().Length == 1)
                     {
+                        // First subscriber attached - attach COM events
                         AttachEvents();
                     }
                 }
@@ -265,8 +262,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
                     _click -= value;
                     if (_click == null || _click.GetInvocationList().Length == 0)
                     {
+                        // Last subscriber detached - detach COM events 
                         DetachEvents();
-                    };
+                    }
                 }
             }
         }
@@ -279,14 +277,17 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
             {                
                 return;
             }
-            var button = new CommandBarButton((MSO.CommandBarButton)Ctrl, _vbe);
 
-            System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
+            using (var button = new CommandBarButton((MSO.CommandBarButton) Ctrl, _vbe))
+            {
+                System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1,
+                    "Multicast delegate is registered more than once.");
 
-            var args = new CommandBarButtonClickEventArgs(button);
-            handler.Invoke(this, args);
-            CancelDefault = args.Cancel;
-            Handled = args.Handled;
+                var args = new CommandBarButtonClickEventArgs(button);
+                handler.Invoke(this, args);
+                CancelDefault = args.Cancel;
+                Handled = args.Handled;
+            }
         }
 		
         public event EventHandler Disposing;
@@ -295,6 +296,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
             Disposing?.Invoke(this, EventArgs.Empty);
             base.Dispose(disposing);
             _control.Dispose();
+        }
+
+        public override void AttachEvents()
+        {
+            // Cast to VB6 VBE SafeComWrapper as  events are not exposed on IVBE as they are only safe to use in VB6
+            using (var events = ((VB6.VBE)_vbe).Events)
+            using (var commandBarEvents = events.CommandBarEvents)
+            {
+                // Disposal of buttonEvents is handled by the base class
+                var buttonEvents = commandBarEvents[Target] as IEventSource<VB.CommandBarEvents>;
+                AttachEvents(buttonEvents, this);
+            }
         }
     }
 }

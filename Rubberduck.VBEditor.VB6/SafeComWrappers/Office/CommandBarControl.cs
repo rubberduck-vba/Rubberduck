@@ -1,7 +1,6 @@
 ﻿extern alias Office_v8;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using MSO = Office_v8::Office;
-using VB = Microsoft.Vbe.Interop.VB6;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.Office8
@@ -217,5 +216,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office8
 
             return _hashCode;
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

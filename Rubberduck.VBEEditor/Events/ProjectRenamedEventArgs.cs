@@ -4,7 +4,7 @@ namespace Rubberduck.VBEditor.Events
 {
     public class ProjectRenamedEventArgs : ProjectEventArgs
     {
-        public ProjectRenamedEventArgs(string projectId, IVBProject project, string oldName) : base(projectId, project)
+        public ProjectRenamedEventArgs(string projectId, string projectName, string oldName) : base(projectId, projectName)
         {
             OldName = oldName;
         }

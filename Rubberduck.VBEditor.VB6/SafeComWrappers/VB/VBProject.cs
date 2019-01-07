@@ -111,7 +111,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public override bool Equals(ISafeComWrapper<VB.VBProject> other)
         {
-            return IsEqualIfNull(other) || (other != null && other.Target == Target);
+            // This is only safe in VB6 because project names must be unique within a session (which is not true of VBA)
+            // Need to do it this way as reference equality fails when comparing to VBProjects.StartProject
+            return IsEqualIfNull(other) || (other?.Target != null && other.Target.Name == Target.Name);
         }
 
         public bool Equals(IVBProject other)
@@ -127,7 +129,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public IReadOnlyList<string> ComponentNames()
         {
-            return VBComponents.Select(component => component.Name).ToArray();
+            var names = new List<string>();
+            using (var components = VBComponents)
+            {
+                foreach (var component in components)
+                {
+                    using (component)
+                    {
+                        names.Add(component.Name);
+                    }
+                }
+
+                return names.ToArray();
+            }
         }
 
         public void AssignProjectId()
@@ -201,6 +215,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 }
             }
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
 
         private const string DllName = "vba6.dll";
         [DllImport(DllName)]

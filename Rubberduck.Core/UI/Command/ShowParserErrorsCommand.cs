@@ -10,6 +10,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
 using Rubberduck.Resources;
+using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.Command
 {
@@ -131,10 +132,23 @@ namespace Rubberduck.UI.Command
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
+            {
+                return;
+            }
+
             if (_state != null)
             {
                 _state.StateChanged -= _state_StateChanged;
             }
+            _isDisposed = true;
         }
     }
 }

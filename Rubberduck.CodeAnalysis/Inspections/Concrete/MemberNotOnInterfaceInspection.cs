@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
@@ -20,15 +21,23 @@ namespace Rubberduck.Inspections.Concrete
 
             var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&
                                                      !decl.AsTypeDeclaration.IsUserDefined &&
-                                                     decl.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule) &&
+                                                     decl.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule) &&                                                    
                                                      ((ClassModuleDeclaration)decl.AsTypeDeclaration).IsExtensible)
                                        .SelectMany(decl => decl.References).ToList();
-            return from access in unresolved
-                   let callingContext = targets.FirstOrDefault(usage => usage.Context.Equals(access.CallingContext))
-                   where callingContext != null
-                   select new DeclarationInspectionResult(this,
-                        string.Format(InspectionResults.MemberNotOnInterfaceInspection, access.IdentifierName, callingContext.Declaration.AsTypeDeclaration.IdentifierName),
-                        access);
+            return unresolved
+                .Select(access => new
+                {
+                    access,
+                    callingContext = targets.FirstOrDefault(usage => usage.Context.Equals(access.CallingContext)
+                                                                     || (access.CallingContext is VBAParser.NewExprContext && 
+                                                                         usage.Context.Parent.Parent.Equals(access.CallingContext))
+                                                                     )
+                })
+                .Where(memberAccess => memberAccess.callingContext != null &&
+                                       memberAccess.callingContext.Declaration.DeclarationType != DeclarationType.Control)    //TODO - remove this exception after resolving #2592)
+                .Select(memberAccess => new DeclarationInspectionResult(this,
+                    string.Format(InspectionResults.MemberNotOnInterfaceInspection, memberAccess.access.IdentifierName,
+                        memberAccess.callingContext.Declaration.AsTypeDeclaration.IdentifierName), memberAccess.access));
         }
     }
 }

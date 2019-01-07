@@ -28,7 +28,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -99,7 +99,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -195,6 +195,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null, 
                 null,
                 Selection.Home,
                 false,
@@ -211,6 +212,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -225,6 +227,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -241,6 +244,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -255,6 +259,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -302,6 +307,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -328,6 +334,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -342,6 +349,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -369,6 +377,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -383,6 +392,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -410,6 +420,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -435,6 +446,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -472,6 +484,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -486,6 +499,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -502,6 +516,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -516,6 +531,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -553,6 +569,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -567,6 +584,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -583,6 +601,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -597,6 +616,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -613,6 +633,7 @@ End Sub";
                 null,
                 Accessibility.Global,
                 null,
+                null,
                 Selection.Home,
                 false,
                 false,
@@ -627,6 +648,7 @@ End Sub";
                 null,
                 string.Empty,
                 Accessibility.Global,
+                null,
                 null,
                 new Selection(),
                 false,
@@ -644,6 +666,7 @@ End Sub";
                 string.Empty,
                 Accessibility.Global,
                 null,
+                null,
                 new Selection(),
                 false,
                 false,
@@ -658,6 +681,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,
@@ -694,6 +718,7 @@ End Sub";
                 null,
                 null,
                 Accessibility.Global,
+                null,
                 null,
                 Selection.Home,
                 false,

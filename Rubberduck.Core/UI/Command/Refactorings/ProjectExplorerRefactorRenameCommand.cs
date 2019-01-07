@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
@@ -13,12 +14,14 @@ namespace Rubberduck.UI.Command.Refactorings
     public class ProjectExplorerRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _msgBox;
 
-        public ProjectExplorerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox) 
+        public ProjectExplorerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager) 
             : base (vbe)
         {
             _state = state;
+            _rewritingManager = rewritingManager;
             _msgBox = msgBox;
         }
 
@@ -32,7 +35,7 @@ namespace Rubberduck.UI.Command.Refactorings
             using (var view = new RenameDialog(new RenameViewModel(_state)))
             {
                 var factory = new RenamePresenterFactory(Vbe, view, _state);
-                var refactoring = new RenameRefactoring(Vbe, factory, _msgBox, _state);
+                var refactoring = new RenameRefactoring(Vbe, factory, _msgBox, _state, _state.ProjectsProvider, _rewritingManager);
 
                 var target = GetTarget();
 
@@ -45,23 +48,32 @@ namespace Rubberduck.UI.Command.Refactorings
 
         private Declaration GetTarget()
         {
-            if (Vbe.SelectedVBComponent == null)
+            string selectedComponentName;
+            using (var selectedComponent = Vbe.SelectedVBComponent)
             {
-                return
-                    _state.AllUserDeclarations.SingleOrDefault(d =>
-                            d.DeclarationType == DeclarationType.Project && d.IdentifierName == Vbe.ActiveVBProject.Name);
+                selectedComponentName = selectedComponent?.Name;
             }
-            
-            return _state.AllUserDeclarations.SingleOrDefault(
-                    t => t.IdentifierName == Vbe.SelectedVBComponent.Name &&
-                            t.ProjectId == Vbe.ActiveVBProject.ProjectId &&
-                            new[]
-                                {
-                                    DeclarationType.ClassModule,
-                                    DeclarationType.Document,
-                                    DeclarationType.ProceduralModule,
-                                    DeclarationType.UserForm
-                                }.Contains(t.DeclarationType));
+
+            string activeProjectId;
+            using (var activeProject = Vbe.ActiveVBProject)
+            {
+                activeProjectId = activeProject?.ProjectId;
+            }
+
+            if (activeProjectId == null)
+            {
+                return null;
+            }
+
+            if (selectedComponentName == null)
+            {
+                return _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
+                    .SingleOrDefault(d => d.ProjectId == activeProjectId);
+            }
+
+            return _state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
+                .SingleOrDefault(t => t.IdentifierName == selectedComponentName
+                                      && t.ProjectId == activeProjectId);
         }
     }
 }

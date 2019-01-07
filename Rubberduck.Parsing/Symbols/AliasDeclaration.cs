@@ -17,6 +17,7 @@ namespace Rubberduck.Parsing.Symbols
                 Accessibility.Public,
                 DeclarationType.ComAlias,
                 null,
+                null,
                 Selection.Home,
                 false,
                 null,

@@ -12,7 +12,6 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class RemoveCommand : CommandBase, IDisposable
     {
         private readonly ISaveFileDialog _saveFileDialog;
@@ -97,10 +96,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public void Dispose()
         {
-            if (_saveFileDialog != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
             {
-                _saveFileDialog.Dispose();
+                return;
             }
+
+            _saveFileDialog?.Dispose();
+            _isDisposed = true;
         }
     }
 }

@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
 
 namespace Rubberduck.Navigation.CodeExplorer
@@ -15,6 +17,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public Declaration Declaration { get; }
 
         private readonly CodeExplorerCustomFolderViewModel _folderTree;
+        private readonly IVBE _vbe;
 
         private static readonly DeclarationType[] ComponentTypes =
         {
@@ -24,17 +27,24 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserForm, 
         };
 
-        public CodeExplorerProjectViewModel(FolderHelper folderHelper, Declaration declaration, IEnumerable<Declaration> declarations)
+        public CodeExplorerProjectViewModel(FolderHelper folderHelper, Declaration declaration, IEnumerable<Declaration> declarations, IVBE vbe, bool references = false)
         {
             Declaration = declaration;
             _name = Declaration.IdentifierName;
             IsExpanded = true;
             _folderTree = folderHelper.GetFolderTree(declaration);
+            _vbe = vbe;
 
             try
             {
+                Items = new List<CodeExplorerItemViewModel>();
+                if (references)
+                {
+                    Items.Add(new CodeExplorerReferenceFolderViewModel(this));
+                }
+
                 FillFolders(declarations.ToList());
-                Items = _folderTree.Items.ToList();
+                Items.AddRange(_folderTree.Items);
 
                 _icon = Declaration.Project?.Protection == ProjectProtection.Locked
                     ? GetImageSource(resx.lock__exclamation)
@@ -94,6 +104,27 @@ namespace Rubberduck.Navigation.CodeExplorer
         private readonly BitmapImage _icon;
         public override BitmapImage CollapsedIcon => _icon;
         public override BitmapImage ExpandedIcon => _icon;
+
+        public override FontWeight FontWeight
+        {
+            get
+            {
+                if (_vbe.Kind == VBEKind.Hosted || Declaration.Project == null)
+                {
+                    return base.FontWeight;
+                }
+
+                using (var vbProjects = _vbe.VBProjects)
+                {
+                    if (Declaration.Project.Equals(vbProjects.StartProject))
+                    {
+                        return FontWeights.Bold;
+                    }
+
+                    return base.FontWeight;
+                }
+            }
+        }
 
         // projects are always at the top of the tree
         public override CodeExplorerItemViewModel Parent => null;

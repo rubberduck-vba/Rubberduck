@@ -130,7 +130,12 @@ namespace Rubberduck.SmartIndenter
 
         public string Indented()
         {
-            if (_lines.Count <= 1)
+            if (!_lines.Any())
+            {
+                return string.Empty;
+            }
+
+            if (_lines.Count == 1)
             {
                 return _lines.First().Indent(IndentationLevel, AtProcedureStart);
             }
@@ -146,7 +151,6 @@ namespace Rubberduck.SmartIndenter
             output.Add(current);
             var alignment = FunctionAlign(current, _lines[1].Escaped.Trim().StartsWith(":="));
 
-            //foreach (var line in _lines.Skip(1))
             for (var i = 1; i < _lines.Count; i++)
             {
                 var line = _lines[i];
@@ -182,6 +186,7 @@ namespace Rubberduck.SmartIndenter
 
         private static readonly Regex StartIgnoreRegex = new Regex(@"^(\d*\s)?\s*[LR]?Set\s|^(\d*\s)?\s*Let\s|^(\d*\s)?\s*(Public|Private)\sDeclare\s(Function|Sub)|^(\d*\s+)", RegexOptions.IgnoreCase);
         private readonly Stack<AlignmentToken> _alignment = new Stack<AlignmentToken>();
+        private int _nestingDepth;
 
         //The splitNamed parameter is a straight up hack for fixing https://github.com/rubberduck-vba/Rubberduck/issues/2402
         private int FunctionAlign(string line, bool splitNamed)
@@ -196,21 +201,26 @@ namespace Rubberduck.SmartIndenter
                 {
                     case "\a":
                     case "\x2":
-                        index++;
                         break;
                     case "(":
                         //Start of another function => remember this position
-                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Function, index));
-                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1));
+                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Function, index, ++_nestingDepth));
+                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1, _nestingDepth));
                         break;
                     case ")":
                         //Function finished => Remove back to the previous open bracket
                         while (_alignment.Any())
                         {
-                            var finished = _alignment.Count == stackPos + 1 || _alignment.Peek().Type == AlignmentTokenType.Function;
-                            _alignment.Pop();
+                            var finished = _alignment.Count == stackPos + 1;                            
+                            var token =_alignment.Pop();
+                            if (token.Type == AlignmentTokenType.Function && token.NestingDepth == _nestingDepth - 1)
+                            {
+                                _alignment.Push(token);
+                                finished = true;
+                            }
                             if (finished)
                             {
+                                _nestingDepth--;
                                 break;
                             }
                         }
@@ -221,13 +231,13 @@ namespace Rubberduck.SmartIndenter
                             //Space before an = sign => remember it to align to later
                             if (!_alignment.Any(a => a.Type == AlignmentTokenType.Equals || a.Type == AlignmentTokenType.Variable))
                             {
-                                _alignment.Push(new AlignmentToken(AlignmentTokenType.Equals, index + 2));
+                                _alignment.Push(new AlignmentToken(AlignmentTokenType.Equals, index + 2, _nestingDepth));
                             }
                         }
                         else if (!_alignment.Any() && index < line.Length - 2)
                         {
                             //Space after a name before the end of the line => remember it for later
-                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Variable, index));
+                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Variable, index, _nestingDepth));
                         }
                         else if (index > 5 && line.Substring(index - 6, 6).Equals(" Then "))
                         {
@@ -241,13 +251,13 @@ namespace Rubberduck.SmartIndenter
                         break;
                     case ",":
                         //Start of a new parameter => remember it to align to
-                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1));
+                        _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 1, _nestingDepth));
                         break;
                     case ":":
                         if (line.Substring(index - 1, 2).Equals(":="))
                         {
                             //A named paremeter => remember to align to after the name
-                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 3));
+                            _alignment.Push(new AlignmentToken(AlignmentTokenType.Parameter, index + 3, _nestingDepth));
                         }
                         else if (line.Substring(index, 2).Equals(": "))
                         {

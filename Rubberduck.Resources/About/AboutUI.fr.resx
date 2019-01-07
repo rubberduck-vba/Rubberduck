@@ -132,7 +132,7 @@ Icônes IDE de SharpDevelop
 Support localisation WPF par Grant Frisken</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 Mathieu Guindon &amp; Christopher McClellan</value>
+    <value>© Copyright 2014-2018 Rubberduck project contributors</value>
   </data>
   <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
     <value>Contributeurs et supporters:</value>
@@ -174,5 +174,14 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   </data>
   <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
     <value>Vous nous retrouvez également ici:</value>
+  </data>
+  <data name="AboutWindow_FoundAnIssue" xml:space="preserve">
+    <value>Un problème?</value>
+  </data>
+  <data name="AboutWindow_HelpImproveRubberduck" xml:space="preserve">
+    <value>Aidez-nous à améliorer Rubberduck!</value>
+  </data>
+  <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
+    <value>Rapporter un problème</value>
   </data>
 </root>

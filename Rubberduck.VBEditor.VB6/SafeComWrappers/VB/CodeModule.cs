@@ -1,7 +1,5 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
-using System.Text;
-using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
@@ -100,25 +98,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             }
         }
 
-        private string _previousContentHash;
-        public string ContentHash()
-        {
-            using (var hash = new SHA256Managed())
-            using (var stream = Content().ToStream())
-            {
-                return _previousContentHash = new string(Encoding.Unicode.GetChars(hash.ComputeHash(stream)));
-            }
-        }
-
-        public int SimpleContentHash()
+        public int ContentHash()
         {
             var code = Content();
             return string.IsNullOrEmpty(code)
                 ? 0
                 : code.GetHashCode();
         }
-
-        public bool IsDirty => _previousContentHash.Equals(ContentHash());
 
         public void AddFromString(string content)
         {
@@ -134,26 +120,56 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public void InsertLines(int line, string content)
         {
-            if (IsWrappingNullReference) return; 
-            Target.InsertLines(line, content);
+            if (IsWrappingNullReference) return;
+
+            try
+            {
+                Target.InsertLines(line, content);
+            }
+            catch (Exception e)
+            {
+                // "too many line continuations" is one possible cause for a COMException here.
+                // deleting the only line in a module is another.
+                // we can log the exception, but really we're just intentionally swallowing it.
+                _logger.Warn(e, $"{nameof(InsertLines)} failed.");
+            }
         }
 
         public void DeleteLines(int startLine, int count = 1)
         {
-            if (IsWrappingNullReference) return; 
-            Target.DeleteLines(startLine, count);
+            if (IsWrappingNullReference) return;
+
+            try
+            {
+                Target.DeleteLines(startLine, count);
+            }
+            catch (Exception e)
+            {
+                // "too many line continuations" is one possible cause for a COMException here.
+                // deleting the only line in a module is another.
+                // we can log the exception, but really we're just intentionally swallowing it.
+                _logger.Warn(e, $"{nameof(DeleteLines)} failed.");
+            }
         }
 
         public void ReplaceLine(int line, string content)
         {
             if (IsWrappingNullReference) return;
-            if (Target.CountOfLines == 0)
-            {
-                Target.AddFromString(content);
-            }
-            else
+
+            try
             {
                 Target.ReplaceLine(line, content);
+                if (Target.CountOfLines == 0)
+                {
+                    Target.AddFromString(content);
+                }
+            }
+            catch (Exception e)
+            {
+                // "too many line continuations" is one possible cause for a COMException here.
+                // deleting the only line in a module is another.
+                // we can log the exception, but really we're just intentionally swallowing it.
+                _logger.Warn(e, $"{nameof(ReplaceLine)} failed.");
             }
         }
 
@@ -212,5 +228,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         {
             return IsWrappingNullReference ? 0 : Target.GetHashCode();
         }
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

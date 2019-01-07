@@ -10,16 +10,16 @@ using MSO = Microsoft.Office.Core;
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 {
-    public class CommandBarButton : SafeEventedComWrapper<MSO.CommandBarButton, MSO._CommandBarButtonEvents>, ICommandBarButton, MSO._CommandBarButtonEvents
+    public sealed class CommandBarButton : SafeEventedComWrapper<MSO.CommandBarButton, MSO._CommandBarButtonEvents>, ICommandBarButton, MSO._CommandBarButtonEvents
     {
         private readonly CommandBarControl _control;
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
         public const bool AddCommandBarControlsTemporarily = false;
 
         public CommandBarButton(MSO.CommandBarButton target, bool rewrapping = false) 
             : base(target, rewrapping)
         {
-            _control = new CommandBarControl(target, rewrapping);
+            _control = new CommandBarControl(target, true);
         }
         
         private MSO.CommandBarButton Button => Target;
@@ -291,8 +291,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
                 lock (_eventLock)
                 {
                     _click += value;
-                    if (_click != null && _click.GetInvocationList().Length != 0)
+                    if (_click != null && _click.GetInvocationList().Length == 1)
                     {
+                        // First subscriber attached - attach COM events
                         AttachEvents();
                     }
                 }
@@ -304,6 +305,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
                     _click -= value;
                     if (_click == null || _click.GetInvocationList().Length == 0)
                     {
+                        // Last subscriber detached - detach COM events
                         DetachEvents();
                     };
                 }
@@ -312,19 +314,21 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Office12
 
         void MSO._CommandBarButtonEvents.Click(MSO.CommandBarButton Ctrl, ref bool CancelDefault)
         {
-            var button = new CommandBarButton(Ctrl);
             var handler = _click;
             if (handler == null || IsWrappingNullReference)
             {
-                button.Dispose();
                 return;
             }
 
-            System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1, "Multicast delegate is registered more than once.");
+            using (var button = new CommandBarButton(Ctrl))
+            {
+                System.Diagnostics.Debug.Assert(handler.GetInvocationList().Length == 1,
+                    "Multicast delegate is registered more than once.");
 
-            var args = new CommandBarButtonClickEventArgs(button);
-            handler.Invoke(this, args);
-            CancelDefault = args.Cancel;
+                var args = new CommandBarButtonClickEventArgs(button);
+                handler.Invoke(this, args);
+                CancelDefault = args.Cancel;
+            }
         }
 
         public event EventHandler Disposing;

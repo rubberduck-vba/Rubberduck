@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Rubberduck.Parsing.Inspections.Abstract;
-using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA.Extensions;
+using Rubberduck.Parsing.VBA.Parsing;
 
 namespace Rubberduck.Inspections.Abstract
 {
     public abstract class QuickFixBase : IQuickFix
     {
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        protected readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private HashSet<Type> _supportedInspections;
         public IReadOnlyCollection<Type> SupportedInspections => _supportedInspections.ToList();
 
@@ -26,7 +28,7 @@ namespace Rubberduck.Inspections.Abstract
                 throw new ArgumentException($"Parameters must implement {nameof(IInspection)}", nameof(inspections));
 #else
                 inspections.Where(s => s.GetInterfaces().All(i => i != typeof(IInspection))).ToList()
-                    .ForEach(i => _logger.Error($"Type {i.Name} does not implement {nameof(IInspection)}"));
+                    .ForEach(i => Logger.Error($"Type {i.Name} does not implement {nameof(IInspection)}"));
 #endif
             }
 
@@ -38,7 +40,9 @@ namespace Rubberduck.Inspections.Abstract
             _supportedInspections = _supportedInspections.Except(inspections).ToHashSet();
         }
 
-        public abstract void Fix(IInspectionResult result);
+        public virtual CodeKind TargetCodeKind => CodeKind.CodePaneCode;
+
+        public abstract void Fix(IInspectionResult result, IRewriteSession rewriteSession);
         public abstract string Description(IInspectionResult result);
 
         public abstract bool CanFixInProcedure { get; }

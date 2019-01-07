@@ -107,7 +107,7 @@ namespace Rubberduck.UI.Refactorings
             this.TitleLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TitleLabel.Location = new System.Drawing.Point(15, 9);
             this.TitleLabel.Name = "TitleLabel";
-            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.TitleLabel.Padding = new System.Windows.Forms.Padding(2);
             this.TitleLabel.Size = new System.Drawing.Size(107, 19);
             this.TitleLabel.TabIndex = 2;
             this.TitleLabel.Text = "Extract Method";
@@ -117,7 +117,7 @@ namespace Rubberduck.UI.Refactorings
             this.InstructionsLabel.Location = new System.Drawing.Point(15, 24);
             this.InstructionsLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.InstructionsLabel.Name = "InstructionsLabel";
-            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.InstructionsLabel.Padding = new System.Windows.Forms.Padding(3);
             this.InstructionsLabel.Size = new System.Drawing.Size(412, 28);
             this.InstructionsLabel.TabIndex = 3;
             this.InstructionsLabel.Text = "Please specify method name, return type and/or parameters (if applicable), and ot" +
@@ -141,7 +141,7 @@ namespace Rubberduck.UI.Refactorings
             // 
             // InvalidNameValidationIcon
             // 
-            this.InvalidNameValidationIcon.Image = global::Rubberduck.Resources.RubberduckUI.cross_circle;
+            this.InvalidNameValidationIcon.Image = ((System.Drawing.Image)(resources.GetObject("InvalidNameValidationIcon.Image")));
             this.InvalidNameValidationIcon.Location = new System.Drawing.Point(577, 1);
             this.InvalidNameValidationIcon.Name = "InvalidNameValidationIcon";
             this.InvalidNameValidationIcon.Size = new System.Drawing.Size(16, 16);

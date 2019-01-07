@@ -146,28 +146,8 @@
         HFTsDEBsA+DL/+xB8T2EAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAEAAAAAAAAABwAAAAgAAAAGAAAABwAAAAgAAAADAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAABAwNEAAAA/zpkZP8uXmP/LGBl/y9hY/80ZGP/OWlo/0t2dP8AAAD/AAAAxwEC
-        AogAAAAAAAAAAAAAAAAAAQGTCicr/zTk+f9U3v//RtX//0rV//9P3f//Ve3//y/p//855/v/Qv3//1T/
-        //8MLS/+AAAA0QAAAAAAAQGRBBMW/zXn/f846v//SNz9/0jL/v8xvv//OMv//0DU//8/3v3/L+j//zTo
-        //8r4/z/Svr//0mAf/4BAgKIISko/ynQ5v8x6P//Men//y7Z7v9ApLn/LrH4/y+y9f84vfT/K57K/y/l
-        +v8x5///L+j//0v2//+M////AAAAihIsLf8w7f//MOr//zXq//8x6f//JK6+/yeIp/8gZoL/LYyq/ynF
-        2f8w5/7/MOj//zTq//9K9P//g////wAAAJUAAADSROX//1LK//9E5f//OO7//zLr//8w4ff/L+X7/y/j
-        +v8x6P//N+z//zHo//8s5v//gv3//7j///4AAACcAAAAlD+Cof87c4z/RGNj/zRdY/8xoK7+LfX//xrm
-        //8c2v//IeD//zDx//9G+P//Vvr//9z///8kKir/AAAAAAAAAFYAAABtAAAAGgAAAAgAAAALAAAA2yTb
-        +v8Y0f//HNr//xzf//8z+///Yv///2y8vP4qMjL/BAUFMwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA3Cac
-        r/8t0/7/Icn//x7Y//8o+P7/Sv///wAAAP8AAACgAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAEwwh
-        I/873P//JMj//xS8//8Wyv//Gpi2/wIADv8LCgC5AAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-        ACUqYWT/Mtb//xy6//8Gt/7/Htr//xlhbP8fRvX/O1Hs/jlCctsAAAADAAAAAAAAAAAAAAAAAAAAAAAA
-        AAAAAAAaSGpo/0vZ//4Zs///n+z//wAAAP9FVFz/E0Gh/z1G//9AS2j/AAAAAwAAAAAAAAAAAAAAAAAA
-        AAAAAAAAAAAABAAAAKiS8/7MOr3//pLc/v/v////Pmxs/zBBPcIAAAD/ISEv/wAAAAQAAAAAAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAABNAAAAtqXk8shM0v//Ppac/wAAAP8AAAA2AAAAAAAAAAcAAAABAAAAAAAA
-        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0AAACfAAAAlAAAAIAAAAA3AAAAAQAAAAAAAAAAAAAAAAAA
-        AAAAAAAA//8AAOADAACAAQAAAAAAAAAAAAAAAAAAAAAAAAABAAD4AwAA8AcAAPAPAADwBwAA8AcAAPAH
-        AAD4PwAA/H8AAA==
-</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="$this.Icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\..\..\Ducky.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

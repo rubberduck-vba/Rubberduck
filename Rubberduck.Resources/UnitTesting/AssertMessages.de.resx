@@ -126,9 +126,6 @@
   <data name="Assert_ReferenceValueMismatch" xml:space="preserve">
     <value>[Erwartet] ist ein Referenztyp und [Tatsächlich] ist ein Werttyp.</value>
   </data>
-  <data name="Assert_GenericException" xml:space="preserve">
-    <value>Unerwarteter Fehler beim Ausführen der Tests.</value>
-  </data>
   <data name="Assert_UBoundMismatchFormat" xml:space="preserve">
     <value>Dimension {0}: Erwarteter UBound-Wert {1}; Tatsächlicher UBound-Wert {2}. {3}</value>
   </data>
@@ -140,9 +137,6 @@
   </data>
   <data name="Assert_UnexpectedValueComparisonFormat" xml:space="preserve">
     <value>[Erwartet] und [Tatsächlich] sind Werttypen. Erwägen Sie eine Benutzung von {0}.</value>
-  </data>
-  <data name="Assert_ComException" xml:space="preserve">
-    <value>Unerwarteter Fehler in der COM Schnittstelle bei der Ausführung der Tests.</value>
   </data>
   <data name="Assert_UnexpectedReferenceComparisonFormat" xml:space="preserve">
     <value>[Erwartet] und [Tatsächlich] sind Referenztypen. Erwägen Sie eine Benutzung von {0}.</value>
@@ -191,5 +185,23 @@
   </data>
   <data name="Assert_EasterEggIFakePassed" xml:space="preserve">
     <value>Erwartet: Stacküberlauf?; Tatsächlich: Schutzbedingung.</value>
+  </data>
+  <data name="TestRunner_ComException" xml:space="preserve">
+    <value>Unerwarteter Fehler in der COM-Schnittstelle bei der Ausführung der Tests.</value>
+  </data>
+  <data name="TestRunner_GenericException" xml:space="preserve">
+    <value>Unerwarteter Fehler beim Ausführen der Tests.</value>
+  </data>
+  <data name="Prerequisite_EarlyBindingReferenceMissing" xml:space="preserve">
+    <value>Die für frühes Binden benötigte Referenz auf Rubberduck wurde nicht gefunden. Die Referenz könnte korrupt sein.</value>
+  </data>
+  <data name="TestRunner_ExceptionDuringRun" xml:space="preserve">
+    <value>Das Aufrufen einer Testmethode ist fehlgeschlagen.</value>
+  </data>
+  <data name="TestRunner_ModuleInitializeFailure" xml:space="preserve">
+    <value>Etwas ist beim Aufruf von @ModuleInitialize schiefgelaufen. Das Modul wurde übersprungen.</value>
+  </data>
+  <data name="TestRunner_TestInitializeFailure" xml:space="preserve">
+    <value>Etwas ist beim Aufruf von @TestInitialize schiefgelaufen. Der Test wurde übersprungen.</value>
   </data>
 </root>

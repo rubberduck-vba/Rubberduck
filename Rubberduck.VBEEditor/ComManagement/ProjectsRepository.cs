@@ -245,10 +245,16 @@ namespace Rubberduck.VBEditor.ComManagement
             return EvaluateWithinReadLock(() => _components.TryGetValue(qualifiedModuleName, out var component) ? component : null);
         }
 
-        private bool _disposed;
         public void Dispose()
         {
-            if (_disposed)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _disposed;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed || !disposing)
             {
                 return;
             }

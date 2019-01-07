@@ -14,6 +14,7 @@ namespace RubberduckTests.Inspections
     public class SheetAccessedUsingStringInspectionTests
     {
         [Test]
+        [Ignore("See #4411")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_ReturnsResult_AccessingUsingWorkbookModule()
         {
@@ -71,6 +72,7 @@ End Sub";
         }
 
         [Test]
+        [Ignore("Ref #4329")]
         [Category("Inspections")]
         public void SheetAccessedUsingString_DoesNotReturnResult_AccessingUsingWorkbooksProperty()
         {
@@ -171,24 +173,16 @@ End Sub";
                         CreateVBComponentPropertyMock("Name", "Sheet1").Object,
                         CreateVBComponentPropertyMock("CodeName", "Sheet1").Object
                     })
-                .AddReference("ReferencedProject", "")
+                .AddReference("ReferencedProject", string.Empty, 0, 0)
                 .AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
                 .Build();
 
             var vbe = builder.AddProject(referencedProject).AddProject(project).Build();
 
-            var parser = MockParser.Create(vbe.Object);
-            parser.State.AddTestLibrary("Excel.1.8.xml");
-            parser.Parse(new CancellationTokenSource());
-
-            if (parser.State.Status >= ParserState.Error)
-            {
-                Assert.Inconclusive("Parser Error");
-            }
-
-            return parser.State;
+            return MockParser.CreateAndParse(vbe.Object);
         }
 
+        // ReSharper disable once InconsistentNaming
         private static Mock<IProperty> CreateVBComponentPropertyMock(string propertyName, string propertyValue)
         {
             var propertyMock = new Mock<IProperty>();

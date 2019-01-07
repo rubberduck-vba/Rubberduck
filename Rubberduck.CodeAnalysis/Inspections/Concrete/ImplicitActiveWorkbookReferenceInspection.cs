@@ -4,6 +4,7 @@ using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 
@@ -15,32 +16,32 @@ namespace Rubberduck.Inspections.Concrete
         public ImplicitActiveWorkbookReferenceInspection(RubberduckParserState state)
             : base(state) { }
 
-        private static readonly string[] Targets =
+        private static readonly string[] InterestingMembers =
         {
-            "Worksheets", "Sheets", "Names", "_Default"
+            "Worksheets", "Sheets", "Names"
+        };
+
+        private static readonly string[] InterestingClasses =
+        {
+            "_Global", "_Application", "Global", "Application"
         };
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var excel = State.DeclarationFinder.Projects.SingleOrDefault(item => !item.IsUserDefined && item.IdentifierName == "Excel");
-            if (excel == null) { return Enumerable.Empty<IInspectionResult>(); }
-
-            var modules = new[]
+            if (excel == null)
             {
-                State.DeclarationFinder.FindClassModule("_Global", excel, true),
-                State.DeclarationFinder.FindClassModule("_Application", excel, true),
-                State.DeclarationFinder.FindClassModule("Global", excel, true),
-                State.DeclarationFinder.FindClassModule("Application", excel, true),
-                State.DeclarationFinder.FindClassModule("Sheets", excel, true),
-            };
+                return Enumerable.Empty<IInspectionResult>();
+            }
 
-            var members = Targets
-                .SelectMany(target => modules.SelectMany(module =>
-                    State.DeclarationFinder.FindMemberMatches(module, target)))
-                .Where(item => item.References.Any())
-                .SelectMany(item => item.References.Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName)))
+            var targetProperties = BuiltInDeclarations
+                .OfType<PropertyGetDeclaration>()
+                .Where(x => InterestingMembers.Contains(x.IdentifierName) && InterestingClasses.Contains(x.ParentDeclaration?.IdentifierName))
                 .ToList();
-                
+
+            var members = targetProperties.SelectMany(item =>
+                item.References.Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName)));
+
             return members.Select(issue => new IdentifierReferenceInspectionResult(this,
                                                                 string.Format(InspectionResults.ImplicitActiveWorkbookReferenceInspection, issue.Context.GetText()),
                                                                 State,

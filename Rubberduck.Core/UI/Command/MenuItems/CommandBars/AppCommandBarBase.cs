@@ -169,8 +169,27 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             }
         }
 
-        public ICommandBars Parent { get; set; }
-        public ICommandBar Item { get; private set; }
+        private ICommandBars _parent;
+        public ICommandBars Parent
+        {
+            get => _parent;
+            set
+            {
+                _parent?.Dispose();
+                _parent = value;
+            }
+        }
+
+        private ICommandBar _item;
+        public ICommandBar Item
+        {
+            get => _item;
+            private set
+            {
+                _item?.Dispose();
+                _item = value;
+            }
+        }
 
         public void RemoveCommandBar()
         {
@@ -181,9 +200,9 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                     Logger.Debug("Removing commandbar.");
                     RemoveChildren();
                     Item.Delete();
-                    Item.Dispose();
+
+                    // Setting them to null will automatically dispose those
                     Item = null;
-                    Parent?.Dispose();
                     Parent = null;
                 }
             }
@@ -224,7 +243,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
             ICommandMenuItem item;
             try
             {
-                item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Control.Tag);
+                item = _items.Select(kvp => kvp.Key).SingleOrDefault(menu => menu.GetType().FullName == e.Tag);
             }
             catch (COMException exception)
             {
@@ -236,7 +255,7 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
                 return;
             }
 
-            Logger.Debug("({0}) Executing click handler for commandbar item '{1}', hash code {2}", GetHashCode(), e.Control.Caption, e.Control.Target.GetHashCode());
+            Logger.Debug("({0}) Executing click handler for commandbar item '{1}', hash code {2}", GetHashCode(), e.Caption, e.TargetHashCode);
             item.Command.Execute(null);
         }
     }

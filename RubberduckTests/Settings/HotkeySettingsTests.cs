@@ -97,7 +97,7 @@ namespace RubberduckTests.Settings
             Assert.IsFalse(settings.Settings.Contains(duplicate));
         }
 
-        [Category("Settings)")]
+        [Category("Settings")]
         [Test]
         public void HotkeyModifier_None_IsNotValid()
         {
@@ -106,7 +106,7 @@ namespace RubberduckTests.Settings
             Assert.IsFalse(setting.IsValid);
         }
 
-        [Category("Settings)")]
+        [Category("Settings")]
         [Test]
         public void HotkeyModifier_Shift_IsNotValid()
         {
@@ -115,7 +115,7 @@ namespace RubberduckTests.Settings
             Assert.IsFalse(setting.IsValid);
         }
 
-        [Category("Settings)")]
+        [Category("Settings")]
         [Test]
         public void HotkeyModifier_ShiftAlt_IsValid()
         {
@@ -124,7 +124,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(setting.IsValid);
         }
 
-        [Category("Settings)")]
+        [Category("Settings")]
         [Test]
         public void HotkeyModifier_ShiftCtrl_IsValid()
         {
@@ -133,7 +133,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(setting.IsValid);
         }
 
-        [Category("Settings)")]
+        [Category("Settings")]
         [Test]
         public void HotkeyModifier_ShiftAltCtrl_IsValid()
         {
@@ -142,7 +142,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(setting.IsValid);
         }
 
-        [Category("Settings)")]
+        [Category("Settings")]
         [Test]
         public void HotkeyModifier_Alt_IsValid()
         {
@@ -151,7 +151,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(setting.IsValid);
         }
 
-        [Category("Settings)")]
+        [Category("Settings")]
         [Test]
         public void HotkeyModifier_Ctrl_IsValid()
         {
@@ -160,7 +160,7 @@ namespace RubberduckTests.Settings
             Assert.IsTrue(setting.IsValid);
         }
 
-        [Category("Settings)")]
+        [Category("Settings")]
         [Test]
         public void HotkeyModifier_AltCtrl_IsValid()
         {

@@ -23,7 +23,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 var decSelection = new Selection(5, 1, 5, 10);
                 var referenceDeclaration = new Declaration(decQualifiedMemberName, null, "", "", "",
                     false, false, Accessibility.Friend, DeclarationType.ClassModule,
-                    context: null, selection: decSelection, isArray: false, asTypeContext: null);
+                    context: null, attributesPassContext: null, selection: decSelection, isArray: false, asTypeContext: null);
 
                 IdentifierReference reference = new IdentifierReference(new QualifiedModuleName(), null, null, "a", referenceSelection, null, referenceDeclaration);
 
@@ -49,7 +49,7 @@ namespace RubberduckTests.Refactoring.ExtractMethod
                 var decSelection = new Selection(5, 1, 5, 10);
                 var referenceDeclaration = new Declaration(decQualifiedMemberName, null, "", "", "",
                     false, false, Accessibility.Friend, DeclarationType.ClassModule,
-                    context: null, selection: decSelection, isArray: false, asTypeContext: null);
+                    context: null, attributesPassContext: null, selection: decSelection, isArray: false, asTypeContext: null);
 
                 IdentifierReference reference = new IdentifierReference(new QualifiedModuleName(), null, null, "a", referenceSelection, null, referenceDeclaration);
 

@@ -1,4 +1,5 @@
 using System;
+using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
 {
@@ -20,11 +21,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IWindows Windows { get; }
         IHostApplication HostApplication();
         IWindow ActiveMDIChild();
-
         QualifiedSelection? GetActiveSelection();
 
         bool IsInDesignMode { get; }
         int ProjectsCount { get; }
-        ISourceCodeHandler SourceCodeHandler { get; }
+        ITempSourceFileHandler TempSourceFileHandler { get; }
     }
 }

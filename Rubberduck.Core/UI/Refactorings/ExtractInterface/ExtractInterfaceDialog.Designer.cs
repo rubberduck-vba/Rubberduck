@@ -30,16 +30,16 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExtractInterfaceDialog));
             this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
-            this.ExtractInterfaceViewElement = new ExtractInterfaceView();
+            this.ExtractInterfaceViewElement = new Rubberduck.UI.Refactorings.ExtractInterfaceView();
             this.SuspendLayout();
             // 
             // elementHost1
             // 
             this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.elementHost1.Location = new System.Drawing.Point(0, 0);
-            this.elementHost1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.elementHost1.Margin = new System.Windows.Forms.Padding(5);
             this.elementHost1.Name = "elementHost1";
-            this.elementHost1.Size = new System.Drawing.Size(667, 513);
+            this.elementHost1.Size = new System.Drawing.Size(459, 339);
             this.elementHost1.TabIndex = 1;
             this.elementHost1.Text = "elementHost1";
             this.elementHost1.Child = this.ExtractInterfaceViewElement;
@@ -56,7 +56,6 @@
             this.ShowInTaskbar = false;
             this.Text = "Rubberduck - Extract Interface";
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

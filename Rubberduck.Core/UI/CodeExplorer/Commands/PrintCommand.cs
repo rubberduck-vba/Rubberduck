@@ -13,7 +13,6 @@ using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    [CodeExplorerCommand]
     public class PrintCommand : CommandBase
     {
         private readonly IProjectsProvider _projectsProvider;
@@ -34,7 +33,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             try
             {
-                using (var codeModule = _projectsProvider.Component(node.Declaration.QualifiedName.QualifiedModuleName).CodeModule)
+                var component = _projectsProvider.Component(node.Declaration.QualifiedName.QualifiedModuleName);
+                using (var codeModule = component.CodeModule)
                 {
                     return codeModule.CountOfLines != 0;
                 }
@@ -55,7 +55,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 qualifiedComponentName.ComponentName + ".txt");
 
             List<string> text;
-            using (var codeModule = _projectsProvider.Component(qualifiedComponentName).CodeModule)
+            var component = _projectsProvider.Component(qualifiedComponentName);
+            using (var codeModule = component.CodeModule)
             {
                 text = codeModule.GetLines(1, codeModule.CountOfLines)
                     .Split(new[] {Environment.NewLine}, StringSplitOptions.None).ToList();
@@ -86,19 +87,23 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 {
                     while (index < text.Count)
                     {
-                        var font = new Font(new FontFamily("Consolas"), 10, FontStyle.Regular);
-                        printPageArgs.Graphics.DrawString(text[index++], font, Brushes.Black, 0, offsetY, new StringFormat());
-
-                        offsetY += font.Height;
-
-                        if (offsetY >= pageHeight)
+                        using (var font = new Font(new FontFamily("Consolas"), 10, FontStyle.Regular))
+                        using (var stringFormat = new StringFormat())
                         {
-                            printPageArgs.HasMorePages = true;
-                            offsetY = 0;
-                            return;
-                        }
+                            printPageArgs.Graphics.DrawString(text[index++], font, Brushes.Black, 0, offsetY,
+                                stringFormat);
 
-                        printPageArgs.HasMorePages = false;
+                            offsetY += font.Height;
+
+                            if (offsetY >= pageHeight)
+                            {
+                                printPageArgs.HasMorePages = true;
+                                offsetY = 0;
+                                return;
+                            }
+
+                            printPageArgs.HasMorePages = false;
+                        }
                     }
                 };
 

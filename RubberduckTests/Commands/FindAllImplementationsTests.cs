@@ -1,11 +1,9 @@
 using System.Linq;
 using System.Threading;
-using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
@@ -13,6 +11,8 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Interaction.Navigation;
 
 namespace RubberduckTests.Commands
 {
@@ -84,6 +84,53 @@ End Sub";
                 var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
 
                 command.Execute(state.AllUserDeclarations.First(s => s.IdentifierName == "IClass1_Foo"));
+
+                Assert.AreEqual(2, vm.Tabs[0].SearchResults.Count);
+            }
+        }
+
+        [Category("Commands")]
+        [Test]
+        public void FindAllImplementations_ReturnsCorrectNumberForProperty()
+        {
+            var intrface =
+                @"Option Explicit
+
+Public Property Get Foo(Bar As Long) As Long
+End Property
+
+Public Property Let Foo(Bar As Long, NewValue As Long)
+End Property
+";
+
+            var implementation =
+                @"Option Explicit
+
+Implements TestInterface
+
+Private Property Get TestInterface_Foo(Bar As Long) As Long
+End Property
+
+Private Property Let TestInterface_Foo(Bar As Long, RHS As Long)
+End Property
+";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, implementation)
+                .AddComponent("Class2", ComponentType.ClassModule, implementation)
+                .AddComponent("TestInterface", ComponentType.ClassModule, intrface)
+                .Build();
+
+            var vbe = builder.AddProject(project).Build();
+            var uiDispatcher = new Mock<IUiDispatcher>();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var vm = new SearchResultsWindowViewModel();
+                var command = new FindAllImplementationsCommand(null, null, state, vbe.Object, vm, null, uiDispatcher.Object);
+
+                command.Execute(state.AllUserDeclarations.Single(s => s.IdentifierName == "Foo" && s.DeclarationType == DeclarationType.PropertyGet));
 
                 Assert.AreEqual(2, vm.Tabs[0].SearchResults.Count);
             }

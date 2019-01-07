@@ -9,7 +9,7 @@ using VB = Microsoft.Vbe.Interop;
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
 namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 {
-    public class VBProjects : SafeEventedComWrapper<VB.VBProjects, VB._dispVBProjectsEvents>, IVBProjects, VB._dispVBProjectsEvents
+    public sealed class VBProjects : SafeEventedComWrapper<VB.VBProjects, VB._dispVBProjectsEvents>, IVBProjects, VB._dispVBProjectsEvents
     {
         public VBProjects(VB.VBProjects target, bool rewrapping = false)
         :base(target, rewrapping)
@@ -39,6 +39,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public IVBProject Open(string path)
         {
             return new VBProject(IsWrappingNullReference ? null : Target.Open(path));
+        }
+
+        // Not applicable to VBA
+        IVBProject IVBProjects.StartProject
+        {
+            get => new VBProject(null);
+            set { }
         }
 
         public IVBProject this[object index] => new VBProject(IsWrappingNullReference ? null : Target.Item(index));
@@ -71,6 +78,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 : HashCode.Compute(Target);
         }
 
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
+
         #region Events
 
         public event EventHandler<ProjectEventArgs> ProjectAdded;
@@ -89,23 +98,23 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         void VB._dispVBProjectsEvents.ItemRenamed([MarshalAs(UnmanagedType.Interface), In] VB.VBProject VBProject,
             [MarshalAs(UnmanagedType.BStr), In] string OldName)
         {
-            var project = new VBProject(VBProject);
-
-            if (!IsInDesignMode() || VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+            using (var project = new VBProject(VBProject))
             {
-                project.Dispose();
-                return;
-            }
+                if (!IsInDesignMode() || VBProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+                {
+                    return;
+                }
 
-            var projectId = project.ProjectId;
+                var projectId = project.ProjectId;
 
-            var handler = ProjectRenamed;
-            if (handler == null || projectId == null)
-            {
-                project.Dispose();
-                return;
+                if (projectId == null)
+                {
+                    return;
+                }
+
+                var handler = ProjectRenamed;
+                handler?.Invoke(this, new ProjectRenamedEventArgs(projectId, project.Name, OldName));
             }
-            handler.Invoke(project, new ProjectRenamedEventArgs(projectId, project, OldName));
         }
 
         public event EventHandler<ProjectEventArgs> ProjectActivated;
@@ -116,26 +125,29 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         private void OnDispatch(EventHandler<ProjectEventArgs> dispatched, VB.VBProject vbProject, bool assignId = false)
         {
-            var project = new VBProject(vbProject);
-            var handler = dispatched;
-            if (handler == null || !IsInDesignMode() || vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+            using (var project = new VBProject(vbProject))
             {
-                project.Dispose();
-                return;
-            }
+                var handler = dispatched;
+                if (handler == null || !IsInDesignMode() ||
+                    vbProject.Protection == VB.vbext_ProjectProtection.vbext_pp_locked)
+                {
+                    return;
+                }
 
-            if (assignId)
-            {
-                project.AssignProjectId();
-            }
-            var projectId = project.ProjectId;
+                if (assignId)
+                {
+                    project.AssignProjectId();
+                }
 
-            if (projectId == null)
-            {
-                project.Dispose();
-                return;
+                var projectId = project.ProjectId;
+
+                if (projectId == null)
+                {
+                    return;
+                }
+
+                handler.Invoke(project, new ProjectEventArgs(projectId, project.Name));
             }
-            handler.Invoke(project, new ProjectEventArgs(projectId, project));
         }
 
         private bool IsInDesignMode()

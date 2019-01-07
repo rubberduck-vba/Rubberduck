@@ -228,4 +228,13 @@
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Unable to create test module. The host application may not allow for creation of new modules or the project may be locked. For details, check the log.</value>
   </data>
+  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
+    <value>Selected Category</value>
+  </data>
+  <data name="TestExplorer_CategoryName" xml:space="preserve">
+    <value>Category</value>
+  </data>
+  <data name="TestExplorer_Uncategorized" xml:space="preserve">
+    <value>Uncategorized</value>
+  </data>
 </root>

@@ -27,7 +27,7 @@ namespace Rubberduck.Parsing.PreProcessing
             // 3.4.1: If <cc-var-lhs> is a <TYPED-NAME> with a <type-suffix>, the <type-suffix> is ignored.
             var identifier = _identifier.Evaluate().AsString;
             var constantValue = _expression.Evaluate();
-            _symbolTable.Add(identifier, constantValue);
+            _symbolTable.AddOrUpdate(identifier, constantValue);
             return new LivelinessExpression(
                 isAlive: new ConstantExpression(new BoolValue(false)),
                 tokens: _tokens).Evaluate();

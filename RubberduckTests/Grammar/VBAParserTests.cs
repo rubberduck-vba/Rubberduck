@@ -550,7 +550,7 @@ Attribute view.VB_VarHelpID = -1
         public void TestEmptyModule()
         {
             string code = @"
-_
+ _
 
    _
 
@@ -1095,6 +1095,24 @@ End
 ";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestIndexedProperty()
+        {
+            string code = @"
+VERSION 5.00
+Begin VB.Form Form1
+   Begin ComctlLib.ListView lvFilter 
+      BeginProperty ColumnHeader(1) {0713E8C7-850A-101B-AFC0-4210102A8DA7} 
+         Caption      =   ""ID""
+      EndProperty
+   End
+End
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//moduleConfigProperty", matches => matches.Count == 1);
         }
 
         [Category("Parser")]
@@ -1748,7 +1766,7 @@ Sub Test()
                     a = m + n + c + d
                         For k = 0 To 100
                             t = a + k
-    Next k, d, m,_
+    Next k, d, m, _
             c, _
             n
 End Sub";
@@ -2432,7 +2450,7 @@ End Sub";
         {
             string code = @"
 Sub Test()
-    Me.Circle Step(1, 2), 3, 4, 5, 6, 7
+    Me.Circle Step (1, 2), 3, 4, 5, 6, 7
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
@@ -2456,7 +2474,7 @@ End Sub";
         {
             string code = @"
 Sub Test()
-    Me.Circle Step(1, 2), 3
+    Me.Circle Step (1, 2), 3
 End Sub";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//circleSpecialForm");
@@ -2811,6 +2829,290 @@ End Sub
             AssertTree(parseResult.Item1, parseResult.Item2, "//callStmt", matches => matches.Count == 1);
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentExpression", matches => matches.Count == 3);
             AssertTree(parseResult.Item1, parseResult.Item2, "//argumentList", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnUnderscoreComment()
+        {
+            const string code = @"
+Sub Test()   
+    '_
+    If True Then
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnUnderscoreAfterNonBreakingSpaceInComment()
+        {
+            const string code = @"
+Sub Test()   
+    '" + "\u00A0" + @"_
+    If True Then
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnStartOfLineUnderscoreInLineContinuedComment()
+        {
+            const string code = @"
+Sub Test()   
+    ' _
+_
+    If True Then
+    End If
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//ifStmt", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionInType1()
+        {
+            const string code = @"
+Sub Test()   
+Dim dic2 As _
+Scripting _
+. _
+Dictionary
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionInType2()
+        {
+            const string code = @"
+Sub Test()   
+  Dim dic3 As Scripting _
+  . _
+  Dictionary
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionOnObject1()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+  Debug.Print dict. _
+  Item(""a"")
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionOnObject2()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Debug.Print dict _
+. _
+Item(""a"")
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedMemberAccessExpressionOnObject3()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Debug.Print dict _
+    . _
+Item(""a"")
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedBangOperator1()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict _
+! _
+a
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedBangOperator2()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict _
+  ! _
+  a
+
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedBangOperator3()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict _
+!a
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineContinuedTypeDeclaration()
+        {
+            const string code = @"
+Sub Test()   
+Dim dic1 As _
+Dictionary
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnIdentifierEndingInUnderscore()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x_
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineNumberNotOnStartOfLineAfterALineContinuation()
+        {
+            const string code = @"
+Sub foo()
+ _
+    10
+ _ 
+Beep
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//standaloneLineNumberLabel", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineLAbelNotOnStartOfLineAfterALineContinuation()
+        {
+            const string code = @"
+Sub foo()
+ _
+    foo: Beep
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLinecontinuedLabel()
+        {
+            const string code = @"
+Sub foo()
+foo _
+: Beep
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineNumberAndLineContinuedLabelNotOnStartOfLineAfterALineContinuation()
+        {
+            const string code = @"
+Sub foo()
+ _
+    10
+ _
+    foo _
+    : Beeb
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//standaloneLineNumberLabel", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnLineNumberAndLineContinuedLabelNotOnStartOfLineAfterMultipleLineContinuation()
+        {
+            const string code = @"
+Sub foo()
+ _
+ _
+ _
+    10
+ _
+ _
+ _
+    foo _
+    : Beeb
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//standaloneLineNumberLabel", matches => matches.Count == 1);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//identifierStatementLabel", matches => matches.Count == 1);
         }
 
         [Category("Parser")]
@@ -3174,6 +3476,59 @@ End Sub
 ";
             var parseResult = Parse(code);
             AssertTree(parseResult.Item1, parseResult.Item2, "//midStatement", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserAcceptsScaleMemberInUDT()
+        {
+            const string code = @"
+Public Type Whatever
+    Scale As Double
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserAcceptsCircleMemberInUDT()
+        {
+            const string code = @"
+Public Type Whatever
+    Circle As Long
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserAcceptsPSetMemberInUDT()
+        {
+            const string code = @"
+Public Type Whatever
+    PSet As Boolean
+End Type
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
+        }
+
+        
+        [Test]
+        [Category("Parser")]
+        [TestCase("Private WithEvents foo As EventSource, WithEvents bar As EventSource", 2)]
+        [TestCase("Private WithEvents foo As EventSource, bar As EventSource", 2)]
+        [TestCase("Private foo As EventSource, WithEvents bar As EventSource", 2)]
+        [TestCase("Private foo As EventSource, bar As EventSource", 2)]
+        [TestCase("Private WithEvents foo As EventSource", 1)]
+        public void WithEventsInVariableList(string code, int count)
+        {
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//variableSubStmt", matches => matches.Count == count);
         }
 
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)

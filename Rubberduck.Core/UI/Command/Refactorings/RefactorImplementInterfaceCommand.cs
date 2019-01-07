@@ -1,11 +1,10 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Common;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -14,12 +13,14 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorImplementInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
+        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _msgBox;
 
-        public RefactorImplementInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox)
+        public RefactorImplementInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager)
             : base(vbe)
         {
             _state = state;
+            _rewritingManager = rewritingManager;
             _msgBox = msgBox;
         }
 
@@ -33,7 +34,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var targetInterface = _state.AllUserDeclarations.FindInterface(selection.Value);
+            var targetInterface = _state.DeclarationFinder.FindInterface(selection.Value);
             
             var targetClass = _state.DeclarationFinder.Members(selection.Value.QualifiedName)
                 .SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.ClassModule);
@@ -53,7 +54,7 @@ namespace Rubberduck.UI.Command.Refactorings
                     return;
                 }
             }
-            var refactoring = new ImplementInterfaceRefactoring(Vbe, _state, _msgBox);
+            var refactoring = new ImplementInterfaceRefactoring(Vbe, _state, _msgBox, _rewritingManager);
             refactoring.Refactor();
         }
     }

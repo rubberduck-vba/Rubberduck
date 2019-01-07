@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
@@ -21,8 +22,8 @@ namespace Rubberduck.Inspections.Concrete
             var declarations = UserDeclarations.ToArray();
             var issues = new List<IInspectionResult>();
 
-            var interfaceDeclarationMembers = declarations.FindInterfaceMembers().ToArray();
-            var interfaceScopes = declarations.FindInterfaceImplementationMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
+            var interfaceDeclarationMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToArray();
+            var interfaceScopes = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
 
             issues.AddRange(GetResults(declarations, interfaceDeclarationMembers));
 
@@ -79,7 +80,7 @@ namespace Rubberduck.Inspections.Concrete
 
                 var members = declarationMembers.Any(a => a.DeclarationType == DeclarationType.Event)
                     ? declarations.FindHandlersForEvent(declaration).Select(s => s.Item2).ToList()
-                    : declarations.FindInterfaceImplementationMembers(declaration).ToList();
+                    : State.DeclarationFinder.FindInterfaceImplementationMembers(declaration).Cast<Declaration>().ToList();
 
                 foreach (var member in members)
                 {
@@ -88,6 +89,9 @@ namespace Rubberduck.Inspections.Concrete
                         .OrderBy(o => o.Selection.StartLine)
                         .ThenBy(t => t.Selection.StartColumn)
                         .ToList();
+
+                    //If you hit this assert, reopen https://github.com/rubberduck-vba/Rubberduck/issues/3906
+                    Debug.Assert(parametersAreByRef.Count == parameters.Count);
 
                     for (var i = 0; i < parameters.Count; i++)
                     {

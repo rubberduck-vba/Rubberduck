@@ -3,7 +3,6 @@ using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,28 +14,47 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         event EventHandler<ValueResultEventArgs> OnValueResultCreated;
     }
 
-    public class ParseTreeValueVisitor : IParseTreeValueVisitor
+    public interface ITestParseTreeVisitor
     {
-        private IParseTreeVisitorResults _contextValues;
-        private RubberduckParserState _state;
-        private IParseTreeValueFactory _inspValueFactory;
+        void InjectValuedDeclarationEvaluator(Func<Declaration, (bool, string, string)> func);
+    }
 
-        public ParseTreeValueVisitor(RubberduckParserState state, IParseTreeValueFactory valueFactory)
+    public class ParseTreeValueVisitor : IParseTreeValueVisitor, ITestParseTreeVisitor
+    {
+        private class EnumMember
         {
-            _state = state;
+            public EnumMember(VBAParser.EnumerationStmt_ConstantContext constContext, long initValue)
+            {
+                ConstantContext = constContext;
+                Value = initValue;
+                HasAssignment = constContext.children.Any(ch => ch.Equals(constContext.GetToken(VBAParser.EQ, 0)));
+            }
+            public VBAParser.EnumerationStmt_ConstantContext ConstantContext { set; get; }
+            public long Value { set; get; }
+            public bool HasAssignment { set; get; }
+        }
+
+        private IParseTreeVisitorResults _contextValues;
+        private IParseTreeValueFactory _inspValueFactory;
+        private List<VBAParser.EnumerationStmtContext> _enumStmtContexts;
+        private List<EnumMember> _enumMembers;
+
+        public ParseTreeValueVisitor(IParseTreeValueFactory valueFactory, List<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> idRefRetriever)
+        {
             _inspValueFactory = valueFactory;
-            Calculator = new ParseTreeExpressionEvaluator(valueFactory);
+            IdRefRetriever = idRefRetriever;
             _contextValues = new ParseTreeVisitorResults();
             OnValueResultCreated += _contextValues.OnNewValueResult;
+            _enumStmtContexts = allEnums;
         }
+
+        private Func<ParserRuleContext, (bool success, IdentifierReference idRef)> IdRefRetriever { set; get; } = null;
 
         public event EventHandler<ValueResultEventArgs> OnValueResultCreated;
 
-        public IParseTreeExpressionEvaluator Calculator { set; get; }
-
         public virtual IParseTreeVisitorResults Visit(IParseTree tree)
         {
-            if (tree is ParserRuleContext context)
+            if (tree is ParserRuleContext context && !(context is VBAParser.WhiteSpaceContext))
             {
                 Visit(context);
             }
@@ -65,59 +83,53 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _contextValues;
         }
 
-        internal static bool IsMathContext<T>(T context)
-        {
-            return IsBinaryMathContext(context) || IsUnaryMathContext(context);
-        }
-
-        internal static bool IsLogicalContext<T>(T context)
-        {
-            return IsBinaryLogicalContext(context) || IsUnaryLogicalContext(context);
-        }
-
         private void StoreVisitResult(ParserRuleContext context, IParseTreeValue inspValue)
         {
             OnValueResultCreated(this, new ValueResultEventArgs(context, inspValue));
         }
 
-        private bool ContextHasResult(ParserRuleContext context)
-        {
-            return _contextValues.Contains(context);
-        }
+        private bool HasResult(ParserRuleContext context)
+         => _contextValues.Contains(context);
 
         private void Visit(ParserRuleContext parserRuleContext)
         {
-            if (IsUnaryResultContext(parserRuleContext))
+            switch (parserRuleContext)
             {
-                VisitUnaryResultContext(parserRuleContext);
-            }
-            else if (parserRuleContext is VBAParser.LExprContext lExpr)
-            {
-                Visit(lExpr);
-            }
-            else if (parserRuleContext is VBAParser.LiteralExprContext litExpr)
-            {
-                Visit(litExpr);
-            }
-            else if (parserRuleContext is VBAParser.CaseClauseContext
-                || parserRuleContext is VBAParser.RangeClauseContext)
-            {
-                VisitImpl(parserRuleContext);
-                StoreVisitResult(parserRuleContext, _inspValueFactory.Create(parserRuleContext.GetText()));
-            }
-            else if (IsBinaryMathContext(parserRuleContext) || IsBinaryLogicalContext(parserRuleContext))
-            {
-                VisitBinaryOpEvaluationContext(parserRuleContext);
-            }
-            else if  (IsUnaryLogicalContext(parserRuleContext) || IsUnaryMathContext(parserRuleContext))
-            {
-                VisitUnaryOpEvaluationContext(parserRuleContext);
+                case VBAParser.LExprContext lExpr:
+                    Visit(lExpr);
+                    return;
+                case VBAParser.LiteralExprContext litExpr:
+                    Visit(litExpr);
+                    return;
+                case VBAParser.CaseClauseContext caseClause:
+                    VisitChildren(caseClause);
+                    StoreVisitResult(caseClause, _inspValueFactory.Create(caseClause.GetText()));
+                    return;
+                case VBAParser.RangeClauseContext rangeClause:
+                    VisitChildren(rangeClause);
+                    StoreVisitResult(rangeClause, _inspValueFactory.Create(rangeClause.GetText()));
+                    return;
+                default:
+                    if (IsUnaryResultContext(parserRuleContext))
+                    {
+                        VisitUnaryResultContext(parserRuleContext);
+                    }
+                    else if (IsBinaryOpEvaluationContext(parserRuleContext))
+                    {
+                        VisitBinaryOpEvaluationContext(parserRuleContext);
+                    }
+                    else if (parserRuleContext is VBAParser.LogicalNotOpContext
+                        || parserRuleContext is VBAParser.UnaryMinusOpContext)
+                    {
+                        VisitUnaryOpEvaluationContext(parserRuleContext);
+                    }
+                    return;
             }
         }
 
         private void Visit(VBAParser.LExprContext context)
         {
-            if (ContextHasResult(context))
+            if (HasResult(context))
             {
                 return;
             }
@@ -125,7 +137,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             IParseTreeValue newResult = null;
             if (TryGetLExprValue(context, out string lexprValue, out string declaredType))
             {
-                newResult = _inspValueFactory.Create(lexprValue, declaredType);
+                newResult = _inspValueFactory.CreateDeclaredType(lexprValue, declaredType);
             }
             else
             {
@@ -134,7 +146,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 if (TryGetIdentifierReferenceForContext(smplName, out IdentifierReference idRef))
                 {
                     var declarationTypeName = GetBaseTypeForDeclaration(idRef.Declaration);
-                    newResult = _inspValueFactory.Create(context.GetText(), declarationTypeName);
+                    newResult = _inspValueFactory.CreateDeclaredType(context.GetText(), declarationTypeName);
                 }
             }
 
@@ -146,7 +158,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void Visit(VBAParser.LiteralExprContext context)
         {
-            if (!ContextHasResult(context))
+            if (!HasResult(context))
             {
                 var nResult = _inspValueFactory.Create(context.GetText());
                 StoreVisitResult(context, nResult);
@@ -155,70 +167,83 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 
         private void VisitBinaryOpEvaluationContext(ParserRuleContext context)
         {
-            VisitImpl(context);
+            VisitChildren(context);
 
-            var operands = RetrieveRelevantOpData(context, out string opSymbol);
-            if (operands.Count != 2 || operands.All(opr => opr is null))
+            RetrieveOpEvaluationElements(context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) binaryData);
+            if (binaryData.LHS is null || binaryData.RHS is null)
             {
                 return;
             }
+            if (binaryData.LHS.IsOverflowExpression)
+            {
+                StoreVisitResult(context, binaryData.LHS);
+                return;
+            }
 
-            var nResult = Calculator.Evaluate(operands[0], operands[1], opSymbol);
+            if (binaryData.RHS.IsOverflowExpression)
+            {
+                StoreVisitResult(context, binaryData.RHS);
+                return;
+            }
 
-            StoreVisitResult(context, nResult);
+            var calculator = new ParseTreeExpressionEvaluator(_inspValueFactory, context.IsOptionCompareBinary());
+            var result = calculator.Evaluate(binaryData.LHS, binaryData.RHS, binaryData.Symbol);
+
+            StoreVisitResult(context, result);
         }
 
         private void VisitUnaryOpEvaluationContext(ParserRuleContext context)
         {
-            VisitImpl(context);
-            var operands = RetrieveRelevantOpData(context, out string opSymbol);
-            if (operands.Count != 1 || operands.All(opr => opr is null))
+            VisitChildren(context);
+
+            RetrieveOpEvaluationElements(context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) unaryData);
+            if (unaryData.LHS is null || unaryData.RHS != null)
             {
                 return;
             }
 
-            var result = Calculator.Evaluate(operands[0], opSymbol, operands[0].TypeName);
+            var calculator = new ParseTreeExpressionEvaluator(_inspValueFactory, context.IsOptionCompareBinary());
+            var result = calculator.Evaluate(unaryData.LHS, unaryData.Symbol);
             StoreVisitResult(context, result);
         }
 
-        private List<IParseTreeValue> RetrieveRelevantOpData(ParserRuleContext context, out string opSymbol)
+        private void RetrieveOpEvaluationElements(ParserRuleContext context, out (IParseTreeValue LHS, IParseTreeValue RHS, string Symbol) operandElements)
         {
-            opSymbol = string.Empty;
-            var values = new List<IParseTreeValue>();
-            var contextsOfInterest = NonWhitespaceChildren(context);
-            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
+            operandElements = (null, null, string.Empty);
+            foreach (var child in NonWhitespaceChildren(context))
             {
-                if (contextsOfInterest.ElementAt(idx) is ParserRuleContext ctxt)
+                if (child is ParserRuleContext ctxt)
                 {
-                    values.Add(_contextValues.GetValue(ctxt));
+                    if (operandElements.LHS is null)
+                    {
+                        operandElements.LHS = _contextValues.GetValue(ctxt);
+                    }
+                    else if (operandElements.RHS is null)
+                    {
+                        operandElements.RHS = _contextValues.GetValue(ctxt);
+                    }
                 }
                 else
                 {
-                    opSymbol = contextsOfInterest.ElementAt(idx).GetText();
+                    operandElements.Symbol = child.GetText();
                 }
             }
-            return values;
         }
 
         private void VisitUnaryResultContext(ParserRuleContext parserRuleContext)
         {
-            VisitImpl(parserRuleContext);
+            VisitChildren(parserRuleContext);
 
-            var contextsOfInterest = ParserRuleContextChildren(parserRuleContext);
-            for (var idx = 0; idx < contextsOfInterest.Count(); idx++)
+            foreach (var ctxt in ParserRuleContextChildren(parserRuleContext).Where(ct => HasResult(ct)))
             {
-                var ctxt = contextsOfInterest.ElementAt(idx);
-                if (_contextValues.Contains(ctxt))
-                {
-                    var value = _contextValues.GetValue(ctxt);
-                    StoreVisitResult(parserRuleContext, value);
-                }
+                StoreVisitResult(parserRuleContext, _contextValues.GetValue(ctxt));
+                return;
             }
         }
 
-        private void VisitImpl(ParserRuleContext context)
+        private void VisitChildren(ParserRuleContext context)
         {
-            if (!ContextHasResult(context))
+            if (!HasResult(context))
             {
                 foreach (var ctxt in ParserRuleContextChildren(context))
                 {
@@ -227,15 +252,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             }
         }
 
-        private static IEnumerable<ParserRuleContext> ParserRuleContextChildren(IParseTree ptParent)
-        {
-            return ((ParserRuleContext)ptParent).children.Where(ch => !(ch is VBAParser.WhiteSpaceContext) && ch is ParserRuleContext).Select(item => (ParserRuleContext)item);
-        }
+        private static IEnumerable<ParserRuleContext> ParserRuleContextChildren(ParserRuleContext ptParent)
+            => NonWhitespaceChildren(ptParent).Where(ch => ch is ParserRuleContext).Cast<ParserRuleContext>();
 
         private static IEnumerable<IParseTree> NonWhitespaceChildren(ParserRuleContext ptParent)
-        {
-            return ptParent.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext));
-        }
+            => ptParent.children.Where(ch => !(ch is VBAParser.WhiteSpaceContext));
 
         private bool TryGetLExprValue(VBAParser.LExprContext lExprContext, out string expressionValue, out string declaredTypeName)
         {
@@ -254,7 +275,39 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 return true;
             }
 
+            if (lExprContext.TryGetChildContext(out VBAParser.IndexExprContext idxExpr)
+                && ParseTreeValue.TryGetNonPrintingControlCharCompareToken(idxExpr.GetText(), out string comparableToken))
+            {
+                declaredTypeName = Tokens.String;
+                expressionValue = comparableToken;
+                return true;
+            }
+
             return false;
+        }
+
+        private Func<Declaration, (bool, string, string)> _valueDeclarationEvaluator;
+        private Func<Declaration, (bool, string, string)> ValuedDeclarationEvaluator
+        {
+            set
+            {
+                _valueDeclarationEvaluator = value;
+            }
+            get
+            {
+                return _valueDeclarationEvaluator ?? GetValuedDeclaration;
+            }
+        }
+
+
+        private (bool IsType, string ExpressionValue, string TypeName) GetValuedDeclaration(Declaration declaration)
+        {
+            if (declaration is ValuedDeclaration valuedDeclaration)
+            {
+                var typeName = GetBaseTypeForDeclaration(declaration);
+                return (true, valuedDeclaration.Expression, typeName);
+            }
+            return (false, null, null);
         }
 
         private void GetContextValue(ParserRuleContext context, out string declaredTypeName, out string expressionValue)
@@ -268,10 +321,42 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 expressionValue = rangeClauseIdentifierReference.IdentifierName;
                 declaredTypeName = GetBaseTypeForDeclaration(declaration);
 
-                if (declaration.DeclarationType.HasFlag(DeclarationType.Constant)
-                    || declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
+                (bool IsValuedDeclaration, string ExpressionValue, string TypeName) = ValuedDeclarationEvaluator(declaration);
+
+                if( IsValuedDeclaration)
                 {
-                    expressionValue = GetConstantDeclarationValueToken(declaration);
+                    expressionValue = ExpressionValue;
+                    declaredTypeName = TypeName;
+
+                    if (ParseTreeValue.TryGetNonPrintingControlCharCompareToken(expressionValue, out string resolvedValue))
+                    {
+                        expressionValue = resolvedValue;
+                        declaredTypeName = Tokens.String;
+                        return;
+                    }
+                    else if (long.TryParse(expressionValue, out _))
+                    {
+                        return;
+                    }
+                }
+
+                if (declaration.DeclarationType.HasFlag(DeclarationType.Constant))
+                {
+                    expressionValue = GetConstantContextValueToken(declaration.Context);
+                }
+                else if (declaration.DeclarationType.HasFlag(DeclarationType.EnumerationMember))
+                {
+                    declaredTypeName = Tokens.Long;
+                    expressionValue = GetConstantContextValueToken(declaration.Context);
+                    if (expressionValue.Equals(string.Empty))
+                    {
+                        if (_enumMembers is null)
+                        {
+                            LoadEnumMemberValues();
+                        }
+                        var enumValue = _enumMembers.SingleOrDefault(dt => dt.ConstantContext == declaration.Context);
+                        expressionValue = enumValue?.Value.ToString() ?? string.Empty;
+                    }
                 }
             }
         }
@@ -279,20 +364,24 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private bool TryGetIdentifierReferenceForContext(ParserRuleContext context, out IdentifierReference idRef)
         {
             idRef = null;
-            var identifierReferences = (_state.DeclarationFinder.MatchName(context.GetText()).Select(dec => dec.References)).SelectMany(rf => rf)
-                .Where(rf => rf.Context == context);
-            if (identifierReferences.Count() == 1)
+            if (IdRefRetriever != null)
             {
-                idRef = identifierReferences.First();
-                return true;
+                (bool success, IdentifierReference idReference) = IdRefRetriever(context);
+                idRef = idReference;
+                return success;
             }
             return false;
         }
 
-        private string GetConstantDeclarationValueToken(Declaration constantDeclaration)
+        private string GetConstantContextValueToken(ParserRuleContext context)
         {
-            var declarationContextChildren = constantDeclaration.Context.children.ToList();
-            var equalsSymbolIndex = declarationContextChildren.FindIndex(ch => ch.Equals(constantDeclaration.Context.GetToken(VBAParser.EQ, 0)));
+            if (context is null)
+            {
+                return string.Empty;
+            }
+
+            var declarationContextChildren = context.children.ToList();
+            var equalsSymbolIndex = declarationContextChildren.FindIndex(ch => ch.Equals(context.GetToken(VBAParser.EQ, 0)));
 
             var contextsOfInterest = new List<ParserRuleContext>();
             for (int idx = equalsSymbolIndex + 1; idx < declarationContextChildren.Count(); idx++)
@@ -309,7 +398,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 Visit(child);
                 if (_contextValues.TryGetValue(child, out IParseTreeValue value))
                 {
-                    return value.ValueText;
+                    return value.Token;
                 }
             }
             return string.Empty;
@@ -328,19 +417,6 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return localDeclaration is null ? declaration.AsTypeName : localDeclaration.AsTypeName;
         }
 
-        private static bool IsBinaryMathContext<T>(T context)
-        {
-            return context is VBAParser.MultOpContext   //MultOpContext includes both * and /
-                || context is VBAParser.AddOpContext    //AddOpContet includes both + and -
-                || context is VBAParser.PowOpContext
-                || context is VBAParser.ModOpContext;
-        }
-
-        private static bool IsUnaryMathContext<T>(T context)
-        {
-            return context is VBAParser.UnaryMinusOpContext;
-        }
-
         private static bool IsUnaryResultContext<T>(T context)
         {
             return context is VBAParser.SelectStartValueContext
@@ -349,21 +425,49 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 || context is VBAParser.SelectExpressionContext;
         }
 
-        private static bool IsBinaryLogicalContext<T>(T context)
+        private static bool IsBinaryOpEvaluationContext<T>(T context)
         {
-            return context is VBAParser.RelationalOpContext
-                || context is VBAParser.LogicalXorOpContext
-                || context is VBAParser.LogicalAndOpContext
-                || context is VBAParser.LogicalOrOpContext
-                || context is VBAParser.LogicalEqvOpContext;
+            if (context is VBAParser.ExpressionContext expressionContext)
+            {
+
+                return expressionContext.IsBinaryMathContext()
+                    || expressionContext.IsBinaryLogicalContext()
+                    || context is VBAParser.ConcatOpContext;
+            }
+            return false;
         }
 
-        private static bool IsUnaryLogicalContext<T>(T context)
+        public void InjectValuedDeclarationEvaluator( Func<Declaration, (bool, string, string)> func)
+            => ValuedDeclarationEvaluator = func;
+
+        private void LoadEnumMemberValues()
         {
-            return context is VBAParser.LogicalNotOpContext;
+            _enumMembers = new List<EnumMember>();
+            foreach (var enumStmt in _enumStmtContexts)
+            {
+                long enumAssignedValue = -1;
+                var enumConstContexts = enumStmt.children.Where(ch => ch is VBAParser.EnumerationStmt_ConstantContext).Cast<VBAParser.EnumerationStmt_ConstantContext>();
+                foreach (var enumConstContext in enumConstContexts)
+                {
+                    enumAssignedValue++;
+                    var enumMember = new EnumMember(enumConstContext, enumAssignedValue);
+                    if (enumMember.HasAssignment)
+                    {
+                        Visit(enumMember.ConstantContext);
+
+                        var valueText = GetConstantContextValueToken(enumMember.ConstantContext);
+                        if (!valueText.Equals(string.Empty))
+                        {
+                            enumMember.Value = long.Parse(valueText);
+                            enumAssignedValue = enumMember.Value;
+                        }
+                    }
+                    _enumMembers.Add(enumMember);
+                }
+            }
         }
     }
-    
+
     public class ValueResultEventArgs : EventArgs
     {
         public ValueResultEventArgs(ParserRuleContext context, IParseTreeValue value)

@@ -156,9 +156,6 @@
   <data name="MultipleDeclarationsInspection" xml:space="preserve">
     <value>Declaring multiple variables in the same instruction is legal, but should be used sparingly. Consider declaring variables closer to their usage, in a single instruction per declaration.</value>
   </data>
-  <data name="MultipleFolderAnnotationsInspection" xml:space="preserve">
-    <value>Rubberduck only uses the first '@Folder' annotation in a code module; consider removing extraneous ones.</value>
-  </data>
   <data name="NonReturningFunctionInspection" xml:space="preserve">
     <value>This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a 'Sub' procedure instead.</value>
   </data>
@@ -254,10 +251,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>This is the default setting, it does not need to be specified.</value>
   </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
-    <value>An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level; module and member annotations should only be specified once.</value>
-  </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
+    <value>An annotation meant to be specified at module level cannot be used to annotate members; annotations meant to be annotate members cannot be used at module level.</value>
   </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute isn't present. Module attributes and annotations need to be synchronized.</value>
@@ -327,5 +321,47 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   </data>
   <data name="SheetAccessedUsingStringInspection" xml:space="preserve">
     <value>Excel already defines a globally scoped object variable with this reference. Consider using the sheet's 'CodeName' property.</value>
+  </data>
+  <data name="ObsoleteMemberUsageInspection" xml:space="preserve">
+    <value>This member is marked '@Obsolete'. It should no longer be used, there should be a better alternative.</value>
+  </data>
+  <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
+    <value>Windows implementations of Visual Basic only support the StdCall calling convention. The CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - 'Bad DLL calling convention'. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled.</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>An annotation is specified multiple times, but is intended to be specified only once.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Modules without the '@Folder' annotation cannot receive custom groupings in the Code Explorer. </value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>On Local Error exists only for compatibility with previous versions of Visual Basic, and all Errors are treated as Local regardless of the On Local Error statement. Use of this keyword inaccurately gives the impression that there is a distinction between types of error handling when there is not.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>IsMissing is only intended to be called on optional arguments, and will only return correct results if the type of the argument is 'Variant' with no explicit default value. All other uses will return 'False'.</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>IsMissing is only intended to be called on arguments of the containing procedure, and almost all other usages will return 'False'. Passing any other expression to the function is the equivalent to 'VarType({expression}) = vbError', and in rare circumstances can cause the host application to crash.</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>An assignment is immediately overridden by another assignment or is never referenced.</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>A class module that contains members with underscores cannot be implemented by other classes. The underscore is used as a separator between the interface/object name and the implemented member name: having an underscore in the member name confuses the compiler, which then refuses to compile the project. Avoid underscores in public member names by following a 'PascalCase' naming convention.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>A procedure that returns an object may return 'Nothing'. That will cause a runtime error 91 - "Object variable or With block variable not set" on subsequent member access. Perform an 'Is Nothing' check after the 'Set' assignment to guard against runtime errors.</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Functions that are visible to Excel as User-Defined Functions will return a '#REF!' error when used on a Worksheet if they match the name of a valid cell reference. If the function is intended to be used as a UDF, it must be renamed. If the function is not intended to be used as a UDF, it should be scoped as 'Private' or moved out of a standard Module.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>A Rubberduck annotation is specified for a module or member, but the corresponding attribute has a different value. Module attributes and annotations need to be synchronized.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Module attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
   </data>
 </root>

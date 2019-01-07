@@ -68,7 +68,27 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("AccessSheetUsingCodeNameQuickFix", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refer to statically accessible sheet by its code name.
+        /// </summary>
+        public static string AddAttributeAnnotationQuickFix
+        {
+            get {
+                return ResourceManager.GetString("AddAttributeAnnotationQuickFix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refer to statically accessible sheet by its code name.
+        /// </summary>
+        public static string AddMissingAttributeQuickFix
+        {
+            get {
+                return ResourceManager.GetString("AddMissingAttributeQuickFix", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Add explicit &apos;Step&apos; clause.
         /// </summary>
@@ -77,7 +97,27 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("AddStepOneQuickFix", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add explicit &apos;Step&apos; clause.
+        /// </summary>
+        public static string AdjustAttributeAnnotationQuickFix
+        {
+            get {
+                return ResourceManager.GetString("AdjustAttributeAnnotationQuickFix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Add explicit &apos;Step&apos; clause.
+        /// </summary>
+        public static string AdjustAttributeValuesQuickFix
+        {
+            get {
+                return ResourceManager.GetString("AdjustAttributeValuesQuickFix", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Use early-bound Application.WorksheetFunction method..
         /// </summary>
@@ -187,6 +227,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change &apos;IsMissing&apos; call to test for default value..
+        /// </summary>
+        public static string IsMissingOnInappropriateArgumentQuickFix {
+            get {
+                return ResourceManager.GetString("IsMissingOnInappropriateArgumentQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Write variable on one line.
         /// </summary>
         public static string MakeSingleLineParameterQuickFix {
@@ -248,13 +297,42 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("RedundantByRefModifierQuickFix", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove comment.
+        /// </summary>
+        public static string RemoveAnnotationQuickFix
+        {
+            get {
+                return ResourceManager.GetString("RemoveAnnotationQuickFix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove comment.
+        /// </summary>
+        public static string RemoveAttributeQuickFix
+        {
+            get {
+                return ResourceManager.GetString("RemoveAttributeQuickFix", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Remove comment.
         /// </summary>
         public static string RemoveCommentQuickFix {
             get {
                 return ResourceManager.GetString("RemoveCommentQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove duplicated annotation.
+        /// </summary>
+        public static string RemoveDuplicatedAnnotationQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveDuplicatedAnnotationQuickFix", resourceCulture);
             }
         }
         
@@ -273,6 +351,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string RemoveEmptyIfBlockQuickFix {
             get {
                 return ResourceManager.GetString("RemoveEmptyIfBlockQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;On Local Error&apos; with &apos;On Error&apos;.
+        /// </summary>
+        public static string RemoveLocalErrorQuickFix {
+            get {
+                return ResourceManager.GetString("RemoveLocalErrorQuickFix", resourceCulture);
             }
         }
         

@@ -9,10 +9,10 @@ using Rubberduck.UI.Command.MenuItems;
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Resources;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.VersionCheck;
 using Application = System.Windows.Forms.Application;
@@ -32,8 +32,7 @@ namespace Rubberduck
         
         private Configuration _config;
 
-        public App(IVBE vbe, 
-            IMessageBox messageBox,
+        public App(IMessageBox messageBox,
             IGeneralConfigService configService,
             IAppMenu appMenus,
             IRubberduckHooks hooks,
@@ -105,6 +104,24 @@ namespace Rubberduck
             LogLevelHelper.SetMinimumLogLevel(LogLevel.FromOrdinal(_config.UserSettings.GeneralSettings.MinimumLogLevel));
         }
 
+        /// <summary>
+        /// Ensure that log level is changed to "none" after a successful
+        /// run of Rubberduck for first time. By default, we ship with 
+        /// log level set to Trace (0) but once it's installed and has
+        /// ran without problem, it should be set to None (6)
+        /// </summary>
+        private void UpdateLoggingLevelOnShutdown()
+        {
+            if (_config.UserSettings.GeneralSettings.UserEditedLogLevel ||
+                _config.UserSettings.GeneralSettings.MinimumLogLevel != LogLevel.Trace.Ordinal)
+            {
+                return;
+            }
+
+            _config.UserSettings.GeneralSettings.MinimumLogLevel = LogLevel.Off.Ordinal;
+            _configService.SaveConfiguration(_config);
+        }
+
         public void Startup()
         {
             EnsureLogFolderPathExists();
@@ -116,13 +133,13 @@ namespace Rubberduck
             
             CheckForLegacyIndenterSettings();
             _appMenus.Initialize();
-            _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts
+            _hooks.HookHotkeys(); // need to hook hotkeys before we localize menus, to correctly display ShortcutTexts            
             _appMenus.Localize();
 
             if (_config.UserSettings.GeneralSettings.CanCheckVersion)
             {
                 _checkVersionCommand.Execute(null);
-            }
+            }            
         }
 
         public void Shutdown()
@@ -131,6 +148,8 @@ namespace Rubberduck
             {
                 Debug.WriteLine("App calling Hooks.Detach.");
                 _hooks.Detach();
+
+                UpdateLoggingLevelOnShutdown();
             }
             catch
             {
@@ -162,21 +181,22 @@ namespace Rubberduck
 
         private static void LocalizeResources(CultureInfo culture)
         {
-            Resources.RubberduckUI.Culture = culture;
-            Resources.About.AboutUI.Culture = culture;
-            Resources.Inspections.InspectionInfo.Culture = culture;
-            Resources.Inspections.InspectionNames.Culture = culture;
-            Resources.Inspections.InspectionResults.Culture = culture;
-            Resources.Inspections.InspectionsUI.Culture = culture;
-            Resources.Inspections.QuickFixes.Culture = culture;
-            Resources.Menus.RubberduckMenus.Culture = culture;
-            Resources.RegexAssistant.RegexAssistantUI.Culture = culture;
-            Resources.Settings.SettingsUI.Culture = culture;
-            Resources.Settings.ToDoExplorerPage.Culture = culture;
-            Resources.Settings.UnitTestingPage.Culture = culture;
-            Resources.ToDoExplorer.ToDoExplorerUI.Culture = culture;
-            Resources.UnitTesting.AssertMessages.Culture = culture;
-            Resources.UnitTesting.TestExplorer.Culture = culture;
+            var localizers = AppDomain.CurrentDomain.GetAssemblies()
+                .SingleOrDefault(assembly => assembly.GetName().Name == "Rubberduck.Resources")
+                ?.DefinedTypes.SelectMany(type => type.DeclaredProperties.Where(prop =>
+                    prop.CanWrite && prop.Name.Equals("Culture") && prop.PropertyType == typeof(CultureInfo) &&
+                    (prop.SetMethod?.IsStatic ?? false)));
+
+            if (localizers == null)
+            {
+                return;
+            }
+
+            var args = new object[] { culture };
+            foreach (var localizer in localizers)
+            {
+                localizer.SetMethod.Invoke(null, args);
+            }
         }
 
         private void CheckForLegacyIndenterSettings()
@@ -207,14 +227,26 @@ namespace Rubberduck
         {
             var version = _version.CurrentVersion;
             GlobalDiagnosticsContext.Set("RubberduckVersion", version.ToString());
+
             var headers = new List<string>
             {
                 $"\r\n\tRubberduck version {version} loading:",
-                $"\tOperating System: {Environment.OSVersion.VersionString} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}",
-                $"\tHost Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}",
-                $"\tHost Version: {Application.ProductVersion}",
-                $"\tHost Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}", // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
+                $"\tOperating System: {Environment.OSVersion.VersionString} {(Environment.Is64BitOperatingSystem ? "x64" : "x86")}"
             };
+            try
+            {
+                headers.AddRange(new []
+                {
+                    $"\tHost Product: {Application.ProductName} {(Environment.Is64BitProcess ? "x64" : "x86")}",
+                    $"\tHost Version: {Application.ProductVersion}",
+                    $"\tHost Executable: {Path.GetFileName(Application.ExecutablePath).ToUpper()}", // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
+                });
+            }
+            catch
+            {
+                headers.Add("\tHost could not be determined.");
+            }
+
             LogLevelHelper.SetDebugInfo(string.Join(Environment.NewLine, headers));
         }
 

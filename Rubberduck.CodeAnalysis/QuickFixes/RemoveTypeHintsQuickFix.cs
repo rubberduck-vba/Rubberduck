@@ -3,26 +3,22 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class RemoveTypeHintsQuickFix : QuickFixBase
     {
-        private readonly RubberduckParserState _state;
-
-        public RemoveTypeHintsQuickFix(RubberduckParserState state)
+        public RemoveTypeHintsQuickFix()
             : base(typeof(ObsoleteTypeHintInspection))
-        {
-            _state = state;
-        }
+        {}
 
-        public override void Fix(IInspectionResult result)
+        public override void Fix(IInspectionResult result, IRewriteSession rewriteSession)
         {
             if (!string.IsNullOrWhiteSpace(result.Target.TypeHint))
             {
-                var rewriter = _state.GetRewriter(result.Target);
+                var rewriter = rewriteSession.CheckOutModuleRewriter(result.Target.QualifiedModuleName);
                 var typeHintContext = result.Context.GetDescendent<VBAParser.TypeHintContext>();
 
                 rewriter.Remove(typeHintContext);
@@ -55,11 +51,11 @@ namespace Rubberduck.Inspections.QuickFixes
 
             foreach (var reference in result.Target.References)
             {
-                var rewriter = _state.GetRewriter(reference.QualifiedModuleName);
                 var context = reference.Context.GetDescendent<VBAParser.TypeHintContext>();
 
                 if (context != null)
                 {
+                    var rewriter = rewriteSession.CheckOutModuleRewriter(reference.QualifiedModuleName);
                     rewriter.Remove(context);
                 }
             }

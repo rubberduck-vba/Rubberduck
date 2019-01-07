@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using NLog;
 using Rubberduck.Common;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
@@ -116,13 +117,14 @@ namespace Rubberduck.UI.Inspections
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
-        private ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
+        private ObservableCollection<IInspectionResult> _resultsAll = new ObservableCollection<IInspectionResult>();
+        private ObservableCollection<IInspectionResult> _resultsGroupedAndFiltered = new ObservableCollection<IInspectionResult>();
         public ObservableCollection<IInspectionResult> Results
         {
-            get => _results;
+            get => _resultsGroupedAndFiltered;
             private set
             {
-                _results = value;
+                _resultsGroupedAndFiltered = value;
                 OnPropertyChanged();
             }
         }
@@ -202,6 +204,7 @@ namespace Rubberduck.UI.Inspections
                                 .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
                                 .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
                                 .ToList());
+
                 }
 
                 _groupByInspectionType = value;
@@ -232,6 +235,85 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
+        private readonly List<CodeInspectionSeverity> _filterCriteria = new List<CodeInspectionSeverity>();
+
+        public bool FilterInspectionsByHint
+        {
+            get => _filterCriteria.Contains(CodeInspectionSeverity.Hint);
+            set
+            {
+                UpdateFilterCriteria(value, CodeInspectionSeverity.Hint);
+
+                FilterResults(_filterCriteria);
+                OnPropertyChanged();
+            }
+        }
+
+        public bool FilterInspectionsBySuggestion
+        {
+            get => _filterCriteria.Contains(CodeInspectionSeverity.Suggestion);
+            set
+            {
+                UpdateFilterCriteria(value, CodeInspectionSeverity.Suggestion);
+
+                FilterResults(_filterCriteria);
+                OnPropertyChanged();
+            }
+        }
+
+        public bool FilterInspectionsByWarning
+        {
+            get => _filterCriteria.Contains(CodeInspectionSeverity.Warning);
+            set
+            {
+                UpdateFilterCriteria(value, CodeInspectionSeverity.Warning);
+
+                FilterResults(_filterCriteria);
+                OnPropertyChanged();
+            }
+        }
+
+        public bool FilterInspectionsByError
+        {
+            get => _filterCriteria.Contains(CodeInspectionSeverity.Error);
+            set
+            {
+                UpdateFilterCriteria(value, CodeInspectionSeverity.Error);
+
+                FilterResults(_filterCriteria);
+                OnPropertyChanged();
+            }
+        }
+
+        private void UpdateFilterCriteria(bool isCriteria ,CodeInspectionSeverity criteria)
+        {
+            if (_filterCriteria.Contains(criteria) == isCriteria) { return; }
+
+            if (isCriteria)
+            {
+                _filterCriteria.Add(criteria);
+            }
+            else
+            {
+                _filterCriteria.Remove(criteria);
+            }
+        }
+
+        public void FilterResults(IEnumerable<CodeInspectionSeverity> inspections)
+        {
+            if (_filterCriteria.Any())
+            {
+                Results = new ObservableCollection<IInspectionResult>(_resultsAll
+                    .GroupBy(result => result.Inspection.Severity)
+                    .Where(group => _filterCriteria.Contains(group.Key))
+                    .SelectMany(x => x));
+            }
+            else
+            {
+                Results = _resultsAll;
+            }
+        }
+
         public INavigateCommand NavigateCommand { get; }
         public CommandBase SetInspectionTypeGroupingCommand { get; }
         public CommandBase SetLocationGroupingCommand { get; }
@@ -247,7 +329,7 @@ namespace Rubberduck.UI.Inspections
 
         private void OpenSettings(object param)
         {
-            using (var window = _settingsFormFactory.Create())
+            using (var window = _settingsFormFactory.Create(SettingsViews.InspectionSettings))
             {
                 window.ShowDialog();
                 _settingsFormFactory.Release(window);
@@ -288,6 +370,11 @@ namespace Rubberduck.UI.Inspections
             }
 
             if(_state.Status != ParserState.Ready)
+            {
+                return;
+            }
+
+            if (_state.Status == ParserState.Ready && e.OldState == ParserState.Busy)
             {
                 return;
             }
@@ -333,7 +420,8 @@ namespace Rubberduck.UI.Inspections
                     .ToList();
             }
 
-            Results = new ObservableCollection<IInspectionResult>(results);
+            _resultsAll = new ObservableCollection<IInspectionResult>(results);
+            Results = _resultsAll;
 
             _uiDispatcher.Invoke(() =>
             {
@@ -496,21 +584,21 @@ namespace Rubberduck.UI.Inspections
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-            if (_results == null)
+            if (_resultsAll == null)
             {
                 return;
             }
             ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
-            var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = _resultsAll.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
-            var resource = _results.Count == 1
+            var resource = _resultsAll.Count == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _resultsAll.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join("", _resultsAll.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(resultArray, title,columnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title,columnInfos);
             var rtfResults = ExportFormatter.RTF(resultArray, title);
@@ -529,10 +617,10 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteCopyResultsCommand(object parameter)
         {
-            return !IsBusy && _results != null && _results.Any();
+            return !IsBusy && _resultsAll != null && _resultsAll.Any();
         }
 
-        public Visibility EmptyUIRefreshVisibility => _state.Projects.Count > 0 ? Visibility.Hidden : Visibility.Visible;
+        public Visibility EmptyUIRefreshVisibility => _state.ProjectsProvider.Projects().Any() ? Visibility.Hidden : Visibility.Visible;
 
         public Visibility EmptyUIRefreshMessageVisibility => IsBusy ? Visibility.Hidden : Visibility.Visible;
 
