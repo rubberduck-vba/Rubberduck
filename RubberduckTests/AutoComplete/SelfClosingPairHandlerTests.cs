@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using Rubberduck.AutoComplete.Service;
+using Rubberduck.AutoComplete.SelfClosingPairs;
 using Rubberduck.VBEditor;
 
 namespace RubberduckTests.AutoComplete

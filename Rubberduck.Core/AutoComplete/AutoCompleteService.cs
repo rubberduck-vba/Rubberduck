@@ -5,7 +5,7 @@ using NLog;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.Events;
 
-namespace Rubberduck.AutoComplete.Service
+namespace Rubberduck.AutoComplete
 {
     public class AutoCompleteService : IDisposable
     {

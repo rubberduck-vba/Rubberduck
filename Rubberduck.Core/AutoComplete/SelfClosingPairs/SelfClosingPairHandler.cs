@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
-namespace Rubberduck.AutoComplete.Service
+namespace Rubberduck.AutoComplete.SelfClosingPairs
 {
     public class SelfClosingPairHandler : AutoCompleteHandlerBase
     {
