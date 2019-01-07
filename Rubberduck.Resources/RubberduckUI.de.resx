@@ -1240,7 +1240,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Microsoft-Access-Datenbanken({0})|{0}</value>
   </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>DPI-Unaware-Wert setzen</value>
+    <value>Korrektur für hochauflösende Displayskalierung</value>
   </data>
   <data name="TodoSettings_Caption" xml:space="preserve">
     <value>TODO Explorer</value>
@@ -1264,7 +1264,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Zu Projekt hinzufügen</value>
   </data>
   <data name="References_CaptionTemplate" xml:space="preserve">
-    <value>Füge Referenzen {0} hinzu oder entferne sie</value>
+    <value>Referenzen hinzufügen/entfernen - {0}</value>
   </data>
   <data name="References_Caption" xml:space="preserve">
     <value>Referenzen hinzufügen/entfernen</value>
@@ -1300,7 +1300,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
     <value>Angeheftet</value>
   </data>
   <data name="ReferenceSettings_FoldersHeader" xml:space="preserve">
-    <value>Projektverzeichnis</value>
+    <value>Projektverzeichnisse</value>
   </data>
   <data name="References_Projects" xml:space="preserve">
     <value>Projekte</value>
