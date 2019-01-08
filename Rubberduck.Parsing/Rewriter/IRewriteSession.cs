@@ -9,8 +9,15 @@ namespace Rubberduck.Parsing.Rewriter
         IModuleRewriter CheckOutModuleRewriter(QualifiedModuleName module);
         bool TryRewrite();
         IReadOnlyCollection<QualifiedModuleName> CheckedOutModules { get; }
-        bool IsInvalidated { get; }
-        void Invalidate();
+        RewriteSessionState Status { get; set; }
         CodeKind TargetCodeKind { get; }
+    }
+
+    public enum RewriteSessionState
+    {
+        Valid,
+        RewriteApplied,
+        OtherSessionsRewriteApplied,
+        StaleParseTree
     }
 }

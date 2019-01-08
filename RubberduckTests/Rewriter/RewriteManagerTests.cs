@@ -18,7 +18,7 @@ namespace RubberduckTests.Rewriter
         {
             var rewritingManager = RewritingManager(out _);
             var codePaneSession = rewritingManager.CheckOutCodePaneSession();
-            Assert.IsFalse(codePaneSession.IsInvalidated);
+            Assert.AreEqual(RewriteSessionState.Valid, codePaneSession.Status);
         }
 
 
@@ -28,13 +28,13 @@ namespace RubberduckTests.Rewriter
         {
             var rewritingManager = RewritingManager(out _);
             var attributesSession = rewritingManager.CheckOutAttributesSession();
-            Assert.IsFalse(attributesSession.IsInvalidated);
+            Assert.AreEqual(RewriteSessionState.Valid, attributesSession.Status);
         }
 
 
         [Test]
         [Category("Rewriter")]
-        public void InvalidateAllSessionsCallsInvalidateOnAllActiveSessions()
+        public void InvalidateAllSessionsSetsTheStatusToOtherSessionsRewriteAppliedForAllActiveSessions()
         {
             var rewritingManager = RewritingManager(out var mockFactory);
             rewritingManager.CheckOutCodePaneSession();
@@ -46,13 +46,43 @@ namespace RubberduckTests.Rewriter
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions().Concat(mockFactory.RequestedAttributesSessions()))
             {
-                mockSession.Verify(m => m.Invalidate(), Times.Once);
+                mockSession.VerifySet(m => m.Status = RewriteSessionState.OtherSessionsRewriteApplied, Times.Once);
             }
         }
 
         [Test]
         [Category("Rewriter")]
-        public void CallingTheRewritingAllowedCallbackFromAnActiveCodePaneSessionCallsInvalidateOnAllActiveSessions()
+        public void CallingTheRewritingAllowedCallbackFromAnActiveCodePaneSessionSetsItsStatusToRewriteApplied()
+        {
+            var rewritingManager = RewritingManager(out var mockFactory);
+            var codePaneSession = rewritingManager.CheckOutCodePaneSession();
+            rewritingManager.CheckOutAttributesSession();
+            rewritingManager.CheckOutCodePaneSession();
+            rewritingManager.CheckOutAttributesSession();
+
+            codePaneSession.TryRewrite();
+
+            Assert.AreEqual(RewriteSessionState.RewriteApplied, codePaneSession.Status);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void CallingTheRewritingAllowedCallbackFromAnActiveAttributesSessionSetsItsStatusToRewriteApplied()
+        {
+            var rewritingManager = RewritingManager(out var mockFactory);
+            rewritingManager.CheckOutCodePaneSession();
+            var attributesSession = rewritingManager.CheckOutAttributesSession();
+            rewritingManager.CheckOutCodePaneSession();
+            rewritingManager.CheckOutAttributesSession();
+
+            attributesSession.TryRewrite();
+
+            Assert.AreEqual(RewriteSessionState.RewriteApplied, attributesSession.Status);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void CallingTheRewritingAllowedCallbackFromAnActiveCodePaneSessionSetsTheStatusToOtherSessionsRewriteAppliedForAllActiveSessions()
         {
             var rewritingManager = RewritingManager(out var mockFactory);
             var codePaneSession = rewritingManager.CheckOutCodePaneSession();
@@ -64,13 +94,13 @@ namespace RubberduckTests.Rewriter
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions().Concat(mockFactory.RequestedAttributesSessions()))
             {
-                mockSession.Verify(m => m.Invalidate(), Times.Once);
+                mockSession.VerifySet(m => m.Status = RewriteSessionState.OtherSessionsRewriteApplied, Times.Once);
             }
         }
 
         [Test]
         [Category("Rewriter")]
-        public void CallingTheRewritingAllowedCallbackFromAnActiveAttributesSessionCallsInvalidateOnAllActiveSessions()
+        public void CallingTheRewritingAllowedCallbackFromAnActiveAttributesSessionSetsTheStatusToOtherSessionsRewriteAppliedForAllActiveSessions()
         {
             var rewritingManager = RewritingManager(out var mockFactory);
             rewritingManager.CheckOutCodePaneSession();
@@ -82,17 +112,98 @@ namespace RubberduckTests.Rewriter
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions().Concat(mockFactory.RequestedAttributesSessions()))
             {
-                mockSession.Verify(m => m.Invalidate(), Times.Once);
+                mockSession.VerifySet(m => m.Status = RewriteSessionState.OtherSessionsRewriteApplied, Times.Once);
             }
         }
 
         [Test]
         [Category("Rewriter")]
-        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveCodePaneSessionDoesNotCallInvalidateOnAnyActiveSession_InactiveDueToRewrite()
+        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveCodePaneSessionDoesNotSetItsStatusToRewriteApplied_InactiveDueToInvalidateAll()
+        {
+            var rewritingManager = RewritingManager(out var mockFactory);
+            var codePaneSession = rewritingManager.CheckOutCodePaneSession();
+
+            rewritingManager.InvalidateAllSessions();
+
+            rewritingManager.CheckOutCodePaneSession();
+            rewritingManager.CheckOutAttributesSession();
+
+            codePaneSession.TryRewrite();
+
+            var mockSession = mockFactory.RequestedCodePaneSessions()
+                .First(mockedSession => codePaneSession.Equals(mockedSession.Object));
+
+            mockSession.VerifySet(m => m.Status = RewriteSessionState.RewriteApplied, Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveAttributesSessionDoesNotSetItsStatusToRewriteApplied_InactiveDueToInvalidateAll()
+        {
+            var rewritingManager = RewritingManager(out var mockFactory);
+            var attributesSession = rewritingManager.CheckOutAttributesSession();
+
+            rewritingManager.InvalidateAllSessions();
+
+            rewritingManager.CheckOutCodePaneSession();
+            rewritingManager.CheckOutAttributesSession();
+
+            attributesSession.TryRewrite();
+
+            var mockSession = mockFactory.RequestedAttributesSessions()
+                .First(mockedSession => attributesSession == mockedSession.Object);
+
+            mockSession.VerifySet(m => m.Status = RewriteSessionState.RewriteApplied, Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveCodePaneSessionDoesNotSetItsStatusToRewriteApplied_InactiveDueToRewrite()
         {
             var rewritingManager = RewritingManager(out var mockFactory);
             var codePaneSession = rewritingManager.CheckOutCodePaneSession();
             var attributesSession = rewritingManager.CheckOutAttributesSession();
+
+            attributesSession.TryRewrite();
+
+            rewritingManager.CheckOutCodePaneSession();
+            rewritingManager.CheckOutAttributesSession();
+
+            codePaneSession.TryRewrite();
+
+            var mockSession = mockFactory.RequestedCodePaneSessions()
+                .First(mockedSession => codePaneSession == mockedSession.Object);
+
+            mockSession.VerifySet(m => m.Status = RewriteSessionState.RewriteApplied, Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveAttributesSessionDoesNotSetItsStatusToRewriteApplied_InactiveDueToRewrite()
+        {
+            var rewritingManager = RewritingManager(out var mockFactory);
+            var codePaneSession = rewritingManager.CheckOutCodePaneSession();
+            var attributesSession = rewritingManager.CheckOutAttributesSession();
+
+            codePaneSession.TryRewrite();
+
+            rewritingManager.CheckOutCodePaneSession();
+            rewritingManager.CheckOutAttributesSession();
+
+            attributesSession.TryRewrite();
+
+            var mockSession = mockFactory.RequestedAttributesSessions()
+                .First(mockedSession => attributesSession.Equals(mockedSession.Object));
+
+            mockSession.VerifySet(m => m.Status = RewriteSessionState.RewriteApplied, Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveCodePaneSessionDoesNotSetTheStatusToOtherSessionsRewriteAppliedForAnyActiveSession_InactiveDueToInvalidateAll()
+        {
+            var rewritingManager = RewritingManager(out var mockFactory);
+            var codePaneSession = rewritingManager.CheckOutCodePaneSession();
 
             rewritingManager.InvalidateAllSessions();
 
@@ -103,18 +214,17 @@ namespace RubberduckTests.Rewriter
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions()
                 .Concat(mockFactory.RequestedAttributesSessions())
-                .Where(session => session.Object != codePaneSession && session.Object != attributesSession))
+                .Where(session => session.Object != codePaneSession))
             {
-                mockSession.Verify(m => m.Invalidate(), Times.Never);
+                mockSession.VerifySet(m => m.Status = RewriteSessionState.OtherSessionsRewriteApplied, Times.Never);
             }
         }
 
         [Test]
         [Category("Rewriter")]
-        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveAttributesSessionDoesNotCallInvalidateOnAnyActiveSession_InactiveDueToRewrite()
+        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveAttributesSessionDoesNotSetTheStatusToOtherSessionsRewriteAppliedForAnyActiveSession_InactiveDueToInvalidateAll()
         {
             var rewritingManager = RewritingManager(out var mockFactory);
-            var codePaneSession = rewritingManager.CheckOutCodePaneSession();
             var attributesSession = rewritingManager.CheckOutAttributesSession();
 
             rewritingManager.InvalidateAllSessions();
@@ -122,19 +232,19 @@ namespace RubberduckTests.Rewriter
             rewritingManager.CheckOutCodePaneSession();
             rewritingManager.CheckOutAttributesSession();
 
-            codePaneSession.TryRewrite();
+            attributesSession.TryRewrite();
 
             foreach (var mockSession in mockFactory.RequestedCodePaneSessions()
                 .Concat(mockFactory.RequestedAttributesSessions())
-                .Where(session => session.Object != codePaneSession && session.Object != attributesSession))
+                .Where(session => session.Object != attributesSession))
             {
-                mockSession.Verify(m => m.Invalidate(), Times.Never);
+                mockSession.VerifySet(m => m.Status = RewriteSessionState.OtherSessionsRewriteApplied, Times.Never);
             }
         }
 
         [Test]
         [Category("Rewriter")]
-        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveCodePaneSessionDoesNotCallInvalidateOnAnyActiveSession_InactiveDueToInvalidateAll()
+        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveCodePaneSessionDoesNotSetTheStatusToOtherSessionsRewriteAppliedForAnyActiveSession_InactiveDueToRewrite()
         {
             var rewritingManager = RewritingManager(out var mockFactory);
             var codePaneSession = rewritingManager.CheckOutCodePaneSession();
@@ -151,13 +261,13 @@ namespace RubberduckTests.Rewriter
                 .Concat(mockFactory.RequestedAttributesSessions())
                 .Where(session => session.Object != codePaneSession && session.Object != attributesSession))
             {
-                mockSession.Verify(m => m.Invalidate(), Times.Never);
+                mockSession.VerifySet(m => m.Status = RewriteSessionState.OtherSessionsRewriteApplied, Times.Never);
             }
         }
 
         [Test]
         [Category("Rewriter")]
-        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveAttributesSessionDoesNotCallInvalidateOnAnyActiveSession_InactiveDueToInvalidateAll()
+        public void CallingTheRewritingAllowedCallbackFromANoLongerActiveAttributesSessionDoesNotSetTheStatusToOtherSessionsRewriteAppliedForAnyActiveSession_InactiveDueToRewrite()
         {
             var rewritingManager = RewritingManager(out var mockFactory);
             var codePaneSession = rewritingManager.CheckOutCodePaneSession();
@@ -174,7 +284,7 @@ namespace RubberduckTests.Rewriter
                 .Concat(mockFactory.RequestedAttributesSessions())
                 .Where( session => session.Object != codePaneSession && session.Object != attributesSession))
             {
-                mockSession.Verify(m => m.Invalidate(), Times.Never);
+                mockSession.VerifySet(m => m.Status = RewriteSessionState.OtherSessionsRewriteApplied, Times.Never);
             }
         }
 
@@ -259,9 +369,17 @@ namespace RubberduckTests.Rewriter
         {
             var mockSession = new Mock<IRewriteSession>();
             mockSession.Setup(m => m.TryRewrite()).Callback(() => rewritingAllowed.Invoke(mockSession.Object));
-            var isInvalidated = false;
-            mockSession.Setup(m => m.IsInvalidated).Returns(() => isInvalidated);
-            mockSession.Setup(m => m.Invalidate()).Callback(() => isInvalidated = true);
+            var status = RewriteSessionState.Valid;
+            mockSession.SetupGet(m => m.Status).Returns(status);
+            mockSession.SetupSet(m => m.Status = It.IsAny<RewriteSessionState>())
+                .Callback<RewriteSessionState>( value =>
+                {
+                    if (status == RewriteSessionState.Valid)
+                    {
+                        status = value;
+                        mockSession.SetupGet(m => m.Status).Returns(status);
+                    }
+                }); 
             mockSession.Setup(m => m.TargetCodeKind).Returns(targetCodeKind);
 
             var checkedOutModules = new HashSet<QualifiedModuleName>();

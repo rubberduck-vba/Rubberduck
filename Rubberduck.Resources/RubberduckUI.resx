@@ -1393,7 +1393,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>TODO Explorer</value>
   </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>Set DPI Unaware</value>
+    <value>Correction for high-resolution display scalings</value>
   </data>
   <data name="References_BrowseFilterAccess" xml:space="preserve">
     <value>Microsoft Access Databases({0})|{0}</value>
@@ -1404,7 +1404,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
   </data>
   <data name="References_BrowseFilterWord" xml:space="preserve">
-    <value>Word Documents({0})|{0}</value>
+    <value>Word Documents ({0})|{0}</value>
     <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
   </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">

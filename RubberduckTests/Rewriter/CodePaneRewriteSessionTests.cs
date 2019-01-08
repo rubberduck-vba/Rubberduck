@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
@@ -41,7 +40,7 @@ namespace RubberduckTests.Rewriter
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
             var otherModule = new QualifiedModuleName("TestProject", string.Empty, "OtherTestModule");
             rewriteSession.CheckOutModuleRewriter(module);
-            rewriteSession.Invalidate();
+            rewriteSession.Status = RewriteSessionState.OtherSessionsRewriteApplied;
             rewriteSession.CheckOutModuleRewriter(otherModule);
 
             rewriteSession.TryRewrite();
@@ -99,9 +98,9 @@ namespace RubberduckTests.Rewriter
             Assert.AreEqual(CodeKind.CodePaneCode, rewriteSession.TargetCodeKind);
         }
 
-        protected override IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider)
+        protected override IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false)
         {
-            mockProvider = new MockRewriterProvider();
+            mockProvider = new MockRewriterProvider(rewritersAreDirty);
             return new CodePaneRewriteSession(parseManager, mockProvider, rewritingAllowed);
         }
     }
