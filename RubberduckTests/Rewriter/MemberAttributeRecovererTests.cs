@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -45,7 +46,8 @@ End Function";
             using (state)
             {
                 var attributesUpdater = new AttributesUpdater(state);
-                var memberAttributeRecoverer = new MemberAttributeRecoverer(state, state, attributesUpdater);
+                var mockFailureNotifier = new Mock<IMemberAttributeRecoveryFailureNotifier>(); 
+                var memberAttributeRecoverer = new MemberAttributeRecoverer(state, state, attributesUpdater, mockFailureNotifier.Object);
                 memberAttributeRecoverer.RewritingManager = rewritingManager;
 
                 var fooDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function)
@@ -90,7 +92,8 @@ End Function";
             using (state)
             {
                 var attributesUpdater = new AttributesUpdater(state);
-                var memberAttributeRecoverer = new MemberAttributeRecoverer(state, state, attributesUpdater);
+                var mockFailureNotifier = new Mock<IMemberAttributeRecoveryFailureNotifier>();
+                var memberAttributeRecoverer = new MemberAttributeRecoverer(state, state, attributesUpdater, mockFailureNotifier.Object);
                 memberAttributeRecoverer.RewritingManager = rewritingManager;
 
                 var modulesToRecoverMemberAttributesIn = new List<QualifiedModuleName> { component.QualifiedModuleName };
@@ -131,7 +134,8 @@ End Function";
             using (state)
             {
                 var attributesUpdater = new AttributesUpdater(state);
-                var memberAttributeRecoverer = new MemberAttributeRecoverer(state, state, attributesUpdater);
+                var mockFailureNotifier = new Mock<IMemberAttributeRecoveryFailureNotifier>();
+                var memberAttributeRecoverer = new MemberAttributeRecoverer(state, state, attributesUpdater, mockFailureNotifier.Object);
                 memberAttributeRecoverer.RewritingManager = rewritingManager;
 
                 var fooDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function)
@@ -232,7 +236,8 @@ End Function";
             using (state)
             {
                 var attributesUpdater = new AttributesUpdater(state);
-                var memberAttributeRecoverer = new MemberAttributeRecoverer(state, state, attributesUpdater);
+                var mockFailureNotifier = new Mock<IMemberAttributeRecoveryFailureNotifier>();
+                var memberAttributeRecoverer = new MemberAttributeRecoverer(state, state, attributesUpdater, mockFailureNotifier.Object);
                 memberAttributeRecoverer.RewritingManager = rewritingManager;
 
                 var recoveryModule = state.DeclarationFinder.UserDeclarations(DeclarationType.Module)

@@ -17,19 +17,22 @@ namespace Rubberduck.Parsing.Rewriter
         private readonly IParseManager _parseManager;
         private readonly IAttributesUpdater _attributesUpdater;
         private IRewritingManager _rewritingManager;
+        private readonly IMemberAttributeRecoveryFailureNotifier _failureNotifier;
 
         private readonly
             IDictionary<QualifiedModuleName, IDictionary<string, HashSet<AttributeNode>>> _attributesToRecover
                 = new Dictionary<QualifiedModuleName, IDictionary<string, HashSet<AttributeNode>>>();
+        private readonly HashSet<QualifiedMemberName> _missingMembers = new HashSet<QualifiedMemberName>();
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public MemberAttributeRecoverer(IDeclarationFinderProvider declarationFinderProvider,
-            IParseManager parseManager, IAttributesUpdater attributesUpdater)
+            IParseManager parseManager, IAttributesUpdater attributesUpdater, IMemberAttributeRecoveryFailureNotifier failureNotifier)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;
             _attributesUpdater = attributesUpdater;
+            _failureNotifier = failureNotifier;
         }
 
         //This needs to be property injected because this class will be constructor injected into the RewritingManager that needs to set itself as the dependency here.
@@ -101,6 +104,8 @@ namespace Rubberduck.Parsing.Rewriter
             StopRecoveringAttributesOnNextParse();
             
             var rewriteSession = _rewritingManager.CheckOutAttributesSession();
+
+            _missingMembers.Clear();
             foreach (var module in _attributesToRecover.Keys)
             {
                 RecoverAttributes(rewriteSession, module, _attributesToRecover[module]);
@@ -112,11 +117,31 @@ namespace Rubberduck.Parsing.Rewriter
                 return;
             }
 
+            if (rewriteSession.Status != RewriteSessionState.Valid)
+            {
+                _failureNotifier.NotifyRewriteFailed(rewriteSession.Status);
+                return;
+            }
+
             CancelTheCurrentParse();
 
-            Task.Run(() => rewriteSession.TryRewrite());
+            Task.Run(() => Apply(rewriteSession));
 
             EndTheCurrentParse(e.Token);
+        }
+
+        private void Apply(IRewriteSession rewriteSession)
+        {
+
+            var rewriteSucceeded = rewriteSession.TryRewrite();
+            if (!rewriteSucceeded)
+            {
+                _failureNotifier.NotifyRewriteFailed(rewriteSession.Status);
+            }
+            else if (_missingMembers.Any())
+            {
+                _failureNotifier.NotifyMembersForRecoveryNotFound(_missingMembers);
+            }
         }
 
         private void StopRecoveringAttributesOnNextParse()
@@ -140,7 +165,9 @@ namespace Rubberduck.Parsing.Rewriter
 
             if (membersWithAttributesToRecover.Count != declarationsWithAttributesToRecover.Count)
             {
-                LogFailureToRecoverAllAttributes(module, membersWithAttributesToRecover, declarationsWithAttributesToRecover);
+                var membersWithoutDeclarations = MembersWithoutDeclarations(membersWithAttributesToRecover, declarationsWithAttributesToRecover);
+                LogFailureToRecoverAllAttributes(module, membersWithoutDeclarations);
+                _missingMembers.UnionWith(membersWithoutDeclarations.Select(memberName => new QualifiedMemberName(module, memberName)));
             }
 
             foreach (var declaration in declarationsWithAttributesToRecover)
@@ -149,12 +176,16 @@ namespace Rubberduck.Parsing.Rewriter
             }
         }
 
-        private void LogFailureToRecoverAllAttributes(QualifiedModuleName module, IEnumerable<string> membersWithAttributesToRecover, List<Declaration> declarationsWithAttributesToRecover)
+        private static ICollection<string> MembersWithoutDeclarations(HashSet<string> membersWithAttributesToRecover, IEnumerable<Declaration> declarationsWithAttributesToRecover)
         {
-            _logger.Warn("Could not recover the attributes for all members because one or more members could no longer be found.");
-
             var membersWithoutDeclarations = membersWithAttributesToRecover.ToHashSet();
             membersWithoutDeclarations.ExceptWith(declarationsWithAttributesToRecover.Select(decl => decl.IdentifierName));
+            return membersWithoutDeclarations;
+        }
+
+        private void LogFailureToRecoverAllAttributes(QualifiedModuleName module, IEnumerable<string> membersWithoutDeclarations)
+        {
+            _logger.Warn("Could not recover the attributes for all members because one or more members could no longer be found.");
             foreach (var member in membersWithoutDeclarations)
             {
                 _logger.Trace($"Could not recover the attributes for member {member} in module {module} because a member of that name exists no longer.");
