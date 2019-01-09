@@ -166,5 +166,10 @@ namespace Rubberduck.Inspections.Abstract
             _logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), _stopwatch.ElapsedMilliseconds);
             return result;
         }
+
+        public virtual bool ChangesInvalidateResult(IInspectionResult result, ICollection<QualifiedModuleName> modifiedModules)
+        {
+            return true;
+        }
     }
 }

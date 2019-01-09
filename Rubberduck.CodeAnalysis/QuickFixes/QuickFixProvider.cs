@@ -5,7 +5,6 @@ using System.Linq;
 using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
@@ -14,11 +13,13 @@ namespace Rubberduck.Inspections.QuickFixes
     public class QuickFixProvider : IQuickFixProvider
     {
         private readonly IRewritingManager _rewritingManager;
+        private readonly IQuickFixFailureNotifier _failureNotifier;
         private readonly Dictionary<Type, HashSet<IQuickFix>> _quickFixes = new Dictionary<Type, HashSet<IQuickFix>>();
 
-        public QuickFixProvider(IRewritingManager rewritingManager, IEnumerable<IQuickFix> quickFixes)
+        public QuickFixProvider(IRewritingManager rewritingManager, IQuickFixFailureNotifier failureNotifier, IEnumerable<IQuickFix> quickFixes)
         {
             _rewritingManager = rewritingManager;
+            _failureNotifier = failureNotifier;
             foreach (var quickFix in quickFixes)
             {
                 foreach (var supportedInspection in quickFix.SupportedInspections)
@@ -78,7 +79,15 @@ namespace Rubberduck.Inspections.QuickFixes
 
             var rewriteSession = RewriteSession(fix.TargetCodeKind);
             fix.Fix(result, rewriteSession);
-            rewriteSession.TryRewrite();
+            Apply(rewriteSession);
+        }
+
+        private void Apply(IRewriteSession rewriteSession)
+        {
+            if (!rewriteSession.TryRewrite())
+            {
+                _failureNotifier.NotifyQuickFixExecutionFailure(rewriteSession.Status);
+            }
         }
 
         private IRewriteSession RewriteSession(CodeKind targetCodeKind)
@@ -115,7 +124,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 fix.Fix(result, rewriteSession);
             }
-            rewriteSession.TryRewrite();
+            Apply(rewriteSession);
         }
 
         public void FixInModule(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -137,7 +146,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 fix.Fix(result, rewriteSession);
             }
-            rewriteSession.TryRewrite();
+            Apply(rewriteSession);
         }
 
         public void FixInProject(IQuickFix fix, QualifiedSelection selection, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -159,7 +168,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 fix.Fix(result, rewriteSession);
             }
-            rewriteSession.TryRewrite();
+            Apply(rewriteSession);
         }
 
         public void FixAll(IQuickFix fix, Type inspectionType, IEnumerable<IInspectionResult> results)
@@ -181,7 +190,7 @@ namespace Rubberduck.Inspections.QuickFixes
 
                 fix.Fix(result, rewriteSession);
             }
-            rewriteSession.TryRewrite();
+            Apply(rewriteSession);
         }
 
         public bool HasQuickFixes(IInspectionResult inspectionResult)

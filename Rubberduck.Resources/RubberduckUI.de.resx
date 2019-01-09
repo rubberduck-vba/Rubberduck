@@ -1227,4 +1227,124 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="IndenterSettings_EmptyLineHeading" xml:space="preserve">
     <value>Leerzeilenbehandlung:</value>
   </data>
+  <data name="References_BrowseFilterAllFiles" xml:space="preserve">
+    <value>Alle Dateien(*.*)|*.*</value>
+  </data>
+  <data name="References_BrowseFilterExcel" xml:space="preserve">
+    <value>Microsoft-Excel-Dateien ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterPowerPoint" xml:space="preserve">
+    <value>PowerPoint-Addin-Dateien({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterAccess" xml:space="preserve">
+    <value>Microsoft-Access-Datenbanken({0})|{0}</value>
+  </data>
+  <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
+    <value>Korrektur für hochauflösende Displayskalierung</value>
+  </data>
+  <data name="TodoSettings_Caption" xml:space="preserve">
+    <value>TODO Explorer</value>
+  </data>
+  <data name="TodoSettings_Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="TodoSettings_TextLabel" xml:space="preserve">
+    <value>Text:</value>
+  </data>
+  <data name="ReferenceSettings_FixBroken" xml:space="preserve">
+    <value>Versuche fehlerhafte Referenzen zu reparieren</value>
+  </data>
+  <data name="References_Version" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="References_BrowseFilterActiveX" xml:space="preserve">
+    <value>ActiveX-Kontrollelemente (*.ocx)|*.ocx</value>
+  </data>
+  <data name="References_AddToolTip" xml:space="preserve">
+    <value>Zu Projekt hinzufügen</value>
+  </data>
+  <data name="References_CaptionTemplate" xml:space="preserve">
+    <value>Referenzen hinzufügen/entfernen - {0}</value>
+  </data>
+  <data name="References_Caption" xml:space="preserve">
+    <value>Referenzen hinzufügen/entfernen</value>
+  </data>
+  <data name="References_BrowseFilterVisio" xml:space="preserve">
+    <value>Alle Visio-Dateien ({0})|{0}</value>
+  </data>
+  <data name="ApplyButtonText" xml:space="preserve">
+    <value>Ausführen</value>
+  </data>
+  <data name="ReferenceSettings_FolderDialogHeader" xml:space="preserve">
+    <value>Projektverzeichnis öffnen</value>
+  </data>
+  <data name="References_BrowseCaption" xml:space="preserve">
+    <value>Verzeichnis der Referenz öffnen</value>
+  </data>
+  <data name="References_AddFailedCaption" xml:space="preserve">
+    <value>Hinzufügen der Referenz fehlgeschlagen</value>
+  </data>
+  <data name="References_BrowseFilterExecutable" xml:space="preserve">
+    <value>Ausführbare Dateien (*.exe;*.dll)|*.exe;*.dll</value>
+  </data>
+  <data name="References_Locale" xml:space="preserve">
+    <value>Sprache:</value>
+  </data>
+  <data name="References_BrowseFilterOutlook" xml:space="preserve">
+    <value>Outlook-VBA-Dateien ({0})|{0}</value>
+  </data>
+  <data name="References_PinToolTip" xml:space="preserve">
+    <value>Referenz anheften</value>
+  </data>
+  <data name="References_Pinned" xml:space="preserve">
+    <value>Angeheftet</value>
+  </data>
+  <data name="ReferenceSettings_FoldersHeader" xml:space="preserve">
+    <value>Projektverzeichnisse</value>
+  </data>
+  <data name="References_Projects" xml:space="preserve">
+    <value>Projekte</value>
+  </data>
+  <data name="References_BrowseFilterWord" xml:space="preserve">
+    <value>Word-Dokumente ({0})|{0}</value>
+  </data>
+  <data name="References_BrowseFilterTypes" xml:space="preserve">
+    <value>Typbibliotheken (*.olb;*.tlb;*.dll)|*.olb;*.tlb;*.dll</value>
+  </data>
+  <data name="References_TypeLibs" xml:space="preserve">
+    <value>Typbibliotheken</value>
+  </data>
+  <data name="ReferenceSettings_TrackHostReferences" xml:space="preserve">
+    <value>Verfolge nicht von Rubberduck hinzugefügte Referenzen</value>
+  </data>
+  <data name="References_DefaultLocale" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="References_SubCaption" xml:space="preserve">
+    <value>Wähle Typbibliotheken und VB-Projekte zum Hinzufügen oder Entfernen.</value>
+  </data>
+  <data name="References_SearchPlaceholder" xml:space="preserve">
+    <value>Nach Referenz suchen...</value>
+  </data>
+  <data name="References" xml:space="preserve">
+    <value>Referenzen</value>
+  </data>
+  <data name="References_BrowseFilterPublisher" xml:space="preserve">
+    <value>Publisher-Dateien ({0}|{0}</value>
+  </data>
+  <data name="ReferenceSettings_RecentTracked" xml:space="preserve">
+    <value>Zuletzt verfolgte Referenzen</value>
+  </data>
+  <data name="References_Recent" xml:space="preserve">
+    <value>Zuletzt verwendet</value>
+  </data>
+  <data name="References_RemoveToolTip" xml:space="preserve">
+    <value>Vom Projekt enfernen</value>
+  </data>
+  <data name="References_MoveDownToolTip" xml:space="preserve">
+    <value>Aufwärts bewegen</value>
+  </data>
+  <data name="References_MoveUpToolTip" xml:space="preserve">
+    <value>Abwärts bewegen</value>
+  </data>
 </root>

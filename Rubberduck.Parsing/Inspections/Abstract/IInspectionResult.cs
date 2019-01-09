@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -14,5 +15,6 @@ namespace Rubberduck.Parsing.Inspections.Abstract
         Declaration Target { get; }
         ParserRuleContext Context { get; }
         dynamic Properties { get; }
+        bool ChangesInvalidateResult(ICollection<QualifiedModuleName> modifiedModules);
     }
 }

@@ -72,6 +72,12 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
                 throw new ArgumentNullException();
             }
 
+            if (ParseTreeValue.TryGetNonPrintingControlCharCompareToken(expression, out string comparableToken))
+            {
+                var charConversion = new TypeTokenPair(Tokens.String, comparableToken);
+                return ParseTreeValue.CreateValueType(charConversion);
+            }
+
             var goalTypeTokenPair = new TypeTokenPair(declaredTypeName, null);
             var typeToken = TypeTokenPair.ConformToType(declaredTypeName, expression);
             if (typeToken.HasValue)

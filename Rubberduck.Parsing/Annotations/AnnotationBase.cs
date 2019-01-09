@@ -6,7 +6,7 @@ namespace Rubberduck.Parsing.Annotations
 {
     public abstract class AnnotationBase : IAnnotation
     {
-        public const string ANNOTATION_MARKER = "'@";
+        public const string ANNOTATION_MARKER = "@";
 
         private readonly Lazy<int?> _annotatedLine;
 

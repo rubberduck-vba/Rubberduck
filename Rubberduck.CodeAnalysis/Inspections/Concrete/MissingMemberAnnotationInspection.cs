@@ -77,10 +77,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private static string AttributeBaseName(Declaration declaration, AttributeNode attribute)
         {
-            var attributeName = attribute.Name;
-            return attributeName.StartsWith($"{declaration.IdentifierName}.") 
-                ? attributeName.Substring(declaration.IdentifierName.Length + 1) 
-                : attributeName;
+            return Attributes.AttributeBaseName(attribute.Name, declaration.IdentifierName);
         }
     }
 }
