@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.ComClientLibrary.UnitTesting.Mocks;
+using Rubberduck.Parsing.ComReflection.TypeLibReflection;
 using Rubberduck.Resources.Registration;
-using Scripting;
 
 namespace RubberduckTests.ComMock
 {
@@ -15,6 +16,9 @@ namespace RubberduckTests.ComMock
         // NOTE: this class includes unit tests that deals with COM internals. To ensure 
         // the tests work, it's best to stick to only COM objects that are a part of 
         // Windows such as Scripting library (scrrun.dll)
+
+        private static Guid CLSID_FileSystemObject = new Guid("0D43FE01-F093-11CF-8940-00A0C9054228");
+        private static Guid IID_IFileSystem3 = new Guid("2A0B9D10-4B87-11D3-A97A-00104B365C9F");
 
         [Test]
         public void MockProvider_Returns_ComMocked()
@@ -103,6 +107,23 @@ namespace RubberduckTests.ComMock
         }
 
         [Test]
+        [TestCase("Scripting.FileSystemObject", "Scripting.FileSystemObject")]
+        [TestCase("Scripting.FileSystemObject", "scripting.filesystemobject")]
+        [TestCase("Scripting.FileSystemObject", "Scripting.Filesystemobject")]
+        [TestCase("Scripting.FileSystemObject", "SCRIPTING.FILESYSTEMOBJECT")]
+        [TestCase("Scripting.FileSystemObject", "sCrIpTiNg.FiLeSyStEmObJeCt")]
+        public void Mock_Returns_Same_Type(string input1, string input2)
+        {
+            var provider1 = new MockProvider();
+            var provider2 = new MockProvider();
+
+            var mock1 = provider1.Mock(input1);
+            var mock2 = provider2.Mock(input2);
+
+            Assert.AreEqual(mock1.Object.GetType(), mock2.Object.GetType());
+        }
+
+        [Test]
         public void Mock_NoSetup_Returns_Null()
         {
             var pUnk = IntPtr.Zero;
@@ -115,14 +136,13 @@ namespace RubberduckTests.ComMock
                 var obj = mock.Object;
 
                 pUnk = Marshal.GetIUnknownForObject(obj);
-                var iid = typeof(IFileSystem3).GUID;
-                var hr = Marshal.QueryInterface(pUnk, ref iid, out pMocked);
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pMocked);
                 if (hr != 0)
                 {
                     throw new InvalidCastException("QueryInterface failed on the mocked type");
                 }
 
-                dynamic proxy =  Marshal.GetObjectForIUnknown(pMocked);
+                dynamic proxy = Marshal.GetObjectForIUnknown(pMocked);
                 
                 Assert.IsNull(proxy.GetTempName());
                 Assert.IsNull(proxy.BuildPath("abc", "def"));
@@ -150,8 +170,7 @@ namespace RubberduckTests.ComMock
 
                 pUnk = Marshal.GetIUnknownForObject(obj);
                 
-                var guid = typeof(IFileSystem3).GUID;
-                var hr = Marshal.QueryInterface(pUnk, ref guid, out pProxy);
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
                 if (hr != 0)
                 {
                     throw new InvalidCastException("QueryInterface failed on the proxy type");
@@ -172,6 +191,9 @@ namespace RubberduckTests.ComMock
         [TestCase("", "")]
         [TestCase(null, null)]
         [TestCase("abc", null)]
+        [TestCase(null, "def")]
+        [TestCase("abc", "")]
+        [TestCase("", "def")]
         public void Mock_Setup_Args_Returns_Specified_Value(string input1, string input2)
         {
             var pUnk = IntPtr.Zero;
@@ -182,13 +204,12 @@ namespace RubberduckTests.ComMock
                 var expected = "foobar";
                 var provider = new MockProvider();
                 var mock = provider.Mock("Scripting.FileSystemObject");
-                mock.SetupWithReturns("BuildPath", expected, new object[] {provider.It().IsAny(), provider.It().IsAny()});
+                mock.SetupWithReturns("BuildPath", expected, new object[] {provider.It.IsAny(), provider.It.IsAny()});
                 var obj = mock.Object;
 
                 pUnk = Marshal.GetIUnknownForObject(obj);
 
-                var guid = typeof(IFileSystem3).GUID;
-                var hr = Marshal.QueryInterface(pUnk, ref guid, out pProxy);
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
                 if (hr != 0)
                 {
                     throw new InvalidCastException("QueryInterface failed on the proxy type");
@@ -205,12 +226,14 @@ namespace RubberduckTests.ComMock
         }
 
         [Test]
-        [TestCase("abc", "def", "foobar")]
-        [TestCase("def", "abc", null)]
-        [TestCase("", "", null)]
+        [TestCase("foobar", "abc", "def")]
+        [TestCase("foobar", "", "")]
         [TestCase(null, null, null)]
-        [TestCase("abc", null, null)]
-        public void Mock_Setup_Specified_Args_Returns_Specified_Value(string input1, string input2, string expected)
+        [TestCase(null, "abc", null)]
+        [TestCase(null, null, "def")]
+        [TestCase("foobar", "abc", "")]
+        [TestCase("foobar", "", "def")]
+        public void Mock_Setup_NonEmpty_Args_Returns_Specified_Value(string expected, string input1, string input2)
         {
             var pUnk = IntPtr.Zero;
             var pProxy = IntPtr.Zero;
@@ -219,13 +242,12 @@ namespace RubberduckTests.ComMock
             {
                 var provider = new MockProvider();
                 var mock = provider.Mock("Scripting.FileSystemObject");
-                mock.SetupWithReturns("BuildPath", expected, new object[] { provider.It().Is("abc"), provider.It().Is("def") });
+                mock.SetupWithReturns("BuildPath", expected, new object[] { provider.It.IsNotNull(), provider.It.IsNotNull() });
                 var obj = mock.Object;
 
                 pUnk = Marshal.GetIUnknownForObject(obj);
 
-                var guid = typeof(IFileSystem3).GUID;
-                var hr = Marshal.QueryInterface(pUnk, ref guid, out pProxy);
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
                 if (hr != 0)
                 {
                     throw new InvalidCastException("QueryInterface failed on the proxy type");
@@ -240,5 +262,212 @@ namespace RubberduckTests.ComMock
                 if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
             }
         }
+
+        [Test]
+        [TestCase("foobar" ,"abc", "def")]
+        [TestCase(null, "def", "abc")]
+        [TestCase(null, "", "")]
+        [TestCase(null, null, null)]
+        [TestCase(null, "abc", null)]
+        public void Mock_Setup_Specified_Args_Returns_Specified_Value(string expected, string input1, string input2)
+        {
+            var pUnk = IntPtr.Zero;
+            var pProxy = IntPtr.Zero;
+
+            try
+            {
+                var provider = new MockProvider();
+                var mock = provider.Mock("Scripting.FileSystemObject");
+                mock.SetupWithReturns("BuildPath", "foobar", new object[] { provider.It.Is("abc"), provider.It.Is("def") });
+                var obj = mock.Object;
+
+                pUnk = Marshal.GetIUnknownForObject(obj);
+
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
+                if (hr != 0)
+                {
+                    throw new InvalidCastException("QueryInterface failed on the proxy type");
+                }
+
+                dynamic mocked = Marshal.GetObjectForIUnknown(pProxy);
+                Assert.AreEqual(expected, mocked.BuildPath(input1, input2));
+            }
+            finally
+            {
+                if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+            }
+        }
+
+        [Test]
+        [TestCase("foobar", "foo", "bar", new[] { "foo", "baz" }, new[] { "bar", "baz" })]
+        [TestCase("foobar", "baz", "baz", new[] { "foo", "baz" }, new[] { "bar", "baz" })]
+        [TestCase("foobar", "foo", "bar", new[] { "foo" }, new[] { "bar" })]
+        [TestCase(null, "bar", "foo", new[] { "foo" }, new[] { "bar" })]
+        [TestCase(null, "derp", "duh", new[] { "foo", "baz" }, new[] { "bar", "baz" })]
+        public void Mock_Setup_Args_List_Returns_Specified_Value(string expected, string input1, string input2, string[] list1, string[] list2)
+        {
+            var pUnk = IntPtr.Zero;
+            var pProxy = IntPtr.Zero;
+
+            try
+            {
+                var provider = new MockProvider();
+                var mock = provider.Mock("Scripting.FileSystemObject");
+                mock.SetupWithReturns("BuildPath", "foobar", new object[] { provider.It.IsIn(list1), provider.It.IsIn(list2) });
+                var obj = mock.Object;
+
+                pUnk = Marshal.GetIUnknownForObject(obj);
+
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
+                if (hr != 0)
+                {
+                    throw new InvalidCastException("QueryInterface failed on the proxy type");
+                }
+
+                dynamic mocked = Marshal.GetObjectForIUnknown(pProxy);
+                Assert.AreEqual(expected, mocked.BuildPath(input1, input2));
+            }
+            finally
+            {
+                if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+            }
+        }
+
+        [Test]
+        [TestCase(null, "foo", "bar", new[] { "foo", "baz" }, new[] { "bar", "baz" })]
+        [TestCase(null, "baz", "baz", new[] { "foo", "baz" }, new[] { "bar", "baz" })]
+        [TestCase(null, "foo", "bar", new[] { "foo" }, new[] { "bar" })]
+        [TestCase("foobar", "bar", "foo", new[] { "foo" }, new[] { "bar" })]
+        [TestCase("foobar", "derp", "duh", new[] { "foo", "baz" }, new[] { "bar", "baz" })]
+        public void Mock_Setup_Args_NotInList_Returns_Specified_Value(string expected, string input1, string input2, string[] list1, string[] list2)
+        {
+            var pUnk = IntPtr.Zero;
+            var pProxy = IntPtr.Zero;
+
+            try
+            {
+                var provider = new MockProvider();
+                var mock = provider.Mock("Scripting.FileSystemObject");
+                mock.SetupWithReturns("BuildPath", "foobar", new object[] { provider.It.IsNotIn(list1), provider.It.IsNotIn(list2) });
+                var obj = mock.Object;
+
+                pUnk = Marshal.GetIUnknownForObject(obj);
+
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
+                if (hr != 0)
+                {
+                    throw new InvalidCastException("QueryInterface failed on the proxy type");
+                }
+
+                dynamic mocked = Marshal.GetObjectForIUnknown(pProxy);
+                Assert.AreEqual(expected, mocked.BuildPath(input1, input2));
+            }
+            finally
+            {
+                if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+            }
+        }
+
+        [Test]
+        [TestCase("foobar", "a", "d", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "b", "e", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "c", "f", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "c", "d", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "a", "f", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase(null, "d", "d", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase(null, "a", "a", MockArgumentRange.Inclusive, "a", "c", "d", "f")]
+        [TestCase("foobar", "b", "e", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
+        [TestCase(null, "a", "e", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
+        [TestCase(null, "c", "e", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
+        [TestCase(null, "b", "d", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
+        [TestCase(null, "b", "f", MockArgumentRange.Exclusive, "a", "c", "d", "f")]
+        public void Mock_Setup_Args_Range_Returns_Specified_Value(string expected, string input1, string input2, MockArgumentRange type, string start1, string end1, string start2, string end2)
+        {
+            var pUnk = IntPtr.Zero;
+            var pProxy = IntPtr.Zero;
+
+            try
+            {
+                var provider = new MockProvider();
+                var mock = provider.Mock("Scripting.FileSystemObject");
+                mock.SetupWithReturns("BuildPath", "foobar", new object[] { provider.It.IsInRange(start1, end1, type), provider.It.IsInRange(start2, end2, type)});
+                var obj = mock.Object;
+
+                pUnk = Marshal.GetIUnknownForObject(obj);
+
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
+                if (hr != 0)
+                {
+                    throw new InvalidCastException("QueryInterface failed on the proxy type");
+                }
+
+                dynamic mocked = Marshal.GetObjectForIUnknown(pProxy);
+                Assert.AreEqual(expected, mocked.BuildPath(input1, input2));
+            }
+            finally
+            {
+                if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+            }
+        }
+
+        [Test]
+        public void Mock_FileSystemObject_Via_ComMocked()
+        {
+            var pUnk = IntPtr.Zero;
+            var pProxy = IntPtr.Zero;
+
+            try
+            {
+                if (!TypeLibQueryService.Instance.TryGetTypeInfoFromProgId("Scripting.FileSystemObject", out var targetType))
+                {
+                    throw new InvalidOperationException("Unable to locate the ProgId `Scripting.FileSystemObject`");
+                }
+                var closedMockType = typeof(Mock<>).MakeGenericType(targetType);
+                var mock = (Mock)Activator.CreateInstance(closedMockType);
+                var comMock = new Rubberduck.ComClientLibrary.UnitTesting.Mocks.ComMock(mock, targetType, targetType.GetInterfaces());
+                var comMocked = new ComMocked(comMock, targetType.GetInterfaces());
+                var obj = comMocked;
+
+                pUnk = Marshal.GetIUnknownForObject(obj);
+                var hr = Marshal.QueryInterface(pUnk, ref IID_IFileSystem3, out pProxy);
+                if (hr != 0)
+                {
+                    throw new InvalidCastException("QueryInterface failed");
+                }
+
+                dynamic proxy = Marshal.GetObjectForIUnknown(pProxy);
+
+                Assert.IsInstanceOf(targetType, proxy);
+                foreach (var face in targetType.GetInterfaces())
+                {
+                    Assert.IsInstanceOf(face, proxy);
+                }
+                Assert.AreNotEqual(pUnk, pProxy);
+                Assert.AreNotSame(obj, proxy);
+                Assert.IsInstanceOf<ComMocked>(obj);
+            }
+            finally
+            {
+                if (pProxy != IntPtr.Zero) Marshal.Release(pProxy);
+                if (pUnk != IntPtr.Zero) Marshal.Release(pUnk);
+            }
+        }
+
+        /* Commented to remove the PIA reference to Scripting library, but keeping code in one day they fix type equivalence?
+        [Test]
+        public void Type_From_ITypeInfo_Are_Equivalent()
+        {
+            var other = typeof(FileSystemObject);
+            var service = new TypeLibQueryService();
+            if (service.TryGetTypeInfoFromProgId("Scripting.FileSystemObject", out var type))
+            {
+                Assert.IsTrue(type.IsEquivalentTo(typeof(FileSystemObject)));
+            }
+        }
+        */
     }
 }
