@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
-using Microsoft.Win32;
 using Moq;
 using Rubberduck.Parsing.ComReflection.TypeLibReflection;
 using Rubberduck.Resources.Registration;
@@ -31,7 +28,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
         IComMock Mock(string ProgId, [Optional] string ProjectName);
 
         [DispId(2)]
-        MockArgumentCreator It();
+        MockArgumentCreator It { get; }
     }
 
     [
@@ -43,18 +40,16 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     ]
     public class MockProvider : IMockProvider
     {
-        [DllImport("ole32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = true)]
-        private static extern int CLSIDFromProgID(string lpszProgID, out Guid lpclsid);
-
-        [DllImport("oleaut32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = true)]
-        private static extern int LoadTypeLib(string fileName, out ITypeLib typeLib);
-
-        private readonly MockArgumentCreator _it = new MockArgumentCreator();
         private static readonly ConcurrentDictionary<string, Type> typeCache = new ConcurrentDictionary<string, Type>();
+
+        public MockProvider()
+        {
+            It = new MockArgumentCreator();
+        }
 
         public IComMock Mock(string ProgId, string ProjectName = null)
         {
-            var key = string.Concat(ProjectName, "::", ProgId);
+            var key = string.Concat(ProjectName?.ToLowerInvariant(), "::", ProgId.ToLowerInvariant());
             if (!typeCache.TryGetValue(key, out var classType))
             {
                 // In order to mock a COM type, we must acquire a Type. However,
@@ -74,12 +69,8 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 if (classType.Name == "__ComObject")
                 {
                     var service = TypeLibQueryService.Instance;
-                    if (service.TryGetTypeInfoFromProgId(ProgId, out var typeInfo))
+                    if (service.TryGetTypeInfoFromProgId(ProgId, out classType))
                     {
-                        var pUnk = Marshal.GetIUnknownForObject(typeInfo);
-                        classType = Marshal.GetTypeForITypeInfo(pUnk);
-                        Marshal.Release(pUnk);
-
                         if (classType == null)
                         {
                             throw new ArgumentOutOfRangeException(nameof(ProgId),
@@ -89,16 +80,34 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 }
 
                 typeCache.TryAdd(key, classType);
+                foreach (var face in classType.GetInterfaces())
+                {
+                    typeCache.TryAdd(ProjectName + "::" + face.FullName, face);
+                }
             }
 
             var targetType = classType.IsInterface ? classType : GetComDefaultInterface(classType);
 
             var closedMockType = typeof(Mock<>).MakeGenericType(targetType);
             var mock = (Mock)Activator.CreateInstance(closedMockType);
-            return new ComMock(mock, targetType, classType.GetInterfaces());
+
+            // Ensure that the mock implements all the interfaces to cover the case where
+            // no setup is performed on the given interface and to enssure that mock can 
+            // be cast successfully.
+            var asGenericMemberInfo = closedMockType.GetMethod("As");
+            System.Diagnostics.Debug.Assert(asGenericMemberInfo != null);
+
+            var supportedTypes = classType.GetInterfaces();
+            foreach (var type in supportedTypes)
+            {
+                var asMemberInfo = asGenericMemberInfo.MakeGenericMethod(type);
+                asMemberInfo.Invoke(mock, null);
+            }
+
+            return new ComMock(mock, targetType, supportedTypes);
         }
 
-        public MockArgumentCreator It() => _it;
+        public MockArgumentCreator It { get; }
 
         private static Type GetComDefaultInterface(Type classType)
         {
