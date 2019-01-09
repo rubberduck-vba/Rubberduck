@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -18,13 +19,24 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
         private static readonly RegisteredLibraryFinderService Finder = new RegisteredLibraryFinderService();
 
         /// <summary>
+        /// The types returned by the <see cref="Marshal.GetTypeForITypeInfo"/> are not equivalent. For that reason
+        /// we must cache all types to ensure that any objects we create will be castable accordingly. We must also
+        /// collect all implementing interfaces for the same reasons.
+        /// </summary>
+        private static readonly ConcurrentDictionary<string, Type> TypeCache = new ConcurrentDictionary<string, Type>();
+        
+        /// <summary>
         /// Provided primarily for uses outside the CW's DI, mainly within Rubberduck.Main.
         /// </summary>
         public static TypeLibQueryService Instance => LazyInstance.Value;
 
-        public bool TryGetTypeInfoFromProgId(string progId, out ITypeInfo typeInfo)
+        public bool TryGetTypeInfoFromProgId(string progId, out Type type)
         {
-            typeInfo = null;
+            if (TypeCache.TryGetValue(progId, out type))
+            {
+                return true;
+            }
+
             if (CLSIDFromProgID(progId, out var clsid) != 0)
             {
                 return false;
@@ -34,9 +46,38 @@ namespace Rubberduck.Parsing.ComReflection.TypeLibReflection
             {
                 return false;
             }
+            
+            lib.GetTypeInfoOfGuid(ref clsid, out var typeInfo);
+            var pUnk = IntPtr.Zero;
+            try
+            {
+                pUnk = Marshal.GetIUnknownForObject(typeInfo);
+                type = Marshal.GetTypeForITypeInfo(pUnk);
 
-            lib.GetTypeInfoOfGuid(ref clsid, out typeInfo);
-            return true;
+                if (type == null)
+                {
+                    return false;
+                }
+
+                if (!TypeCache.TryAdd(progId, type))
+                {
+                    return false;
+                }
+
+                foreach (var face in type.GetInterfaces())
+                {
+                    if (face.FullName != null)
+                    {
+                        TypeCache.TryAdd(face.FullName, face);
+                    }
+                }
+
+                return type != null;
+            }
+            finally
+            {
+                if(pUnk!=IntPtr.Zero) Marshal.Release(pUnk);
+            }
         }
 
         private static bool TryGetTypeLibFromClsid(Guid clsid, out ITypeLib lib)
