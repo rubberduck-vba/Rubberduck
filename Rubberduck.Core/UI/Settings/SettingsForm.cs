@@ -12,6 +12,7 @@ namespace Rubberduck.UI.Settings
     public interface ISettingsFormFactory
     {
         SettingsForm Create();
+        SettingsForm Create(SettingsViews activeView);
         void Release(SettingsForm form);
     }
 

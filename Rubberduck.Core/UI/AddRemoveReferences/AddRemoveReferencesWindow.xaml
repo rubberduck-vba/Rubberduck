@@ -232,7 +232,7 @@
                                       SelectionMode="Single"
                                       ItemsSource="{Binding AvailableReferences}" 
                                       HorizontalContentAlignment="Stretch"
-                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">
                                         <Setter Property="Height" Value="20" />
@@ -289,7 +289,7 @@
                                       SelectedItem="{Binding SelectedReference, Mode=TwoWay}" 
                                       SelectionMode="Single"
                                       ItemsSource="{Binding ProjectReferences, NotifyOnTargetUpdated=True}" 
-                                      ScrollViewer.HorizontalScrollBarVisibility="Hidden"
+                                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                       HorizontalContentAlignment="Stretch">
                                 <ListView.ItemContainerStyle>
                                     <Style TargetType="ListViewItem">

@@ -89,9 +89,9 @@ namespace RubberduckTests.Rewriter
             Assert.AreEqual(CodeKind.AttributesCode, rewriteSession.TargetCodeKind);
         }
 
-        protected override IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider)
+        protected override IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false)
         {
-            mockProvider = new MockRewriterProvider();
+            mockProvider = new MockRewriterProvider(rewritersAreDirty);
             return new AttributesRewriteSession(parseManager, mockProvider, rewritingAllowed);
         }
     }

@@ -261,4 +261,7 @@
   <data name="CodeExplorer_AddUserDocumentText" xml:space="preserve">
     <value>Benutzerdefiniertes Dokument (.dob)</value>
   </data>
+  <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
+    <value>Vorlagen</value>
+  </data>
 </root>

@@ -5,7 +5,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
-    internal class QualifiedContextInspectionResult : InspectionResultBase
+    public class QualifiedContextInspectionResult : InspectionResultBase
     {
         public QualifiedContextInspectionResult(IInspection inspection, string description, QualifiedContext context, dynamic properties = null) :
             base(inspection,
@@ -16,7 +16,6 @@ namespace Rubberduck.Inspections.Results
                  new QualifiedSelection(context.ModuleName, context.Context.GetSelection()),
                  context.MemberName,
                  (object)properties)
-        {
-        }
+        {}
     }
 }
