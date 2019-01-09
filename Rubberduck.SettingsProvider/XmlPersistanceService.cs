@@ -19,6 +19,10 @@ namespace Rubberduck.SettingsProvider
 
             var doc = GetConfigurationDoc(FilePath);
             var node = GetNodeByName(doc, typeof(T).Name);
+            if (node == null)
+            {
+                return FailedLoadReturnValue();
+            }
 
             using (var reader = node.CreateReader())
             {
