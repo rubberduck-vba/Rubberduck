@@ -252,9 +252,6 @@
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Anotace '{0}' je v tomto kontextu ilegální.</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Modul nebo člen '{0}' má atribut '{1}', avšak žádnou korespondující anotaci</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Modul nebo člen '{0}' má '{1}' anotaci, ale žádný korespondující atribut</value>
   </data>

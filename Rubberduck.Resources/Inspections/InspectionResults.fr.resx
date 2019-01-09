@@ -297,9 +297,6 @@
   <data name="RedundantOptionInspection" xml:space="preserve">
     <value>'{0}' n'a aucun effet</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Le module ou membre '{0}' a un attribut '{1}', mais pas l'annotation correspondante</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Le module ou membre '{0}' a l'annotation '{1}', mais pas l'attribut correspondant</value>
   </data>

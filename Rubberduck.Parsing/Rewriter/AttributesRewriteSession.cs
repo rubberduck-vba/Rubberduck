@@ -24,7 +24,7 @@ namespace Rubberduck.Parsing.Rewriter
         }
 
         protected override bool TryRewriteInternal()
-        {
+        {          
             //The suspension ensures that only one parse gets executed instead of two for each rewritten module.
             var result = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, ExecuteAllRewriters);
             if(result != SuspensionResult.Completed)
@@ -38,9 +38,11 @@ namespace Rubberduck.Parsing.Rewriter
 
         private void ExecuteAllRewriters()
         {
-            foreach (var rewriter in CheckedOutModuleRewriters.Values)
+            foreach (var module in CheckedOutModuleRewriters.Keys)
             {
-                rewriter.Rewrite();
+                //We have to mark the modules explicitly as modified because attributes only changes do not alter the code pane code.
+                _parseManager.MarkAsModified(module);
+                CheckedOutModuleRewriters[module].Rewrite();
             }
         }
     }

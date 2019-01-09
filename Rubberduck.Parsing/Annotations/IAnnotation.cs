@@ -9,5 +9,6 @@ namespace Rubberduck.Parsing.Annotations
         QualifiedSelection QualifiedSelection { get; }
         bool AllowMultiple { get; }
         VBAParser.AnnotationContext Context { get; }
+        int? AnnotatedLine { get; }
     }
 }

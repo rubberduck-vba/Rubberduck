@@ -1,4 +1,5 @@
-﻿using Rubberduck.Inspections.Abstract;
+﻿using System.Collections.Generic;
+using Rubberduck.Inspections.Abstract;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
@@ -6,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Results
 {
-    internal class DeclarationInspectionResult : InspectionResultBase
+    public class DeclarationInspectionResult : InspectionResultBase
     {
         public DeclarationInspectionResult(IInspection inspection, string description, Declaration target, QualifiedContext context = null, dynamic properties = null) :
             base(inspection,
@@ -30,6 +31,12 @@ namespace Rubberduck.Inspections.Results
             return target.DeclarationType.HasFlag(DeclarationType.Member)
                 ? target.QualifiedName
                 : GetQualifiedMemberName(target.ParentDeclaration);
+        }
+
+        public override bool ChangesInvalidateResult(ICollection<QualifiedModuleName> modifiedModules)
+        {
+            return modifiedModules.Contains(Target.QualifiedModuleName)
+                   || base.ChangesInvalidateResult(modifiedModules);
         }
     }
 }

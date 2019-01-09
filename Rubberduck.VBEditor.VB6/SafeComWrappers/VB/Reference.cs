@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
@@ -49,9 +50,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 {
                     return IsBroken ? string.Empty : Target.FullPath;
                 }
-                catch (System.Runtime.InteropServices.COMException)
+                catch (COMException)
                 {
-
                     return string.Empty;
                 }
             }
@@ -64,7 +64,19 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
 
         public bool IsBroken
         {
-            get { return IsWrappingNullReference || Target.IsBroken; }
+            get
+            {
+                try
+                {
+                    return IsWrappingNullReference || Target.IsBroken;
+                }
+                catch (COMException ex)
+                {
+                    _logger.Trace(ex, "IsBroken is broken.");
+                }
+
+                return true;
+            }
         }
 
         public ReferenceKind Type

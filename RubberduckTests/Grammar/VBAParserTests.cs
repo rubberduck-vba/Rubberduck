@@ -3517,6 +3517,20 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
         }
 
+        
+        [Test]
+        [Category("Parser")]
+        [TestCase("Private WithEvents foo As EventSource, WithEvents bar As EventSource", 2)]
+        [TestCase("Private WithEvents foo As EventSource, bar As EventSource", 2)]
+        [TestCase("Private foo As EventSource, WithEvents bar As EventSource", 2)]
+        [TestCase("Private foo As EventSource, bar As EventSource", 2)]
+        [TestCase("Private WithEvents foo As EventSource", 1)]
+        public void WithEventsInVariableList(string code, int count)
+        {
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//variableSubStmt", matches => matches.Count == count);
+        }
+
         private Tuple<VBAParser, ParserRuleContext> Parse(string code, PredictionMode predictionMode = null)
         {
             var stream = new AntlrInputStream(code);

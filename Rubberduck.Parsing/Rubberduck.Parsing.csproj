@@ -25,7 +25,7 @@
     <Antlr4 Include="Grammar\VBAParser.g4">
       <CustomToolNamespace>Rubberduck.Parsing.Grammar</CustomToolNamespace>
     </Antlr4>
-    <Antlr4 Include="PreProcessing\*.g4">
+    <Antlr4 Include="Preprocessing\*.g4">
       <CustomToolNamespace>Rubberduck.Parsing.PreProcessing</CustomToolNamespace>
     </Antlr4>
   </ItemGroup>

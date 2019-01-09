@@ -283,7 +283,8 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
 
         public Selection GetSelection(QualifiedModuleName module)
         {
-            using (var component = _projectsProvider.Component(module))
+            var component = _projectsProvider.Component(module);
+
             using (var codeModule = component.CodeModule)
             using (var pane = codeModule.CodePane)
             {

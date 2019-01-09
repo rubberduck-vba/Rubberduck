@@ -66,11 +66,11 @@ namespace Rubberduck.AutoComplete.Service
                         break;
                     }
                 }
+            }
 
-                if (result == null)
-                {
-                    return false;
-                }
+            if (result == null)
+            {
+                return false;
             }
 
             var snippetPosition = new Selection(result.SnippetPosition.StartLine, 1, result.SnippetPosition.EndLine, 1);
@@ -84,46 +84,65 @@ namespace Rubberduck.AutoComplete.Service
         {
             if (!original.CaretPosition.IsSingleCharacter)
             {
-                // todo: WrapSelection?
+                // todo: WrapSelectionWith(pair)?
                 result = null;
                 return false;
             }
 
-            var isPresent = original.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}");
-
+            // if executing the SCP against the original code yields no result, we need to bail out.
             if (!_scpService.Execute(pair, original, e.Character, out result))
             {
                 return false;
             }
 
+            // let the VBE alter the original code if it wants to, then work with the prettified code.
             var prettified = CodePaneHandler.Prettify(e.Module, original);
+
+            var isPresent = original.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}");
             if (!isPresent && original.CaretLine.Length + 2 == prettified.CaretLine.Length &&
                 prettified.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}"))
             {
                 // prettifier just added the pair for us; likely a Sub or Function statement.
-                prettified = original; // pretend this didn't happen. note: probably breaks if original has extra whitespace.
+                prettified = original; // pretend this didn't happen; we need to work out the caret position anyway.
             }
 
+            if (prettified.CaretLine.Length == 0)
+            {
+                // prettifier destroyed the indent. need to reinstate it now.
+                prettified = prettified.ReplaceLine(
+                    index:prettified.CaretPosition.StartLine,
+                    content:new string(' ', original.CaretLine.TakeWhile(c => c == ' ').Count())
+                );
+            }
+
+            // if executing the SCP against the prettified code yields no result, we need to bail out.
             if (!_scpService.Execute(pair, prettified, e.Character, out result))
             {
                 return false;
             }
 
-            result = CodePaneHandler.Prettify(e.Module, result);
-
-            var currentLine = result.Lines[result.CaretPosition.StartLine];
+            var reprettified = CodePaneHandler.Prettify(e.Module, result);
+            if (pair.OpeningChar == '(' && e.Character == pair.OpeningChar && !reprettified.Equals(result))
+            {
+                // VBE eats it. bail out but don't swallow the keypress.
+                e.Handled = false;
+                result = null;
+                return false;
+            }
+            
+            var currentLine = reprettified.Lines[reprettified.CaretPosition.StartLine];
             if (!string.IsNullOrWhiteSpace(currentLine) &&
                 currentLine.EndsWith(" ") &&
-                result.CaretPosition.StartColumn == currentLine.Length)
+                reprettified.CaretPosition.StartColumn == currentLine.Length)
             {
-                result = result.ReplaceLine(result.CaretPosition.StartLine, currentLine.TrimEnd());
+                result = reprettified.ReplaceLine(reprettified.CaretPosition.StartLine, currentLine.TrimEnd());
             }
 
             if (pair.OpeningChar == '(' && 
                 e.Character == pair.OpeningChar &&
                 !result.CaretLine.EndsWith($"{pair.OpeningChar}{pair.ClosingChar}"))
             {
-                // VBE eats it. bail out but still swallow the keypress, since we've already re-prettified.
+                // VBE eats it. bail out but still swallow the keypress; we already prettified the opening character into the editor.
                 e.Handled = true;
                 result = null;
                 return false;

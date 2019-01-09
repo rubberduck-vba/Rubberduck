@@ -2399,7 +2399,7 @@ End Sub
             var builder = new MockVbeBuilder();
             var projectName = "Test";
             var vbe = builder.ProjectBuilder(projectName, ProjectProtection.Unprotected)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, major: 4, minor: 1, isBuiltIn: true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, major: 4, minor: 2, isBuiltIn: true)
                 .AddComponent("MyClass", ComponentType.ClassModule, classInputOutput.Input)
                 .AddComponent("Usage", ComponentType.StandardModule, usageInputOutput.Input)
                 .AddProjectToVbeBuilder()
@@ -2893,8 +2893,8 @@ End Property";
 
             if (useLibraries)
             {
-                enclosingProjectBuilder.AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true);
-                enclosingProjectBuilder.AddReference("EXCEL", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true);
+                enclosingProjectBuilder.AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true);
+                enclosingProjectBuilder.AddReference("Excel", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true);
             }
             
             foreach (var comp in testComponents)

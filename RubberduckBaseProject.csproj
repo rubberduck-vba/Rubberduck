@@ -17,7 +17,7 @@
     <!-- Ignore MSB4011 warning, rationale above -->
     <!-- Ignore VisualStudio whining about the CodeAnalysis assembly changing (IDE1001) -->
     <DisabledWarnings>$(DisabledWarnings);4011;1001</DisabledWarnings>
-    <Version Condition=" '$(Version)' == ''">2.3.0</Version>
+    <Version Condition=" '$(Version)' == ''">2.3.1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(AssemblyVersion)' == '' ">
@@ -25,7 +25,7 @@
      This assembly version specification is considered nonstandard.
      As such builds that do not override the assembly version generate a warning, which we ignore.
     -->
-    <AssemblyVersion>2.3.*</AssemblyVersion>
+    <AssemblyVersion>2.3.1.*</AssemblyVersion>
     <!-- Ignore CSharp compiler warning for nonstandard assembly version (CS7035) -->
     <!-- Ignore Linker warning for nonstandard assembly version (AL1053) -->
     <DisabledWarnings>$(DisabledWarnings);7035;1053</DisabledWarnings>

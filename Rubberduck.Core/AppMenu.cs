@@ -38,6 +38,7 @@ namespace Rubberduck
             {
                 menu.Initialize();
             }
+            EvaluateCanExecute(_parser.State);
         }
 
         public void OnSelectedDeclarationChange(object sender, DeclarationChangedEventArgs e)

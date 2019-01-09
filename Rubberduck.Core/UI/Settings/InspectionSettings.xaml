@@ -19,6 +19,7 @@
 
         <BitmapImage x:Key="AddImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/plus-circle.png" />
         <BitmapImage x:Key="DeleteImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-script.png" />
+        <BitmapImage x:Key="FilterImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
         
         <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
             <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -267,7 +268,7 @@
             <Setter Property="Background" Value="DarkGray"/>
             <Setter Property="CornerRadius" Value="5"/>
         </Style>
-        <BitmapImage x:Key="FilterIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/Funnel.png" />
+        
         <Style TargetType="ScrollViewer">
             <Style.Setters>
                 <Setter Property="settings:ScrollViewerCorrector.FixScrolling" Value="True" />
@@ -285,7 +286,7 @@
                                 Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionSettings_InspectionSeveritySettingsLabel}" />
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
                                 <Label Content="-"/>
-                                <Image Source="{StaticResource FilterIcon}" />
+                                <Image Source="{StaticResource FilterImage}" />
                                 <Label Style="{StaticResource HeaderText}"
                                        Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionSettings_FilterByDescription}" />
                                 <TextBox MinWidth="125"

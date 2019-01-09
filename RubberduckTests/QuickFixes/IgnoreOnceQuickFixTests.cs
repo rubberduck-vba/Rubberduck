@@ -31,7 +31,7 @@ End Sub";
             const string expectedCode =
                 @"Sub ExcelSub()
     Dim foo As Double
-'@Ignore ApplicationWorksheetFunction
+    '@Ignore ApplicationWorksheetFunction
     foo = Application.Pi
 End Sub";
 
@@ -69,7 +69,7 @@ End Sub";
 
             const string expectedCode =
                 @"Public Sub Foo()
-'@Ignore ConstantNotUsed
+    '@Ignore ConstantNotUsed
     Const const1 As Integer = 9
 End Sub";
 
@@ -88,7 +88,7 @@ End Sub";
 
             const string expectedCode =
                 @"Public Sub Foo(ByRef arg1 As String)
-'@Ignore EmptyStringLiteral
+    '@Ignore EmptyStringLiteral
     arg1 = """"
 End Sub";
 
@@ -174,7 +174,7 @@ End Sub";
             const string expectedCode =
                 @"Sub foo()
     Dim arr1() As Variant
-'@Ignore ImplicitActiveSheetReference
+    '@Ignore ImplicitActiveSheetReference
     arr1 = Range(""A1:B2"")
 End Sub";
 
@@ -197,7 +197,7 @@ End Sub";
                 @"
 Sub foo()
     Dim sheet As Worksheet
-'@Ignore ImplicitActiveWorkbookReference
+    '@Ignore ImplicitActiveWorkbookReference
     Set sheet = Worksheets(""Sheet1"")
 End Sub";
 
@@ -321,6 +321,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
+        [Ignore("With the current annotation scoping rules, this test makes no sense since the Ignore annotation will not attach to the offending context.")]
         public void MultilineParameter_IgnoreQuickFixWorks()
         {
             const string inputCode =
@@ -356,7 +357,7 @@ End Sub";
 
             const string expectedCode =
                 @"Public Sub Foo()
-'@Ignore MultipleDeclarations
+    '@Ignore MultipleDeclarations
     Dim var1 As Integer, var2 As String
 End Sub";
 
@@ -401,7 +402,7 @@ End Sub";
 Private Sub DoSomething()
     
     Dim target As Object
-'@Ignore ObjectVariableNotSet
+    '@Ignore ObjectVariableNotSet
     target = New Object
     
     target.Value = ""forgot something?""
@@ -428,12 +429,12 @@ End Sub";
 
             const string expectedCode =
                 @"Sub Foo()
-'@Ignore ObsoleteCallStatement
+    '@Ignore ObsoleteCallStatement
     Call Goo(1, ""test"")
 End Sub
 
 Sub Goo(arg1 As Integer, arg1 As String)
-'@Ignore ObsoleteCallStatement
+    '@Ignore ObsoleteCallStatement
     Call Foo
 End Sub";
 
@@ -467,7 +468,7 @@ End Sub";
 
             const string expectedCode =
                 @"Sub Foo()
-'@Ignore ObsoleteErrorSyntax
+    '@Ignore ObsoleteErrorSyntax
     Error 91
 End Sub";
 
@@ -508,7 +509,7 @@ End Sub";
     Dim var1 As Integer
     Dim var2 As Integer
     
-'@Ignore ObsoleteLetStatement
+    '@Ignore ObsoleteLetStatement
     Let var2 = var1
 End Sub";
 
@@ -657,7 +658,7 @@ End Sub";
 
             const string expectedCode =
                 @"Sub Foo()
-'@Ignore SelfAssignedDeclaration
+    '@Ignore SelfAssignedDeclaration
     Dim b As New Collection
 End Sub";
 
@@ -681,7 +682,7 @@ End Sub";
                 @"Sub Foo()
     Dim b As Boolean
     Dim bb As Boolean
-'@Ignore UnassignedVariableUsage
+    '@Ignore UnassignedVariableUsage
     bb = b
 End Sub";
 
@@ -710,7 +711,7 @@ End Sub";
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("VBAProject", ProjectProtection.Unprotected)
                 .AddComponent("MyClass", ComponentType.ClassModule, inputCode)
-                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 1, true)
+                .AddReference("VBA", MockVbeBuilder.LibraryPathVBA, 4, 2, true)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 
@@ -732,7 +733,7 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
+                new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
                 var actualCode = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
 
                 Assert.AreEqual(expectedCode, actualCode);
@@ -766,7 +767,7 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                new IgnoreOnceQuickFix(state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
+                new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] { inspection }).Fix(inspectionResults.First(), rewriteSession);
                 var actualCode = rewriteSession.CheckOutModuleRewriter(component.QualifiedModuleName).GetText();
 
                 Assert.AreEqual(expectedCode, actualCode);
@@ -830,6 +831,38 @@ End Sub";
             Assert.AreEqual(expectedCode, actualCode);
         }
 
+
+        [Test]
+        [Category("QuickFixes")]
+        public void EmptyModule_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+                @"Option Explicit";
+
+            const string expectedCode =
+                @"'@IgnoreModule EmptyModule
+Option Explicit";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new EmptyModuleInspection(state), TestStandardModuleVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+
+        [Test]
+        [Category("QuickFixes")]
+        public void ModuleWithoutFolder_IgnoreQuickFixWorks()
+        {
+            const string inputCode =
+                @"Option Explicit";
+
+            const string expectedCode =
+                @"'@IgnoreModule ModuleWithoutFolder
+Option Explicit";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new ModuleWithoutFolderInspection(state), TestStandardModuleVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
         [Test]
         [Category("QuickFixes")]
         public void WriteOnlyProperty_IgnoreQuickFixWorks()
@@ -864,7 +897,7 @@ End Sub";
             const string expectedCode =
                 @"Sub Foo()
     Dim d As Boolean
-'@Ignore BooleanAssignedInIfElse
+    '@Ignore BooleanAssignedInIfElse
     If True Then
         d = True
     Else
@@ -893,6 +926,60 @@ End Sub";
 End Sub";
 
             var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new UndeclaredVariableInspection(state), TestClassVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IgnoreQuickFixPrependsToExistingAnnotation_Module()
+        {
+            const string inputCode =
+                @"'@IgnoreModule EmptyModule
+Option Explicit";
+
+            const string expectedCode =
+                @"'@IgnoreModule ModuleWithoutFolder, EmptyModule
+Option Explicit";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new ModuleWithoutFolderInspection(state), TestStandardModuleVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IgnoreQuickFixDoesNotAppendToExistingAnnotationMixed_ModuleAfterNonModule()
+        {
+            const string inputCode =
+                @"'@Ignore ParameterCanBeByVal
+Private Sub Foo(arg)
+End Sub";
+
+            const string expectedCode =
+                @"'@IgnoreModule ModuleWithoutFolder
+'@Ignore ParameterCanBeByVal
+Private Sub Foo(arg)
+End Sub";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new ModuleWithoutFolderInspection(state), TestStandardModuleVbeSetup);
+            Assert.AreEqual(expectedCode, actualCode);
+        }
+
+        [Test]
+        [Category("QuickFixes")]
+        public void IgnoreQuickFixDoesNotPrependToExistingAnnotationMixed_NonModuleAfterModule()
+        {
+            const string inputCode =
+                @"'@IgnoreModule ModuleWithoutFolder
+Private Sub Foo(arg)
+End Sub";
+
+            const string expectedCode =
+                @"'@IgnoreModule ModuleWithoutFolder
+'@Ignore ParameterCanBeByVal
+Private Sub Foo(arg)
+End Sub";
+
+            var actualCode = ApplyIgnoreOnceToFirstResult(inputCode, state => new ParameterCanBeByValInspection(state), TestStandardModuleVbeSetup);
             Assert.AreEqual(expectedCode, actualCode);
         }
 
@@ -977,7 +1064,7 @@ End Sub";
                 var resultToFix = inspectionResults.First();
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                var quickFix = new IgnoreOnceQuickFix(state, new[] {inspection});
+                var quickFix = new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] {inspection});
                 quickFix.Fix(resultToFix, rewriteSession);
 
                 return rewriteSession.CheckOutModuleRewriter(moduleName).GetText();
@@ -1053,7 +1140,7 @@ End Sub";
                 var inspectionResults = InspectionResults(inspection, state);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
 
-                var quickFix = new IgnoreOnceQuickFix(state, new[] { inspection });
+                var quickFix = new IgnoreOnceQuickFix(new AnnotationUpdater(), state, new[] { inspection });
 
                 foreach (var resultToFix in inspectionResults)
                 {

@@ -1,4 +1,4 @@
-version: '2.3.0.{build}'
+version: '2.3.1.{build}'
 
 # add nuget api to hosts file, making sure we can actually nuget restore for the build
 hosts:

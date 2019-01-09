@@ -42,7 +42,8 @@
             <BitmapImage x:Key="SortImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/edit-list-order.png" />
             <BitmapImage x:Key="ShowSignaturesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/DisplayFullSignature.png" />
             <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
-
+            <BitmapImage x:Key="AddRemoveReferencesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/node-select-all.png" />
+           
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
             <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
             <converters:StringHasValueToVisibilityConverter x:Key="StringHasValueToVisibility" />
@@ -285,6 +286,13 @@
                                   Command="{Binding RenameCommand}"
                                   CommandParameter="{Binding SelectedItem}" />
                             <Separator />
+                            <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Caption}"
+                                      Command="{Binding AddRemoveReferencesCommand}"
+                                      CommandParameter="{Binding SelectedItem}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource AddRemoveReferencesImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
                             <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SetAsStartupProject}"
                                       Command="{Binding SetAsStartupProjectCommand}"
                                       CommandParameter="{Binding SelectedItem}"  
