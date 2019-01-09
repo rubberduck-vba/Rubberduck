@@ -28,12 +28,17 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     public class ComMocked : IComMocked, ICustomQueryInterface
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
-        private readonly IEnumerable<Type> _supportedTypes;
+        private readonly IEnumerable<Type> _supportedInterfaces;
+        
+        // Not using auto-property as that leads to ambiguity. For COM compatibility,
+        // this backs the public field `Mock`, which hides the `Moq.IMocked.Mock` 
+        // property that returns a non-COM-visible `Moq.Mock` object. 
+        private readonly ComMock _comMock; 
 
-        internal ComMocked(ComMock mock, IEnumerable<Type> supportedTypes)
+        internal ComMocked(ComMock mock, IEnumerable<Type> supportedInterfaces)
         {
-            Mock = mock;
-            _supportedTypes = supportedTypes;
+            _comMock = mock;
+            _supportedInterfaces = supportedInterfaces;
         }
 
         public CustomQueryInterfaceResult GetInterface(ref Guid iid, out IntPtr ppv)
@@ -43,7 +48,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 var result = IntPtr.Zero;
                 var searchIid = iid; // Cannot use ref parameters directly in LINQ
 
-                if (iid == new Guid(RubberduckGuid.ComMockedGuid))
+                if (iid == new Guid(RubberduckGuid.ComMockedGuid) || iid == new Guid(RubberduckGuid.IComMockedGuid))
                 {
                     result = Marshal.GetIUnknownForObject(this);
                 }
@@ -51,10 +56,11 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 {
                     // Apparently some COM objects have multiple interface implementations using same GUID
                     // so first result should suffice to avoid exception when using single. 
-                    var type = _supportedTypes.FirstOrDefault(x => x.GUID == searchIid);
+                    var type = _supportedInterfaces.FirstOrDefault(x => x.GUID == searchIid);
                     if (type != null)
                     {
-                        result = Marshal.GetComInterfaceForObject(Mock.Mock.Object, type);
+                        // Ensure that we return the actual Moq.Mock.Object, not the ComMocked object.
+                        result = Marshal.GetComInterfaceForObject(_comMock.Mock.Object, type);
                     }
                 }
 
@@ -71,8 +77,9 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             }
         }
 
-        public ComMock Mock { get; }
+        // ReSharper disable once ConvertToAutoPropertyWhenPossible -- Leads to ambiguous naming; see comments above
+        public ComMock Mock => _comMock;
 
-        Mock IMocked.Mock => Mock.Mock;
+        Mock IMocked.Mock => _comMock.Mock;
     }
 }

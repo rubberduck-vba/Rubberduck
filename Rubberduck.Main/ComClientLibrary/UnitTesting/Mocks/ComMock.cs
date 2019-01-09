@@ -7,6 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using Fasterflect;
 
 // ReSharper disable InconsistentNaming
 
@@ -22,17 +23,17 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     public class ComMock : IComMock
     {
         private readonly Type _type;
-        private readonly IEnumerable<Type> _supportedTypes;
-        private readonly Lazy<ComMocked> mocked;
+        private readonly IEnumerable<Type> _supportedInterfaces;
+        private readonly ComMocked mocked;
 
-        public ComMock(Mock mock, Type type, IEnumerable<Type> supportedTypes)
+        public ComMock(Mock mock, Type type, IEnumerable<Type> supportedInterfaces)
         {
             Mock = mock;
             _type = type;
-            _supportedTypes = supportedTypes;
+            _supportedInterfaces = supportedInterfaces;
 
             Mock.As<IComMocked>().Setup(x => x.Mock).Returns(this);
-            mocked = new Lazy<ComMocked>(() => new ComMocked(this, _supportedTypes));
+            mocked = new ComMocked(this, _supportedInterfaces);
         }
 
         public void SetupWithReturns(string Name, object Value, object Args = null)
@@ -85,7 +86,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             }
         }
 
-        public object Object => mocked.Value;
+        public object Object => mocked;
 
         internal Mock Mock { get; }
 
@@ -207,12 +208,12 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 
                 var parameterType = parameter.ParameterType;
                 var itArgumentExpressions = new List<Expression>();
-
+                var typeExpression = Expression.Parameter(parameterType, "x");
+                
                 switch (definition.Type)
                 {
                     case MockArgumentType.Is:
                         itMemberInfo = itType.GetMethod(nameof(It.Is)).MakeGenericMethod(parameterType);
-                        var typeExpression = Expression.Parameter(parameterType, "x");
                         var bodyExpression = Expression.Equal(typeExpression, Expression.Constant(definition.Values[0]));
                         var itLambda = Expression.Lambda(bodyExpression, typeExpression);
                         itArgumentExpressions.Add(itLambda);
@@ -221,8 +222,10 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                         itMemberInfo = itType.GetMethod(nameof(It.IsAny)).MakeGenericMethod(parameterType);
                         break;
                     case MockArgumentType.IsIn:
-                        itMemberInfo = itType.GetMethod(nameof(It.IsIn)).MakeGenericMethod(parameterType);
-                        itArgumentExpressions.AddRange(definition.Values.Select(val => Expression.Constant(val)));
+                        itMemberInfo = ((MethodInfo)itType.GetMember(nameof(It.IsIn)).First()).MakeGenericMethod(parameterType);
+                        var arrayInit = Expression.NewArrayInit(parameterType,
+                            definition.Values.Select(val => Expression.Constant(val)));
+                        itArgumentExpressions.Add(arrayInit);
                         break;
                     case MockArgumentType.IsInRange:
                         itMemberInfo = itType.GetMethod(nameof(It.IsInRange)).MakeGenericMethod(parameterType);
@@ -234,8 +237,10 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                         }
                         break;
                     case MockArgumentType.IsNotIn:
-                        itMemberInfo = itType.GetMethod(nameof(It.IsNotIn)).MakeGenericMethod(parameterType);
-                        itArgumentExpressions.AddRange(definition.Values.Select(val => Expression.Constant(val)));
+                        itMemberInfo = ((MethodInfo)itType.GetMember(nameof(It.IsNotIn)).First()).MakeGenericMethod(parameterType);
+                        var notArrayInit = Expression.NewArrayInit(parameterType,
+                            definition.Values.Select(val => Expression.Constant(val)));
+                        itArgumentExpressions.Add(notArrayInit);
                         break;
                     case MockArgumentType.IsNotNull:
                         itMemberInfo = itType.GetMethod(nameof(It.IsNotNull)).MakeGenericMethod(parameterType);
@@ -350,7 +355,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 (returnType, parameters) = GetMemberInfo(member);
             }
 
-            foreach (var subType in _supportedTypes)
+            foreach (var subType in _supportedInterfaces)
             {
                 if (subType == _type)
                 {
