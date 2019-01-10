@@ -84,7 +84,7 @@ namespace Rubberduck.Root
             ActivateAutoMagicFactories(container);
             OverridePropertyInjection(container);
 
-            RegisterConstantVbeAndAddIn(container);
+            RegisterInstances(container);
             RegisterAppWithSpecialDependencies(container);
             RegisterUnitTestingComSide(container);
 
@@ -850,7 +850,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
         }
 
-        private void RegisterConstantVbeAndAddIn(IWindsorContainer container)
+        private void RegisterInstances(IWindsorContainer container)
         {
             container.Register(Component.For<IVBE>().Instance(_vbe));
             container.Register(Component.For<IAddIn>().Instance(_addin));
@@ -858,7 +858,8 @@ namespace Rubberduck.Root
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars));
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
-            container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler));
+            container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler).LifestyleSingleton());
+            container.Register(Component.For<IPersistancePathProvider>().Instance(PersistancePathProvider.Instance).LifestyleSingleton());
         }
     }
 }

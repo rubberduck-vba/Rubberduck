@@ -24,12 +24,11 @@ namespace Rubberduck.SettingsProvider
 
         public override T Load(T toDeserialize)
         {
-            var defaultOutput = CachedOrNotFound();
-            if (defaultOutput != null)
+            if (!File.Exists(FilePath))
             {
-                return defaultOutput;
+                return Cached;
             }
-
+            
             try
             {
                 using (var stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read))

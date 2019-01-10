@@ -7,21 +7,16 @@ using System.Xml.Serialization;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class XmlPersistanceService<T> : XmlPersistanceServiceBase<T> where T : class, IEquatable<T>, new()
+    public class XmlPersistanceService<T> : XmlPersistanceServiceBase<T> 
+        where T : class, IEquatable<T>, new()
     {
         public override T Load(T toDeserialize)
         {
-            var defaultOutput = CachedOrNotFound();
-            if (defaultOutput != null)
-            {
-                return defaultOutput;
-            }
-
             var doc = GetConfigurationDoc(FilePath);
             var node = GetNodeByName(doc, typeof(T).Name);
             if (node == null)
             {
-                return FailedLoadReturnValue();
+                return Cached;
             }
 
             using (var reader = node.CreateReader())
@@ -29,7 +24,7 @@ namespace Rubberduck.SettingsProvider
                 var deserializer = new XmlSerializer(typeof(T));
                 try
                 {
-                    Cached = (T)Convert.ChangeType(deserializer.Deserialize(reader), typeof(T));
+                    Cached = (T)deserializer.Deserialize(reader);
                     return Cached;
                 }
                 catch

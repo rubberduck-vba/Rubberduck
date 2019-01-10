@@ -13,7 +13,7 @@ namespace Rubberduck.SettingsProvider
     {
         private const string DefaultConfigFile = "rubberduck.config";
 
-        protected readonly string RootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck");
+        protected readonly string RootPath;
         protected static readonly UTF8Encoding OutputEncoding = new UTF8Encoding(false);        
         protected const string RootElement = "Configuration";
 
@@ -28,6 +28,12 @@ namespace Rubberduck.SettingsProvider
 
         protected T Cached { get; set; }
 
+        protected XmlPersistanceServiceBase()
+        {
+            var pathProvider = PersistancePathProvider.Instance;
+            RootPath = pathProvider.DataRootPath;
+        }
+
         private string _filePath;
         public virtual string FilePath
         {
@@ -41,11 +47,16 @@ namespace Rubberduck.SettingsProvider
 
         protected static T FailedLoadReturnValue()
         {
-            return (T)Convert.ChangeType(null, typeof(T));
+            return new T();
         }
 
         protected static XDocument GetConfigurationDoc(string file)
         {
+            if (!File.Exists(file))
+            {
+                return new XDocument();
+            }
+
             XDocument output;
             try
             {
@@ -77,11 +88,6 @@ namespace Rubberduck.SettingsProvider
             {
                 Directory.CreateDirectory(folder);
             }
-        }
-
-        protected T CachedOrNotFound()
-        {
-            return !File.Exists(FilePath) ? FailedLoadReturnValue() : Cached;
         }
     }
 }

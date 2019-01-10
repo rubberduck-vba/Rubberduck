@@ -145,7 +145,7 @@ namespace Rubberduck
                     return;
                 }
 
-                var configLoader = new XmlPersistanceService<GeneralSettings>
+                var configLoader = new XmlPersistanceService<GeneralSettings>()
                 {
                     FilePath =
                         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
