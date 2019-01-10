@@ -47,7 +47,7 @@ namespace Rubberduck.SettingsProvider
 
         protected static T FailedLoadReturnValue()
         {
-            return new T();
+            return null;
         }
 
         protected static XDocument GetConfigurationDoc(string file)
