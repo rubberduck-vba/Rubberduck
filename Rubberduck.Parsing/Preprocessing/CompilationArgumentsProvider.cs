@@ -29,7 +29,7 @@ namespace Rubberduck.Parsing.PreProcessing
             var task = _uiDispatcher.StartTask(() => {
                 using (var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(projectId))
                 {
-                    return typeLib?.ConditionalCompilationArguments ?? new Dictionary<string, short>();
+                    return typeLib?.VBEExtensions.ConditionalCompilationArguments ?? new Dictionary<string, short>();
                 }
             });
             return task.Result;

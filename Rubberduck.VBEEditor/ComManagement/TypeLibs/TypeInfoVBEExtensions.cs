@@ -1,0 +1,135 @@
+﻿using System;
+using System.Runtime.InteropServices;
+
+namespace Rubberduck.VBEditor.ComManagement.TypeLibs
+{
+    /// <summary>
+    /// An internal interface exposed by VBA for all components (modules, class modules, etc)
+    /// </summary>
+    /// <remarks>This internal interface is known to be supported since the very earliest version of VBA6</remarks>
+    [ComImport(), Guid("DDD557E1-D96F-11CD-9570-00AA0051E5D4")]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    public interface IVBEComponent
+    {
+        void Placeholder1();
+        void Placeholder2();
+        void Placeholder3();
+        void Placeholder4();
+        void Placeholder5();
+        void Placeholder6();
+        void Placeholder7();
+        void Placeholder8();
+        void Placeholder9();
+        void Placeholder10();
+        void Placeholder11();
+        void Placeholder12();
+        void CompileComponent();
+        void Placeholder14();
+        IDispatch GetStdModAccessor();
+        void Placeholder16();
+        void Placeholder17();
+        void Placeholder18();
+        void Placeholder19();
+        void Placeholder20();
+        void Placeholder21();
+        void Placeholder22();
+        void Placeholder23();
+        void Placeholder24();
+        void Placeholder25();
+        void Placeholder26();
+        void Placeholder27();
+        void Placeholder28();
+        void Placeholder29();
+        void Placeholder30();
+        void Placeholder31();
+        void Placeholder32();
+        void Placeholder33();
+        void GetSomeRelatedTypeInfoPtrs(out IntPtr a, out IntPtr b);        // returns 2 TypeInfos, seemingly related to this ITypeInfo, but slightly different.
+    }
+
+    public class TypeInfoVBEExtensions : IDisposable
+    {
+        private readonly TypeInfoWrapper _parent;
+        private readonly IVBEComponent _target_IVBEComponent;
+
+        public TypeInfoVBEExtensions(TypeInfoWrapper parent, IntPtr tiPtr)
+        {
+            _parent = parent;
+            _target_IVBEComponent = ComHelper.ComCastViaAggregation<IVBEComponent>(tiPtr);
+        }
+
+        private bool _isDisposed;
+        public void Dispose()
+        {
+            if (_isDisposed) return;
+            _isDisposed = true;
+
+            if (_target_IVBEComponent != null) Marshal.ReleaseComObject(_target_IVBEComponent);
+        }
+
+        /// <summary>
+        /// Silently compiles the individual VBE component (class/module etc)
+        /// </summary>
+        /// <returns>true if this module, plus any direct dependent modules compile successfully</returns>
+        public bool CompileComponent()
+        {
+            try
+            {
+                _target_IVBEComponent.CompileComponent();
+                return true;
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                if (e.HResult != (int)KnownComHResults.E_VBA_COMPILEERROR)
+                {
+                    // When debugging we want to know if there are any other errors returned by the compiler as
+                    // the error code might be useful.
+                    throw new ArgumentException("Unrecognised VBE compiler error: \n" + e.ToString());
+                }
+#endif
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Provides an accessor object for invoking methods on a standard module in a VBA project
+        /// </summary>
+        /// <remarks>caller is responsible for calling ReleaseComObject</remarks>
+        /// <returns>the accessor object</returns>
+        public IDispatch GetStdModAccessor()
+        {
+            return _target_IVBEComponent.GetStdModAccessor();
+        }
+
+        /// <summary>
+        /// Executes a procedure inside a standard module in a VBA project
+        /// </summary>
+        /// <param name="name">the name of the procedure to invoke</param>
+        /// <param name="args">arguments to pass to the procedure</param>
+        /// <remarks>the returned object can be a COM object, and the callee is responsible for releasing it appropriately</remarks>
+        /// <returns>an object representing the return value from the procedure, or null if none.</returns>
+        public object StdModExecute(string name, object[] args = null)
+        {
+            // We search for the dispId using the real type info rather than using staticModule.GetIdsOfNames, 
+            // as we can then also include PRIVATE scoped procedures.
+            var func = _parent.Funcs.Find(name, TypeInfoFunction.PROCKIND.PROCKIND_PROC);
+            if (func == null)
+            {
+                throw new ArgumentException($"StdModExecute failed.  Couldn't find procedure named '{name}'");
+            }
+
+            var staticModule = GetStdModAccessor();
+
+            try
+            {
+                return IDispatchHelper.Invoke(staticModule, func.FuncDesc.memid, IDispatchHelper.InvokeKind.DISPATCH_METHOD, args);
+            }
+            finally
+            {
+                Marshal.ReleaseComObject(staticModule);
+            }
+        }
+    }
+}

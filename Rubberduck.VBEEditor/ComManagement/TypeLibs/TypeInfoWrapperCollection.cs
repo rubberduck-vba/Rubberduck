@@ -1,5 +1,4 @@
 ﻿using System;
-using Rubberduck.VBEditor.ComManagement.TypeLibsSupport;
 
 /// <summary>
 /// For usage examples, please see VBETypeLibsAPI
@@ -23,12 +22,22 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// <summary>
     /// Exposes an enumerable collection of TypeInfo objects exposed by this ITypeLib
     /// </summary>
-    public class TypeInfosCollection : IIndexedCollectionBase<TypeInfoWrapper>
+    public class TypeInfoWrapperCollection : IIndexedCollectionBase<TypeInfoWrapper>
     {
         private readonly TypeLibWrapper _parent;
-        public TypeInfosCollection(TypeLibWrapper parent) => _parent = parent;
+        public TypeInfoWrapperCollection(TypeLibWrapper parent) => _parent = parent;
         public override int Count => _parent.TypesCount;
-        public override TypeInfoWrapper GetItemByIndex(int index) => _parent.GetSafeTypeInfoByIndex(index);
+        public override TypeInfoWrapper GetItemByIndex(int index)
+        {
+            int hr = _parent.GetSafeTypeInfoByIndex(index, out var retVal);
+
+            if (ComHelper.HRESULT_FAILED(hr))
+            {
+                throw new System.Runtime.InteropServices.COMException("TypeInfosCollection::GetItemByIndex failed.", hr);
+            }
+
+            return retVal;
+        }
 
         public TypeInfoWrapper Find(string searchTypeName)
         {

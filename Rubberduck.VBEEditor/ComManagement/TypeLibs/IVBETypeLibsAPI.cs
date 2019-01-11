@@ -234,7 +234,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="className">The name of the class document, as defined in the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        DocClassType DetermineDocumentClassType(IVBE ide, string projectName, string className);
+        DocClassHelper.DocClassType DetermineDocumentClassType(IVBE ide, string projectName, string className);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
@@ -242,7 +242,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="className">The name of the class document, as defined in the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        DocClassType DetermineDocumentClassType(ITypeLibWrapper projectTypeLib, string className);
+        DocClassHelper.DocClassType DetermineDocumentClassType(ITypeLibWrapper projectTypeLib, string className);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
@@ -250,21 +250,21 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="className">The name of the class document, as defined in the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        DocClassType DetermineDocumentClassType(IVBProject project, string className);
+        DocClassHelper.DocClassType DetermineDocumentClassType(IVBProject project, string className);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
         /// </summary>
         /// <param name="project">Safe-com wrapper representing the VBA component</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        DocClassType DetermineDocumentClassType(IVBComponent component);
+        DocClassHelper.DocClassType DetermineDocumentClassType(IVBComponent component);
 
         /// <summary>
         /// Determines whether the specified document class is a known document class type (e.g. Excel._Workbook, Access._Form)
         /// </summary>
         /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        DocClassType DetermineDocumentClassType(TypeInfoWrapper classTypeInfo);
+        DocClassHelper.DocClassType DetermineDocumentClassType(TypeInfoWrapper classTypeInfo);
 
         /// <summary>
         /// Determines whether the specified VBA class implements a specific interface
@@ -586,7 +586,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="referenceIdx">Index into the references collection</param>
         /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
-        TypeInfoReference GetReferenceInfo(IVBE ide, string projectName, int referenceIdx);
+        TypeLibReference GetReferenceInfo(IVBE ide, string projectName, int referenceIdx);
 
         /// <summary>
         /// Returns a TypeInfoReference object containing information about the specified VBA project reference
@@ -594,7 +594,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="referenceIdx">Index into the references collection</param>
         /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
-        TypeInfoReference GetReferenceInfo(IVBProject project, int referenceIdx);
+        TypeLibReference GetReferenceInfo(IVBProject project, int referenceIdx);
 
         /// <summary>
         /// Returns a TypeInfoReference object containing information about the specified VBA project reference
@@ -602,7 +602,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="referenceIdx">Index into the references collection</param>
         /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
-        TypeInfoReference GetReferenceInfo(ITypeLibWrapper projectTypeLib, int referenceIdx);
+        TypeLibReference GetReferenceInfo(ITypeLibWrapper projectTypeLib, int referenceIdx);
 
         /// <summary>
         /// Returns a TypeInfoReference object containing information about the specified VBA project reference
@@ -610,7 +610,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="vbeReference">Safe-com wrapper representing the VBA project reference</param>
         /// <returns>TypeInfoReference containing information about the specified VBA project reference</returns>
-        TypeInfoReference GetReferenceInfo(IVBProject project, IReference vbeReference);
+        TypeLibReference GetReferenceInfo(IVBProject project, IReference vbeReference);
 
         /// <summary>
         /// Documents the type libaries of all loaded VBA projects
@@ -631,6 +631,6 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// </summary>
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <returns>text document, in a non-standard format, useful for debugging purposes</returns>
-        string DocumentAll(ITypeLibWrapper projectTypeLib);
+        string DocumentAll(TypeLibWrapper projectTypeLib);
     }
 }
