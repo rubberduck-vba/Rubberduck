@@ -49,7 +49,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         [DispId(10)]
         void DocumentAllSaveAs(string filePath);
         [DispId(11)]
-        object GetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0);
+        string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0);
     }
 
     [
@@ -93,8 +93,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
             => _api.DocumentAll(_ide);
         public void DocumentAllSaveAs(string filePath)
             => _api.DocumentAllSaveAs(_ide, filePath);
-        public object GetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0)
-            => _api.GetCLRTypeFromVBAComponent(_ide, projectName, componentName, inheritenceLevel);
+        public string TestGetCLRTypeFromVBAComponent(string projectName, string componentName, int inheritenceLevel = 0)
+            => _api.TestGetCLRTypeFromVBAComponent(_ide, projectName, componentName, inheritenceLevel);
     }
 #endif
 
@@ -1090,10 +1090,21 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
             return output.ToString();
         }
 
+        /// <summary>
+        /// Documents the type libary of a single VBA project and outputs to a file
+        /// </summary>
+        /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
+        /// <param name="filePath">string representing a full path and filename where output will be written to</param>
         public void DocumentAllSaveAs(IVBE ide, string filePath)
             => System.IO.File.WriteAllText(filePath, DocumentAll(ide));
 
-        public object GetCLRTypeFromVBAComponent(IVBE ide, string projectName, string componentName, int inheritenceLevel = 0)
+        /// <summary>
+        /// Tests converting an ITypeInfo representing a VBA project component to System.Type using Marshal.GetTypeForITypeInfo
+        /// </summary>
+        /// <param name="projectName">The VBA project name</param>
+        /// <param name="componentName">The name of the component to grab the ITypeInfo of</param>
+        /// <returns>the System.Type ToString() </returns>
+        public string TestGetCLRTypeFromVBAComponent(IVBE ide, string projectName, string componentName, int inheritenceLevel = 0)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
@@ -1106,7 +1117,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
                 }
 
                 var clrType = Marshal.GetTypeForITypeInfo(Marshal.GetIUnknownForObject(ti));
-                return clrType;
+                return clrType.ToString();
             }
         }
     }
