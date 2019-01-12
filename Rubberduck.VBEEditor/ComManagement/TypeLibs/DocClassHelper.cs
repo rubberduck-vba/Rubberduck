@@ -19,22 +19,22 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     }
 
     /// <summary>
+    /// An enumeration used for identifying the type of a VBA document class
+    /// </summary>
+    public enum DocClassType
+    {
+        Unrecognized,
+        ExcelWorkbook,
+        ExcelWorksheet,
+        AccessForm,
+        AccessReport,
+    }
+
+    /// <summary>
     /// A helper class for providing a static array of known VBA document class types
     /// </summary>
     public static class DocClassHelper
     {
-        /// <summary>
-        /// An enumeration used for identifying the type of a VBA document class
-        /// </summary>
-        public enum DocClassType
-        {
-            Unrecognized,
-            ExcelWorkbook,
-            ExcelWorksheet,
-            AccessForm,
-            AccessReport,
-        }
-
         /// <summary>
         /// A class for holding known document class types used in VBA hosts, and their corresponding interface progIds
         /// </summary>

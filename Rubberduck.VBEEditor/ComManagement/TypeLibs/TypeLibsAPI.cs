@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         [DispId(7)]
         string GetDocumentClassControlType(string projectName, string documentClassName, string controlName);
         [DispId(8)]
-        DocClassHelper.DocClassType DetermineDocumentClassType(string projectName, string className);
+        DocClassType DetermineDocumentClassType(string projectName, string className);
         [DispId(9)]
         string DocumentAll();
         [DispId(10)]
@@ -87,7 +87,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
             => _api.GetUserFormControlType(_ide, projectName, userFormName, controlName);
         public string GetDocumentClassControlType(string projectName, string documentClassName, string controlName)
             => _api.GetDocumentClassControlType(_ide, projectName, documentClassName, controlName);
-        public DocClassHelper.DocClassType DetermineDocumentClassType(string projectName, string className)
+        public DocClassType DetermineDocumentClassType(string projectName, string className)
             => _api.DetermineDocumentClassType(_ide, projectName, className);
         public string DocumentAll()
             => _api.DocumentAll(_ide);
@@ -454,7 +454,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectName">VBA Project name, as declared in the VBE</param>
         /// <param name="className">The name of the class document, as defined in the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassHelper.DocClassType DetermineDocumentClassType(IVBE ide, string projectName, string className)
+        public DocClassType DetermineDocumentClassType(IVBE ide, string projectName, string className)
         {
             using (var typeLibs = new VBETypeLibsAccessor(ide))
             {
@@ -468,7 +468,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="projectTypeLib">Low-level ITypeLib wrapper representing the VBA project</param>
         /// <param name="className">The name of the class document, as defined in the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassHelper.DocClassType DetermineDocumentClassType(ITypeLibWrapper projectTypeLib, string className)
+        public DocClassType DetermineDocumentClassType(ITypeLibWrapper projectTypeLib, string className)
         {
             return DetermineDocumentClassType(projectTypeLib.TypeInfos.Get(className));
         }
@@ -479,7 +479,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// <param name="project">Safe-com wrapper representing the VBA project</param>
         /// <param name="className">The name of the class document, as defined in the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassHelper.DocClassType DetermineDocumentClassType(IVBProject project, string className)
+        public DocClassType DetermineDocumentClassType(IVBProject project, string className)
         {
             using (var typeLib = TypeLibWrapper.FromVBProject(project))
             {
@@ -492,7 +492,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// </summary>
         /// <param name="project">Safe-com wrapper representing the VBA component</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassHelper.DocClassType DetermineDocumentClassType(IVBComponent component)
+        public DocClassType DetermineDocumentClassType(IVBComponent component)
         {
             using (var project = component.ParentProject)
             {
@@ -505,7 +505,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
         /// </summary>
         /// <param name="classTypeInfo">Low-level ITypeInfo wrapper representing the VBA project</param>
         /// <returns>DocClassType indicating the type of the document class module, or DocType.Unrecognized</returns>
-        public DocClassHelper.DocClassType DetermineDocumentClassType(TypeInfoWrapper classTypeInfo)
+        public DocClassType DetermineDocumentClassType(TypeInfoWrapper classTypeInfo)
         {
             return DocClassHelper.DetermineDocumentClassType(classTypeInfo);
         }
