@@ -77,6 +77,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         // Currently this is achieved by defining a range in the 32-bit space used by DispIDs that is unlikely to conflict with 
         // any normal DispIDs assigned by VBA, and one would think unlikely to be used by custom VB_UserMemId attributes. 
         // The range chosen allows for 65536 constants, starting at _ourConstantsDispatchMemberIDRangeStart.
+        // generated names are in the format "_constantFieldId" + Index (where index is the index into GetVarDesc)
         const int _ourConstantsDispatchMemberIDRangeStart = unchecked((int)0xFEDC0000);
         const int _ourConstantsDispatchMemberIDRangeBitmaskCheck = unchecked((int)0xFFFF0000);
         const int _ourConstantsDispatchMemberIDIndexBitmask = unchecked((int)0x0000FFFF);
