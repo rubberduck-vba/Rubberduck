@@ -373,7 +373,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     {
                         var funcDescAlternate = funcDescAlternatePtr.Value.Value;    // dereference the ptr, then the content
                         funcDesc.wFuncFlags = funcDescAlternate.wFuncFlags;
-                        _target_ITypeInfoAlternate.ReleaseFuncDesc(funcDescAlternatePtr.Address);
+                        _target_ITypeInfoAlternate.ReleaseFuncDesc(funcDescAlternatePtr.Value.Address);
 
                         Marshal.StructureToPtr(funcDesc, pFuncDesc, false);
                     }
