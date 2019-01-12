@@ -369,13 +369,14 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 using (var funcDescAlternatePtr = AddressableVariables.CreatePtrTo<ComTypes.FUNCDESC>())
                 {
                     var hr2 = _target_ITypeInfoAlternate.GetFuncDesc(index, funcDescAlternatePtr.Address);
-                    if (ComHelper.HRESULT_FAILED(hr2)) return HandleBadHRESULT(hr2);
+                    if (!ComHelper.HRESULT_FAILED(hr2))
+                    {
+                        var funcDescAlternate = funcDescAlternatePtr.Value.Value;    // dereference the ptr, then the content
+                        funcDesc.wFuncFlags = funcDescAlternate.wFuncFlags;
+                        _target_ITypeInfoAlternate.ReleaseFuncDesc(funcDescAlternatePtr.Address);
 
-                    var funcDescAlternate = funcDescAlternatePtr.Value.Value;    // dereference the ptr, then the content
-                    funcDesc.wFuncFlags = funcDescAlternate.wFuncFlags;                    
-                    _target_ITypeInfoAlternate.ReleaseFuncDesc(funcDescAlternatePtr.Address);
-
-                    Marshal.StructureToPtr(funcDesc, pFuncDesc, false);
+                        Marshal.StructureToPtr(funcDesc, pFuncDesc, false);
+                    }
                 }
             }
 
