@@ -366,11 +366,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 // Populate wFuncFlags from the alternative typeinfo provided by VBA
                 // The alternative typeinfo is not as useful as the main typeinfo for most things, but does expose wFuncFlags
                 // The list of functions appears to be in the same order as the main typeinfo.  
-                using (var funcDescPtr = AddressableVariables.CreatePtrTo<ComTypes.FUNCDESC>())
+                using (var funcDescAlternatePtr = AddressableVariables.CreatePtrTo<ComTypes.FUNCDESC>())
                 {
-                    var hr2 = _target_ITypeInfoAlternate.GetFuncDesc(index, funcDescPtr.Address);
-                    var funcDescAlternate = funcDescPtr.Value.Value;    // dereference the ptr, then the content
-                    funcDesc.wFuncFlags = funcDescAlternate.wFuncFlags;
+                    var hr2 = _target_ITypeInfoAlternate.GetFuncDesc(index, funcDescAlternatePtr.Address);
+                    if (ComHelper.HRESULT_FAILED(hr2)) return HandleBadHRESULT(hr2);
+
+                    var funcDescAlternate = funcDescAlternatePtr.Value.Value;    // dereference the ptr, then the content
+                    funcDesc.wFuncFlags = funcDescAlternate.wFuncFlags;                    
+                    _target_ITypeInfoAlternate.ReleaseFuncDesc(funcDescAlternatePtr.Address);
+
                     Marshal.StructureToPtr(funcDesc, pFuncDesc, false);
                 }
             }
