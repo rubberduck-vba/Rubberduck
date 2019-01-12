@@ -79,6 +79,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         // The range chosen allows for 65536 constants, starting at _ourConstantsDispatchMemberIDRangeStart.
         const int _ourConstantsDispatchMemberIDRangeStart = unchecked((int)0xFEDC0000);
         const int _ourConstantsDispatchMemberIDRangeBitmaskCheck = unchecked((int)0xFFFF0000);
+        const int _ourConstantsDispatchMemberIDIndexBitmask = unchecked((int)0x0000FFFF);
         bool IsDispatchMemberIDInOurConstantsRange(int memid)
         {
             return (memid & _ourConstantsDispatchMemberIDRangeBitmaskCheck) == _ourConstantsDispatchMemberIDRangeStart;
@@ -407,7 +408,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (IsDispatchMemberIDInOurConstantsRange(memid))
             {
                 // this is most likely one of our simulated names from GetVarDesc()
-                var fieldId = memid & 0xFFFFFF;
+                var fieldId = memid & _ourConstantsDispatchMemberIDIndexBitmask;
                 if ((rgBstrNames != IntPtr.Zero) && (cMaxNames >= 1))
                 {
                     // output 1 string to the array
@@ -455,7 +456,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             if (IsDispatchMemberIDInOurConstantsRange(memid))
             {
                 // this is very likely one of our simulated names from GetVarDesc()
-                var fieldId = memid & 0xFFFFFF;
+                var fieldId = memid & _ourConstantsDispatchMemberIDIndexBitmask;
                 if (strName != IntPtr.Zero) Marshal.WriteIntPtr(strName, Marshal.StringToBSTR("_constantFieldId" + fieldId));
                 if (strDocString != IntPtr.Zero) Marshal.WriteIntPtr(strDocString, IntPtr.Zero);
                 if (dwHelpContext != IntPtr.Zero) Marshal.WriteInt32(dwHelpContext, 0);
