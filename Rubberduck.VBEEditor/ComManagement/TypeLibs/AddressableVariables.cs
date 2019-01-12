@@ -12,7 +12,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     {
         public IntPtr Address { get; private set; }
         public int ElementCount { get; private set; }       // 1 for singular elements
-        private readonly bool _ownedMemory;      // true if WE allocated the memory (default)
+        private bool _ownedMemory;      // true if WE allocated the memory, and it hasn't been extracted from us (default)
 
         // marshalling provided by the derived classes
         public abstract TMarshalled MarshalFrom(TUnmarshalled input);
@@ -99,6 +99,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             {
                 Address = alreadyAllocatedMem;
             }
+        }
+
+        // Extract the address and ensure no cleanup
+        public IntPtr Extract()
+        {
+            _ownedMemory = false;
+            return Address;
         }
 
         public void Dispose()
