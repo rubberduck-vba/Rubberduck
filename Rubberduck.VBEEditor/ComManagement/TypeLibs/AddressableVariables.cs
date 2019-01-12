@@ -10,8 +10,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     // and allows the derived classes to implement marshalling for the elements (e.g. string<->BSTR etc)
     public abstract class IAddressableVariableBase<TUnmarshalled, TMarshalled> : IDisposable
     {
-        public readonly IntPtr _address;
-        public readonly int _elementCount;       // 1 for singular elements
+        public IntPtr Address { get; private set; }
+        public int ElementCount { get; private set; }       // 1 for singular elements
         private readonly bool _ownedMemory;      // true if WE allocated the memory (default)
 
         // marshalling provided by the derived classes
@@ -41,12 +41,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         // array accessors, unmarshalled
         public TUnmarshalled GetArrayElementUnmarshalled(int elementIndex)
         {
-            var elementAddress = _address + (ElementSize * elementIndex);
+            var elementAddress = Address + (ElementSize * elementIndex);
             return StructHelper.ReadStructureUnsafe<TUnmarshalled>(elementAddress);
         }
         public void SetArrayElementUnmarshalled(int elementIndex, TUnmarshalled value)
         {
-            var elementAddress = _address + (ElementSize * elementIndex);
+            var elementAddress = Address + (ElementSize * elementIndex);
             Marshal.StructureToPtr<TUnmarshalled>(value, elementAddress, false);
         }
 
@@ -60,8 +60,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         // GetArray: grab a full copy of the array content as a c# array, including marshalling of all elements
         public TMarshalled[] GetArray(int maxCopyElements = 0)
         {
-            if (maxCopyElements > _elementCount) throw new InvalidOperationException();
-            if (maxCopyElements == 0) maxCopyElements = _elementCount;
+            if (maxCopyElements > ElementCount) throw new InvalidOperationException();
+            if (maxCopyElements == 0) maxCopyElements = ElementCount;
 
             TMarshalled[] retVal = new TMarshalled[maxCopyElements];
             var index = 0;
@@ -78,7 +78,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public void CopyArrayTo(TMarshalled[] copyTo)
         {
             var index = 0;
-            while (index < _elementCount)
+            while (index < ElementCount)
             {
                 copyTo[index] = GetArrayElement(index);
                 index++;
@@ -87,17 +87,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
         public IAddressableVariableBase(int contiguousArrayElementCount = 1, IntPtr alreadyAllocatedMem = default)
         {
-            _elementCount = contiguousArrayElementCount;
-            var sizeOf = ElementSize * _elementCount;
+            ElementCount = contiguousArrayElementCount;
+            var sizeOf = ElementSize * ElementCount;
             _ownedMemory = alreadyAllocatedMem == IntPtr.Zero;
             if (_ownedMemory)
             {
-                _address = Marshal.AllocHGlobal(sizeOf);
-                Marshal.Copy(new byte[sizeOf], 0, _address, sizeOf); // nullify the data
+                Address = Marshal.AllocHGlobal(sizeOf);
+                Marshal.Copy(new byte[sizeOf], 0, Address, sizeOf); // nullify the data
             }
             else
             {
-                _address = alreadyAllocatedMem;
+                Address = alreadyAllocatedMem;
             }
         }
 
@@ -117,12 +117,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             // call the derived MarshallRelease for each element (e.g. Marshal.FreeBSTR for strings etc)
             var index = 0;
-            while (index < _elementCount)
+            while (index < ElementCount)
             {
                 MarshalRelease(GetArrayElementUnmarshalled(index++));
             }
 
-            if (_ownedMemory && (_address != IntPtr.Zero)) Marshal.FreeHGlobal(_address);
+            if (_ownedMemory && (Address != IntPtr.Zero)) Marshal.FreeHGlobal(Address);
             _isDisposed = true;
         }
     }
@@ -180,7 +180,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public override AddressableVariableSimple<T> MarshalFrom(IntPtr input)
             => new AddressableVariableSimple<T>(alreadyAllocatedMem: UnmarshalledValue);
         public override IntPtr MarshalTo(AddressableVariableSimple<T> input)
-            => UnmarshalledValue = input._address;
+            => UnmarshalledValue = input.Address;
         public override void MarshalRelease(IntPtr input) { }
     }
 

@@ -157,7 +157,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeInfoPtr = AddressableVariables.Create<IntPtr>())
             {
-                int hr = _target_ITypeLib.GetTypeInfo(index, typeInfoPtr._address);
+                int hr = _target_ITypeLib.GetTypeInfo(index, typeInfoPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
                 var outVal = new TypeInfoWrapper(typeInfoPtr.Value);
@@ -178,11 +178,11 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 {
                     using (var typeLibAttributesPtr = AddressableVariables.CreatePtrTo<ComTypes.TYPELIBATTR>())
                     {
-                        int hr = _target_ITypeLib.GetLibAttr(typeLibAttributesPtr._address);
+                        int hr = _target_ITypeLib.GetLibAttr(typeLibAttributesPtr.Address);
                         if (!ComHelper.HRESULT_FAILED(hr))
                         {
                             _cachedLibAttribs = typeLibAttributesPtr.Value.Value;   // dereference the ptr, then the content
-                            var pTypeLibAttr = typeLibAttributesPtr.Value._address; // dereference the ptr, and take the contents address
+                            var pTypeLibAttr = typeLibAttributesPtr.Value.Address; // dereference the ptr, and take the contents address
                             _target_ITypeLib.ReleaseTLibAttr(pTypeLibAttr);         // can release immediately as _cachedLibAttribs is a copy
                         }
                     }

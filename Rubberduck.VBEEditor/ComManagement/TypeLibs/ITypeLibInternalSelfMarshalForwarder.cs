@@ -49,7 +49,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeInfoPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeInfo>())
             {
-                var hr = _this_Internal.GetTypeInfo(index, typeInfoPtr._address);
+                var hr = _this_Internal.GetTypeInfo(index, typeInfoPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 ppTI = typeInfoPtr.Value;
@@ -63,7 +63,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeKindPtr = AddressableVariables.Create<ComTypes.TYPEKIND>())
             {
-                var hr = _this_Internal.GetTypeInfoType(index, typeKindPtr._address);
+                var hr = _this_Internal.GetTypeInfoType(index, typeKindPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 pTKind = typeKindPtr.Value;
             }
@@ -76,7 +76,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeInfoPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeInfo>())
             {
-                var hr = _this_Internal.GetTypeInfoOfGuid(guid, typeInfoPtr._address);
+                var hr = _this_Internal.GetTypeInfoOfGuid(guid, typeInfoPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 ppTInfo = typeInfoPtr.Value;
             }
@@ -89,9 +89,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeLibAttrPtr = AddressableVariables.CreatePtrTo<ComTypes.TYPELIBATTR>())
             {
-                var hr = _this_Internal.GetLibAttr(typeLibAttrPtr._address);
+                var hr = _this_Internal.GetLibAttr(typeLibAttrPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
-                ppTLibAttr = typeLibAttrPtr.Value._address;
+                ppTLibAttr = typeLibAttrPtr.Value.Address;
             }
         }
 
@@ -102,7 +102,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeCompPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeComp>())
             {
-                var hr = _this_Internal.GetTypeComp(typeCompPtr._address);
+                var hr = _this_Internal.GetTypeComp(typeCompPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 ppTComp = typeCompPtr.Value;
             }
@@ -121,7 +121,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var _helpContext = AddressableVariables.Create<int>())
             using (var _Helpfile = AddressableVariables.CreateBSTR())
             {
-                int hr = _this_Internal.GetDocumentation(memid, _name._address, _docString._address, _helpContext._address, _Helpfile._address);
+                int hr = _this_Internal.GetDocumentation(memid, _name.Address, _docString.Address, _helpContext.Address, _Helpfile.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 strName = _name.Value;
@@ -135,7 +135,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             using (var _pfName = AddressableVariables.Create<int>())
             {
-                var hr = _this_Internal.IsName(szNameBuf, lHashVal, _pfName._address);
+                var hr = _this_Internal.IsName(szNameBuf, lHashVal, _pfName.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 return _pfName.Value != 0;
@@ -150,7 +150,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var _MemIds = AddressableVariables.Create<int>(pcFound))
             using (var _pcFound = AddressableVariables.Create<short>())
             {
-                var hr = _this_Internal.FindName(szNameBuf, lHashVal, _ppTInfo._address, _MemIds._address, _pcFound._address);
+                var hr = _this_Internal.FindName(szNameBuf, lHashVal, _ppTInfo.Address, _MemIds.Address, _pcFound.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 _ppTInfo.CopyArrayTo(ppTInfo);

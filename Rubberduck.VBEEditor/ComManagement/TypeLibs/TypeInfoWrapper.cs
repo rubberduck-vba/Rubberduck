@@ -90,12 +90,12 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         {
             using (var typeAttrPtr = AddressableVariables.CreatePtrTo<ComTypes.TYPEATTR>())
             {
-                int hr = _target_ITypeInfo.GetTypeAttr(typeAttrPtr._address);
+                int hr = _target_ITypeInfo.GetTypeAttr(typeAttrPtr.Address);
 
                 if (!ComHelper.HRESULT_FAILED(hr))
                 {
                     CachedAttributes = typeAttrPtr.Value.Value;     // dereference the ptr, then the content
-                    var pTypeAttr = typeAttrPtr.Value._address;     // dereference the ptr, and take the contents address
+                    var pTypeAttr = typeAttrPtr.Value.Address;     // dereference the ptr, and take the contents address
                     _target_ITypeInfo.ReleaseTypeAttr(pTypeAttr);   // can release immediately as CachedAttributes is a copy
                 }
                 else
@@ -120,7 +120,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var typeLibPtr = AddressableVariables.Create<IntPtr>())
             using (var containerTypeLibIndex = AddressableVariables.Create<int>())
             {
-                var hr = _target_ITypeInfo.GetContainingTypeLib(typeLibPtr._address, containerTypeLibIndex._address);
+                var hr = _target_ITypeInfo.GetContainingTypeLib(typeLibPtr.Address, containerTypeLibIndex.Address);
 
                 if (!ComHelper.HRESULT_FAILED(hr))
                 {
@@ -287,7 +287,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeInfoPtr = AddressableVariables.Create<IntPtr>())
             {
-                int hr = _target_ITypeInfo.GetRefTypeInfo(hRef, typeInfoPtr._address);
+                int hr = _target_ITypeInfo.GetRefTypeInfo(hRef, typeInfoPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
                 var outVal = new TypeInfoWrapper(typeInfoPtr.Value, IsUserFormBaseClass ? (int?)hRef : null); // takes ownership of the COM reference
@@ -360,7 +360,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 // The list of functions appears to be in the same order as the main typeinfo.  
                 using (var funcDescPtr = AddressableVariables.CreatePtrTo<ComTypes.FUNCDESC>())
                 {
-                    var hr2 = _target_ITypeInfoAlternate.GetFuncDesc(index, funcDescPtr._address);
+                    var hr2 = _target_ITypeInfoAlternate.GetFuncDesc(index, funcDescPtr.Address);
                     var funcDescAlternate = funcDescPtr.Value.Value;    // dereference the ptr, then the content
                     funcDesc.wFuncFlags = funcDescAlternate.wFuncFlags;
                     Marshal.StructureToPtr(funcDesc, pFuncDesc, false);

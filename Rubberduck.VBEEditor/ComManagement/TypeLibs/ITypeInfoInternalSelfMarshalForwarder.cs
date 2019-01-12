@@ -54,7 +54,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var typeLibPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeLib>())
             using (var indexPtr = AddressableVariables.Create<int>())
             {
-                int hr = _this_Internal.GetContainingTypeLib(typeLibPtr._address, indexPtr._address);
+                int hr = _this_Internal.GetContainingTypeLib(typeLibPtr.Address, indexPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 ppTLB = typeLibPtr.Value;
@@ -69,10 +69,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeAttrPtr = AddressableVariables.CreatePtrTo<ComTypes.TYPEATTR>())
             {
-                var hr = _this_Internal.GetTypeAttr(typeAttrPtr._address);
+                var hr = _this_Internal.GetTypeAttr(typeAttrPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
-                ppTypeAttr = typeAttrPtr.Value._address;        // dereference the ptr, and take the contents address
+                ppTypeAttr = typeAttrPtr.Value.Address;        // dereference the ptr, and take the contents address
             }
         }
 
@@ -83,7 +83,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeCompPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeComp>())
             {
-                var hr = _this_Internal.GetTypeComp(typeCompPtr._address);
+                var hr = _this_Internal.GetTypeComp(typeCompPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 ppTComp = typeCompPtr.Value;
@@ -97,10 +97,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var funcDescPtr = AddressableVariables.CreatePtrTo<ComTypes.FUNCDESC>())
             {
-                var hr = _this_Internal.GetFuncDesc(index, funcDescPtr._address);
+                var hr = _this_Internal.GetFuncDesc(index, funcDescPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
-                ppFuncDesc = funcDescPtr.Value._address;        // dereference the ptr, and take the contents address
+                ppFuncDesc = funcDescPtr.Value.Address;        // dereference the ptr, and take the contents address
             }
         }
 
@@ -111,9 +111,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var varDescPtr = AddressableVariables.CreatePtrTo<ComTypes.VARDESC>())
             {
-                var hr = _this_Internal.GetVarDesc(index, varDescPtr._address);
+                var hr = _this_Internal.GetVarDesc(index, varDescPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
-                ppVarDesc = varDescPtr.Value._address;          // dereference the ptr, and take the contents address
+                ppVarDesc = varDescPtr.Value.Address;          // dereference the ptr, and take the contents address
             }
         }
 
@@ -125,7 +125,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var names = AddressableVariables.CreateBSTR(cMaxNames))
             using (var namesCount = AddressableVariables.Create<int>())
             {
-                var hr = _this_Internal.GetNames(memid, names._address, cMaxNames, namesCount._address);
+                var hr = _this_Internal.GetNames(memid, names.Address, cMaxNames, namesCount.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 names.CopyArrayTo(rgBstrNames);
                 pcNames = namesCount.Value;
@@ -139,7 +139,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var outHref = AddressableVariables.Create<int>())
             {
-                int hr = _this_Internal.GetRefTypeOfImplType(index, outHref._address);
+                int hr = _this_Internal.GetRefTypeOfImplType(index, outHref.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 href = outHref.Value;
             }
@@ -152,7 +152,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var implTypeFlags = AddressableVariables.Create<ComTypes.IMPLTYPEFLAGS>())
             {
-                int hr = _this_Internal.GetImplTypeFlags(index, implTypeFlags._address);
+                int hr = _this_Internal.GetImplTypeFlags(index, implTypeFlags.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 pImplTypeFlags = implTypeFlags.Value;
@@ -166,7 +166,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var names = AddressableVariables.CreateBSTR(cNames))
             using (var memberIds = AddressableVariables.Create<int>(cNames))
             {
-                var hr = _this_Internal.GetIDsOfNames(names._address, cNames, memberIds._address);
+                var hr = _this_Internal.GetIDsOfNames(names.Address, cNames, memberIds.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 names.CopyArrayTo(rgszNames);
                 memberIds.CopyArrayTo(pMemId);
@@ -193,7 +193,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var helpContext = AddressableVariables.Create<int>())
             using (var helpFile = AddressableVariables.CreateBSTR())
             {
-                int hr = _this_Internal.GetDocumentation(memid, name._address, docString._address, helpContext._address, helpFile._address);
+                int hr = _this_Internal.GetDocumentation(memid, name.Address, docString.Address, helpContext.Address, helpFile.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 strName = name.Value;
@@ -218,7 +218,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var typeInfoPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeInfo>())
             {
-                var hr = _this_Internal.GetRefTypeInfo(hRef, typeInfoPtr._address);
+                var hr = _this_Internal.GetRefTypeInfo(hRef, typeInfoPtr.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 ppTI = typeInfoPtr.Value;
             }
@@ -231,7 +231,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var outPpv = AddressableVariables.Create<IntPtr>())
             {
-                int hr = _this_Internal.AddressOfMember(memid, invKind, outPpv._address);
+                int hr = _this_Internal.AddressOfMember(memid, invKind, outPpv.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
                 ppv = outPpv.Value;
             }
@@ -245,7 +245,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             using (var outPpvObj = AddressableVariables.CreateObjectPtr<object>())
             {
                 var unkOuter = Marshal.GetIUnknownForObject(pUnkOuter);
-                int hr = _this_Internal.CreateInstance(unkOuter, riid, outPpvObj._address);
+                int hr = _this_Internal.CreateInstance(unkOuter, riid, outPpvObj.Address);
                 Marshal.Release(unkOuter);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
@@ -260,7 +260,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             using (var strMops = AddressableVariables.CreateBSTR())
             {
-                int hr = _this_Internal.GetMops(memid, strMops._address);
+                int hr = _this_Internal.GetMops(memid, strMops.Address);
                 if (ComHelper.HRESULT_FAILED(hr)) HandleBadHRESULT(hr);
 
                 pBstrMops = strMops.Value;
