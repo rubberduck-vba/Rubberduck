@@ -264,7 +264,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
 
         /// <summary>
-        /// Used to detect UserForm classes, needed to workaround a VBE bug.  See TypeInfoWrapper XML doc for details. 
+        /// Used to detect UserForm classes, needed to workaround a VBE bug.  See <cref see="TypeInfoWrapper"> for details. 
         /// </summary>
         private void DetectUserFormClass()
         {
