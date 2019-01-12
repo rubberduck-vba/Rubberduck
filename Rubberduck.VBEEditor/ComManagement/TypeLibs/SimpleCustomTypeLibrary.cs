@@ -55,11 +55,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             var ti = _containedTypeInfos[index];
 
-            var typeKind = ti.TypeKind;
-            if (typeKind == TYPEKIND_VBE.TKIND_VBACLASS)
-            {
-                typeKind = TYPEKIND_VBE.TKIND_DISPATCH;
-            }
+            var typeKind = TypeInfoWrapper.PatchTypeKind(ti.TypeKind);
             Marshal.WriteInt32(pTKind, (int)typeKind);
 
             return (int)KnownComHResults.S_OK;

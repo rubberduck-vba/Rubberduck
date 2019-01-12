@@ -219,12 +219,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             int hr = _target_ITypeLib.GetTypeInfoType(index, pTKind);
             if (ComHelper.HRESULT_FAILED(hr)) return HandleBadHRESULT(hr);
 
-            var tKind = (TYPEKIND_VBE)Marshal.ReadInt32(pTKind);
-            if (tKind == TYPEKIND_VBE.TKIND_VBACLASS)
-            {
-                // patch up TKIND_VBACLASS to the nearest equivalent, TKIND_DISPATCH
-                Marshal.WriteInt32(pTKind, (int)TYPEKIND_VBE.TKIND_DISPATCH);
-            }
+            var tKind = Marshal.ReadInt32(pTKind);
+            tKind = (int)TypeInfoWrapper.PatchTypeKind((TYPEKIND_VBE)tKind);
+            Marshal.WriteInt32(pTKind, tKind);
 
             return hr;
         }

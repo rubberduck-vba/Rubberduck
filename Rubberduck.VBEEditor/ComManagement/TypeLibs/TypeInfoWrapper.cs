@@ -264,6 +264,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             }
         }
 
+        public static ComTypes.TYPEKIND PatchTypeKind(TYPEKIND_VBE typeKind)
+        {
+            // We patch up the special TKIND_VBACLASS constant to TKIND_DISPATCH as that seems the most appropriate
+            // supporting both variables[fields] and functions[members]
+            if (typeKind == TYPEKIND_VBE.TKIND_VBACLASS)
+            {
+                return ComTypes.TYPEKIND.TKIND_DISPATCH;
+            }
+            return (ComTypes.TYPEKIND)typeKind;
+        }
+
         /// <summary>
         /// Used to detect UserForm classes, needed to workaround a VBE bug.  See <cref see="TypeInfoWrapper"> for details. 
         /// </summary>
@@ -329,12 +340,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 
             var pTypeAttr = StructHelper.ReadStructureUnsafe<IntPtr>(ppTypeAttr);
             var typeAttr = StructHelper.ReadStructureUnsafe<ComTypes.TYPEATTR>(pTypeAttr);
-            if ((TYPEKIND_VBE)typeAttr.typekind == TYPEKIND_VBE.TKIND_VBACLASS)
-            {
-                // patch up TKIND_VBACLASS to the nearest equivalent, TKIND_DISPATCH
-                typeAttr.typekind = ComTypes.TYPEKIND.TKIND_DISPATCH;
-                Marshal.StructureToPtr<ComTypes.TYPEATTR>(typeAttr, pTypeAttr, false);
-            }
+
+            typeAttr.typekind = PatchTypeKind((TYPEKIND_VBE)typeAttr.typekind);
+            Marshal.StructureToPtr<ComTypes.TYPEATTR>(typeAttr, pTypeAttr, false);
             return hr;
         }
 
