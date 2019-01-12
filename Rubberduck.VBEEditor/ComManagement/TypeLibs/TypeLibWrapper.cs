@@ -64,6 +64,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                     var cache = new TypeLibTextFields();
                     // as a C# caller, it's easier to work with ComTypes.ITypeLib
                     ((ComTypes.ITypeLib)_target_ITypeLib).GetDocumentation((int)KnownDispatchMemberIDs.MEMBERID_NIL, out cache._name, out cache._docString, out cache._helpContext, out cache._helpFile);
+                    if (cache._name == null) cache._name = "[VBA.Immediate.Window]";
                     _cachedTextFields = cache;
                 }
                 return _cachedTextFields.Value;
