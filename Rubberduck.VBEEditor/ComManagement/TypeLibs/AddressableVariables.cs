@@ -3,11 +3,19 @@ using System.Runtime.InteropServices;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
-    // AddressableVariables are created in unmanaged memory space, designed to aid creating addressable
-    // content when passing to/from interop code (as IntPtr addresses)
-
-    // IAddressableVariableBase<T> can  represent a single element, or a contiguous array,
-    // and allows the derived classes to implement marshalling for the elements (e.g. string<->BSTR etc)
+    /// <summary>
+    /// AddressableVariables aid creating and handling unmanaged data
+    /// </summary>
+    /// <remarks>
+    /// AddressableVariables are created in unmanaged memory space, designed to aid creating addressable
+    /// content when passing to/from interop code (as IntPtr addresses)
+    /// 
+    /// Memory is allocated on the heap, and alignment of the data is on 8-byte boundaries as is standard 
+    /// for the Windows heap allocators, and this is ample for our use cases.
+    /// 
+    /// IAddressableVariableBase<T> can  represent a single element, or a contiguous array,
+    /// and allows the derived classes to implement marshalling for the elements (e.g. string<->BSTR etc)
+    /// </remarks>
     public abstract class IAddressableVariableBase<TUnmarshalled, TMarshalled> : IDisposable
     {
         public IntPtr Address { get; private set; }
@@ -134,7 +142,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
-    // AddressableVariableSimple is ideal for basic types, like int, short, that require no marshalling or special handling
+    /// <summary>
+    /// AddressableVariableSimple is ideal for basic types, like int, short, that require no marshalling or special handling
+    /// </summary>
     public class AddressableVariableSimple<TBasicType> : IAddressableVariableBase<TBasicType, TBasicType>
     {
         public AddressableVariableSimple(int contiguousArrayElementCount = 1,
@@ -146,7 +156,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public override void MarshalRelease(TBasicType input) { }                   // no cleanup for basic types
     }
 
-    // this one is for marshalling string <-> BSTR
+    /// <summary>
+    /// AddressableVariableBSTR handles marshalling between string and BSTR
+    /// </summary>
     public class AddressableVariableBSTR : IAddressableVariableBase<IntPtr, string>
     {
         public AddressableVariableBSTR(int contigiousArrayElementCount)
@@ -162,7 +174,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
-    // this one is for marshalling com-interface-ptr <-> object
+    /// <summary>
+    /// AddressableVariableObject handles marshalling between COM interface pointers, and object
+    /// </summary>
     public class AddressableVariableObject<T> : IAddressableVariableBase<IntPtr, T>
     {
         public AddressableVariableObject(int contigiousArrayElementCount)
@@ -180,8 +194,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
-    // A pointer version, particularly useful for creating out-only pointers, 
-    // making the content easily deferencable once set on the unmanaged side
+    /// <summary>
+    /// AddressableVariablePtr is ideal for creating out-only pointers, making the content easily 
+    /// deferencable once set on the unmanaged side. Designed for simple types with no content marshalling.
+    /// </summary>
     public class AddressableVariablePtr<T> : IAddressableVariableBase<IntPtr, AddressableVariableSimple<T>>
     {
         public override AddressableVariableSimple<T> MarshalFrom(IntPtr input)
@@ -191,7 +207,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public override void MarshalRelease(IntPtr input) { }
     }
 
-    // helpers for creating AddressableVariables
+    /// <summary>
+    /// AddressableVariables exposes helpers for creating the common derived classes 
+    /// </summary>
     static class AddressableVariables
     {
         public static AddressableVariableSimple<T> Create<T>(int elementCount = 1)

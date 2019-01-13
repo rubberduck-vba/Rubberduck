@@ -10,14 +10,15 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibsAPI
 {
 #if DEBUG
-    // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
-    /* 
-        VBA Usage example:
-
-            With Application.VBE.Addins("Rubberduck.Extension").Object
-                .ExecuteCode("ProjectName", "ModuleName", "ProcedureName")
-            End With
-    */
+    /// <summary>
+    /// FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
+    /// </summary>
+    /// <remarks>
+    /// VBA Usage example:
+    /// With Application.VBE.Addins("Rubberduck.Extension").Object
+    ///    .ExecuteCode("ProjectName", "ModuleName", "ProcedureName")
+    /// End With
+    /// </remarks>
     [
         ComVisible(true),
         Guid(RubberduckGuid.DebugAddinObjectInterfaceGuid),

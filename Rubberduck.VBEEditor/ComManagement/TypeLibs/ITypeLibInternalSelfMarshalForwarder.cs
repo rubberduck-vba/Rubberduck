@@ -5,9 +5,12 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// A compatible version of ITypeLib, where COM objects are outputted as IntPtrs instead of objects
+    /// A compatible version of ComTypes.ITypeLib, using IntPtr for all out params
     /// see https://msdn.microsoft.com/en-us/library/windows/desktop/ms221549(v=vs.85).aspx
     /// </summary>
+    /// <remarks>
+    /// We use [PreserveSig] so that we can handle HRESULTs directly
+    /// </remarks>
     [ComImport(), Guid("00020402-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface ITypeLibInternal
@@ -24,10 +27,15 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         [PreserveSig] void ReleaseTLibAttr(/*TLIBATTR*/ IntPtr pTLibAttr);
     }
 
-    // This class marshals ComTypes.ITypeLib members to ITypeLibInternal
-    // ITypeLibInternal must be inherited BEFORE ComTypes.ITypeLib as they both have the same IID 
-    // this will ensure QueryInterface(IID_ITypeLib) returns ITypeLibInternal, not ComTypes.ITypeLib
-    // These wrappers could likely be implemented much more efficiently if we could use unsafe/fixed code
+    /// <summary>
+    /// This class marshals ComTypes.ITypeLib members to ITypeLibInternal
+    /// </summary>
+    /// <remarks>
+    /// ITypeLibInternal must be inherited BEFORE ComTypes.ITypeLib as they both have the same IID 
+    /// this will ensure QueryInterface(IID_ITypeLib) returns ITypeLibInternal, not ComTypes.ITypeLib
+    /// 
+    /// These wrappers could likely be implemented much more efficiently if we could use unsafe/fixed code
+    /// </remarks>
     public abstract class ITypeLibInternalSelfMarshalForwarder : ITypeLibInternal, ComTypes.ITypeLib, IDisposable
     {
         private ITypeLibInternal _this_Internal => (ITypeLibInternal)this;

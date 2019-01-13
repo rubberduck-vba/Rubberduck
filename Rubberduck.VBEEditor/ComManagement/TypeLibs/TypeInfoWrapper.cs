@@ -107,7 +107,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                         HasModuleScopeCompilationErrors = true;
                     }
 
-                    // just mute the erorr and expose an empty type
+                    // just mute the error and expose an empty type
                     CachedAttributes = new ComTypes.TYPEATTR();
                 }
             }

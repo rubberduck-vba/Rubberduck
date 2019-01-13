@@ -4,6 +4,9 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
+    /// <summary>
+    /// Static helpers here for working with TypeInfoWrapper
+    /// </summary>
     public static class TypeInfoWrapperHelpers
     {
         /// <summary>

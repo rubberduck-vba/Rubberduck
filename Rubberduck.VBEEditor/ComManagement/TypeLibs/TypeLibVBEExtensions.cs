@@ -55,6 +55,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     }
     */
 
+    /// <summary>
+    /// Exposes the VBE specific extensions provided by an ITypeLib
+    /// </summary>
     public class TypeLibVBEExtensions
     {
         private readonly TypeLibWrapper _parent;

@@ -36,6 +36,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         public uint Type;
     }
 
+    /// <summary>
+    /// Exposes some special routines for dealing with unmanaged memory
+    /// </summary>
     public static class UnmanagedMemHelper
     {
         /// <summary>

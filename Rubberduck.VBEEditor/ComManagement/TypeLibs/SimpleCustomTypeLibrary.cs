@@ -6,7 +6,13 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
-    // this acts as a pretty dumb ITypeInfo container.  the TypeInfos it holds are disposed of elsewhere (usually in an earlier typeinfos references collections) 
+    /// <summary>
+    /// A custom implementation of ITypeLib.  A dumb container of ITypeInfos.
+    /// </summary>
+    /// <remarks>
+    /// The TypeInfos it holds are disposed of elsewhere.
+    /// (typically in an earlier typeinfo references collection) 
+    /// </remarks>
     public sealed class SimpleCustomTypeLibrary : ITypeLibInternalSelfMarshalForwarder, IDisposable
     {
         private readonly List<TypeInfoWrapper> _containedTypeInfos = new List<TypeInfoWrapper>();

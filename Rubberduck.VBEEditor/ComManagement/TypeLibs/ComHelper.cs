@@ -110,6 +110,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         }
     }
 
+    /// <summary>
+    /// Exposes some special routines for dealing with COM interop
+    /// </summary>
     public static class ComHelper
     {
         /// <summary>

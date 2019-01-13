@@ -5,9 +5,12 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
     /// <summary>
-    /// A compatible version of ITypeInfo, where COM objects are outputted as IntPtrs instead of objects
+    /// A compatible version of ComTypes.ITypeInfo, using IntPtr for all out params
     /// see https://msdn.microsoft.com/en-gb/library/windows/desktop/ms221696(v=vs.85).aspx
     /// </summary>
+    /// <remarks>
+    /// We use [PreserveSig] so that we can handle HRESULTs directly
+    /// </remarks>
     [ComImport(), Guid("00020401-0000-0000-C000-000000000046")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface ITypeInfoInternal
@@ -33,9 +36,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         [PreserveSig] void ReleaseVarDesc(/*VARDESC*/ IntPtr pVarDesc);
     }
 
-    // This class marshals ComTypes.ITypeLib members to ITypeLibInternal
-    // ITypeLibInternal must be inherited BEFORE ComTypes.ITypeLib as they both have the same IID 
-    // this will ensure QueryInterface(IID_ITypeLib) returns ITypeLibInternal, not ComTypes.ITypeLib
+    /// <summary>
+    /// This class marshals ComTypes.ITypeInfo members to ITypeInfoInternal
+    /// </summary>
+    /// <remarks>
+    /// ITypeInfoInternal must be inherited BEFORE ComTypes.ITypeInfo as they both have the same IID 
+    /// this will ensure QueryInterface(IID_ITypeInfo) returns ITypeInfoInternal, not ComTypes.ITypeInfo
+    /// </remarks>
     public abstract class ITypeInfoInternalSelfMarshalForwarder : ITypeInfoInternal, ComTypes.ITypeInfo
     {
         private ITypeInfoInternal _this_Internal => (ITypeInfoInternal)this;

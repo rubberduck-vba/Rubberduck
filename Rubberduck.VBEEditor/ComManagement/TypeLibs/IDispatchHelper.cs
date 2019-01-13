@@ -50,6 +50,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             [Out] out uint pArgErr);
     }
 
+    /// <summary>
+    /// Exposes some special routines for dealing with OLEs IDispatch interface
+    /// </summary>
     public static class IDispatchHelper
     {
         private static Guid _guid_null = new Guid();

@@ -47,6 +47,9 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void GetSomeRelatedTypeInfoPtrs(out IntPtr a, out IntPtr b);        // returns 2 TypeInfos, seemingly related to this ITypeInfo, but slightly different.
     }
 
+    /// <summary>
+    /// Exposes the VBE specific extensions provided by an ITypeInfo
+    /// </summary>
     public class TypeInfoVBEExtensions : IDisposable
     {
         private readonly TypeInfoWrapper _parent;

@@ -1,9 +1,13 @@
 ﻿namespace Rubberduck.VBEditor.ComManagement.TypeLibs
 {
+    /// <summary>
+    /// All the Document() methods in one extension class for convenience
+    /// </summary>
+    /// <remarks>
+    /// TODO: could make this more friendly by outputting in IDL format
+    /// </remarks>
     public static class TypeInfoDocumentationExtensions
     {
-        // All the Document() methods in one extension class for convenience
-
         public static void Document(this TypeLibWrapper _this, StringLineBuilder output)
         {
             output.AppendLine();

@@ -26,8 +26,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
     /// A wrapper for ITypeLib objects, with specific extensions for VBE hosted ITypeLibs
     /// </summary>
     /// <remarks>
-    /// allow safe managed consumption, plus adds ConditionalCompilationArguments property, 
-    /// VBEReferences collection, and CompileProject method.
+    /// allow safe managed consumption of VBA provided type librarys, plus exposes 
+    /// a VBE extentions property for accessing VBE specific extensions.
     /// Can also be cast to ComTypes.ITypeLib for raw access to the underlying type library
     /// </remarks>
     public sealed class TypeLibWrapper : ITypeLibInternalSelfMarshalForwarder, ITypeLibWrapper
