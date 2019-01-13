@@ -130,14 +130,17 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
                 return;
             }
 
-            // call the derived MarshallRelease for each element (e.g. Marshal.FreeBSTR for strings etc)
-            var index = 0;
-            while (index < ElementCount)
+            if (_ownedMemory)
             {
-                MarshalRelease(GetArrayElementUnmarshalled(index++));
-            }
+                // call the derived MarshallRelease for each element (e.g. Marshal.FreeBSTR for strings etc)
+                var index = 0;
+                while (index < ElementCount)
+                {
+                    MarshalRelease(GetArrayElementUnmarshalled(index++));
+                }
 
-            if (_ownedMemory && (Address != IntPtr.Zero)) Marshal.FreeHGlobal(Address);
+                if (Address != IntPtr.Zero) Marshal.FreeHGlobal(Address);
+            }
             _isDisposed = true;
         }
     }
