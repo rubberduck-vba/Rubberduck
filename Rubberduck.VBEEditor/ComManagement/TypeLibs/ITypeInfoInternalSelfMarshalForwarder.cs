@@ -48,8 +48,8 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetContainingTypeLib(out ComTypes.ITypeLib ppTLB, out int pIndex)
         {
             // initialize out parameters
-            ppTLB = null;
-            pIndex = 0;
+            ppTLB = default;
+            pIndex = default;
 
             using (var typeLibPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeLib>())
             using (var indexPtr = AddressableVariables.Create<int>())
@@ -65,7 +65,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetTypeAttr(out IntPtr ppTypeAttr)
         {
             // initialize out parameters
-            ppTypeAttr = IntPtr.Zero;
+            ppTypeAttr = default;
 
             using (var typeAttrPtr = AddressableVariables.CreatePtrTo<ComTypes.TYPEATTR>())
             {
@@ -79,7 +79,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetTypeComp(out ComTypes.ITypeComp ppTComp)
         {
             // initialize out parameters
-            ppTComp = null;
+            ppTComp = default;
 
             using (var typeCompPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeComp>())
             {
@@ -93,7 +93,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetFuncDesc(int index, out IntPtr ppFuncDesc)
         {
             // initialize out parameters
-            ppFuncDesc = IntPtr.Zero;
+            ppFuncDesc = default;
 
             using (var funcDescPtr = AddressableVariables.CreatePtrTo<ComTypes.FUNCDESC>())
             {
@@ -107,7 +107,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetVarDesc(int index, out IntPtr ppVarDesc)
         {
             // initialize out parameters
-            ppVarDesc = IntPtr.Zero;
+            ppVarDesc = default;
 
             using (var varDescPtr = AddressableVariables.CreatePtrTo<ComTypes.VARDESC>())
             {
@@ -120,7 +120,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetNames(int memid, string[] rgBstrNames, int cMaxNames, out int pcNames)
         {
             // initialize out parameters
-            pcNames = 0;
+            pcNames = default;
 
             using (var names = AddressableVariables.CreateBSTR(cMaxNames))
             using (var namesCount = AddressableVariables.Create<int>())
@@ -135,7 +135,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetRefTypeOfImplType(int index, out int href)
         {
             // initialize out parameters
-            href = 0;
+            href = default;
 
             using (var outHref = AddressableVariables.Create<int>())
             {
@@ -148,7 +148,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetImplTypeFlags(int index, out ComTypes.IMPLTYPEFLAGS pImplTypeFlags)
         {
             // initialize out parameters
-            pImplTypeFlags = 0;
+            pImplTypeFlags = default;
 
             using (var implTypeFlags = AddressableVariables.Create<ComTypes.IMPLTYPEFLAGS>())
             {
@@ -183,10 +183,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetDocumentation(int memid, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile)
         {
             // initialize out parameters
-            strName = null;
-            strDocString = null;
-            dwHelpContext = 0;
-            strHelpFile = null;
+            strName = default;
+            strDocString = default;
+            dwHelpContext = default;
+            strHelpFile = default;
 
             using (var name = AddressableVariables.CreateBSTR())
             using (var docString = AddressableVariables.CreateBSTR())
@@ -214,7 +214,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetRefTypeInfo(int hRef, out ComTypes.ITypeInfo ppTI)
         {
             // initialize out parameters
-            ppTI = null;
+            ppTI = default;
 
             using (var typeInfoPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeInfo>())
             {
@@ -227,7 +227,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.AddressOfMember(int memid, ComTypes.INVOKEKIND invKind, out IntPtr ppv)
         {
             // initialize out parameters
-            ppv = IntPtr.Zero;
+            ppv = default;
 
             using (var outPpv = AddressableVariables.Create<IntPtr>())
             {
@@ -240,7 +240,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.CreateInstance(object pUnkOuter, ref Guid riid, out object ppvObj)
         {
             // initialize out parameters
-            ppvObj = null;
+            ppvObj = default;
 
             using (var outPpvObj = AddressableVariables.CreateObjectPtr<object>())
             {
@@ -256,7 +256,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeInfo.GetMops(int memid, out string pBstrMops)
         {
             // initialize out parameters
-            pBstrMops = null;
+            pBstrMops = default;
 
             using (var strMops = AddressableVariables.CreateBSTR())
             {

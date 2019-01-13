@@ -45,7 +45,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeLib.GetTypeInfo(int index, out ComTypes.ITypeInfo ppTI)
         {
             // initialize out parameters
-            ppTI = null;
+            ppTI = default;
 
             using (var typeInfoPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeInfo>())
             {
@@ -59,7 +59,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeLib.GetTypeInfoType(int index, out ComTypes.TYPEKIND pTKind)
         {
             // initialize out parameters
-            pTKind = 0;
+            pTKind = default;
 
             using (var typeKindPtr = AddressableVariables.Create<ComTypes.TYPEKIND>())
             {
@@ -72,7 +72,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeLib.GetTypeInfoOfGuid(ref Guid guid, out ComTypes.ITypeInfo ppTInfo)
         {
             // initialize out parameters
-            ppTInfo = null;
+            ppTInfo = default;
 
             using (var typeInfoPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeInfo>())
             {
@@ -85,7 +85,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeLib.GetLibAttr(out IntPtr ppTLibAttr)
         {
             // initialize out parameters
-            ppTLibAttr = IntPtr.Zero;
+            ppTLibAttr = default;
 
             using (var typeLibAttrPtr = AddressableVariables.CreatePtrTo<ComTypes.TYPELIBATTR>())
             {
@@ -98,7 +98,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeLib.GetTypeComp(out ComTypes.ITypeComp ppTComp)
         {
             // initialize out parameters
-            ppTComp = null;
+            ppTComp = default;
 
             using (var typeCompPtr = AddressableVariables.CreateObjectPtr<ComTypes.ITypeComp>())
             {
@@ -111,10 +111,10 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
         void ComTypes.ITypeLib.GetDocumentation(int memid, out string strName, out string strDocString, out int dwHelpContext, out string strHelpFile)
         {
             // initialize out parameters
-            strName = null;
-            strDocString = null;
-            dwHelpContext = 0;
-            strHelpFile = null;
+            strName = default;
+            strDocString = default;
+            dwHelpContext = default;
+            strHelpFile = default;
 
             using (var _name = AddressableVariables.CreateBSTR())
             using (var _docString = AddressableVariables.CreateBSTR())
