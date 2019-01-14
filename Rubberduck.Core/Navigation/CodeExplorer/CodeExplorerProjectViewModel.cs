@@ -22,10 +22,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly IVBE _vbe;
 
-        public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations, RubberduckParserState state, IVBE vbe) : base(null, declaration)
+        public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations, RubberduckParserState state, IVBE vbe, bool references = true) : base(null, declaration)
         {
-            State = state;
+            State = state;         
             _vbe = vbe;
+            ShowReferences = references;
+
             SetName();
             AddNewChildren(declarations.ToList());
         }
@@ -33,10 +35,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         private string _displayName;
         private string _name;
 
-        public override string Name => string.IsNullOrEmpty(_displayName) ? _name : $"{_name} ({_displayName})";
-
         public RubberduckParserState State { get; }
 
+        public bool ShowReferences { get; }
+
+        public override string Name => string.IsNullOrEmpty(_displayName) ? _name : $"{_name} ({_displayName})";
+        
         public override FontWeight FontWeight
         {
             get
@@ -99,6 +103,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void SynchronizeReferences()
         {
+            if (!ShowReferences)
+            {
+                return;
+            }
+
             var references = GetProjectReferenceModels();
             foreach (var child in Children.OfType<CodeExplorerReferenceFolderViewModel>())
             {
