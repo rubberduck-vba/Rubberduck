@@ -28,9 +28,8 @@ namespace Rubberduck.SettingsProvider
 
         protected T Cached { get; set; }
 
-        protected XmlPersistanceServiceBase()
+        protected XmlPersistanceServiceBase(IPersistancePathProvider pathProvider)
         {
-            var pathProvider = PersistancePathProvider.Instance;
             RootPath = pathProvider.DataRootPath;
         }
 
@@ -41,9 +40,9 @@ namespace Rubberduck.SettingsProvider
             set => _filePath = value;
         }
 
-        public abstract T Load(T toDeserialize);
+        public abstract T Load(T toDeserialize, string nonDefaultFilePath = null);
 
-        public abstract void Save(T toSerialize);
+        public abstract void Save(T toSerialize, string nonDefaultFilePath = null);
 
         protected static T FailedLoadReturnValue()
         {
@@ -81,9 +80,10 @@ namespace Rubberduck.SettingsProvider
             return doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(name));
         }
 
-        protected void EnsurePathExists()
+        protected void EnsurePathExists(string nonDefaultFilePath = null)
         {
-            var folder = Path.GetDirectoryName(FilePath);
+            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
+            var folder = Path.GetDirectoryName(filePath);
             if (folder != null && !Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);

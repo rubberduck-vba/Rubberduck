@@ -10,9 +10,12 @@ namespace Rubberduck.SettingsProvider
     public class XmlPersistanceService<T> : XmlPersistanceServiceBase<T> 
         where T : class, IEquatable<T>, new()
     {
-        public override T Load(T toDeserialize)
+        public XmlPersistanceService(IPersistancePathProvider pathProvider) : base(pathProvider) { }
+
+        public override T Load(T toDeserialize, string nonDefaultFilePath = null)
         {
-            var doc = GetConfigurationDoc(FilePath);
+            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
+            var doc = GetConfigurationDoc(filePath);
             var node = GetNodeByName(doc, typeof(T).Name);
             if (node == null)
             {
@@ -35,9 +38,10 @@ namespace Rubberduck.SettingsProvider
         }
 
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")] //This is fine. StreamWriter disposes the MemoryStream, but calling twice is a NOP.
-        public override void Save(T toSerialize)
+        public override void Save(T toSerialize, string nonDefaultFilePath = null)
         {
-            var doc = GetConfigurationDoc(FilePath);
+            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
+            var doc = GetConfigurationDoc(filePath);
             var node = GetNodeByName(doc, typeof(T).Name);
 
             using (var stream = new MemoryStream())

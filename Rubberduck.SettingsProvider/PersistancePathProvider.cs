@@ -12,6 +12,9 @@ namespace Rubberduck.SettingsProvider
             LazyInstance = new Lazy<IPersistancePathProvider>(() => new PersistancePathProvider());
         }
 
+        // Disallow instancing of the class except via static method
+        private PersistancePathProvider() { }
+
         public string DataRootPath => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
             "Rubberduck");
