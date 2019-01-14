@@ -9,7 +9,6 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using Rubberduck.AddRemoveReferences;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
@@ -54,6 +53,9 @@ using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.UI.AddRemoveReferences;
+using Rubberduck.UI.Settings;
+using GeneralSettings = Rubberduck.Settings.GeneralSettings;
+using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
 
 namespace Rubberduck.Root
 {
@@ -124,6 +126,7 @@ namespace Rubberduck.Root
                 .ImplementedBy<VBEInteraction>()
                 .LifestyleSingleton());
 
+            RegisterSettingsViewModel(container);
             RegisterRefactoringDialogs(container);
 
             container.Register(Component.For<ISearchResultsWindowViewModel>()
@@ -611,6 +614,23 @@ namespace Rubberduck.Root
             };
             
             return items.ToArray();
+        }
+
+        private void RegisterSettingsViewModel(IWindsorContainer container)
+        {
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(SettingsViewModelBase<>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ISettingsViewModel<>));
+
+                    return face == null ? new[] { type } : new[] { type, face };
+                })
+            );
         }
 
         private void RegisterRefactoringDialogs(IWindsorContainer container)
