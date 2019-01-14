@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SmartIndenter;
@@ -19,6 +18,7 @@ using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UnitTesting;
 
@@ -101,13 +101,13 @@ namespace RubberduckTests.CodeExplorer
         [TestCase(ProjectType.HostProject, ExpectedResult = true)]
         [TestCase(ProjectType.StandAlone, ExpectedResult = true)]
         public bool AddUserForm_CanExecuteBasedOnProjectType(ProjectType projectType)
-        {            
+        {
             using (var explorer = new MockedCodeExplorer(projectType).ImplementAddUserFormCommand().SelectFirstModule())
             {
                 return explorer.ViewModel.AddUserFormCommand.CanExecute(explorer.ViewModel.SelectedItem);
             }
         }
-        
+
         [Category("Code Explorer")]
         [Test]
         public void AddVbForm()
@@ -306,7 +306,7 @@ namespace RubberduckTests.CodeExplorer
                 Assert.IsFalse(explorer.ViewModel.AddTestModuleWithStubsCommand.CanExecute(explorer.ViewModel.SelectedItem));
             }
         }
- 
+
         [Category("Code Explorer")]
         [Test]
         public void ImportModule()
@@ -406,7 +406,7 @@ namespace RubberduckTests.CodeExplorer
             const string selected = @"C:\Users\Rubberduck\Desktop\ExportAll";
             const string result = @"C:\Users\Rubberduck\Documents\Subfolder\Project.xlsm";
 
-            var modules = new []
+            var modules = new[]
             {
                 ComponentType.StandardModule, ComponentType.ClassModule, ComponentType.Document, ComponentType.UserControl
             };
@@ -472,7 +472,7 @@ namespace RubberduckTests.CodeExplorer
                 var removing = explorer.ViewModel.SelectedItem;
                 var component = explorer.VbComponent.Object;
 
-                explorer.ViewModel.RemoveCommand.Execute(removing); 
+                explorer.ViewModel.RemoveCommand.Execute(removing);
                 explorer.VbComponents.Verify(c => c.Remove(component), Times.Once);
             }
         }
@@ -505,7 +505,7 @@ namespace RubberduckTests.CodeExplorer
                 .ConfigureMessageBox(ConfirmationOutcome.No)
                 .SelectFirstModule())
             {
-                
+
                 var removing = explorer.ViewModel.SelectedItem;
                 var component = explorer.VbComponent.Object;
 
@@ -540,7 +540,7 @@ Dim d As Boolean
 d = True
 End Sub";
 
-            const string expectedCode = 
+            const string expectedCode =
 @"Sub Foo()
     Dim d As Boolean
     d = True
@@ -592,7 +592,7 @@ End Sub";
 End Sub
 ";
 
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new [] { ComponentType.StandardModule, ComponentType.ClassModule }, new [] { inputCode, inputCode })
+            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new[] { ComponentType.StandardModule, ComponentType.ClassModule }, new[] { inputCode, inputCode })
                 .SelectFirstProject())
             {
                 var module1 = explorer.VbComponents.Object[0].CodeModule;
@@ -761,10 +761,10 @@ End Sub";
             }
         }
 
-        private IEnumerable<bool> GetNodeExpandedStates(CodeExplorerItemViewModel root)
+        private IEnumerable<bool> GetNodeExpandedStates(ICodeExplorerNode root)
         {
             yield return root.IsExpanded;
-            foreach (var node in root.Items)
+            foreach (var node in root.Children)
             {
                 foreach (var state in GetNodeExpandedStates(node))
                 {
@@ -801,10 +801,13 @@ End Sub";
                 .SelectFirstCustomFolder())
             {
                 var expanded = explorer.ViewModel.SelectedItem;
-                var collapsed = explorer.ViewModel.Projects.Single().Items.Last();
+                var collapsed = explorer.ViewModel.Projects.Single().Children.Last();
+
+                expanded.IsExpanded = true;
+                collapsed.IsExpanded = false;
 
                 explorer.ViewModel.ExpandAllSubnodesCommand.Execute(expanded);
-                
+
                 Assert.IsTrue(GetNodeExpandedStates(expanded).All(state => state));
                 Assert.IsFalse(GetNodeExpandedStates(collapsed).All(state => state));
             }
@@ -840,7 +843,7 @@ End Sub";
                 .SelectFirstProject())
             {
                 explorer.ViewModel.ExpandAllSubnodesCommand.Execute(explorer.ViewModel.SelectedItem);
-                var expanded = explorer.ViewModel.Projects.Single().Items.Last();
+                var expanded = explorer.ViewModel.Projects.Single().Children.Last();
 
                 explorer.SelectFirstCustomFolder();
                 var collapsed = explorer.ViewModel.SelectedItem;
@@ -853,57 +856,9 @@ End Sub";
 
         [Category("Code Explorer")]
         [Test]
-        [TestCase(false, true)]
-        [TestCase(true, false)]
-        [TestCase(false, false)]
-        [TestCase(true, true)]
-        public void SetSortByNameCommand_LinkedToViewModel(bool name, bool code)
-        {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new[] { ComponentType.StandardModule, ComponentType.ClassModule })
-                .SelectFirstCustomFolder())
-            {
-                var view = explorer.ViewModel;
-
-                var settings = explorer.WindowSettings;
-                settings.CodeExplorer_SortByName = name;
-                settings.CodeExplorer_SortByCodeOrder = code;
-
-                view.SetNameSortCommand.Execute(true);
-
-                Assert.IsTrue(view.SortByName);
-                Assert.IsFalse(view.SortByCodeOrder);
-            }
-        }
-
-        [Category("Code Explorer")]
-        [Test]
-        [TestCase(false, true)]
-        [TestCase(true, false)]
-        [TestCase(false, false)]
-        [TestCase(true, true)]
-        public void SetSortByCodeOrder_LinkedToViewModel(bool name, bool code)
-        {
-            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new[] { ComponentType.StandardModule, ComponentType.ClassModule })
-                .SelectFirstCustomFolder())
-            {
-                var view = explorer.ViewModel;
-
-                var settings = explorer.WindowSettings;
-                settings.CodeExplorer_SortByName = name;
-                settings.CodeExplorer_SortByCodeOrder = code;
-
-                view.SetCodeOrderSortCommand.Execute(true);
-
-                Assert.IsTrue(view.SortByCodeOrder);
-                Assert.IsFalse(view.SortByName);
-            }
-        }
-
-        [Category("Code Explorer")]
-        [Test]
         public void CompareByName_ReturnsZeroForIdenticalNodes()
         {
-            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, null);
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, Enumerable.Empty<Declaration>());
             Assert.AreEqual(0, new CompareByName().Compare(folderNode, folderNode));
         }
 
@@ -912,8 +867,8 @@ End Sub";
         public void CompareByName_ReturnsZeroForIdenticalNames()
         {
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, null);
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, null);
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, Enumerable.Empty<Declaration>());
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, Enumerable.Empty<Declaration>());
 
             Assert.AreEqual(0, new CompareByName().Compare(folderNode1, folderNode2));
         }
@@ -922,9 +877,8 @@ End Sub";
         [Test]
         public void CompareByName_ReturnsCorrectOrdering()
         {
-            // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name1", "Name1", null, null);
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name2", "Name2", null, null);
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name1", "Name1", null, Enumerable.Empty<Declaration>());
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name2", "Name2", null, Enumerable.Empty<Declaration>());
 
             Assert.IsTrue(new CompareByName().Compare(folderNode1, folderNode2) < 0);
         }
@@ -933,7 +887,7 @@ End Sub";
         [Test]
         public void CompareByType_ReturnsZeroForIdenticalNodes()
         {
-            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2", null, null);
+            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2", null, Enumerable.Empty<Declaration>());
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 
@@ -949,10 +903,10 @@ Public Const Bar = 0";
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var eventNode = module.Items.Single(s => s.Name == "Foo");
-                var constNode = module.Items.Single(s => s.Name == "Bar = 0");
+                var eventNode = module.Children.Single(s => s.Name == "Foo");
+                var constNode = module.Children.Single(s => s.Name == "Bar");
 
-                Assert.AreEqual(-1, new CompareByType().Compare(eventNode, constNode));
+                Assert.AreEqual(-1, new CompareByDeclarationType().Compare(eventNode, constNode));
             }
         }
 
@@ -968,10 +922,10 @@ Public Bar As Boolean";
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var constNode = module.Items.Single(s => s.Name == "Foo = 0");
-                var fieldNode = module.Items.Single(s => s.Name == "Bar");
+                var constNode = module.Children.Single(s => s.Name == "Foo");
+                var fieldNode = module.Children.Single(s => s.Name == "Bar");
 
-                Assert.AreEqual(-1, new CompareByType().Compare(constNode, fieldNode));
+                Assert.AreEqual(-1, new CompareByDeclarationType().Compare(constNode, fieldNode));
             }
         }
 
@@ -990,10 +944,10 @@ End Property
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var fieldNode = module.Items.Single(s => s.Name == "Bar");
-                var propertyGetNode = module.Items.Single(s => s.Name == "Foo (Get)");
+                var fieldNode = module.Children.Single(s => s.Name == "Bar");
+                var propertyGetNode = module.Children.Single(s => s.Name == "Foo (Get)");
 
-                Assert.AreEqual(-1, new CompareByType().Compare(fieldNode, propertyGetNode));
+                Assert.AreEqual(-1, new CompareByDeclarationType().Compare(fieldNode, propertyGetNode));
             }
         }
 
@@ -1013,10 +967,10 @@ End Property
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var propertyGetNode = module.Items.Single(s => s.Name == "Foo (Get)");
-                var propertyLetNode = module.Items.Single(s => s.Name == "Foo (Let)");
+                var propertyGetNode = module.Children.Single(s => s.Name == "Foo (Get)");
+                var propertyLetNode = module.Children.Single(s => s.Name == "Foo (Let)");
 
-                Assert.AreEqual(0, new CompareByType().Compare(propertyGetNode, propertyLetNode));
+                Assert.AreEqual(0, new CompareByDeclarationType().Compare(propertyGetNode, propertyLetNode));
             }
         }
 
@@ -1036,10 +990,10 @@ End Property
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var propertyGetNode = module.Items.Single(s => s.Name == "Foo (Get)");
-                var propertyLetNode = module.Items.Single(s => s.Name == "Foo (Set)");
+                var propertyGetNode = module.Children.Single(s => s.Name == "Foo (Get)");
+                var propertyLetNode = module.Children.Single(s => s.Name == "Foo (Set)");
 
-                Assert.AreEqual(0, new CompareByType().Compare(propertyGetNode, propertyLetNode));
+                Assert.AreEqual(0, new CompareByDeclarationType().Compare(propertyGetNode, propertyLetNode));
             }
         }
 
@@ -1059,10 +1013,10 @@ End Property
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var propertyLetNode = module.Items.Single(s => s.Name == "Foo (Let)");
-                var propertySetNode = module.Items.Single(s => s.Name == "Foo (Get)");
+                var propertyLetNode = module.Children.Single(s => s.Name == "Foo (Let)");
+                var propertySetNode = module.Children.Single(s => s.Name == "Foo (Get)");
 
-                Assert.AreEqual(0, new CompareByType().Compare(propertyLetNode, propertySetNode));
+                Assert.AreEqual(0, new CompareByDeclarationType().Compare(propertyLetNode, propertySetNode));
             }
         }
 
@@ -1082,10 +1036,10 @@ End Property
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var propertyLetNode = module.Items.Single(s => s.Name == "Foo (Let)");
-                var propertySetNode = module.Items.Single(s => s.Name == "Foo (Set)");
+                var propertyLetNode = module.Children.Single(s => s.Name == "Foo (Let)");
+                var propertySetNode = module.Children.Single(s => s.Name == "Foo (Set)");
 
-                Assert.AreEqual(0, new CompareByType().Compare(propertyLetNode, propertySetNode));
+                Assert.AreEqual(0, new CompareByDeclarationType().Compare(propertyLetNode, propertySetNode));
             }
         }
 
@@ -1105,10 +1059,10 @@ End Function
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var propertySetNode = module.Items.Single(s => s.Name == "Foo (Set)");
-                var functionNode = module.Items.Single(s => s.Name == "Bar");
+                var propertySetNode = module.Children.Single(s => s.Name == "Foo (Set)");
+                var functionNode = module.Children.Single(s => s.Name == "Bar");
 
-                Assert.AreEqual(-1, new CompareByType().Compare(propertySetNode, functionNode));
+                Assert.AreEqual(-1, new CompareByDeclarationType().Compare(propertySetNode, functionNode));
             }
         }
 
@@ -1128,16 +1082,16 @@ End Sub
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var functionNode = module.Items.Single(s => s.Name == "Foo");
-                var subNode = module.Items.Single(s => s.Name == "Bar");
+                var functionNode = module.Children.Single(s => s.Name == "Foo");
+                var subNode = module.Children.Single(s => s.Name == "Bar");
 
-                Assert.AreEqual(0, new CompareByType().Compare(functionNode, subNode));
+                Assert.AreEqual(0, new CompareByDeclarationType().Compare(functionNode, subNode));
             }
         }
 
         [Category("Code Explorer")]
         [Test]
-        public void CompareByType_ReturnsPublicMethodsAbovePrivateMethods()
+        public void CompareByAccessibility_ReturnsPublicMethodsAbovePrivateMethods()
         {
             const string inputCode =
  @"Private Sub Foo()
@@ -1147,14 +1101,14 @@ Public Sub Bar()
 End Sub
 ";
 
-             using (var explorer = new MockedCodeExplorer(inputCode)
-                .SelectFirstModule())
+            using (var explorer = new MockedCodeExplorer(inputCode)
+               .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var privateNode = module.Items.Single(s => s.Name == "Foo");
-                var publicNode = module.Items.Single(s => s.Name == "Bar");
+                var privateNode = module.Children.Single(s => s.Name == "Foo");
+                var publicNode = module.Children.Single(s => s.Name == "Bar");
 
-                Assert.AreEqual(-1, new CompareByType().Compare(publicNode, privateNode));
+                Assert.AreEqual(-1, new CompareByAccessibility().Compare(publicNode, privateNode));
             }
         }
 
@@ -1167,13 +1121,13 @@ End Sub
                 .SelectFirstCustomFolder())
             {
                 var folder = explorer.ViewModel.SelectedItem;
-                var docNode = folder.Items.Single(s => s.Name == "Document");
-                var clsNode = folder.Items.Single(s => s.Name == "ClassModule");
+                var docNode = folder.Children.Single(s => s.Name == "Document");
+                var clsNode = folder.Children.Single(s => s.Name == "ClassModule");
 
                 // this tests the logic I wrote to place docs above cls modules even though the parser calls them both cls modules
                 Assert.AreEqual(clsNode.Declaration.DeclarationType, docNode.Declaration.DeclarationType);
 
-                Assert.AreEqual(-1, new CompareByType().Compare(docNode, clsNode));
+                Assert.AreEqual(-1, new CompareByDeclarationType().Compare(docNode, clsNode));
             }
         }
 
@@ -1193,7 +1147,7 @@ End Sub";
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var node = module.Items.Single(s => s.Name == "Foo");
+                var node = module.Children.Single(s => s.Name == "Foo");
 
                 Assert.AreEqual(0, new CompareByName().Compare(node, node));
             }
@@ -1215,10 +1169,10 @@ End Sub";
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var memberNode1 = module.Items.Single(s => s.Name == "Foo");
-                var memberNode2 = module.Items.Single(s => s.Name == "Bar");
+                var memberNode1 = module.Children.Single(s => s.Name == "Foo");
+                var memberNode2 = module.Children.Single(s => s.Name == "Bar");
 
-                Assert.AreEqual(-1, new CompareBySelection().Compare(memberNode1, memberNode2));
+                Assert.AreEqual(-1, new CompareByCodeLine().Compare(memberNode1, memberNode2));
             }
         }
 
@@ -1238,20 +1192,10 @@ End Sub";
                 .SelectFirstModule())
             {
                 var module = explorer.ViewModel.SelectedItem;
-                var node = module.Items.Single(s => s.Name == "Foo");
+                var node = module.Children.Single(s => s.Name == "Foo");
 
                 Assert.AreEqual(0, new CompareByNodeType().Compare(node, node));
             }
-        }
-
-        [Category("Code Explorer")]
-        [Test]
-        public void CompareByNodeType_FoldersAreSortedByName()
-        {
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "AAA", string.Empty, null, null);
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "zzz", string.Empty, null, null);
-
-            Assert.IsTrue(new CompareByNodeType().Compare(folderNode1, folderNode2) < 0);
         }
 
         protected class MockedCodeExplorer : IDisposable
@@ -1269,6 +1213,8 @@ End Sub";
                 _generalSettingsProvider.Setup(s => s.Create()).Returns(_generalSettings);
                 _windowSettingsProvider.Setup(s => s.Create()).Returns(WindowSettings);
                 _configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
+
+                _uiDispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
 
                 SaveDialog = new Mock<ISaveFileDialog>();
                 SaveDialog.Setup(o => o.OverwritePrompt);
@@ -1350,10 +1296,10 @@ End Sub";
 
                 var removeCommand = new RemoveCommand(BrowserFactory.Object, MessageBox.Object, State.ProjectsProvider);
 
-                ViewModel = new CodeExplorerViewModel(new FolderHelper(State, Vbe.Object), State, removeCommand, 
+                ViewModel = new CodeExplorerViewModel(State, removeCommand,
                     _generalSettingsProvider.Object,
-                    _windowSettingsProvider.Object, 
-                    _uiDispatcher.Object, Vbe.Object, 
+                    _windowSettingsProvider.Object,
+                    _uiDispatcher.Object, Vbe.Object,
                     null,
                     new CodeExplorerSyncProvider(Vbe.Object, State));
 
@@ -1630,19 +1576,19 @@ End Sub";
 
             public MockedCodeExplorer SelectFirstCustomFolder()
             {
-                ViewModel.SelectedItem = ViewModel.Projects.First().Items.First(node => node is CodeExplorerCustomFolderViewModel);
+                ViewModel.SelectedItem = ViewModel.Projects.First().Children.First(node => node is CodeExplorerCustomFolderViewModel);
                 return this;
             }
 
             public MockedCodeExplorer SelectFirstModule()
             {
-                ViewModel.SelectedItem = ViewModel.Projects.First().Items.First(node => !(node is CodeExplorerReferenceFolderViewModel)).Items.First();
+                ViewModel.SelectedItem = ViewModel.Projects.First().Children.First(node => !(node is CodeExplorerReferenceFolderViewModel)).Children.First();
                 return this;
             }
 
             public MockedCodeExplorer SelectFirstMember()
             {
-                ViewModel.SelectedItem = ViewModel.Projects.First().Items.First(node => !(node is CodeExplorerReferenceFolderViewModel)).Items.First().Items.First();
+                ViewModel.SelectedItem = ViewModel.Projects.First().Children.First(node => !(node is CodeExplorerReferenceFolderViewModel)).Children.First().Children.First();
                 return this;
             }
 
@@ -1678,6 +1624,5 @@ End Sub";
                 _disposed = true;
             }
         }
-
     }
 }
