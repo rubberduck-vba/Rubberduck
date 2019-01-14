@@ -15,6 +15,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly Type[] ApplicableNodes =
         {
+            typeof(CodeExplorerCustomFolderViewModel),
             typeof(CodeExplorerProjectViewModel),
             typeof(CodeExplorerComponentViewModel),
             typeof(CodeExplorerMemberViewModel)

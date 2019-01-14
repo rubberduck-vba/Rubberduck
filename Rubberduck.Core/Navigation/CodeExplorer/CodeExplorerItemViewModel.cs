@@ -1,128 +1,76 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
-using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public abstract class CodeExplorerItemViewModel : ViewModelBase
+    public abstract class CodeExplorerItemViewModel : CodeExplorerItemViewModelBase
     {
-        protected CodeExplorerItemViewModel(Declaration declaration)
-        {
-            Declaration = declaration;
-        }
+        protected CodeExplorerItemViewModel(ICodeExplorerNode parent, Declaration declaration) : base(parent, declaration) { }
 
-        private List<CodeExplorerItemViewModel> _items = new List<CodeExplorerItemViewModel>();
-        public List<CodeExplorerItemViewModel> Items
-        {
-            get => _items;
-            protected set
-            {
-                _items = value;
-                OnPropertyChanged();
-            }
-        }
+        public override string Name => Declaration?.IdentifierName ?? string.Empty;
 
-        private bool _isExpanded;
-        public bool IsExpanded
+        public override string NameWithSignature => Name;
+
+        private bool _isErrorState;
+        public override bool IsErrorState
         {
-            get => _isExpanded;
+            get => _isErrorState;
             set
             {
-                _isExpanded = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _selected;
-        public bool IsSelected
-        {
-            get => _selected;
-            set
-            {
-                _selected = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _dimmed;
-        public virtual bool IsDimmed
-        {
-            get => _dimmed;
-            set
-            {
-                _dimmed = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _isVisible = true;
-        public bool IsVisible
-        {
-            get => _isVisible;
-            set
-            {
-                _isVisible = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public virtual bool IsObsolete => false;
-
-        public Declaration Declaration { get; }
-
-        public virtual string ToolTip => NameWithSignature;
-
-        public abstract string Name { get; }
-        public abstract string NameWithSignature { get; }
-        public abstract BitmapImage CollapsedIcon { get; }
-        public abstract BitmapImage ExpandedIcon { get; }
-        public abstract CodeExplorerItemViewModel Parent { get; }
-
-        public virtual FontWeight FontWeight => FontWeights.Normal;
-
-        public abstract QualifiedSelection? QualifiedSelection { get; }
-
-        public CodeExplorerItemViewModel GetChild(string name)
-        {
-            foreach (var item in _items)
-            {
-                if (item.Name == name)
+                if (_isErrorState == value)
                 {
-                    return item;
+                    return;
                 }
-                var result = item.GetChild(name);
-                if (result != null)
+
+                _isErrorState = value;
+
+                foreach (var child in Children)
                 {
-                    return result;
+                    child.IsErrorState = _isErrorState;
                 }
+
+                OnPropertyChanged();
             }
-
-            return null;
         }
 
-        public void AddChild(CodeExplorerItemViewModel item)
+        public virtual void Synchronize(List<Declaration> updated)
         {
-            _items.Add(item);
-        }
-
-        public void ReorderItems(bool sortByName, bool groupByType)
-        {
-            if (groupByType)
+            if (Declaration is null)
             {
-                Items = sortByName
-                    ? Items.OrderBy(o => o, new CompareByType()).ThenBy(t => t, new CompareByName()).ToList()
-                    : Items.OrderBy(o => o, new CompareByType()).ThenBy(t => t, new CompareBySelection()).ToList();
-
                 return;
             }
 
-            Items = sortByName
-                ? Items.OrderBy(t => t, new CompareByName()).ToList()
-                : Items.OrderBy(t => t, new CompareBySelection()).ToList();
+            var matching = updated.FirstOrDefault(decl => Declaration.QualifiedName.Equals(decl?.QualifiedName));
+
+            if (matching is null)
+            {
+                Declaration = null;
+                return;
+            }
+
+            Declaration = matching;
+            updated.Remove(matching);
+            SynchronizeChildren(updated);
         }
+
+        protected virtual void SynchronizeChildren(List<Declaration> updated)
+        {
+            foreach (var child in Children.OfType<CodeExplorerItemViewModel>().ToList())
+            {
+                child.Synchronize(updated);
+                if (child.Declaration is null)
+                {
+                    RemoveChild(child);
+                    continue;
+                }
+
+                updated.Remove(child.Declaration);
+            }
+
+            AddNewChildren(updated);
+        }
+
+        protected abstract void AddNewChildren(List<Declaration> updated);
     }
 }

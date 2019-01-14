@@ -16,14 +16,18 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
     {
         private readonly RubberduckParserState _state;
         private readonly ICodeMetricsAnalyst _analyst;
-        private readonly FolderHelper _folderHelper;
+        //private readonly FolderHelper _folderHelper;
         private readonly IVBE _vbe;
 
-        public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst, FolderHelper folderHelper, IVBE vbe)
+        public CodeMetricsViewModel(
+            RubberduckParserState state, 
+            ICodeMetricsAnalyst analyst, 
+            //FolderHelper folderHelper, 
+            IVBE vbe)
         {
             _state = state;
             _analyst = analyst;
-            _folderHelper = folderHelper;
+            //_folderHelper = folderHelper;
             _state.StateChanged += OnStateChanged;
             _vbe = vbe;
         }
@@ -65,17 +69,17 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
                 .GroupBy(declaration => declaration.ProjectId)
                 .ToList();
 
-            var newProjects = userDeclarations
-                .Where(grouping => grouping.Any(declaration => declaration.DeclarationType == DeclarationType.Project))
-                .Select(grouping =>
-                new CodeExplorerProjectViewModel(_folderHelper,
-                    grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
-                    grouping,
-                    _vbe)).ToList();
+            //var newProjects = userDeclarations
+            //    .Where(grouping => grouping.Any(declaration => declaration.DeclarationType == DeclarationType.Project))
+            //    .Select(grouping =>
+            //    new CodeExplorerProjectViewModel(_folderHelper,
+            //        grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
+            //        grouping,
+            //        _vbe)).ToList();
 
-            UpdateNodes(Projects, newProjects);
+            //UpdateNodes(Projects, newProjects);
 
-            Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
+            //Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
 
             IsBusy = false;
         }
@@ -101,16 +105,16 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
                         i.QualifiedSelection.Value.Selection == item.QualifiedSelection.Value.Selection);
                 }
 
-                if (oldItem != null)
-                {
-                    item.IsExpanded = oldItem.IsExpanded;
-                    item.IsSelected = oldItem.IsSelected;
+                //if (oldItem != null)
+                //{
+                //    item.IsExpanded = oldItem.IsExpanded;
+                //    item.IsSelected = oldItem.IsSelected;
 
-                    if (oldItem.Items.Any() && item.Items.Any())
-                    {
-                        UpdateNodes(oldItem.Items, item.Items);
-                    }
-                }
+                //    if (oldItem.Items.Any() && item.Items.Any())
+                //    {
+                //        UpdateNodes(oldItem.Items, item.Items);
+                //    }
+                //}
             }
         }
 

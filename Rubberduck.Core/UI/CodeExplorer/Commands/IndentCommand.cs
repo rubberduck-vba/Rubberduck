@@ -48,7 +48,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                                   c.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent) &&
                                   c.ProjectId == project.Declaration.ProjectId);
                 case CodeExplorerCustomFolderViewModel folder:
-                    return folder.Items.OfType<CodeExplorerComponentViewModel>()
+                    return folder.Children.OfType<CodeExplorerComponentViewModel>()     //TODO - this has the filter applied.
                         .Select(s => s.Declaration)
                         .Any(d => d.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent));
                 case CodeExplorerComponentViewModel model:
@@ -89,7 +89,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
                 case CodeExplorerCustomFolderViewModel folder:
                 {
-                    var components = folder.Items.OfType<CodeExplorerComponentViewModel>()
+                    var components = folder.Children.OfType<CodeExplorerComponentViewModel>()   //TODO: this has the filter applied.
                         .Select(s => s.Declaration)
                         .Where(d => d.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent))
                         .Select(d => _state.ProjectsProvider.Component(d.QualifiedName.QualifiedModuleName));

@@ -29,7 +29,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected override void OnExecute(object parameter)
         {
             if (_state.Status != ParserState.Ready ||
-                !(parameter is CodeExplorerItemViewModel node) ||
+                !(parameter is ICodeExplorerNode node) ||
                 node.Declaration == null)
             {
                 return;
@@ -53,7 +53,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected override bool EvaluateCanExecute(object parameter)
         {
             return base.EvaluateCanExecute(parameter) && 
-                   ((CodeExplorerItemViewModel)parameter).Declaration != null &&
+                   ((ICodeExplorerNode)parameter).Declaration != null &&
                    (!(parameter is CodeExplorerReferenceViewModel reference) || !reference.IsDimmed) &&
                    _state.Status == ParserState.Ready;
         }

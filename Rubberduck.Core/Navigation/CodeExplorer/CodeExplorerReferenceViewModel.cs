@@ -1,49 +1,68 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Windows.Media.Imaging;
+using System.Linq;
 using Rubberduck.AddRemoveReferences;
-using Rubberduck.Resources.CodeExplorer;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public sealed class CodeExplorerReferenceViewModel : CodeExplorerItemViewModel
+    public sealed class CodeExplorerReferenceViewModel : CodeExplorerItemViewModelBase
     {
-        public CodeExplorerReferenceViewModel(CodeExplorerReferenceFolderViewModel parent, ReferenceModel reference) : base(parent?.Declaration)
+        public CodeExplorerReferenceViewModel(ICodeExplorerNode parent, ReferenceModel reference) : base(parent, parent?.Declaration)
         {
-            Parent = parent;
             Reference = reference;
-            IsDimmed = !Reference.IsUsed;
         }
 
-        public override string NameWithSignature => $"{Reference.Name} ({Path.GetFileName(Reference.FullPath)} {Reference.Version})";
+        public ReferenceModel Reference { get; private set; }
+        
+        public override string Name => Reference?.Name ?? string.Empty;
 
-        public override string Name => Reference.Name;
+        public override string NameWithSignature => $"{Name} ({Path.GetFileName(Reference.FullPath)} {Reference.Version})";
 
-        public override string ToolTip => Reference.Description;
+        public override string PanelTitle => ToolTip;
 
-        public override CodeExplorerItemViewModel Parent { get; }
+        public override string Description => Reference?.FullPath ?? string.Empty;
 
         public override QualifiedSelection? QualifiedSelection => null;
 
-        public override BitmapImage CollapsedIcon => GetIcon();
+        public override bool IsDimmed => !Reference?.IsUsed ?? true;
 
-        public override BitmapImage ExpandedIcon => GetIcon();
-
-        public ReferenceModel Reference { get; }
-
-        public int? Priority => Reference.Priority;
-
-        public bool Locked => Reference.IsBuiltIn;
-
-        private BitmapImage GetIcon()
+        public override bool IsErrorState
         {
-            if (Reference.Status.HasFlag(ReferenceStatus.Broken))
+            get => false;
+            set { }
+        }
+
+        public override string ToolTip => Reference?.Description ?? string.Empty;
+
+        public int? Priority => Reference?.Priority;
+
+        public bool Locked => Reference?.IsBuiltIn ?? false;
+
+        public override Comparer<ICodeExplorerNode> SortComparer => CodeExplorerItemComparer.ReferencePriority;
+
+        public override bool Filtered => false;
+
+        public void Synchronize(Declaration project, List<ReferenceModel> updated)
+        {
+            Declaration = project;
+
+            var used = Reference?.IsUsed ?? false;
+            Reference = updated.FirstOrDefault(reference => reference.Matches(Reference.ToReferenceInfo()));
+
+            if (Reference == null)
             {
-                GetImageSource(CodeExplorerUI.BrokenReference);
+                return;
             }
 
-            return Reference.IsBuiltIn ? GetImageSource(CodeExplorerUI.LockedReference) : GetImageSource(CodeExplorerUI.Reference);
+            updated.Remove(Reference);
+
+            if (used != Reference.IsUsed)
+            {
+                // ReSharper disable once ExplicitCallerInfoArgument
+                OnPropertyChanged("IsDimmed");
+            }
         }
     }
 }

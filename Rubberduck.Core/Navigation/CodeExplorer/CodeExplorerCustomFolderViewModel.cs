@@ -1,15 +1,13 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media.Imaging;
+using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerCustomFolderViewModel : CodeExplorerItemViewModel
+    public sealed class CodeExplorerCustomFolderViewModel : CodeExplorerItemViewModel
     {
         private static readonly DeclarationType[] ComponentTypes =
         {
@@ -19,73 +17,90 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserForm
         };
 
-        private readonly IProjectsProvider _projectsProvider;
         private readonly IVBE _vbe;
 
         public CodeExplorerCustomFolderViewModel(
-            CodeExplorerItemViewModel parent, 
+            ICodeExplorerNode parent, 
             string name, 
             string fullPath, 
-            IProjectsProvider projectsProvider, 
-            IVBE vbe, 
-            Declaration declaration = null) : base(declaration ?? parent?.Declaration)
+            IVBE vbe,
+            IEnumerable<Declaration> declarations) : base(parent, parent?.Declaration)
         {
-            _parent = parent;
-            _projectsProvider = projectsProvider;
             _vbe = vbe;
 
-            FullPath = fullPath;
+            FullPath = fullPath ?? string.Empty;
             Name = name.Replace("\"", string.Empty);
-            FolderAttribute = $"@Folder(\"{fullPath.Replace("\"", string.Empty)}\")";
 
-            CollapsedIcon = GetImageSource(Resources.CodeExplorer.CodeExplorerUI.FolderClosed);
-            ExpandedIcon = GetImageSource(Resources.CodeExplorer.CodeExplorerUI.FolderOpen);
+            AddNewChildren(declarations.ToList());
         }
-
-        public void AddNodes(List<Declaration> declarations)
-        {
-            var parents = declarations.GroupBy(item => item.ComponentName).OrderBy(item => item.Key).ToList();
-            foreach (var component in parents)
-            {
-                try
-                {
-                    var moduleName = component.Key;
-                    var parent = declarations.Single(item =>
-                        ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
-                    var members = declarations.Where(item =>
-                        !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
-
-                    AddChild(new CodeExplorerComponentViewModel(this, parent, members, _projectsProvider, _vbe));
-                }
-                catch (InvalidOperationException exception)
-                {
-                    Console.WriteLine(exception);
-                }
-            }
-        }
-
-        public string FolderAttribute { get; }
-
-        public string FullPath { get; }
 
         public override string Name { get; }
 
-        public override string NameWithSignature => Name; // Is this actually doing anything? Should this member be replaced with 'Name'?
+        public override string PanelTitle => FullPath ?? string.Empty;
+
+        public override string Description => FolderAttribute ?? string.Empty;
+
+        public string FullPath { get; }
+
+        public string FolderAttribute => $"@Folder(\"{FullPath.Replace("\"", string.Empty)}\")";
 
         public override QualifiedSelection? QualifiedSelection => null;
 
-        public override BitmapImage CollapsedIcon { get; }
-
-        public override BitmapImage ExpandedIcon { get; }
-
-        // I have to set the parent from a different location than
-        // the node is created because of the folder helper
-        internal void SetParent(CodeExplorerItemViewModel parent)
+        public override bool IsErrorState
         {
-            _parent = parent;
+            get => false;
+            set { }
         }
 
-        private CodeExplorerItemViewModel _parent;
-        public override CodeExplorerItemViewModel Parent => _parent;
+        public override Comparer<ICodeExplorerNode> SortComparer => CodeExplorerItemComparer.Name;
+
+        public override bool Filtered => false;
+
+        protected override void AddNewChildren(List<Declaration> declarations)
+        {
+            var subfolders = declarations.Where(declaration => declaration.IsInSubFolder(FullPath)).ToList();
+
+            foreach (var folder in subfolders.GroupBy(declaration => declaration.CustomFolder))
+            {
+                AddChild(new CodeExplorerCustomFolderViewModel(this, folder.Key.SubFolderRoot(Name), folder.Key, _vbe, folder));
+            }
+
+            var components = declarations.Except(subfolders).ToList();
+
+            foreach (var component in components.GroupBy(item => item.ComponentName))
+            {
+                var moduleName = component.Key;
+                var parent = declarations.SingleOrDefault(item => 
+                    ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
+
+                if (parent is null)
+                {
+                    continue;
+                }
+
+                var members = declarations.Where(item =>
+                    !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
+
+                AddChild(new CodeExplorerComponentViewModel(this, parent, members, _vbe));
+            }
+        }
+
+        public override void Synchronize(List<Declaration> updated)
+        {
+            var declarations = updated.Where(declaration => declaration.IsInFolderOrSubFolder(FullPath)).ToList();
+
+            if (!declarations.Any())
+            {
+                Declaration = null;
+                return;
+            }
+
+            foreach (var declaration in declarations)
+            {
+                updated.Remove(declaration);
+            }
+
+            SynchronizeChildren(declarations);
+        }
     }
 }

@@ -1,66 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interactivity;
-using Rubberduck.Navigation.CodeExplorer;
+using System.Windows.Media;
 
 namespace Rubberduck.UI.Controls
 {
-    /// <summary>
-    /// http://stackoverflow.com/a/5118406/1188513
-    /// </summary>
+
     public class BindableSelectedItemBehavior : Behavior<TreeView>
     {
         public object SelectedItem
         {
-            get => (object) GetValue(SelectedItemProperty);
+            get => GetValue(SelectedItemProperty);
             set => SetValue(SelectedItemProperty, value);
         }
 
         public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register("SelectedItem", typeof (object), typeof (BindableSelectedItemBehavior),
-                new UIPropertyMetadata(null, OnSelectedItemChanged));
+            DependencyProperty.Register("SelectedItem", typeof(object), typeof(BindableSelectedItemBehavior), new UIPropertyMetadata(null, OnSelectedItemChanged));
 
         private static void OnSelectedItemChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
         {
-            if (!(e.NewValue is CodeExplorerItemViewModel node) || 
-                !(sender is BindableSelectedItemBehavior binding))
+            if (!(sender is BindableSelectedItemBehavior behavior) ||
+                !(behavior.AssociatedObject is TreeView tree))
             {
                 return;
             }
 
-            var item = FindTreeViewItemFromData(binding.AssociatedObject, node);
-            if (item == null)
+            if (e.NewValue == null)
             {
+                foreach (var item in tree.Items.OfType<TreeViewItem>())
+                {
+                    item.SetValue(TreeViewItem.IsSelectedProperty, false);
+                }
                 return;
             }
 
-            item.BringIntoView();
-            item.Focus();
-            item.IsSelected = true;
+            if (e.NewValue is TreeViewItem treeViewItem)
+            {
+                treeViewItem.SetValue(TreeViewItem.IsSelectedProperty, true);
+            }
+            else
+            {
+                var itemsHostProperty = tree.GetType().GetProperty("ItemsHost", BindingFlags.NonPublic | BindingFlags.Instance);
+                if (itemsHostProperty == null)
+                {
+                    return;
+                }
+
+                if (!(itemsHostProperty.GetValue(tree, null) is Panel itemsHost))
+                {
+                    return;
+                }
+                foreach (var item in itemsHost.Children.OfType<TreeViewItem>())
+                {
+                    if (WalkTreeViewItem(item, e.NewValue))
+                    {
+                        break;
+                    }
+                }
+            }
         }
 
-        private static TreeViewItem FindTreeViewItemFromData(ItemsControl items, object node)
+        public static bool WalkTreeViewItem(TreeViewItem treeViewItem, object selectedValue)
         {
-            if (items.ItemContainerGenerator.ContainerFromItem(node) is TreeViewItem item)
+            if (treeViewItem.DataContext == selectedValue)
             {
-                return item;
+                treeViewItem.SetValue(TreeViewItem.IsSelectedProperty, true);
+                treeViewItem.Focus();
+                return true;
             }
 
-            foreach (var container in items.Items)
+            var itemsHostProperty = treeViewItem.GetType().GetProperty("ItemsHost", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (itemsHostProperty == null ||
+                !(itemsHostProperty.GetValue(treeViewItem, null) is Panel itemsHost))
             {
-                if (!(items.ItemContainerGenerator.ContainerFromItem(container) is TreeViewItem subItem))
-                {
-                    continue;
-                }
+                return false;
+            }
 
-                item = FindTreeViewItemFromData(subItem, node);
-
-                if (item != null)
+            foreach (var item in itemsHost.Children.OfType<TreeViewItem>())
+            {
+                if (WalkTreeViewItem(item, selectedValue))
                 {
-                    return item;
+                    break;
                 }
             }
-            return null;
+            return false;
         }
 
         protected override void OnAttached()
@@ -72,7 +100,6 @@ namespace Rubberduck.UI.Controls
         protected override void OnDetaching()
         {
             base.OnDetaching();
-
             if (AssociatedObject != null)
             {
                 AssociatedObject.SelectedItemChanged -= OnTreeViewSelectedItemChanged;

@@ -59,7 +59,47 @@ namespace Rubberduck.Resources.CodeExplorer {
                 resourceCulture = value;
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap AccessibilityFriend {
+            get {
+                object obj = ResourceManager.GetObject("AccessibilityFriend", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap AccessibilityGlobal {
+            get {
+                object obj = ResourceManager.GetObject("AccessibilityGlobal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap AccessibilityPrivate {
+            get {
+                object obj = ResourceManager.GetObject("AccessibilityPrivate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap AccessibilityStatic {
+            get {
+                object obj = ResourceManager.GetObject("AccessibilityStatic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
@@ -719,16 +759,6 @@ namespace Rubberduck.Resources.CodeExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap ObjectConstantPrivate {
-            get {
-                object obj = ResourceManager.GetObject("ObjectConstantPrivate", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap ObjectEnum {
             get {
                 object obj = ResourceManager.GetObject("ObjectEnum", resourceCulture);
@@ -749,33 +779,13 @@ namespace Rubberduck.Resources.CodeExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap ObjectEnumPrivate {
-            get {
-                object obj = ResourceManager.GetObject("ObjectEnumPrivate", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap ObjectEvent {
             get {
                 object obj = ResourceManager.GetObject("ObjectEvent", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ObjectEventPrivate {
-            get {
-                object obj = ResourceManager.GetObject("ObjectEventPrivate", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -785,17 +795,17 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap ObjectFieldPrivate {
+        public static System.Drawing.Bitmap ObjectInterface {
             get {
-                object obj = ResourceManager.GetObject("ObjectFieldPrivate", resourceCulture);
+                object obj = ResourceManager.GetObject("ObjectInterface", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -805,7 +815,17 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ObjectLibraryFunction {
+            get {
+                object obj = ResourceManager.GetObject("ObjectLibraryFunction", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -815,37 +835,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ObjectMethodFriend {
-            get {
-                object obj = ResourceManager.GetObject("ObjectMethodFriend", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ObjectMethodPrivate {
-            get {
-                object obj = ResourceManager.GetObject("ObjectMethodPrivate", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ObjectMethodShortcut {
-            get {
-                object obj = ResourceManager.GetObject("ObjectMethodShortcut", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -865,27 +855,47 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+ 
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap ObjectPropertiesFriend {
+        public static System.Drawing.Bitmap ObjectPropertyGet {
             get {
-                object obj = ResourceManager.GetObject("ObjectPropertiesFriend", resourceCulture);
+                object obj = ResourceManager.GetObject("ObjectPropertyGet", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap ObjectPropertiesPrivate {
+        public static System.Drawing.Bitmap ObjectPropertyLet {
             get {
-                object obj = ResourceManager.GetObject("ObjectPropertiesPrivate", resourceCulture);
+                object obj = ResourceManager.GetObject("ObjectPropertyLet", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ObjectPropertySet {
+            get {
+                object obj = ResourceManager.GetObject("ObjectPropertySet", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ObjectTestMethod {
+            get {
+                object obj = ResourceManager.GetObject("ObjectTestMethod", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -895,17 +905,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap ObjectValueTypePrivate {
-            get {
-                object obj = ResourceManager.GetObject("ObjectValueTypePrivate", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
+ 
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>

@@ -145,7 +145,6 @@ namespace Rubberduck.Parsing.Symbols
                 ProjectName = IdentifierName;
             }
 
-            CustomFolder = FolderFromAnnotations();
             IsArray = isArray;
             AsTypeContext = asTypeContext;
             TypeHint = typeHint;
@@ -229,25 +228,6 @@ namespace Rubberduck.Parsing.Symbols
                 false,
                 null,
                 new Attributes()) { }
-
-        private string FolderFromAnnotations()
-            {
-                var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
-                string result;
-                if (@namespace == null)
-                {
-                    result = string.IsNullOrEmpty(QualifiedName.QualifiedModuleName.ProjectName)
-                        ? ProjectId
-                        : QualifiedName.QualifiedModuleName.ProjectName;
-                }
-                else
-                {
-                    var value = ((FolderAnnotation)@namespace).FolderName;
-                    result = value;
-                }
-                return result;
-            }
-
 
         public static Declaration GetModuleParent(Declaration declaration)
         {
@@ -590,7 +570,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public bool IsUndeclared { get; }
 
-        public string CustomFolder { get; }
+        public virtual string CustomFolder => ParentDeclaration?.CustomFolder ?? ProjectName;
 
         public bool Equals(Declaration other)
         {

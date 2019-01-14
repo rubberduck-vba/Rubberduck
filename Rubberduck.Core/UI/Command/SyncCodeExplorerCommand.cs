@@ -48,7 +48,7 @@ namespace Rubberduck.UI.Command
         {
             if (_state.Status != ParserState.Ready || 
                 _explorer.IsBusy || 
-                _explorer.TreeViewVisibility != Visibility.Visible ||
+                //_explorer.TreeViewVisibility != Visibility.Visible ||
                 FindTargetNode() == null)
             {
                 return false;
@@ -69,7 +69,7 @@ namespace Rubberduck.UI.Command
             _explorer.SelectedItem = target;
         }
 
-        private CodeExplorerItemViewModel FindTargetNode()
+        private ICodeExplorerNode FindTargetNode()
         {
             using (var active = _vbe.ActiveCodePane)
             {

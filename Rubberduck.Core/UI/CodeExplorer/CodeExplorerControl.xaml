@@ -7,6 +7,7 @@
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             xmlns:local="clr-namespace:Rubberduck.UI.CodeExplorer"
              ResxExtension.DefaultResxName="Rubberduck.Resources.CodeExplorer.CodeExplorerUI" 
              Language="{UICulture}"
              Name="CodeExplorer"
@@ -48,6 +49,9 @@
             <converters:BooleanToDimmedBrushConverter x:Key="BooleanToDimmed" />
             <converters:TemplateCommandParameterToTupleConverter x:Key="TemplateCommandParameterToTuple" />
             <converters:SearchImageSourceConverter x:Key="SearchToIcon" />
+            <converters:InvertBoolValueConverter x:Key="NotBool" />
+            <converters:CodeExplorerNodeToIconConverter x:Key="NodeToIcon" />
+            <converters:AccessibilityToIconConverter x:Key="AccessibilityToIcon" />
 
             <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
                 <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -91,32 +95,10 @@
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
 
-            <CompositeCollection x:Key="SortOptions">
-                <MenuItem Name="SortByName"
-                          Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                          Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SortStyle_ByName}"
-                          IsChecked="{Binding SortByName, UpdateSourceTrigger=PropertyChanged}" 
-                          Command="{Binding SetNameSortCommand}"
-                          CommandParameter="{Binding ElementName=SortByName, Path=IsChecked}"
-                          IsCheckable="True" />
-                <MenuItem Name="SortByCodeOrder"
-                          Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                          Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SortStyle_ByCodeOrder}"
-                          IsChecked="{Binding SortByCodeOrder, UpdateSourceTrigger=PropertyChanged}" 
-                          Command="{Binding SetCodeOrderSortCommand}"
-                          CommandParameter="{Binding ElementName=SortByCodeOrder, Path=IsChecked}"
-                          IsCheckable="True" />
-                <Separator />
-                <MenuItem Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
-                          Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SortStyle_ByType}"
-                          IsChecked="{Binding GroupByType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                          IsCheckable="True" />
-            </CompositeCollection>
-
             <CompositeCollection x:Key="AddModuleCommands">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddVBFormText}"
                                   Command="{Binding AddVBFormCommand}"
-                                  CommandParameter="{Binding SelectedItem}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource AddTestModuleImage}" />
@@ -124,7 +106,7 @@
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddMDIFormText}"
                                   Command="{Binding AddMDIFormCommand}"
-                                  CommandParameter="{Binding SelectedItem}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource AddMdiFormImage}" />
@@ -132,7 +114,7 @@
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddFormText}"
                                   Command="{Binding AddUserFormCommand}"
-                                  CommandParameter="{Binding SelectedItem}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VBAVisibility}">
                     <MenuItem.Icon>
                         <Image  Source="{StaticResource AddUserFormImage}" />
@@ -140,21 +122,21 @@
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddStdModuleText}"
                                   Command="{Binding AddStdModuleCommand}"
-                                  CommandParameter="{Binding SelectedItem}">
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource AddStdModuleImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddClassModuleText}"
                                   Command="{Binding AddClassModuleCommand}"
-                                  CommandParameter="{Binding SelectedItem}">
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource AddClassModuleImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddUserControlText}"
                                   Command="{Binding AddUserControlCommand}"
-                                  CommandParameter="{Binding SelectedItem}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource AddUserControlImage}" />
@@ -162,7 +144,7 @@
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddPropertyPageText}"
                                   Command="{Binding AddPropertyPageCommand}"
-                                  CommandParameter="{Binding SelectedItem}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource AddPropertyPageImage}" />
@@ -170,7 +152,7 @@
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddUserDocumentText}"
                                   Command="{Binding AddUserDocumentCommand}"
-                                  CommandParameter="{Binding SelectedItem}"
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                                   Visibility="{Binding VB6Visibility}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource AddUserDocumentImage}" />
@@ -179,14 +161,14 @@
                 <Separator />
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddTestModuleText}"
                                   Command="{Binding AddTestModuleCommand}"
-                                  CommandParameter="{Binding SelectedItem}">
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource AddTestModuleImage}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddTestModuleWithStubsText}"
                                   Command="{Binding AddTestModuleWithStubsCommand}"
-                                  CommandParameter="{Binding SelectedItem}">
+                                  CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                     <MenuItem.Icon>
                         <Image Source="{StaticResource AddTestModuleImage}" />
                     </MenuItem.Icon>
@@ -242,6 +224,26 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
+            <Style x:Key="FooterTextBoxStyle" TargetType="TextBox">
+                <Setter Property="FontSize" Value="{Binding FontSize, Mode=OneWay}" />
+                <Setter Property="IsReadOnly" Value="True" />
+                <Setter Property="Margin" Value="4" />
+                <Setter Property="TextWrapping" Value="WrapWithOverflow" />
+                <Setter Property="Background" Value="WhiteSmoke" />
+                <Setter Property="BorderThickness" Value="0" />
+            </Style>
+
+            <Style x:Key="DisablingIconStyle" TargetType="Image">
+                <Setter Property="Height" Value="16" />
+                <Setter Property="Width" Value="16" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Style.Triggers>
+                    <Trigger Property="IsEnabled"  Value="False">
+                        <Setter Property="Opacity" Value="0.3" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -278,14 +280,31 @@
 
                 <Separator />
 
-                <Menu VerticalContentAlignment="Center" Background="Transparent">
-                    <MenuItem ItemsSource="{StaticResource SortOptions}" VerticalContentAlignment="Center">
+                <Menu Background="Transparent">
+                    <Menu.Resources>
+                        <local:CodeExplorerSortOrderBooleanConverter x:Key="NameFlagConverter" />
+                        <local:CodeExplorerSortOrderBooleanConverter x:Key="CodeFlagConverter" />
+                        <local:CodeExplorerSortOrderBooleanConverter x:Key="TypeFlagConverter" />
+                    </Menu.Resources>
+                    <MenuItem IsEnabled="{Binding IsBusy, Converter={StaticResource NotBool}}" VerticalAlignment="Center" >
                         <MenuItem.Header>
-                            <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource SortImage}" />
+                            <Image Style="{StaticResource DisablingIconStyle}" Source="{StaticResource SortImage}" />
                         </MenuItem.Header>
                         <MenuItem.ToolTip>
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Sort}" />
                         </MenuItem.ToolTip>
+                        <MenuItem.Items>
+                            <MenuItem IsCheckable="True" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SortStyle_ByName}"
+                                      IsChecked="{Binding Path=SortOrder, Converter={StaticResource NameFlagConverter}, ConverterParameter={x:Static codeExplorer:CodeExplorerSortOrder.Name}}" />
+                            <MenuItem IsCheckable="True" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SortStyle_ByCodeOrder}"
+                                      IsChecked="{Binding Path=SortOrder, Converter={StaticResource CodeFlagConverter}, ConverterParameter={x:Static codeExplorer:CodeExplorerSortOrder.CodeLine}}" />
+                            <Separator />
+                            <MenuItem IsCheckable="True" Style="{DynamicResource MenuItemStyle}" VerticalAlignment="Center" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SortStyle_ByType}"
+                                      IsChecked="{Binding Path=SortOrder, Converter={StaticResource TypeFlagConverter}, ConverterParameter={x:Static codeExplorer:CodeExplorerSortOrder.DeclarationType}}" />
+                        </MenuItem.Items>
                     </MenuItem>
                 </Menu>
 
@@ -297,7 +316,7 @@
 
                 <Separator />
 
-                <Button Command="{Binding OpenDesignerCommand}" CommandParameter="{Binding SelectedItem}">
+                <Button Command="{Binding OpenDesignerCommand}" CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                     <Image Source="{StaticResource OpenDesignerImage}" Style="{StaticResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ShowDesignerToolTip}" />
@@ -377,21 +396,21 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="20" />
                 </Grid.ColumnDefinitions>
-                <TextBox Name="SearchBox" Grid.Column="0" IsEnabled="{Binding CanSearch}">
+                <TextBox Name="SearchBox" Grid.Column="0">
                     <TextBox.Style>
                         <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource PlaceHolder}">
                             <Setter Property="Height" Value="20" />
                             <Setter Property="Width" Value="Auto" />
                             <Setter Property="Tag" Value="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SearchPlaceholder}" />
-                            <Setter Property="Text" Value="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Setter Property="Text" Value="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
                         </Style>
                     </TextBox.Style>
                 </TextBox>
-                <Button Name="SearchButton" Grid.Column="1" Command="{Binding ClearFilterTextCommand}" IsEnabled="{Binding CanSearch}" 
-                        BorderBrush="{x:Static SystemColors.ControlLightBrush}"
-                        Background="Transparent"
-                        Width="20" Height="20" Padding="0" Margin="0,1">
-                    <Image Margin="2" Width="16" Height="16" Source="{Binding FilterText, Converter={StaticResource SearchToIcon}, UpdateSourceTrigger=PropertyChanged}" />
+                <Button Name="SearchButton"  Grid.Column="1" Command="{Binding ClearSearchCommand}" 
+                                        BorderBrush="{x:Static SystemColors.ControlLightBrush}"
+                                        Background="Transparent"
+                                        Width="20" Height="20" Padding="0" Margin="0,1">
+                    <Image Margin="2" Width="16" Height="16" Source="{Binding Search, Converter={StaticResource SearchToIcon}, UpdateSourceTrigger=PropertyChanged}" />
                     <i:Interaction.Behaviors>
                         <controls:FocusElementAfterClickBehavior FocusElement="{Binding ElementName=SearchBox, Mode=OneWay}"/>
                     </i:Interaction.Behaviors>
@@ -399,26 +418,23 @@
             </Grid>
         </Border>
 
-        <controls:EmptyUIRefresh Grid.Row="2" />
-
         <TreeView x:Name="ProjectTree"
                   Grid.Row="2"
                   Background="White"
                   HorizontalContentAlignment="Stretch"
-                  ItemsSource="{Binding Projects, UpdateSourceTrigger=PropertyChanged}"
+                  ItemsSource="{Binding Projects}"
                   FontSize="{Binding FontSize, Mode=OneWay}"
                   BorderThickness="0,1"
-                  VirtualizingPanel.IsVirtualizing="False"
-                  Visibility="{Binding Path=TreeViewVisibility}">
+                  VirtualizingPanel.IsVirtualizing="False">
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Open}"
                       FontWeight="Bold"
                       Command="{Binding OpenCommand}"
-                      CommandParameter="{Binding SelectedItem}" />
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_OpenDesigner}"
                       Command="{Binding OpenDesignerCommand}"
-                      CommandParameter="{Binding SelectedItem}"
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                       Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibility}}">
                         <MenuItem.Icon>
                             <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource OpenDesignerImage}" />
@@ -433,22 +449,22 @@
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Rename}"
                       Command="{Binding RenameCommand}"
-                      CommandParameter="{Binding SelectedItem}" />
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <Separator />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_Caption}"
                           Command="{Binding AddRemoveReferencesCommand}"
-                          CommandParameter="{Binding SelectedItem}">
+                          CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource AddRemoveReferencesImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SetAsStartupProject}"
                           Command="{Binding SetAsStartupProjectCommand}"
-                          CommandParameter="{Binding SelectedItem}"  
+                          CommandParameter="{Binding SelectedItem, Mode=OneWay}"  
                           Visibility="{Binding VB6Visibility}"/>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_OpenProjectProperties}"
                       Command="{Binding OpenProjectPropertiesCommand}"
-                      CommandParameter="{Binding SelectedItem}" />
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <Separator />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddModule}"
                           ItemsSource="{StaticResource AddModuleCommands}">
@@ -462,25 +478,25 @@
                         </MenuItem.Icon>
                         <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FindAllReferencesText}"
                       Command="{Binding FindAllReferencesCommand}"
-                      CommandParameter="{Binding SelectedItem}" />
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                         <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FindAllImplementationsText}"
                       Command="{Binding FindAllImplementationsCommand}"
-                      CommandParameter="{Binding SelectedItem}" />
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Indent}"
                       Command="{Binding IndenterCommand}"
-                      CommandParameter="{Binding SelectedItem}" />
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}" />
                     <Separator />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CollapseSubnodesToolTip}"
                       Command="{Binding CollapseAllSubnodesCommand}"
-                      CommandParameter="{Binding SelectedItem}">
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource CollapseNodesImage}" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ExpandSubnodesToolTip}"
                       Command="{Binding ExpandAllSubnodesCommand}"
-                      CommandParameter="{Binding SelectedItem}">
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource ExpandNodesImage}" />
                         </MenuItem.Icon>
@@ -488,19 +504,19 @@
                     <Separator />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Import}"
                       Command="{Binding ImportCommand}"
-                      CommandParameter="{Binding SelectedItem}"
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                       Visibility="{Binding VBAVisibility}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Export}"
                       Command="{Binding ExportCommand}"
-                      CommandParameter="{Binding SelectedItem}"
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                       Visibility="{Binding ExportVisibility}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_ExportAll}"
                       Command="{Binding ExportAllCommand}"
-                      CommandParameter="{Binding SelectedItem}" 
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}" 
                       Visibility="{Binding ExportAllVisibility}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Remove}"
                       Command="{Binding RemoveCommand}"
-                      CommandParameter="{Binding SelectedItem}"
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}"
                       Visibility="{Binding VBAVisibility}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource RemoveImage}" Style="{StaticResource ToolbarImageOpacity}" />
@@ -509,7 +525,7 @@
                     <Separator Visibility="{Binding VBAVisibility}" />
                     <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Print}"
                       Command="{Binding PrintCommand}"
-                      CommandParameter="{Binding SelectedItem}">
+                      CommandParameter="{Binding SelectedItem, Mode=OneWay}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource PrintImage}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
@@ -517,13 +533,13 @@
                 </ContextMenu>
             </TreeView.ContextMenu>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="codeExplorer:CodeExplorerItemViewModel" ItemsSource="{Binding Items}">
+                <HierarchicalDataTemplate DataType="codeExplorer:ICodeExplorerNode" ItemsSource="{Binding Children}">
                     <HierarchicalDataTemplate.ItemContainerStyle>
                         <Style TargetType="{x:Type TreeViewItem}">
                             <Setter Property="BorderThickness" Value="1.5"/>
                             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                            <Setter Property="Visibility" Value="{Binding IsVisible, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
+                            <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={StaticResource BoolToHiddenVisibility}}" />
                             <Setter Property="HorizontalAlignment" Value="Left" />
                             <EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />
                             <EventSetter Event="MouseRightButtonDown" Handler="TreeView_OnMouseRightButtonDown" />
@@ -547,15 +563,6 @@
                         </Style>
                     </HierarchicalDataTemplate.ItemContainerStyle>
                     <HierarchicalDataTemplate.Resources>
-                        <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource ToolbarIconStyle}">
-                            <Setter Property="Source" Value="{Binding CollapsedIcon}" />
-                            <Style.Triggers>
-                                <!-- thanks to H.B. on http://stackoverflow.com/a/5797323/1188513 -->
-                                <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=IsExpanded}" Value="True">
-                                    <Setter Property="Source" Value="{Binding ExpandedIcon}" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
                         <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TextBlock}">
                             <Setter Property="Text" Value="{Binding Name}" />
                             <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}, Path=FontSize}" />
@@ -578,7 +585,20 @@
                         </Style>
                     </HierarchicalDataTemplate.Resources>
                     <StackPanel Orientation="Horizontal">
-                        <Image Style="{StaticResource TreeViewIconStyle}" />
+                        <Grid>
+                            <Image Style="{StaticResource ToolbarIconStyle}">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource NodeToIcon}">
+                                        <MultiBinding.Bindings>
+                                            <Binding RelativeSource="{RelativeSource Self}" Path="DataContext"/>
+                                            <Binding Path="Declaration" />
+                                            <Binding Path="IsExpanded" />
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image> 
+                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
+                        </Grid>
                         <TextBlock Style="{StaticResource TreeViewItemStyle}" />
                     </StackPanel>
                 </HierarchicalDataTemplate>
@@ -587,6 +607,8 @@
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
         </TreeView>
+
+        <controls:EmptyUIRefresh Grid.Row="2" Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
 
         <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
@@ -600,31 +622,35 @@
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        <Image Grid.Column="0" Style="{StaticResource ToolbarIconStyle}" Source="{Binding SelectedItem.CollapsedIcon}" />
-                        <TextBox Grid.Column="1"  Style="{StaticResource FooterStyle}" Text="{Binding PanelTitle, Mode=OneWay}" FontWeight="Bold" />
+                        <Image Grid.Column="0" Style="{StaticResource ToolbarIconStyle}">
+                            <Image.Source>
+                                <MultiBinding Converter="{StaticResource NodeToIcon}">
+                                    <MultiBinding.Bindings>
+                                        <Binding Path="SelectedItem"/>
+                                        <Binding Path="SelectedItem.Declaration" />
+                                        <Binding Path="SelectedItem.IsExpanded" />
+                                        <Binding Path="SelectedItem.IsErrorState" />
+                                    </MultiBinding.Bindings>
+                                </MultiBinding>
+                            </Image.Source>
+                        </Image>
+                        <Image Grid.Column="0" Source="{Binding SelectedItem.Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
+                        <TextBox Style="{StaticResource FooterTextBoxStyle}" Grid.Column="1" Text="{Binding SelectedItem.PanelTitle, Mode=OneWay}" FontWeight="Bold" />
                     </Grid>
-
-                    <TextBox Style="{StaticResource FooterStyle}" Text="{Binding Description, Mode=OneWay}" />
-
+                    <TextBox Style="{StaticResource FooterTextBoxStyle}" Text="{Binding SelectedItem.Description, Mode=OneWay}" />
                     <WrapPanel>
-                        <controls:LinkButton Margin="4"
-                                             Visibility="{Binding CanExecuteIndenterCommand, Converter={StaticResource BoolToVisibility}, UpdateSourceTrigger=PropertyChanged}"
-                                             Command="{Binding IndenterCommand}"
-                                             CommandParameter="{Binding SelectedItem}"
-                                             Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Indent}"
-                                             FontSize="{Binding FontSize, Mode=OneWay}" />
-                        <controls:LinkButton Margin="4"
-                                             Visibility="{Binding CanExecuteRenameCommand, Converter={StaticResource BoolToVisibility}}"
-                                             Command="{Binding RenameCommand}"
-                                             CommandParameter="{Binding SelectedItem}"
-                                             Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Rename}"
-                                             FontSize="{Binding FontSize, Mode=OneWay}" />
-                        <controls:LinkButton Margin="4"
-                                             Visibility="{Binding CanExecuteFindAllReferencesCommand, Converter={StaticResource BoolToVisibility}}"
-                                             Command="{Binding FindAllReferencesCommand}"
-                                             CommandParameter="{Binding SelectedItem}"
-                                             Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FindAllReferencesText}"
-                                             FontSize="{Binding FontSize, Mode=OneWay}" />
+                        <controls:LinkButton Margin="4" FontSize="{Binding FontSize, Mode=OneWay}"
+                            Command="{Binding IndenterCommand}" CommandParameter="{Binding SelectedItem, Mode=OneWay}"
+                            Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Indent}"
+                            Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
+                        <controls:LinkButton Margin="4" FontSize="{Binding FontSize, Mode=OneWay}"
+                            Command="{Binding RenameCommand}" CommandParameter="{Binding SelectedItem, Mode=OneWay}"
+                            Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Rename}"
+                            Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
+                        <controls:LinkButton Margin="4" FontSize="{Binding FontSize, Mode=OneWay}"
+                            Command="{Binding FindAllReferencesCommand}" CommandParameter="{Binding SelectedItem, Mode=OneWay}"
+                            Content="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_FindAllReferencesText}"
+                            Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource BoolToVisibility}, Mode=OneWay}"/>
                     </WrapPanel>
                 </WrapPanel>
             </ScrollViewer>

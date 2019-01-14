@@ -21,7 +21,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public override ComponentType ComponentType => ComponentType.Undefined;
 
-        public bool CanExecuteForNode(CodeExplorerItemViewModel model)
+        public bool CanExecuteForNode(ICodeExplorerNode model)
         {
             return base.EvaluateCanExecute(model);
         }
