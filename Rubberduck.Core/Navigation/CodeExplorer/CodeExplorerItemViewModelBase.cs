@@ -116,7 +116,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public virtual bool IsDimmed
         {
             get => false;
-            set { }
+            set { /* no-op for base class, override as needed */ }
         }
 
         public virtual bool IsObsolete => false;
