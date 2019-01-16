@@ -27,23 +27,16 @@
                 <Setter Property="Margin" Value="4" />
             </Style>
 
-            <CollectionViewSource x:Key="ResultsByInspectionType" Source="{Binding Results}">
-                <CollectionViewSource.GroupDescriptions>
-                    <PropertyGroupDescription PropertyName="Inspection" Converter="{StaticResource InspectionTypeConverter}" />
-                </CollectionViewSource.GroupDescriptions>
-            </CollectionViewSource>
-
-            <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Results}">
-                <CollectionViewSource.GroupDescriptions>
-                    <PropertyGroupDescription PropertyName="QualifiedSelection.QualifiedName" />
-                </CollectionViewSource.GroupDescriptions>
-            </CollectionViewSource>
-
             <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
             <BitmapImage x:Key="SettingsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/gear.png" />
             <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
             <BitmapImage x:Key="FixImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick.png" />
-            <BitmapImage x:Key="GroupByImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
+
+            <BitmapImage x:Key="GroupByInspectionTypeImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/block.png" />
+            <BitmapImage x:Key="GroupByInspectionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/light-bulb-code.png" />
+            <BitmapImage x:Key="GroupByLocationImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
+            <BitmapImage x:Key="GroupBySeverityImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/Severity.png" />
+
             <BitmapImage x:Key="FilterByHintImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information-white.png" />
             <BitmapImage x:Key="FilterBySuggestionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png" />
             <BitmapImage x:Key="FilterByWarningImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
@@ -53,7 +46,6 @@
                 <Setter Property="Height" Value="16"/>
                 <Setter Property="Width" Value="16" />
             </Style>
-
 
             <Style TargetType="MenuItem">
                 <Setter Property="VerticalAlignment" Value="Center"/>
@@ -71,17 +63,28 @@
         </Grid.RowDefinitions>
 
         <ToolBarTray Grid.Row="0" IsLocked="True">
+
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
+                <ToolBar.Resources>
+                    <codeInspections:InspectionFilterToBooleanConverter x:Key="ErrorFlagConverter" />
+                    <codeInspections:InspectionFilterToBooleanConverter x:Key="WarningFlagConverter" />
+                    <codeInspections:InspectionFilterToBooleanConverter x:Key="SuggestionFlagConverter" />
+                    <codeInspections:InspectionFilterToBooleanConverter x:Key="HintFlagConverter" />
+                    <Style x:Key="ToolBarToggleStyle" TargetType="ToggleButton">
+                        <Setter Property="Margin" Value="2" />
+                        <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
+                    </Style>
+                </ToolBar.Resources>
 
                 <Button Command="{Binding RefreshCommand}">
                     <Image Source="{StaticResource RefreshImage}" />
                 </Button>
 
                 <Separator />
-                <Menu>
+                <Menu Background="Transparent">
                     <MenuItem VerticalAlignment="Center" 
                           Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Fix}"
-                          ItemsSource="{Binding QuickFixes}">
+                          ItemsSource="{Binding QuickFixes}" Background="Transparent">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource FixImage}" />
                         </MenuItem.Icon>
@@ -90,81 +93,67 @@
                                 <Setter Property="Command" Value="{Binding Path=DataContext.QuickFixCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Menu, AncestorLevel=1}}" />
                                 <Setter Property="CommandParameter" Value="{Binding Fix}" />
                                 <Setter Property="Header" Value="{Binding Description}" />
+                                <Setter Property="Background" Value="Transparent"></Setter>
                             </Style>
                         </MenuItem.ItemContainerStyle>
                     </MenuItem>
                 </Menu>
 
-                <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
-                        <MenuItem.Icon>
-                            <Image Source="{StaticResource GroupByImage}" />
-                        </MenuItem.Icon>
-                        
-                        <MenuItem x:Name="GroupByInspectionType"
-                                  Style="{DynamicResource MenuItemStyle}"
-                                  VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
-                                  IsChecked="{Binding GroupByInspectionType, UpdateSourceTrigger=PropertyChanged}" 
-                                  IsCheckable="True"
-                                  Command="{Binding SetInspectionTypeGroupingCommand}"
-                                  CommandParameter="{Binding ElementName=GroupByInspectionType, Path=IsChecked}"
-                                  controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
-                        <MenuItem x:Name="GroupByLocation"
-                                  Style="{DynamicResource MenuItemStyle}"
-                                  VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}" 
-                                  IsChecked="{Binding GroupByLocation, UpdateSourceTrigger=PropertyChanged}"
-                                  Command="{Binding SetLocationGroupingCommand}"
-                                  CommandParameter="{Binding ElementName=GroupByLocation, Path=IsChecked}"
-                                  IsCheckable="True"
-                                  controls:MenuItemGroup.GroupName="InspectionsResults_GroupingStyle" />
-                    </MenuItem>
-                </Menu>
+                <Separator />
+
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalContentAlignment="Center" />
+
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
+                              IsChecked="{Binding GroupByInspectionType, Mode=TwoWay}">
+                    <Image Source="{StaticResource GroupByInspectionTypeImage}" />
+                </ToggleButton>
+
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByName}"
+                              IsChecked="{Binding GroupByName, Mode=TwoWay}">
+                    <Image Source="{StaticResource GroupByInspectionImage}" />
+                </ToggleButton>
+
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
+                              IsChecked="{Binding GroupByLocation, Mode=TwoWay}">
+                    <Image Source="{StaticResource GroupByLocationImage}" />
+                </ToggleButton>
+
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_BySeverity}"
+                              IsChecked="{Binding GroupBySeverity, Mode=TwoWay}" >
+                    <Image Source="{StaticResource GroupBySeverityImage}" />
+                </ToggleButton>
 
                 <Separator />
 
-                <Menu>
-                    <MenuItem x:Name="FilterInspectionByError"
-                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
-                              IsChecked="{Binding FilterInspectionsByError, UpdateSourceTrigger=PropertyChanged}"
-                              IsCheckable="True"
-                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
-                        <MenuItem.Icon>
-                            <Image Source="{StaticResource FilterByErrorImage}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_Filter}" VerticalContentAlignment="Center" />
 
-                    <MenuItem x:Name="FilterInspectionByWarning"
-                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
-                              IsChecked="{Binding FilterInspectionsByWarning, UpdateSourceTrigger=PropertyChanged}"
-                              IsCheckable="True"
-                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
-                        <MenuItem.Icon>
-                            <Image Source="{StaticResource FilterByWarningImage}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByError}"
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource ErrorFlagConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Error}}">
+                    <Image Source="{StaticResource FilterByErrorImage}" />
+                </ToggleButton>
 
-                    <MenuItem x:Name="FilterInspectionBySuggestion"
-                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
-                              IsChecked="{Binding FilterInspectionsBySuggestion, UpdateSourceTrigger=PropertyChanged}"
-                              IsCheckable="True"
-                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
-                        <MenuItem.Icon>
-                            <Image Source="{StaticResource FilterBySuggestionImage}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByWarning}"
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource WarningFlagConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Warning}}">
+                    <Image Source="{StaticResource FilterByWarningImage}" />
+                </ToggleButton>
 
-                    <MenuItem x:Name="FilterInspectionByHint"
-                              Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
-                              IsChecked="{Binding FilterInspectionsByHint, UpdateSourceTrigger=PropertyChanged}"
-                              IsCheckable="True"
-                              controls:MenuItemGroup.GroupName="InspectionResults_FilterBy">
-                        <MenuItem.Icon>
-                            <Image Source="{StaticResource FilterByHintImage}" />
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </Menu>
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterBySuggestion}"
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource SuggestionFlagConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Suggestion}}">
+                    <Image Source="{StaticResource FilterBySuggestionImage}" />
+                </ToggleButton>
+
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_FilterByHint}"
+                              IsChecked="{Binding Path=SelectedFilters, Converter={StaticResource HintFlagConverter}, ConverterParameter={x:Static codeInspections:InspectionResultsFilter.Hint}}">
+                    <Image Source="{StaticResource FilterByHintImage}" />
+                </ToggleButton>
 
                 <Separator />
 
@@ -174,6 +163,9 @@
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
+
+                <Separator />
+
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenInspectionSettings}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource SettingsImage}" />
                 </Button>
@@ -184,27 +176,7 @@
                                Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
-                               ItemsSource="{Binding Source={StaticResource ResultsByInspectionType}, IsAsync=True}"
-                               Visibility="{Binding IsChecked, ElementName=GroupByInspectionType, Converter={StaticResource BoolToVisibility}}"
-                               VirtualizingPanel.IsVirtualizingWhenGrouping="True">
-            <DataGrid.Columns>
-                <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="{Binding}">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate DataType="abstract1:IInspectionResult">
-                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}, Mode=OneTime}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime}" />
-            </DataGrid.Columns>
-        </controls:GroupingGrid>
-
-        <controls:GroupingGrid Grid.Row="1"
-                               ShowGroupingItemCount="True"
-                               SelectedItem="{Binding SelectedItem}"
-                               ItemsSource="{Binding Source={StaticResource ResultsByModule}, IsAsync=True}"
-                               Visibility="{Binding IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}"
+                               ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
                                VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
