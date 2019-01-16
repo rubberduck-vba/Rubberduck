@@ -1,110 +1,47 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media.Imaging;
+using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
+    public class CodeExplorerProjectViewModel : CodeExplorerItemViewModel
     {
-        public Declaration Declaration { get; }
-
-        private readonly CodeExplorerCustomFolderViewModel _folderTree;
-        private readonly IVBE _vbe;
-
-        private static readonly DeclarationType[] ComponentTypes =
+        public static readonly DeclarationType[] ComponentTypes =
         {
-            DeclarationType.ClassModule, 
-            DeclarationType.Document, 
-            DeclarationType.ProceduralModule, 
-            DeclarationType.UserForm, 
+            DeclarationType.ClassModule,
+            DeclarationType.Document,
+            DeclarationType.ProceduralModule,
+            DeclarationType.UserForm
         };
 
-        public CodeExplorerProjectViewModel(FolderHelper folderHelper, Declaration declaration, IEnumerable<Declaration> declarations, IVBE vbe, bool references = false)
+        private readonly IVBE _vbe;
+
+        public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations, RubberduckParserState state, IVBE vbe, bool references = true) : base(null, declaration)
         {
-            Declaration = declaration;
-            _name = Declaration.IdentifierName;
-            IsExpanded = true;
-            _folderTree = folderHelper.GetFolderTree(declaration);
+            State = state;         
             _vbe = vbe;
+            ShowReferences = references;
 
-            try
-            {
-                Items = new List<CodeExplorerItemViewModel>();
-                if (references)
-                {
-                    Items.Add(new CodeExplorerReferenceFolderViewModel(this));
-                }
-
-                FillFolders(declarations.ToList());
-                Items.AddRange(_folderTree.Items);
-
-                _icon = Declaration.Project?.Protection == ProjectProtection.Locked
-                    ? GetImageSource(resx.lock__exclamation)
-                    : GetImageSource(resx.ObjectLibrary);
-            }
-            catch (NullReferenceException e)
-            {
-                Console.WriteLine(e);
-            }
+            SetName();
+            AddNewChildren(declarations.ToList());
+            IsExpanded = true;
         }
 
-        private void FillFolders(IEnumerable<Declaration> declarations)
-        {
-            var items = declarations.ToList();
-            var groupedItems = items.Where(item => ComponentTypes.Contains(item.DeclarationType))
-                               .GroupBy(item => item.CustomFolder)
-                               .OrderBy(item => item.Key);
+        private string _displayName;
+        private string _name;
 
-            // set parent so we can walk up to the project node
-            // we haven't added the nodes yet, so this cast is valid
-            // ReSharper disable once PossibleInvalidCastExceptionInForeachLoop
-            foreach (CodeExplorerCustomFolderViewModel item in _folderTree.Items)
-            {
-                item.SetParent(this);
-            }
+        public RubberduckParserState State { get; }
 
-            foreach (var grouping in groupedItems)
-            {
-                CanAddNodesToTree(_folderTree, items, grouping);
-            }
-        }
+        public bool ShowReferences { get; }
 
-        private bool CanAddNodesToTree(CodeExplorerCustomFolderViewModel tree, List<Declaration> items, IGrouping<string, Declaration> grouping)
-        {
-            foreach (var folder in tree.Items.OfType<CodeExplorerCustomFolderViewModel>())
-            {
-                if (grouping.Key.Replace("\"", string.Empty) != folder.FullPath)
-                {
-                    continue;
-                }
-
-                var parents = grouping.Where(
-                        item => ComponentTypes.Contains(item.DeclarationType) &&
-                            item.CustomFolder.Replace("\"", string.Empty) == folder.FullPath)
-                        .ToList();
-
-                folder.AddNodes(items.Where(item => parents.Contains(item) || parents.Any(parent =>
-                    (item.ParentDeclaration != null && item.ParentDeclaration.Equals(parent)) ||
-                    item.ComponentName == parent.ComponentName)).ToList());
-
-                return true;
-            }
-
-            return tree.Items.OfType<CodeExplorerCustomFolderViewModel>().Any(node => CanAddNodesToTree(node, items, grouping));
-        }
-
-        private readonly BitmapImage _icon;
-        public override BitmapImage CollapsedIcon => _icon;
-        public override BitmapImage ExpandedIcon => _icon;
-
+        public override string Name => string.IsNullOrEmpty(_displayName) ? _name : $"{_name} ({_displayName})";
+        
         public override FontWeight FontWeight
         {
             get
@@ -115,28 +52,123 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 using (var vbProjects = _vbe.VBProjects)
+                using (var startProject = vbProjects?.StartProject)
                 {
-                    if (Declaration.Project.Equals(vbProjects.StartProject))
-                    {
-                        return FontWeights.Bold;
-                    }
-
-                    return base.FontWeight;
+                    return Declaration.Project.Equals(startProject) ? FontWeights.Bold : base.FontWeight;
                 }
             }
         }
 
-        // projects are always at the top of the tree
-        public override CodeExplorerItemViewModel Parent => null;
+        public override Comparer<ICodeExplorerNode> SortComparer => CodeExplorerItemComparer.NodeType;
 
-        private string _name;
-        public override string Name => _name;
-        public override string NameWithSignature => _name;
-        public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
+        public override bool Filtered => false;
 
-        public void SetParenthesizedName(string parenthesizedName)
+        public override void Synchronize(List<Declaration> updated)
         {
-            _name += " (" + parenthesizedName + ")";
+            if (Declaration is null ||
+                !(updated?.OfType<ProjectDeclaration>()
+                    .FirstOrDefault(declaration => declaration.ProjectId.Equals(Declaration.ProjectId)) is ProjectDeclaration match))
+            {
+                Declaration = null;
+                return;
+            }
+
+            Declaration = match;
+            updated.Remove(Declaration);
+            var children = updated.Where(declaration => declaration.ProjectId.Equals(Declaration.ProjectId)).ToList();
+            updated.RemoveAll(declaration => declaration.ProjectId.Equals(Declaration.ProjectId));
+
+            // Reference synchronization is deferred to AddNewChildren for 2 reasons. First, it doesn't make sense to sling around a List of
+            // declaration for something that doesn't need it. Second (and more importantly), the priority can't be set without calling 
+            // GetProjectReferenceModels, which hits the VBE COM interfaces. So, we only want to do that once. The bonus 3rd reason is that it
+            // can be called from the ctor this way.
+
+            SynchronizeChildren(children);
+
+            // Have to do this again - the project might have been saved or otherwise had the ProjectDisplayName changed.
+            SetName();
+        }
+
+        protected sealed override void AddNewChildren(List<Declaration> updated)
+        {
+            if (updated is null)
+            {
+                return;
+            }
+
+            SynchronizeReferences();
+
+            AddChildren(updated.GroupBy(declaration => declaration.RootFolder())
+                .Where(folder => !string.IsNullOrEmpty(folder.Key))
+                .Select(folder => new CodeExplorerCustomFolderViewModel(this, folder.Key, folder.Key, _vbe, folder)));
+        }
+
+        private void SynchronizeReferences()
+        {
+            if (!ShowReferences)
+            {
+                return;
+            }
+
+            var references = GetProjectReferenceModels();
+            foreach (var child in Children.OfType<CodeExplorerReferenceFolderViewModel>())
+            {
+                child.Synchronize(Declaration, references);
+                if (child.Declaration is null)
+                {
+                    RemoveChild(child);
+                }
+            }
+
+            if (!references.Any())
+            {
+                return;
+            }
+
+            var types = references.GroupBy(reference => reference.Type);
+
+            foreach (var type in types)
+            {
+                AddChild(new CodeExplorerReferenceFolderViewModel(this, State.DeclarationFinder, type.ToList(), type.Key));
+            }
+        }
+
+        private List<ReferenceModel> GetProjectReferenceModels()
+        {
+            var project = Declaration?.Project;
+            if (project == null)
+            {
+                return new List<ReferenceModel>();
+            }
+
+            var referenced = new List<ReferenceModel>();
+
+            using (var references = project.References)
+            {
+                var priority = 1;
+                foreach (var reference in references)
+                {
+                    referenced.Add(new ReferenceModel(reference, priority++));
+                    reference.Dispose();
+                }
+            }
+
+            return referenced;
+        }
+
+        private void SetName()
+        {
+            if (Declaration is null)
+            {
+                return;
+            }
+
+            _name = Declaration?.IdentifierName ?? string.Empty;
+
+            // F' the flicker. Digging into the properties has some even more evil side-effects, and is a performance nightmare by comparison.
+            _displayName = Declaration?.ProjectDisplayName ?? string.Empty;
+
+            OnNameChanged();
         }
     }
 }

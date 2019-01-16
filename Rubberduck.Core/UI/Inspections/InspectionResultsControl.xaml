@@ -191,12 +191,12 @@
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}" SortDirection="{Binding}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
-                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" />
+                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}, Mode=OneTime}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime}" />
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
@@ -210,12 +210,12 @@
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
-                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}}" />
+                            <Image Source="{Binding Inspection, Converter={StaticResource InspectionIconConverter}, Mode=OneTime}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime}" />
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
@@ -235,12 +235,12 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Image Style="{StaticResource IconMargin}" VerticalAlignment="Top" Grid.Column="0"
-                           Source="{Binding SelectedItem.Inspection.Severity, Converter={StaticResource SeverityIconConverter}}"/>
-                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedItem.Inspection.Description}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
+                           Source="{Binding SelectedSeverity, Converter={StaticResource SeverityIconConverter}}"/>
+                    <TextBlock Grid.Column="1" Margin="4" Text="{Binding SelectedDescription}" FontWeight="Bold" TextWrapping="WrapWithOverflow"/>
                 </Grid>
 
-                <TextBlock Margin="4" Text="{Binding SelectedItem.Inspection.Meta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
-                <TextBlock Margin="8" Text="{Binding SelectedItem.QualifiedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
+                <TextBlock Margin="4" Text="{Binding SelectedMeta}" FontSize="10" TextWrapping="WrapWithOverflow"/>
+                <TextBlock Margin="8" Text="{Binding SelectedSelection}" FontSize="10" TextWrapping="WrapWithOverflow" />
 
                 <WrapPanel>
                     <controls:LinkButton Margin="4"

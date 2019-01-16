@@ -7,22 +7,21 @@ namespace Rubberduck.UI.Inspections
 {
     public class InspectionImageSourceConverter : IValueConverter
     {
+        private static readonly InspectionSeverityImageSourceConverter SeverityConverter = new InspectionSeverityImageSourceConverter();
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var inspection = value as IInspection;
-            if (inspection == null )
+            if (!(value is IInspection inspection))
             {
                 return null;
             }
 
-            var converter = new InspectionSeverityImageSourceConverter();
-            return converter.Convert(inspection.Severity, targetType, parameter, culture);
+            return SeverityConverter.Convert(inspection.Severity, targetType, parameter, culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var converter = new InspectionSeverityImageSourceConverter();
-            return converter.ConvertBack(value, targetType, parameter, culture);
+            return SeverityConverter.ConvertBack(value, targetType, parameter, culture);
         }
     }
 }

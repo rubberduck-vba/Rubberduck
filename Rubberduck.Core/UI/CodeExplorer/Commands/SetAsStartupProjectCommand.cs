@@ -1,39 +1,45 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command;
+using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class SetAsStartupProjectCommand : CommandBase
+    public class SetAsStartupProjectCommand : CodeExplorerCommandBase
     {
+        private static readonly Type[] ApplicableNodes = { typeof(CodeExplorerProjectViewModel) };
+
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _parserState;
 
         public SetAsStartupProjectCommand(IVBE vbe, RubberduckParserState parserState)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _parserState = parserState;
         }
 
+        public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
+
         protected override bool EvaluateCanExecute(object parameter)
         {
             try
             {
-                if (_vbe.ProjectsCount <= 1)
+                if (!base.EvaluateCanExecute(parameter) ||                   
+                    !(parameter is CodeExplorerProjectViewModel node) ||
+                    !(node.Declaration?.Project is IVBProject project) ||
+                    !ProjectTypes.VB6.Contains(project.Type) ||
+                    _vbe.ProjectsCount <= 1)
                 {
                     return false;
                 }
 
-                var project = GetDeclaration(parameter as CodeExplorerItemViewModel)?.Project;
-
                 using (var vbProjects = _vbe.VBProjects)
                 {
-                    return project != null && !project.Equals(vbProjects.StartProject);
+                    return !project.Equals(vbProjects.StartProject);
                 }
             }
             catch (COMException exception)
@@ -45,38 +51,26 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
+            if (!EvaluateCanExecute(parameter) ||
+                !(parameter is CodeExplorerProjectViewModel node))
+            {
+                return;
+            }
+
             try
             {
-                if (_vbe.ProjectsCount <= 1)
-                {
-                    return;                    
-                }
-
-                var project = GetDeclaration(parameter as CodeExplorerItemViewModel)?.Project;
+                var project = node.Declaration.Project;
 
                 using (var vbProjects = _vbe.VBProjects)
                 {
-                    if (!vbProjects.StartProject.Equals(project))
-                    {
-                        vbProjects.StartProject = project;
-                        _parserState.OnParseRequested(this);
-                    }
+                    vbProjects.StartProject = project;
+                    _parserState.OnParseRequested(this);
                 }
             }
             catch (COMException exception)
             {
                 Logger.Error(exception);
             }
-        }
-
-        private Declaration GetDeclaration(CodeExplorerItemViewModel node)
-        {
-            while (node != null && !(node is ICodeExplorerDeclarationViewModel))
-            {
-                node = node.Parent;
-            }
-
-            return (node as ICodeExplorerDeclarationViewModel)?.Declaration;
         }
     }
 }

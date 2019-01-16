@@ -136,6 +136,24 @@ namespace Rubberduck.Resources {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to No references were found for project reference &apos;{0}&apos;..
+        /// </summary>
+        public static string AllReferences_NoneFoundReference {
+            get {
+                return ResourceManager.GetString("AllReferences_NoneFoundReference", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search for reference &apos;{0}&apos; returned {1} uses. Displaying the references may negatively impact performance. Continue?.
+        /// </summary>
+        public static string AllReferences_PerformanceWarning {
+            get {
+                return ResourceManager.GetString("AllReferences_PerformanceWarning", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Apply.
         /// </summary>
         public static string ApplyButtonText
@@ -2581,6 +2599,15 @@ namespace Rubberduck.Resources {
         public static string Passed {
             get {
                 return ResourceManager.GetString("Passed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to PerformanceWarningCaption.
+        /// </summary>
+        public static string PerformanceWarningCaption {
+            get {
+                return ResourceManager.GetString("PerformanceWarningCaption", resourceCulture);
             }
         }
 
