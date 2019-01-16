@@ -431,6 +431,7 @@ namespace Rubberduck.UI.Inspections
         private async void RefreshInspections(CancellationToken token)
         {
             var stopwatch = Stopwatch.StartNew();
+            // TODO sort out busy state.
             IsBusy = true;
 
             List<IInspectionResult> results;
