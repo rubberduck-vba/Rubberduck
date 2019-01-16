@@ -268,7 +268,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 {
                     var model = new CodeExplorerProjectViewModel(project, declarations, _state, _vbe);
                     Projects.Add(model);
-                    model.IsExpanded = true;
+                    //model.IsExpanded = true;
                 }
 
                 CanSearch = Projects.Any();

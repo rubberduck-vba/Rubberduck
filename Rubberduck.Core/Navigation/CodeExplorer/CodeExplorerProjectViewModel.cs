@@ -30,6 +30,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             SetName();
             AddNewChildren(declarations.ToList());
+            IsExpanded = true;
         }
 
         private string _displayName;

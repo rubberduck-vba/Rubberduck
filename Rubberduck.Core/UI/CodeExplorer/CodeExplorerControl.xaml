@@ -244,6 +244,33 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
+            <Style x:Key="TreeViewContainerStyle" TargetType="{x:Type TreeViewItem}">
+                <Setter Property="BorderThickness" Value="1.5"/>
+                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
+                <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={StaticResource BoolToHiddenVisibility}}" />
+                <Setter Property="HorizontalAlignment" Value="Left" />
+                <EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />
+                <EventSetter Event="MouseRightButtonDown" Handler="TreeView_OnMouseRightButtonDown" />
+                <Style.Triggers>
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="BorderBrush" Value="#adc6e5"/>
+                    </Trigger>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsSelected" Value="True"/>
+                            <Condition Property="IsSelectionActive" Value="False"/>
+                        </MultiTrigger.Conditions>
+                        <Setter Property="BorderBrush" Value="LightGray"/>
+                    </MultiTrigger>
+                </Style.Triggers>
+                <Style.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="2"/>
+                    </Style>
+                </Style.Resources>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -423,6 +450,7 @@
                   Background="White"
                   HorizontalContentAlignment="Stretch"
                   ItemsSource="{Binding Projects}"
+                  ItemContainerStyle="{StaticResource TreeViewContainerStyle}"
                   FontSize="{Binding FontSize, Mode=OneWay}"
                   BorderThickness="0,1"
                   VirtualizingPanel.IsVirtualizing="False">
@@ -533,35 +561,7 @@
                 </ContextMenu>
             </TreeView.ContextMenu>
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="codeExplorer:ICodeExplorerNode" ItemsSource="{Binding Children}">
-                    <HierarchicalDataTemplate.ItemContainerStyle>
-                        <Style TargetType="{x:Type TreeViewItem}">
-                            <Setter Property="BorderThickness" Value="1.5"/>
-                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
-                            <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={StaticResource BoolToHiddenVisibility}}" />
-                            <Setter Property="HorizontalAlignment" Value="Left" />
-                            <EventSetter Event="MouseDoubleClick" Handler="TreeView_OnMouseDoubleClick" />
-                            <EventSetter Event="MouseRightButtonDown" Handler="TreeView_OnMouseRightButtonDown" />
-                            <Style.Triggers>
-                                <Trigger Property="IsSelected" Value="True">
-                                    <Setter Property="BorderBrush" Value="#adc6e5"/>
-                                </Trigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsSelected" Value="True"/>
-                                        <Condition Property="IsSelectionActive" Value="False"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="BorderBrush" Value="LightGray"/>
-                                </MultiTrigger>
-                            </Style.Triggers>
-                            <Style.Resources>
-                                <Style TargetType="Border">
-                                    <Setter Property="CornerRadius" Value="2"/>
-                                </Style>
-                            </Style.Resources>
-                        </Style>
-                    </HierarchicalDataTemplate.ItemContainerStyle>
+                <HierarchicalDataTemplate DataType="codeExplorer:ICodeExplorerNode" ItemsSource="{Binding Children}" ItemContainerStyle="{StaticResource TreeViewContainerStyle}">
                     <HierarchicalDataTemplate.Resources>
                         <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TextBlock}">
                             <Setter Property="Text" Value="{Binding Name}" />

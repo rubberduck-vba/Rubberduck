@@ -88,7 +88,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         protected bool UnfilteredIsExpanded { get; private set; }
 
-        private bool _isExpanded = true;
+        private bool _isExpanded;
         public bool IsExpanded
         {
             get => _isExpanded;
