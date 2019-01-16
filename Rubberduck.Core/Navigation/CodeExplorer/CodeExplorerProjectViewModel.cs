@@ -75,14 +75,15 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             Declaration = match;
             updated.Remove(Declaration);
+            var children = updated.Where(declaration => declaration.ProjectId.Equals(Declaration.ProjectId)).ToList();
+            updated.RemoveAll(declaration => declaration.ProjectId.Equals(Declaration.ProjectId));
 
             // Reference synchronization is deferred to AddNewChildren for 2 reasons. First, it doesn't make sense to sling around a List of
             // declaration for something that doesn't need it. Second (and more importantly), the priority can't be set without calling 
             // GetProjectReferenceModels, which hits the VBE COM interfaces. So, we only want to do that once. The bonus 3rd reason is that it
             // can be called from the ctor this way.
 
-            SynchronizeChildren(updated.Where(declaration => declaration.ProjectId.Equals(Declaration.ProjectId)).ToList());
-            updated.RemoveAll(declaration => declaration.ProjectId.Equals(Declaration.ProjectId));
+            SynchronizeChildren(children);
 
             // Have to do this again - the project might have been saved or otherwise had the ProjectDisplayName changed.
             SetName();
