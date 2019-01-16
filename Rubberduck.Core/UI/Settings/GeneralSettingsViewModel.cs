@@ -28,14 +28,14 @@ namespace Rubberduck.UI.Settings
         private readonly IFilePersistanceService<HotkeySettings> _hotkeyService;
 
         private bool _indenterPrompted;
-        private readonly ReadOnlyCollection<Type> _experimentalFeatureTypes;
+        private readonly IReadOnlyList<Type> _experimentalFeatureTypes;
 
         public GeneralSettingsViewModel(
             Configuration config, 
             IOperatingSystem operatingSystem, 
             IMessageBox messageBox,
-            IVbeSettings vbeSettings, 
-            IEnumerable<Type> experimentalFeatureTypes,
+            IVbeSettings vbeSettings,
+            IExperimentalTypesProvider experimentalTypesProvider,
             IFilePersistanceService<Rubberduck.Settings.GeneralSettings> service,
             IFilePersistanceService<HotkeySettings> hotkeyService) 
             : base(service)
@@ -43,7 +43,7 @@ namespace Rubberduck.UI.Settings
             _operatingSystem = operatingSystem;
             _messageBox = messageBox;
             _vbeSettings = vbeSettings;
-            _experimentalFeatureTypes = experimentalFeatureTypes.ToList().AsReadOnly();
+            _experimentalFeatureTypes = experimentalTypesProvider.ExperimentalTypes;
             Languages = new ObservableCollection<DisplayLanguageSetting>(
                 new[]
                 {
