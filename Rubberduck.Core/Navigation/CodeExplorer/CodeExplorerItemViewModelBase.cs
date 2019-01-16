@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using NLog;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
@@ -15,6 +16,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public abstract class CodeExplorerItemViewModelBase : ViewModelBase, ICodeExplorerNode
     {
+        protected static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         protected CodeExplorerItemViewModelBase(ICodeExplorerNode parent, Declaration declaration)
         {
             Parent = parent;

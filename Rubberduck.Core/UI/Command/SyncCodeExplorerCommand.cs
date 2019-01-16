@@ -48,7 +48,6 @@ namespace Rubberduck.UI.Command
         {
             if (_state.Status != ParserState.Ready || 
                 _explorer.IsBusy || 
-                //_explorer.TreeViewVisibility != Visibility.Visible ||
                 FindTargetNode() == null)
             {
                 return false;

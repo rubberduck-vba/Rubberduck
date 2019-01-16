@@ -49,7 +49,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public override bool IsErrorState
         {
             get => false;
-            set { }
+            set { /* Folders can never be in an error state. */ }
         }
 
         public override Comparer<ICodeExplorerNode> SortComparer => CodeExplorerItemComparer.Name;

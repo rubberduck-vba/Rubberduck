@@ -31,7 +31,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         public override bool IsErrorState
         {
             get => false;
-            set { }
+            set { /* References can never be in an error state (in this context). */ }
         }
 
         public override string ToolTip => Reference?.Description ?? string.Empty;

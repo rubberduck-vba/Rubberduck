@@ -68,8 +68,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             _vbe = vbe;
             _templateProvider = templateProvider;
 
-            CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes);
-            ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes);
+            CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes, EvaluateCanSwitchNodeState);
+            ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes, EvaluateCanSwitchNodeState);
             ClearSearchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteClearSearchCommand);
             if (_externalRemoveCommand != null)
             {
@@ -306,6 +306,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 Search = string.Empty;
             }
+        }
+
+        private bool EvaluateCanSwitchNodeState(object parameter)
+        {
+            return SelectedItem?.Children?.Any() ?? false;
         }
 
         private void ExecuteCollapseNodes(object parameter)

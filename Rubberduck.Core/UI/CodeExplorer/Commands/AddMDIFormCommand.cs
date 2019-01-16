@@ -33,17 +33,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             if (project != null || Vbe.ProjectsCount != 1)
             {
-                return EvaluateCanExecuteCore(project, node);
+                return EvaluateCanExecuteForProject(project, node);
             }
 
             using (var vbProjects = Vbe.VBProjects)
             using (project = vbProjects[1])
             {
-                return EvaluateCanExecuteCore(project, node);
+                return EvaluateCanExecuteForProject(project, node);
             }
         }
 
-        private bool EvaluateCanExecuteCore(IVBProject project, CodeExplorerItemViewModel itemViewModel)
+        private bool EvaluateCanExecuteForProject(IVBProject project, CodeExplorerItemViewModel itemViewModel)
         {
             if (project == null)
             {

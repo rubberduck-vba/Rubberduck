@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Resources.CodeExplorer;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -113,9 +114,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                         break;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                //Ignored;
+                Logger.Trace(ex);
             }
 
             OnNameChanged();
