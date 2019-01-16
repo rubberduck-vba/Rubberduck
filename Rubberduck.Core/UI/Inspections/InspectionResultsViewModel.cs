@@ -492,13 +492,14 @@ namespace Rubberduck.UI.Inspections
 
         private void InvalidateStaleInspectionResults(ICollection<QualifiedModuleName> modifiedModules)
         {
-            var staleResults = Results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
+            var staleResults = _results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
             _uiDispatcher.Invoke(() =>
             {
                 foreach (var staleResult in staleResults)
                 {
-                    Results.Remove(staleResult);
+                    _results.Remove(staleResult);
                 }
+                Results.Refresh();
             });
         }
 
