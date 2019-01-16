@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
@@ -22,6 +24,25 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Inspections
 {
+    [Flags]
+    public enum InspectionResultsFilter
+    {
+        None = 0,
+        Hint = 1,
+        Suggestion = 1 << 2,
+        Warning = 1 << 3,
+        Error = 1 << 4,
+        All = Hint | Suggestion | Warning | Error
+    }
+
+    public enum InspectionResultGrouping
+    {
+        Type,
+        Name,
+        Location,
+        Severity
+    };
+
     public class DisplayQuickFix
     {
         public IQuickFix Fix { get; }
@@ -89,17 +110,11 @@ namespace Rubberduck.UI.Inspections
             // todo: remove I/O work in constructor
             _runInspectionsOnReparse = _configService.LoadConfiguration().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            SetInspectionTypeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                GroupByInspectionType = (bool)param;
-                GroupByLocation = !(bool)param;
-            });
+            Results = CollectionViewSource.GetDefaultView(_results) as ListCollectionView;
+            Results.Filter = inspection => InspectionFilter((IInspectionResult)inspection);          
+            OnPropertyChanged(nameof(Results));
 
-            SetLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                GroupByLocation = (bool)param;
-                GroupByInspectionType = !(bool)param;
-            });
+            GroupByInspectionType = true;
 
             _state.StateChanged += HandleStateChanged;
         }
@@ -118,17 +133,9 @@ namespace Rubberduck.UI.Inspections
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
-        private ObservableCollection<IInspectionResult> _resultsAll = new ObservableCollection<IInspectionResult>();
-        private ObservableCollection<IInspectionResult> _resultsGroupedAndFiltered = new ObservableCollection<IInspectionResult>();
-        public ObservableCollection<IInspectionResult> Results
-        {
-            get => _resultsGroupedAndFiltered;
-            private set
-            {
-                _resultsGroupedAndFiltered = value;
-                OnPropertyChanged();
-            }
-        }
+        private ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
+
+        public ICollectionView Results { get; }
 
         private IQuickFix _defaultFix;
 
@@ -202,28 +209,67 @@ namespace Rubberduck.UI.Inspections
             }
         }
 
-        private bool _groupByInspectionType = true;
+        private static readonly Dictionary<InspectionResultGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<InspectionResultGrouping, PropertyGroupDescription>
+        {
+            { InspectionResultGrouping.Type, new PropertyGroupDescription("Inspection", new InspectionTypeConverter()) },
+            { InspectionResultGrouping.Name, new PropertyGroupDescription("Inspection.Name") },
+            { InspectionResultGrouping.Location, new PropertyGroupDescription("QualifiedSelection.QualifiedName") },
+            { InspectionResultGrouping.Severity, new PropertyGroupDescription("Inspection.Severity") }
+        };
+
+        private void SetGrouping(InspectionResultGrouping grouping)
+        {
+            Results.GroupDescriptions.Clear();
+            Results.GroupDescriptions.Add(GroupDescriptions[grouping]);
+            Results.Refresh();
+
+            OnPropertyChanged(nameof(GroupByInspectionType));
+            OnPropertyChanged(nameof(GroupByName));
+            OnPropertyChanged(nameof(GroupByLocation));
+            OnPropertyChanged(nameof(GroupBySeverity));
+        }
+
+        private bool _groupByInspection;
         public bool GroupByInspectionType
         {
-            get => _groupByInspectionType;
+            get => _groupByInspection;
             set
             {
-                if (_groupByInspectionType == value) { return; }
-
-                if (value)
+                if (value == _groupByInspection)
                 {
-                    Results = new ObservableCollection<IInspectionResult>(
-                            Results.OrderBy(o => o.Inspection.InspectionType)
-                                .ThenBy(t => t.Inspection.Name)
-                                .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                                .ToList());
-
+                    return;
                 }
 
-                _groupByInspectionType = value;
-                OnPropertyChanged();
+                _groupByInspection = value;
+                if (_groupByInspection)
+                {
+                    _groupByName = false;
+                    _groupByLocation = false;
+                    _groupBySeverity = false;
+                    SetGrouping(InspectionResultGrouping.Type);
+                }
+            }
+        }
+
+        private bool _groupByName;
+        public bool GroupByName
+        {
+            get => _groupByName;
+            set
+            {
+                if (value == _groupByName)
+                {
+                    return;
+                }
+
+                _groupByName = value;
+                if (_groupByName)
+                {
+                    _groupByInspection = false;
+                    _groupByLocation = false;
+                    _groupBySeverity = false;
+                    SetGrouping(InspectionResultGrouping.Name);
+                }
             }
         }
 
@@ -233,105 +279,81 @@ namespace Rubberduck.UI.Inspections
             get => _groupByLocation;
             set
             {
-                if (_groupByLocation == value) { return; }
-
-                if (value)
+                if (value == _groupByLocation)
                 {
-                    Results = new ObservableCollection<IInspectionResult>(
-                            Results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
-                                .ThenBy(t => t.Inspection.Name)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                                .ToList());
+                    return;
                 }
 
                 _groupByLocation = value;
-                OnPropertyChanged();
+                if (_groupByLocation)
+                {
+                    _groupByInspection = false;
+                    _groupByName = false;
+                    _groupBySeverity = false;
+                    SetGrouping(InspectionResultGrouping.Location);
+                }
             }
         }
 
-        private readonly List<CodeInspectionSeverity> _filterCriteria = new List<CodeInspectionSeverity>();
-
-        public bool FilterInspectionsByHint
+        private bool _groupBySeverity;
+        public bool GroupBySeverity
         {
-            get => _filterCriteria.Contains(CodeInspectionSeverity.Hint);
+            get => _groupBySeverity;
             set
             {
-                UpdateFilterCriteria(value, CodeInspectionSeverity.Hint);
+                if (value == _groupBySeverity)
+                {
+                    return;
+                }
 
-                FilterResults(_filterCriteria);
-                OnPropertyChanged();
+                _groupBySeverity = value;
+                if (_groupBySeverity)
+                {
+                    _groupByInspection = false;
+                    _groupByName = false;
+                    _groupByLocation = false;
+                    SetGrouping(InspectionResultGrouping.Severity);
+                }
             }
         }
 
-        public bool FilterInspectionsBySuggestion
+        private InspectionResultsFilter _filters = InspectionResultsFilter.All;
+        public InspectionResultsFilter SelectedFilters
         {
-            get => _filterCriteria.Contains(CodeInspectionSeverity.Suggestion);
+            get => _filters;
             set
             {
-                UpdateFilterCriteria(value, CodeInspectionSeverity.Suggestion);
+                if (value == _filters)
+                {
+                    return;
+                }
 
-                FilterResults(_filterCriteria);
+                _filters = value;
                 OnPropertyChanged();
+                Results.Refresh();
             }
         }
 
-        public bool FilterInspectionsByWarning
+        private bool InspectionFilter(IInspectionResult result)
         {
-            get => _filterCriteria.Contains(CodeInspectionSeverity.Warning);
-            set
+            switch (result.Inspection.Severity)
             {
-                UpdateFilterCriteria(value, CodeInspectionSeverity.Warning);
-
-                FilterResults(_filterCriteria);
-                OnPropertyChanged();
-            }
-        }
-
-        public bool FilterInspectionsByError
-        {
-            get => _filterCriteria.Contains(CodeInspectionSeverity.Error);
-            set
-            {
-                UpdateFilterCriteria(value, CodeInspectionSeverity.Error);
-
-                FilterResults(_filterCriteria);
-                OnPropertyChanged();
-            }
-        }
-
-        private void UpdateFilterCriteria(bool isCriteria ,CodeInspectionSeverity criteria)
-        {
-            if (_filterCriteria.Contains(criteria) == isCriteria) { return; }
-
-            if (isCriteria)
-            {
-                _filterCriteria.Add(criteria);
-            }
-            else
-            {
-                _filterCriteria.Remove(criteria);
-            }
-        }
-
-        public void FilterResults(IEnumerable<CodeInspectionSeverity> inspections)
-        {
-            if (_filterCriteria.Any())
-            {
-                Results = new ObservableCollection<IInspectionResult>(_resultsAll
-                    .GroupBy(result => result.Inspection.Severity)
-                    .Where(group => _filterCriteria.Contains(group.Key))
-                    .SelectMany(x => x));
-            }
-            else
-            {
-                Results = _resultsAll;
-            }
+                case CodeInspectionSeverity.DoNotShow:
+                    return false;
+                case CodeInspectionSeverity.Hint:
+                    return SelectedFilters.HasFlag(InspectionResultsFilter.Hint);
+                case CodeInspectionSeverity.Suggestion:
+                    return SelectedFilters.HasFlag(InspectionResultsFilter.Suggestion);
+                case CodeInspectionSeverity.Warning:
+                    return SelectedFilters.HasFlag(InspectionResultsFilter.Warning);
+                case CodeInspectionSeverity.Error:
+                    return SelectedFilters.HasFlag(InspectionResultsFilter.Error);
+                default:
+                    return true;    // Not in the enum...
+            }     
         }
 
         public INavigateCommand NavigateCommand { get; }
-        public CommandBase SetInspectionTypeGroupingCommand { get; }
-        public CommandBase SetLocationGroupingCommand { get; }
         public CommandBase RefreshCommand { get; }
         public CommandBase QuickFixCommand { get; }
         public CommandBase QuickFixInProcedureCommand { get; }
@@ -441,11 +463,16 @@ namespace Rubberduck.UI.Inspections
                     .ToList();
             }
 
-            _resultsAll = new ObservableCollection<IInspectionResult>(results);
-            Results = _resultsAll;
-
             _uiDispatcher.Invoke(() =>
             {
+                _results.Clear();
+                foreach (var result in results)
+                {
+                    _results.Add(result);
+                }
+
+                Results.Refresh();
+
                 try
                 {
                     IsBusy = false;
@@ -512,7 +539,7 @@ namespace Rubberduck.UI.Inspections
             }
 
             _quickFixProvider.FixInProcedure(_defaultFix, selectedResult.QualifiedMemberName,
-                selectedResult.Inspection.GetType(), Results);
+                selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
 
         private bool _canExecuteQuickFixInModule;
@@ -540,7 +567,7 @@ namespace Rubberduck.UI.Inspections
             }
             
             _quickFixProvider.FixInModule(_defaultFix, selectedResult.QualifiedSelection,
-                selectedResult.Inspection.GetType(), Results);
+                selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
 
         private bool _canExecuteQuickFixInProject;
@@ -595,7 +622,7 @@ namespace Rubberduck.UI.Inspections
             }
 
             _quickFixProvider.FixInProject(_defaultFix, selectedResult.QualifiedSelection,
-                selectedResult.Inspection.GetType(), Results);
+                selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
 
         private void ExecuteQuickFixInAllProjectsCommand(object parameter)
@@ -611,27 +638,27 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            _quickFixProvider.FixAll(_defaultFix, selectedResult.Inspection.GetType(), Results);
+            _quickFixProvider.FixAll(_defaultFix, selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-            if (_resultsAll == null)
+            if (_results == null)
             {
                 return;
             }
             ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
-            var resultArray = _resultsAll.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
-            var resource = _resultsAll.Count == 1
+            var resource = _results.Count == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _resultsAll.Count);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _resultsAll.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
             var csvResults = ExportFormatter.Csv(resultArray, title,columnInfos);
             var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title,columnInfos);
             var rtfResults = ExportFormatter.RTF(resultArray, title);
@@ -650,7 +677,7 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteCopyResultsCommand(object parameter)
         {
-            return !IsBusy && _resultsAll != null && _resultsAll.Any();
+            return !IsBusy && _results != null && _results.Any();
         }
 
         public Visibility EmptyUIRefreshVisibility => _state.ProjectsProvider.Projects().Any() ? Visibility.Hidden : Visibility.Visible;

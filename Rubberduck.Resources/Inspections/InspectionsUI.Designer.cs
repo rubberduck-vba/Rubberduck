@@ -59,7 +59,16 @@ namespace Rubberduck.Resources.Inspections {
                 resourceCulture = value;
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string CodeInspection_Filter {
+            get {
+                return ResourceManager.GetString("CodeInspection_Filter", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Code Quality Issues.
         /// </summary>
@@ -207,7 +216,17 @@ namespace Rubberduck.Resources.Inspections {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap inspection {
+            get {
+                object obj = ResourceManager.GetObject("inspection", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Declaration.
         /// </summary>
@@ -234,7 +253,37 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("Inspections_Usage", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap location {
+            get {
+                object obj = ResourceManager.GetObject("location", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap severity {
+            get {
+                object obj = ResourceManager.GetObject("severity", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap type {
+            get {
+                object obj = ResourceManager.GetObject("type", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to {0}: {1} - {2} {3}.{4}, line {5}.
         /// </summary>

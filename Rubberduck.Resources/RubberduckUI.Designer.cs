@@ -1670,7 +1670,16 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("Go", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string GroupingGrid_Filter {
+            get {
+                return ResourceManager.GetString("GroupingGrid_Filter", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Filter by.
         /// </summary>
@@ -1724,7 +1733,16 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("GroupingStyle_ByMarker", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to By name.
+        /// </summary>
+        public static string GroupingStyle_ByName {
+            get {
+                return ResourceManager.GetString("GroupingStyle_ByName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to By outcome.
         /// </summary>
@@ -1733,7 +1751,16 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("GroupingStyle_ByOutcome", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to By severity.
+        /// </summary>
+        public static string GroupingStyle_BySeverity {
+            get {
+                return ResourceManager.GetString("GroupingStyle_BySeverity", resourceCulture);
+            }
+        }
+    
         /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
