@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Converters
         private static readonly ImageSource ProjectIcon = ToImageSource(CodeExplorerUI.ObjectLibrary);
         private static readonly ImageSource InterfaceIcon = ToImageSource(CodeExplorerUI.ObjectInterface);
         private static readonly ImageSource PredeclaredIcon = ToImageSource(CodeExplorerUI.ObjectClassPredeclared);
-        private static readonly ImageSource OopsIcon = ToImageSource(CodeExplorerUI.status_offline);
+        private static readonly ImageSource NullIcon = ToImageSource(CodeExplorerUI.status_offline);
         private static readonly ImageSource TestMethodIcon = ToImageSource(CodeExplorerUI.ObjectTestMethod);
 
         private static readonly ImageSource OpenFolderIcon = ToImageSource(CodeExplorerUI.FolderOpen);
@@ -62,6 +62,11 @@ namespace Rubberduck.UI.Converters
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if ((value as ICodeExplorerNode )?.Declaration is null)
+            {
+                return NullIcon;
+            }
+
             switch (value)
             {
                 case CodeExplorerProjectViewModel _:
@@ -94,7 +99,7 @@ namespace Rubberduck.UI.Converters
 
                     return DeclarationIcons.ContainsKey(component.Declaration.DeclarationType)
                         ? DeclarationIcons[component.Declaration.DeclarationType]
-                        : OopsIcon;
+                        : ExceptionIcon;
                 default:
                     return value is ICodeExplorerNode node &&
                            node.Declaration != null &&
