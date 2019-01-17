@@ -29,7 +29,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected override bool EvaluateCanExecute(object parameter)
         {
             // TODO this cast needs to be safer.
-            var data = ((string templateName, CodeExplorerItemViewModel model)) parameter;
+            var data = ((string templateName, ICodeExplorerNode model)) parameter;
 
             return base.EvaluateCanExecute(data.model);
         }
@@ -37,15 +37,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected override void OnExecute(object parameter)
         {
             // TODO this cast needs to be safer.
-            var data = ((string templateName, CodeExplorerItemViewModel model)) parameter;
+            var data = ((string templateName, ICodeExplorerNode node)) parameter;
 
-            if (string.IsNullOrWhiteSpace(data.templateName))
+            if (string.IsNullOrWhiteSpace(data.templateName) || !(data.node is CodeExplorerItemViewModel model))
             {
                 return;
             }
 
             var moduleText = GetTemplate(data.templateName);
-            AddComponent(data.model, moduleText);
+            AddComponent(model, moduleText);
         }
 
         private string GetTemplate(string name)
