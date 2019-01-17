@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Templates;
@@ -28,24 +29,49 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            // TODO this cast needs to be safer.
-            var data = ((string templateName, ICodeExplorerNode model)) parameter;
+            if (parameter is null)
+            {
+                return false;
+            }
 
-            return base.EvaluateCanExecute(data.model);
+            try
+            {
+                // TODO this cast needs to be safer.
+                var data = ((string templateName, ICodeExplorerNode model))parameter;
+
+                return base.EvaluateCanExecute(data.model);
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace(ex);
+                return false;
+            }
         }
 
         protected override void OnExecute(object parameter)
         {
-            // TODO this cast needs to be safer.
-            var data = ((string templateName, ICodeExplorerNode node)) parameter;
-
-            if (string.IsNullOrWhiteSpace(data.templateName) || !(data.node is CodeExplorerItemViewModel model))
+            if (parameter is null)
             {
                 return;
             }
 
-            var moduleText = GetTemplate(data.templateName);
-            AddComponent(model, moduleText);
+            try
+            {
+                // TODO this cast needs to be safer.
+                var data = ((string templateName, ICodeExplorerNode node))parameter;
+
+                if (string.IsNullOrWhiteSpace(data.templateName) || !(data.node is CodeExplorerItemViewModel model))
+                {
+                    return;
+                }
+
+                var moduleText = GetTemplate(data.templateName);
+                AddComponent(model, moduleText);
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace(ex);
+            }
         }
 
         private string GetTemplate(string name)
