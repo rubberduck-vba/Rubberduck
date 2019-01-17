@@ -84,7 +84,7 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
 
                 foreach (var project in adding)
                 {
-                    var model = new CodeExplorerProjectViewModel(project, declarations, _state, _vbe, false);
+                    var model = new CodeExplorerProjectViewModel(project, declarations.Where(proj => proj.ProjectId.Equals(project.ProjectId)).ToList(), _state, _vbe, false);
                     Projects.Add(model);
                     model.IsExpanded = true;
                 }

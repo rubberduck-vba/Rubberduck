@@ -266,9 +266,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 foreach (var project in adding)
                 {
-                    var model = new CodeExplorerProjectViewModel(project, declarations, _state, _vbe);
+                    var model = new CodeExplorerProjectViewModel(project, declarations.Where(proj => proj.ProjectId.Equals(project.ProjectId)).ToList(), _state, _vbe);
                     Projects.Add(model);
-                    //model.IsExpanded = true;
                 }
 
                 CanSearch = Projects.Any();
