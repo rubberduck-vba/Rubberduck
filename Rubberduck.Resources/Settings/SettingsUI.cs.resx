@@ -216,4 +216,16 @@
   <data name="DialogMask_XmlFilesOnly" xml:space="preserve">
     <value>XML soubor (.xml)'|*.xml|Rubberduck config soubor|*.config</value>
   </data>
+  <data name="DialogCaption_LoadAutocompletionSettings" xml:space="preserve">
+    <value>Načíst Nastavení Automatického Doplňování</value>
+  </data>
+  <data name="DialogCaption_SaveAutocompletionSettings" xml:space="preserve">
+    <value>Uložit Nastavení Automatického Doplňování</value>
+  </data>
+  <data name="PageHeader_ReferenceSettings" xml:space="preserve">
+    <value>Nastavení Referencí</value>
+  </data>
+  <data name="PageInstructions_ReferenceSettings" xml:space="preserve">
+    <value>Nakonfigurujte nastavení pro přidávání a odstraňování referencí.</value>
+  </data>
 </root>
