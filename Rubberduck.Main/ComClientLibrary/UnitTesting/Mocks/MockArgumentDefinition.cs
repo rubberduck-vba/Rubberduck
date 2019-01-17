@@ -10,8 +10,8 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     ]
     public enum MockArgumentRange
     {
-        Inclusive = Moq.Range.Inclusive,
-        Exclusive = Moq.Range.Exclusive
+        Inclusive = Range.Inclusive,
+        Exclusive = Range.Exclusive
     }
 
     [
