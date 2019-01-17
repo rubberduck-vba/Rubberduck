@@ -29,9 +29,9 @@ namespace Rubberduck.UI.Inspections
     {
         None = 0,
         Hint = 1,
-        Suggestion = 1 << 2,
-        Warning = 1 << 3,
-        Error = 1 << 4,
+        Suggestion = 1 << 1,
+        Warning = 1 << 2,
+        Error = 1 << 3,
         All = Hint | Suggestion | Warning | Error
     }
 
