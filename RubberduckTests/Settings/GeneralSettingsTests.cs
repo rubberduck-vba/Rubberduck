@@ -9,6 +9,7 @@ using Moq;
 using Rubberduck.VBEditor.VbeRuntime.Settings;
 using System;
 using Rubberduck.Interaction;
+using Rubberduck.SettingsProvider;
 
 namespace RubberduckTests.Settings
 {
@@ -154,14 +155,22 @@ namespace RubberduckTests.Settings
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
         }
 
-        //[Category("Settings")]
-        //[Test]
-        //public void DelimiterIsSetInCtor()
-        //{
-        //    var defaultConfig = GetDefaultConfig();
-        //    var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object);
+        [Category("Settings")]
+        [Test]
+        public void UserSettingsLoadedUsingDefaultWhenMissingFile()
+        {
+            // For this test, we need to use the actual object. Fortunately, the path is virtual, so we
+            // can override that property and force it to use an non-existent path to prove that settings
+            // will be still created using defaults without the file present. 
+            var persisterMock = new Mock<XmlPersistanceService<GeneralSettings>>();
+            persisterMock.Setup(x => x.FilePath).Returns("C:\\some\\non\\existent\\path\\rubberduck");
+            persisterMock.CallBase = true;
+            var configProvider = new GeneralConfigProvider(persisterMock.Object);
 
-        //    Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Delimiter, (char)viewModel.Delimiter);
-        //}
+            var settings = configProvider.Create();
+            var defaultSettings = configProvider.CreateDefaults();
+
+            Assert.AreEqual(defaultSettings, settings);
+        }
     }
 }

@@ -1,27 +1,17 @@
-using NLog;
-using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.UI.Command;
+using System.Collections.Generic;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class AddUserDocumentCommand : CommandBase
+    public class AddUserDocumentCommand : AddComponentCommandBase
     {
-        private readonly AddComponentCommand _addComponentCommand;
+        private static readonly ProjectType[] Types = { ProjectType.ActiveXExe, ProjectType.ActiveXDll };
 
-        public AddUserDocumentCommand(AddComponentCommand addComponentCommand) : base(LogManager.GetCurrentClassLogger())
-        {
-            _addComponentCommand = addComponentCommand;
-        }
+        public AddUserDocumentCommand(IVBE vbe) : base(vbe) { }
 
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel, new []{ProjectType.ActiveXExe, ProjectType.ActiveXDll});
-        }
+        public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
 
-        protected override void OnExecute(object parameter)
-        {
-            _addComponentCommand.AddComponent(parameter as CodeExplorerItemViewModel, ComponentType.DocObject);
-        }
+        public override ComponentType ComponentType => ComponentType.DocObject;
     }
 }

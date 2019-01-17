@@ -6,27 +6,29 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using NLog;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class PrintCommand : CommandBase
+    public class PrintCommand : CodeExplorerCommandBase
     {
+        private static readonly Type[] ApplicableNodes = { typeof(CodeExplorerComponentViewModel) };
+
         private readonly IProjectsProvider _projectsProvider;
 
         public PrintCommand(IProjectsProvider projectsProvider)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _projectsProvider = projectsProvider;
         }
 
+        public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
+
         protected override bool EvaluateCanExecute(object parameter)
         {
-            var node = parameter as CodeExplorerComponentViewModel;
-            if (node == null)
+            if (!base.EvaluateCanExecute(parameter) || 
+                !(parameter is CodeExplorerComponentViewModel node) ||
+                node.Declaration == null)
             {
                 return false;
             }
@@ -48,7 +50,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            var node = (CodeExplorerComponentViewModel)parameter;
+            if (!base.EvaluateCanExecute(parameter) ||
+                !(parameter is CodeExplorerComponentViewModel node) ||
+                node.Declaration == null)
+            {
+                return;
+            }
+
             var qualifiedComponentName = node.Declaration.QualifiedName.QualifiedModuleName;
 
             var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck",
@@ -63,6 +71,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
 
             var printDoc = new PrintDocument { DocumentName = path };
+            // TODO this should be abstracted to an interface and injected.
             using (var pd = new PrintDialog
             {
                 Document = printDoc,
