@@ -422,7 +422,7 @@ namespace RubberduckTests.ComMock
 
             try
             {
-                if (!TypeLibQueryService.Instance.TryGetTypeInfoFromProgId("Scripting.FileSystemObject", out var targetType))
+                if (!CachedTypeService.Instance.TryGetCachedType("Scripting.FileSystemObject", out var targetType))
                 {
                     throw new InvalidOperationException("Unable to locate the ProgId `Scripting.FileSystemObject`");
                 }

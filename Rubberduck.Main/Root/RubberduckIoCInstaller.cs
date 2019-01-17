@@ -43,6 +43,7 @@ using Rubberduck.VBEditor.Utility;
 using Rubberduck.AutoComplete;
 using Rubberduck.AutoComplete.Service;
 using Rubberduck.CodeAnalysis.CodeMetrics;
+using Rubberduck.Parsing.ComReflection.TypeLibReflection;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.ComReferenceLoading;
 using Rubberduck.Parsing.VBA.DeclarationResolving;
@@ -859,6 +860,8 @@ namespace Rubberduck.Root
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
             container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler));
+            container.Register(Component.For<ICachedTypeService>().Instance(CachedTypeService.Instance).LifestyleSingleton());
+            container.Register(Component.For<ITypeLibQueryService>().Instance(TypeLibQueryService.Instance).LifestyleSingleton());
         }
     }
 }

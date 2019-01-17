@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -40,7 +39,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
     ]
     public class MockProvider : IMockProvider
     {
-        private static readonly ConcurrentDictionary<string, Type> typeCache = new ConcurrentDictionary<string, Type>();
+        private static readonly ICachedTypeService TypeCache = CachedTypeService.Instance;
 
         public MockProvider()
         {
@@ -49,8 +48,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
 
         public IComMock Mock(string ProgId, string ProjectName = null)
         {
-            var key = string.Concat(ProjectName?.ToLowerInvariant(), "::", ProgId.ToLowerInvariant());
-            if (!typeCache.TryGetValue(key, out var classType))
+            if (!TypeCache.TryGetCachedType(ProgId, ProjectName, out var classType))
             {
                 // In order to mock a COM type, we must acquire a Type. However,
                 // ProgId will only return the coclass, which itself is a collection
@@ -63,26 +61,7 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
                 if (classType == null)
                 {
                     throw new ArgumentOutOfRangeException(nameof(ProgId),
-                        $"The supplied {ProgId} was not found. The class may not be registered.");
-                }
-
-                if (classType.Name == "__ComObject")
-                {
-                    var service = TypeLibQueryService.Instance;
-                    if (service.TryGetTypeInfoFromProgId(ProgId, out classType))
-                    {
-                        if (classType == null)
-                        {
-                            throw new ArgumentOutOfRangeException(nameof(ProgId),
-                                $"The supplied {ProgId} was found, but we could not acquire the required metadata on the type to mock it. The class may not support early-binding.");
-                        }
-                    }
-                }
-
-                typeCache.TryAdd(key, classType);
-                foreach (var face in classType.GetInterfaces())
-                {
-                    typeCache.TryAdd(ProjectName + "::" + face.FullName, face);
+                        $"The supplied {ProgId} was not found. The class may not be registered or could not be located with the available metadata.");
                 }
             }
 
@@ -155,36 +134,28 @@ namespace Rubberduck.ComClientLibrary.UnitTesting.Mocks
             return targetType;
         }
 
-        private static Type GetVbaType(string ProgId, string ProjectName)
+        private static Type GetVbaType(string progId, string projectName)
         {
             Type classType = null;
 
-            if (!TryGetVbeProject(ProjectName, out var project))
+            if (!TryGetVbeProject(projectName, out var project))
             {
                 return null;
             }
 
             var lib = TypeLibWrapper.FromVBProject(project);
 
-            foreach (var info in lib.TypeInfos)
+            foreach (var typeInfo in lib.TypeInfos)
             {
-                if (info.Name != ProgId)
+                if (typeInfo.Name != progId)
                 {
                     continue;
                 }
 
-                var typeInfo = (ITypeInfo) info;
-                var pTypeInfo = Marshal.GetComInterfaceForObject(typeInfo, typeof(ITypeInfo));
-
-                // TODO: find out why this crashes with NRE; the pointer seems to be valid, but
-                // the exception comes from deep within the mscorlib assembly. It might not
-                // be liking some of funkiness that the VBA class typeinfo generates.
-                //
-                // Note: Tried both TypeLibConverter class and TypeToTypeInfoMarshaler class;
-                // all go into the same code path that throws NRE. 
-                classType = Marshal.GetTypeForITypeInfo(pTypeInfo);
-                Marshal.Release(pTypeInfo);
-                break;
+                if (TypeCache.TryGetCachedType(typeInfo, projectName, out classType))
+                {
+                    break;
+                }
             }
 
             return classType;
