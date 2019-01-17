@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Navigation.Folders;
 using Rubberduck.Parsing.Symbols;
@@ -7,6 +8,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
+    [DebuggerDisplay("{Name}")]
     public sealed class CodeExplorerCustomFolderViewModel : CodeExplorerItemViewModel
     {
         private static readonly DeclarationType[] ComponentTypes =
@@ -27,8 +29,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             IEnumerable<Declaration> declarations) : base(parent, parent?.Declaration)
         {
             _vbe = vbe;
-
-            FullPath = fullPath ?? string.Empty;
+            FolderDepth = parent is CodeExplorerCustomFolderViewModel folder ? folder.FolderDepth + 1 : 1;
+            FullPath = fullPath?.Trim('"') ?? string.Empty;
             Name = name.Replace("\"", string.Empty);
 
             AddNewChildren(declarations.ToList());
@@ -44,6 +46,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public string FolderAttribute => $"@Folder(\"{FullPath.Replace("\"", string.Empty)}\")";
 
+        /// <summary>
+        /// One-based depth in the folder hierarchy.
+        /// </summary>
+        public int FolderDepth { get; }
+
         public override QualifiedSelection? QualifiedSelection => null;
 
         public override bool IsErrorState
@@ -58,18 +65,20 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         protected override void AddNewChildren(List<Declaration> declarations)
         {
-            var subfolders = declarations.Where(declaration => declaration.IsInSubFolder(FullPath)).ToList();
+            var children = declarations.Where(declaration => declaration.IsInSubFolder(FullPath)).ToList();
 
-            foreach (var folder in subfolders.GroupBy(declaration => declaration.CustomFolder))
+            foreach (var folder in children.GroupBy(declaration => declaration.CustomFolder.SubFolderRoot(FullPath)))
             {
-                AddChild(new CodeExplorerCustomFolderViewModel(this, folder.Key.SubFolderRoot(Name), folder.Key, _vbe, folder));
+                AddChild(new CodeExplorerCustomFolderViewModel(this, folder.Key, $"{FullPath}.{folder.Key}", _vbe, folder));
+                foreach (var declaration in folder)
+                {
+                    declarations.Remove(declaration);
+                }
             }
 
-            var components = declarations.Except(subfolders).ToList();
-
-            foreach (var component in components.GroupBy(item => item.ComponentName))
+            foreach (var declaration in declarations.GroupBy(item => item.ComponentName))
             {
-                var moduleName = component.Key;
+                var moduleName = declaration.Key;
                 var parent = declarations.SingleOrDefault(item => 
                     ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
 

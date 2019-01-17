@@ -6,7 +6,7 @@ namespace Rubberduck.Navigation.Folders
 {
     public static class FolderExtensions
     {
-        private const char FolderDelimiter = '.';
+        public const char FolderDelimiter = '.';
 
         public static string RootFolder(this Declaration declaration)
         {
@@ -17,12 +17,12 @@ namespace Rubberduck.Navigation.Folders
 
         public static string SubFolderRoot(this string folder, string subfolder)
         {
-            if (folder is null || subfolder is null || !subfolder.Trim('"').StartsWith(folder.Trim('"')))
+            if (folder is null || subfolder is null || !folder.Trim('"').StartsWith(subfolder.Trim('"')))
             {
                 return string.Empty;
             }
 
-            var subPath = subfolder.Trim('"').Substring(folder.Length - 1);
+            var subPath = folder.Trim('"').Substring(subfolder.Length + 1);
             return subPath.Split(FolderDelimiter).FirstOrDefault() ?? string.Empty;
         }
 
@@ -51,7 +51,7 @@ namespace Rubberduck.Navigation.Folders
                 return false;
             }
 
-            return declarationPath.Take(declarationPath.Length).SequenceEqual(folderPath, StringComparer.Ordinal);
+            return declarationPath.Take(folderPath.Length).SequenceEqual(folderPath, StringComparer.Ordinal);
         }
 
         public static bool IsInFolderOrSubFolder(this Declaration declaration, string folder)

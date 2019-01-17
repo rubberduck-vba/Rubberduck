@@ -19,8 +19,6 @@ using Rubberduck.Templates;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-// ReSharper disable ExplicitCallerInfoArgument
-
 namespace Rubberduck.Navigation.CodeExplorer
 {
     [Flags]
@@ -28,8 +26,8 @@ namespace Rubberduck.Navigation.CodeExplorer
     {
         Undefined = 0,
         Name = 1,
-        CodeLine = 1 << 2,
-        DeclarationType = 1 << 3,
+        CodeLine = 1 << 1,
+        DeclarationType = 1 << 2,
         DeclarationTypeThenName = DeclarationType | Name,
         DeclarationTypeThenCodeLine = DeclarationType | CodeLine
     }
@@ -76,11 +74,11 @@ namespace Rubberduck.Navigation.CodeExplorer
                 RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, _externalRemoveCommand.CanExecute);
             }
 
-            OnPropertyChanged("Projects");
+            OnPropertyChanged(nameof(Projects));
 
             SyncCodePaneCommand = syncProvider.GetSyncCommand(this);
             // Force a call to EvaluateCanExecute
-            OnPropertyChanged("SyncCodePaneCommand");
+            OnPropertyChanged(nameof(SyncCodePaneCommand));
         }
 
         public ObservableCollection<ICodeExplorerNode> Projects { get; } = new ObservableCollection<ICodeExplorerNode>();
@@ -109,8 +107,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 OnPropertyChanged();
 
-                OnPropertyChanged("ExportVisibility");
-                OnPropertyChanged("ExportAllVisibility");
+                OnPropertyChanged(nameof(ExportVisibility));
+                OnPropertyChanged(nameof(ExportAllVisibility));
             }
         }
 
@@ -266,9 +264,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 foreach (var project in adding)
                 {
-                    var model = new CodeExplorerProjectViewModel(project, declarations, _state, _vbe);
+                    var model = new CodeExplorerProjectViewModel(project, declarations.Where(proj => proj.ProjectId.Equals(project.ProjectId)).ToList(), _state, _vbe);
                     Projects.Add(model);
-                    //model.IsExpanded = true;
                 }
 
                 CanSearch = Projects.Any();
