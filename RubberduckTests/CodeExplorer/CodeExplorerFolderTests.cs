@@ -6,6 +6,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
@@ -86,6 +87,70 @@ End Sub";
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
                 Assert.AreEqual(project.Declaration.IdentifierName, added.Declaration.CustomFolder);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddedModuleIsAtCorrectDepth_FirstAnnotation()
+        {
+            const string inputCode =
+@"'@Folder(""First.Second.Third"")
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new[] { ComponentType.StandardModule }, new[] { inputCode })
+                .SelectFirstCustomFolder())
+            {
+                var project = explorer.ViewModel.Projects.OfType<CodeExplorerProjectViewModel>().First();
+                var folder = (CodeExplorerCustomFolderViewModel)explorer.ViewModel.SelectedItem;
+                var declarations = project.State.AllUserDeclarations.ToList();
+
+                var annotation = new FolderAnnotation(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(1, 1)), null, new[] { "\"First\"" });
+                var predeclared = new PredeclaredIdAnnotation(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(2, 1)), null, Enumerable.Empty<string>());
+
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new IAnnotation [] { annotation, predeclared }));
+
+                project.Synchronize(declarations);
+                var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
+
+                Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
+                Assert.AreEqual("\"First\"", added.Declaration.CustomFolder);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddedModuleIsAtCorrectDepth_NotFirstAnnotation()
+        {
+            const string inputCode =
+@"'@Folder(""First.Second.Third"")
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new[] { ComponentType.StandardModule }, new[] { inputCode })
+                .SelectFirstCustomFolder())
+            {
+                var project = explorer.ViewModel.Projects.OfType<CodeExplorerProjectViewModel>().First();
+                var folder = (CodeExplorerCustomFolderViewModel)explorer.ViewModel.SelectedItem;
+                var declarations = project.State.AllUserDeclarations.ToList();
+
+                var annotation = new FolderAnnotation(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(2, 1)), null, new[] { "\"First\"" });
+                var predeclared = new PredeclaredIdAnnotation(new QualifiedSelection(project.Declaration.QualifiedModuleName, new Selection(1, 1)), null, Enumerable.Empty<string>());
+
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new IAnnotation[] { predeclared, annotation }));
+
+                project.Synchronize(declarations);
+                var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
+
+                Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
+                Assert.AreEqual("\"First\"", added.Declaration.CustomFolder);
             }
         }
 
@@ -298,6 +363,11 @@ End Sub";
                 ? Enumerable.Empty<IAnnotation>()
                 : new[] { new FolderAnnotation(new QualifiedSelection(project.QualifiedModuleName, new Selection(1, 1)), null, new[] { folder }) };
 
+            return GetNewClassDeclaration(project, name, annotations);
+        }
+
+        private static Declaration GetNewClassDeclaration(Declaration project, string name, IEnumerable<IAnnotation> annotations)
+        {
             var declaration =
                 new ClassModuleDeclaration(new QualifiedMemberName(project.QualifiedModuleName, name), project, name, true, annotations, new Attributes());
 
