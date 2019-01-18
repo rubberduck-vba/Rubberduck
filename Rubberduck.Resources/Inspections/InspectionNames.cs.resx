@@ -360,4 +360,7 @@
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Chybějící anotace modulu</value>
   </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Funkce je schována referencí Excelovské buňky</value>
+  </data>
 </root>

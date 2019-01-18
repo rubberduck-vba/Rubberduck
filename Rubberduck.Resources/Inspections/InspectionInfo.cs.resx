@@ -337,4 +337,19 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Přiřazení je okamžitě přepsáno jiným přiřazením nebo na něj není nikdy odkazováno.</value>
   </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Je možné, že procedura vracející objekt, může vrátit 'Nothing'. Toto způsobí runtime chybu 91 - "Proměnná objektu nebo bloku With není nastavena" u přístupu následujícího člena. Proveďte kontrolu na 'Is Nothing' po zadání 'Set', aby se těmto chybám předešlo.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Anotace Rubberducku je určena pro modul nebo člen, ale příslušný atribut má jinou hodnotu. Atributy modulu a anotace musejí být synchronizovány.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>IsMissing je určeno pouze pro volání volitelných argumentů a správné výsledky vrátí pouze v případě, jestliže je typ argumenty 'Variant' bez explicitní výchozí hodnoty. Všechna jiná použití vrátí 'False'.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Atributy členu se nezobrazují ve VBE. Přidáním anotace uděláte tyto atributy více explicitní a Rubberduck bude moci držet anotace a atributy synchronizovány.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Atribudy modulu se nezobrazují ve VBE. Přidáním anotace uděláte tyto atributy více explicitní a Rubberduck bude moci držet anotace a atributy synchronizovány.</value>
+  </data>
 </root>

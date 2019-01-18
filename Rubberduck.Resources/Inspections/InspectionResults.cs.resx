@@ -363,4 +363,19 @@
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>'{0}' je skryta(o) validní Excelovskou referencí na buňku.</value>
   </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>'IsMissing' je předáno jako výraz, který není argumentem uzavírající procedury</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Přiřazení je okamžitě přepsáno jiným přiřazením, nebo není nikdy použito.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Hodnota(y) atributu pro atribut {0} ({1}) jsou nesynchronizovány s anotací {2}.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Člen '{0}' má '{1}' atribut s hodnotou/hodnotami '{2}', avšak chybí odpovídající anotace.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Modul '{0}' má '{1}' atribut s hodnotou/hodnotami '{2}', avšak chybí odpovídající anotace.</value>
+  </data>
 </root>
