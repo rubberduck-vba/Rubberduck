@@ -1,7 +1,14 @@
 ﻿using NUnit.Framework;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Parsing.Annotations;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.Utility;
+using System;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -51,6 +58,123 @@ End Sub";
                 Assert.AreEqual("First", folder.Name);
                 Assert.AreEqual("Second", subfolder.Name);
                 Assert.AreEqual("Third", subsubfolder.Name);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddedModuleIsAtCorrectDepth_DefaultNode()
+        {
+            const string inputCode =
+@"'@Folder(""First.Second.Third"")
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new[] { ComponentType.StandardModule }, new[] { inputCode })
+                .SelectFirstProject())
+            {
+                var project = (CodeExplorerProjectViewModel)explorer.ViewModel.SelectedItem;
+                var folder = project.Children.OfType<CodeExplorerCustomFolderViewModel>().First(node => node.Name.Equals(project.Declaration.IdentifierName));
+                var declarations = project.State.AllUserDeclarations.ToList();
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo"));
+
+                project.Synchronize(declarations);
+                var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
+
+                Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
+                Assert.AreEqual(project.Declaration.IdentifierName, added.Declaration.CustomFolder);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddedModuleIsAtCorrectDepth_RootNode()
+        {
+            const string inputCode =
+@"'@Folder(""First.Second.Third"")
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new[] { ComponentType.StandardModule }, new[] { inputCode })
+                .SelectFirstCustomFolder())
+            {
+                var project = explorer.ViewModel.Projects.OfType<CodeExplorerProjectViewModel>().First();
+                var folder = (CodeExplorerCustomFolderViewModel)explorer.ViewModel.SelectedItem;
+                var declarations = project.State.AllUserDeclarations.ToList();
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", "\"First\""));
+
+                project.Synchronize(declarations);
+                var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
+
+                Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
+                Assert.AreEqual("\"First\"", added.Declaration.CustomFolder);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddedModuleIsAtCorrectDepth_SubNode()
+        {
+            const string inputCode =
+@"'@Folder(""First.Second.Third"")
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new[] { ComponentType.StandardModule }, new[] { inputCode })
+                .SelectFirstCustomFolder())
+            {
+                var project = explorer.ViewModel.Projects.OfType<CodeExplorerProjectViewModel>().First();
+                var folder = (CodeExplorerCustomFolderViewModel)explorer.ViewModel.SelectedItem;
+                var subfolder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().Single();
+                var declarations = project.State.AllUserDeclarations.ToList();
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", "\"First.Second\""));
+
+                project.Synchronize(declarations);
+                var added = subfolder.Children.OfType<CodeExplorerComponentViewModel>().Single();
+
+                Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
+                Assert.AreEqual("\"First.Second\"", added.Declaration.CustomFolder);
+            }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void AddedModuleIsAtCorrectDepth_TerminalNode()
+        {
+            const string inputCode =
+@"'@Folder(""First.Second.Third"")
+
+Sub Foo()
+Dim d As Boolean
+d = True
+End Sub";
+
+            using (var explorer = new MockedCodeExplorer(ProjectType.HostProject, new[] { ComponentType.StandardModule }, new[] { inputCode })
+                .SelectFirstCustomFolder())
+            {
+                var project = explorer.ViewModel.Projects.OfType<CodeExplorerProjectViewModel>().First();
+                var folder = (CodeExplorerCustomFolderViewModel)explorer.ViewModel.SelectedItem;
+                var subfolder = folder.Children.OfType<CodeExplorerCustomFolderViewModel>().Single()
+                                      .Children.OfType<CodeExplorerCustomFolderViewModel>().Single();
+                var declarations = project.State.AllUserDeclarations.ToList();
+                declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", "\"First.Second.Third\""));
+
+                project.Synchronize(declarations);
+
+                var added = subfolder.Children.OfType<CodeExplorerComponentViewModel>()                   
+                    .SingleOrDefault(node => node.Declaration.DeclarationType == DeclarationType.ClassModule);
+
+                Assert.IsNotNull(added);
+                Assert.AreEqual("\"First.Second.Third\"", added.Declaration.CustomFolder);
             }
         }
 
@@ -166,6 +290,18 @@ End Sub";
                 var project = explorer.ViewModel.SelectedItem;
                 Assert.AreEqual(3, project.Children.Count);
             }
+        }
+
+        private static Declaration GetNewClassDeclaration(Declaration project, string name, string folder = "")
+        {
+            var annotations = string.IsNullOrEmpty(folder)
+                ? Enumerable.Empty<IAnnotation>()
+                : new[] { new FolderAnnotation(new QualifiedSelection(project.QualifiedModuleName, new Selection(1, 1)), null, new[] { folder }) };
+
+            var declaration =
+                new ClassModuleDeclaration(new QualifiedMemberName(project.QualifiedModuleName, name), project, name, true, annotations, new Attributes());
+
+            return declaration;
         }
     }
 }
