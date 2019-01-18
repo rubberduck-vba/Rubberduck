@@ -1245,7 +1245,7 @@ End Sub
 
                 var enclosing = declarations.FirstOrDefault(decl => decl.IdentifierName.Equals("Bar"));
                 var context = enclosing?.Context.GetDescendent<VBAParser.ArgumentExpressionContext>();
-                var actual = state.DeclarationFinder.FindParameterFromArgument(context, enclosing);
+                var actual = state.DeclarationFinder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(context, enclosing);
 
                 Assert.AreEqual(expected, actual);
             }
