@@ -16,6 +16,12 @@ using Rubberduck.VBEditor.VbeRuntime.Settings;
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
+    public class ReparseCancellationFlag
+    {
+        public bool Canceled { get;  set; }
+    }
+
+    [ComVisible(false)]
     public class ReparseCommand : CommandBase
     {
         private readonly IVBE _vbe;
@@ -50,6 +56,10 @@ namespace Rubberduck.UI.Command
             {
                 if (!VerifyCompileOnDemand())
                 {
+                    if (parameter is ReparseCancellationFlag cancellation)
+                    {
+                        cancellation.Canceled = true;
+                    }
                     return;
                 }
 
@@ -57,6 +67,10 @@ namespace Rubberduck.UI.Command
                 {
                     if (!PromptUserToContinue(failedNames))
                     {
+                        if (parameter is ReparseCancellationFlag cancellation)
+                        {
+                            cancellation.Canceled = true;
+                        }
                         return;
                     }
                 }

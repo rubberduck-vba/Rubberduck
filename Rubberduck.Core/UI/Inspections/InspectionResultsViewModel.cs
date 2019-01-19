@@ -94,7 +94,12 @@ namespace Rubberduck.UI.Inspections
                 {
                     IsRefreshing = true;
                     IsBusy = true;
-                    reparseCommand.Execute(o);
+                    var cancellation = new ReparseCancellationFlag();
+                    reparseCommand.Execute(cancellation);
+                    if (cancellation.Canceled)
+                    {
+                        IsBusy = false;
+                    }
                 },
                 o => !IsBusy && reparseCommand.CanExecute(o));
 
@@ -340,8 +345,6 @@ namespace Rubberduck.UI.Inspections
         private bool _runInspectionsOnReparse;
         private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
-            Unparsed = false;
-
             if (!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
             {
                 IsBusy = false;
@@ -390,6 +393,8 @@ namespace Rubberduck.UI.Inspections
 
             stopwatch.Stop();
             LogManager.GetCurrentClassLogger().Trace("Inspection results returned in {0}ms", stopwatch.ElapsedMilliseconds);
+
+            Unparsed = false;
 
             _uiDispatcher.Invoke(() =>
             {
