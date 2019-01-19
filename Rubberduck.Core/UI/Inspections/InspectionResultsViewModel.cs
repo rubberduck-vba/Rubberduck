@@ -373,7 +373,6 @@ namespace Rubberduck.UI.Inspections
         private async void RefreshInspections(CancellationToken token)
         {
             var stopwatch = Stopwatch.StartNew();
-            // TODO sort out busy state.
             IsBusy = true;
 
             List<IInspectionResult> results;
@@ -385,33 +384,40 @@ namespace Rubberduck.UI.Inspections
             catch (OperationCanceledException)
             {
                 Logger.Debug("Inspections got canceled.");
+                IsBusy = false;
                 return; //We throw away the partial results.
             }
 
+            stopwatch.Stop();
+            LogManager.GetCurrentClassLogger().Trace("Inspection results returned in {0}ms", stopwatch.ElapsedMilliseconds);
+
             _uiDispatcher.Invoke(() =>
             {
-                _results.Clear();
-                foreach (var result in results)
-                {
-                    _results.Add(result);
-                }
-
-                Results.Refresh();
-
+                stopwatch = Stopwatch.StartNew();
                 try
                 {
-                    IsBusy = false;
-                    IsRefreshing = false;
+                    _results.Clear();
+                    foreach (var result in results)
+                    {
+                        _results.Add(result);
+                    }
+
+                    Results.Refresh();
                     SelectedItem = null;
                 }
                 catch (Exception exception)
                 {
                     Logger.Error(exception, "Exception thrown trying to refresh the inspection results view on th UI thread.");
                 }
-            });
+                finally
+                {
+                    IsBusy = false;
+                    IsRefreshing = false;
+                }
 
-            stopwatch.Stop();
-            LogManager.GetCurrentClassLogger().Trace("Inspections loaded in {0}ms", stopwatch.ElapsedMilliseconds);
+                stopwatch.Stop();
+                LogManager.GetCurrentClassLogger().Trace("Inspection results rendered in {0}ms", stopwatch.ElapsedMilliseconds);
+            });
         }
 
         private void InvalidateStaleInspectionResults(ICollection<QualifiedModuleName> modifiedModules)
