@@ -70,6 +70,10 @@
                     <codeInspections:InspectionFilterToBooleanConverter x:Key="WarningFlagConverter" />
                     <codeInspections:InspectionFilterToBooleanConverter x:Key="SuggestionFlagConverter" />
                     <codeInspections:InspectionFilterToBooleanConverter x:Key="HintFlagConverter" />
+                    <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupByTypeConverter" />
+                    <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupByNameConverter" />
+                    <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupByLocationConverter" />
+                    <codeInspections:InspectionResultGroupingToBooleanConverter x:Key="GroupBySeverityConverter" />
                     <Style x:Key="ToolBarToggleStyle" TargetType="ToggleButton">
                         <Setter Property="Margin" Value="2" />
                         <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
@@ -105,25 +109,25 @@
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByInspectionType}"
-                              IsChecked="{Binding GroupByInspectionType, Mode=TwoWay}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByTypeConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Type}}">
                     <Image Source="{StaticResource GroupByInspectionTypeImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByName}"
-                              IsChecked="{Binding GroupByName, Mode=TwoWay}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByNameConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Name}}">
                     <Image Source="{StaticResource GroupByInspectionImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
-                              IsChecked="{Binding GroupByLocation, Mode=TwoWay}">
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupByLocationConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Location}}">
                     <Image Source="{StaticResource GroupByLocationImage}" />
                 </ToggleButton>
 
                 <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_BySeverity}"
-                              IsChecked="{Binding GroupBySeverity, Mode=TwoWay}" >
+                              IsChecked="{Binding Path=Grouping, Converter={StaticResource GroupBySeverityConverter}, ConverterParameter={x:Static codeInspections:InspectionResultGrouping.Severity}}">
                     <Image Source="{StaticResource GroupBySeverityImage}" />
                 </ToggleButton>
 
@@ -191,7 +195,8 @@
             </DataGrid.Columns>
         </controls:GroupingGrid>
 
-        <controls:EmptyUIRefresh Grid.Row="1" Visibility="{Binding EmptyUIRefreshVisibility}"/>
+        <controls:EmptyUIRefresh Grid.Row="1" Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
+
 
         <controls:BusyIndicator Grid.Row="1" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 

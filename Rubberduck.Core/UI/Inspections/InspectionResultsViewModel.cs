@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -37,6 +38,7 @@ namespace Rubberduck.UI.Inspections
 
     public enum InspectionResultGrouping
     {
+        None,
         Type,
         Name,
         Location,
@@ -55,7 +57,7 @@ namespace Rubberduck.UI.Inspections
         }
     }
 
-    public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IDisposable
+    public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IComparer<IInspectionResult>, IComparer, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
@@ -110,11 +112,13 @@ namespace Rubberduck.UI.Inspections
             // todo: remove I/O work in constructor
             _runInspectionsOnReparse = _configService.LoadConfiguration().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            Results = CollectionViewSource.GetDefaultView(_results) as ListCollectionView;
-            Results.Filter = inspection => InspectionFilter((IInspectionResult)inspection);          
-            OnPropertyChanged(nameof(Results));
+            var results = CollectionViewSource.GetDefaultView(_results) as ListCollectionView;
+            results.Filter = inspection => InspectionFilter((IInspectionResult)inspection);
+            results.CustomSort = this;
+            Results = results;
 
-            GroupByInspectionType = true;
+            OnPropertyChanged(nameof(Results));
+            Grouping = InspectionResultGrouping.Type;
 
             _state.StateChanged += HandleStateChanged;
         }
@@ -128,7 +132,10 @@ namespace Rubberduck.UI.Inspections
         {            
             if (e.InspectionSettingsChanged)
             {
-                RefreshCommand.Execute(null);
+                _uiDispatcher.Invoke(() =>
+                {
+                    RefreshCommand.Execute(null);
+                });
             }
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
@@ -217,103 +224,22 @@ namespace Rubberduck.UI.Inspections
             { InspectionResultGrouping.Severity, new PropertyGroupDescription("Inspection.Severity") }
         };
 
-        private void SetGrouping(InspectionResultGrouping grouping)
+        private InspectionResultGrouping _grouping;
+        public InspectionResultGrouping Grouping
         {
-            Results.GroupDescriptions.Clear();
-            Results.GroupDescriptions.Add(GroupDescriptions[grouping]);
-            Results.Refresh();
-
-            OnPropertyChanged(nameof(GroupByInspectionType));
-            OnPropertyChanged(nameof(GroupByName));
-            OnPropertyChanged(nameof(GroupByLocation));
-            OnPropertyChanged(nameof(GroupBySeverity));
-        }
-
-        private bool _groupByInspection;
-        public bool GroupByInspectionType
-        {
-            get => _groupByInspection;
+            get => _grouping;
             set
             {
-                if (value == _groupByInspection)
+                if (value == _grouping)
                 {
                     return;
                 }
 
-                _groupByInspection = value;
-                if (_groupByInspection)
-                {
-                    _groupByName = false;
-                    _groupByLocation = false;
-                    _groupBySeverity = false;
-                    SetGrouping(InspectionResultGrouping.Type);
-                }
-            }
-        }
-
-        private bool _groupByName;
-        public bool GroupByName
-        {
-            get => _groupByName;
-            set
-            {
-                if (value == _groupByName)
-                {
-                    return;
-                }
-
-                _groupByName = value;
-                if (_groupByName)
-                {
-                    _groupByInspection = false;
-                    _groupByLocation = false;
-                    _groupBySeverity = false;
-                    SetGrouping(InspectionResultGrouping.Name);
-                }
-            }
-        }
-
-        private bool _groupByLocation;
-        public bool GroupByLocation
-        {
-            get => _groupByLocation;
-            set
-            {
-                if (value == _groupByLocation)
-                {
-                    return;
-                }
-
-                _groupByLocation = value;
-                if (_groupByLocation)
-                {
-                    _groupByInspection = false;
-                    _groupByName = false;
-                    _groupBySeverity = false;
-                    SetGrouping(InspectionResultGrouping.Location);
-                }
-            }
-        }
-
-        private bool _groupBySeverity;
-        public bool GroupBySeverity
-        {
-            get => _groupBySeverity;
-            set
-            {
-                if (value == _groupBySeverity)
-                {
-                    return;
-                }
-
-                _groupBySeverity = value;
-                if (_groupBySeverity)
-                {
-                    _groupByInspection = false;
-                    _groupByName = false;
-                    _groupByLocation = false;
-                    SetGrouping(InspectionResultGrouping.Severity);
-                }
+                _grouping = value;
+                Results.GroupDescriptions.Clear();
+                Results.GroupDescriptions.Add(GroupDescriptions[_grouping]);
+                Results.Refresh();
+                OnPropertyChanged();
             }
         }
 
@@ -393,14 +319,30 @@ namespace Rubberduck.UI.Inspections
             {
                 _isBusy = value;
                 OnPropertyChanged();
-                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
             } 
+        }
+
+        private bool _unparsed = true;
+        public bool Unparsed
+        {
+            get => _unparsed;
+            set
+            {
+                if (_unparsed == value)
+                {
+                    return;
+                }
+                _unparsed = value;
+                OnPropertyChanged();
+            }
         }
 
         private bool _runInspectionsOnReparse;
         private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
-            if(!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
+            Unparsed = false;
+
+            if (!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
             {
                 IsBusy = false;
                 return;
@@ -446,24 +388,6 @@ namespace Rubberduck.UI.Inspections
                 return; //We throw away the partial results.
             }
 
-            if (GroupByInspectionType)
-            {
-                results = results.OrderBy(o => o.Inspection.InspectionType)
-                    .ThenBy(t => t.Inspection.Name)
-                    .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
-                    .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                    .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                    .ToList();
-            }
-            else
-            {
-                results = results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
-                    .ThenBy(t => t.Inspection.Name)
-                    .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                    .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                    .ToList();
-            }
-
             _uiDispatcher.Invoke(() =>
             {
                 _results.Clear();
@@ -477,7 +401,6 @@ namespace Rubberduck.UI.Inspections
                 try
                 {
                     IsBusy = false;
-                    OnPropertyChanged("EmptyUIRefreshVisibility");
                     IsRefreshing = false;
                     SelectedItem = null;
                 }
@@ -595,7 +518,12 @@ namespace Rubberduck.UI.Inspections
             var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == _selectedInspection.Name);
             setting.Severity = CodeInspectionSeverity.DoNotShow;
 
-            Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => RefreshCommand.Execute(null));
+            Task.Run(() => _configService.SaveConfiguration(config));
+
+            _uiDispatcher.Invoke(() =>
+            {
+                RefreshCommand.Execute(null);
+            });
         }
 
         private bool _canDisableInspection;
@@ -643,6 +571,19 @@ namespace Rubberduck.UI.Inspections
             _quickFixProvider.FixAll(_defaultFix, selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
 
+        // TODO - these should be localized.
+        private static readonly List<(string Name, hAlignment alignment)> ResultColumns = new List<(string Name, hAlignment alignment)>
+        {
+            ("Type", hAlignment.Left),
+            ("Project", hAlignment.Left),
+            ("Component", hAlignment.Left),
+            ("Issue", hAlignment.Left),
+            ("Line", hAlignment.Right),
+            ("Column", hAlignment.Right)
+        };
+
+        private static readonly ColumnInfo[] ColumnInformation = ResultColumns.Select(column => new ColumnInfo(column.Name, column.alignment)).ToArray();
+
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
@@ -650,7 +591,6 @@ namespace Rubberduck.UI.Inspections
             {
                 return;
             }
-            ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
             var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
@@ -661,12 +601,12 @@ namespace Rubberduck.UI.Inspections
             var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
 
             var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(resultArray, title,columnInfos);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title,columnInfos);
+            var csvResults = ExportFormatter.Csv(resultArray, title, ColumnInformation);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, ColumnInformation);
             var rtfResults = ExportFormatter.RTF(resultArray, title);
 
             // todo: verify that this disposing this stream breaks the xmlSpreadsheetDataFormat
-            var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
+            var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, ColumnInformation);
             //Add the formats from richest formatting to least formatting
             _clipboard.AppendStream(DataFormats.GetDataFormat(xmlSpreadsheetDataFormat).Name, stream);
             _clipboard.AppendString(DataFormats.Rtf, rtfResults);
@@ -682,9 +622,68 @@ namespace Rubberduck.UI.Inspections
             return !IsBusy && _results != null && _results.Any();
         }
 
-        public Visibility EmptyUIRefreshVisibility => _state.ProjectsProvider.Projects().Any() ? Visibility.Hidden : Visibility.Visible;
+        private static readonly Dictionary<InspectionResultGrouping, List<Comparer<IInspectionResult>>> GroupSorts =
+            new Dictionary<InspectionResultGrouping, List<Comparer<IInspectionResult>>>
+        {
+            { InspectionResultGrouping.Type,
+                new List<Comparer<IInspectionResult>>
+                {
+                    InspectionResultComparer.InspectionType,
+                    InspectionResultComparer.Location,
+                    InspectionResultComparer.Severity,
+                    InspectionResultComparer.Name
+                }
+            },
+            { InspectionResultGrouping.Name,
+                new List<Comparer<IInspectionResult>>
+                {
+                    InspectionResultComparer.Name,
+                    InspectionResultComparer.Location,
+                    InspectionResultComparer.Severity
+                }
+            },
+            { InspectionResultGrouping.Location,
+                new List<Comparer<IInspectionResult>>
+                {
+                    InspectionResultComparer.Location,
+                    InspectionResultComparer.Severity,
+                    InspectionResultComparer.Name
+                }
+            },
+            { InspectionResultGrouping.Severity,
+                new List<Comparer<IInspectionResult>>
+                {
+                    InspectionResultComparer.Severity,
+                    InspectionResultComparer.Location,
+                    InspectionResultComparer.Name
+                }
+            }
+        };
 
-        public Visibility EmptyUIRefreshMessageVisibility => IsBusy ? Visibility.Hidden : Visibility.Visible;
+        public int Compare(IInspectionResult x, IInspectionResult y)
+        {
+            return x == y ? 0 : GroupSorts[Grouping].Select(comp => comp.Compare(x, y)).FirstOrDefault(result => result != 0);
+        }
+
+        public int Compare(object x, object y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            if (!(x is IInspectionResult first))
+            {
+                return -1;
+            }
+
+            if (!(y is IInspectionResult second))
+            {
+                return -1;
+            }
+
+            return Compare(first, second);
+        }
 
         public void Dispose()
         {
