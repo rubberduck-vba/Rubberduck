@@ -79,7 +79,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 ? nodeProject.VBComponents
                 : ComponentsCollectionFromActiveProject())
             {
-                var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
+                var folderAnnotation = (node is CodeExplorerCustomFolderViewModel folder) ? folder.FolderAttribute : $"'@Folder(\"{GetFolder(node)}\")";
 
                 using (var newComponent = components.Add(ComponentType))
                 {
@@ -110,7 +110,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 ? nodeProject.VBComponents
                 : ComponentsCollectionFromActiveProject())
             {
-                var folderAnnotation = $"'@Folder(\"{GetFolder(node)}\")";
+                var folderAnnotation = (node is CodeExplorerCustomFolderViewModel folder) ? folder.FolderAttribute : $"'@Folder(\"{GetFolder(node)}\")";
                 var fileName = CreateTempTextFile(moduleText);
 
                 using (var newComponent = components.Import(fileName))
