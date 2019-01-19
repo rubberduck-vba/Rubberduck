@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
@@ -76,8 +78,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var rewriter = rewriteSession.CheckOutModuleRewriter(_model.TargetDeclaration.QualifiedModuleName);
 
             UpdateReferences(rewriteSession);
-            SetFieldToPrivate(rewriter);
-
+            
             var members = _model.State.DeclarationFinder
                 .Members(_model.TargetDeclaration.QualifiedName.QualifiedModuleName)
                 .OrderBy(declaration => declaration.QualifiedSelection);
@@ -85,11 +86,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var fields = members.Where(d => d.DeclarationType == DeclarationType.Variable && !d.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member)).ToList();
 
             var property = Environment.NewLine + Environment.NewLine + GetPropertyText();
-            if (members.Any(m => m.DeclarationType.HasFlag(DeclarationType.Member)))
-            {
-                property += Environment.NewLine;
-            }
-
+            
             if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
             {
                 var newField = $"Private {_model.TargetDeclaration.IdentifierName} As {_model.TargetDeclaration.AsTypeName}";
@@ -103,11 +100,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (_model.TargetDeclaration.Accessibility == Accessibility.Private || fields.Count > 1)
             {
+                SetFieldToPrivate(rewriter);
+                if (members.Any(m => m.DeclarationType.HasFlag(DeclarationType.Member)))
+                {
+                    property += Environment.NewLine;
+                }
                 rewriter.InsertAfter(fields.Last().Context.Stop.TokenIndex, property);
             }
             else
             {
-                rewriter.InsertBefore(0, property);
+                rewriter.Replace(_model.TargetDeclaration.Context.GetAncestor<VBAParser.ModuleDeclarationsElementContext>(), property);
             }
         }
 
