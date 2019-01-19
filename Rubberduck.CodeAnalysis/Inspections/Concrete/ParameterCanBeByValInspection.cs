@@ -70,7 +70,7 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var declaration in declarationMembers)
             {
                 var declarationParameters = declarations.OfType<ParameterDeclaration>()
-                    .Where(d => Equals(d.ParentDeclaration, declaration))
+                    .Where(d => !d.IsArray && Equals(d.ParentDeclaration, declaration))
                     .OrderBy(o => o.Selection.StartLine)
                     .ThenBy(t => t.Selection.StartColumn)
                     .ToList();
@@ -85,7 +85,7 @@ namespace Rubberduck.Inspections.Concrete
                 foreach (var member in members)
                 {
                     var parameters = declarations.OfType<ParameterDeclaration>()
-                        .Where(d => Equals(d.ParentDeclaration, member))
+                        .Where(d => !d.IsArray && Equals(d.ParentDeclaration, member))
                         .OrderBy(o => o.Selection.StartLine)
                         .ThenBy(t => t.Selection.StartColumn)
                         .ToList();

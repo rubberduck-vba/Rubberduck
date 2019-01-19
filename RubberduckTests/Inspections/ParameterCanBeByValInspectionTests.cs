@@ -263,6 +263,29 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
+        public void GivenArrayParameter_OnInterface_ReturnsNoResult()
+        {
+            (string name, string content, ComponentType componentType) myClass = ("myClass",
+                @"Implements myInterface
+
+Private Sub myInterface_Whatever(ByRef someArray() As Variant)
+End Sub", ComponentType.ClassModule);
+            (string name, string content, ComponentType componentType) myInterface = ("myInterface",
+                @"Public Sub Whatever(ByRef someArray() As Variant)
+End Sub", ComponentType.ClassModule);
+
+            var vbe = MockVbeBuilder.BuildFromModules(myClass, myInterface);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var inspection = new ParameterCanBeByValInspection(state);
+                var results = inspection.GetInspectionResults(CancellationToken.None).ToList();
+
+                Assert.AreEqual(0, results.Count);
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ParameterCanBeByVal_ReturnsResult_PassedToByRefProc_NoAssignment()
         {
             const string inputCode =
