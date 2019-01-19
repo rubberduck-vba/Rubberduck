@@ -94,6 +94,14 @@ namespace Rubberduck.Inspections.Concrete
             return usage.Context.IsDescendentOf<VBAParser.TypeofexprContext>();
         }
 
+        /*
+        private bool IsMemberAccess(IdentifierReference usage)
+        {
+            return usage.Context.TryGetAncestor(out VBAParser.MemberAccessExprContext context) &&
+                   context.SourceInterval.ProperlyContains(usage.Context.SourceInterval);
+        }
+        */
+
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
         {
             return assignment.ParentScoping.Equals(function) && assignment.Declaration.Equals(function);
@@ -111,6 +119,19 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return false;
             }
+
+            var indexExpr = usage.Context.GetAncestor<VBAParser.IndexExprContext>();
+            if (indexExpr != null)
+            {
+                var memberAccessStmt = usage.Context.GetAncestor<VBAParser.MemberAccessExprContext>();
+                if (memberAccessStmt != null &&
+                    callStmt.SourceInterval.ProperlyContains(memberAccessStmt.SourceInterval) &&
+                    memberAccessStmt.SourceInterval.ProperlyContains(indexExpr.SourceInterval))
+                {
+                    return false;
+                }
+            }
+
             var argumentList = CallStatement.GetArgumentList(callStmt);
             if (argumentList == null)
             {
