@@ -108,9 +108,7 @@ namespace Rubberduck.Inspections.Concrete
                     for (var i = 0; i < implementationParameters.Count; i++)
                     {
                         parameterCanBeChangedToBeByVal[i] = parameterCanBeChangedToBeByVal[i]
-                                                            && !IsPotentiallyUsedAsByRefParameter(implementationParameters[i]) 
-                                                            && ((VBAParser.ArgContext)implementationParameters[i].Context).BYVAL() == null 
-                                                            && !implementationParameters[i].References.Any(reference => reference.IsAssignment);
+                                                            && CanBeChangedToBePassedByValIndividually(implementationParameters[i]);
                     }
                 }
 
@@ -153,9 +151,7 @@ namespace Rubberduck.Inspections.Concrete
                     for (var i = 0; i < handlerParameters.Count; i++)
                     {
                         parameterCanBeChangedToBeByVal[i] = parameterCanBeChangedToBeByVal[i] 
-                                                            && !IsPotentiallyUsedAsByRefParameter(handlerParameters[i]) 
-                                                            && ((VBAParser.ArgContext)handlerParameters[i].Context).BYVAL() == null 
-                                                            && !handlerParameters[i].References.Any(reference => reference.IsAssignment);
+                                                            && CanBeChangedToBePassedByValIndividually(handlerParameters[i]);
                     }
                 }
 
