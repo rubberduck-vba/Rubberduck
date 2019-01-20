@@ -41,7 +41,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            var matching = updated.FirstOrDefault(decl => Declaration.DeclarationType == decl?.DeclarationType && Declaration.QualifiedName.Equals(decl?.QualifiedName));
+            var matching = updated.FirstOrDefault(decl =>
+                Declaration.DeclarationType == decl?.DeclarationType &&
+                Declaration.QualifiedName.Equals(decl.QualifiedName));
 
             if (matching is null)
             {

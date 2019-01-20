@@ -76,7 +76,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             if (updated != null)
             {
-                var updates = updated.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(Declaration)).ToList();
+                var updates = updated.Where(item =>
+                        SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(Declaration))
+                    .ToList();
 
                 AddChildren(updates.Select(item => new CodeExplorerSubMemberViewModel(this, item)));
 

@@ -243,6 +243,13 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        /// <summary>
+        /// Updates the ViewModel tree to reflect changes in user declarations after a reparse.
+        /// </summary>
+        /// <param name="declarations">
+        /// The new declarations. This should always be the complete declaration set, and materializing
+        /// the IEnumerable should be deferred to UI thread.
+        /// </param>
         private void Synchronize(IEnumerable<Declaration> declarations)
         {
             _uiDispatcher.Invoke(() =>

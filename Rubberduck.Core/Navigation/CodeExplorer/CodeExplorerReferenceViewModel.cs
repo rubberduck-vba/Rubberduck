@@ -60,8 +60,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             if (used != Reference.IsUsed)
             {
-                // ReSharper disable once ExplicitCallerInfoArgument
-                OnPropertyChanged("IsDimmed");
+                OnPropertyChanged(nameof(IsDimmed));
             }
         }
     }

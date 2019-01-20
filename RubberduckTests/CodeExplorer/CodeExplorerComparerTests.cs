@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Symbols;
 
 namespace RubberduckTests.CodeExplorer
 {
+    // TODO: These tests should probably be refactored to use test cases.
     [TestFixture]
     public class CodeExplorerComparerTests
     {
