@@ -44,7 +44,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public string FullPath { get; }
 
-        public string FolderAttribute => $"@Folder(\"{FullPath.Replace("\"", string.Empty)}\")";
+        public string FolderAttribute => $"'@Folder(\"{FullPath.Replace("\"", string.Empty)}\")";
 
         /// <summary>
         /// One-based depth in the folder hierarchy.
@@ -76,7 +76,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
             }
 
-            foreach (var declaration in declarations.GroupBy(item => item.ComponentName))
+            foreach (var declaration in declarations.Where(child => child.IsInFolder(FullPath)).GroupBy(item => item.ComponentName))
             {
                 var moduleName = declaration.Key;
                 var parent = declarations.SingleOrDefault(item => 
@@ -91,25 +91,56 @@ namespace Rubberduck.Navigation.CodeExplorer
                     !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
 
                 AddChild(new CodeExplorerComponentViewModel(this, parent, members, _vbe));
+                declarations.Remove(parent);
             }
         }
 
         public override void Synchronize(List<Declaration> updated)
         {
-            var declarations = updated.Where(declaration => declaration.IsInFolderOrSubFolder(FullPath)).ToList();
+            SynchronizeChildren(updated);
+        }
 
+        protected override void SynchronizeChildren(List<Declaration> updated)
+        {
+            var declarations = updated.Where(declaration => declaration.IsInFolderOrSubFolder(FullPath)).ToList();
+            
             if (!declarations.Any())
             {
                 Declaration = null;
                 return;
             }
 
-            foreach (var declaration in declarations)
+            var synchronizing = declarations.ToList();
+
+            foreach (var subfolder in Children.OfType<CodeExplorerCustomFolderViewModel>().ToList())
             {
-                updated.Remove(declaration);
+                subfolder.SynchronizeChildren(declarations);
+                if (subfolder.Declaration is null)
+                {
+                    RemoveChild(subfolder);
+                    continue;
+                }
+
+                var synchronized = synchronizing.Where(child => !declarations.Contains(child)).ToList();
+                foreach (var declaration in synchronized)
+                {
+                    updated.Remove(declaration);
+                }
             }
 
-            SynchronizeChildren(declarations);
+            foreach (var child in Children.OfType<CodeExplorerComponentViewModel>().ToList())
+            {
+                child.Synchronize(updated);
+                if (child.Declaration is null)
+                {
+                    RemoveChild(child);
+                    continue;
+                }
+
+                updated.Remove(child.Declaration);
+            }
+
+            AddNewChildren(updated);
         }
     }
 }
