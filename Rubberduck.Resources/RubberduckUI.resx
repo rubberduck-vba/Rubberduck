@@ -1483,9 +1483,11 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="AllReferences_NoneFoundReference" xml:space="preserve">
     <value>No references were found for project reference '{0}'.</value>
+    <comment>{0} = reference name</comment>
   </data>
   <data name="AllReferences_PerformanceWarning" xml:space="preserve">
     <value>Search for reference '{0}' returned {1} uses. Displaying the references may negatively impact performance. Continue?</value>
+    <comment>{0} = reference name, {1} = number of uses</comment>
   </data>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Performance Warning</value>
