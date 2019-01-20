@@ -476,16 +476,16 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 : Enumerable.Empty<ModuleBodyElementDeclaration>();
         }
 
-        public ParameterDeclaration FindParameter(Declaration procedure, string parameterName)
+        public ParameterDeclaration FindParameter(Declaration parameterizedMember, string parameterName)
         {
-            return _parametersByParent.TryGetValue(procedure, out List<ParameterDeclaration> parameters) 
+            return _parametersByParent.TryGetValue(parameterizedMember, out List<ParameterDeclaration> parameters) 
                 ? parameters.SingleOrDefault(parameter => parameter.IdentifierName == parameterName) 
                 : null;
         }
 
-        public IEnumerable<ParameterDeclaration> Parameters(Declaration procedure)
+        public IEnumerable<ParameterDeclaration> Parameters(Declaration parameterizedMember)
         {
-            return _parametersByParent.TryGetValue(procedure, out List<ParameterDeclaration> result)
+            return _parametersByParent.TryGetValue(parameterizedMember, out List<ParameterDeclaration> result)
                 ? result
                 : Enumerable.Empty<ParameterDeclaration>();
         }
@@ -584,8 +584,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 var arguments = argumentList.GetDescendents<VBAParser.PositionalArgumentContext>().ToArray();
 
                 var parameterIndex = arguments
-                    .Select((param, index) => param.GetDescendent<VBAParser.ArgumentExpressionContext>() == argumentExpression ? (param, index) : (null, -1))
-                    .SingleOrDefault(item => item.param != null).index;
+                    .Select((arg, index) => arg.GetDescendent<VBAParser.ArgumentExpressionContext>() == argumentExpression ? (arg, index) : (null, -1))
+                    .SingleOrDefault(item => item.arg != null).index;
 
                 parameter = parameters
                     .OrderBy(p => p.Selection)
@@ -659,6 +659,53 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             var referencedMember = IdentifierReferences(callingIdentifier, module)
                 .Select(reference => reference.Declaration)
                 .OfType<ModuleBodyElementDeclaration>()
+                .FirstOrDefault();
+
+            return referencedMember;
+        }
+
+        public ParameterDeclaration FindParameterFromSimpleEventArgumentNotPassedByValExplicitly(VBAParser.EventArgumentContext eventArgument, QualifiedModuleName module)
+        {
+            if (eventArgument == null
+                || eventArgument.GetDescendent<VBAParser.ParenthesizedExprContext>() != null
+                || eventArgument.BYVAL() != null)
+            {
+                // not a simple argument, or argument is parenthesized and thus passed ByVal
+                return null;
+            }
+
+            var raisedEvent = RaisedEvent(eventArgument, module);
+            if (raisedEvent == null)
+            {
+                return null;
+            }
+
+            var parameters = Parameters(raisedEvent);
+
+            // event arguments are always positional: work out the index
+            var argumentList = eventArgument.GetAncestor<VBAParser.EventArgumentListContext>();
+            var arguments = argumentList.eventArgument();
+
+            var parameterIndex = arguments
+                .Select((arg, index) => arg == eventArgument ? (arg, index) : (null, -1))
+                .SingleOrDefault(tpl => tpl.arg != null).index;
+
+            var parameter = parameters
+                .OrderBy(p => p.Selection)
+                .Select((param, index) => (param, index))
+                .SingleOrDefault(tpl => tpl.index == parameterIndex).param;
+
+            return parameter;
+        }
+
+        private EventDeclaration RaisedEvent(VBAParser.EventArgumentContext argument, QualifiedModuleName module)
+        {
+            var raiseEventContext = argument.GetAncestor<VBAParser.RaiseEventStmtContext>();
+            var eventIdentifier = raiseEventContext.identifier();
+
+            var referencedMember = IdentifierReferences(eventIdentifier, module)
+                .Select(reference => reference.Declaration)
+                .OfType<EventDeclaration>()
                 .FirstOrDefault();
 
             return referencedMember;

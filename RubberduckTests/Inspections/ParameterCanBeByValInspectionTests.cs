@@ -263,14 +263,14 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_ReturnsResult_PassedToByRefProc_NoAssignment()
+        public void ParameterCanBeByVal_DoesNotReturnResult_PassedToByRefProc_NoAssignment()
         {
             const string inputCode =
                 @"Sub DoSomething(foo As Integer)
     DoSomethingElse foo
 End Sub
 
-Sub DoSomethingElse(ByVal bar As Integer)
+Sub DoSomethingElse(ByRef bar As Integer)
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
@@ -279,7 +279,7 @@ End Sub";
                 var inspection = new ParameterCanBeByValInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
-                Assert.AreEqual(1, inspectionResults.Count());
+                Assert.IsFalse(inspectionResults.Any(result => result.Target.IdentifierName.Equals("foo")));
             }
         }
 
@@ -308,14 +308,14 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_ReturnsResult_PassedToByValProc_WithAssignment()
+        public void ParameterCanBeByVal_ReturnsResult_PassedToByRefProc_ExplicitlyByVal()
         {
             const string inputCode =
                 @"Sub DoSomething(foo As Integer)
-    DoSomethingElse foo
+    DoSomethingElse (foo)
 End Sub
 
-Sub DoSomethingElse(ByVal bar As Integer)
+Sub DoSomethingElse(ByRef bar As Integer)
     bar = 42
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
@@ -326,6 +326,117 @@ End Sub";
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
 
                 Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_ReturnsResult_PassedToByRefProc_PartOfExpression()
+        {
+            const string inputCode =
+                @"Sub DoSomething(foo As Integer)
+    DoSomethingElse foo + 2
+End Sub
+
+Sub DoSomethingElse(ByRef bar As Integer)
+    bar = 42
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_ReturnsResult_PassedToByValEvent()
+        {
+            const string inputCode =
+                @" Public Event Bar(ByVal baz As Integer)
+
+Sub DoSomething(foo As Integer)
+    RaiseEvent Bar(foo)
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_DoesNotReturnResult_PassedToByRefEvent()
+        {
+            const string inputCode =
+                @" Public Event Bar(ByRef baz As Integer)
+
+Sub DoSomething(foo As Integer)
+    RaiseEvent Bar(foo)
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any(result => result.Target.IdentifierName.Equals("foo")));
+            }
+        }
+
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_ReturnsResult_PassedToByRefEvent_ExplicilyByVal()
+        {
+            const string inputCode =
+                @" Public Event Bar(ByRef baz As Integer)
+
+Sub DoSomething(foo As Integer)
+    RaiseEvent Bar(BYVAL foo)
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+                var fooInspectionResults = inspectionResults.Where(result => result.Target.IdentifierName.Equals("foo"));
+
+                Assert.AreEqual(1, fooInspectionResults.Count());
+            }
+        }
+
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_ReturnsResult_PassedToByRefEvent_PartOfExpression()
+        {
+            const string inputCode =
+                @" Public Event Bar(ByRef baz As Integer)
+
+Sub DoSomething(foo As Integer)
+    RaiseEvent Bar(foo + 2)
+End Sub";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+                var fooInspectionResults = inspectionResults.Where(result => result.Target.IdentifierName.Equals("foo"));
+
+                Assert.AreEqual(1, fooInspectionResults.Count());
             }
         }
 

@@ -171,6 +171,12 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsPotentiallyUsedAsByRefParameter(ParameterDeclaration parameter)
         {
+            return IsPotentiallyUsedAsByRefMethodParameter(parameter) 
+                   || IsPotentiallyUsedAsByRefEventParameter(parameter);
+        }
+
+        private bool IsPotentiallyUsedAsByRefMethodParameter(ParameterDeclaration parameter)
+        {
             //The condition on the text of the argument context excludes the cases where the argument is either passed explicitly by value 
             //or used inside a non-trivial expression, e.g. an arithmetic expression.
             var argumentsBeingTheParameter = parameter.References
@@ -181,6 +187,34 @@ namespace Rubberduck.Inspections.Concrete
             {
                 var parameterCorrespondingToArgument = State.DeclarationFinder
                     .FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argument, parameter.QualifiedModuleName);
+
+                if (parameterCorrespondingToArgument == null)
+                {
+                    //We have no idea what parameter it is passed to ar argument. So, we have to err on the safe side and assume it is passed by reference.
+                    return true;
+                }
+
+                if (parameterCorrespondingToArgument.IsByRef)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsPotentiallyUsedAsByRefEventParameter(ParameterDeclaration parameter)
+        {
+            //The condition on the text of the eventArgument context excludes the cases where the argument is either passed explicitly by value 
+            //or used inside a non-trivial expression, e.g. an arithmetic expression.
+            var argumentsBeingTheParameter = parameter.References
+                .Select(reference => reference.Context.GetAncestor<VBAParser.EventArgumentContext>())
+                .Where(context => context != null && context.GetText().Equals(parameter.IdentifierName, StringComparison.OrdinalIgnoreCase));
+
+            foreach (var argument in argumentsBeingTheParameter)
+            {
+                var parameterCorrespondingToArgument = State.DeclarationFinder
+                    .FindParameterFromSimpleEventArgumentNotPassedByValExplicitly(argument, parameter.QualifiedModuleName);
 
                 if (parameterCorrespondingToArgument == null)
                 {
