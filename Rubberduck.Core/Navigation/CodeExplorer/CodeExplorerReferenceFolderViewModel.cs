@@ -72,6 +72,7 @@ namespace Rubberduck.Navigation.CodeExplorer
             foreach (var reference in updates)
             {
                 reference.IsUsed = reference.IsBuiltIn ||
+                                   _finder != null &&
                                    _finder.IsReferenceUsedInProject(Declaration as ProjectDeclaration,
                                        reference.ToReferenceInfo());
 
@@ -95,6 +96,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 reference.IsUsed = reference.IsBuiltIn ||
+                                   _finder != null &&
                                    _finder.IsReferenceUsedInProject(
                                        library.Parent?.Declaration as ProjectDeclaration,
                                        reference.ToReferenceInfo());
