@@ -54,12 +54,10 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             Unparsed = false;
             IsBusy = _state.Status != ParserState.Pending && _state.Status <= ParserState.ResolvedDeclarations;
 
-            if (e.State != ParserState.ResolvedDeclarations)
+            if (e.State == ParserState.ResolvedDeclarations)
             {
-                return;
+                Synchronize(_state.DeclarationFinder.AllUserDeclarations.ToList());
             }
-
-            Synchronize(_state.DeclarationFinder.AllUserDeclarations.ToList());
         }
 
         private void Synchronize(List<Declaration> declarations)

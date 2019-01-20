@@ -9,9 +9,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 {
     public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel
     {
-        public CodeExplorerMemberViewModel(ICodeExplorerNode parent, Declaration declaration, IEnumerable<Declaration> declarations) : base(parent, declaration)
+        public CodeExplorerMemberViewModel(ICodeExplorerNode parent, Declaration declaration, List<Declaration> declarations) : base(parent, declaration)
         {
-            AddNewChildren(declarations.ToList());
+            AddNewChildren(declarations);
             Name = DetermineMemberName(declaration);
         }
 
@@ -76,10 +76,14 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             if (updated != null)
             {
-                AddChildren(updated
-                    .Where(item =>
-                        SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(Declaration))
-                    .Select(item => new CodeExplorerSubMemberViewModel(this, item)));
+                var updates = updated.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(Declaration)).ToList();
+
+                AddChildren(updates.Select(item => new CodeExplorerSubMemberViewModel(this, item)));
+
+                foreach (var declaration in updates)
+                {
+                    updated.Remove(declaration);
+                }
             }
         }
 

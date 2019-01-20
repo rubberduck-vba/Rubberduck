@@ -103,7 +103,7 @@ namespace Rubberduck.Navigation.CodeExplorer
         protected override void SynchronizeChildren(List<Declaration> updated)
         {
             var declarations = updated.Where(declaration => declaration.IsInFolderOrSubFolder(FullPath)).ToList();
-            
+
             if (!declarations.Any())
             {
                 Declaration = null;

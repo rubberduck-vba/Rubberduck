@@ -197,8 +197,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             return owned.Where(declaration => !UntrackedTypes.Contains(declaration.DeclarationType) &&
-                !ModuleRestrictedTypes.Contains(declaration.DeclarationType) ||
-                declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)).ToList();
+                (!ModuleRestrictedTypes.Contains(declaration.DeclarationType) ||
+                declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))).ToList();
         }
     }
 }

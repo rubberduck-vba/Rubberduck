@@ -73,11 +73,17 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return;
             }
 
-            AddChildren(updated.GroupBy(item => item.Scope).SelectMany(grouping =>
-                grouping.Where(item =>
-                        item.ParentDeclaration != null && item.ParentScope == Declaration.Scope &&
-                        MemberTypes.Contains(item.DeclarationType))
-                    .Select(item => new CodeExplorerMemberViewModel(this, item, grouping))));
+            var children = updated
+                .Where(declaration => declaration.ParentDeclaration != null &&
+                    MemberTypes.Contains(declaration.DeclarationType) &&
+                    declaration.ParentScope.Equals(Declaration.Scope, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            foreach (var member in children)
+            {
+                AddChild(new CodeExplorerMemberViewModel(this, member, updated));
+                updated.Remove(member);
+            }
         }
 
         private void SetName()
