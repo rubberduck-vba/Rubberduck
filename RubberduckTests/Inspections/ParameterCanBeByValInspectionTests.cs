@@ -589,7 +589,7 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_InterfaceMember_SingleParamAssignedTo()
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamAssignedTo_InImplementation()
         {
             //Input
             const string inputCode1 =
@@ -627,7 +627,40 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRefMethod()
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamAssignedTo_InInterface()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Sub DoSomething(ByRef a As Integer)
+    a = 42
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any());
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRefMethod_InImplementation()
         {
             //Input
             const string inputCode1 =
@@ -668,7 +701,43 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRefMethodExplicitlyByVal()
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRefMethod_InInterface()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Sub DoSomething(ByRef a As Integer)
+    DoSomethingElse a
+End Sub
+
+Private Sub DoSomethingElse(ByRef bar As Integer)
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any(result => result.Target.IdentifierName.Equals("a")));
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRefMethodExplicitlyByVal_InImplementation()
         {
             //Input
             const string inputCode1 =
@@ -709,7 +778,42 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRefMethodPartOfExpression()
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRefMethodExplicitlyByVal_InInterface()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Sub DoSomething(ByRef a As Integer)
+    DoSomethingElse (a)
+End Sub
+
+Private Sub DoSomethingElse(ByRef bar As Integer)
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+End Sub";
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count(result => result.Target.IdentifierName.Equals("a")));
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRefMethodPartOfExpression_InImplementation()
         {
             //Input
             const string inputCode1 =
@@ -750,7 +854,43 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_InterfaceMember_SingleParamByRefEvent()
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamUsedByRefMethodPartOfExpression_InInterface()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Sub DoSomething(ByRef a As Integer)
+    DoSomethingElse a + 42
+End Sub
+
+Private Sub DoSomethingElse(ByRef bar As Integer)
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count(result => result.Target.IdentifierName.Equals("a")));
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamByRefEvent_InImplementation()
         {
             //Input
             const string inputCode1 =
@@ -790,7 +930,42 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_InterfaceMember_SingleParamByRefEventExplicitlyByVal()
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamByRefEvent_InInterface()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Event Bar(ByRef foo As Integer)
+
+Public Sub DoSomething(ByRef a As Integer)
+    RaiseEvent Bar(a)
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.IsFalse(inspectionResults.Any(result => result.Target.IdentifierName.Equals("a")));
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamByRefEventExplicitlyByVal_InImplementation()
         {
             //Input
             const string inputCode1 =
@@ -830,7 +1005,42 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_InterfaceMember_SingleParamByRefEventPartOfExpression()
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamByRefEventExplicitlyByVal_InInterface()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Event Bar(ByRef foo As Integer)
+
+Public Sub DoSomething(ByRef a As Integer)
+    RaiseEvent Bar(ByVal a)
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count(result => result.Target.IdentifierName.Equals("a")));
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamByRefEventPartOfExpression_InImplementation()
         {
             //Input
             const string inputCode1 =
@@ -870,7 +1080,42 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal()
+        public void ParameterCanBeByVal_InterfaceMember_SingleParamByRefEventPartOfExpression_InInterface()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Event Bar(ByRef foo As Integer)
+
+Public Sub DoSomething(ByRef a As Integer)
+    RaiseEvent Bar(a + 15)
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(1, inspectionResults.Count(result => result.Target.IdentifierName.Equals("a")));
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal_InImplementation()
         {
             //Input
             const string inputCode1 =
@@ -893,6 +1138,39 @@ End Sub";
                 .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
                 .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
                 .AddComponent("Class2", ComponentType.ClassModule, inputCode3)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ParameterCanBeByValInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual("a", inspectionResults.Single().Target.IdentifierName);
+            }
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ParameterCanBeByVal_InterfaceMember_MultipleParams_OneCanBeByVal_InInterface()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Sub DoSomething(ByRef a As Integer, ByRef b As Integer)
+    b = 42
+End Sub";
+            const string inputCode2 =
+                @"Implements IClass1
+
+Private Sub IClass1_DoSomething(ByRef a As Integer, ByRef b As Integer)
+End Sub";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("IClass1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
 

@@ -95,7 +95,7 @@ namespace Rubberduck.Inspections.Concrete
                     continue;
                 }
 
-                var parameterCanBeChangedToBeByVal = interfaceParameters.Select(parameter => parameter.IsByRef).ToList();
+                var parameterCanBeChangedToBeByVal = interfaceParameters.Select(parameter => CanBeChangedToBePassedByValIndividually(parameter)).ToList();
 
                 var implementingMembers = State.DeclarationFinder.FindInterfaceImplementationMembers(memberDeclaration);
                 foreach (var implementingMember in implementingMembers)
