@@ -22,14 +22,14 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly IVBE _vbe;
 
-        public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations, RubberduckParserState state, IVBE vbe, bool references = true) : base(null, declaration)
+        public CodeExplorerProjectViewModel(Declaration project, List<Declaration> declarations, RubberduckParserState state, IVBE vbe, bool references = true) : base(null, project)
         {
             State = state;         
             _vbe = vbe;
             ShowReferences = references;
 
             SetName();
-            AddNewChildren(declarations.ToList());
+            AddNewChildren(ExtractTrackedDeclarationsForProject(project, declarations));
             IsExpanded = true;
         }
 
@@ -75,7 +75,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             Declaration = match;
             updated.Remove(Declaration);
-            var children = updated.Where(declaration => declaration.ProjectId.Equals(Declaration.ProjectId)).ToList();
+            var children = ExtractTrackedDeclarationsForProject(Declaration, updated);
             updated.RemoveAll(declaration => declaration.ProjectId.Equals(Declaration.ProjectId));
 
             // Reference synchronization is deferred to AddNewChildren for 2 reasons. First, it doesn't make sense to sling around a List of
@@ -129,7 +129,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             foreach (var type in types)
             {
-                AddChild(new CodeExplorerReferenceFolderViewModel(this, State.DeclarationFinder, type.ToList(), type.Key));
+                AddChild(new CodeExplorerReferenceFolderViewModel(this, State?.DeclarationFinder, type.ToList(), type.Key));
             }
         }
 
@@ -169,6 +169,36 @@ namespace Rubberduck.Navigation.CodeExplorer
             _displayName = Declaration?.ProjectDisplayName ?? string.Empty;
 
             OnNameChanged();
+        }
+
+        private static readonly List<DeclarationType> UntrackedTypes = new List<DeclarationType>
+        {
+            DeclarationType.Parameter,
+            DeclarationType.LineLabel,
+            DeclarationType.UnresolvedMember,
+            DeclarationType.BracketedExpression,
+            DeclarationType.ComAlias
+        };
+
+        private static readonly List<DeclarationType> ModuleRestrictedTypes = new List<DeclarationType>
+        {
+            DeclarationType.Variable,
+            DeclarationType.Control,
+            DeclarationType.Constant
+        };
+
+        public static List<Declaration> ExtractTrackedDeclarationsForProject(Declaration project, List<Declaration> declarations)
+        {
+            var owned = declarations.Where(declaration => declaration.ProjectId.Equals(project.ProjectId)).ToList();
+
+            foreach (var declaration in owned)
+            {
+                declarations.Remove(declaration);
+            }
+
+            return owned.Where(declaration => !UntrackedTypes.Contains(declaration.DeclarationType) &&
+                !ModuleRestrictedTypes.Contains(declaration.DeclarationType) ||
+                declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)).ToList();
         }
     }
 }
