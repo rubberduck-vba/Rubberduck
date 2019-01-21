@@ -87,6 +87,13 @@ namespace Rubberduck.UI.AddRemoveReferences
                     foreach (var reference in references)
                     {
                         var guid = Guid.TryParse(reference.Guid, out var result) ? result : Guid.Empty;
+
+                        // This avoids collisions when the parse actually succeeds, but the result is empty.
+                        if (guid.Equals(Guid.Empty))
+                        {
+                            guid = new Guid(priority, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                        }
+
                         var libraryId = new RegisteredLibraryKey(guid, reference.Major, reference.Minor);
 
                         // TODO: If for some reason the VBA reference is broken, we could technically use this to repair it. Just a thought...

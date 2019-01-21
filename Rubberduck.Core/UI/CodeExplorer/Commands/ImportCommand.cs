@@ -1,37 +1,37 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class ImportCommand : CommandBase, IDisposable
+    public class ImportCommand : CodeExplorerCommandBase
     {
-        private readonly IVBE _vbe;
-        private readonly IOpenFileDialog _openFileDialog;
+        private static readonly Type[] ApplicableNodes =
+        {
+            typeof(CodeExplorerCustomFolderViewModel),
+            typeof(CodeExplorerProjectViewModel),
+            typeof(CodeExplorerComponentViewModel),
+            typeof(CodeExplorerMemberViewModel)
+        };
 
-        public ImportCommand(IVBE vbe, IOpenFileDialog openFileDialog) : base(LogManager.GetCurrentClassLogger())
+        private readonly IVBE _vbe;
+        private readonly IFileSystemBrowserFactory _dialogFactory;
+
+        public ImportCommand(IVBE vbe, IFileSystemBrowserFactory dialogFactory)
         {
             _vbe = vbe;
-            _openFileDialog = openFileDialog;
-
-            _openFileDialog.AddExtension = true;
-            _openFileDialog.AutoUpgradeEnabled = true;
-            _openFileDialog.CheckFileExists = true;
-            _openFileDialog.CheckPathExists = true;
-            _openFileDialog.Multiselect = true;
-            _openFileDialog.ShowHelp = false;   // we don't want 1996's file picker.
-            _openFileDialog.Filter = string.Concat(RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles, @" (*.cls, *.bas, *.frm, *.doccls)|*.cls; *.bas; *.frm; *.doccls|", RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles, @" (*.*)|*.*");
-            _openFileDialog.Title = RubberduckUI.ImportCommand_OpenDialog_Title;
+            _dialogFactory = dialogFactory;
         }
+
+        public override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return parameter != null || _vbe.ProjectsCount == 1 || ThereIsAValidActiveProject();
+            return base.EvaluateCanExecute(parameter) && _vbe.ProjectsCount == 1 || ThereIsAValidActiveProject();
         }
 
         private bool ThereIsAValidActiveProject()
@@ -42,11 +42,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
+        private static readonly List<string> ImportableExtensions = new List<string> { "bas", "cls", "frm" };
+
         protected override void OnExecute(object parameter)
         {
-            var usingFreshProjectWrapper = false;
+            if (!base.EvaluateCanExecute(parameter))
+            {
+                return;
+            }
 
-            var project = GetNodeProject(parameter as CodeExplorerItemViewModel);
+            var usingFreshProjectWrapper = false;
+            var project = (parameter as CodeExplorerItemViewModel)?.Declaration?.Project;
 
             if (project == null)
             {
@@ -63,32 +69,41 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     usingFreshProjectWrapper = true;
                     project = _vbe.ActiveVBProject;
                 }
-            }
-
-            if (project == null || _openFileDialog.ShowDialog() != DialogResult.OK)
-            {
-                if (usingFreshProjectWrapper)
+                else
                 {
-                    project?.Dispose();
+                    return;
                 }
-                return;
             }
 
-            var fileExts = _openFileDialog.FileNames.Select(s => s.Split('.').Last());
-            if (fileExts.Any(fileExt => !new[] {"bas", "cls", "frm"}.Contains(fileExt)))
+            using (var dialog = _dialogFactory.CreateOpenFileDialog())
             {
-                if (usingFreshProjectWrapper)
+                ConfigureOpenDialog(dialog);
+
+                if (project == null || dialog.ShowDialog() != DialogResult.OK)
                 {
-                    project.Dispose();
+                    if (usingFreshProjectWrapper)
+                    {
+                        project?.Dispose();
+                    }
+                    return;
                 }
-                return;
-            }
 
-            foreach (var filename in _openFileDialog.FileNames)
-            {
-                using (var components = project.VBComponents)
+                var fileExists = dialog.FileNames.Select(s => s.Split('.').Last());
+                if (fileExists.Any(fileExt => !ImportableExtensions.Contains(fileExt)))
                 {
-                    components.Import(filename);
+                    if (usingFreshProjectWrapper)
+                    {
+                        project.Dispose();
+                    }
+                    return;
+                }
+
+                foreach (var filename in dialog.FileNames)
+                {
+                    using (var components = project.VBComponents)
+                    {
+                        components.Import(filename);
+                    }
                 }
             }
 
@@ -98,43 +113,19 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             }
         }
 
-        private IVBProject GetNodeProject(CodeExplorerItemViewModel parameter)
+        private static void ConfigureOpenDialog(IOpenFileDialog dialog)
         {
-            if (parameter == null)
-            {
-                return null;
-            }
-
-            if (parameter is ICodeExplorerDeclarationViewModel)
-            {
-                return parameter.GetSelectedDeclaration().Project;
-            }
-
-            var node = parameter.Parent;
-            while (!(node is ICodeExplorerDeclarationViewModel))
-            {
-                node = node.Parent;
-            }
-
-            return ((ICodeExplorerDeclarationViewModel)node).Declaration.Project;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private bool _isDisposed;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_isDisposed || !disposing)
-            {
-                return;
-            }
-
-            _openFileDialog?.Dispose();
-            _isDisposed = true;
+            dialog.AddExtension = true;
+            dialog.AutoUpgradeEnabled = true;
+            dialog.CheckFileExists = true;
+            dialog.CheckPathExists = true;
+            dialog.Multiselect = true;
+            dialog.ShowHelp = false;   // we don't want 1996's file picker.
+            //TODO - Filter needs descriptions.
+            dialog.Filter = string.Concat(RubberduckUI.ImportCommand_OpenDialog_Filter_VBFiles,
+                @" (*.cls, *.bas, *.frm, *.doccls)|*.cls; *.bas; *.frm; *.doccls|",
+                RubberduckUI.ImportCommand_OpenDialog_Filter_AllFiles, @" (*.*)|*.*");
+            dialog.Title = RubberduckUI.ImportCommand_OpenDialog_Title;
         }
     }
 }

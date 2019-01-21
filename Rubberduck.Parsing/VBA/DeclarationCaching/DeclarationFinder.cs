@@ -31,8 +31,11 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         private IDictionary<Declaration, List<ParameterDeclaration>> _parametersByParent;
         private IDictionary<DeclarationType, List<Declaration>> _userDeclarationsByType;
         private IDictionary<QualifiedSelection, List<Declaration>> _declarationsBySelection;
+       
+        private IReadOnlyList<IdentifierReference> _identifierReferences;
         private IDictionary<QualifiedSelection, List<IdentifierReference>> _referencesBySelection;
         private IReadOnlyDictionary<QualifiedModuleName, IReadOnlyList<IdentifierReference>> _referencesByModule;
+        private IReadOnlyDictionary<string, IReadOnlyList<IdentifierReference>> _referencesByProjectId;
         private IDictionary<QualifiedMemberName, List<IdentifierReference>> _referencesByMember;
 
         private Lazy<IDictionary<DeclarationType, List<Declaration>>> _builtInDeclarationsByType;
@@ -105,12 +108,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                         .Where(declaration => declaration.IsUserDefined)
                         .GroupBy(GetGroupingKey)
                         .ToDictionary(),
-                () =>
-                    _referencesBySelection = declarations
-                        .SelectMany(declaration => declaration.References)
-                        .GroupBy(
-                            reference => new QualifiedSelection(reference.QualifiedModuleName, reference.Selection))
-                        .ToDictionary(),
+
                 () =>
                     _parametersByParent = declarations
                         .Where(declaration => declaration.DeclarationType == DeclarationType.Parameter)
@@ -122,20 +120,32 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                         .Where(declaration => declaration.IsUserDefined)
                         .GroupBy(declaration => declaration.DeclarationType)
                         .ToDictionary(),
-                () =>
-                    _referencesByModule = declarations
-                        .SelectMany(declaration => declaration.References)
-                        .GroupBy(reference =>
-                            Declaration.GetModuleParent(reference.ParentScoping).QualifiedName.QualifiedModuleName)
-                        .ToReadonlyDictionary(),
-                () =>
-                    _referencesByMember = declarations
-                        .SelectMany(declaration => declaration.References)
-                        .GroupBy(reference => reference.ParentScoping.QualifiedName)
-                        .ToDictionary()
+
+                () => InitializeIdentifierDictionaries(declarations)
             };
 
             return actions;
+        }
+
+        private void InitializeIdentifierDictionaries(IReadOnlyList<Declaration> declarations)
+        {
+            _identifierReferences = declarations.SelectMany(declaration => declaration.References).ToList();
+
+            _referencesBySelection = _identifierReferences
+                .GroupBy(reference => new QualifiedSelection(reference.QualifiedModuleName, reference.Selection))
+                .ToDictionary();
+
+            _referencesByModule = _identifierReferences
+                .GroupBy(reference => Declaration.GetModuleParent(reference.ParentScoping).QualifiedName.QualifiedModuleName)
+                .ToReadonlyDictionary();
+
+            _referencesByMember = _identifierReferences
+                .GroupBy(reference => reference.ParentScoping.QualifiedName)
+                .ToDictionary();
+
+            _referencesByProjectId = _identifierReferences
+                .GroupBy(reference => reference.Declaration.ProjectId)
+                .ToReadonlyDictionary();
         }
 
         private void InitializeLazyCollections()
@@ -1160,12 +1170,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 return false;
             }
 
-            var referenceProject = reference.Guid.Equals(Guid.Empty)
-                ? UserDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>().FirstOrDefault(proj =>
-                    proj.QualifiedModuleName.ProjectPath.Equals(reference.FullPath, StringComparison.OrdinalIgnoreCase))
-                : BuiltInDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>().FirstOrDefault(proj =>
-                    proj.Guid.Equals(reference.Guid) && proj.MajorVersion == reference.Major &&
-                    proj.MinorVersion == reference.Minor);
+            var referenceProject = GetProjectDeclarationForReference(reference);
 
             if (referenceProject == null ||         // Can't locate the project for the reference - assume it is used to avoid false negatives.
                 IdentifierReferences().Any(item =>
@@ -1184,6 +1189,44 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return !referenceProject.IsUserDefined && AllBuiltInDeclarations.Any(declaration =>
                        declaration.AsTypeDeclaration != null &&
                        declaration.AsTypeDeclaration.QualifiedModuleName.ProjectId.Equals(referenceProject.ProjectId));
+        }
+
+        public List<IdentifierReference> FindAllReferenceUsesInProject(ProjectDeclaration project, ReferenceInfo reference, 
+            out ProjectDeclaration referenceProject)
+        {
+            var output = new List<IdentifierReference>();
+            if (project == null || string.IsNullOrEmpty(reference.FullPath))
+            {
+                referenceProject = null;
+                return output;
+            }
+
+            referenceProject = GetProjectDeclarationForReference(reference);
+
+            if (!_referencesByProjectId.TryGetValue(referenceProject.ProjectId, out var directReferences))
+            {
+                return output;
+            }
+
+            output.AddRange(directReferences);
+
+            var projectId = referenceProject.ProjectId;
+
+            output.AddRange(_identifierReferences.Where(identifier =>
+                identifier?.Declaration?.AsTypeDeclaration != null &&
+                identifier.Declaration.AsTypeDeclaration.QualifiedModuleName.ProjectId.Equals(projectId)));
+
+            return output;
+        }
+
+        private ProjectDeclaration GetProjectDeclarationForReference(ReferenceInfo reference)
+        {
+            return reference.Guid.Equals(Guid.Empty)
+                ? UserDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>().FirstOrDefault(proj =>
+                    proj.QualifiedModuleName.ProjectPath.Equals(reference.FullPath, StringComparison.OrdinalIgnoreCase))
+                : BuiltInDeclarations(DeclarationType.Project).OfType<ProjectDeclaration>().FirstOrDefault(proj =>
+                    proj.Guid.Equals(reference.Guid) && proj.MajorVersion == reference.Major &&
+                    proj.MinorVersion == reference.Minor);
         }
 
         private bool UsesScopeResolution(RuleContext ruleContext)
