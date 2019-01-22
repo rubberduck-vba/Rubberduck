@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Navigation.Folders;
-using Rubberduck.Parsing.Symbols;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -246,6 +242,104 @@ namespace RubberduckTests.CodeExplorer
             AssertFolderStructureIsCorrect(folder, structure);
         }
 
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo.Modules",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Classes",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Docs",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Forms")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Bar")]
+        [TestCase(CodeExplorerTestSetup.TestClassName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestModuleName, "Foo")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar.Baz")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo.Baz",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Baz")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Foo.Foo",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar.Baz")]
+        [TestCase(CodeExplorerTestSetup.TestClassName, "Foo Bar.Baz Baz",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo Bar.Baz",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo Bar.Foo Foo",
+                  CodeExplorerTestSetup.TestModuleName, "Foo Bar")]
+        public void Synchronize_AddedComponent_HasCorrectSubFolderStructure(params object[] parameters)
+        {
+            var structure = ToFolderStructure(parameters.Cast<string>());
+            var root = structure.First().Folder;
+            var path = root.Split(FolderExtensions.FolderDelimiter);
+
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out var projectDeclaration);
+            var synchronizing = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations);
+            var component = synchronizing.TestComponentDeclarations(structure.Last().Name);
+            var contents = synchronizing.Except(component).ToList();
+
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref contents, null, null);
+            var folder = project.Children.OfType<CodeExplorerCustomFolderViewModel>().Single(item => item.Name.Equals(path.First()));
+
+            project.Synchronize(ref synchronizing);
+
+            AssertFolderStructureIsCorrect(folder, structure);
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo.Modules",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Classes",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Docs",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Forms")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Bar")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Bar")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Bar.Baz")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo.Baz",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Baz",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Bar")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo",
+                  CodeExplorerTestSetup.TestClassName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo.Bar.Baz",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo.Foo.Foo")]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, "Foo Bar",
+                  CodeExplorerTestSetup.TestClassName, "Foo Bar.Baz Baz",
+                  CodeExplorerTestSetup.TestDocumentName, "Foo Bar.Baz",
+                  CodeExplorerTestSetup.TestUserFormName, "Foo Bar.Foo Foo")]
+        public void Synchronize_RemovedComponent_HasCorrectSubFolderStructure(params object[] parameters)
+        {
+            var structure = ToFolderStructure(parameters.Cast<string>());
+            var root = structure.First().Folder;
+            var path = root.Split(FolderExtensions.FolderDelimiter);
+
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(structure, out var projectDeclaration);
+            var contents = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations);
+            var component = contents.TestComponentDeclarations(structure.Last().Name);
+            var synchronizing = contents.Except(component).ToList();
+
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref contents, null, null);
+            var folder = project.Children.OfType<CodeExplorerCustomFolderViewModel>().Single(item => item.Name.Equals(path.First()));
+
+            project.Synchronize(ref synchronizing);
+
+            AssertFolderStructureIsCorrect(folder, structure.Take(structure.Count - 1).ToList());
+        }
+
         private static void AssertFolderStructureIsCorrect(CodeExplorerCustomFolderViewModel underTest, List<(string Name, string Folder)> structure)
         {
             foreach (var (name, fullPath) in structure)
@@ -262,17 +356,17 @@ namespace RubberduckTests.CodeExplorer
                                 path.Take(folder.FolderDepth + 1))));
                 }
 
-                Assert.IsNotNull(folder);
+                Assert.IsNotNull(folder, $"Folder {fullPath} was not found.");
 
                 var components = folder.Children.OfType<CodeExplorerComponentViewModel>().ToList();
                 var component = components.SingleOrDefault(subFolder => subFolder.Name.Equals(name));
 
-                Assert.IsNotNull(component);
+                Assert.IsNotNull(component, $"Component {name} was not found in folder {fullPath}.");
 
                 var expected = structure.Where(item => item.Folder.Equals(fullPath)).Select(item => item.Name).OrderBy(_ => _);
                 var actual = components.Select(item => item.Declaration.IdentifierName).OrderBy(_ => _);
 
-                Assert.IsTrue(expected.SequenceEqual(actual));
+                Assert.IsTrue(expected.SequenceEqual(actual), $"Folder {fullPath} does not contain expected components.");
             }
         }
 
