@@ -27,8 +27,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public ReferenceKind ReferenceKind { get; }
 
         public override string Name => ReferenceKind == ReferenceKind.TypeLibrary
-            ? Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_ProjectReferences
-            : Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_LibraryReferences;
+            ? Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_LibraryReferences
+            : Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_ProjectReferences;
 
         public override string NameWithSignature => Name;
 
@@ -43,6 +43,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             get => false;
             set { }
         }
+
+        public override bool Filtered => false;
 
         public override Comparer<ICodeExplorerNode> SortComparer => CodeExplorerItemComparer.ReferenceType;
 
