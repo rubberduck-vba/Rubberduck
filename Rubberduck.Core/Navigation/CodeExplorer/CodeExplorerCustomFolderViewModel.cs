@@ -133,6 +133,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
             }
 
+            children = children.Concat(subFolders).ToList();
             AddNewChildren(ref children);
         }
     }
