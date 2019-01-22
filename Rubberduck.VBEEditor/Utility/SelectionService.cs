@@ -1,4 +1,5 @@
 ﻿using System;
+using NLog;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -8,6 +9,8 @@ namespace Rubberduck.VBEditor.Utility
     {
         private readonly IProjectsProvider _projectsProvider;
         private readonly IVBE _vbe;
+
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public SelectionService(IVBE vbe, IProjectsProvider projectsProvider)
         {
@@ -57,8 +60,9 @@ namespace Rubberduck.VBEditor.Utility
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                _logger.Debug(exception, $"Failed to activate the code pane of module {module}.");
                 return false;
             }
         }
@@ -99,8 +103,9 @@ namespace Rubberduck.VBEditor.Utility
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                _logger.Debug(exception, $"Failed to set the selection of module {module} to {selection}.");
                 return false;
             }
         }
