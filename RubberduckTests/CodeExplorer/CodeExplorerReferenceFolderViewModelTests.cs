@@ -195,10 +195,11 @@ namespace RubberduckTests.CodeExplorer
         public void Constructor_PlacesAllReferences_TypeLibraries()
         {
             var references = AddRemoveReferencesSetup.DummyReferencesList;
-            // ReSharper disable once UnusedVariable
+            var expected = references.Count;
+
             var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.TypeLibrary);
 
-            Assert.AreEqual(references.Count, folder.Children.Count);
+            Assert.AreEqual(expected, folder.Children.Count);
         }
 
         [Test]
@@ -206,10 +207,11 @@ namespace RubberduckTests.CodeExplorer
         public void Constructor_PlacesAllReferences_Projects()
         {
             var references = AddRemoveReferencesSetup.DummyProjectsList;
-            // ReSharper disable once UnusedVariable
+            var expected = references.Count;
+
             var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.Project);
 
-            Assert.AreEqual(references.Count, folder.Children.Count);
+            Assert.AreEqual(expected, folder.Children.Count);
         }
 
         [Test]
@@ -282,12 +284,11 @@ namespace RubberduckTests.CodeExplorer
         [Category("Code Explorer")]
         public void Synchronize_RemovesReference_TypeLibraryRemoved()
         {
-            var references = AddRemoveReferencesSetup.DummyReferencesList;
-            var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.TypeLibrary);
-
+            var references = AddRemoveReferencesSetup.DummyReferencesList.ToList();
             var updates = AddRemoveReferencesSetup.DummyReferencesList.Take(references.Count - 1).ToList();
             var expected = updates.Select(reference => reference.Name).OrderBy(_ => _).ToList();
 
+            var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.TypeLibrary);
             folder.Synchronize(null, updates);
             var actual = folder.Children.Cast<CodeExplorerReferenceViewModel>().Select(reference => reference.Reference.Name).OrderBy(_ => _);
 
@@ -298,13 +299,11 @@ namespace RubberduckTests.CodeExplorer
         [Category("Code Explorer")]
         public void Synchronize_RemovesReference_ProjectRemoved()
         {
-            var references = AddRemoveReferencesSetup.DummyProjectsList;
-            // ReSharper disable once UnusedVariable
-            var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.Project);
-
+            var references = AddRemoveReferencesSetup.DummyProjectsList.ToList();
             var updates = AddRemoveReferencesSetup.DummyProjectsList.Take(references.Count - 1).ToList();
             var expected = updates.Select(reference => reference.Name).OrderBy(_ => _).ToList();
 
+            var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.Project);
             folder.Synchronize(null, updates);
             var actual = folder.Children.Cast<CodeExplorerReferenceViewModel>().Select(reference => reference.Reference.Name).OrderBy(_ => _);
 
