@@ -237,34 +237,40 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             IsBusy = _state.Status != ParserState.Pending && _state.Status <= ParserState.ResolvedDeclarations;
 
-            if (e.State != ParserState.ResolvedDeclarations)
+            if (e.State == ParserState.ResolvedDeclarations)
             {
-                return;
+                Synchronize(_state.DeclarationFinder.AllUserDeclarations);
             }
-
-            Synchronize(_state.DeclarationFinder.AllUserDeclarations.ToList());
         }
 
-        private void Synchronize(List<Declaration> declarations)
+        /// <summary>
+        /// Updates the ViewModel tree to reflect changes in user declarations after a reparse.
+        /// </summary>
+        /// <param name="declarations">
+        /// The new declarations. This should always be the complete declaration set, and materializing
+        /// the IEnumerable should be deferred to UI thread.
+        /// </param>
+        private void Synchronize(IEnumerable<Declaration> declarations)
         {
             _uiDispatcher.Invoke(() =>
             {
+                var updates = declarations.ToList();
                 var existing = Projects.OfType<CodeExplorerProjectViewModel>().ToList();
 
                 foreach (var project in existing)
                 {
-                    project.Synchronize(declarations);
+                    project.Synchronize(ref updates);
                     if (project.Declaration is null)
                     {
                         Projects.Remove(project);
                     }
                 }
 
-                var adding = declarations.OfType<ProjectDeclaration>().ToList();
+                var adding = updates.OfType<ProjectDeclaration>().ToList();
 
                 foreach (var project in adding)
                 {
-                    var model = new CodeExplorerProjectViewModel(project, declarations.Where(proj => proj.ProjectId.Equals(project.ProjectId)).ToList(), _state, _vbe);
+                    var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe);
                     Projects.Add(model);
                 }
 

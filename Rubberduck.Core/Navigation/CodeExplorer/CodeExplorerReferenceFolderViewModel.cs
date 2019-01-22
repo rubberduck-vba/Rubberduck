@@ -27,8 +27,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public ReferenceKind ReferenceKind { get; }
 
         public override string Name => ReferenceKind == ReferenceKind.TypeLibrary
-            ? Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_ProjectReferences
-            : Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_LibraryReferences;
+            ? Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_LibraryReferences
+            : Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_ProjectReferences;
 
         public override string NameWithSignature => Name;
 
@@ -43,6 +43,8 @@ namespace Rubberduck.Navigation.CodeExplorer
             get => false;
             set { }
         }
+
+        public override bool Filtered => false;
 
         public override Comparer<ICodeExplorerNode> SortComparer => CodeExplorerItemComparer.ReferenceType;
 
@@ -72,10 +74,12 @@ namespace Rubberduck.Navigation.CodeExplorer
             foreach (var reference in updates)
             {
                 reference.IsUsed = reference.IsBuiltIn ||
+                                   _finder != null &&
                                    _finder.IsReferenceUsedInProject(Declaration as ProjectDeclaration,
                                        reference.ToReferenceInfo());
 
                 AddChild(new CodeExplorerReferenceViewModel(this, reference));
+                updated.Remove(reference);
             }
 
             if (!Children.Any())
@@ -95,6 +99,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
 
                 reference.IsUsed = reference.IsBuiltIn ||
+                                   _finder != null &&
                                    _finder.IsReferenceUsedInProject(
                                        library.Parent?.Declaration as ProjectDeclaration,
                                        reference.ToReferenceInfo());

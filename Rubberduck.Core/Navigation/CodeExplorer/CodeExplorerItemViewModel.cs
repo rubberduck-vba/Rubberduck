@@ -34,14 +34,16 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
-        public virtual void Synchronize(List<Declaration> updated)
+        public virtual void Synchronize(ref List<Declaration> updated)
         {
             if (Declaration is null)
             {
                 return;
             }
 
-            var matching = updated.FirstOrDefault(decl => Declaration.DeclarationType == decl?.DeclarationType && Declaration.QualifiedName.Equals(decl?.QualifiedName));
+            var matching = updated.FirstOrDefault(decl =>
+                Declaration.DeclarationType == decl?.DeclarationType &&
+                Declaration.QualifiedName.Equals(decl.QualifiedName));
 
             if (matching is null)
             {
@@ -51,14 +53,14 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             Declaration = matching;
             updated.Remove(matching);
-            SynchronizeChildren(updated);
+            SynchronizeChildren(ref updated);
         }
 
-        protected virtual void SynchronizeChildren(List<Declaration> updated)
+        protected virtual void SynchronizeChildren(ref List<Declaration> updated)
         {
             foreach (var child in Children.OfType<CodeExplorerItemViewModel>().ToList())
             {
-                child.Synchronize(updated);
+                child.Synchronize(ref updated);
                 if (child.Declaration is null)
                 {
                     RemoveChild(child);
@@ -68,9 +70,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                 updated.Remove(child.Declaration);
             }
 
-            AddNewChildren(updated);
+            AddNewChildren(ref updated);
         }
 
-        protected abstract void AddNewChildren(List<Declaration> updated);
+        protected abstract void AddNewChildren(ref List<Declaration> updated);
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
@@ -18,7 +19,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         
         public override string Name => Reference?.Name ?? string.Empty;
 
-        public override string NameWithSignature => $"{Name} ({Path.GetFileName(Reference.FullPath)} {Reference.Version})";
+        public override string NameWithSignature => Reference.Type == ReferenceKind.TypeLibrary
+            ? $"{Name} ({Path.GetFileName(Reference.FullPath)} {Reference.Version})"
+            : $"{Name} ({Path.GetFileName(Reference.FullPath)})";
 
         public override string PanelTitle => ToolTip;
 
@@ -60,8 +63,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             if (used != Reference.IsUsed)
             {
-                // ReSharper disable once ExplicitCallerInfoArgument
-                OnPropertyChanged("IsDimmed");
+                OnPropertyChanged(nameof(IsDimmed));
             }
         }
     }

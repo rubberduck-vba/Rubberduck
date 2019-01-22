@@ -7,11 +7,11 @@ using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel
+    public sealed class CodeExplorerMemberViewModel : CodeExplorerItemViewModel
     {
-        public CodeExplorerMemberViewModel(ICodeExplorerNode parent, Declaration declaration, IEnumerable<Declaration> declarations) : base(parent, declaration)
+        public CodeExplorerMemberViewModel(ICodeExplorerNode parent, Declaration declaration, ref List<Declaration> declarations) : base(parent, declaration)
         {
-            AddNewChildren(declarations.ToList());
+            AddNewChildren(ref declarations);
             Name = DetermineMemberName(declaration);
         }
 
@@ -59,9 +59,9 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.UserDefinedTypeMember
         };
 
-        public override void Synchronize(List<Declaration> updated)
+        public override void Synchronize(ref List<Declaration> updated)
         {
-            base.Synchronize(updated);
+            base.Synchronize(ref updated);
             if (Declaration is null)
             {
                 return;
@@ -72,15 +72,19 @@ namespace Rubberduck.Navigation.CodeExplorer
             OnNameChanged();
         }
 
-        protected sealed override void AddNewChildren(List<Declaration> updated)
+        protected override void AddNewChildren(ref List<Declaration> updated)
         {
-            if (updated != null)
+            if (updated == null)
             {
-                AddChildren(updated
-                    .Where(item =>
-                        SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(Declaration))
-                    .Select(item => new CodeExplorerSubMemberViewModel(this, item)));
+                return;
             }
+
+            var updates = updated.Where(item =>
+                SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(Declaration)).ToList();
+
+            updated = updated.Except(updates.Concat(new[] { Declaration })).ToList();
+
+            AddChildren(updates.Select(item => new CodeExplorerSubMemberViewModel(this, item)));
         }
 
         public override Comparer<ICodeExplorerNode> SortComparer
