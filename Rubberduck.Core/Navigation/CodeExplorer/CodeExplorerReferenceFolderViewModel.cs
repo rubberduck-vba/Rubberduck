@@ -79,6 +79,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                                        reference.ToReferenceInfo());
 
                 AddChild(new CodeExplorerReferenceViewModel(this, reference));
+                updated.Remove(reference);
             }
 
             if (!Children.Any())
