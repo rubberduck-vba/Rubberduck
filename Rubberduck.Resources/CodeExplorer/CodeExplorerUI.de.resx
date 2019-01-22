@@ -264,4 +264,25 @@
   <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
     <value>Vorlagen</value>
   </data>
+  <data name="CodeExplorer_ProjectReferences" xml:space="preserve">
+    <value>Projektreferenzen</value>
+  </data>
+  <data name="CodeExplorer_SearchPlaceholder" xml:space="preserve">
+    <value>Suchen...</value>
+  </data>
+  <data name="CodeExplorer_FontSizeToolTip" xml:space="preserve">
+    <value>Schriftgröße</value>
+  </data>
+  <data name="CodeExplorer_SyncCodePaneToolTip" xml:space="preserve">
+    <value>Mit Codefenster synchronisieren</value>
+  </data>
+  <data name="ExportError_Caption" xml:space="preserve">
+    <value>Fehler beim Exportieren von '{0}'</value>
+  </data>
+  <data name="RemoveError_Caption" xml:space="preserve">
+    <value>Fehler beim Entfernen von '{0}'</value>
+  </data>
+  <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
+    <value>Referenzen zu Biblotheken</value>
+  </data>
 </root>
