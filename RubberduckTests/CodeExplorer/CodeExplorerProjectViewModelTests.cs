@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Navigation.CodeExplorer;
@@ -15,7 +16,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
 
             Assert.AreSame(projectDeclaration, project.Declaration);
         }
@@ -27,7 +28,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
 
             Assert.AreEqual(CodeExplorerTestSetup.TestProjectOneName, project.Name);
         }
@@ -39,7 +40,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
 
             Assert.IsFalse(string.IsNullOrEmpty(project.NameWithSignature));
         }
@@ -51,7 +52,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
 
             Assert.IsFalse(string.IsNullOrEmpty(project.PanelTitle));
         }
@@ -63,7 +64,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
 
             Assert.IsTrue(project.IsExpanded);
         }
@@ -75,7 +76,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
 
             Assert.IsFalse(string.IsNullOrEmpty(project.ToolTip));
         }
@@ -93,7 +94,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null)
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null)
             {
                 SortOrder = order
             };
@@ -111,7 +112,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null)
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null)
             {
                 Filter = filter
             };
@@ -135,7 +136,7 @@ namespace RubberduckTests.CodeExplorer
             }
 
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
-            var tracked = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, declarations);
+            var tracked = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations);
 
             Assert.IsFalse(tracked.Any(declaration => declaration.DeclarationType == excluded));
         }
@@ -155,7 +156,7 @@ namespace RubberduckTests.CodeExplorer
             }
 
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
-            var tracked = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, declarations);
+            var tracked = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations);
 
             Assert.IsFalse(tracked.Any(declaration => declaration.DeclarationType == excluded && !declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module)));
         }
@@ -167,7 +168,7 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
             var folder = project.Children.OfType<CodeExplorerCustomFolderViewModel>().Single();
 
             Assert.AreEqual(projectDeclaration.IdentifierName, folder.Name);
@@ -181,7 +182,7 @@ namespace RubberduckTests.CodeExplorer
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
             // ReSharper disable once UnusedVariable
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
 
             Assert.AreEqual(0, declarations.Count);
         }
@@ -192,9 +193,11 @@ namespace RubberduckTests.CodeExplorer
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
+            var updates = declarations.ToList();
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
-            project.Synchronize(CodeExplorerTestSetup.TestProjectOneDeclarations);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
+
+            project.Synchronize(ref updates);
 
             var folder = project.Children.OfType<CodeExplorerCustomFolderViewModel>().Single();
 
@@ -208,9 +211,9 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
             var updates = CodeExplorerTestSetup.TestProjectOneDeclarations;
-            project.Synchronize(updates);
+            project.Synchronize(ref updates);
 
             Assert.AreEqual(0, updates.Count);
         }
@@ -222,9 +225,9 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
             var updates = CodeExplorerTestSetup.TestProjectTwoDeclarations;
-            project.Synchronize(updates);
+            project.Synchronize(ref updates);
 
             var expected = CodeExplorerTestSetup.TestProjectTwoDeclarations
                 .Select(declaration => declaration.QualifiedName.ToString())
@@ -242,11 +245,12 @@ namespace RubberduckTests.CodeExplorer
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
+            var results = declarations.ToList();
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
 
             var expected = 
-                CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, CodeExplorerTestSetup.TestProjectOneDeclarations)
+                CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref results)
                 .Select(declaration => declaration.QualifiedName.ToString())
                 .OrderBy(_ => _);
 
@@ -264,14 +268,100 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
             var updates = CodeExplorerTestSetup.TestProjectOneDeclarations;
-            project.Synchronize(updates);
+            var results = updates.ToList();
+
+            project.Synchronize(ref updates);
 
             var expected =
-                CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, CodeExplorerTestSetup.TestProjectOneDeclarations)
+                CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref results)
                 .Select(declaration => declaration.QualifiedName.ToString())
                 .OrderBy(_ => _);
+
+            var actual = project.GetAllChildDeclarations()
+                .Select(declaration => declaration.QualifiedName.ToString())
+                .OrderBy(_ => _);
+
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestSetup.TestDocumentName, CodeExplorerTestSetup.TestModuleName)]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, CodeExplorerTestSetup.TestClassName)]
+        [TestCase(CodeExplorerTestSetup.TestClassName, CodeExplorerTestSetup.TestUserFormName)]
+        [TestCase(CodeExplorerTestSetup.TestUserFormName, CodeExplorerTestSetup.TestDocumentName)]
+        public void Synchronize_PlacesAllTrackedDeclarations_AddedComponent(string component, string added)
+        {
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations
+                .TestProjectWithComponentDeclarations(new[] { component },out var projectDeclaration);
+
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
+
+            var updates = CodeExplorerTestSetup.TestProjectOneDeclarations
+                .TestProjectWithComponentDeclarations(new[] { component, added }, out _).ToList();
+
+            var results = updates.ToList();
+            var expected =
+                CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref results)
+                    .Select(declaration => declaration.QualifiedName.ToString())
+                    .OrderBy(_ => _)
+                    .ToList();
+
+            project.Synchronize(ref updates);
+
+            var children = project.GetAllChildDeclarations();
+            var actual = children
+                .Select(declaration => declaration.QualifiedName.ToString())
+                .OrderBy(_ => _);
+
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestSetup.TestDocumentName, CodeExplorerTestSetup.TestModuleName)]
+        [TestCase(CodeExplorerTestSetup.TestModuleName, CodeExplorerTestSetup.TestClassName)]
+        [TestCase(CodeExplorerTestSetup.TestClassName, CodeExplorerTestSetup.TestUserFormName)]
+        [TestCase(CodeExplorerTestSetup.TestUserFormName, CodeExplorerTestSetup.TestDocumentName)]
+        public void Synchronize_AddedComponent_SingleProjectFolderExists(string component, string added)
+        {
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations
+                .TestProjectWithComponentDeclarations(new[] { component }, out var projectDeclaration);
+
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
+
+            var updates = CodeExplorerTestSetup.TestProjectOneDeclarations
+                .TestProjectWithComponentDeclarations(new[] { component, added }, out _);
+
+            project.Synchronize(ref updates);
+
+            var actual = project.Children.OfType<CodeExplorerCustomFolderViewModel>()
+                .Count(folder => folder.Name.Equals(CodeExplorerTestSetup.TestProjectOneName));
+
+            Assert.AreEqual(1, actual);
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestSetup.TestDocumentName)]
+        [TestCase(CodeExplorerTestSetup.TestModuleName)]
+        [TestCase(CodeExplorerTestSetup.TestClassName)]
+        [TestCase(CodeExplorerTestSetup.TestUserFormName)]
+        public void Synchronize_RemovesComponent(string removed)
+        {
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
+            var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
+
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
+
+            var updates = CodeExplorerTestSetup.TestProjectOneDeclarations.TestProjectWithComponentRemoved(removed);
+            var expected = updates.Select(declaration => declaration.QualifiedName.ToString())
+                .OrderBy(_ => _)
+                .ToList();
+
+            project.Synchronize(ref updates);
 
             var actual = project.GetAllChildDeclarations()
                 .Select(declaration => declaration.QualifiedName.ToString())
@@ -287,13 +377,14 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
             if (project.Declaration is null)
             {
                 Assert.Inconclusive("Project declaration is null. Fix test setup and see why no other tests failed.");
             }
 
-            project.Synchronize(Enumerable.Empty<Declaration>().ToList());
+            var updates = new List<Declaration>();
+            project.Synchronize(ref updates);
 
             Assert.IsNull(project.Declaration);
         }
@@ -305,13 +396,14 @@ namespace RubberduckTests.CodeExplorer
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations;
             var projectDeclaration = declarations.First(declaration => declaration.DeclarationType == DeclarationType.Project);
 
-            var project = new CodeExplorerProjectViewModel(projectDeclaration, declarations, null, null);
+            var project = new CodeExplorerProjectViewModel(projectDeclaration, ref declarations, null, null);
             if (project.Declaration is null)
             {
                 Assert.Inconclusive("Project declaration is null. Fix test setup and see why no other tests failed.");
             }
 
-            project.Synchronize(CodeExplorerTestSetup.TestProjectTwoDeclarations);
+            var updates = CodeExplorerTestSetup.TestProjectTwoDeclarations;
+            project.Synchronize(ref updates);
 
             Assert.IsNull(project.Declaration);
         }

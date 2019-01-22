@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -14,7 +15,8 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void CompareByName_ReturnsZeroForIdenticalNodes()
         {
-            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, Enumerable.Empty<Declaration>());
+            var declarations = new List<Declaration>();
+            var folderNode = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, ref declarations);
             Assert.AreEqual(0, new CompareByName().Compare(folderNode, folderNode));
         }
 
@@ -22,9 +24,10 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void CompareByName_ReturnsZeroForIdenticalNames()
         {
+            var declarations = new List<Declaration>();
             // this won't happen, but just to be thorough...--besides, it is good for the coverage
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, Enumerable.Empty<Declaration>());
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, Enumerable.Empty<Declaration>());
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, ref declarations);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name", "Name", null, ref declarations);
 
             Assert.AreEqual(0, new CompareByName().Compare(folderNode1, folderNode2));
         }
@@ -33,8 +36,9 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void CompareByName_ReturnsCorrectOrdering()
         {
-            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name1", "Name1", null, Enumerable.Empty<Declaration>());
-            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name2", "Name2", null, Enumerable.Empty<Declaration>());
+            var declarations = new List<Declaration>();
+            var folderNode1 = new CodeExplorerCustomFolderViewModel(null, "Name1", "Name1", null, ref declarations);
+            var folderNode2 = new CodeExplorerCustomFolderViewModel(null, "Name2", "Name2", null, ref declarations);
 
             Assert.IsTrue(new CompareByName().Compare(folderNode1, folderNode2) < 0);
         }
@@ -43,7 +47,8 @@ namespace RubberduckTests.CodeExplorer
         [Test]
         public void CompareByType_ReturnsZeroForIdenticalNodes()
         {
-            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2", null, Enumerable.Empty<Declaration>());
+            var declarations = new List<Declaration>();
+            var errorNode = new CodeExplorerCustomFolderViewModel(null, "Name", "folder1.folder2", null, ref declarations);
             Assert.AreEqual(0, new CompareByName().Compare(errorNode, errorNode));
         }
 

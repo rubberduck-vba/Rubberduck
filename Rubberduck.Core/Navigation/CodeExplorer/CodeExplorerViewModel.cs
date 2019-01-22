@@ -259,7 +259,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 foreach (var project in existing)
                 {
-                    project.Synchronize(updates);
+                    project.Synchronize(ref updates);
                     if (project.Declaration is null)
                     {
                         Projects.Remove(project);
@@ -270,7 +270,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 foreach (var project in adding)
                 {
-                    var model = new CodeExplorerProjectViewModel(project, updates, _state, _vbe);
+                    var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe);
                     Projects.Add(model);
                 }
 

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
@@ -33,7 +31,7 @@ namespace RubberduckTests.CodeExplorer
         public void Constructor_SetsDeclaration(string name, DeclarationType type = DeclarationType.Member)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             Assert.AreSame(memberDeclaration, member.Declaration);
         }
@@ -54,7 +52,7 @@ namespace RubberduckTests.CodeExplorer
         public void Constructor_SetsName_Member(string name)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             Assert.AreEqual(name, member.Name);
         }
@@ -67,7 +65,7 @@ namespace RubberduckTests.CodeExplorer
         public void Constructor_SetsName_Property(string name, DeclarationType type, string suffix)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             Assert.AreEqual($"{name} {suffix}", member.Name);
         }
@@ -91,7 +89,7 @@ namespace RubberduckTests.CodeExplorer
         public void Constructor_NameWithSignatureIsSet(string name, DeclarationType type = DeclarationType.Member)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             Assert.IsFalse(string.IsNullOrEmpty(member.NameWithSignature));
         }
@@ -115,7 +113,7 @@ namespace RubberduckTests.CodeExplorer
         public void Constructor_ToolTipIsSet(string name, DeclarationType type = DeclarationType.Member)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             Assert.IsFalse(string.IsNullOrEmpty(member.ToolTip));
         }
@@ -139,7 +137,7 @@ namespace RubberduckTests.CodeExplorer
         public void Constructor_SetsIsExpandedFalse(string name, DeclarationType type = DeclarationType.Member)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             Assert.IsFalse(member.IsExpanded);
         }
@@ -155,9 +153,8 @@ namespace RubberduckTests.CodeExplorer
         public void SortComparerIsCorrectSortOrderType(CodeExplorerSortOrder order, Type comparerType)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(CodeExplorerTestCode.TestSubName, out var memberDeclaration);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations) { SortOrder = order };
 
-            member.SortOrder = order;
 
             Assert.AreEqual(comparerType, member.SortComparer.GetType());
         }
@@ -178,7 +175,9 @@ namespace RubberduckTests.CodeExplorer
         public void FilteredIsFalseForSubsetsOfName(string name)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, new List<Declaration> { memberDeclaration });
+            var testing = new List<Declaration> { memberDeclaration };
+
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref testing);
 
             for (var characters = 1; characters <= name.Length; characters++)
             {
@@ -211,7 +210,9 @@ namespace RubberduckTests.CodeExplorer
             const string testCharacters = "abcdefghijklmnopqrstuwxyz";
 
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, new List<Declaration> { memberDeclaration });
+            var testing = new List<Declaration> { memberDeclaration };
+
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref testing);
 
             var nonMatching = testCharacters.ToCharArray().Except(name.ToLowerInvariant().ToCharArray());
 
@@ -241,7 +242,7 @@ namespace RubberduckTests.CodeExplorer
         public void Constructor_PlacesAllTrackedDeclarations(string name, DeclarationType type = DeclarationType.Member)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             var expected = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out _, type)
                 .Select(declaration => declaration.QualifiedName.ToString())
@@ -273,10 +274,10 @@ namespace RubberduckTests.CodeExplorer
         public void Synchronize_ClearsPassedDeclarationList_NoChanges(string name, DeclarationType type = DeclarationType.Member)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             var updates = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out _, type);
-            member.Synchronize(updates);
+            member.Synchronize(ref updates);
 
             Assert.AreEqual(0, updates.Count);
         }
@@ -300,10 +301,10 @@ namespace RubberduckTests.CodeExplorer
         public void Synchronize_DoesNotAlterDeclarationList_DifferentComponent(string name, string other, DeclarationType type = DeclarationType.Member)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             var updates = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(other, out _);
-            member.Synchronize(updates);
+            member.Synchronize(ref updates);
 
             var expected = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(other, out _)
                 .Select(declaration => declaration.QualifiedName.ToString()).OrderBy(_ => _);
@@ -331,10 +332,10 @@ namespace RubberduckTests.CodeExplorer
         public void Synchronize_PlacesAllTrackedDeclarations_NoChanges(string name, DeclarationType type = DeclarationType.Member)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
 
             var updates = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out _, type);
-            member.Synchronize(updates);
+            member.Synchronize(ref updates);
 
             var expected = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out _, type)
                 .Select(declaration => declaration.QualifiedName.ToString()).OrderBy(_ => _);
@@ -365,15 +366,74 @@ namespace RubberduckTests.CodeExplorer
         public void Synchronize_SetsDeclarationNull_NoDeclarationsForComponent(string name, DeclarationType type = DeclarationType.Member)
         {
             var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration, type);
-            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, declarations);
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
             if (member.Declaration is null)
             {
                 Assert.Inconclusive("Project declaration is null. Fix test setup and see why no other tests failed.");
             }
 
-            member.Synchronize(Enumerable.Empty<Declaration>().ToList());
+            var updates = new List<Declaration>();
+            member.Synchronize(ref updates);
 
             Assert.IsNull(member.Declaration);
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestCode.TestTypeMemberName)]
+        [TestCase(CodeExplorerTestCode.TestEnumMemberName)]
+        public void Synchronize_PlacesAllTrackedDeclarations_AddedSubMember(string added)
+        {
+            var memberDeclaration = CodeExplorerTestSetup.TestProjectOneDeclarations
+                .Single(declaration => declaration.IdentifierName.Equals(added)).ParentDeclaration;
+
+            var updates = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(memberDeclaration.IdentifierName, out _).ToList();
+            var subMemberDeclaration = updates.Single(declaration => declaration.IdentifierName.Equals(added));
+
+            var declarations = updates.Except(new List<Declaration> { subMemberDeclaration }).ToList();
+
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
+
+            var expected = updates.Select(declaration => declaration.QualifiedName.ToString())
+                .OrderBy(_ => _)
+                .ToList();
+
+            member.Synchronize(ref updates);
+
+            var actual = member.GetAllChildDeclarations()
+                .Select(declaration => declaration.QualifiedName.ToString())
+                .OrderBy(_ => _);
+
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestCode.TestTypeMemberName)]
+        [TestCase(CodeExplorerTestCode.TestEnumMemberName)]
+        public void Synchronize_RemovesSubMember(string removed)
+        {
+            var memberDeclaration = CodeExplorerTestSetup.TestProjectOneDeclarations
+                .Single(declaration => declaration.IdentifierName.Equals(removed)).ParentDeclaration;
+
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(memberDeclaration.IdentifierName, out _).ToList();
+            var subMemberDeclaration = declarations.Single(declaration => declaration.IdentifierName.Equals(removed));
+
+            var updates = declarations.Except(new List<Declaration> { subMemberDeclaration }).ToList();
+
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
+
+            var expected = updates.Select(declaration => declaration.QualifiedName.ToString())
+                .OrderBy(_ => _)
+                .ToList();
+
+            member.Synchronize(ref updates);
+
+            var actual = member.GetAllChildDeclarations()
+                .Select(declaration => declaration.QualifiedName.ToString())
+                .OrderBy(_ => _);
+
+            Assert.IsTrue(expected.SequenceEqual(actual));
         }
     }
 }

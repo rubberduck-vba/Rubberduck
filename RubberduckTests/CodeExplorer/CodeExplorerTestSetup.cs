@@ -1,4 +1,5 @@
-﻿using Rubberduck.Navigation.CodeExplorer;
+﻿using System;
+using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
@@ -11,7 +12,7 @@ namespace RubberduckTests.CodeExplorer
     {
         private static readonly List<Declaration> ProjectOne;
         private static readonly List<Declaration> ProjectTwo;
-
+       
         public const string TestProjectOneName = "TestProject1";
         public const string TestProjectTwoName = "TestProject2";
         public const string TestDocumentName = "TestDocument1";
@@ -26,11 +27,36 @@ namespace RubberduckTests.CodeExplorer
         public static List<Declaration> TestComponentDeclarations(this List<Declaration> declarations, string moduleName)
         {
             var projectDeclaration = declarations.Single(declaration => declaration.DeclarationType == DeclarationType.Project);
-            var candidates = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, declarations);
+            var candidates = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations);
 
             return candidates.Where(declaration =>
                 declaration.DeclarationType != DeclarationType.Project &&
                 declaration.QualifiedModuleName.ComponentName.Equals(moduleName)).ToList();
+        }
+
+        public static List<Declaration> TestProjectWithComponentDeclarations(this List<Declaration> declarations, IEnumerable<string> moduleNames, out Declaration projectDeclaration)
+        {
+            projectDeclaration = declarations.Single(declaration => declaration.DeclarationType == DeclarationType.Project);
+            var candidates = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations).ToList();
+
+            var output = new List<Declaration> { projectDeclaration };
+
+            foreach (var component in moduleNames)
+            {
+                output.AddRange(candidates.Where(declaration =>
+                    declaration.DeclarationType != DeclarationType.Project &&
+                    declaration.QualifiedModuleName.ComponentName.Equals(component)));
+            }
+            return output;
+        }
+
+        public static List<Declaration> TestProjectWithComponentRemoved(this List<Declaration> declarations, string moduleName)
+        {
+            var projectDeclaration = declarations.Single(declaration => declaration.DeclarationType == DeclarationType.Project);
+            var removing = declarations.ToList().TestComponentDeclarations(moduleName);
+            var candidates = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations).ToList();
+
+            return candidates.Except(removing).ToList();
         }
 
         public static List<Declaration> TestMemberDeclarations(this List<Declaration> declarations, 
@@ -44,11 +70,76 @@ namespace RubberduckTests.CodeExplorer
 
             memberDeclaration = member;
 
-            var candidates = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, declarations);
+            var candidates = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations);
 
             return candidates.Where(declaration =>
                 ReferenceEquals(declaration, member) ||
                 ReferenceEquals(declaration.ParentDeclaration, member)).ToList();
+        }
+
+        public static List<Declaration> TestProjectWithMemberRemoved(this List<Declaration> declarations, 
+            string memberName, out Declaration componentDeclaration, DeclarationType type = DeclarationType.Member)
+        {
+            var projectDeclaration = declarations.Single(declaration => declaration.DeclarationType == DeclarationType.Project);
+            var removing = declarations.ToList().TestMemberDeclarations(memberName, out var member, type);
+
+            componentDeclaration = member.ParentDeclaration;
+
+            var candidates = CodeExplorerProjectViewModel.ExtractTrackedDeclarationsForProject(projectDeclaration, ref declarations).ToList();
+
+            return candidates.Except(removing).ToList();
+        }
+
+        public static List<Declaration> TestSubMemberDeclarations(this List<Declaration> declarations,
+            string subMemberName, out Declaration subMemberDeclaration)
+        {
+            subMemberDeclaration = declarations.Single(declaration => declaration.IdentifierName.Equals(subMemberName));
+            return new List<Declaration> { subMemberDeclaration };
+        }
+
+        private static readonly Dictionary<string, string> CodeByModuleName = new Dictionary<string, string>
+        {
+            { TestDocumentName, CodeExplorerTestCode.TestDocumentCode },
+            { TestModuleName, CodeExplorerTestCode.TestModuleCode },
+            { TestClassName, CodeExplorerTestCode.TestClassCode },
+            { TestUserFormName, CodeExplorerTestCode.TestUserFormCode }
+        };
+
+        private static readonly Dictionary<string, ComponentType> ComponentTypeByModuleName = new Dictionary<string, ComponentType>
+        {
+            { TestDocumentName, ComponentType.Document },
+            { TestModuleName, ComponentType.StandardModule },
+            { TestClassName, ComponentType.ClassModule },
+            { TestUserFormName, ComponentType.UserForm }
+        };
+
+        public static List<Declaration> TestProjectWithFolderStructure(IEnumerable<(string Name, string Folder)> modules, out Declaration projectDeclaration)
+        {
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder(TestProjectOneName, ProjectProtection.Unprotected);
+
+            foreach (var (name, folder) in modules)
+            {
+                var code = string.IsNullOrEmpty(folder)
+                    ? CodeByModuleName[name]
+                    : string.Join(Environment.NewLine, $"'@Folder(\"{folder}\")", CodeByModuleName[name]);
+
+                var type = ComponentTypeByModuleName[name];
+                if (type == ComponentType.UserForm)
+                {
+                    project.MockUserFormBuilder(TestUserFormName, code).AddFormToProjectBuilder();
+                    continue;
+                }
+
+                project.AddComponent(name, type, code);
+            }
+
+            builder.AddProject(project.Build());
+            var parser = MockParser.CreateAndParse(builder.Build().Object);
+            var output = parser.AllUserDeclarations.ToList();
+
+            projectDeclaration = output.Single(declaration => declaration.DeclarationType == DeclarationType.Project);
+            return output;
         }
 
         static CodeExplorerTestSetup()

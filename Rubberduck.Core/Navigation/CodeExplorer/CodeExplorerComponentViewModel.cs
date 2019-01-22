@@ -30,12 +30,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly IVBE _vbe;
 
-        public CodeExplorerComponentViewModel(ICodeExplorerNode parent, Declaration declaration, IEnumerable<Declaration> declarations, IVBE vbe) 
+        public CodeExplorerComponentViewModel(ICodeExplorerNode parent, Declaration declaration, ref List<Declaration> declarations, IVBE vbe) 
             : base(parent, declaration)
         {
             _vbe = vbe;
             SetName();    
-            AddNewChildren(declarations.ToList());
+            AddNewChildren(ref declarations);
         }
 
         private string _name;
@@ -54,9 +54,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         public bool IsTestModule => Declaration.DeclarationType == DeclarationType.ProceduralModule
                                     && Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.TestModule);
 
-        public override void Synchronize(List<Declaration> updated)
+        public override void Synchronize(ref List<Declaration> updated)
         {
-            base.Synchronize(updated);
+            base.Synchronize(ref updated);
             if (Declaration is null)
             {
                 return;
@@ -66,23 +66,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             SetName();
         }
 
-        protected override void AddNewChildren(List<Declaration> updated)
+        protected override void AddNewChildren(ref List<Declaration> updated)
         {
             if (updated is null)
             {
                 return;
             }
 
-            var children = updated
-                .Where(declaration => declaration.ParentDeclaration != null &&
-                    MemberTypes.Contains(declaration.DeclarationType) &&
-                    declaration.ParentScope.Equals(Declaration.Scope, StringComparison.OrdinalIgnoreCase))
-                .ToList();
+            var children = updated.Where(declaration =>
+                !ReferenceEquals(Declaration, declaration) &&
+                declaration.QualifiedModuleName.Equals(Declaration?.QualifiedModuleName)).ToList();
 
-            foreach (var member in children)
+            updated = updated.Except(children.Concat(new [] { Declaration })).ToList();
+
+            foreach (var member in children.Where(declaration => MemberTypes.Contains(declaration.DeclarationType)).ToList())
             {
-                AddChild(new CodeExplorerMemberViewModel(this, member, updated));
-                updated.Remove(member);
+                AddChild(new CodeExplorerMemberViewModel(this, member, ref children));
             }
         }
 

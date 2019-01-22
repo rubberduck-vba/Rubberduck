@@ -22,7 +22,7 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = declarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             Assert.AreSame(componentDeclaration, component.Declaration);
         }
@@ -39,7 +39,7 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = declarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             Assert.AreEqual(name, component.Name);
         }
@@ -56,7 +56,7 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = declarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             Assert.IsFalse(string.IsNullOrEmpty(component.NameWithSignature));
         }
@@ -73,7 +73,7 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = declarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             Assert.IsFalse(string.IsNullOrEmpty(component.ToolTip));
         }
@@ -90,7 +90,7 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = declarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             Assert.IsFalse(component.IsExpanded);
         }
@@ -103,7 +103,8 @@ namespace RubberduckTests.CodeExplorer
                 .First(declaration => declaration.DeclarationType == DeclarationType.Project);
             var componentDeclaration = PredeclaredClassDeclaration(projectDeclaration);
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, Enumerable.Empty<Declaration>(), null);
+            var declarations = new List<Declaration>();
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             Assert.IsTrue(component.IsPredeclared);
         }
@@ -116,7 +117,8 @@ namespace RubberduckTests.CodeExplorer
                 .First(declaration => declaration.DeclarationType == DeclarationType.Project);
             var componentDeclaration = PredeclaredClassDeclaration(projectDeclaration);
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, Enumerable.Empty<Declaration>(), null);
+            var declarations = new List<Declaration>();
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             Assert.IsTrue(component.NameWithSignature.EndsWith("(Predeclared)"));
         }
@@ -136,7 +138,7 @@ namespace RubberduckTests.CodeExplorer
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) &&
                     declaration.IdentifierName.Equals(CodeExplorerTestSetup.TestModuleName));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             Assert.AreEqual(CodeExplorerItemComparer.ComponentType.GetType(), component.SortComparer.GetType());
         }
@@ -152,7 +154,8 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = CodeExplorerTestSetup.TestProjectOneDeclarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, new List<Declaration> { componentDeclaration }, null);
+            var declarations = new List<Declaration> { componentDeclaration };
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             for (var characters = 1; characters <= name.Length; characters++)
             {
@@ -180,7 +183,8 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = CodeExplorerTestSetup.TestProjectOneDeclarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, new List<Declaration> { componentDeclaration }, null);
+            var declarations = new List<Declaration> { componentDeclaration };
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             var nonMatching = testCharacters.ToCharArray().Except(name.ToLowerInvariant().ToCharArray());
 
@@ -203,7 +207,7 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = declarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             var expected = CodeExplorerTestSetup.TestProjectOneDeclarations.TestComponentDeclarations(name)
                 .Select(declaration => declaration.QualifiedName.ToString())
@@ -228,10 +232,10 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = declarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             var updates = CodeExplorerTestSetup.TestProjectOneDeclarations.TestComponentDeclarations(name);
-            component.Synchronize(updates);
+            component.Synchronize(ref updates);
 
             Assert.AreEqual(0, updates.Count);
         }
@@ -248,10 +252,10 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = declarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             var updates = CodeExplorerTestSetup.TestProjectOneDeclarations.TestComponentDeclarations(other);
-            component.Synchronize(updates);
+            component.Synchronize(ref updates);
 
             var expected = CodeExplorerTestSetup.TestProjectOneDeclarations.TestComponentDeclarations(other)
                 .Select(declaration => declaration.QualifiedName.ToString()).OrderBy(_ => _);
@@ -272,10 +276,10 @@ namespace RubberduckTests.CodeExplorer
             var componentDeclaration = declarations
                 .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, declarations, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
 
             var updates = CodeExplorerTestSetup.TestProjectOneDeclarations.TestComponentDeclarations(name);
-            component.Synchronize(updates);
+            component.Synchronize(ref updates);
 
             var expected = CodeExplorerTestSetup.TestProjectOneDeclarations.TestComponentDeclarations(name)
                 .Select(declaration => declaration.QualifiedName.ToString()).OrderBy(_ => _);
@@ -302,15 +306,92 @@ namespace RubberduckTests.CodeExplorer
             var original = declarations.TestComponentDeclarations(name);
             var updates = declarations.Except(original).ToList();
 
-            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, original, null);
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref original, null);
             if (component.Declaration is null)
             {
                 Assert.Inconclusive("Component declaration is null. Fix test setup and see why no other tests failed.");
             }
 
-            component.Synchronize(updates);
+            component.Synchronize(ref updates);
 
             Assert.IsNull(component.Declaration);
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestCode.TestSubName)]
+        [TestCase(CodeExplorerTestCode.TestSubWithLineLabelName)]
+        [TestCase(CodeExplorerTestCode.TestSubWithUnresolvedMemberName)]
+        [TestCase(CodeExplorerTestCode.TestFunctionName)]
+        [TestCase(CodeExplorerTestCode.TestPropertyName, DeclarationType.PropertyGet)]
+        [TestCase(CodeExplorerTestCode.TestPropertyName, DeclarationType.PropertyLet)]
+        [TestCase(CodeExplorerTestCode.TestPropertyName, DeclarationType.PropertySet)]
+        [TestCase(CodeExplorerTestCode.TestTypeName)]
+        [TestCase(CodeExplorerTestCode.TestEnumName)]
+        [TestCase(CodeExplorerTestCode.TestConstantName)]
+        [TestCase(CodeExplorerTestCode.TestFieldName)]
+        [TestCase(CodeExplorerTestCode.TestLibraryFunctionName)]
+        [TestCase(CodeExplorerTestCode.TestLibraryProcedureName)]
+        [TestCase(CodeExplorerTestCode.TestEventName)]
+        public void Synchronize_PlacesAllTrackedDeclarations_AddedMember(string added, DeclarationType type = DeclarationType.Member)
+        {
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations
+                .TestProjectWithMemberRemoved(added, out var componentDeclaration, type);
+
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
+            var updates = CodeExplorerTestSetup.TestProjectOneDeclarations.TestComponentDeclarations(componentDeclaration.IdentifierName);
+
+            var expected = updates.Select(declaration => declaration.QualifiedName.ToString())
+                    .OrderBy(_ => _)
+                    .ToList();
+
+            component.Synchronize(ref updates);
+
+            var actual = component.GetAllChildDeclarations()
+                .Select(declaration => declaration.QualifiedName.ToString())
+                .OrderBy(_ => _);
+
+            Assert.IsTrue(expected.SequenceEqual(actual));
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestCode.TestSubName)]
+        [TestCase(CodeExplorerTestCode.TestSubWithLineLabelName)]
+        [TestCase(CodeExplorerTestCode.TestSubWithUnresolvedMemberName)]
+        [TestCase(CodeExplorerTestCode.TestFunctionName)]
+        [TestCase(CodeExplorerTestCode.TestPropertyName, DeclarationType.PropertyGet)]
+        [TestCase(CodeExplorerTestCode.TestPropertyName, DeclarationType.PropertyLet)]
+        [TestCase(CodeExplorerTestCode.TestPropertyName, DeclarationType.PropertySet)]
+        [TestCase(CodeExplorerTestCode.TestTypeName)]
+        [TestCase(CodeExplorerTestCode.TestEnumName)]
+        [TestCase(CodeExplorerTestCode.TestConstantName)]
+        [TestCase(CodeExplorerTestCode.TestFieldName)]
+        [TestCase(CodeExplorerTestCode.TestLibraryFunctionName)]
+        [TestCase(CodeExplorerTestCode.TestLibraryProcedureName)]
+        [TestCase(CodeExplorerTestCode.TestEventName)]
+        public void Synchronize_RemovesMember(string removed, DeclarationType type = DeclarationType.Member)
+        {
+            var updates = CodeExplorerTestSetup.TestProjectOneDeclarations
+                .TestProjectWithMemberRemoved(removed, out var componentDeclaration, type)
+                .TestComponentDeclarations(componentDeclaration.IdentifierName);
+
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations
+                .TestComponentDeclarations(componentDeclaration.IdentifierName);
+
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
+
+            var expected = updates.Select(declaration => declaration.QualifiedName.ToString())
+                    .OrderBy(_ => _)
+                    .ToList();
+
+            component.Synchronize(ref updates);
+
+            var actual = component.GetAllChildDeclarations()
+                .Select(declaration => declaration.QualifiedName.ToString())
+                .OrderBy(_ => _);
+
+            Assert.IsTrue(expected.SequenceEqual(actual));
         }
 
         private const string PredeclaredClassName = "PredeclaredClass";

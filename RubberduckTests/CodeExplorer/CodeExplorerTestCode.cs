@@ -14,8 +14,10 @@ namespace RubberduckTests.CodeExplorer
         public const string TestPropertyParameterName = "value";
         public const string TestTypeName = "TestType";
         public const string TestTypeMemberName = "TestTypeMember";
+        public const string TestTypeMemberTwoName = "TestTypeMemberTwo";
         public const string TestEnumName = "TestEnum";
         public const string TestEnumMemberName = "TestEnumMember";
+        public const string TestEnumMemberTwoName = "TestEnumMemberTwo";
         public const string TestConstantName = "TestConstant";
         public const string TestFieldName = "TestField";
         public const string TestLibraryFunctionName = "TestLibraryFunction";
@@ -81,6 +83,7 @@ End Property
 $@"
 Public Type {TestTypeName}
     {TestTypeMemberName} As Long
+    {TestTypeMemberTwoName} As Long
 End Type
 ";
 
@@ -88,6 +91,7 @@ End Type
 $@"
 Public Enum {TestEnumName}
     {TestEnumMemberName}
+    {TestEnumMemberTwoName}
 End Enum
 ";
         public static string TestUserFormCode =>

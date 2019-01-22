@@ -78,7 +78,7 @@ End Sub";
                 var declarations = project.State.AllUserDeclarations.ToList();
                 declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo"));
 
-                project.Synchronize(declarations);
+                project.Synchronize(ref declarations);
                 var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
@@ -110,7 +110,7 @@ End Sub";
 
                 declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new IAnnotation [] { annotation, predeclared }));
 
-                project.Synchronize(declarations);
+                project.Synchronize(ref declarations);
                 var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
@@ -142,7 +142,7 @@ End Sub";
 
                 declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", new IAnnotation[] { predeclared, annotation }));
 
-                project.Synchronize(declarations);
+                project.Synchronize(ref declarations);
                 var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
@@ -170,7 +170,7 @@ End Sub";
                 var declarations = project.State.AllUserDeclarations.ToList();
                 declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", "\"First\""));
 
-                project.Synchronize(declarations);
+                project.Synchronize(ref declarations);
                 var added = folder.Children.OfType<CodeExplorerComponentViewModel>().Single();
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
@@ -199,7 +199,7 @@ End Sub";
                 var declarations = project.State.AllUserDeclarations.ToList();
                 declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", "\"First.Second\""));
 
-                project.Synchronize(declarations);
+                project.Synchronize(ref declarations);
                 var added = subfolder.Children.OfType<CodeExplorerComponentViewModel>().Single();
 
                 Assert.AreEqual(DeclarationType.ClassModule, added.Declaration.DeclarationType);
@@ -229,7 +229,7 @@ End Sub";
                 var declarations = project.State.AllUserDeclarations.ToList();
                 declarations.Add(GetNewClassDeclaration(project.Declaration, "Foo", "\"First.Second.Third\""));
 
-                project.Synchronize(declarations);
+                project.Synchronize(ref declarations);
 
                 var added = subfolder.Children.OfType<CodeExplorerComponentViewModel>()                   
                     .SingleOrDefault(node => node.Declaration.DeclarationType == DeclarationType.ClassModule);
