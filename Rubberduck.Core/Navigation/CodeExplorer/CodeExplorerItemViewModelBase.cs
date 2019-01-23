@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -75,13 +74,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public virtual string Description => Declaration?.DescriptionString ?? string.Empty;
 
-        [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
         protected void OnNameChanged()
         {
-            OnPropertyChanged("Name");
-            OnPropertyChanged("NameWithSignature");
-            OnPropertyChanged("PanelTitle");
-            OnPropertyChanged("Description");
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged(nameof(NameWithSignature));
+            OnPropertyChanged(nameof(PanelTitle));
+            OnPropertyChanged(nameof(Description));
         }
 
         public virtual QualifiedSelection? QualifiedSelection => Declaration?.QualifiedSelection;
@@ -232,8 +230,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
                 
                 OnPropertyChanged();
-                // ReSharper disable once ExplicitCallerInfoArgument
-                OnPropertyChanged("Filtered");
+                OnPropertyChanged(nameof(Filtered));
             }
         }
 

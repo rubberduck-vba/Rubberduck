@@ -22,14 +22,15 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private readonly IVBE _vbe;
 
-        public CodeExplorerProjectViewModel(Declaration declaration, IEnumerable<Declaration> declarations, RubberduckParserState state, IVBE vbe, bool references = true) : base(null, declaration)
+        public CodeExplorerProjectViewModel(Declaration project, ref List<Declaration> declarations, RubberduckParserState state, IVBE vbe, bool references = true) : base(null, project)
         {
             State = state;         
             _vbe = vbe;
             ShowReferences = references;
 
             SetName();
-            AddNewChildren(declarations.ToList());
+            var children = ExtractTrackedDeclarationsForProject(project, ref declarations);
+            AddNewChildren(ref children);
             IsExpanded = true;
         }
 
@@ -63,7 +64,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public override bool Filtered => false;
 
-        public override void Synchronize(List<Declaration> updated)
+        public override void Synchronize(ref List<Declaration> updated)
         {
             if (Declaration is null ||
                 !(updated?.OfType<ProjectDeclaration>()
@@ -74,22 +75,22 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
 
             Declaration = match;
-            updated.Remove(Declaration);
-            var children = updated.Where(declaration => declaration.ProjectId.Equals(Declaration.ProjectId)).ToList();
-            updated.RemoveAll(declaration => declaration.ProjectId.Equals(Declaration.ProjectId));
+
+            var children = ExtractTrackedDeclarationsForProject(Declaration, ref updated);
+            updated = updated.Except(children.Union(new[] { Declaration })).ToList();
 
             // Reference synchronization is deferred to AddNewChildren for 2 reasons. First, it doesn't make sense to sling around a List of
             // declaration for something that doesn't need it. Second (and more importantly), the priority can't be set without calling 
             // GetProjectReferenceModels, which hits the VBE COM interfaces. So, we only want to do that once. The bonus 3rd reason is that it
             // can be called from the ctor this way.
 
-            SynchronizeChildren(children);
+            SynchronizeChildren(ref children);
 
             // Have to do this again - the project might have been saved or otherwise had the ProjectDisplayName changed.
             SetName();
         }
 
-        protected sealed override void AddNewChildren(List<Declaration> updated)
+        protected sealed override void AddNewChildren(ref List<Declaration> updated)
         {
             if (updated is null)
             {
@@ -98,9 +99,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             SynchronizeReferences();
 
-            AddChildren(updated.GroupBy(declaration => declaration.RootFolder())
-                .Where(folder => !string.IsNullOrEmpty(folder.Key))
-                .Select(folder => new CodeExplorerCustomFolderViewModel(this, folder.Key, folder.Key, _vbe, folder)));
+            foreach (var rootFolder in updated.GroupBy(declaration => declaration.RootFolder())
+                .Where(folder => !string.IsNullOrEmpty(folder.Key)))
+            {
+                var contents = rootFolder.ToList();
+                AddChild(new CodeExplorerCustomFolderViewModel(this, rootFolder.Key, rootFolder.Key, _vbe, ref contents));
+            }
         }
 
         private void SynchronizeReferences()
@@ -129,7 +133,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             foreach (var type in types)
             {
-                AddChild(new CodeExplorerReferenceFolderViewModel(this, State.DeclarationFinder, type.ToList(), type.Key));
+                AddChild(new CodeExplorerReferenceFolderViewModel(this, State?.DeclarationFinder, type.ToList(), type.Key));
             }
         }
 
@@ -169,6 +173,32 @@ namespace Rubberduck.Navigation.CodeExplorer
             _displayName = Declaration?.ProjectDisplayName ?? string.Empty;
 
             OnNameChanged();
+        }
+
+        private static readonly List<DeclarationType> UntrackedTypes = new List<DeclarationType>
+        {
+            DeclarationType.Parameter,
+            DeclarationType.LineLabel,
+            DeclarationType.UnresolvedMember,
+            DeclarationType.BracketedExpression,
+            DeclarationType.ComAlias
+        };
+
+        private static readonly List<DeclarationType> ModuleRestrictedTypes = new List<DeclarationType>
+        {
+            DeclarationType.Variable,
+            DeclarationType.Control,
+            DeclarationType.Constant
+        };
+
+        public static List<Declaration> ExtractTrackedDeclarationsForProject(Declaration project, ref List<Declaration> declarations)
+        {
+            var owned = declarations.Where(declaration => declaration.ProjectId.Equals(project.ProjectId)).ToList();
+            declarations = declarations.Except(owned).ToList();
+
+            return owned.Where(declaration => !UntrackedTypes.Contains(declaration.DeclarationType) &&
+                               (!ModuleRestrictedTypes.Contains(declaration.DeclarationType) ||
+                                declaration.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Module))).ToList();
         }
     }
 }

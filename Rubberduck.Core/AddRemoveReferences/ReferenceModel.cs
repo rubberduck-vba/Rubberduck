@@ -183,7 +183,7 @@ namespace Rubberduck.AddRemoveReferences
                    FullPath.Equals(info.FullPath, StringComparison.OrdinalIgnoreCase) ||
                    FullPath32.Equals(info.FullPath, StringComparison.OrdinalIgnoreCase) ||
                    FullPath64.Equals(info.FullPath, StringComparison.OrdinalIgnoreCase) ||
-                   Guid.Equals(info.Guid);
+                   !Guid.Equals(Guid.Empty) && Guid.Equals(info.Guid);
         }
 
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

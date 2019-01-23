@@ -8,7 +8,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    [DebuggerDisplay("{Name}")]
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
     public sealed class CodeExplorerCustomFolderViewModel : CodeExplorerItemViewModel
     {
         private static readonly DeclarationType[] ComponentTypes =
@@ -26,14 +26,14 @@ namespace Rubberduck.Navigation.CodeExplorer
             string name, 
             string fullPath, 
             IVBE vbe,
-            IEnumerable<Declaration> declarations) : base(parent, parent?.Declaration)
+            ref List<Declaration> declarations) : base(parent, parent?.Declaration)
         {
             _vbe = vbe;
             FolderDepth = parent is CodeExplorerCustomFolderViewModel folder ? folder.FolderDepth + 1 : 1;
             FullPath = fullPath?.Trim('"') ?? string.Empty;
             Name = name.Replace("\"", string.Empty);
 
-            AddNewChildren(declarations.ToList());
+            AddNewChildren(ref declarations);
         }
 
         public override string Name { get; }
@@ -44,7 +44,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public string FullPath { get; }
 
-        public string FolderAttribute => $"@Folder(\"{FullPath.Replace("\"", string.Empty)}\")";
+        public string FolderAttribute => $"'@Folder(\"{FullPath.Replace("\"", string.Empty)}\")";
 
         /// <summary>
         /// One-based depth in the folder hierarchy.
@@ -63,23 +63,25 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public override bool Filtered => false;
 
-        protected override void AddNewChildren(List<Declaration> declarations)
+        protected override void AddNewChildren(ref List<Declaration> declarations)
         {
-            var children = declarations.Where(declaration => declaration.IsInSubFolder(FullPath)).ToList();
+            var children = declarations.Where(declaration => declaration.IsInFolderOrSubFolder(FullPath)).ToList();
+            declarations = declarations.Except(children).ToList();
 
-            foreach (var folder in children.GroupBy(declaration => declaration.CustomFolder.SubFolderRoot(FullPath)))
+            var subFolders = children.Where(declaration => declaration.IsInSubFolder(FullPath)).ToList();
+
+            foreach (var folder in subFolders.GroupBy(declaration => declaration.CustomFolder.SubFolderRoot(FullPath)))
             {
-                AddChild(new CodeExplorerCustomFolderViewModel(this, folder.Key, $"{FullPath}.{folder.Key}", _vbe, folder));
-                foreach (var declaration in folder)
-                {
-                    declarations.Remove(declaration);
-                }
+                var contents = folder.ToList();
+                AddChild(new CodeExplorerCustomFolderViewModel(this, folder.Key, $"{FullPath}.{folder.Key}", _vbe, ref contents));
             }
 
-            foreach (var declaration in declarations.GroupBy(item => item.ComponentName))
+            children = children.Except(subFolders).ToList();
+
+            foreach (var declaration in children.Where(child => child.IsInFolder(FullPath)).GroupBy(item => item.ComponentName))
             {
                 var moduleName = declaration.Key;
-                var parent = declarations.SingleOrDefault(item => 
+                var parent = children.SingleOrDefault(item => 
                     ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
 
                 if (parent is null)
@@ -87,29 +89,52 @@ namespace Rubberduck.Navigation.CodeExplorer
                     continue;
                 }
 
-                var members = declarations.Where(item =>
-                    !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName);
+                var members = children.Where(item =>
+                    !ComponentTypes.Contains(item.DeclarationType) && item.ComponentName == moduleName).ToList();
 
-                AddChild(new CodeExplorerComponentViewModel(this, parent, members, _vbe));
+                AddChild(new CodeExplorerComponentViewModel(this, parent, ref members, _vbe));
             }
         }
 
-        public override void Synchronize(List<Declaration> updated)
+        public override void Synchronize(ref List<Declaration> updated)
         {
-            var declarations = updated.Where(declaration => declaration.IsInFolderOrSubFolder(FullPath)).ToList();
+            SynchronizeChildren(ref updated);
+        }
 
-            if (!declarations.Any())
+        protected override void SynchronizeChildren(ref List<Declaration> updated)
+        {
+            var children = updated.Where(declaration => declaration.IsInFolderOrSubFolder(FullPath)).ToList();
+            updated = updated.Except(children).ToList();
+
+            if (!children.Any())
             {
                 Declaration = null;
                 return;
             }
 
-            foreach (var declaration in declarations)
+            var subFolders = children.Where(declaration => declaration.IsInSubFolder(FullPath)).ToList();
+            children = children.Except(subFolders).ToList();
+
+            foreach (var subfolder in Children.OfType<CodeExplorerCustomFolderViewModel>().ToList())
             {
-                updated.Remove(declaration);
+                subfolder.SynchronizeChildren(ref subFolders);
+                if (subfolder.Declaration is null)
+                {
+                    RemoveChild(subfolder);
+                }
             }
 
-            SynchronizeChildren(declarations);
+            foreach (var child in Children.OfType<CodeExplorerComponentViewModel>().ToList())
+            {
+                child.Synchronize(ref children);
+                if (child.Declaration is null)
+                {
+                    RemoveChild(child);
+                }
+            }
+
+            children = children.Concat(subFolders).ToList();
+            AddNewChildren(ref children);
         }
     }
 }
