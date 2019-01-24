@@ -7,6 +7,9 @@ using Rubberduck.VBEditor.SourceCodeHandling;
 
 namespace Rubberduck.AutoComplete.SelfClosingPairs
 {
+    /// <summary>
+    /// An AC handler that automatically closes certain specific "pairs" of characters, e.g. double quotes, or parentheses.
+    /// </summary>
     public class SelfClosingPairHandler : AutoCompleteHandlerBase
     {
         private const int MaximumLines = 25;
@@ -38,6 +41,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
             result = null;
             if (!_scpInputLookup.TryGetValue(e.Character, out var pair) && e.Character != '\b')
             {
+                // not an interesting keypress.
                 return false;
             }
 
@@ -49,8 +53,17 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
                 return false;
             }
 
+            if (!original.CaretPosition.IsSingleCharacter)
+            {
+                // here would be an opportunity to "wrap selection" with a SCP.
+                // todo: WrapSelectionWith(pair)?
+                result = null;
+                return false;
+            }
+
             if (pair != null)
             {
+                // found a SCP for the input key; see if we should handle it:
                 if (!HandleInternal(e, original, pair, out result))
                 {
                     return false;
@@ -58,6 +71,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
             }
             else if (e.Character == '\b')
             {
+                // backspace - see if SCP logic needs to intervene:
                 foreach (var scp in _selfClosingPairs)
                 {
                     if (HandleInternal(e, original, scp, out result))
@@ -69,9 +83,11 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
 
             if (result == null)
             {
+                // no meaningful output; let the input be handled by another handler, maybe.
                 return false;
             }
 
+            // 1-based selection span in the code pane starts at column 1 but really encompasses the entire line.
             var snippetPosition = new Selection(result.SnippetPosition.StartLine, 1, result.SnippetPosition.EndLine, 1);
             result = new CodeString(result.Code, result.CaretPosition, snippetPosition);
 
@@ -81,13 +97,6 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
 
         private bool HandleInternal(AutoCompleteEventArgs e, CodeString original, SelfClosingPair pair, out CodeString result)
         {
-            if (!original.CaretPosition.IsSingleCharacter)
-            {
-                // todo: WrapSelectionWith(pair)?
-                result = null;
-                return false;
-            }
-
             // if executing the SCP against the original code yields no result, we need to bail out.
             if (!_scpService.Execute(pair, original, e.Character, out result))
             {
