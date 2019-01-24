@@ -40,6 +40,9 @@ namespace RubberduckTests.AddRemoveReferences
                     new ReferenceInfo(Guid.Empty, $"VBProject{info}", $@"C:\Users\Rubberduck\Documents\Book{info}.xlsm", 0, 0))
                 .ToList();
 
+        public static List<ReferenceModel> DummyProjectsList => ProjectReferenceInfoList
+            .Select(proj => new ReferenceModel(proj, ReferenceKind.Project)).ToList();
+
         public static List<ReferenceInfo> RecentProjectReferenceInfoList =>
             Enumerable.Range(1, 3)
                 .Select(info =>

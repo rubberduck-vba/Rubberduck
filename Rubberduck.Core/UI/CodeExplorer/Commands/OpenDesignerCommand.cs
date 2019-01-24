@@ -1,32 +1,39 @@
+using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.ComManagement;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class OpenDesignerCommand : CommandBase
+    public class OpenDesignerCommand : CodeExplorerCommandBase
     {
+        private static readonly Type[] ApplicableNodes =
+        {
+            typeof(CodeExplorerComponentViewModel),
+            typeof(CodeExplorerMemberViewModel)
+        };
+
         private readonly IProjectsProvider _projectsProvider;
 
         public OpenDesignerCommand(IProjectsProvider projectsProvider)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _projectsProvider = projectsProvider;
         }
 
+        public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
+
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (parameter == null)
+            if (!base.EvaluateCanExecute(parameter) || !(parameter is CodeExplorerItemViewModel node))
             {
                 return false;   
             }
 
             try
             {
-                var declaration = ((CodeExplorerItemViewModel) parameter).GetSelectedDeclaration();
+                var declaration = node.Declaration;
                 return declaration != null && declaration.DeclarationType == DeclarationType.ClassModule &&
                        _projectsProvider.Component(declaration.QualifiedName.QualifiedModuleName).HasDesigner;
             }
@@ -39,7 +46,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            var component = _projectsProvider.Component(((ICodeExplorerDeclarationViewModel)parameter).Declaration.QualifiedName.QualifiedModuleName);
+            if (!base.EvaluateCanExecute(parameter) || !(parameter is CodeExplorerItemViewModel node) || node.Declaration == null)
+            {
+                return;
+            }
+
+            var component = _projectsProvider.Component(node.Declaration.QualifiedName.QualifiedModuleName);
             using (var designer = component.DesignerWindow())
             {
                 if (!designer.IsWrappingNullReference)

@@ -134,69 +134,71 @@ namespace Rubberduck
 
         private void InitializeAddIn()
         {
-            if (_isInitialized)
-            {
-                // The add-in is already initialized. See:
-                // The strange case of the add-in initialized twice
-                // http://msmvps.com/blogs/carlosq/archive/2013/02/14/the-strange-case-of-the-add-in-initialized-twice.aspx
-                return;
-            }
-
-            var configLoader = new XmlPersistanceService<GeneralSettings>
-            {
-                FilePath =
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                        "Rubberduck", "rubberduck.config")
-            };
-            var configProvider = new GeneralConfigProvider(configLoader);
-            
-            _initialSettings = configProvider.Create();
-            if (_initialSettings != null)
-            {
-                try
-                {
-                    var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.Language.Code);
-                    Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
-                }
-                catch (CultureNotFoundException)
-                {
-                }
-                try
-                {
-                    if (_initialSettings.SetDpiUnaware)
-                    {
-                        SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
-                    }
-                }
-                catch (Exception)
-                {
-                    Debug.Assert(false, "Could not set DPI awareness.");
-                }
-            }
-            else
-            {
-                Debug.Assert(false, "Settings could not be initialized.");
-            }
-
             Splash splash = null;
-            if (_initialSettings.CanShowSplash)
-            {
-                splash = new Splash
-                {
-                    // note: IVersionCheck.CurrentVersion could return this string.
-                    Version = $"version {Assembly.GetExecutingAssembly().GetName().Version}"
-                };
-                splash.Show();
-                splash.Refresh();
-            }
-
             try
             {
+                if (_isInitialized)
+                {
+                    // The add-in is already initialized. See:
+                    // The strange case of the add-in initialized twice
+                    // http://msmvps.com/blogs/carlosq/archive/2013/02/14/the-strange-case-of-the-add-in-initialized-twice.aspx
+                    return;
+                }
+
+                var configLoader = new XmlPersistanceService<GeneralSettings>
+                {
+                    FilePath =
+                        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                            "Rubberduck", "rubberduck.config")
+                };
+                var configProvider = new GeneralConfigProvider(configLoader);
+
+                _initialSettings = configProvider.Create();
+                if (_initialSettings != null)
+                {
+                    try
+                    {
+                        var cultureInfo = CultureInfo.GetCultureInfo(_initialSettings.Language.Code);
+                        Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = cultureInfo;
+                    }
+                    catch (CultureNotFoundException)
+                    {
+                    }
+
+                    try
+                    {
+                        if (_initialSettings.SetDpiUnaware)
+                        {
+                            SHCore.SetProcessDpiAwareness(PROCESS_DPI_AWARENESS.Process_DPI_Unaware);
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        Debug.Assert(false, "Could not set DPI awareness.");
+                    }
+                }
+                else
+                {
+                    Debug.Assert(false, "Settings could not be initialized.");
+                }
+
+                if (_initialSettings?.CanShowSplash ?? false)
+                {
+                    splash = new Splash
+                    {
+                        // note: IVersionCheck.CurrentVersion could return this string.
+                        Version = $"version {Assembly.GetExecutingAssembly().GetName().Version}"
+                    };
+                    splash.Show();
+                    splash.Refresh();
+                }
+
                 Startup();
             }
             catch (Win32Exception)
             {
-                System.Windows.Forms.MessageBox.Show(Resources.RubberduckUI.RubberduckReloadFailure_Message, RubberduckUI.RubberduckReloadFailure_Title,
+                System.Windows.Forms.MessageBox.Show(Resources.RubberduckUI.RubberduckReloadFailure_Message,
+                    RubberduckUI.RubberduckReloadFailure_Title,
                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             catch (Exception exception)
@@ -211,8 +213,8 @@ namespace Rubberduck
                     RubberduckUI.RubberduckLoadFailure, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
-            {                
-                splash?.Dispose();                
+            {
+                splash?.Dispose();
             }
         }
 

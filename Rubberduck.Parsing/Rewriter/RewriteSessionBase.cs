@@ -15,7 +15,7 @@ namespace Rubberduck.Parsing.Rewriter
         private readonly Func<IRewriteSession, bool> _rewritingAllowed;
 
         protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
-        private readonly object _invalidationLockObject = new object();
+        private readonly object _statusLockObject = new object();
 
         public abstract CodeKind TargetCodeKind { get; }
 
@@ -25,6 +25,27 @@ namespace Rubberduck.Parsing.Rewriter
             _rewritingAllowed = rewritingAllowed;
         }
 
+        private RewriteSessionState _status = RewriteSessionState.Valid;
+        public RewriteSessionState Status
+        {
+            get
+            {
+                lock (_statusLockObject)
+                {
+                    return _status;
+                }
+            }
+            set
+            {
+                lock (_statusLockObject)
+                {
+                    if (_status == RewriteSessionState.Valid)
+                    {
+                        _status = value;
+                    }
+                }
+            }
+        }
 
         public IModuleRewriter CheckOutModuleRewriter(QualifiedModuleName module)
         {
@@ -35,6 +56,13 @@ namespace Rubberduck.Parsing.Rewriter
             
             rewriter = ModuleRewriter(module);
             CheckedOutModuleRewriters.Add(module, rewriter);
+
+            if (rewriter.IsDirty)
+            {
+                //The parse tree is stale.
+                Status = RewriteSessionState.StaleParseTree;
+            }
+
             return rewriter;
         }
 
@@ -48,9 +76,9 @@ namespace Rubberduck.Parsing.Rewriter
             }
 
             //This is thread-safe because, once invalidated, there is no way back.
-            if (IsInvalidated)
+            if (Status != RewriteSessionState.Valid)
             {
-                Logger.Warn("Tried to execute Rewrite on a RewriteSession that was already invalidated.");
+                Logger.Warn($"Tried to execute Rewrite on a RewriteSession that was in the invalid status {Status}.");
                 return false;
             }            
 
@@ -64,25 +92,5 @@ namespace Rubberduck.Parsing.Rewriter
         }
 
         protected abstract bool TryRewriteInternal();
-
-        private bool _isInvalidated = false;
-        public bool IsInvalidated
-        {
-            get
-            {
-                lock (_invalidationLockObject)
-                {
-                    return _isInvalidated;
-                }
-            }
-        }
-
-        public void Invalidate()
-        {
-            lock(_invalidationLockObject)
-            {
-                _isInvalidated = true;
-            }
-        }
     }
 }

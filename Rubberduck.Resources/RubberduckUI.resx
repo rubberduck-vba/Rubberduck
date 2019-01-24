@@ -1393,7 +1393,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>TODO Explorer</value>
   </data>
   <data name="GeneralSettings_SetDpiUnaware" xml:space="preserve">
-    <value>Set DPI Unaware</value>
+    <value>Correction for high-resolution display scalings</value>
   </data>
   <data name="References_BrowseFilterAccess" xml:space="preserve">
     <value>Microsoft Access Databases({0})|{0}</value>
@@ -1404,7 +1404,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
   </data>
   <data name="References_BrowseFilterWord" xml:space="preserve">
-    <value>Word Documents({0})|{0}</value>
+    <value>Word Documents ({0})|{0}</value>
     <comment>{0} = semi-colon delimited extension list in the format of *.ext</comment>
   </data>
   <data name="ReferenceSettings_FixBroken" xml:space="preserve">
@@ -1480,5 +1480,16 @@ NOTE: Restart is required for the setting to take effect.</value>
   </data>
   <data name="References_RemoveToolTip" xml:space="preserve">
     <value>Remove from project</value>
+  </data>
+  <data name="AllReferences_NoneFoundReference" xml:space="preserve">
+    <value>No uses were found for project reference '{0}'.</value>
+    <comment>{0} = reference name</comment>
+  </data>
+  <data name="AllReferences_PerformanceWarning" xml:space="preserve">
+    <value>Search for uses of reference '{0}' has returned {1} results. Displaying them may negatively impact performance. Continue?</value>
+    <comment>{0} = reference name, {1} = number of uses</comment>
+  </data>
+  <data name="PerformanceWarningCaption" xml:space="preserve">
+    <value>Performance Warning</value>
   </data>
 </root>
