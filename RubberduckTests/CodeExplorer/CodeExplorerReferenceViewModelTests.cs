@@ -148,19 +148,46 @@ namespace RubberduckTests.CodeExplorer
         [Category("Code Explorer")]
         [TestCase(ReferenceKind.TypeLibrary)]
         [TestCase(ReferenceKind.Project)]
-        public void FilteredIsFalseForAnyCharacter(ReferenceKind type)
+        public void FilteredIsTrueForCharactersNotInName(ReferenceKind type)
         {
             const string testCharacters = "abcdefghijklmnopqrstuwxyz";
 
             var reference = type == ReferenceKind.TypeLibrary ? LibraryReference : ProjectReference;
             var viewModel = new CodeExplorerReferenceViewModel(null, reference);
+            var name = viewModel.Name;
 
-            foreach (var character in testCharacters.ToCharArray().Select(letter => letter.ToString()))
+            var nonMatching = testCharacters.ToCharArray().Except(name.ToLowerInvariant().ToCharArray());
+
+            foreach (var character in nonMatching.Select(letter => letter.ToString()))
             {
                 viewModel.Filter = character;
+                Assert.IsTrue(viewModel.Filtered);
+            }
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(ReferenceKind.TypeLibrary)]
+        [TestCase(ReferenceKind.Project)]
+        public void FilteredIsFalseForSubsetsOfName(ReferenceKind type)
+        {
+            var reference = type == ReferenceKind.TypeLibrary ? LibraryReference : ProjectReference;
+            var viewModel = new CodeExplorerReferenceViewModel(null, reference);
+            var name = viewModel.Name;
+
+            for (var characters = 1; characters <= name.Length; characters++)
+            {
+                viewModel.Filter = name.Substring(0, characters);
+                Assert.IsFalse(viewModel.Filtered);
+            }
+
+            for (var position = name.Length - 2; position > 0; position--)
+            {
+                viewModel.Filter = name.Substring(position);
                 Assert.IsFalse(viewModel.Filtered);
             }
         }
+
 
         [Test]
         [Category("Code Explorer")]

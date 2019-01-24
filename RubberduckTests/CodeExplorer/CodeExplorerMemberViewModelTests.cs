@@ -225,6 +225,49 @@ namespace RubberduckTests.CodeExplorer
 
         [Test]
         [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestCode.TestTypeName)]
+        [TestCase(CodeExplorerTestCode.TestEnumName)]
+        public void FilteredIsFalseIfChildMatches(string name)
+        {
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration);
+
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
+            var childName = member.Children.First().Name;
+
+            for (var characters = 1; characters <= childName.Length; characters++)
+            {
+                member.Filter = childName.Substring(0, characters);
+                Assert.IsFalse(member.Filtered);
+            }
+
+            for (var position = childName.Length - 2; position > 0; position--)
+            {
+                member.Filter = childName.Substring(position);
+                Assert.IsFalse(member.Filtered);
+            }
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestCode.TestTypeName)]
+        [TestCase(CodeExplorerTestCode.TestEnumName)]
+        public void UnfilteredStateIsRestored(string name)
+        {
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestMemberDeclarations(name, out var memberDeclaration);
+
+            var member = new CodeExplorerMemberViewModel(null, memberDeclaration, ref declarations);
+            var childName = member.Children.First().Name;
+
+            member.IsExpanded = false;
+            member.Filter = childName;
+            Assert.IsTrue(member.IsExpanded);
+
+            member.Filter = string.Empty;
+            Assert.IsFalse(member.IsExpanded);
+        }
+
+        [Test]
+        [Category("Code Explorer")]
         [TestCase(CodeExplorerTestCode.TestSubName)]
         [TestCase(CodeExplorerTestCode.TestSubWithLineLabelName)]
         [TestCase(CodeExplorerTestCode.TestSubWithUnresolvedMemberName)]
