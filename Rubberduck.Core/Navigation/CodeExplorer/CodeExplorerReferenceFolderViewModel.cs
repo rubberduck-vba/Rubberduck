@@ -1,44 +1,110 @@
-﻿using System.Windows.Media.Imaging;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Rubberduck.AddRemoveReferences;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerReferenceFolderViewModel : CodeExplorerItemViewModel
+    public sealed class CodeExplorerReferenceFolderViewModel : CodeExplorerItemViewModelBase
     {
-        private readonly CodeExplorerProjectViewModel _parent;
+        private readonly DeclarationFinder _finder;
 
-        public CodeExplorerReferenceFolderViewModel(CodeExplorerProjectViewModel parent)
+        public CodeExplorerReferenceFolderViewModel(
+            ICodeExplorerNode parent, 
+            DeclarationFinder finder, 
+            List<ReferenceModel> references, 
+            ReferenceKind type) 
+            : base(parent, parent?.Declaration)
         {
-            _parent = parent;
-            CollapsedIcon = GetImageSource(Resources.CodeExplorer.CodeExplorerUI.ObjectAssembly);
-            ExpandedIcon = GetImageSource(Resources.CodeExplorer.CodeExplorerUI.ObjectAssembly);
-            AddReferenceNodes();
+            _finder = finder;
+            ReferenceKind = type;
+            Synchronize(Declaration, references);
         }
 
-        public override string Name => "References";
-        public override string NameWithSignature => "References";
-        public override BitmapImage CollapsedIcon { get; }
-        public override BitmapImage ExpandedIcon { get; }
-        public override CodeExplorerItemViewModel Parent => _parent;
+        public ReferenceKind ReferenceKind { get; }
+
+        public override string Name => ReferenceKind == ReferenceKind.TypeLibrary
+            ? Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_LibraryReferences
+            : Resources.CodeExplorer.CodeExplorerUI.CodeExplorer_ProjectReferences;
+
+        public override string NameWithSignature => Name;
+
+        public override string PanelTitle => Name;
+
+        public override string Description => string.Empty;
+
         public override QualifiedSelection? QualifiedSelection => null;
 
-        private void AddReferenceNodes()
+        public override bool IsErrorState
         {
-            var project = _parent?.Declaration?.Project;
-            if (project == null)
+            get => false;
+            set { }
+        }
+
+        public override bool Filtered => false;
+
+        public override Comparer<ICodeExplorerNode> SortComparer => CodeExplorerItemComparer.ReferenceType;
+
+        public void Synchronize(Declaration parent, List<ReferenceModel> updated)
+        {
+            var updates = updated.Where(reference => reference.Type == ReferenceKind).ToList();
+            if (!updates.Any())
             {
+                Declaration = null;
                 return;
             }
 
-            using (var references = project.References)
+            Declaration = parent;
+
+            foreach (var child in Children.OfType<CodeExplorerReferenceViewModel>().ToList())
             {
-                var priority = 1;
-                foreach (var reference in references)
+                child.Synchronize(Declaration, updates);
+                if (child.Reference is null)
                 {
-                    AddChild(new CodeExplorerReferenceViewModel(this, new ReferenceModel(reference, priority++)));
-                    reference.Dispose();
+                    RemoveChild(child);
+                    continue;
                 }
+
+                updated.Remove(child.Reference);
+            }
+
+            foreach (var reference in updates)
+            {
+                reference.IsUsed = reference.IsBuiltIn ||
+                                   _finder != null &&
+                                   _finder.IsReferenceUsedInProject(Declaration as ProjectDeclaration,
+                                       reference.ToReferenceInfo());
+
+                AddChild(new CodeExplorerReferenceViewModel(this, reference));
+                updated.Remove(reference);
+            }
+
+            if (!Children.Any())
+            {
+                Declaration = null;
+            }
+        }
+
+        public void UpdateChildren()
+        {
+            foreach (var library in Children.OfType<CodeExplorerReferenceViewModel>())
+            {
+                var reference = library.Reference;
+                if (reference == null)
+                {
+                    continue;
+                }
+
+                reference.IsUsed = reference.IsBuiltIn ||
+                                   _finder != null &&
+                                   _finder.IsReferenceUsedInProject(
+                                       library.Parent?.Declaration as ProjectDeclaration,
+                                       reference.ToReferenceInfo());
+
+                library.IsDimmed = !reference.IsUsed;
             }
         }
     }

@@ -1,16 +1,11 @@
-using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NLog;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.Interaction.Navigation;
 
 namespace Rubberduck.UI.Command
 {
@@ -18,83 +13,18 @@ namespace Rubberduck.UI.Command
     /// A command that locates all references to a specified identifier, or of the active code module.
     /// </summary>
     [ComVisible(false)]
-    public class FindAllReferencesCommand : CommandBase, IDisposable
+    public class FindAllReferencesCommand : CommandBase
     {
-        private readonly INavigateCommand _navigateCommand;
-        private readonly IMessageBox _messageBox;
         private readonly RubberduckParserState _state;
-        private readonly ISearchResultsWindowViewModel _viewModel;
-        private readonly SearchResultPresenterInstanceManager _presenterService;
         private readonly IVBE _vbe;
-        private readonly IUiDispatcher _uiDispatcher;
+        private readonly FindAllReferencesService _finder;
 
-        public FindAllReferencesCommand(INavigateCommand navigateCommand, IMessageBox messageBox,
-            RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel,
-            SearchResultPresenterInstanceManager presenterService, IUiDispatcher uiDispatcher)
-             : base(LogManager.GetCurrentClassLogger())
+        public FindAllReferencesCommand(RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder)
+            : base(LogManager.GetCurrentClassLogger())
         {
-            _navigateCommand = navigateCommand;
-            _messageBox = messageBox;
             _state = state;
             _vbe = vbe;
-            _viewModel = viewModel;
-            _presenterService = presenterService;
-            _uiDispatcher = uiDispatcher;
-
-            _state.StateChanged += _state_StateChanged;
-        }
-
-        private Declaration FindNewDeclaration(Declaration declaration)
-        {
-            return _state.DeclarationFinder
-                .MatchName(declaration.IdentifierName)
-                .SingleOrDefault(d => d.ProjectId == declaration.ProjectId
-                    && d.ComponentName == declaration.ComponentName
-                    && d.ParentScope == declaration.ParentScope
-                    && d.DeclarationType == declaration.DeclarationType);            
-        }
-
-        private void _state_StateChanged(object sender, ParserStateEventArgs e)
-        {
-            if (e.State != ParserState.Ready) { return; }
-
-            if (_viewModel == null) { return; }
-
-            _uiDispatcher.InvokeAsync(UpdateTab);
-        }
-
-        private void UpdateTab()
-        {
-            try
-            {
-                var findReferenceTabs = _viewModel.Tabs.Where(
-                    t => t.Header.StartsWith(RubberduckUI.AllReferences_Caption.Replace("'{0}'", ""))).ToList();
-
-                foreach (var tab in findReferenceTabs)
-                {
-                    var newTarget = FindNewDeclaration(tab.Target);
-                    if (newTarget == null)
-                    {
-                        tab.CloseCommand.Execute(null);
-                        return;
-                    }
-
-                    var vm = CreateViewModel(newTarget);
-                    if (vm.SearchResults.Any())
-                    {
-                        tab.SearchResults = vm.SearchResults;
-                        tab.Target = vm.Target;
-                    }
-                    else
-                    {
-                        tab.CloseCommand.Execute(null);
-                    }
-                }
-            }
-            catch (Exception exception)
-            {
-                Logger.Error(exception, "Exception thrown while trying to update the find all references tab.");
-            }
+            _finder = finder;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -135,62 +65,7 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            var viewModel = CreateViewModel(declaration);
-            if (!viewModel.SearchResults.Any())
-            {
-                _messageBox.NotifyWarn(string.Format(RubberduckUI.AllReferences_NoneFound, declaration.IdentifierName), RubberduckUI.Rubberduck);
-                return;
-            }
-
-            if (viewModel.SearchResults.Count == 1)
-            {
-                _navigateCommand.Execute(viewModel.SearchResults.Single().GetNavigationArgs());
-                return;
-            }
-
-            _viewModel.AddTab(viewModel);
-            _viewModel.SelectedTab = viewModel;
-
-            try
-            {
-                var presenter = _presenterService.Presenter(_viewModel);
-                presenter.Show();
-            }
-            catch (Exception e)
-            {
-                Logger.Error(e);
-            }
-        }
-
-        private SearchResultsViewModel CreateViewModel(Declaration declaration)
-        {
-            var results = declaration.References.Distinct().Select(reference =>
-                new SearchResultItem(
-                    reference.ParentNonScoping,
-                    new NavigateCodeEventArgs(reference.QualifiedModuleName, reference.Selection),
-                    GetModuleLine(reference.QualifiedModuleName, reference.Selection.StartLine)));
-
-            var accessor = declaration.DeclarationType.HasFlag(DeclarationType.PropertyGet) ? "(get)"
-                         : declaration.DeclarationType.HasFlag(DeclarationType.PropertyLet) ? "(let)"
-                         : declaration.DeclarationType.HasFlag(DeclarationType.PropertySet) ? "(set)"
-                         : string.Empty;
-
-            var tabCaption = $"{declaration.IdentifierName} {accessor}".Trim();
-
-
-            var viewModel = new SearchResultsViewModel(_navigateCommand,
-                string.Format(RubberduckUI.SearchResults_AllReferencesTabFormat, tabCaption), declaration, results);
-
-            return viewModel;
-        }
-
-        private string GetModuleLine(QualifiedModuleName module, int line)
-        {
-            var component = _state.ProjectsProvider.Component(module);
-            using (var codeModule = component.CodeModule)
-            {
-                return codeModule.GetLines(line, 1).Trim();
-            }
+            _finder.FindAllReferences(declaration);
         }
 
         private Declaration FindTarget(object parameter)
@@ -290,27 +165,6 @@ namespace Rubberduck.UI.Command
             }
 
             return null;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private bool _isDisposed;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_isDisposed || !disposing)
-            {
-                return;
-            }
-
-            if (_state != null)
-            {
-                _state.StateChanged -= _state_StateChanged;
-            }
-            _isDisposed = true;
         }
     }
 }

@@ -1,25 +1,41 @@
+using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class OpenProjectPropertiesCommand : CommandBase
+    public class OpenProjectPropertiesCommand : CodeExplorerCommandBase
     {
+        private static readonly Type[] ApplicableNodes =
+        {
+            typeof(CodeExplorerCustomFolderViewModel),
+            typeof(CodeExplorerProjectViewModel),
+            typeof(CodeExplorerComponentViewModel),
+            typeof(CodeExplorerMemberViewModel)
+        };
+
         private readonly IVBE _vbe;
 
-        public OpenProjectPropertiesCommand(IVBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public OpenProjectPropertiesCommand(IVBE vbe)
         {
             _vbe = vbe;
         }
 
+        public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
+
         protected override bool EvaluateCanExecute(object parameter)
         {
+            if (!base.EvaluateCanExecute(parameter) ||
+                !(parameter is CodeExplorerItemViewModel node))
+            {
+                return false;
+            }
+
             try
             {
-                return parameter != null || _vbe.ProjectsCount == 1;
+                return node.Declaration != null || _vbe.ProjectsCount == 1;
             }
             catch (COMException)
             {
@@ -41,14 +57,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                         return;
                     }
 
-                    var node = parameter as CodeExplorerItemViewModel;
-                    while (!(node is ICodeExplorerDeclarationViewModel))
+                    if (!(parameter is CodeExplorerItemViewModel node))
                     {
-                        // ReSharper disable once PossibleNullReferenceException
-                        node = node.Parent; // the project node is an ICodeExplorerDeclarationViewModel--no worries here
+                        return;
                     }
 
-                    var nodeProject = node.GetSelectedDeclaration().Project;
+                    var nodeProject = node.Declaration?.Project;
                     if (nodeProject == null)
                     {
                         return; //The project declaration has been disposed, i.e. the project has been removed already.

@@ -530,10 +530,10 @@
 			                   SelectedItem="{Binding SelectedItem}"
                                Visibility="{Binding Path=IsChecked, ElementName=GroupByMarker, Converter={StaticResource BoolToVisibility}}">
             <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description, Mode=OneTime}" Width="*"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName, Mode=OneTime}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName, Mode=OneTime}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine, Mode=OneTime}" />
             </controls:GroupingGrid.Columns>
         </controls:GroupingGrid>
         
@@ -542,10 +542,10 @@
 			                   SelectedItem="{Binding SelectedItem}"
                                Visibility="{Binding Path=IsChecked, ElementName=GroupByLocation, Converter={StaticResource BoolToVisibility}}">
             <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description}" Width="*"/>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName}" />
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description, Mode=OneTime}" Width="*"/>
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName, Mode=OneTime}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ModuleName}" Binding="{Binding Selection.QualifiedName.ComponentName, Mode=OneTime}" />
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_LineNumber}" Binding="{Binding Selection.Selection.StartLine, Mode=OneTime}" />
             </controls:GroupingGrid.Columns>
         </controls:GroupingGrid>
     </Grid>

@@ -6,136 +6,91 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Rubberduck.Navigation.CodeExplorer;
-using System.Windows;
-using Rubberduck.Navigation.Folders;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
-    public class CodeMetricsViewModel : ViewModelBase, IDisposable
+    public sealed class CodeMetricsViewModel : ViewModelBase, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly ICodeMetricsAnalyst _analyst;
-        private readonly FolderHelper _folderHelper;
         private readonly IVBE _vbe;
+        private readonly IUiDispatcher _uiDispatcher;
 
-        public CodeMetricsViewModel(RubberduckParserState state, ICodeMetricsAnalyst analyst, FolderHelper folderHelper, IVBE vbe)
+        public CodeMetricsViewModel(
+            RubberduckParserState state, 
+            ICodeMetricsAnalyst analyst, 
+            IVBE vbe,
+            IUiDispatcher uiDispatcher)
         {
             _state = state;
-            _analyst = analyst;
-            _folderHelper = folderHelper;
             _state.StateChanged += OnStateChanged;
+
+            _analyst = analyst;
             _vbe = vbe;
+            _uiDispatcher = uiDispatcher;
+
+            OnPropertyChanged(nameof(Projects));
         }
-        
+
+        private bool _unparsed = true;
+        public bool Unparsed
+        {
+            get => _unparsed;
+            set
+            {
+                if (_unparsed == value)
+                {
+                    return;
+                }
+                _unparsed = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void OnStateChanged(object sender, ParserStateEventArgs e)
         {
-            if (e.State != ParserState.Ready && e.State != ParserState.Error && e.State != ParserState.ResolverError && e.State != ParserState.UnexpectedError)
-            {
-                IsBusy = true;
-            }
-
-            if (e.State == ParserState.Ready)
-            {
-                UpdateData();
-                IsBusy = false;
-            }
-
-            if (e.State == ParserState.Error || e.State == ParserState.ResolverError || e.State == ParserState.UnexpectedError)
-            {
-                IsBusy = false;
-            }
-        }
-
-        private void UpdateData()
-        {
-            IsBusy = true;
-
-            var metricResults = _analyst.GetMetrics(_state);
-            resultsByDeclaration = metricResults.GroupBy(r => r.Declaration).ToDictionary(g => g.Key, g => g.ToList());
-
-            if (Projects == null)
-            {
-                Projects = new ObservableCollection<CodeExplorerItemViewModel>();
-            }
-
+            Unparsed = false;
             IsBusy = _state.Status != ParserState.Pending && _state.Status <= ParserState.ResolvedDeclarations;
 
-            var userDeclarations = _state.DeclarationFinder.AllUserDeclarations
-                .GroupBy(declaration => declaration.ProjectId)
-                .ToList();
-
-            var newProjects = userDeclarations
-                .Where(grouping => grouping.Any(declaration => declaration.DeclarationType == DeclarationType.Project))
-                .Select(grouping =>
-                new CodeExplorerProjectViewModel(_folderHelper,
-                    grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
-                    grouping,
-                    _vbe)).ToList();
-
-            UpdateNodes(Projects, newProjects);
-
-            Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
-
-            IsBusy = false;
+            if (e.State == ParserState.ResolvedDeclarations)
+            {
+                Synchronize(_state.DeclarationFinder.AllUserDeclarations);
+            }
         }
 
-        private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList, IEnumerable<CodeExplorerItemViewModel> newList)
+        private void Synchronize(IEnumerable<Declaration> declarations)
         {
-            foreach (var item in newList)
+            var metricResults = _analyst.GetMetrics(_state);
+            _resultsByDeclaration = metricResults.GroupBy(r => r.Declaration).ToDictionary(g => g.Key, g => g.ToList());
+
+            _uiDispatcher.Invoke(() =>
             {
-                CodeExplorerItemViewModel oldItem;
+                var updates = declarations.ToList();
+                var existing = Projects.OfType<CodeExplorerProjectViewModel>().ToList();
 
-                if (item is CodeExplorerCustomFolderViewModel)
+                foreach (var project in existing)
                 {
-                    oldItem = oldList.FirstOrDefault(i => i.Name == item.Name);
-                }
-                else
-                {
-                    oldItem = oldList.FirstOrDefault(i =>
-                        item.QualifiedSelection != null && i.QualifiedSelection != null &&
-                        i.QualifiedSelection.Value.QualifiedName.ProjectId ==
-                        item.QualifiedSelection.Value.QualifiedName.ProjectId &&
-                        i.QualifiedSelection.Value.QualifiedName.ComponentName ==
-                        item.QualifiedSelection.Value.QualifiedName.ComponentName &&
-                        i.QualifiedSelection.Value.Selection == item.QualifiedSelection.Value.Selection);
-                }
-
-                if (oldItem != null)
-                {
-                    item.IsExpanded = oldItem.IsExpanded;
-                    item.IsSelected = oldItem.IsSelected;
-
-                    if (oldItem.Items.Any() && item.Items.Any())
+                    project.Synchronize(ref updates);
+                    if (project.Declaration is null)
                     {
-                        UpdateNodes(oldItem.Items, item.Items);
+                        Projects.Remove(project);
                     }
                 }
-            }
+
+                var adding = updates.OfType<ProjectDeclaration>().ToList();
+
+                foreach (var project in adding)
+                {
+                    var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe, false);
+                    Projects.Add(model);
+                }
+            });
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private bool _isDisposed;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_isDisposed || !disposing)
-            {
-                return;
-            }
-            _isDisposed = true;
-
-            _state.StateChanged -= OnStateChanged;
-        }
-
-        private Dictionary<Declaration, List<ICodeMetricResult>> resultsByDeclaration;
-
-        private CodeExplorerItemViewModel _selectedItem;
-        public CodeExplorerItemViewModel SelectedItem
+        private ICodeExplorerNode _selectedItem;
+        public ICodeExplorerNode SelectedItem
         {
             get => _selectedItem;
             set
@@ -150,27 +105,15 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             }
         }
 
-        private ObservableCollection<CodeExplorerItemViewModel> _projects;
-        public ObservableCollection<CodeExplorerItemViewModel> Projects
-        {
-            get => _projects;
-            set
-            {
-                _projects = new ObservableCollection<CodeExplorerItemViewModel>(value.OrderBy(o => o.NameWithSignature));
+        public ObservableCollection<ICodeExplorerNode> Projects { get; } = new ObservableCollection<ICodeExplorerNode>();
 
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(TreeViewVisibility));
-            }
-        }
-
-        public Visibility TreeViewVisibility => Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
-        
+        private Dictionary<Declaration, List<ICodeMetricResult>> _resultsByDeclaration;
         public ObservableCollection<ICodeMetricResult> Metrics
         {
             get
             {
-                var results = resultsByDeclaration?.FirstOrDefault(f => f.Key == SelectedItem.GetSelectedDeclaration());
-                return !results.HasValue || results.Value.Value == null ? new ObservableCollection<ICodeMetricResult>() : new ObservableCollection<ICodeMetricResult>(results.Value.Value);
+                var results = _resultsByDeclaration?.FirstOrDefault(f => ReferenceEquals(f.Key, SelectedItem.Declaration));
+                return results?.Value == null ? new ObservableCollection<ICodeMetricResult>() : new ObservableCollection<ICodeMetricResult>(results.Value.Value);
             }
         }
 
@@ -181,23 +124,27 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             set
             {
                 _isBusy = value;
-                EmptyUIRefreshMessageVisibility = false;
                 OnPropertyChanged();
             }
         }
 
-        private bool _emptyUIRefreshMessageVisibility = true;
-        public bool EmptyUIRefreshMessageVisibility
+        public void Dispose()
         {
-            get => _emptyUIRefreshMessageVisibility;
-            set
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private bool _isDisposed;
+
+        private void Dispose(bool disposing)
+        {
+            if (_isDisposed || !disposing)
             {
-                if (_emptyUIRefreshMessageVisibility != value)
-                {
-                    _emptyUIRefreshMessageVisibility = value;
-                    OnPropertyChanged();
-                }
+                return;
             }
+            _isDisposed = true;
+
+            _state.StateChanged -= OnStateChanged;
         }
     }
 }
