@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PredeclaredClassModule_Caption" xml:space="preserve">
-    <value>Predeclared Class module (.cls)</value>
+    <value>Module de classe à instance prédéclarée (.cls)</value>
   </data>
   <data name="PredeclaredClassModule_Code" xml:space="preserve">
     <value>VERSION 1.0 CLASS
@@ -135,9 +135,9 @@ Option Explicit
 '@PredeclaredId</value>
   </data>
   <data name="PredeclaredClassModule_Description" xml:space="preserve">
-    <value>Adds a class module that is predeclared and thus can be used without first creating a new instance.</value>
+    <value>Ajoute un module de classe avec un attribut déclarant une instance par défaut, ce qui permet d'utiliser la classe directement avec son identifiant, sans créer une instance.</value>
   </data>
   <data name="PredeclaredClassModule_Name" xml:space="preserve">
-    <value>PredeclaredClassModule</value>
+    <value>PreclaredClassModule</value>
   </data>
 </root>
