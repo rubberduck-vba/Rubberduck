@@ -21,6 +21,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             Parent = parent;
             _declaration = declaration;
+            UnfilteredIsExpanded = IsExpanded;
+
+            if (parent != null)
+            {
+                Filter = parent.Filter;
+            }
         }
 
         private Declaration _declaration;
@@ -92,13 +98,12 @@ namespace Rubberduck.Navigation.CodeExplorer
             get => _isExpanded;
             set
             {
-                _isExpanded = value;
-
-                if (!Filtered)
+                if (_isExpanded == value)
                 {
-                    UnfilteredIsExpanded = _isExpanded;
+                    return;
                 }
 
+                _isExpanded = value;              
                 OnPropertyChanged();
             }
         }
@@ -217,6 +222,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             get => _filter;
             set
             {
+                if (string.IsNullOrEmpty(_filter))
+                {
+                    UnfilteredIsExpanded = _isExpanded;
+                }
+
                 var input = value ?? string.Empty;
                 if (_filter.Equals(input))
                 {
@@ -231,6 +241,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(Filtered));
+                IsExpanded = !string.IsNullOrEmpty(_filter) ? Children.Any(child => !child.Filtered) : UnfilteredIsExpanded;                
             }
         }
 

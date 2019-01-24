@@ -270,7 +270,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
                 foreach (var project in adding)
                 {
-                    var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe);
+                    var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe) { Filter = Search };
                     Projects.Add(model);
                 }
 

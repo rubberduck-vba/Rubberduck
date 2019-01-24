@@ -178,6 +178,38 @@ namespace RubberduckTests.CodeExplorer
 
         [Test]
         [Category("Code Explorer")]
+        public void UnfilteredStateIsRestored_TypeLibraries()
+        {
+            var references = AddRemoveReferencesSetup.DummyReferencesList;
+            var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.TypeLibrary);
+            var childName = folder.Children.First().Name;
+
+            folder.IsExpanded = false;
+            folder.Filter = childName;
+            Assert.IsTrue(folder.IsExpanded);
+
+            folder.Filter = string.Empty;
+            Assert.IsFalse(folder.IsExpanded);
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        public void UnfilteredStateIsRestored_Projects()
+        {
+            var references = AddRemoveReferencesSetup.DummyProjectsList;
+            var folder = new CodeExplorerReferenceFolderViewModel(null, null, references, ReferenceKind.Project);
+            var childName = folder.Children.First().Name;
+
+            folder.IsExpanded = false;
+            folder.Filter = childName;
+            Assert.IsTrue(folder.IsExpanded);
+
+            folder.Filter = string.Empty;
+            Assert.IsFalse(folder.IsExpanded);
+        }
+
+        [Test]
+        [Category("Code Explorer")]
         [TestCase(ReferenceKind.TypeLibrary)]
         [TestCase(ReferenceKind.Project)]
         public void ErrorStateCanNotBeSet(ReferenceKind type)

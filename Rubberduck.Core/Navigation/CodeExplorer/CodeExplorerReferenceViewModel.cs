@@ -45,8 +45,6 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public override Comparer<ICodeExplorerNode> SortComparer => CodeExplorerItemComparer.ReferencePriority;
 
-        public override bool Filtered => false;
-
         public void Synchronize(Declaration project, List<ReferenceModel> updated)
         {
             Declaration = project;
