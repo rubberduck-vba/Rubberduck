@@ -328,4 +328,40 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>Windows implemenace Visual Basic podporuje pouze StdCall volací konvenci a použití CDecl volací konvence je podporováno pouze ve verzích VBA systému Macintosh. Použití tohoto klíčového slova ve Windows může mít za následek chybu runtime 49 - 'Bad DLL calling convention'. Pokud je tato procedura určena pouze pro hostitele systému Macintosh, měla by být podmíněně zkompilována.</value>
   </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Anotace je specifikována vícenásobně, avšak měla by být zadána pouze jednou.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Moduly bez '@Folder' anotace nelze v Code Exploreru uživatelsky seskupovat do skupin</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Přiřazení je okamžitě přepsáno jiným přiřazením nebo na něj není nikdy odkazováno.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Je možné, že procedura vracející objekt, může vrátit 'Nothing'. Toto způsobí runtime chybu 91 - "Proměnná objektu nebo bloku With není nastavena" u přístupu následujícího člena. Proveďte kontrolu na 'Is Nothing' po zadání 'Set', aby se těmto chybám předešlo.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Anotace Rubberducku je určena pro modul nebo člen, ale příslušný atribut má jinou hodnotu. Atributy modulu a anotace musejí být synchronizovány.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>IsMissing je určeno pouze pro volání volitelných argumentů a správné výsledky vrátí pouze v případě, jestliže je typ argumenty 'Variant' bez explicitní výchozí hodnoty. Všechna jiná použití vrátí 'False'.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Atributy členu se nezobrazují ve VBE. Přidáním anotace uděláte tyto atributy více explicitní a Rubberduck bude moci držet anotace a atributy synchronizovány.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Atribudy modulu se nezobrazují ve VBE. Přidáním anotace uděláte tyto atributy více explicitní a Rubberduck bude moci držet anotace a atributy synchronizovány.</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>Chyba 'On Local Error' existuje pouze kvůli kompatibilitě s předchozími verzemi Visual Basic a se všemi chybami je zacházeno jako s Lokálními. Chybné použití tohoto klíčového slova může navodit dojem, že existuje rozdíl mezi typy zpracování chyb a přitom nic takového není.</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>'IsMissing' je určen pouze k tomu, aby byl volán argumenty procedury a téměř všechny ostatní vrátí 'False'. Předávání jakéhokoli jiného výrazu do funkce je ekvivalentní k 'VarType({expression}) = vbError' a ve vzácných případech může způsobit selhání hostitelské aplikace.</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Modul třídy, který obsahuje členy s podtržítky, nemůže být implementován jinými třídy. Podtržítko je používáno jako oddělovač mezi názvem rozhraní/objektem a implementovaným jménem členu: podtržítko v názvu člena zmate kompilátor, který pak odmítá zkompilování projektu. Vyhněte se podtržítkům v názvech veřejných členů a řiďte se konvencí pojmenování dle 'PascalCase'.</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Funkce, které jsou pro Excel viditelné jako funkce 'definované uživatelem', vrátí chybu 'REF!', pokud jsou použity ve Worksheetu a jestli odpovídají názvu platného odkazu na buňku. Pokud je funkce zamyšlena k použití jako UDF, musí být přejmenována. Není-li tato funkce míněna jako UDF, měla by být zařazena jako 'Privátní' nebo přesunuta pryč ze standardního modulu.</value>
+  </data>
 </root>

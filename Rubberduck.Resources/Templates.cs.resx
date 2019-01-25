@@ -117,124 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ContextMenu_FindSymbol" xml:space="preserve">
-    <value>Najít &amp;symbol...</value>
+  <data name="PredeclaredClassModule_Caption" xml:space="preserve">
+    <value>Předdeklarovaný modul Třídy (.cls)</value>
   </data>
-  <data name="ContextMenu_GoToImplementation" xml:space="preserve">
-    <value>Jít na &amp;implementaci...</value>
+  <data name="PredeclaredClassModule_Code" xml:space="preserve">
+    <value>VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Attribute VB_Ext_KEY = "Rubberduck", "Predeclared Class Module"
+
+Option Explicit</value>
   </data>
-  <data name="RefactorMenu_ExtractMethod" xml:space="preserve">
-    <value>Extrahovat &amp;Metodu</value>
+  <data name="PredeclaredClassModule_Name" xml:space="preserve">
+    <value>Předdeklarovaný modul Třídy</value>
   </data>
-  <data name="ContextMenu_FindAllReferences" xml:space="preserve">
-    <value>Najít všechny re&amp;ference...</value>
-  </data>
-  <data name="RefactorMenu_RemoveParameter" xml:space="preserve">
-    <value>&amp;Odstranit Parametry</value>
-  </data>
-  <data name="RefactorMenu_Rename" xml:space="preserve">
-    <value>&amp;Přejmenovat</value>
-  </data>
-  <data name="RefactorMenu_ReorderParameters" xml:space="preserve">
-    <value>Pře&amp;rozdělit Parametry</value>
-  </data>
-  <data name="RubberduckMenu" xml:space="preserve">
-    <value>Ru&amp;bberduck</value>
-  </data>
-  <data name="RubberduckMenu_About" xml:space="preserve">
-    <value>O &amp;Aplikaci...</value>
-  </data>
-  <data name="RubberduckMenu_CodeExplorer" xml:space="preserve">
-    <value>&amp;Code Explorer</value>
-  </data>
-  <data name="RubberduckMenu_Settings" xml:space="preserve">
-    <value>Nastav&amp;ení</value>
-  </data>
-  <data name="ToolsMenu_TodoItems" xml:space="preserve">
-    <value>TO&amp;DO Položky</value>
-  </data>
-  <data name="RubberduckMenu_CodeInspections" xml:space="preserve">
-    <value>&amp;Inspekce kódu</value>
-  </data>
-  <data name="RubberduckMenu_Refactor" xml:space="preserve">
-    <value>&amp;Refaktorovat</value>
-  </data>
-  <data name="RubberduckMenu_UnitTests" xml:space="preserve">
-    <value>Unit &amp;Testy</value>
-  </data>
-  <data name="RefactorMenu_ImplementInterface" xml:space="preserve">
-    <value>&amp;Implementovat interface</value>
-  </data>
-  <data name="RefactorMenu_ExtractInterface" xml:space="preserve">
-    <value>E&amp;xtrahovat interface</value>
-  </data>
-  <data name="FormContextMenu_Rename" xml:space="preserve">
-    <value>Přejme&amp;novat</value>
-  </data>
-  <data name="IndentCurrentModule" xml:space="preserve">
-    <value>Aktuální &amp;Modul</value>
-  </data>
-  <data name="IndentCurrentProcedure" xml:space="preserve">
-    <value>Aktuální &amp;Procedura</value>
-  </data>
-  <data name="IndentCurrentProject" xml:space="preserve">
-    <value>Aktuální Projekt</value>
-  </data>
-  <data name="NoIndentAnnotation" xml:space="preserve">
-    <value>Přid&amp;at '@NoIndent'</value>
-  </data>
-  <data name="RefactorMenu_EncapsulateField" xml:space="preserve">
-    <value>&amp;Enkapsulace Pole</value>
-  </data>
-  <data name="RefactorMenu_IntroduceField" xml:space="preserve">
-    <value>Představit Po&amp;le</value>
-  </data>
-  <data name="RefactorMenu_IntroduceParameter" xml:space="preserve">
-    <value>Představit &amp;Parametr</value>
-  </data>
-  <data name="RefactorMenu_MoveCloserToUsage" xml:space="preserve">
-    <value>Přesunout Blíže k Prvnímu Po&amp;užití</value>
-  </data>
-  <data name="RubberduckMenu_CodeMetrics" xml:space="preserve">
-    <value>Metrika Kódu</value>
-  </data>
-  <data name="RubberduckMenu_Navigate" xml:space="preserve">
-    <value>Na&amp;vigovat</value>
-  </data>
-  <data name="RubberduckMenu_Refresh" xml:space="preserve">
-    <value>Obnovit</value>
-  </data>
-  <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
-    <value>Rege&amp;x Najít/Nahradit</value>
-  </data>
-  <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>O&amp;dsazení</value>
-  </data>
-  <data name="TestExplorerMenu_AddExpectedErrorTestMethod" xml:space="preserve">
-    <value>Testovací Metoda (Př&amp;edpokládaná Chyba)</value>
-  </data>
-  <data name="TestExplorerMenu_AddTestMethod" xml:space="preserve">
-    <value>Testovací &amp;Metoda</value>
-  </data>
-  <data name="TestExplorerMenu_AddTestModule" xml:space="preserve">
-    <value>Testovací M&amp;odul</value>
-  </data>
-  <data name="TestMenu_RunAllTests" xml:space="preserve">
-    <value>Spustit &amp;všechny testy</value>
-  </data>
-  <data name="TestMenu_TextExplorer" xml:space="preserve">
-    <value>&amp;Test Explorer</value>
-  </data>
-  <data name="ToolsMenu" xml:space="preserve">
-    <value>Nástr&amp;oje</value>
-  </data>
-  <data name="ToolsMenu_ExportProject" xml:space="preserve">
-    <value>Exportovat Aktivní Projekt...</value>
-  </data>
-  <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
-    <value>Regex &amp;Asistent</value>
-  </data>
-  <data name="AddRemoveReferences" xml:space="preserve">
-    <value>Přidat/Odebrat Reference...</value>
+  <data name="PredeclaredClassModule_Description" xml:space="preserve">
+    <value>Přidá modul třídy, který je předdeklarovaný a může být tedy použit bez nutnosti do něj napsat hlavičku.</value>
   </data>
 </root>
