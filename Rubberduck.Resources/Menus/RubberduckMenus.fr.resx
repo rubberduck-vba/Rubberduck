@@ -234,4 +234,7 @@
   <data name="TestMenu_TextExplorer" xml:space="preserve">
     <value>Explorateur de &amp;tests</value>
   </data>
+  <data name="AddRemoveReferences" xml:space="preserve">
+    <value>Ajouter/Supprimer Référence</value>
+  </data>
 </root>

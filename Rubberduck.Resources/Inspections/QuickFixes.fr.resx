@@ -261,4 +261,31 @@
   <data name="RemoveLocalErrorQuickFix" xml:space="preserve">
     <value>Remplacer 'On Local Error' par 'On Error'</value>
   </data>
+  <data name="AddAttributeAnnotationQuickFix" xml:space="preserve">
+    <value>Ajouter une annotation</value>
+  </data>
+  <data name="AddMissingAttributeQuickFix" xml:space="preserve">
+    <value>Ajouter l'attribut manquant</value>
+  </data>
+  <data name="AdjustAttributeAnnotationQuickFix" xml:space="preserve">
+    <value>Ajuster l'annotation</value>
+  </data>
+  <data name="AdjustAttributeValuesQuickFix" xml:space="preserve">
+    <value>Ajuster l'attribut</value>
+  </data>
+  <data name="ApplyQuickFixesFailedMessage" xml:space="preserve">
+    <value>Le correctif n'a pu être appliqué.</value>
+  </data>
+  <data name="ApplyQuickFixFailedCaption" xml:space="preserve">
+    <value>Échec de l'application du correctif</value>
+  </data>
+  <data name="RemoveAnnotationQuickFix" xml:space="preserve">
+    <value>Supprimer l'annotation</value>
+  </data>
+  <data name="RemoveAttributeQuickFix" xml:space="preserve">
+    <value>Supprimer l'attribut</value>
+  </data>
+  <data name="StaleModuleFailureReason" xml:space="preserve">
+    <value>Un module affecté a été modifier depuis la dernière analyse.</value>
+  </data>
 </root>
