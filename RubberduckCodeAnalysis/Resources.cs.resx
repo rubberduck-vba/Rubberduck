@@ -180,4 +180,13 @@
   <data name="MissingProgIdDescription" xml:space="preserve">
     <value>COM-viditelné třídy musí mít explicitní atribut ProgId. Toto je potřeba, aby se předešlo problémům s verzováním. Odkazujte se na konstanty RubberduckProgId.</value>
   </data>
+  <data name="ChainedWrapperTitle" xml:space="preserve">
+    <value>Zřetězené Wrappery</value>
+  </data>
+  <data name="ChainedWrapperMessageFormat" xml:space="preserve">
+    <value>Typ '{0}' vychází ze základu SaveComWrapper. Je zavolán přes jiný odvozený SaveComWrapper typ '{1}' ve výrazu '{2}'.</value>
+  </data>
+  <data name="ChainedWrapperDescription" xml:space="preserve">
+    <value>Všechny typy odvozené z SafeComWrappers by neměly být řetězeny, protože způsobují únik nespravovaných zdrojů. Použijte explicitně lokální proměnnou pro každý řetězený člen.</value>
+  </data>
 </root>

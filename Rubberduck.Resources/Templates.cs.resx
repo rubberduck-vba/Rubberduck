@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="PredeclaredClassModule_Caption" xml:space="preserve">
-    <value>Predeclared Class module (.cls)</value>
+    <value>Předdeklarovaný modul Třídy (.cls)</value>
   </data>
   <data name="PredeclaredClassModule_Code" xml:space="preserve">
     <value>VERSION 1.0 CLASS
@@ -131,13 +131,12 @@ Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
 Attribute VB_Ext_KEY = "Rubberduck", "Predeclared Class Module"
 
-Option Explicit
-'@PredeclaredId</value>
-  </data>
-  <data name="PredeclaredClassModule_Description" xml:space="preserve">
-    <value>Adds a class module that is predeclared and thus can be used without first creating a new instance.</value>
+Option Explicit</value>
   </data>
   <data name="PredeclaredClassModule_Name" xml:space="preserve">
-    <value>PredeclaredClassModule</value>
+    <value>Předdeklarovaný modul Třídy</value>
+  </data>
+  <data name="PredeclaredClassModule_Description" xml:space="preserve">
+    <value>Přidá modul třídy, který je předdeklarovaný a může být tedy použit bez nutnosti do něj napsat hlavičku.</value>
   </data>
 </root>

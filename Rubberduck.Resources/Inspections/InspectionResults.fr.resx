@@ -372,4 +372,13 @@
   <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
     <value>Bloc inatteignable: l'expression 'Case' causera une erreur d'exécution 6 : Overflow.</value>
   </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>La valeur de l'attribut {0} ({1}) est désynchronisée avec l'annotation {2}.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Le membre '{0}' a un attribut '{1}' avec la/les valeur(s) '{2}', mais aucune annotation correspondante.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Le module '{0}' a l'attribut '{1}' avec la/les valeur(s) '{2}', mais aucune annotation correspondante.</value>
+  </data>
 </root>
