@@ -102,8 +102,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return;
                 }
 
-                _selectedItem = value;
                 ExpandToNode(value);
+                _selectedItem = value;
 
                 OnPropertyChanged();
 
@@ -434,12 +434,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             while (true)
             {
+                node = node.Parent;
                 if (node == null)
                 {
                     return;
                 }
                 node.IsExpanded = true;
-                node = node.Parent;
             }
         }
 
