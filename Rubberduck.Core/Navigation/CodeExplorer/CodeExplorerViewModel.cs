@@ -230,6 +230,7 @@ namespace Rubberduck.Navigation.CodeExplorer
                         library.UpdateChildren();
                     }
 
+                    Unparsed = !Projects.Any();
                     IsBusy = false;
                 });
                 return;
