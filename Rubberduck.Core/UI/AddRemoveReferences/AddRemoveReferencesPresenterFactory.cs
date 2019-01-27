@@ -118,7 +118,7 @@ namespace Rubberduck.UI.AddRemoveReferences
                 }
 
                 var settings = _settings.Create();
-                model = new AddRemoveReferencesModel(project, models.Values, settings);
+                model = new AddRemoveReferencesModel(_state, project, models.Values, settings);
                 if (AddRemoveReferencesViewModel.HostHasProjects)
                 {
                     model.References.AddRange(GetUserProjectFolderModels(model.Settings).Where(proj =>
