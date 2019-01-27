@@ -12,7 +12,7 @@
     <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
     <ApplicationIcon>Ducky.ico</ApplicationIcon>
     <!-- Give a fixed version to not blow XAML generated code to smithereens -->
-    <AssemblyVersion>2.3.1</AssemblyVersion>
+    <AssemblyVersion>2.4.0</AssemblyVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'DebugAccess|AnyCPU'">
