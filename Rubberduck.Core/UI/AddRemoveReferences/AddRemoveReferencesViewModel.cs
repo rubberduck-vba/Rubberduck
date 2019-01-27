@@ -76,7 +76,7 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         public event EventHandler<DialogResult> OnWindowClosed;
-        private void CloseWindowOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
+        private void CloseWindowOk() => OnWindowClosed?.Invoke(this, IsProjectDirty ? DialogResult.OK : DialogResult.Cancel);
         private void CloseWindowCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
 
         private readonly List<(int?, ReferenceInfo)> _clean;
@@ -300,6 +300,11 @@ namespace Rubberduck.UI.AddRemoveReferences
             }
             
             Model.State.OnParseRequested(this);
+
+            _clean.Clear();
+            _clean.AddRange(new List<(int?, ReferenceInfo)>(_project.Select(reference => (reference.Priority, reference.ToReferenceInfo()))));
+            IsProjectDirty = false;
+
             AvailableReferences.Refresh();
             ProjectReferences.Refresh();
         }
