@@ -218,6 +218,7 @@
             </Style>
 
             <Style x:Key="ToolbarImageOpacity" TargetType="Image" BasedOn="{StaticResource ToolbarIconStyle}">
+                <Setter Property="Margin" Value="0" />
                 <Style.Triggers>
                     <Trigger Property="IsEnabled"  Value="False">
                         <Setter Property="Opacity" Value="0.3" />
@@ -437,7 +438,8 @@
                                         BorderBrush="{x:Static SystemColors.ControlLightBrush}"
                                         Background="Transparent"
                                         Width="20" Height="20" Padding="0" Margin="0,1">
-                    <Image Margin="2" Width="16" Height="16" Source="{Binding Search, Converter={StaticResource SearchToIcon}, UpdateSourceTrigger=PropertyChanged}" />
+                    <Image VerticalAlignment="Center" HorizontalAlignment="Center"  
+                           Width="16" Height="16" Source="{Binding Search, Converter={StaticResource SearchToIcon}, UpdateSourceTrigger=PropertyChanged}" />
                     <i:Interaction.Behaviors>
                         <controls:FocusElementAfterClickBehavior FocusElement="{Binding ElementName=SearchBox, Mode=OneWay}"/>
                     </i:Interaction.Behaviors>
