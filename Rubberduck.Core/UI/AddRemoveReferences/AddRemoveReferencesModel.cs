@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 
 namespace Rubberduck.UI.AddRemoveReferences
@@ -11,6 +12,7 @@ namespace Rubberduck.UI.AddRemoveReferences
     public interface IAddRemoveReferencesModel
     {
         string HostApplication { get; }
+        RubberduckParserState State { get; }
         ReferenceSettings Settings { get; set; }
         ProjectDeclaration Project { get; set; }
         List<ReferenceModel> References { get; set; }
@@ -21,8 +23,9 @@ namespace Rubberduck.UI.AddRemoveReferences
     {
         private static readonly string Host = Path.GetFileName(Application.ExecutablePath).ToUpperInvariant();
 
-        public AddRemoveReferencesModel(ProjectDeclaration project, IEnumerable<ReferenceModel> references, ReferenceSettings settings)
+        public AddRemoveReferencesModel(RubberduckParserState state, ProjectDeclaration project, IEnumerable<ReferenceModel> references, ReferenceSettings settings)
         {
+            State = state;
             Settings = settings;
             Project = project;
             References = references.ToList();
@@ -37,6 +40,8 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         public string HostApplication => Host;
+
+        public RubberduckParserState State { get; }
 
         public ReferenceSettings Settings { get; set; }
 
