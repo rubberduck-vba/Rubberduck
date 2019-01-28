@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Microsoft.Win32;
-using Rubberduck.Deployment.Structs;
+using Rubberduck.Deployment.Build.Structs;
 
-namespace Rubberduck.Deployment.Writers
+namespace Rubberduck.Deployment.Build.Writers
 {
     public class InnoSetupRegistryWriter : IRegistryWriter
     {

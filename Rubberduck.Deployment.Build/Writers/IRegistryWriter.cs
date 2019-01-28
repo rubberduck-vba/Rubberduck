@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using Rubberduck.Deployment.Structs;
+using Rubberduck.Deployment.Build.Structs;
 
-namespace Rubberduck.Deployment.Writers
+namespace Rubberduck.Deployment.Build.Writers
 {
     public interface IRegistryWriter
     {

@@ -1,4 +1,4 @@
-namespace Rubberduck.Deployment.Structs
+namespace Rubberduck.Deployment.Build.Structs
 {
     public enum Bitness
     {

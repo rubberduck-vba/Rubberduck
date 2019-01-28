@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Rubberduck.Deployment.Structs
+namespace Rubberduck.Deployment.Build.Structs
 {
     public struct TypeLibMap
     {

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Xml;
 using Microsoft.Win32;
-using Rubberduck.Deployment.Structs;
+using Rubberduck.Deployment.Build.Structs;
 
-namespace Rubberduck.Deployment.Builders
+namespace Rubberduck.Deployment.Build.Builders
 {
     public class RegistryEntryBuilder
     {
@@ -92,11 +92,11 @@ namespace Rubberduck.Deployment.Builders
                 @="C:\\Github\\Rubberduck\\Rubberduck\\RetailCoder.VBE\\bin\\Debug"
             */
             const string basePath = baseFolder + @"TypeLib\";
-            var libGuid = node.Attributes["Id"].Value;
-            var libDesc = node.Attributes["Description"].Value;
-            var language = node.Attributes["Language"].Value;
-            var major = node.Attributes["MajorVersion"].Value;
-            var minor = node.Attributes["MinorVersion"].Value;
+            var libGuid = node.Attributes["Id"].Value; //mandatory; it should throw if we don't have it.
+            var libDesc = node.Attributes["Description"]?.Value ?? string.Empty;
+            var language = node.Attributes["Language"]?.Value ?? "0";
+            var major = node.Attributes["MajorVersion"]?.Value ?? "1";
+            var minor = node.Attributes["MinorVersion"]?.Value ?? "0";
             var version = major + "." + minor;
             
             var flags = 0;

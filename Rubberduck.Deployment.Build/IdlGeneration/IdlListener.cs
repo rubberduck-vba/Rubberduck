@@ -1,7 +1,7 @@
 ﻿using Org.Benf.OleWoo.Listeners;
 using Org.Benf.OleWoo.Typelib;
 
-namespace Rubberduck.Deployment.IdlGeneration
+namespace Rubberduck.Deployment.Build.IdlGeneration
 {
     public class IdlListener : TypeLibListenerBase
     {

@@ -1,12 +1,12 @@
 ﻿using System;
-using Org.Benf.OleWoo;
-using Org.Benf.OleWoo.Typelib;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
+using Org.Benf.OleWoo;
+using Org.Benf.OleWoo.Typelib;
 
-namespace Rubberduck.Deployment.IdlGeneration
+namespace Rubberduck.Deployment.Build.IdlGeneration
 {
     public class IdlGenerator
     {

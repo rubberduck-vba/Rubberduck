@@ -1,6 +1,6 @@
 using Microsoft.Win32;
 
-namespace Rubberduck.Deployment.Structs
+namespace Rubberduck.Deployment.Build.Structs
 {
     public struct RegistryEntry
     {

@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using Microsoft.Win32;
-using Rubberduck.Deployment.Structs;
+using Rubberduck.Deployment.Build.Structs;
 
-namespace Rubberduck.Deployment.Writers
+namespace Rubberduck.Deployment.Build.Writers
 {
     public class LocalDebugRegistryWriter : IRegistryWriter
     {
         private string _dllName;
         private string _tlb32Name;
         private string _tlb64Name;
+        
+        public string CurrentPath { get; set; }
 
         public string Write(IOrderedEnumerable<RegistryEntry> entries, string dllName, string tlb32Name, string tlb64Name)
         {
@@ -78,36 +80,20 @@ namespace Rubberduck.Deployment.Writers
             }
         }
 
-        //Cache the string so we call the AssemblyDirectory only once
-        private string _currentPath;
         private string ReplacePlaceholder(string value, Bitness bitness)
         {
-            if (_currentPath == null)
-            {
-                _currentPath = AssemblyDirectory;
-            }
+            Debug.Assert(!string.IsNullOrWhiteSpace(CurrentPath));
 
             switch (value)
             {
                 case PlaceHolders.InstallPath:
-                    return _currentPath;
+                    return CurrentPath;
                 case PlaceHolders.DllPath:
-                    return Path.Combine( _currentPath, _dllName);
+                    return Path.Combine(CurrentPath, _dllName);
                 case PlaceHolders.TlbPath:
-                    return Path.Combine(_currentPath,  bitness == Bitness.Is64Bit ? _tlb64Name : _tlb32Name);
+                    return Path.Combine(CurrentPath,  bitness == Bitness.Is64Bit ? _tlb64Name : _tlb32Name);
                 default:
                     return value;
-            }
-        }
-
-        public static string AssemblyDirectory
-        {
-            get
-            {
-                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                UriBuilder uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
-                return Path.GetDirectoryName(path);
             }
         }
     }
