@@ -118,10 +118,46 @@ namespace RubberduckTests.Grammar
         [Category("Grammar")]
         [Category("Annotations")]
         [Test]
+        public void ModuleAttributeAnnotation_TypeIsModuleAttribute()
+        {
+            var annotation = new ModuleAttributeAnnotation(new QualifiedSelection(), null, new[] { "Attribute", "Value" });
+            Assert.AreEqual(AnnotationType.ModuleAttribute, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void MemberAttributeAnnotation_TypeIsMemberAttribute()
+        {
+            var annotation = new MemberAttributeAnnotation(new QualifiedSelection(), null, new[] { "Attribute", "Value" });
+            Assert.AreEqual(AnnotationType.MemberAttribute, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
         public void DescriptionAnnotation_TypeIsDescription()
         {
-            var annotation = new DescriptionAnnotation(new QualifiedSelection(), null, null);
+            var annotation = new DescriptionAnnotation(new QualifiedSelection(), null, new[] { "Desc"});
             Assert.AreEqual(AnnotationType.Description, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void ModuleDescriptionAnnotation_TypeIsModuleDescription()
+        {
+            var annotation = new ModuleDescriptionAnnotation(new QualifiedSelection(), null, new[] { "Desc" });
+            Assert.AreEqual(AnnotationType.ModuleDescription, annotation.AnnotationType);
+        }
+
+        [Category("Grammar")]
+        [Category("Annotations")]
+        [Test]
+        public void VariableDescriptionAnnotation_TypeIsModuleDescription()
+        {
+            var annotation = new VariableDescriptionAnnotation(new QualifiedSelection(), null, new[] { "Desc" });
+            Assert.AreEqual(AnnotationType.VariableDescription, annotation.AnnotationType);
         }
 
         [Category("Grammar")]

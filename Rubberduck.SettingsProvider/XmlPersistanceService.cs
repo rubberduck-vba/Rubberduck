@@ -1,57 +1,24 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class XmlPersistanceService<T> : IFilePersistanceService<T> where T : class, IEquatable<T>, new()
+    public class XmlPersistanceService<T> : XmlPersistanceServiceBase<T> where T : class, IEquatable<T>, new()
     {
-        private readonly string _rootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck");
-        private readonly UTF8Encoding _outputEncoding = new UTF8Encoding(false);
-        private const string DefaultConfigFile = "rubberduck.config";
-        private const string RootElement = "Configuration";
-
-        // ReSharper disable once StaticFieldInGenericType
-        private static readonly XmlSerializerNamespaces EmptyNamespace =
-            new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
-        
-        // ReSharper disable once StaticFieldInGenericType
-        private static readonly XmlWriterSettings OutputXmlSettings = new XmlWriterSettings
+        public override T Load(T toDeserialize)
         {
-            Encoding = new UTF8Encoding(false),
-            Indent = true,
-        };
-
-        private T _cached;
-
-        private string _filePath;
-        public string FilePath
-        {
-            get { return _filePath ?? Path.Combine(_rootPath, DefaultConfigFile); }
-            set { _filePath = value; }
-        }
-
-        public T Load(T toDeserialize)
-        {
-            if (_cached != null)
+            var defaultOutput = CachedOrNotFound();
+            if (defaultOutput != null)
             {
-                return _cached;
+                return defaultOutput;
             }
 
-            var type = typeof(T);
-
-            if (!File.Exists(FilePath))
-            {
-                return FailedLoadReturnValue();
-            }
             var doc = GetConfigurationDoc(FilePath);
-            
-            var node = doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(type.Name));
+            var node = GetNodeByName(doc, typeof(T).Name);
             if (node == null)
             {
                 return FailedLoadReturnValue();
@@ -59,78 +26,49 @@ namespace Rubberduck.SettingsProvider
 
             using (var reader = node.CreateReader())
             {
-                var deserializer = new XmlSerializer(type);
+                var deserializer = new XmlSerializer(typeof(T));
                 try
                 {
-                    _cached = (T)Convert.ChangeType(deserializer.Deserialize(reader), type);
-                    return _cached;
+                    Cached = (T)Convert.ChangeType(deserializer.Deserialize(reader), typeof(T));
+                    return Cached;
                 }
                 catch
                 {
                     return FailedLoadReturnValue();
                 }
-            }  
-        }
-
-        private static T FailedLoadReturnValue()
-        {
-            return (T)Convert.ChangeType(null, typeof(T));
+            }
         }
 
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")] //This is fine. StreamWriter disposes the MemoryStream, but calling twice is a NOP.
-        public void Save(T toSerialize)
+        public override void Save(T toSerialize)
         {
             var doc = GetConfigurationDoc(FilePath);
-            var type = typeof(T);
-            var node = doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(type.Name));
-            
+            var node = GetNodeByName(doc, typeof(T).Name);
+
             using (var stream = new MemoryStream())
             using (var writer = new StreamWriter(stream))
             {
-                var serializer = new XmlSerializer(type);
+                var serializer = new XmlSerializer(typeof(T));
                 serializer.Serialize(writer, toSerialize, EmptyNamespace);
-                var settings = XElement.Parse(_outputEncoding.GetString(stream.ToArray()), LoadOptions.SetBaseUri);
+                var settings = XElement.Parse(OutputEncoding.GetString(stream.ToArray()), LoadOptions.SetBaseUri);
+
                 if (node != null)
                 {
                     node.ReplaceWith(settings);
                 }
                 else
                 {
-                    var parent = doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(RootElement));
-                    // ReSharper disable once PossibleNullReferenceException
-                    parent.Add(settings);
-                }                
+                    GetNodeByName(doc, RootElement).Add(settings);
+                }
             }
 
-            if (!Directory.Exists(_rootPath))
-            {
-                Directory.CreateDirectory(_rootPath);
-            }
+            EnsurePathExists();
 
             using (var xml = XmlWriter.Create(FilePath, OutputXmlSettings))
             {
                 doc.WriteTo(xml);
-                _cached = toSerialize;
+                Cached = toSerialize;
             }
-        }
-
-        private static XDocument GetConfigurationDoc(string file)
-        {
-            XDocument output;
-            try
-            {
-                output = XDocument.Load(file);
-                if (output.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(RootElement)) != null)
-                {
-                    return output;
-                }
-            }
-            // ReSharper disable once EmptyGeneralCatchClause
-            catch { }
-            
-            output = new XDocument();
-            output.Add(new XElement(RootElement));
-            return output;
         }
     }
 }

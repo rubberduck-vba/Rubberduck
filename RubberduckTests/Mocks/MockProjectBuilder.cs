@@ -110,9 +110,9 @@ namespace RubberduckTests.Mocks
         /// <param name="filePath">The path to the referenced library.</param>
         /// <param name="isBuiltIn">Indicates whether the reference is a built-in reference.</param>
         /// <returns>Returns the <see cref="MockProjectBuilder"/> instance.</returns>
-        public MockProjectBuilder AddReference(string name, string filePath, int major, int minor, bool isBuiltIn = false)
+        public MockProjectBuilder AddReference(string name, string filePath, int major, int minor, bool isBuiltIn = false, ReferenceKind type = ReferenceKind.TypeLibrary)
         {
-            var reference = CreateReferenceMock(name, filePath, major, minor, isBuiltIn);
+            var reference = CreateReferenceMock(name, filePath, major, minor, isBuiltIn, type);
             _references.Add(reference.Object);
             return this;
         }
@@ -229,6 +229,12 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
+        public Mock<IReferences> GetMockedReferences(out Mock<IVBProject> project)
+        {
+            project = Build();
+            return _vbReferences;
+        }
+
         private Mock<IReferences> CreateReferencesMock()
         {
             var result = new Mock<IReferences>();
@@ -244,7 +250,7 @@ namespace RubberduckTests.Mocks
             return result;
         }
 
-        private Mock<IReference> CreateReferenceMock(string name, string filePath, int major, int minor, bool isBuiltIn = true)
+        public Mock<IReference> CreateReferenceMock(string name, string filePath, int major, int minor, bool isBuiltIn = true, ReferenceKind type = ReferenceKind.TypeLibrary)
         {
             var result = new Mock<IReference>();
 
@@ -258,6 +264,7 @@ namespace RubberduckTests.Mocks
             result.SetupGet(m => m.FullPath).Returns(() => filePath);
             result.SetupGet(m => m.Major).Returns(() => major);
             result.SetupGet(m => m.Minor).Returns(() => minor);
+            result.SetupGet(m => m.Type).Returns(() => type);
 
             result.SetupGet(m => m.IsBuiltIn).Returns(isBuiltIn);
 

@@ -80,9 +80,9 @@ namespace Rubberduck.Settings
                    IsAutoSaveEnabled == other.IsAutoSaveEnabled &&
                    AutoSavePeriod == other.AutoSavePeriod &&
                    UserEditedLogLevel == other.UserEditedLogLevel &&
-                   MinimumLogLevel == other.MinimumLogLevel &&
-                   EnableExperimentalFeatures.All(a => other.EnableExperimentalFeatures.Contains(a)) &&
+                   MinimumLogLevel == other.MinimumLogLevel &&                   
                    EnableExperimentalFeatures.Count == other.EnableExperimentalFeatures.Count &&
+                   EnableExperimentalFeatures.All(other.EnableExperimentalFeatures.Contains) &&
                    SetDpiUnaware == other.SetDpiUnaware;
         }
     }

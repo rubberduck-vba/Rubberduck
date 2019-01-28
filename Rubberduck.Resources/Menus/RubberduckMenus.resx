@@ -235,4 +235,7 @@
     <value>Re&amp;order Parameters</value>
     <comment>TC: different hotkey</comment>
   </data>
+  <data name="AddRemoveReferences" xml:space="preserve">
+    <value>Add/Remove References...</value>
+  </data>
 </root>

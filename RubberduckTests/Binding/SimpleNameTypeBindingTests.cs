@@ -16,7 +16,7 @@ namespace RubberduckTests.Binding
     {
         private const string BINDING_TARGET_NAME = "BindingTarget";
         private const string TEST_CLASS_NAME = "TestClass";
-        private static readonly string ReferencedProjectFilepath = string.Empty; // must be an empty string
+        private static readonly string ReferencedProjectFilepath = $@"C:\{TEST_CLASS_NAME}.xlsm";
 
         [Category("Binding")]
         [Test]

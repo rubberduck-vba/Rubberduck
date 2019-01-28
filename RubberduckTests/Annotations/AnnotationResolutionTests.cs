@@ -86,13 +86,75 @@ End Function";
         }
 
         [Test]
-        public void MemberAnnotationsAboveFirstNonAnnotationLineAboveMemberDoNotGetScopedToMember()
+        public void MemberAnnotationsAboveFirstNonAnnotationLineAboveMemberStillGetScopedToMember()
         {
             const string inputCode =
                 @"
 Public Sub Foo()
 End Sub
 '@TestMethod
+'SomeComment
+'@Enumerator _
+17 _
+, _
+12 _
+ _
+@DefaultMember _
+
+Public Function Bar() As Variant
+End Function";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var barDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function).Single();
+
+                var expectedAnnotationCount = 3;
+                var actualAnnotationCount = barDeclaration.Annotations.Count();
+
+                Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
+            }
+        }
+
+        [Test]
+        public void MemberAnnotationsOnInOrBelowMemberDoNotGetScopedToMember()
+        {
+            const string inputCode =
+                @"
+Public Sub Foo()
+End Sub
+'SomeComment
+'@Enumerator _
+17 _
+, _
+12 _
+ _
+@DefaultMember _
+
+Public Function Bar() As Variant '@TestMethod
+'@MemberAttribute VB_Attribute1, False
+End Function
+'@MemberAttribute VB_Attribute2, False";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var barDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function).Single();
+
+                var expectedAnnotationCount = 2;
+                var actualAnnotationCount = barDeclaration.Annotations.Count();
+
+                Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
+            }
+        }
+
+        [Test]
+        public void MemberAnnotationsOnOrAbovePreviousMemberDoNotGetScopedToMember()
+        {
+            const string inputCode =
+                @"
+'@Description ""Desc""
+Public Sub Foo()
+End Sub _
+'@TestMethod 
 'SomeComment
 '@Enumerator _
 17 _
@@ -116,14 +178,14 @@ End Function";
         }
 
         [Test]
-        public void MemberAnnotationsAboveFirstNonMemberNonIdentifierAnnotationLineAboveMemberDoNotGetScopedToMember()
+        public void MemberAnnotationsOnOrAboveModuleVariableDoNotGetScopedToMember()
         {
             const string inputCode =
                 @"
-Public Sub Foo()
-End Sub
-'@TestMethod
-'@TestModule
+'@Description ""Desc""
+Public foo As Long _
+'@TestMethod 
+'SomeComment
 '@Enumerator _
 17 _
 , _
@@ -139,37 +201,6 @@ End Function";
                 var barDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function).Single();
 
                 var expectedAnnotationCount = 2;
-                var actualAnnotationCount = barDeclaration.Annotations.Count();
-
-                Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
-            }
-        }
-
-        [Test]
-        [Ignore("We cannot test this because we do not have any identifier annotation that is not a member annotation.")]
-        public void MemberAnnotationsAboveIdentifierAnnotationLineAboveMemberGetScopedToMember()
-        {
-            const string inputCode =
-                @"
-Public Sub Foo()
-End Sub
-'@TestMethod
-'@TestIdentifier
-'@Enumerator _
-17 _
-, _
-12 _
- _
-@DefaultMember _
-
-Public Function Bar() As Variant
-End Function";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var barDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Function).Single();
-
-                var expectedAnnotationCount = 3;
                 var actualAnnotationCount = barDeclaration.Annotations.Count();
 
                 Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
@@ -196,7 +227,8 @@ End Function";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var moduleDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var moduleDeclaration =
+                    state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
 
                 var expectedAnnotationCount = 2;
                 var actualAnnotationCount = moduleDeclaration.Annotations.Count();
@@ -224,7 +256,8 @@ End Function";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var moduleDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var moduleDeclaration =
+                    state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
 
                 var expectedAnnotationCount = 0;
                 var actualAnnotationCount = moduleDeclaration.Annotations.Count();
@@ -234,13 +267,13 @@ End Function";
         }
 
         [Test]
-        public void ModuleAnnotationsBelowFirstMemberAreNotModuleAnnotations()
+        public void ModuleAnnotationsOnOrBelowFirstMemberAreNotModuleAnnotations()
         {
             const string inputCode =
                 @"
 Public Foobar As Long
 
-Public Sub Foo()
+Public Sub Foo() '@ModuleDescription ""Desc""
 End Sub
 
 '@TestModule
@@ -250,7 +283,8 @@ End Function";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var moduleDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var moduleDeclaration =
+                    state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
 
                 var expectedAnnotationCount = 0;
                 var actualAnnotationCount = moduleDeclaration.Annotations.Count();
@@ -274,7 +308,8 @@ End Function";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var moduleDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
+                var moduleDeclaration =
+                    state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single();
 
                 var expectedAnnotationCount = 2;
                 var actualAnnotationCount = moduleDeclaration.Annotations.Count();
@@ -351,10 +386,36 @@ End Function";
         }
 
         [Test]
-        public void VariableAnnotationsAboveFirstNonAnnotationLineAboveVariableDoNotGetScopedToVariable()
+        public void VariableAnnotationsOnOrAbovePreviousVariableDoNotGetScopedToVariable()
         {
             const string inputCode =
-                @"
+                @"'@Obsolete
+Private fooBar As Variant _
+'@Obsolete
+
+'SomeComment
+Public foo As Long
+
+Public Function Bar() As Variant
+End Function";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var fooDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single(decl => decl.IdentifierName == "foo");
+
+                var expectedAnnotationCount = 0;
+                var actualAnnotationCount = fooDeclaration.Annotations.Count();
+
+                Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
+            }
+        }
+
+        [Test]
+        public void VariableAnnotationsOnOrAboveNonWhiteSpaceStatementDoNotGetScopedToVariable()
+        {
+            const string inputCode =
+                @"'@Obsolete
+Option Explicit _
 '@Obsolete
 'SomeComment
 Public foo As Long
@@ -374,36 +435,35 @@ End Function";
         }
 
         [Test]
-        public void VariableAnnotationsAboveFirstNonVariableNonIdentifierAnnotationLineAboveVariableDoNotGetScopedToVariable()
+        public void VariableAnnotationsOnOrBelowVariableDoNotGetScopedToVariable()
         {
             const string inputCode =
                 @"
+'SomeComment
+Public foo As Long '@Obsolete
 '@Obsolete
-'@TestModule
-Public foo As Long
 
 Public Function Bar() As Variant
 End Function";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var fooDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single();
+                var barDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single();
 
                 var expectedAnnotationCount = 0;
-                var actualAnnotationCount = fooDeclaration.Annotations.Count();
+                var actualAnnotationCount = barDeclaration.Annotations.Count();
 
                 Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
             }
         }
 
         [Test]
-        [Ignore("We cannot test this because we do not have any identifier annotation that is not a member annotation.")]
-        public void VariableAnnotationsAboveIdentifierAnnotationLineAboveVariableGetScopedToVariable()
+        public void VariableAnnotationsAboveFirstNonAnnotationLineAboveVariableStillGetScopedToVariable()
         {
             const string inputCode =
                 @"
 '@Obsolete
-'@TestIdentifier
+'SomeComment
 Public foo As Long
 
 Public Function Bar() As Variant
@@ -411,10 +471,87 @@ End Function";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var fooDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single();
+                var barDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single();
 
                 var expectedAnnotationCount = 1;
-                var actualAnnotationCount = fooDeclaration.Annotations.Count();
+                var actualAnnotationCount = barDeclaration.Annotations.Count();
+
+                Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
+            }
+        }
+
+        [Test]
+        public void IdentifierAnnotationsInWhiteSpaceAboveIdentifierGetScopedToIdentifier()
+        {
+            const string inputCode =
+                @"
+Public foo As Long
+
+Public Function Bar() As Variant
+
+'@Ignore MissingAttribute
+'Some Comment
+
+'@TestModule
+
+'@Ignore EmptyModule
+    foo = 42
+End Function";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var fooDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single();
+                var fooReference = fooDeclaration.References.Single();
+
+                var expectedAnnotationCount = 2;
+                var actualAnnotationCount = fooReference.Annotations.Count();
+
+                Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
+            }
+        }
+
+        [Test]
+        public void IdentifierAnnotationsOnOrBelowIdentifierDoNotGetScopedToIdentifier()
+        {
+            const string inputCode =
+                @"
+Public foo As Long
+
+Public Function Bar() As Variant
+    foo = 42 '@Ignore MissingAttribute
+'@Ignore EmptyModule
+End Function";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var fooDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single();
+                var fooReference = fooDeclaration.References.Single();
+
+                var expectedAnnotationCount = 0;
+                var actualAnnotationCount = fooReference.Annotations.Count();
+
+                Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
+            }
+        }
+
+        [Test]
+        public void IdentifierAnnotationsOnPreviousNonWhiteSpaceDoNotGetScopedToIdentifier()
+        {
+            const string inputCode =
+                @"
+Public foo As Long
+
+Public Function Bar() As Variant '@Ignore MissingAttribute
+    foo = 42 
+End Function";
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+                var fooDeclaration = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).Single();
+                var fooReference = fooDeclaration.References.Single();
+
+                var expectedAnnotationCount = 0;
+                var actualAnnotationCount = fooReference.Annotations.Count();
 
                 Assert.AreEqual(expectedAnnotationCount, actualAnnotationCount);
             }

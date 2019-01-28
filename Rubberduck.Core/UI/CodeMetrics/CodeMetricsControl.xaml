@@ -19,129 +19,11 @@
                 <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <Style x:Key="FocusVisual">
-                <Setter Property="Control.Template">
-                    <Setter.Value>
-                        <ControlTemplate>
-                            <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-            <SolidColorBrush x:Key="Item.MouseOver.Background" Color="#1F26A0DA"/>
-            <SolidColorBrush x:Key="Item.MouseOver.Border" Color="#a826A0Da"/>
-            <LinearGradientBrush x:Key="Item.SelectedInactive.Background" EndPoint="0,1" StartPoint="0,0">
-                <GradientStop Color="#FFEEEDED" Offset="0"/>
-                <GradientStop Color="#FFDDDDDD" Offset="1"/>
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="Item.SelectedInactive.Border" Color="LightGray"/>
-            <LinearGradientBrush x:Key="Item.SelectedActive.Background" EndPoint="0,1" StartPoint="0,0">
-                <GradientStop Color="#FFD9F4FF" Offset="0"/>
-                <GradientStop Color="#FF9BDDFB" Offset="1"/>
-            </LinearGradientBrush>
-            <SolidColorBrush x:Key="Item.SelectedActive.Border" Color="#ADC6E5"/>
-            <Style x:Key="PrettyListBoxItem" TargetType="{x:Type ListBoxItem}">
-                <Style.Resources>
-                    <Style TargetType="{x:Type Border}">
-                        <Setter Property="CornerRadius" Value="2"/>
-                    </Style>
-                </Style.Resources>
-                <Setter Property="SnapsToDevicePixels" Value="True"/>
-                <Setter Property="Padding" Value="4,1"/>
-                <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="BorderBrush" Value="Transparent"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
-                <Setter Property="Height" Value="26" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                            <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
-                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="IsMouseOver" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.MouseOver.Background}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.MouseOver.Border}"/>
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="Selector.IsSelectionActive" Value="False"/>
-                                        <Condition Property="IsSelected" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="BorderThickness" Value="1.5" />
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Background}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedInactive.Border}"/>
-                                </MultiTrigger>
-                                <MultiTrigger>
-                                    <MultiTrigger.Conditions>
-                                        <Condition Property="Selector.IsSelectionActive" Value="True"/>
-                                        <Condition Property="IsSelected" Value="True"/>
-                                    </MultiTrigger.Conditions>
-                                    <Setter Property="BorderThickness" Value="1.5" />
-                                    <Setter Property="Background" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Background}"/>
-                                    <Setter Property="BorderBrush" TargetName="Bd" Value="{StaticResource Item.SelectedActive.Border}"/>
-                                </MultiTrigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter Property="TextElement.Foreground" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="PrettifyRow" TargetType="{x:Type DataGridRow}">
-                <Style.Resources>
-                    <Style TargetType="{x:Type Border}">
-                        <Setter Property="CornerRadius" Value="2"/>
-                    </Style>
-                </Style.Resources>
-                <Setter Property="BorderThickness" Value="0,.5,0,0" />
-                <Setter Property="BorderBrush" Value="DarkGray" />
-                <Setter Property="MinHeight" Value="26" />
-                <Setter Property="TextBlock.FontWeight" Value="Normal" />
-                <Style.Triggers>
-                    <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="BorderThickness" Value="1.5" />
-                    </Trigger>
-                    <MultiTrigger>
-                        <MultiTrigger.Conditions>
-                            <Condition Property="IsSelected" Value="True" />
-                            <Condition Property="Selector.IsSelectionActive" Value="True" />
-                        </MultiTrigger.Conditions>
-                        <Setter Property="BorderBrush" Value="#adc6e5"/>
-                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
-                    </MultiTrigger>
-                    <MultiTrigger>
-                        <MultiTrigger.Conditions>
-                            <Condition Property="IsSelected" Value="True" />
-                            <Condition Property="Selector.IsSelectionActive" Value="False" />
-                        </MultiTrigger.Conditions>
-                        <Setter Property="BorderBrush" Value="LightGray"/>
-                        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
-                    </MultiTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <BitmapImage x:Key="RefreshImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-double.png" />
-            <BitmapImage x:Key="CollaseNodesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder.png" />
-            <BitmapImage x:Key="ExpandNodesImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/folder-open.png" />
-            <BitmapImage x:Key="UndoImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-circle-left.png" />
-            <BitmapImage x:Key="PrintImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/printer.png" />
-            <BitmapImage x:Key="SearchImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/magnifier-medium.png" />
-
             <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
             <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
-            <converters:StringHasValueToVisibilityConverter x:Key="StringHasValueToVisibility" />
-            <converters:StringHasNoValueToVisibilityConverter x:Key="StringHasNoValueToVisibility" />
-            <converters:SubtractionConverter x:Key="SubtractionConverter" />
-            <converters:DeclarationToMemberSignatureConverter x:Key="DeclarationToMemberSignatureConverter" />
+            <converters:BooleanToDimmedBrushConverter x:Key="BooleanToDimmed" />
+            <converters:CodeExplorerNodeToIconConverter x:Key="NodeToIcon" />
+            <converters:AccessibilityToIconConverter x:Key="AccessibilityToIcon" />
 
             <LinearGradientBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" EndPoint="0,1" StartPoint="0,0">
                 <GradientStop Color="#FFD9F4FF" Offset="0"/>
@@ -154,82 +36,11 @@
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
             <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
 
-            <Style x:Key="ShinyTreeView"
-               TargetType="{x:Type TreeViewItem}">
-                <Setter Property="BorderThickness" Value="1.5"/>
-                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
-                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                <Setter Property="Visibility" Value="{Binding IsVisible, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Style.Triggers>
-                    <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="BorderBrush" Value="#adc6e5"/>
-                    </Trigger>
-                    <MultiTrigger>
-                        <MultiTrigger.Conditions>
-                            <Condition Property="IsSelected" Value="True"/>
-                            <Condition Property="IsSelectionActive" Value="False"/>
-                        </MultiTrigger.Conditions>
-                        <Setter Property="BorderBrush" Value="LightGray"/>
-                    </MultiTrigger>
-                </Style.Triggers>
-                <Style.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="2"/>
-                    </Style>
-                </Style.Resources>
-            </Style>
-
-            <Style x:Key="IconStyle" TargetType="Image">
+            <Style x:Key="ToolbarIconStyle" TargetType="Image">
                 <Setter Property="Height" Value="16" />
                 <Setter Property="Width" Value="16" />
                 <Setter Property="Margin" Value="2,0,2,0" />
                 <Setter Property="VerticalAlignment" Value="Top" />
-            </Style>
-
-            <Style x:Key="TreeViewItemStyle" TargetType="TextBlock">
-                <Setter Property="Text" Value="{Binding Name}" />
-                <Setter Property="FontSize" Value="10" />
-                <Setter Property="Margin" Value="2,0,2,0" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="ToolTip" Value="{Binding Name}" />
-                <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
-                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-            </Style>
-
-            <Style x:Key="TreeViewItemStyleWithSignatures" TargetType="TextBlock">
-                <Setter Property="Text" Value="{Binding NameWithSignature}" />
-                <Setter Property="FontSize" Value="10" />
-                <Setter Property="Margin" Value="2,0,2,0" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="ToolTip" Value="{Binding NameWithSignature}" />
-                <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
-                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-            </Style>
-
-            <Style x:Key="TreeViewIconStyle" TargetType="Image" BasedOn="{StaticResource IconStyle}">
-                <Setter Property="Source" Value="{Binding CollapsedIcon}" />
-                <Style.Triggers>
-                    <!-- thanks to H.B. on http://stackoverflow.com/a/5797323/1188513 -->
-                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=IsExpanded}" Value="True">
-                        <Setter Property="Source" Value="{Binding ExpandedIcon}" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <HierarchicalDataTemplate x:Key="CodeExplorerTemplate" 
-                                  DataType="codeExplorer:CodeExplorerProjectViewModel"
-                                  ItemsSource="{Binding Items}">
-                <StackPanel Orientation="Horizontal">
-                    <Image Style="{StaticResource TreeViewIconStyle}" />
-                    <!--<TextBlock Style="{StaticResource TreeViewItemStyle}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToHiddenVisibility}}" />-->
-                    <TextBlock Style="{StaticResource TreeViewItemStyleWithSignatures}" Visibility="{Binding ElementName=DisplaySignatures, Path=IsChecked, Converter={StaticResource BoolToVisibility}}" />
-                </StackPanel>
-            </HierarchicalDataTemplate>
-
-            <Style x:Key="CodeExplorerTreeViewStyle" TargetType="TreeView">
-                <Setter Property="ItemTemplate" Value="{StaticResource CodeExplorerTemplate}" />
-                <Setter Property="ItemsSource" Value="{Binding Projects, UpdateSourceTrigger=PropertyChanged}" />
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -247,11 +58,77 @@
 
         <TreeView x:Name="ProjectTree"
                   Grid.RowSpan="2" Grid.Column="0"
-                  ItemContainerStyle="{StaticResource ShinyTreeView}"
+                  Background="White"
                   HorizontalContentAlignment="Stretch"
-                  Style="{StaticResource CodeExplorerTreeViewStyle}" BorderThickness="0,1"
-                  VirtualizingPanel.IsVirtualizing="False"
-                  Visibility="{Binding Path=TreeViewVisibility}">
+                  ItemsSource="{Binding Projects}"
+                  BorderThickness="0,1"
+                  VirtualizingPanel.IsVirtualizing="False">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="codeExplorer:ICodeExplorerNode" ItemsSource="{Binding Children}">
+                    <HierarchicalDataTemplate.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="BorderThickness" Value="1.5"/>
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                            <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=OneWay}" />
+                            <Setter Property="Visibility" Value="{Binding Filtered, Mode=OneWay, Converter={StaticResource BoolToHiddenVisibility}}" />
+                            <Setter Property="HorizontalAlignment" Value="Left" />
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="BorderBrush" Value="#adc6e5"/>
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="IsSelected" Value="True"/>
+                                        <Condition Property="IsSelectionActive" Value="False"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter Property="BorderBrush" Value="LightGray"/>
+                                </MultiTrigger>
+                            </Style.Triggers>
+                            <Style.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="2"/>
+                                </Style>
+                            </Style.Resources>
+                        </Style>
+                    </HierarchicalDataTemplate.ItemContainerStyle>
+                    <HierarchicalDataTemplate.Resources>
+                        <Style x:Key="TreeViewItemStyle" TargetType="{x:Type TextBlock}">
+                            <Setter Property="Text" Value="{Binding NameWithSignature}" />
+                            <Setter Property="FontSize" Value="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeView}}, Path=FontSize}" />
+                            <Setter Property="FontWeight" Value="{Binding FontWeight}"/>
+                            <Setter Property="Margin" Value="2,0,2,0" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="ToolTip" Value="{Binding ToolTip}" />
+                            <Setter Property="ToolTipService.InitialShowDelay" Value="500" />
+                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            <Setter Property="Foreground" Value="{Binding IsDimmed, Mode=OneWay, Converter={StaticResource BooleanToDimmed}}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsObsolete}" Value="True">
+                                    <Setter Property="Foreground" Value="Gray" />
+                                    <Setter Property="TextDecorations" Value="Strikethrough" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </HierarchicalDataTemplate.Resources>
+                    <StackPanel Orientation="Horizontal">
+                        <Grid>
+                            <Image Style="{StaticResource ToolbarIconStyle}">
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource NodeToIcon}">
+                                        <MultiBinding.Bindings>
+                                            <Binding RelativeSource="{RelativeSource Self}" Path="DataContext"/>
+                                            <Binding Path="Declaration" />
+                                            <Binding Path="IsExpanded" />
+                                        </MultiBinding.Bindings>
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
+                            <Image Source="{Binding Declaration, Converter={StaticResource AccessibilityToIcon}}" Style="{StaticResource ToolbarIconStyle}" />
+                        </Grid>
+                        <TextBlock Style="{StaticResource TreeViewItemStyle}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
             <i:Interaction.Behaviors>
                 <controls:BindableSelectedItemBehavior SelectedItem="{Binding SelectedItem, Mode=TwoWay}" />
             </i:Interaction.Behaviors>
@@ -286,8 +163,9 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <controls:EmptyUIRefresh Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Visibility="{Binding EmptyUIRefreshMessageVisibility, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
-        <controls:BusyIndicator Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />
+        <controls:EmptyUIRefresh Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
+
+        <controls:BusyIndicator Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Grid.RowSpan="2" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>
 

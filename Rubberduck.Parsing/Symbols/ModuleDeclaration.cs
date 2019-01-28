@@ -34,7 +34,9 @@ namespace Rubberduck.Parsing.Symbols
                 isUserDefined,
                 annotations,
                 attributes)
-        { }
+        {
+            CustomFolder = FolderFromAnnotations();
+        }
 
         private readonly List<Declaration> _members = new List<Declaration>();
         public IReadOnlyList<Declaration> Members => _members;
@@ -47,6 +49,26 @@ namespace Rubberduck.Parsing.Symbols
         internal void RemoveAnnotations(ICollection<IAnnotation> annotationsToRemove)
         {
             _annotations = _annotations?.Where(annotation => !annotationsToRemove.Contains(annotation)).ToList();
+        }
+
+        public override string CustomFolder { get; }
+
+        private string FolderFromAnnotations()
+        {
+            var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
+            string result;
+            if (@namespace == null)
+            {
+                result = string.IsNullOrEmpty(QualifiedName.QualifiedModuleName.ProjectName)
+                    ? ProjectId
+                    : QualifiedName.QualifiedModuleName.ProjectName;
+            }
+            else
+            {
+                var value = ((FolderAnnotation)@namespace).FolderName;
+                result = value;
+            }
+            return result;
         }
     }
 }

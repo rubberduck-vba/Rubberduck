@@ -86,7 +86,17 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Assignment is not used.
+        /// </summary>
+        public static string AttributeValueOutOfSyncInspection
+        {
+            get {
+                return ResourceManager.GetString("AttributeValueOutOfSyncInspection", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Boolean literal assignment in conditional.
         /// </summary>
@@ -385,15 +395,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing annotation.
-        /// </summary>
-        public static string MissingAnnotationInspection {
-            get {
-                return ResourceManager.GetString("MissingAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Missing attribute.
         /// </summary>
         public static string MissingAttributeInspection {
@@ -401,7 +402,28 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Missing annotation.
+        /// </summary>
+        public static string MissingMemberAnnotationInspection
+        {
+            get {
+                return ResourceManager.GetString("MissingMemberAnnotationInspection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Missing annotation.
+        /// </summary>
+        public static string MissingModuleAnnotationInspection
+        {
+            get
+            {
+                return ResourceManager.GetString("MissingModuleAnnotationInspection", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Use of &apos;Dim&apos; keyword at module level.
         /// </summary>
