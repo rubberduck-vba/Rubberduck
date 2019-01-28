@@ -204,4 +204,22 @@
   <data name="Assert_VerifyInternalErrorMessage" xml:space="preserve">
     <value>Rubberduck nebyl schopen zpracovat výsledky volání.</value>
   </data>
+  <data name="Prerequisite_EarlyBindingReferenceMissing" xml:space="preserve">
+    <value>Reference, které Rubberduck potřebuje pro early-binding testy, nemůžou být vyřešeny. Je možné, že jsou poškozeny.</value>
+  </data>
+  <data name="TestRunner_ComException" xml:space="preserve">
+    <value>Při běhu testů se vyskytla neočekávaná COM výjimka.</value>
+  </data>
+  <data name="TestRunner_ExceptionDuringRun" xml:space="preserve">
+    <value>Spuštěná testovací metoda skončila výjimkou.</value>
+  </data>
+  <data name="TestRunner_GenericException" xml:space="preserve">
+    <value>Při běhu testů se vyskytla neočekávaná výjimka.</value>
+  </data>
+  <data name="TestRunner_ModuleInitializeFailure" xml:space="preserve">
+    <value>Neznámý problém při pokusu spustit @ModuleInitialize. Modul přeskočen.</value>
+  </data>
+  <data name="TestRunner_TestInitializeFailure" xml:space="preserve">
+    <value>Neznámý problém při pokusu spustit @TestInitialize. Test přeskočen.</value>
+  </data>
 </root>

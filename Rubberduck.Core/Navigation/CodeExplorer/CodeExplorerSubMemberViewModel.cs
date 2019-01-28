@@ -25,11 +25,11 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public override string NameWithSignature => $"{Name}{_signature}";
 
-        public override void Synchronize(List<Declaration> updated)
+        public override void Synchronize(ref List<Declaration> updated)
         {
             var signature = _signature;
 
-            base.Synchronize(updated);
+            base.Synchronize(ref updated);
             if (Declaration is null || _signature.Equals(signature))
             {
                 return;
@@ -45,6 +45,6 @@ namespace Rubberduck.Navigation.CodeExplorer
                 : CodeExplorerItemComparer.CodeLine;
 
         // Bottom level node. This is a NOP.
-        protected override void AddNewChildren(List<Declaration> updated) { }
+        protected override void AddNewChildren(ref List<Declaration> updated) { }
     }
 }

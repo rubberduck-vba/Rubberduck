@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
@@ -22,6 +21,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             Parent = parent;
             _declaration = declaration;
+            UnfilteredIsExpanded = IsExpanded;
+
+            if (parent != null)
+            {
+                Filter = parent.Filter;
+            }
         }
 
         private Declaration _declaration;
@@ -75,13 +80,12 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public virtual string Description => Declaration?.DescriptionString ?? string.Empty;
 
-        [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
         protected void OnNameChanged()
         {
-            OnPropertyChanged("Name");
-            OnPropertyChanged("NameWithSignature");
-            OnPropertyChanged("PanelTitle");
-            OnPropertyChanged("Description");
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged(nameof(NameWithSignature));
+            OnPropertyChanged(nameof(PanelTitle));
+            OnPropertyChanged(nameof(Description));
         }
 
         public virtual QualifiedSelection? QualifiedSelection => Declaration?.QualifiedSelection;
@@ -94,13 +98,12 @@ namespace Rubberduck.Navigation.CodeExplorer
             get => _isExpanded;
             set
             {
-                _isExpanded = value;
-
-                if (!Filtered)
+                if (_isExpanded == value)
                 {
-                    UnfilteredIsExpanded = _isExpanded;
+                    return;
                 }
 
+                _isExpanded = value;              
                 OnPropertyChanged();
             }
         }
@@ -219,6 +222,11 @@ namespace Rubberduck.Navigation.CodeExplorer
             get => _filter;
             set
             {
+                if (string.IsNullOrEmpty(_filter))
+                {
+                    UnfilteredIsExpanded = _isExpanded;
+                }
+
                 var input = value ?? string.Empty;
                 if (_filter.Equals(input))
                 {
@@ -232,8 +240,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                 }
                 
                 OnPropertyChanged();
-                // ReSharper disable once ExplicitCallerInfoArgument
-                OnPropertyChanged("Filtered");
+                OnPropertyChanged(nameof(Filtered));
+                IsExpanded = !string.IsNullOrEmpty(_filter) ? Children.Any(child => !child.Filtered) : UnfilteredIsExpanded;                
             }
         }
 

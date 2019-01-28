@@ -54,39 +54,37 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             Unparsed = false;
             IsBusy = _state.Status != ParserState.Pending && _state.Status <= ParserState.ResolvedDeclarations;
 
-            if (e.State != ParserState.ResolvedDeclarations)
+            if (e.State == ParserState.ResolvedDeclarations)
             {
-                return;
+                Synchronize(_state.DeclarationFinder.AllUserDeclarations);
             }
-
-            Synchronize(_state.DeclarationFinder.AllUserDeclarations.ToList());
         }
 
-        private void Synchronize(List<Declaration> declarations)
+        private void Synchronize(IEnumerable<Declaration> declarations)
         {
             var metricResults = _analyst.GetMetrics(_state);
             _resultsByDeclaration = metricResults.GroupBy(r => r.Declaration).ToDictionary(g => g.Key, g => g.ToList());
 
             _uiDispatcher.Invoke(() =>
             {
+                var updates = declarations.ToList();
                 var existing = Projects.OfType<CodeExplorerProjectViewModel>().ToList();
 
                 foreach (var project in existing)
                 {
-                    project.Synchronize(declarations);
+                    project.Synchronize(ref updates);
                     if (project.Declaration is null)
                     {
                         Projects.Remove(project);
                     }
                 }
 
-                var adding = declarations.OfType<ProjectDeclaration>().ToList();
+                var adding = updates.OfType<ProjectDeclaration>().ToList();
 
                 foreach (var project in adding)
                 {
-                    var model = new CodeExplorerProjectViewModel(project, declarations.Where(proj => proj.ProjectId.Equals(project.ProjectId)).ToList(), _state, _vbe, false);
+                    var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe, false);
                     Projects.Add(model);
-                    model.IsExpanded = true;
                 }
             });
         }

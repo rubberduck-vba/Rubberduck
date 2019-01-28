@@ -336,4 +336,46 @@
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>'{0}' je deklarováno zastaralou 'CDecl' volací konvencí.</value>
   </data>
+  <data name="UnreachableCaseInspection_InherentlyUnreachable" xml:space="preserve">
+    <value>Nedostupné: Case Statement obsahuje klauzuli(e) o neplatném rozsahu.</value>
+  </data>
+  <data name="UnreachableCaseInspection_Overflow" xml:space="preserve">
+    <value>Nedostupné: Case Statement způsobí Run-time chybu č. 6 (Přetečení)</value>
+  </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Anotace '{0}' je duplikována.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Modul '{0}' nemá '@Folder' anotaci</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>'On Local Error' statement detekován.</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>'IsMissing' bude s předanými argumenty pokaždé vracet false.</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Veřejné jméno členu '{0}' obsahuje podtržítko.</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Výsledek '{0}' není testovaný pro 'Nothing'.</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>'{0}' je skryta(o) validní Excelovskou referencí na buňku.</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>'IsMissing' je předáno jako výraz, který není argumentem uzavírající procedury</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Přiřazení je okamžitě přepsáno jiným přiřazením, nebo není nikdy použito.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Hodnota(y) atributu pro atribut {0} ({1}) jsou nesynchronizovány s anotací {2}.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Člen '{0}' má '{1}' atribut s hodnotou/hodnotami '{2}', avšak chybí odpovídající anotace.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Modul '{0}' má '{1}' atribut s hodnotou/hodnotami '{2}', avšak chybí odpovídající anotace.</value>
+  </data>
 </root>
