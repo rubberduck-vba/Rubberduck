@@ -243,7 +243,7 @@ namespace Rubberduck.Deployment.Build
             var targetPath = TargetDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             var command = $"call \"{batchPath}\"{Environment.NewLine}" +
                           $"midl.exe /win32 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"{Environment.NewLine}" +
-                          $"midl.exe /amd64 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"";
+                          $"midl.exe /amd64 /tlb \"{parameters.Tlb64File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"";
             ExecuteTask(command, SourceDir);
         }
 
