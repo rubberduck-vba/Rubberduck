@@ -11,7 +11,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public class MemberAttributeRecoverer : IMemberAttributeRecovererWithSettableRewritingManager, IDisposable
+    public sealed class MemberAttributeRecoverer : IMemberAttributeRecovererWithSettableRewritingManager, IDisposable
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IParseManager _parseManager;
