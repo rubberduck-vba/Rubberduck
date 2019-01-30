@@ -2955,6 +2955,21 @@ End Sub
 
         [Category("Parser")]
         [Test]
+        public void ParserDoesNotFailOnBangOperator()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict!a
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
         public void ParserDoesNotFailOnLineContinuedBangOperator1()
         {
             const string code = @"
