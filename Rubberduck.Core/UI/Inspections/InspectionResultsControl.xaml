@@ -17,11 +17,8 @@
                 <ResourceDictionary Source="../Controls/ToolBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-
             <codeInspections:InspectionSeverityImageSourceConverter x:Key="SeverityIconConverter" />
             <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
-            <codeInspections:InspectionTypeConverter x:Key="InspectionTypeConverter" />
 
             <Style x:Key="IconMargin" TargetType="Image">
                 <Setter Property="Margin" Value="4" />
@@ -41,7 +38,10 @@
             <BitmapImage x:Key="FilterBySuggestionImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/information.png" />
             <BitmapImage x:Key="FilterByWarningImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
             <BitmapImage x:Key="FilterByErrorImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
-            
+
+            <BitmapImage x:Key="ExpandAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/expand-all.png" />
+            <BitmapImage x:Key="CollapseAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/collapse-all.png" />
+
             <Style TargetType="Image">
                 <Setter Property="Height" Value="16"/>
                 <Setter Property="Width" Value="16" />
@@ -161,6 +161,18 @@
 
                 <Separator />
 
+                <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
+                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
+                    <Image Source="{StaticResource CollapseAllImage}" />
+                </Button>
+
+                <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}" Margin="2"
+                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
+                    <Image Source="{StaticResource ExpandAllImage}" />
+                </Button>
+
+                <Separator />
+
                 <Button Command="{Binding CopyResultsCommand}">
                     <Image Source="{StaticResource CopyResultsImage}" />
                     <Button.ToolTip>
@@ -180,6 +192,7 @@
                                Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
+                               IsExpanded="{Binding IsExpanded, NotifyOnSourceUpdated=True}"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
                                VirtualizingPanel.IsVirtualizingWhenGrouping="True">
             <DataGrid.Columns>

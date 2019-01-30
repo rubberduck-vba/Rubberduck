@@ -2079,7 +2079,25 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("Inspect", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Collapse all.
+        /// </summary>
+        public static string InspectionSettings_CollapseAll {
+            get {
+                return ResourceManager.GetString("InspectionSettings_CollapseAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expand all.
+        /// </summary>
+        public static string InspectionSettings_ExpandAll {
+            get {
+                return ResourceManager.GetString("InspectionSettings_ExpandAll", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>

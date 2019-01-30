@@ -111,6 +111,8 @@ namespace Rubberduck.UI.Inspections
             QuickFixInAllProjectsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInAllProjectsCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             OpenInspectionSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
+            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
+            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
 
             _configService.SettingsChanged += _configService_SettingsChanged;
             
@@ -280,6 +282,18 @@ namespace Rubberduck.UI.Inspections
         public CommandBase DisableInspectionCommand { get; }
         public CommandBase CopyResultsCommand { get; }
         public CommandBase OpenInspectionSettings { get; }
+        public CommandBase CollapseAllCommand { get; }
+        public CommandBase ExpandAllCommand { get; }
+
+        private void ExecuteCollapseAll(object parameter)
+        {
+            IsExpanded = false;
+        }
+
+        private void ExecuteExpandAll(object parameter)
+        {
+            IsExpanded = true;
+        }
 
         private void OpenSettings(object param)
         {
@@ -324,6 +338,17 @@ namespace Rubberduck.UI.Inspections
                     return;
                 }
                 _unparsed = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _expanded;
+        public bool IsExpanded
+        {
+            get => _expanded;
+            set
+            {
+                _expanded = value;
                 OnPropertyChanged();
             }
         }
