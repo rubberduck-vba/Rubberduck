@@ -191,18 +191,7 @@ End Function";
         [Category("Rewriter")]
         public void RecoveringAttributesRecoversTheAttributesInTheModulesProvided_ViaModule()
         {
-            var inputCodeWithRecovery =
-                @"Public Function Foo() As Variant
-Attribute Foo.VB_UserMemId = 0
-Attribute Foo.VB_Description = ""DefaultMember""
-End Function
-
-Public Function Bar() As Variant
-Attribute Bar.VB_UserMemId = -4
-Attribute Bar.VB_Description = ""Enumerator""
-End Function";
-
-            var inputCodeWithoutRecovery =
+            var inputCode =
                 @"Public Function Foo() As Variant
 Attribute Foo.VB_UserMemId = 0
 Attribute Foo.VB_Description = ""DefaultMember""
@@ -231,7 +220,7 @@ End Function
 Public Function Bar() As Variant
 End Function";
 
-            var vbe = MockVbeBuilder.BuildFromStdModules(("RecoveryModule", inputCodeWithRecovery), ("NoRecoveryModule", inputCodeWithoutRecovery)).Object;
+            var vbe = MockVbeBuilder.BuildFromStdModules(("RecoveryModule", inputCode), ("NoRecoveryModule", inputCode)).Object;
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
