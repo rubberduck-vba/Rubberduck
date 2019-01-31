@@ -77,7 +77,7 @@ namespace RubberduckTests.Refactoring.Rename
             tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == ConfirmationOutcome.Yes);
             
             var activeIndex = renameTMDs.FindIndex(tmd => tmd.Input_WithFauxCursor != string.Empty);
-            tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs, activeIndex);
+            tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs, activeIndex, tdo.UseLibraries);
             tdo.AdditionalSetup?.Invoke(tdo);
             (tdo.ParserState, tdo.RewritingManager) = MockParser.CreateAndParseWithRewritingManager(tdo.VBE);
 

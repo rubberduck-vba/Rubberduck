@@ -2,20 +2,13 @@ using System.Linq;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
-using System.Collections.Generic;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
-using Rubberduck.Common;
-using Rubberduck.UI.Refactorings;
-using RubberduckTests.Refactoring.MockIoC;
-using Rubberduck.Parsing.Rewriter;
 
 using static RubberduckTests.Refactoring.Rename.RenameTestExecution;
 
