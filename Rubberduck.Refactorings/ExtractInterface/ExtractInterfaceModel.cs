@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -13,7 +14,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public string InterfaceName { get; set; }
 
-        public IEnumerable<InterfaceMember> Members { get; set; } = new List<InterfaceMember>();
+        public ObservableCollection<InterfaceMember> Members { get; set; } = new ObservableCollection<InterfaceMember>();
+
+        public IEnumerable<InterfaceMember> SelectedMembers => Members.Where(m => m.IsSelected);
 
         private static readonly DeclarationType[] ModuleTypes =
         {
@@ -47,14 +50,15 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             InterfaceName = $"I{TargetDeclaration.IdentifierName}";
 
-            Members = declarations.Where(item => item.ProjectId == TargetDeclaration.ProjectId
-                                                 && item.ComponentName == TargetDeclaration.ComponentName
-                                                 && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
-                                                 && MemberTypes.Contains(item.DeclarationType))
-                                   .OrderBy(o => o.Selection.StartLine)
-                                   .ThenBy(t => t.Selection.StartColumn)
-                                   .Select(d => new InterfaceMember(d))
-                                   .ToList();
+            Members = new ObservableCollection<InterfaceMember>(declarations.Where(item =>
+                    item.ProjectId == TargetDeclaration.ProjectId
+                    && item.ComponentName == TargetDeclaration.ComponentName
+                    && (item.Accessibility == Accessibility.Public || item.Accessibility == Accessibility.Implicit)
+                    && MemberTypes.Contains(item.DeclarationType))
+                .OrderBy(o => o.Selection.StartLine)
+                .ThenBy(t => t.Selection.StartColumn)
+                .Select(d => new InterfaceMember(d))
+                .ToList());
         }
     }
 }

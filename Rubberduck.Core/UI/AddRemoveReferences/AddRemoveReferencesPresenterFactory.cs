@@ -7,7 +7,6 @@ using NLog;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
@@ -16,7 +15,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.AddRemoveReferences
 {
-    public interface IAddRemoveReferencesPresenterFactory : IRefactoringPresenterFactory<AddRemoveReferencesPresenter>
+    public interface IAddRemoveReferencesPresenterFactory
     {
         AddRemoveReferencesPresenter Create(ProjectDeclaration project);
     }

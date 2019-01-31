@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
@@ -18,13 +18,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
         public List<Parameter> Parameters { get; private set; }
         public List<Parameter> RemoveParameters { get; set; }
 
-        private readonly IMessageBox _messageBox;
-
-        public RemoveParametersModel(RubberduckParserState state, QualifiedSelection selection, IMessageBox messageBox)
+        public RemoveParametersModel(RubberduckParserState state, QualifiedSelection selection)
         {
             State = state;
             Declarations = state.AllDeclarations.ToList();
-            _messageBox = messageBox;
 
             AcquireTarget(selection);
             LoadParameters();
@@ -79,9 +76,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
             var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation,
                 declaration.IdentifierName, interfaceMember.ComponentName, interfaceMember.IdentifierName);
 
-            var confirm = _messageBox.ConfirmYesNo(message, RubberduckUI.ReorderParamsDialog_TitleText);
-            return confirm ? interfaceMember : null;
+            var args = new RefactoringConfirmEventArgs(message) {Confirm = true};
+            ConfirmRemoveParameter?.Invoke(this,args);
+            return args.Confirm ? interfaceMember : null;
         }
+
+        public event EventHandler<RefactoringConfirmEventArgs> ConfirmRemoveParameter;
 
         private Declaration GetEvent()
         {

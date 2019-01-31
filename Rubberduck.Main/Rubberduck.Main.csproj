@@ -35,7 +35,7 @@
   <ItemGroup>
     <Reference Include="extensibility">
       <HintPath>$(MSBuildProgramFiles32)\Common Files\microsoft shared\MSEnv\PublicAssemblies\extensibility.dll</HintPath>
-      <EmbedInteropTypes>true</EmbedInteropTypes>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
