@@ -321,12 +321,6 @@ namespace RubberduckTests.Mocks
             result.Setup(m => m.AddFromFile(It.IsAny<string>()));
 
             codePane.SetupGet(m => m.CodeModule).Returns(() => result.Object);
-            codePane.SetupSet(p => p.Selection)
-                .Callback(setValue =>
-                {
-                    codePane.Setup(p => p.GetQualifiedSelection()).Returns(new QualifiedSelection(new QualifiedModuleName(component.Object), setValue));
-                    codePane.SetupGet(p => p.Selection).Returns(setValue);
-                });
             return result;
         }
 
