@@ -579,7 +579,8 @@ subscript : (expression whiteSpace TO whiteSpace)? expression;
 
 unrestrictedIdentifier : identifier | statementKeyword | markerKeyword;
 legalLabelIdentifier : { !(new[]{DOEVENTS,END,CLOSE,ELSE,LOOP,NEXT,RANDOMIZE,REM,RESUME,RETURN,STOP,WEND}).Contains(_input.La(1))}? identifier | markerKeyword;
-identifier : {_input.La(3) != IDENTIFIER}? typedIdentifier | untypedIdentifier;
+identifier : {_input.La(3) != IDENTIFIER && _input.La(3) != L_SQUARE_BRACKET || _input.La(1) == L_SQUARE_BRACKET}? typedIdentifier 
+             | untypedIdentifier;
 untypedIdentifier : identifierValue;
 typedIdentifier : untypedIdentifier typeHint;
 identifierValue : IDENTIFIER | keyword | foreignName;

@@ -2955,6 +2955,35 @@ End Sub
 
         [Category("Parser")]
         [Test]
+        public void ParserDoesNotFailDoubleBracketForgeignIdentifierWithTypeHint()
+        {
+            const string code = @"
+Sub Test()  
+Dim x
+x = [[bar]]!
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 1);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnBangOperatorFollowedByForeignIdentifier()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict![a]
+End Sub
+";
+            var parseResult = Parse(code);
+        }
+
+        [Category("Parser")]
+        [Test]
         public void ParserDoesNotFailOnBangOperator()
         {
             const string code = @"
