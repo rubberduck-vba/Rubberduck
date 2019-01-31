@@ -252,4 +252,40 @@
   <data name="AccessSheetUsingCodeNameQuickFix" xml:space="preserve">
     <value>Odkazuj na statisticky přístupný list dle jeho kódového jména</value>
   </data>
+  <data name="RemoveDuplicatedAnnotationQuickFix" xml:space="preserve">
+    <value>Odstranit duplicitní anotace</value>
+  </data>
+  <data name="RemoveLocalErrorQuickFix" xml:space="preserve">
+    <value>Nahradit 'On Local Error' za 'On Error'</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentQuickFix" xml:space="preserve">
+    <value>TODO: Change 'IsMissing' call to test for default value.</value>
+  </data>
+  <data name="AddMissingAttributeQuickFix" xml:space="preserve">
+    <value>Přidat chybějící atribut</value>
+  </data>
+  <data name="AdjustAttributeValuesQuickFix" xml:space="preserve">
+    <value>Upravit hodnotu(y) atributu</value>
+  </data>
+  <data name="RemoveAttributeQuickFix" xml:space="preserve">
+    <value>Odstranit atribut</value>
+  </data>
+  <data name="RemoveAnnotationQuickFix" xml:space="preserve">
+    <value>Odstranit anotaci</value>
+  </data>
+  <data name="AdjustAttributeAnnotationQuickFix" xml:space="preserve">
+    <value>Upravit anotaci atributu</value>
+  </data>
+  <data name="AddAttributeAnnotationQuickFix" xml:space="preserve">
+    <value>Přidat anotaci atributu</value>
+  </data>
+  <data name="ApplyQuickFixesFailedMessage" xml:space="preserve">
+    <value>Aplikace rychlé opravy se nezdařila.</value>
+  </data>
+  <data name="StaleModuleFailureReason" xml:space="preserve">
+    <value>Dotčený modul byl od posledního parsování změněn.</value>
+  </data>
+  <data name="ApplyQuickFixFailedCaption" xml:space="preserve">
+    <value>Chyba Při Aplikování Rychlé Chyby</value>
+  </data>
 </root>

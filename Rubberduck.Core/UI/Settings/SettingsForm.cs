@@ -5,12 +5,14 @@ using Rubberduck.Interaction;
 using Rubberduck.VBEditor.VbeRuntime.Settings;
 using System.Collections.Generic;
 using System;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.UI.Settings
 {
     public interface ISettingsFormFactory
     {
         SettingsForm Create();
+        SettingsForm Create(SettingsViews activeView);
         void Release(SettingsForm form);
     }
 
@@ -21,7 +23,13 @@ namespace Rubberduck.UI.Settings
             InitializeComponent();
         }
 
-        public SettingsForm(IGeneralConfigService configService, IOperatingSystem operatingSystem, IMessageBox messageBox, IVbeSettings vbeSettings, SettingsViews activeView = SettingsViews.GeneralSettings) : this()
+        public SettingsForm(IGeneralConfigService configService, 
+            IOperatingSystem operatingSystem, 
+            IMessageBox messageBox, 
+            IVbeSettings vbeSettings,
+            IConfigProvider<ReferenceSettings> referencesProvider,
+            IFileSystemBrowserFactory browserFactory,
+            SettingsViews activeView = SettingsViews.GeneralSettings) : this()
         {
             var config = configService.LoadConfiguration();
 
@@ -69,6 +77,11 @@ namespace Rubberduck.UI.Settings
                 {
                     Control = new WindowSettings(new WindowSettingsViewModel(config)),
                     View = SettingsViews.WindowSettings
+                },
+                new SettingsView
+                {
+                    Control = new AddRemoveReferencesUserSettings(new AddRemoveReferencesUserSettingsViewModel(referencesProvider, browserFactory)),
+                    View = SettingsViews.ReferenceSettings
                 },
                 activeView);
 

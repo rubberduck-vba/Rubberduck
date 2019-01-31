@@ -184,7 +184,7 @@ namespace Rubberduck.Parsing
         /// </summary>
         public static bool ContainsTokenIndex(this ParserRuleContext context, int tokenIndex)
         {
-            if (context == null)
+            if (context?.Stop == null)
             {
                 return false;
             }
@@ -197,8 +197,31 @@ namespace Rubberduck.Parsing
         /// </summary>
         public static TContext GetDescendent<TContext>(this ParserRuleContext context) where TContext : ParserRuleContext
         {
-            var descendents = GetDescendents<TContext>(context);
-            return descendents.FirstOrDefault();
+            if (context?.children == null)
+            {
+                return null;
+            }
+
+            foreach (var child in context.children)
+            {
+                if (child == null)
+                {
+                    continue;
+                }
+
+                if (child is TContext match)
+                {
+                    return match;
+                }
+                
+                var childResult = (child as ParserRuleContext)?.GetDescendent<TContext>();
+                if (childResult != null)
+                {
+                    return childResult;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -219,6 +242,31 @@ namespace Rubberduck.Parsing
         {
             opCtxt = ctxt.GetChild<TContext>();
             return opCtxt != null;
+        }
+
+        /// <summary>
+        /// Returns the endOfStatementContext's first endOfLine context.
+        /// </summary>
+        public static VBAParser.EndOfLineContext GetFirstEndOfLine(this VBAParser.EndOfStatementContext endOfStatement)
+        {
+            //This dedicated method exists for performance reasons on hot-paths.
+            var individualEndOfStatements = endOfStatement.individualNonEOFEndOfStatement();
+
+            if (individualEndOfStatements == null)
+            {
+                return null;
+            }
+
+            foreach (var individualEndOfStatement in individualEndOfStatements)
+            {
+                var endOfLine = individualEndOfStatement.endOfLine();
+                if (endOfLine != null)
+                {
+                    return endOfLine;
+                }
+            }
+            //The only remaining alternative is whitespace followed by an EOF.
+            return null;
         }
 
         /// <summary>
@@ -254,7 +302,7 @@ namespace Rubberduck.Parsing
         /// </summary>
         public static IEnumerable<TContext> GetDescendentsContainingTokenIndex<TContext>(this ParserRuleContext context, int tokenIndex) where TContext : ParserRuleContext
         {
-            if (!context.ContainsTokenIndex(tokenIndex))
+            if (context == null || !context.ContainsTokenIndex(tokenIndex))
             {
                 return new List<TContext>();
             }

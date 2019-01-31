@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Sunburst.NET.Sdk.WPF/1.0.47">
+  <PropertyGroup>
+    <Product>Rubberduck.Deployment.Build</Product>
+    <Copyright>Copyright © 2018</Copyright>
+    <ProjectGuid>{3A3E3535-FF24-40BD-A4D4-5C88AF6DB1BA}</ProjectGuid>
+    <RootNamespace>Rubberduck.Deployment.Build</RootNamespace>
+    <AssemblyName>Rubberduck.Deployment.Build</AssemblyName>
+  </PropertyGroup>
+  <Import Project="..\RubberduckBaseMetaProject.csproj" />
+  <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Tasks.v4.0" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0">
+      <HintPath>$(MSBuildBinPath)\Microsoft.Build.Utilities.v4.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Setup.Configuration.Interop">
+      <HintPath>VisualStudioSetup\Microsoft.VisualStudio.Setup.Configuration.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="olewoo">
+      <HintPath>OleWoo\olewoo.dll</HintPath>
+    </Reference>
+    <Reference Include="olewoo_interop">
+      <HintPath>OleWoo\olewoo_interop.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

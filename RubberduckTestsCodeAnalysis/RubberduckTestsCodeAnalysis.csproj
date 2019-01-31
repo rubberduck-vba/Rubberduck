@@ -8,26 +8,13 @@
     <ProjectGuid>{E9FC6518-F9E8-4E57-BD28-583A9EA69297}</ProjectGuid>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PlatformTarget Condition=" '$(Platform)' == 'AnyCPU' ">AnyCPU</PlatformTarget>
-
-    <UnifyOutputPath>true</UnifyOutputPath>
   </PropertyGroup>
-  <Import Project="..\RubberduckBaseProject.csproj" />
+  <Import Project="..\RubberduckBaseMetaProject.csproj" />
 
   <ItemGroup>
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
-    <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
-    <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj" />
-    <ProjectReference Include="..\Rubberduck.RegexAssistant\Rubberduck.RegexAssistant.csproj" />
-    <ProjectReference Include="..\Rubberduck.Resources\Rubberduck.Resources.csproj" />
-    <ProjectReference Include="..\Rubberduck.SettingsProvider\Rubberduck.SettingsProvider.csproj" />
-    <ProjectReference Include="..\Rubberduck.SmartIndenter\Rubberduck.SmartIndenter.csproj" />
-    <ProjectReference Include="..\Rubberduck.UnitTesting\Rubberduck.UnitTesting.csproj" />
-    <ProjectReference Include="..\Rubberduck.VBEditor.VB6\Rubberduck.VBEditor.VB6.csproj" />
-    <ProjectReference Include="..\Rubberduck.VBEditor.VBA\Rubberduck.VBEditor.VBA.csproj" />
-    <ProjectReference Include="..\Rubberduck.VBEEditor\Rubberduck.VBEditor.csproj" />
     <ProjectReference Include="..\RubberduckCodeAnalysis\RubberduckCodeAnalysis.csproj" />
   </ItemGroup>
   <ItemGroup>
@@ -148,5 +135,10 @@
     <PackageReference Include="System.Xml.XPath.XDocument">
       <Version>4.3.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="RubberduckCodeAnalysisUnitTests.cs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Compile>
   </ItemGroup>
 </Project>

@@ -174,4 +174,7 @@
   <data name="CodeInspectionSettings_Performance" xml:space="preserve">
     <value>Výkon</value>
   </data>
+  <data name="CodeInspectionSeverity_All" xml:space="preserve">
+    <value>Vše</value>
+  </data>
 </root>

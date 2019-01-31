@@ -95,7 +95,17 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to An assignment is immediately overridden by another assignment or is never referenced..
+        /// </summary>
+        public static string AttributeValueOutOfSyncInspection
+        {
+            get {
+                return ResourceManager.GetString("AttributeValueOutOfSyncInspection", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Boolean literal &apos;{0}&apos; assigned in conditional..
         /// </summary>
@@ -403,15 +413,6 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
-        /// </summary>
-        public static string MissingAnnotationInspection {
-            get {
-                return ResourceManager.GetString("MissingAnnotationInspection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; annotation, but no corresponding attribute..
         /// </summary>
         public static string MissingAttributeInspection {
@@ -419,7 +420,27 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
+        /// </summary>
+        public static string MissingMemberAnnotationInspection
+        {
+            get {
+                return ResourceManager.GetString("MissingMemberAnnotationInspection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
+        /// </summary>
+        public static string MissingModuleAnnotationInspection
+        {
+            get {
+                return ResourceManager.GetString("MissingModuleAnnotationInspection", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Module-level variable &apos;{0}&apos; is declared with the &apos;Dim&apos; keyword..
         /// </summary>

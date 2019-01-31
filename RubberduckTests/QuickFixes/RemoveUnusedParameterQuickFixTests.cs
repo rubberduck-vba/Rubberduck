@@ -5,7 +5,7 @@ using Moq;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
-using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
 
 namespace RubberduckTests.QuickFixes
 {
@@ -33,10 +33,9 @@ End Sub";
                 var inspection = new ParameterNotUsedInspection(state);
                 var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
-
-                new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IMessageBox>().Object, rewritingManager)
+                
+                new RemoveUnusedParameterQuickFix(vbe.Object, state, new Mock<IRefactoringPresenterFactory>().Object, rewritingManager)
                     .Fix(inspectionResults.First(), rewriteSession);
-
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
         }

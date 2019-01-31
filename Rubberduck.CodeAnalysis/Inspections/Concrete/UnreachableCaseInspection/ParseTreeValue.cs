@@ -1,6 +1,7 @@
 ﻿using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.PreProcessing;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
@@ -21,6 +22,31 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         private ComparableDateValue _dateValue;
         private StringLiteralExpression _stringConstant;
         private bool? _exceedsValueTypeRange;
+
+        private static Dictionary<string,string> ControlCharacterCompareTokens = new Dictionary<string, string>()
+        {
+            ["Chr$(8)"] = "Chr$(8)", //vbBack
+            ["Chr$(13)"] = "Chr$(13)", //vbCr
+            ["Chr$(13) + Chr$(10)"] = "Chr$(13)Chr$(10)", //vbCrLf
+            ["Chr$(10)"] = "Chr$(10)", //vbLf
+            ["Chr$(12)"] = "Chr$(12)", //vbFormFeed
+            ["Chr$(13) & Chr$(10)"] = "Chr$(13)Chr$(10)", //vbNewLine
+            ["Chr$(0)"] = "Chr$(0)", //vbNullChar
+            ["Chr$(9)"] = "Chr$(9)", //vbTab
+            ["Chr$(11)"] = "Chr$(11)", //vbVerticalTab
+            ["Chr$(13)Chr$(10)"] = "Chr$(13)Chr$(10)",
+        };
+
+        public static bool TryGetNonPrintingControlCharCompareToken(string controlCharCandidate, out string comparableToken)
+        {
+            comparableToken = controlCharCandidate;
+            if (controlCharCandidate.StartsWith(Tokens.Chr))
+            {
+                var key = controlCharCandidate.Replace("Chr(", "Chr$(");
+                return ControlCharacterCompareTokens.TryGetValue(key, out comparableToken);
+            }
+            return false;
+        }
 
         public static IParseTreeValue CreateValueType(TypeTokenPair value)
         {
@@ -87,6 +113,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             else if (valuePair.ValueType.Equals(Tokens.String) && IsStringConstant(valuePair.Token))
             {
                 _stringConstant = new StringLiteralExpression(new ConstantExpression(new StringValue(_typeTokenPair.Token)));
+                ParsesToConstantValue = true;
+            }
+            else if (valuePair.ValueType.Equals(Tokens.String)
+                &&  TryGetNonPrintingControlCharCompareToken(valuePair.Token, out _))
+            {
                 ParsesToConstantValue = true;
             }
         }

@@ -13,6 +13,19 @@ namespace RubberduckTests.Inspections
     {
         [Test]
         [Category("Inspections")]
+        public void ObjectVariableNotSet_NotResultForNonObjectPropertyGetWithObjectArgument()
+        {
+            var expectedResultCount = 0;
+            var input = @"
+Public Property Get Foo(ByVal bar As Object) As Boolean
+    Foo = True
+End Property
+";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectedResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void ObjectVariableNotSet_AlsoAssignedToNothing_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -157,32 +170,6 @@ End Sub";
 
         [Test]
         [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedRange_ReturnsResult()
-        {
-            var expectResultCount = 1;
-            var input =
-@"
-Private Sub TestSub(ByRef testParam As Variant)
-    testParam = Range(""A1:C1"")
-End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenVariantVariableAssignedDeclaredRange_ReturnsResult()
-        {
-            var expectResultCount = 1;
-            var input =
-@"
-Private Sub TestSub(ByRef testParam As Variant, target As Range)
-    testParam = target
-End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
-        }
-
-        [Test]
-        [Category("Inspections")]
         public void ObjectVariableNotSet_GivenVariantVariableAssignedBaseType_ReturnsNoResult()
         {
             var expectResultCount = 0;
@@ -193,24 +180,6 @@ Private Sub Workbook_Open()
     target = ""A1""
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
-        }
-
-        [Test]
-        [Category("Inspections")]
-        public void ObjectVariableNotSet_GivenObjectVariableNotSet_ReturnsResult()
-        {
-            var expectResultCount = 1;
-            var input =
-@"
-Private Sub Workbook_Open()
-    
-    Dim target As Range
-    target = Range(""A1"")
-    
-    target.Value = ""forgot something?""
-
-End Sub";
-            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
         }
 
         [Test]
@@ -481,6 +450,119 @@ Private Sub Test()
     LSet foo = bar
 End Sub";
             AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_ComplexExpressionOnRHSWithMemberAccess_ReturnsNoResult()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub Test()
+    Dim foo As Variant
+    Dim bar As Collection
+    Set bar = New Collection
+    bar.Add ""x"", ""x""
+    foo = ""Test"" & bar.Item(""x"")
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "VBA.4.2");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_SingleRHSVariableCaseRespectsDeclarationShadowing()
+        {
+
+            var expectResultCount = 0;
+            var input =
+                @"
+Private bar As Collection
+
+Private Sub Test()
+    Dim foo As Variant
+    Dim bar As Long
+    bar = 42
+    foo = bar
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount);
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_SingleRHSVariableCaseRespectsDefaultMembers()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Range
+    Dim bar As Variant    
+    bar = foo
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "Excel.1.8.xml");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_SingleRHSVariableCaseIdentifiesDefaultMembersNotReturningAnObject()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Recordset
+    Dim bar As Variant    
+    bar = foo
+End Sub";
+            //The default member of Recordset is Fields, which is an object.
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_AssignmentToVarirableWithDefaultMemberReturningAnObject_OneResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Recordset
+    Dim bar As Variant    
+    foo = bar
+End Sub";
+            //The default member of Recordset is Fields, which is an object.
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_NewExprWithNonObjectDefaultMember_NoResult()
+        {
+            var expectResultCount = 0;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Variant  
+    foo = New Connection
+End Sub";
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void ObjectVariableNotSet_NewExprWithObjectOnlyDefaultMember_OneResult()
+        {
+            var expectResultCount = 1;
+            var input =
+                @"
+Private Sub Test()    
+    Dim foo As Variant  
+    foo = New Recordset
+End Sub";
+            //The default member of Recordset is Fields, which is an object.
+            AssertInputCodeYieldsExpectedInspectionResultCount(input, expectResultCount, "ADODB.6.1");
         }
 
         [Test]

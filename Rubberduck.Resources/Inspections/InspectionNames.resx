@@ -252,9 +252,6 @@
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Illegal annotation</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Missing annotation</value>
-  </data>
   <data name="MissingAttributeInspection" xml:space="preserve">
     <value>Missing attribute</value>
   </data>
@@ -340,10 +337,10 @@
     <value>On Local Error statement</value>
   </data>
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
-    <value>Inappropriate use of 'IsMissing' function</value>
+    <value>Inappropriate use of 'IsMissing' - Parameter is not 'Variant'</value>
   </data>
   <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
-    <value>Inappropriate use of 'IsMissing' function</value>
+    <value>Inappropriate use of 'IsMissing' - Parameter is local variable</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Assignment is not used</value>
@@ -356,5 +353,14 @@
   </data>
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Function is hidden by Excel cell reference</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Value does not match between attribute and annotation</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Missing member annotation</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Missing module annotation</value>
   </data>
 </root>

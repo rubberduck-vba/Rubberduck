@@ -145,7 +145,6 @@ namespace Rubberduck.Parsing.Symbols
                 ProjectName = IdentifierName;
             }
 
-            CustomFolder = FolderFromAnnotations();
             IsArray = isArray;
             AsTypeContext = asTypeContext;
             TypeHint = typeHint;
@@ -229,25 +228,6 @@ namespace Rubberduck.Parsing.Symbols
                 false,
                 null,
                 new Attributes()) { }
-
-        private string FolderFromAnnotations()
-            {
-                var @namespace = Annotations.FirstOrDefault(annotation => annotation.AnnotationType == AnnotationType.Folder);
-                string result;
-                if (@namespace == null)
-                {
-                    result = string.IsNullOrEmpty(QualifiedName.QualifiedModuleName.ProjectName)
-                        ? ProjectId
-                        : QualifiedName.QualifiedModuleName.ProjectName;
-                }
-                else
-                {
-                    var value = ((FolderAnnotation)@namespace).FolderName;
-                    result = value;
-                }
-                return result;
-            }
-
 
         public static Declaration GetModuleParent(Declaration declaration)
         {
@@ -349,13 +329,24 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public bool IsEnumeratorMember => _attributes.Any(a => a.Name.EndsWith("VB_UserMemId") && a.Values.Contains("-4"));
 
-        public virtual bool IsObject =>
-            AsTypeName == Tokens.Object || (
-                AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? 
-                    !AsTypeIsBaseType
-                    && !IsArray
-                    && !DeclarationType.HasFlag(DeclarationType.UserDefinedType)
-                    && !DeclarationType.HasFlag(DeclarationType.Enumeration));
+        public virtual bool IsObject
+        {
+            get
+            {
+                if (AsTypeName == Tokens.Object || 
+                    (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.ClassModule) ?? false))
+                {
+                    return true;
+                }
+
+                var isIntrinsic = AsTypeIsBaseType
+                                  || IsArray
+                                  || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.UserDefinedType) ?? false)
+                                  || (AsTypeDeclaration?.DeclarationType.HasFlag(DeclarationType.Enumeration) ?? false);
+
+                return !isIntrinsic;
+            }
+        }
 
         public void AddReference(
             QualifiedModuleName module,
@@ -579,7 +570,7 @@ namespace Rubberduck.Parsing.Symbols
         /// </summary>
         public bool IsUndeclared { get; }
 
-        public string CustomFolder { get; }
+        public virtual string CustomFolder => ParentDeclaration?.CustomFolder ?? ProjectName;
 
         public bool Equals(Declaration other)
         {

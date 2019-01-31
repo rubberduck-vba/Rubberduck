@@ -51,13 +51,11 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             var qualifiedSelectCaseStmts = Listener.Contexts
                 .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
 
-            var listener = (UnreachableCaseInspectionListener)Listener;
-            var parseTreeValueVisitor = CreateParseTreeValueVisitor(_valueFactory, listener.EnumerationStmtContexts.ToList(), GetIdentifierReferenceForContext);
-            parseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
+            ParseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
 
             foreach (var qualifiedSelectCaseStmt in qualifiedSelectCaseStmts)
             {
-                qualifiedSelectCaseStmt.Context.Accept(parseTreeValueVisitor);
+                qualifiedSelectCaseStmt.Context.Accept(ParseTreeValueVisitor);
                 var selectCaseInspector = _unreachableCaseInspectorFactory.Create((VBAParser.SelectCaseStmtContext)qualifiedSelectCaseStmt.Context, ValueResults, _valueFactory, GetVariableTypeName);
 
                 selectCaseInspector.InspectForUnreachableCases();
@@ -71,6 +69,20 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
             return _inspectionResults;
         }
 
+        private IParseTreeValueVisitor _parseTreeValueVisitor;
+        public IParseTreeValueVisitor ParseTreeValueVisitor
+        {
+            get
+            {
+                if (_parseTreeValueVisitor is null)
+                {
+                    var listener = (UnreachableCaseInspectionListener)Listener;
+                    _parseTreeValueVisitor = CreateParseTreeValueVisitor(_valueFactory, listener.EnumerationStmtContexts.ToList(), GetIdentifierReferenceForContext);
+                }
+                return _parseTreeValueVisitor;
+            }
+        }
+
         private void CreateInspectionResult(QualifiedContext<ParserRuleContext> selectStmt, ParserRuleContext unreachableBlock, string message)
         {
             var result = new QualifiedContextInspectionResult(this,
@@ -80,9 +92,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         }
 
         public static IParseTreeValueVisitor CreateParseTreeValueVisitor(IParseTreeValueFactory valueFactory, List<VBAParser.EnumerationStmtContext> allEnums, Func<ParserRuleContext, (bool success, IdentifierReference idRef)> func)
-        {
-            return new ParseTreeValueVisitor(valueFactory, allEnums, func);
-        }
+            => new ParseTreeValueVisitor(valueFactory, allEnums, func);
 
         //Method is used as a delegate to avoid propogating RubberduckParserState beyond this class
         private (bool success, IdentifierReference idRef) GetIdentifierReferenceForContext(ParserRuleContext context)

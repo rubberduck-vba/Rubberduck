@@ -86,28 +86,22 @@ namespace Rubberduck.Inspections.Abstract
 
         protected bool IsIgnoringInspectionResultFor(QualifiedModuleName module, int line)
         {
-            var annotations = State.GetModuleAnnotations(module).ToList();
-
-            if (State.GetModuleAnnotations(module) == null)
+            var lineScopedAnnotations = State.DeclarationFinder.FindAnnotations(module, line);
+            foreach (var ignoreAnnotation in lineScopedAnnotations.OfType<IgnoreAnnotation>())
             {
-                return false;
-            }
-
-            // VBE 1-based indexing
-            for (var i = line; i >= 1; i--)
-            {
-                var annotation = annotations.SingleOrDefault(a => a.QualifiedSelection.Selection.StartLine == i);
-                var ignoreAnnotation = annotation as IgnoreAnnotation;
-                var ignoreModuleAnnotation = annotation as IgnoreModuleAnnotation;
-
-                if (ignoreAnnotation?.InspectionNames.Contains(AnnotationName) == true)
+                if (ignoreAnnotation.InspectionNames.Contains(AnnotationName))
                 {
                     return true;
                 }
+            }
 
-                if (ignoreModuleAnnotation != null
-                    && (ignoreModuleAnnotation.InspectionNames.Contains(AnnotationName)
-                    || !ignoreModuleAnnotation.InspectionNames.Any()))
+            var moduleDeclaration = State.DeclarationFinder.Members(module)
+                .First(decl => decl.DeclarationType.HasFlag(DeclarationType.Module));
+
+            foreach (var ignoreModuleAnnotation in moduleDeclaration.Annotations.OfType<IgnoreModuleAnnotation>())
+            {
+                if (ignoreModuleAnnotation.InspectionNames.Contains(AnnotationName)
+                    || !ignoreModuleAnnotation.InspectionNames.Any())
                 {
                     return true;
                 }
@@ -119,7 +113,10 @@ namespace Rubberduck.Inspections.Abstract
         protected bool IsIgnoringInspectionResultFor(Declaration declaration, string inspectionName)
         {
             var module = Declaration.GetModuleParent(declaration);
-            if (module == null) { return false; }
+            if (module == null)
+            {
+                return false;
+            }
 
             var isIgnoredAtModuleLevel = module.Annotations
                     .Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule
@@ -168,6 +165,11 @@ namespace Rubberduck.Inspections.Abstract
             _logger.Trace("Intercepted invocation of '{0}.{1}' returned {2} objects.", GetType().Name, nameof(DoGetInspectionResults), result.Count());
             _logger.Trace("Intercepted invocation of '{0}.{1}' ran for {2}ms", GetType().Name, nameof(DoGetInspectionResults), _stopwatch.ElapsedMilliseconds);
             return result;
+        }
+
+        public virtual bool ChangesInvalidateResult(IInspectionResult result, ICollection<QualifiedModuleName> modifiedModules)
+        {
+            return true;
         }
     }
 }

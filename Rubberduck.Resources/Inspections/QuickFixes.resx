@@ -261,4 +261,31 @@
   <data name="IsMissingOnInappropriateArgumentQuickFix" xml:space="preserve">
     <value>Change 'IsMissing' call to test for default value.</value>
   </data>
+  <data name="AddMissingAttributeQuickFix" xml:space="preserve">
+    <value>Add missing attribute</value>
+  </data>
+  <data name="AdjustAttributeValuesQuickFix" xml:space="preserve">
+    <value>Adjust attribute value(s)</value>
+  </data>
+  <data name="RemoveAttributeQuickFix" xml:space="preserve">
+    <value>Remove attribute</value>
+  </data>
+  <data name="RemoveAnnotationQuickFix" xml:space="preserve">
+    <value>Remove annotation</value>
+  </data>
+  <data name="AdjustAttributeAnnotationQuickFix" xml:space="preserve">
+    <value>Adjust attribute annotation</value>
+  </data>
+  <data name="AddAttributeAnnotationQuickFix" xml:space="preserve">
+    <value>Add attribute annotation</value>
+  </data>
+  <data name="ApplyQuickFixesFailedMessage" xml:space="preserve">
+    <value>Failed to apply the quick fix.</value>
+  </data>
+  <data name="StaleModuleFailureReason" xml:space="preserve">
+    <value>An affected module has been modified since the last parse.</value>
+  </data>
+  <data name="ApplyQuickFixFailedCaption" xml:space="preserve">
+    <value>Quick Fix Application Failure</value>
+  </data>
 </root>

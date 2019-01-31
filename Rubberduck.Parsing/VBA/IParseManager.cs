@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA
 {
@@ -10,5 +11,6 @@ namespace Rubberduck.Parsing.VBA
 
         void OnParseRequested(object requestor);
         SuspensionResult OnSuspendParser(object requestor, IEnumerable<ParserState> allowedRunStates, Action busyAction, int millisecondsTimeout = -1);
+        void MarkAsModified(QualifiedModuleName module);
     }
 }

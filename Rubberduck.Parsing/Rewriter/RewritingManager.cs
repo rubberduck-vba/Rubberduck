@@ -50,6 +50,8 @@ namespace Rubberduck.Parsing.Rewriter
                     return false;
                 }
 
+                rewriteSession.Status = RewriteSessionState.RewriteApplied;
+
                 InvalidateAllSessionsInternal();
                 return true;
             }
@@ -80,13 +82,13 @@ namespace Rubberduck.Parsing.Rewriter
         {
             foreach (var rewriteSession in _activeCodePaneSessions)
             {
-                rewriteSession.Invalidate();
+                rewriteSession.Status = RewriteSessionState.OtherSessionsRewriteApplied;
             }
             _activeCodePaneSessions.Clear();
 
             foreach (var rewriteSession in _activeAttributesSessions)
             {
-                rewriteSession.Invalidate();
+                rewriteSession.Status = RewriteSessionState.OtherSessionsRewriteApplied;
             }
             _activeAttributesSessions.Clear();
         }

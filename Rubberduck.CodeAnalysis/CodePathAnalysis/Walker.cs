@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using Antlr4.Runtime;
 
 namespace Rubberduck.Inspections.CodePathAnalysis
 {

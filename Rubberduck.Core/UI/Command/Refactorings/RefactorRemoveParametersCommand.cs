@@ -1,13 +1,11 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.UI.Refactorings.RemoveParameters;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -15,15 +13,15 @@ namespace Rubberduck.UI.Command.Refactorings
     [ComVisible(false)]
     public class RefactorRemoveParametersCommand : RefactorCommandBase
     {
-        private readonly IMessageBox _msgbox;
         private readonly RubberduckParserState _state;
+        private readonly IRefactoringPresenterFactory _factory;
         private readonly IRewritingManager _rewritingManager;
 
-        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox, IRewritingManager rewritingManager) 
+        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager) 
             : base (vbe)
         {
-            _msgbox = msgbox;
             _state = state;
+            _factory = factory;
             _rewritingManager = rewritingManager;
         }
 
@@ -74,13 +72,9 @@ namespace Rubberduck.UI.Command.Refactorings
         protected override void OnExecute(object parameter)
         {
             var selection = Vbe.GetActiveSelection();
-
-            using (var view = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
-            {
-                var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, _msgbox);
-                var refactoring = new RemoveParametersRefactoring(Vbe, factory, _rewritingManager);
-                refactoring.Refactor(selection.Value);
-            }
+            
+            var refactoring = new RemoveParametersRefactoring(_state, Vbe, _factory, _rewritingManager);
+            refactoring.Refactor(selection.Value);
         }
     }
 }

@@ -250,9 +250,6 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="ShadowedDeclarationInspection" xml:space="preserve">
     <value>Deux déclarations ont le même nom dans le même espace-nom: une seule d'entre elles peut être utilisée.</value>
   </data>
-  <data name="MissingAnnotationInspection" xml:space="preserve">
-    <value>Les attributs du module et de ses membres n'apparaissent pas dans l'éditeur. En ajoutant une annotation, vous rendez ces attributs plus explicite, et Rubberduck peut synchroniser annotations et attributs.</value>
-  </data>
   <data name="IllegalAnnotationInspection" xml:space="preserve">
     <value>Une annotation devant être spécifiée au niveau du module ne peut être utilisée pour annoter de membres; les annotations devant être spécifiées au niveau des membres du module, ne peuvent être utilisées au niveau du module; toutes les annotations ne devrait être spécifiées qu'une seule fois par module/membre.</value>
   </data>
@@ -357,5 +354,14 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   </data>
   <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
     <value>Un module de classe qui contient un ou des membres dont le nom comporte un caractère de soulignement, ne peut être implémenté par d'autres classes. Ce caractère est utilisé par Visual Basic pour séparer le nom d'une interface et celui d'un membre de cette interface; la compilation échouera si le membre contient un caractère de soulignement.</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Une annotation Rubberduck est spécifiée pour un module ou un membre, mais l'attribut correspondant a une valeur différente: les attributs devraient être synchronisés avec les annotations.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Les attributs ne sont pas visibles dans l'éditeur. En ajoutant une annotation, ces attributs deviennent plus explicites, et Rubberduck peut assurer la synchronisation des attrbuts avec ces annotations.</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Les attributs ne sont pas visibles dans l'éditeur. En ajoutant une annotation, ces attributs deviennent plus explicites, et Rubberduck peut assurer la synchronisation des attrbuts avec ces annotations.</value>
   </data>
 </root>

@@ -14,10 +14,11 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Controls;
 using Rubberduck.UI.Settings;
+using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Inspections
 {
@@ -140,6 +141,9 @@ namespace Rubberduck.UI.Inspections
                 _selectedItem = value; 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(QuickFixes));
+                OnPropertyChanged(nameof(SelectedDescription));
+                OnPropertyChanged(nameof(SelectedMeta));
+                OnPropertyChanged(nameof(SelectedSeverity));
 
                 SelectedInspection = null;
                 CanQuickFix = false;
@@ -150,6 +154,8 @@ namespace Rubberduck.UI.Inspections
                 if (_selectedItem is IInspectionResult inspectionResult)
                 {
                     SelectedInspection = inspectionResult.Inspection;
+                    SelectedSelection = inspectionResult.QualifiedSelection;
+                    
                     CanQuickFix = _quickFixProvider.HasQuickFixes(inspectionResult);
                     _defaultFix = _quickFixProvider.QuickFixes(inspectionResult).FirstOrDefault();
                     CanExecuteQuickFixInProcedure = _defaultFix != null && _defaultFix.CanFixInProcedure;
@@ -170,8 +176,17 @@ namespace Rubberduck.UI.Inspections
             {
                 _selectedInspection = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(SelectedSelection));
             }
         }
+
+        public string SelectedDescription => SelectedInspection?.Description ?? string.Empty;
+
+        public string SelectedMeta => SelectedInspection?.Meta ?? string.Empty;
+
+        public CodeInspectionSeverity SelectedSeverity => SelectedInspection?.Severity ?? CodeInspectionSeverity.DoNotShow;
+
+        public QualifiedSelection SelectedSelection { get; private set; }
 
         public IEnumerable<DisplayQuickFix> QuickFixes
         {
@@ -329,7 +344,7 @@ namespace Rubberduck.UI.Inspections
 
         private void OpenSettings(object param)
         {
-            using (var window = _settingsFormFactory.Create())
+            using (var window = _settingsFormFactory.Create(SettingsViews.InspectionSettings))
             {
                 window.ShowDialog();
                 _settingsFormFactory.Release(window);
@@ -382,6 +397,12 @@ namespace Rubberduck.UI.Inspections
             if (_runInspectionsOnReparse || IsRefreshing)
             {
                 RefreshInspections(e.Token);
+            }
+            else
+            {
+                //Todo: Find a way to get the actually modified modules in here.
+                var modifiedModules = _state.DeclarationFinder.AllModules.ToHashSet();
+                InvalidateStaleInspectionResults(modifiedModules);
             }
         }
 
@@ -440,6 +461,18 @@ namespace Rubberduck.UI.Inspections
 
             stopwatch.Stop();
             LogManager.GetCurrentClassLogger().Trace("Inspections loaded in {0}ms", stopwatch.ElapsedMilliseconds);
+        }
+
+        private void InvalidateStaleInspectionResults(ICollection<QualifiedModuleName> modifiedModules)
+        {
+            var staleResults = Results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
+            _uiDispatcher.Invoke(() =>
+            {
+                foreach (var staleResult in staleResults)
+                {
+                    Results.Remove(staleResult);
+                }
+            });
         }
 
         private void ExecuteQuickFixCommand(object parameter)

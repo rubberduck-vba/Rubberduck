@@ -126,4 +126,34 @@
   <data name="EnableSmartConcat" xml:space="preserve">
     <value>Enable smart concatenation</value>
   </data>
+  <data name="CompleteBlockOnTab" xml:space="preserve">
+    <value>Automatické doplnění bloku po stisku TAB</value>
+  </data>
+  <data name="CompleteBlockOnEnter" xml:space="preserve">
+    <value>Automatické doplnění bloku po stisku ENTER</value>
+  </data>
+  <data name="BlockCompletion" xml:space="preserve">
+    <value>Doplnění Bloků</value>
+  </data>
+  <data name="EnableAutocompleteLabel" xml:space="preserve">
+    <value>Povolit funkce automatického doplňování</value>
+  </data>
+  <data name="ConcatVbNewLine" xml:space="preserve">
+    <value>Přidat 'vbNewLine' po stisku Ctrl+Enter</value>
+  </data>
+  <data name="EnableBlockCompletion" xml:space="preserve">
+    <value>Povolit doplňování bloků</value>
+  </data>
+  <data name="EnableSelfClosingPairs" xml:space="preserve">
+    <value>Povolit uzavírání párů</value>
+  </data>
+  <data name="SelfClosingPairs" xml:space="preserve">
+    <value>Uzavírání Párů</value>
+  </data>
+  <data name="SmartConcat" xml:space="preserve">
+    <value>Chytré-Propojování</value>
+  </data>
+  <data name="MaxConcatLines" xml:space="preserve">
+    <value>Maximální Počet Řádků</value>
+  </data>
 </root>
