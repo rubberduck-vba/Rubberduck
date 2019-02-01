@@ -15,6 +15,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -24,7 +25,7 @@ namespace Rubberduck.Refactorings.Rename
         private const string PrependUnderscoreFormat = "_{0}";
 
         private readonly IVBE _vbe;
-        private readonly IRefactoringPresenterFactory<IRenamePresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
         private readonly IMessageBox _messageBox;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IProjectsProvider _projectsProvider;
@@ -37,8 +38,7 @@ namespace Rubberduck.Refactorings.Rename
         private bool IsInterfaceMemberRename { set; get; }
         private bool IsControlEventHandlerRename { set; get; }
         private bool IsUserEventHandlerRename { set; get; }
-
-        public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory<IRenamePresenter> factory, IMessageBox messageBox, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager)
+        public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory factory, IMessageBox messageBox, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager)
         {
             _vbe = vbe;
             _factory = factory;
@@ -64,6 +64,13 @@ namespace Rubberduck.Refactorings.Rename
             _neverRenameIdentifiers = NeverRenameList();
         }
 
+        private RenameModel InitializeModel(Declaration target)
+        {
+            var targetSelection = target?.QualifiedSelection ?? _vbe.GetActiveSelection();
+
+            return targetSelection == null ? null : new RenameModel(_declarationFinderProvider.DeclarationFinder, targetSelection.Value);
+        }
+
         public void Refactor(QualifiedSelection qualifiedSelection)
         {
             CacheInitialSelection(qualifiedSelection);
@@ -72,19 +79,35 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor()
         {
-            var presenter = CreateRenamePresenter();
-            if (presenter != null)
+            _model = InitializeModel(null);
+            if (_model == null)
             {
-                RefactorImpl(presenter.Model.Target, presenter);
-                RestoreInitialSelection();
+                return;
+            }
+
+            using (var container = DisposalActionContainer.Create(_factory.Create<IRenamePresenter, RenameModel>(_model), p => _factory.Release(p)))
+            {
+                var presenter = container.Value;
+                if (presenter != null)
+                {
+                    RefactorImpl(presenter.Model.Target, presenter);
+                    RestoreInitialSelection();
+                }
             }
         }
 
         public void Refactor(Declaration target)
         {
-            var presenter = CreateRenamePresenter();
-            if (presenter != null)
+            _model = InitializeModel(target);
+            if (_model == null)
             {
+                return;
+            }
+
+            using (var container = DisposalActionContainer.Create(_factory.Create<IRenamePresenter, RenameModel>(_model), p => _factory.Release(p)))
+            {
+                var presenter = container.Value;
+
                 RefactorImpl(target, presenter);
                 RestoreInitialSelection();
             }
@@ -118,21 +141,6 @@ namespace Rubberduck.Refactorings.Rename
             {
                 PresentRenameErrorMessage($"{BuildDefaultErrorMessage(_model.Target)}: {unhandledEx.Message}");
             }
-        }
-
-        private IRenamePresenter CreateRenamePresenter()
-        {
-            var presenter = _factory.Create();
-            if (presenter != null)
-            {
-                _model = presenter.Model;
-            }
-            if (presenter == null || _model == null)
-            {
-                PresentRenameErrorMessage(RubberduckUI.RefactorRename_TargetNotDefinedError);
-                return null;
-            }
-            return presenter;
         }
 
         private bool TrySetRenameTargetFromInputTarget(Declaration inputTarget)
@@ -247,7 +255,12 @@ namespace Rubberduck.Refactorings.Rename
         private bool TrySetNewName(IRenamePresenter presenter)
         {
             var result = presenter.Show(_model.Target);
-            if (result == null) { return false; }
+            if (result == null)
+            {
+                return false;
+            }
+
+            _model = result;
 
             var conflicts = _declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(_model.NewName, _model.Target);
 
@@ -348,7 +361,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 return;
             }
-
+            
             var implementations = _declarationFinderProvider.DeclarationFinder.FindAllInterfaceImplementingMembers()
                 .Where(impl => ReferenceEquals(_model.Target.ParentDeclaration, impl.InterfaceImplemented)
                                && impl.InterfaceMemberImplemented.IdentifierName.Equals(_model.Target.IdentifierName));
@@ -576,13 +589,11 @@ namespace Rubberduck.Refactorings.Rename
         {
             var component = _projectsProvider.Component(qSelection.QualifiedName);
             using (var codeModule = component.CodeModule)
+            using (var codePane = codeModule.CodePane)
             {
-                using (var codePane = codeModule.CodePane)
+                if (!codePane.IsWrappingNullReference)
                 {
-                    if (!codePane.IsWrappingNullReference)
-                    {
-                        _initialSelection = codePane.GetQualifiedSelection();
-                    }
+                    _initialSelection = codePane.GetQualifiedSelection();
                 }
             }
         }
@@ -593,7 +604,7 @@ namespace Rubberduck.Refactorings.Rename
             {
                 return;
             }
-
+            
             var qualifiedSelection = _initialSelection.Value;
             var component = _projectsProvider.Component(qualifiedSelection.QualifiedName);
             using (var codeModule = component.CodeModule)

@@ -1,51 +1,42 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.RemoveParameters;
-using System.Windows.Forms;
-using System.Linq;
+using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public class RemoveParametersPresenter : IRemoveParametersPresenter
+    public class RemoveParametersPresenter : RefactoringPresenterBase<RemoveParametersModel>, IRemoveParametersPresenter
     {
-        private readonly IRefactoringDialog<RemoveParametersViewModel> _view;
-        private readonly RemoveParametersModel _model;
+        private static readonly DialogData DialogData = DialogData.Create(RubberduckUI.RemoveParamsDialog_Caption, 395, 494);
         private readonly IMessageBox _messageBox;
 
-        public RemoveParametersPresenter(IRefactoringDialog<RemoveParametersViewModel> view, RemoveParametersModel model, IMessageBox messageBox)
+        public RemoveParametersPresenter(RemoveParametersModel model,
+            IRefactoringDialogFactory dialogFactory, IMessageBox messageBox) : 
+            base(DialogData,  model, dialogFactory)
         {
-            _view = view;
-            _model = model;
             _messageBox = messageBox;
         }
 
-        public RemoveParametersModel Show()
+        public override RemoveParametersModel Show()
         {
-            if (_model.TargetDeclaration == null)
+            if (Model.TargetDeclaration == null)
             {
                 return null;
             }
 
-            if (_model.Parameters.Count == 0)
+            switch (Model.Parameters.Count)
             {
-                var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, _model.TargetDeclaration.IdentifierName);
-                _messageBox.NotifyWarn(message, RubberduckUI.RemoveParamsDialog_TitleText);
-                return null;
+                case 0:
+                    var message = string.Format(RubberduckUI.RemovePresenter_NoParametersError, Model.TargetDeclaration.IdentifierName);
+                    _messageBox.NotifyWarn(message, RubberduckUI.RemoveParamsDialog_TitleText);
+                    return null;
+                case 1:
+                    Model.RemoveParameters = Model.Parameters;
+                    return Model;
+                default:
+                    base.Show();
+                    return DialogResult != RefactoringDialogResult.Execute ? null : Model;
             }
-
-            if (_model.Parameters.Count == 1)
-            {
-                return _model;
-            }
-
-            _view.ViewModel.Parameters = _model.Parameters.Select(p => p.ToViewModel()).ToList();
-            _view.ShowDialog();
-            if (_view.DialogResult != DialogResult.OK)
-            {
-                return null;
-            }
-            _model.RemoveParameters = _view.ViewModel.Parameters.Where(m => m.IsRemoved).Select(vm => vm.ToModel()).ToList();
-            return _model;
         }
     }
 }

@@ -1,47 +1,79 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Parsing;
+using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
+using Environment = System.Environment;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
     public class EncapsulateFieldRefactoring : IRefactoring
     {
+        private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly IIndenter _indenter;
         private readonly IRewritingManager _rewritingManager;
-        private readonly IRefactoringPresenterFactory<IEncapsulateFieldPresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
         private EncapsulateFieldModel _model;
 
-        public EncapsulateFieldRefactoring(IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory<IEncapsulateFieldPresenter> factory, IRewritingManager rewritingManager)
+        private readonly HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
+        
+        public EncapsulateFieldRefactoring(RubberduckParserState state, IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
         {
+            _state = state;
             _vbe = vbe;
             _indenter = indenter;
             _factory = factory;
             _rewritingManager = rewritingManager;
         }
 
-        public void Refactor()
+        private EncapsulateFieldModel InitializeModel()
         {
-            var presenter = _factory.Create();
-            if (presenter == null)
+            var selection = _vbe.GetActiveSelection();
+
+            if (!selection.HasValue)
             {
-                return;
+                return null;
             }
 
-            _model = presenter.Show();
+            return new EncapsulateFieldModel(_state, selection.Value);
+        }
+
+        public void Refactor()
+        {
+            _model = InitializeModel();
             if (_model == null)
             {
                 return;
             }
 
-            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
-            AddProperty(rewriteSession);
-            rewriteSession.TryRewrite();
+            using (var container = DisposalActionContainer.Create(_factory.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(_model), p => _factory.Release(p)))
+            {
+                var presenter = container.Value;
+                if (presenter == null)
+                {
+                    return;
+                }
+
+                _model = presenter.Show();
+                if (_model == null)
+                {
+                    return;
+                }
+
+                var target = _model.TargetDeclaration;
+                var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+                AddProperty(rewriteSession);
+                rewriteSession.TryRewrite();
+            }
         }
 
         public void Refactor(QualifiedSelection target)
@@ -76,8 +108,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var rewriter = rewriteSession.CheckOutModuleRewriter(_model.TargetDeclaration.QualifiedModuleName);
 
             UpdateReferences(rewriteSession);
-            SetFieldToPrivate(rewriter);
-
+            
             var members = _model.State.DeclarationFinder
                 .Members(_model.TargetDeclaration.QualifiedName.QualifiedModuleName)
                 .OrderBy(declaration => declaration.QualifiedSelection);
@@ -85,11 +116,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             var fields = members.Where(d => d.DeclarationType == DeclarationType.Variable && !d.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member)).ToList();
 
             var property = Environment.NewLine + Environment.NewLine + GetPropertyText();
-            if (members.Any(m => m.DeclarationType.HasFlag(DeclarationType.Member)))
-            {
-                property += Environment.NewLine;
-            }
-
+            
             if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
             {
                 var newField = $"Private {_model.TargetDeclaration.IdentifierName} As {_model.TargetDeclaration.AsTypeName}";
@@ -103,11 +130,15 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
             if (_model.TargetDeclaration.Accessibility == Accessibility.Private || fields.Count > 1)
             {
+                if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
+                {
+                    rewriter.Remove(_model.TargetDeclaration);
+                }
                 rewriter.InsertAfter(fields.Last().Context.Stop.TokenIndex, property);
             }
             else
             {
-                rewriter.InsertBefore(0, property);
+                rewriter.Replace(_model.TargetDeclaration.Context.GetAncestor<VBAParser.ModuleDeclarationsElementContext>(), property);
             }
         }
 
@@ -119,15 +150,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 rewriter.Replace(reference.Context, _model.PropertyName);
             }
         }
-
-        private void SetFieldToPrivate(IModuleRewriter rewriter)
-        {
-            if (_model.TargetDeclaration.Accessibility != Accessibility.Private)
-            {
-                rewriter.Remove(_model.TargetDeclaration);
-            }
-        }
-
+        
         private string GetPropertyText()
         {
             var generator = new PropertyGenerator

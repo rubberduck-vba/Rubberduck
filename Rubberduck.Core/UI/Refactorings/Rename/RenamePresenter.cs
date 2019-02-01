@@ -1,27 +1,20 @@
-﻿using System.Windows.Forms;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.Rename;
+﻿using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Rename;
+using Rubberduck.Resources;
 
-namespace Rubberduck.Refactorings.Rename
+namespace Rubberduck.UI.Refactorings.Rename
 {
-    // FIXME investigate generic IRefactoringPresenter<RenameModel> usage!
-    public class RenamePresenter : IRenamePresenter
+    internal class RenamePresenter : RefactoringPresenterBase<RenameModel>, IRenamePresenter
     {
-        private readonly IRefactoringDialog<RenameViewModel> _view;
+        private static readonly DialogData DialogData = DialogData.Create(RubberduckUI.RenameDialog_Caption, 164, 684);
 
-        public RenamePresenter(IRefactoringDialog<RenameViewModel> view, RenameModel model)
+        public RenamePresenter(RenameModel model, IRefactoringDialogFactory dialogFactory) : 
+            base(DialogData,  model, dialogFactory) { }
+
+        public override RenameModel Show()
         {
-            _view = view;
-
-            Model = model;
-        }
-
-        public RenameModel Model { get; }
-
-        public RenameModel Show()
-        {
-            return Model.Target == null ? null : Show(Model.Target);
+            return Model.Target == null ? null : base.Show();
         }
 
         public RenameModel Show(Declaration target)
@@ -32,17 +25,15 @@ namespace Rubberduck.Refactorings.Rename
             }
 
             Model.Target = target;
-            _view.ViewModel.Target = target;
 
-            _view.ShowDialog();
+            var model = Show();
 
-            if (_view.DialogResult != DialogResult.OK)
+            if (DialogResult != RefactoringDialogResult.Execute)
             {
                 return null;
             }
-
-            Model.NewName = _view.ViewModel.NewName;
-            return Model;
+            
+            return model;
         }
     }
 }

@@ -55,7 +55,7 @@ namespace Rubberduck.Deployment.Build
 
         private void UpdateLicenseFile()
         {
-            var sourceFile = WorkingDir + @"\Licenses\license.rtf";
+            var sourceFile = WorkingDir + @"\Licenses\License.rtf";
             var license = WorkingDir + @"\InnoSetup\Includes\license.rtf";
             var endYear = new DateTime().Year;
 

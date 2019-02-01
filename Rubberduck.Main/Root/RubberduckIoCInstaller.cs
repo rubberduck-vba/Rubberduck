@@ -29,14 +29,14 @@ using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.UI.Controls;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Component = Castle.MicroKernel.Registration.Component;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.Parsing.Common;
+using Rubberduck.Refactorings;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
@@ -48,7 +48,6 @@ using Rubberduck.Parsing.VBA.ComReferenceLoading;
 using Rubberduck.Parsing.VBA.DeclarationResolving;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
@@ -117,6 +116,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<IRewritingManager>()
                 .ImplementedBy<RewritingManager>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IMemberAttributeRecovererWithSettableRewritingManager>()
+                .ImplementedBy<MemberAttributeRecoverer>()
+                .LifestyleSingleton());
 
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
@@ -124,14 +126,13 @@ namespace Rubberduck.Root
                 .ImplementedBy<VBEInteraction>()
                 .LifestyleSingleton());
 
-            RegisterRefactoringDialogs(container);
-
             container.Register(Component.For<ISearchResultsWindowViewModel>()
                 .ImplementedBy<SearchResultsWindowViewModel>()
                 .LifestyleSingleton());
             container.Register(Component.For<SearchResultPresenterInstanceManager>()
                 .LifestyleSingleton());
-            
+
+            RegisterRefactoringDialogs(container);
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
 
@@ -615,9 +616,72 @@ namespace Rubberduck.Root
 
         private void RegisterRefactoringDialogs(IWindsorContainer container)
         {
-            container.Register(Component.For<IRefactoringDialog<RenameViewModel>>()
-                .ImplementedBy<RenameDialog>()
-                .LifestyleTransient());
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringView<>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringView<>));
+
+                    return face == null ? new[] { type } : new[] { type, face };
+                })
+            );
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringViewModel<>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringViewModel<>));
+
+                    return face == null ? new[] { type } : new[] {type, face};
+                })
+            );
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringDialog<,,>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringDialog<,,>));
+
+                    if (face == null)
+                    {
+                        return new[] { type };
+                    }
+
+                    var model = face.GenericTypeArguments[0];
+
+                    var view = face.GenericTypeArguments[1];
+                    var interfaceView = view.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringView<>));
+
+                    if (interfaceView == null)
+                    {
+                        return new[] { type };
+                    }
+                    
+                    var viewModel = face.GenericTypeArguments[2];
+                    var interfaceViewModel = viewModel.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringViewModel<>));
+
+                    if (interfaceViewModel == null)
+                    {
+                        return new[] {type};
+                    }
+
+                    var closedFace = typeof(IRefactoringDialog<,,>).MakeGenericType(model, interfaceView, interfaceViewModel);
+
+                    return new[] { type, closedFace };
+                })
+            );
         }
 
         private void RegisterCommandMenuItems(IWindsorContainer container)
