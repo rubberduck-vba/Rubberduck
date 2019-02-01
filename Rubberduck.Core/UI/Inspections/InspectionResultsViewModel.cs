@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
+using System.Windows.Input;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
@@ -49,9 +50,11 @@ namespace Rubberduck.UI.Inspections
     {
         public IQuickFix Fix { get; }
         public string Description { get; }
+        public ICommand Command { get; }
 
-        public DisplayQuickFix(IQuickFix fix, IInspectionResult result)
+        public DisplayQuickFix(IQuickFix fix, IInspectionResult result, ICommand command)
         {
+            Command = command;
             Fix = fix;
             Description = fix.Description(result);
         }
@@ -119,10 +122,12 @@ namespace Rubberduck.UI.Inspections
             // todo: remove I/O work in constructor
             _runInspectionsOnReparse = _configService.LoadConfiguration().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            var results = CollectionViewSource.GetDefaultView(_results) as ListCollectionView;
-            results.Filter = inspection => InspectionFilter((IInspectionResult)inspection);
-            results.CustomSort = this;
-            Results = results;
+            if (CollectionViewSource.GetDefaultView(_results) is ListCollectionView results)
+            {
+                results.Filter = inspection => InspectionFilter((IInspectionResult)inspection);
+                results.CustomSort = this;
+                Results = results;
+            }
 
             OnPropertyChanged(nameof(Results));
             Grouping = InspectionResultGrouping.Type;
@@ -147,7 +152,7 @@ namespace Rubberduck.UI.Inspections
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
-        private ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
+        private readonly ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
 
         public ICollectionView Results { get; }
 
@@ -205,7 +210,7 @@ namespace Rubberduck.UI.Inspections
                 }
 
                 return _quickFixProvider.QuickFixes(SelectedItem as IInspectionResult)
-                    .Select(fix => new DisplayQuickFix(fix, (IInspectionResult) _selectedItem));
+                    .Select(fix => new DisplayQuickFix(fix, (IInspectionResult)_selectedItem, QuickFixCommand));
             }
         }
 
@@ -287,12 +292,12 @@ namespace Rubberduck.UI.Inspections
 
         private void ExecuteCollapseAll(object parameter)
         {
-            IsExpanded = false;
+            ExpandedState = false;
         }
 
         private void ExecuteExpandAll(object parameter)
         {
-            IsExpanded = true;
+            ExpandedState = true;
         }
 
         private void OpenSettings(object param)
@@ -343,7 +348,7 @@ namespace Rubberduck.UI.Inspections
         }
 
         private bool _expanded;
-        public bool IsExpanded
+        public bool ExpandedState
         {
             get => _expanded;
             set
@@ -457,8 +462,7 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteQuickFixCommand(object parameter)
         {
-            var quickFix = parameter as IQuickFix;
-            return !IsBusy && quickFix != null && _state.Status == ParserState.Ready;
+            return !IsBusy && parameter is IQuickFix && _state.Status == ParserState.Ready;
         }
 
         private bool _canExecuteQuickFixInProcedure;
@@ -567,8 +571,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
@@ -584,8 +587,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
@@ -593,15 +595,14 @@ namespace Rubberduck.UI.Inspections
             _quickFixProvider.FixAll(_defaultFix, selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
 
-        // TODO - these should be localized.
         private static readonly List<(string Name, hAlignment alignment)> ResultColumns = new List<(string Name, hAlignment alignment)>
         {
-            ("Type", hAlignment.Left),
-            ("Project", hAlignment.Left),
-            ("Component", hAlignment.Left),
-            ("Issue", hAlignment.Left),
-            ("Line", hAlignment.Right),
-            ("Column", hAlignment.Right)
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Type, hAlignment.Left),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Project, hAlignment.Left),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Component, hAlignment.Left),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Issue, hAlignment.Left),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Line, hAlignment.Right),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Column, hAlignment.Right)
         };
 
         private static readonly ColumnInfo[] ColumnInformation = ResultColumns.Select(column => new ColumnInfo(column.Name, column.alignment)).ToArray();

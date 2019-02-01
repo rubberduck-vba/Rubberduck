@@ -196,7 +196,71 @@ namespace Rubberduck.Resources.Inspections {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Column.
+        /// </summary>
+        public static string ExportColumnHeader_Column {
+            get {
+                return ResourceManager.GetString("ExportColumnHeader_Column", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Component.
+        /// </summary>
+        public static string ExportColumnHeader_Component {
+            get {
+                return ResourceManager.GetString("ExportColumnHeader_Component", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Issue.
+        /// </summary>
+        public static string ExportColumnHeader_Issue {
+            get {
+                return ResourceManager.GetString("ExportColumnHeader_Issue", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Line.
+        /// </summary>
+        public static string ExportColumnHeader_Line {
+            get {
+                return ResourceManager.GetString("ExportColumnHeader_Line", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Project.
+        /// </summary>
+        public static string ExportColumnHeader_Project {
+            get {
+                return ResourceManager.GetString("ExportColumnHeader_Project", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Type.
+        /// </summary>
+        public static string ExportColumnHeader_Type {
+            get {
+                return ResourceManager.GetString("ExportColumnHeader_Type", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ignore_once {
+            get {
+                object obj = ResourceManager.GetObject("ignore_once", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>

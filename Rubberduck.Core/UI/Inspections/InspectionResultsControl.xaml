@@ -6,6 +6,7 @@
              xmlns:codeInspections="clr-namespace:Rubberduck.UI.Inspections"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:abstract1="clr-namespace:Rubberduck.Parsing.Inspections.Abstract;assembly=Rubberduck.Parsing"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              ResxExtension.DefaultResxName="Rubberduck.Resources.RubberduckUI" 
              Language="{UICulture}"
              mc:Ignorable="d" 
@@ -19,6 +20,7 @@
 
             <codeInspections:InspectionSeverityImageSourceConverter x:Key="SeverityIconConverter" />
             <codeInspections:InspectionImageSourceConverter x:Key="InspectionIconConverter" />
+            <codeInspections:QuickFixImageSourceConverter x:Key="QuickFixIconConverter" />
 
             <Style x:Key="IconMargin" TargetType="Image">
                 <Setter Property="Margin" Value="4" />
@@ -46,11 +48,6 @@
                 <Setter Property="Height" Value="16"/>
                 <Setter Property="Width" Value="16" />
             </Style>
-
-            <Style TargetType="MenuItem">
-                <Setter Property="VerticalAlignment" Value="Center"/>
-            </Style>
-
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -94,7 +91,12 @@
                         </MenuItem.Icon>
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="{x:Type MenuItem}">
-                                <Setter Property="Command" Value="{Binding Path=DataContext.QuickFixCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=Menu, AncestorLevel=1}}" />
+                                <Setter Property="Icon">
+                                    <Setter.Value>
+                                        <Image Source="{Binding Fix, Converter={StaticResource QuickFixIconConverter}}" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Command" Value="{Binding Command}" />
                                 <Setter Property="CommandParameter" Value="{Binding Fix}" />
                                 <Setter Property="Header" Value="{Binding Description}" />
                                 <Setter Property="Background" Value="Transparent"></Setter>
@@ -192,10 +194,18 @@
                                Grid.Row="1"
                                ShowGroupingItemCount="True"
                                SelectedItem="{Binding SelectedItem}"
-                               IsExpanded="{Binding IsExpanded, NotifyOnSourceUpdated=True}"
+                               SelectionUnit="FullRow"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
-                               VirtualizingPanel.IsVirtualizingWhenGrouping="True">
-            <DataGrid.Columns>
+                               VirtualizingPanel.IsVirtualizingWhenGrouping="False">
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Rectangle Fill="Transparent" />
+                            <GridViewRowPresenter/>
+                        </Grid>
+                </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+                <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
@@ -206,6 +216,26 @@
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Issue}" Binding="{Binding Description, Mode=OneTime}" />
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime}" />
             </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}">
+                    <ContextMenu.Resources>
+                        <Style TargetType="{x:Type MenuItem}">
+                            <Setter Property="Icon">
+                                <Setter.Value>
+                                    <Image Source="{Binding Fix, Converter={StaticResource QuickFixIconConverter}}" />
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Command" Value="{Binding Command}" />
+                            <Setter Property="CommandParameter" Value="{Binding Fix}" />
+                            <Setter Property="Header" Value="{Binding Description}" />
+                            <Setter Property="Background" Value="Transparent"></Setter>
+                        </Style>
+                    </ContextMenu.Resources>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <i:Interaction.Behaviors>
+                <controls:GroupItemExpandedBehavior ExpandedState="{Binding ExpandedState, Mode=TwoWay}" />
+            </i:Interaction.Behaviors>
         </controls:GroupingGrid>
 
         <controls:EmptyUIRefresh Grid.Row="1" Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
