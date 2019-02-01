@@ -2265,7 +2265,37 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("MakeActiveWorkbookReferenceExplicit", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Make ActiveWorkbook reference explicit.
+        /// </summary>
+        public static string MemberAttributeRecoveryFailureCaption
+        {
+            get {
+                return ResourceManager.GetString("MemberAttributeRecoveryFailureCaption", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Make ActiveWorkbook reference explicit.
+        /// </summary>
+        public static string MemberAttributeRecoveryMembersNotFoundMessage
+        {
+            get {
+                return ResourceManager.GetString("MemberAttributeRecoveryMembersNotFoundMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Make ActiveWorkbook reference explicit.
+        /// </summary>
+        public static string MemberAttributeRecoveryRewriteFailedMessage
+        {
+            get {
+                return ResourceManager.GetString("MemberAttributeRecoveryRewriteFailedMessage", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>

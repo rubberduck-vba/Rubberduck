@@ -25,7 +25,7 @@ namespace RubberduckTests.Templates
             var codesCount = 0;
             var dictionary = new Dictionary<string, int>();
             var resourceManager = Rubberduck.Resources.Templates.ResourceManager;
-            var set = resourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, true);
+            var set = resourceManager.GetResourceSet(CultureInfo.InvariantCulture, true, true);
             foreach (DictionaryEntry entry in set)
             {
                 var key = (string) entry.Key;

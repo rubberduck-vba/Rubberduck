@@ -116,6 +116,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<IRewritingManager>()
                 .ImplementedBy<RewritingManager>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IMemberAttributeRecovererWithSettableRewritingManager>()
+                .ImplementedBy<MemberAttributeRecoverer>()
+                .LifestyleSingleton());
 
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
