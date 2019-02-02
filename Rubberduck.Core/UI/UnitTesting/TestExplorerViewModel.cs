@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Windows;
 using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -16,7 +15,7 @@ using Rubberduck.UI.Settings;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using DataFormats = System.Windows.DataFormats;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -30,39 +29,29 @@ namespace Rubberduck.UI.UnitTesting
 
     internal sealed class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
-        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly ITestEngine _testEngine;
         private readonly IClipboardWriter _clipboard;
         private readonly ISettingsFormFactory _settingsFormFactory;
-        private readonly IMessageBox _messageBox;
-        private readonly NavigateCommand _navigateCommand;
 
-        public TestExplorerViewModel(IVBE vbe,
-             RubberduckParserState state,
+        public TestExplorerViewModel(RubberduckParserState state,
              ITestEngine testEngine,
              TestExplorerModel model,
              IClipboardWriter clipboard,
              IGeneralConfigService configService,
-             ISettingsFormFactory settingsFormFactory,
-             IMessageBox messageBox,
-             ReparseCommand reparseCommand)
+             ISettingsFormFactory settingsFormFactory)
         {
-            _vbe = vbe;
             _state = state;
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
-            _messageBox = messageBox;
 
-            _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
-            
-            RunSelectedTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
-            RunSelectedCategoryTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedCategoryTestsCommand, CanExecuteRunSelectedCategoryTestsCommand);
-
+            NavigateCommand = new NavigateCommand(_state.ProjectsProvider);  
+            RunSingleTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSingleTestCommand, CanExecuteSingleTestCommand);
+            RunSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestsCommand, CanExecuteSelectedTestsCommand);
+            RunSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedCategoryTestsCommand, CanExecuteRunSelectedCategoryTestsCommand);
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand);
-
             OpenTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
             Model = model;
@@ -134,8 +123,9 @@ namespace Rubberduck.UI.UnitTesting
         public RunInconclusiveTestsCommand RunInconclusiveTestsCommand { get; set; }
         public RunFailedTestsCommand RunFailedTestsCommand { get; set; }
         public RunSucceededTestsCommand RunPassedTestsCommand { get; set; }
-        public CommandBase RunSelectedTestCommand { get; }
-        public CommandBase RunSelectedCategoryTestsCommand { get; }
+        public CommandBase RunSingleTestCommand { get; }
+        public CommandBase RunSelectedTestsCommand { get; }
+        public CommandBase RunSelectedGroupCommand { get; }
 
         public AddTestModuleCommand AddTestModuleCommand { get; set; }
         public AddTestMethodCommand AddTestMethodCommand { get; set; }
@@ -145,7 +135,7 @@ namespace Rubberduck.UI.UnitTesting
 
         public CommandBase OpenTestSettingsCommand { get; }
 
-        public INavigateCommand NavigateCommand => _navigateCommand;
+        public INavigateCommand NavigateCommand { get; }
 
         private void OpenSettings(object param)
         {
@@ -160,12 +150,17 @@ namespace Rubberduck.UI.UnitTesting
 
         public ICollectionView Tests { get; }
 
-        private bool CanExecuteSelectedTestCommand(object obj)
+        private bool CanExecuteSingleTestCommand(object obj)
         {
             return !Model.IsBusy && SelectedItem != null;
         }
 
-        private void ExecuteSelectedTestCommand(object obj)
+        private bool CanExecuteSelectedTestsCommand(object obj)
+        {
+            return !Model.IsBusy && obj is IList viewModels && viewModels.Count > 0;
+        }
+
+        private void ExecuteSingleTestCommand(object obj)
         {
             if (SelectedTest == null)
             {
@@ -174,6 +169,25 @@ namespace Rubberduck.UI.UnitTesting
             
             Model.IsBusy = true;
             _testEngine.Run(new[] { SelectedTest.Method });
+            Model.IsBusy = false;
+        }
+
+        private void ExecuteSelectedTestsCommand(object obj)
+        {
+            if (Model.IsBusy || !(obj is IList viewModels && viewModels.Count > 0))
+            {
+                return;
+            }
+
+            var models = viewModels.OfType<TestMethodViewModel>().Select(model => model.Method).ToArray();
+
+            if (!models.Any())
+            {
+                return;
+            }
+
+            Model.IsBusy = true;
+            _testEngine.Run(models);
             Model.IsBusy = false;
         }
 

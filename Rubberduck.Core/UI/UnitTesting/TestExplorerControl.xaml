@@ -270,14 +270,11 @@
                                 <Image Source="{StaticResource RunNotRunTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding RunSelectedTestCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer ,Key=TestExplorer_RunSelectedTests}" >
+                        <MenuItem Command="{Binding RunSelectedTestsCommand}" 
+                                  CommandParameter="{Binding ElementName=TestGrid, Path=SelectedItems}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer ,Key=TestExplorer_RunSelectedTests}" >
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunSelectedTestImage}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Command="{Binding RunSelectedCategoryTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer ,Key=TestExplorer_RunSelectedCategoryTests}" >
-                            <MenuItem.Icon>
-                                <Image Source="{StaticResource RunSelectedCategoryImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding RunInconclusiveTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunInconclusiveTests}" >
@@ -379,8 +376,10 @@
 
         <Border Grid.Row="2" Padding="2">
             <Grid>
-                <controls:GroupingGrid ItemsSource="{Binding Tests}"
+                <controls:GroupingGrid x:Name="TestGrid"
+                                       ItemsSource="{Binding Tests}"
                                        SelectedItem="{Binding SelectedTest}"
+                                       SelectionMode="Extended"
                                        ShowGroupingItemCount="True">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
