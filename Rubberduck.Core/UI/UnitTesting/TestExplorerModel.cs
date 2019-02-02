@@ -13,16 +13,16 @@ namespace Rubberduck.UI.UnitTesting
     {
         private readonly IVBE _vbe;
         private readonly Dispatcher _dispatcher;
-        private readonly ITestEngine testEngine;
+        private readonly ITestEngine _testEngine;
 
         public TestExplorerModel(IVBE vbe, ITestEngine testEngine)
         {
             _vbe = vbe;
-            this.testEngine = testEngine;
+            _testEngine = testEngine;
 
-            testEngine.TestsRefreshed += HandleTestsRefreshed;
-            testEngine.TestRunCompleted += HandleRunCompletion;
-            testEngine.TestCompleted += HandleTestCompletion;
+            _testEngine.TestsRefreshed += HandleTestsRefreshed;
+            _testEngine.TestRunCompleted += HandleRunCompletion;
+            _testEngine.TestCompleted += HandleTestCompletion;
             _dispatcher = Dispatcher.CurrentDispatcher;
         }
 
@@ -52,17 +52,25 @@ namespace Rubberduck.UI.UnitTesting
 
         private void HandleTestsRefreshed(object sender, EventArgs args)
         {
+            var previous = Tests.ToList();
+            
             Tests.Clear();
-            foreach (var test in testEngine.Tests.Select(test => new TestMethodViewModel(test)))
+            foreach (var test in _testEngine.Tests)
             {
-                Tests.Add(test);
+                var adding = new TestMethodViewModel(test);
+                var match = previous.FirstOrDefault(ut => ut.Method.Equals(test));
+                if (match != null)
+                {
+                    adding.Result = match.Result;
+                }
+                Tests.Add(adding);
             }
             RefreshProgressBarColor();
         }
 
         private void RefreshProgressBarColor()
         {
-            var overallOutcome = testEngine.CurrentAggregateOutcome;
+            var overallOutcome = _testEngine.CurrentAggregateOutcome;
             switch (overallOutcome)
             {
                 case TestOutcome.Failed:
@@ -85,7 +93,8 @@ namespace Rubberduck.UI.UnitTesting
         private long _totalDuration;
         public long TotalDuration
         {
-            get { return _totalDuration; } private set
+            get => _totalDuration;
+            private set
             {
                 _totalDuration = value;
                 OnPropertyChanged();
@@ -127,11 +136,11 @@ namespace Rubberduck.UI.UnitTesting
 
         public void Dispose()
         {
-            if (testEngine != null)
+            if (_testEngine != null)
             {
-                testEngine.TestCompleted -= HandleTestCompletion;
-                testEngine.TestsRefreshed -= HandleTestsRefreshed;
-                testEngine.TestRunCompleted -= HandleRunCompletion;
+                _testEngine.TestCompleted -= HandleTestCompletion;
+                _testEngine.TestsRefreshed -= HandleTestsRefreshed;
+                _testEngine.TestRunCompleted -= HandleRunCompletion;
             }
         }
     }

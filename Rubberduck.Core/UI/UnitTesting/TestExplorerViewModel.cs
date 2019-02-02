@@ -82,6 +82,7 @@ namespace Rubberduck.UI.UnitTesting
         {
             // Propagate the event
             TestCompleted?.Invoke(sender, e);
+            Tests.Refresh();
         }
 
         public INavigateSource SelectedItem => SelectedTest;

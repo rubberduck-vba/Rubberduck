@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Interaction.Navigation;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
-using System.Collections.Generic;
 
 namespace Rubberduck.UI.UnitTesting.ViewModels
 {
@@ -12,7 +11,7 @@ namespace Rubberduck.UI.UnitTesting.ViewModels
             Method = test;
         }
 
-        public TestMethod Method { get; private set; }
+        public TestMethod Method { get; }
 
         private TestResult _result = new TestResult(TestOutcome.Unknown);
 
