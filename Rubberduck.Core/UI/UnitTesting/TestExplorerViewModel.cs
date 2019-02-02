@@ -1,8 +1,10 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
@@ -18,7 +20,15 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    internal class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
+    internal enum TestExplorerGrouping
+    {
+        None,
+        Outcome,
+        Category,
+        Location
+    }
+
+    internal sealed class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -26,6 +36,7 @@ namespace Rubberduck.UI.UnitTesting
         private readonly IClipboardWriter _clipboard;
         private readonly ISettingsFormFactory _settingsFormFactory;
         private readonly IMessageBox _messageBox;
+        private readonly NavigateCommand _navigateCommand;
 
         public TestExplorerViewModel(IVBE vbe,
              RubberduckParserState state,
@@ -41,7 +52,6 @@ namespace Rubberduck.UI.UnitTesting
             _state = state;
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
-            Model = model;
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
             _messageBox = messageBox;
@@ -55,38 +65,16 @@ namespace Rubberduck.UI.UnitTesting
 
             OpenTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
 
-            SetOutcomeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            Model = model;
+            if (CollectionViewSource.GetDefaultView(Model.Tests) is ListCollectionView tests)
             {
-                GroupByOutcome = true;
+                tests.SortDescriptions.Add(new SortDescription("QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
+                tests.SortDescriptions.Add(new SortDescription("QualifiedName.MemberName", ListSortDirection.Ascending));
+                Tests = tests;
+            }
 
-                if ((bool)param)
-                {
-                    GroupByLocation = false;
-                    GroupByCategory = false;
-                }
-            });
-
-            SetLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                GroupByLocation = true;
-
-                if ((bool)param)
-                {
-                    GroupByOutcome = false;
-                    GroupByCategory = false;
-                }
-            });
-
-            SetCategoryGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                GroupByCategory = true;
-
-                if ((bool)param)
-                {
-                    GroupByOutcome = false;
-                    GroupByLocation = false;
-                }
-            });
+            OnPropertyChanged(nameof(Tests));
+            TestGrouping = TestExplorerGrouping.Outcome;
         }
 
         public event EventHandler<TestCompletedEventArgs> TestCompleted;
@@ -109,69 +97,34 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
-        private bool _groupByOutcome = true;
-        public bool GroupByOutcome
+        private static readonly Dictionary<TestExplorerGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<TestExplorerGrouping, PropertyGroupDescription>
         {
-            get => _groupByOutcome;
+            { TestExplorerGrouping.Outcome, new PropertyGroupDescription("Result.Outcome", new TestResultToOutcomeTextConverter()) },
+            { TestExplorerGrouping.Location, new PropertyGroupDescription("QualifiedName.QualifiedModuleName.Name") },
+            { TestExplorerGrouping.Category, new PropertyGroupDescription("Method.Category.Name") }
+        };
+
+        private TestExplorerGrouping _grouping = TestExplorerGrouping.None;
+
+        public TestExplorerGrouping TestGrouping
+        {
+            get => _grouping;
             set
             {
-                if (_groupByOutcome == value)
+                if (value == _grouping)
                 {
                     return;
                 }
 
-                _groupByOutcome = value;
+                _grouping = value;
+                Tests.GroupDescriptions.Clear();
+                Tests.GroupDescriptions.Add(GroupDescriptions[_grouping]);
+                Tests.Refresh();
                 OnPropertyChanged();
             }
         }
-
-        private bool _groupByLocation;
-        public bool GroupByLocation
-        {
-            get => _groupByLocation;
-            set
-            {
-                if (_groupByLocation == value)
-                {
-                    return;
-                }
-
-                _groupByLocation = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _groupByCategory;
-        public bool GroupByCategory
-        {
-            get => _groupByCategory;
-            set
-            {
-                if (_groupByCategory == value)
-                {
-                    return;
-                }
-
-                _groupByCategory = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public CommandBase SetOutcomeGroupingCommand { get; }
-
-        public CommandBase SetLocationGroupingCommand { get; }
-
-        public CommandBase SetCategoryGroupingCommand { get; }
-        
-
-        public AddTestModuleCommand AddTestModuleCommand { get; set; }
-
-        public AddTestMethodCommand AddTestMethodCommand { get; set; }
-
-        public AddTestMethodExpectedErrorCommand AddErrorTestMethodCommand { get; set; }
 
         public ReparseCommand RefreshCommand { get; set; }
-
 
         public RunAllTestsCommand RunAllTestsCommand { get; set; }
         public RepeatLastRunCommand RepeatLastRunCommand { get; set; }
@@ -183,13 +136,15 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase RunSelectedTestCommand { get; }
         public CommandBase RunSelectedCategoryTestsCommand { get; }
 
+        public AddTestModuleCommand AddTestModuleCommand { get; set; }
+        public AddTestMethodCommand AddTestMethodCommand { get; set; }
+        public AddTestMethodExpectedErrorCommand AddErrorTestMethodCommand { get; set; }
 
         public CommandBase CopyResultsCommand { get; }
 
-        private readonly NavigateCommand _navigateCommand;
-        public INavigateCommand NavigateCommand => _navigateCommand;
-
         public CommandBase OpenTestSettingsCommand { get; }
+
+        public INavigateCommand NavigateCommand => _navigateCommand;
 
         private void OpenSettings(object param)
         {
@@ -201,6 +156,8 @@ namespace Rubberduck.UI.UnitTesting
         }
 
         public TestExplorerModel Model { get; }
+
+        public ICollectionView Tests { get; }
 
         private bool CanExecuteSelectedTestCommand(object obj)
         {
