@@ -113,7 +113,43 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_CategoryName", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Run all tests.
+        /// </summary>
+        public static string TestExplorer_ContextMenuRunAll {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuRunAll", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Run all tests in group.
+        /// </summary>
+        public static string TestExplorer_ContextMenuRunGroup {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuRunGroup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Run selected tests.
+        /// </summary>
+        public static string TestExplorer_ContextMenuRunSelected {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuRunSelected", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Run single test.
+        /// </summary>
+        public static string TestExplorer_ContextMenuRunSingle {
+            get {
+                return ResourceManager.GetString("TestExplorer_ContextMenuRunSingle", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Duration.
         /// </summary>
@@ -167,85 +203,85 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_QualifiedModuleName", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reset all test results.
+        /// </summary>
+        public static string TestExplorer_ResetButtonTooltip {
+            get {
+                return ResourceManager.GetString("TestExplorer_ResetButtonTooltip", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to All Tests.
         /// </summary>
-        public static string TestExplorer_RunAllTests {
+        public static string TestExplorer_RunMenuAllTests {
             get {
-                return ResourceManager.GetString("TestExplorer_RunAllTests", resourceCulture);
+                return ResourceManager.GetString("TestExplorer_RunMenuAllTests", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Run.
         /// </summary>
-        public static string TestExplorer_RunButtonText {
+        public static string TestExplorer_RunMenuButtonText {
             get {
-                return ResourceManager.GetString("TestExplorer_RunButtonText", resourceCulture);
+                return ResourceManager.GetString("TestExplorer_RunMenuButtonText", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Failed Tests.
         /// </summary>
-        public static string TestExplorer_RunFailedTests {
+        public static string TestExplorer_RunMenuFailedTests {
             get {
-                return ResourceManager.GetString("TestExplorer_RunFailedTests", resourceCulture);
+                return ResourceManager.GetString("TestExplorer_RunMenuFailedTests", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Inconclusive Tests.
         /// </summary>
-        public static string TestExplorer_RunInconclusiveTests {
+        public static string TestExplorer_RunMenuInconclusiveTests {
             get {
-                return ResourceManager.GetString("TestExplorer_RunInconclusiveTests", resourceCulture);
+                return ResourceManager.GetString("TestExplorer_RunMenuInconclusiveTests", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Repeat Last Run.
         /// </summary>
-        public static string TestExplorer_RunLastRunTests {
+        public static string TestExplorer_RunMenuLastRunTests {
             get {
-                return ResourceManager.GetString("TestExplorer_RunLastRunTests", resourceCulture);
+                return ResourceManager.GetString("TestExplorer_RunMenuLastRunTests", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Not Run Tests.
         /// </summary>
-        public static string TestExplorer_RunNotRunTests {
+        public static string TestExplorer_RunMenuNotRunTests {
             get {
-                return ResourceManager.GetString("TestExplorer_RunNotRunTests", resourceCulture);
+                return ResourceManager.GetString("TestExplorer_RunMenuNotRunTests", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Passed Tests.
         /// </summary>
-        public static string TestExplorer_RunPassedTests {
+        public static string TestExplorer_RunMenuPassedTests {
             get {
-                return ResourceManager.GetString("TestExplorer_RunPassedTests", resourceCulture);
+                return ResourceManager.GetString("TestExplorer_RunMenuPassedTests", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Selected Category.
+        ///   Looks up a localized string similar to Selected Tests.
         /// </summary>
-        public static string TestExplorer_RunSelectedCategoryTests {
+        public static string TestExplorer_RunMenuSelectedTests {
             get {
-                return ResourceManager.GetString("TestExplorer_RunSelectedCategoryTests", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Selected Test.
-        /// </summary>
-        public static string TestExplorer_RunSelectedTests {
-            get {
-                return ResourceManager.GetString("TestExplorer_RunSelectedTests", resourceCulture);
+                return ResourceManager.GetString("TestExplorer_RunMenuSelectedTests", resourceCulture);
             }
         }
         

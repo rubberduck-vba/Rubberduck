@@ -6,9 +6,8 @@
              xmlns:local="clr-namespace:Rubberduck.UI.UnitTesting"
              xmlns:vm="clr-namespace:Rubberduck.UI.UnitTesting.ViewModels"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="255" d:DesignWidth="455"
@@ -21,12 +20,15 @@
         <BitmapImage x:Key="RunImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/control.png" />
         <BitmapImage x:Key="RunAllTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--arrow.png" />
         <BitmapImage x:Key="RunNotRunTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/question-white.png" />
+        <BitmapImage x:Key="RunSingleTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask.png" />
         <BitmapImage x:Key="RunSelectedTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--arrow.png" />
-        <BitmapImage x:Key="RunSelectedCategoryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--arrow.png" />
+        <BitmapImage x:Key="RunSelectedGroupImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-tag.png" />
         <BitmapImage x:Key="RunInconclusiveTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--exclamation.png" />
         <BitmapImage x:Key="RunPassedTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick-circle.png" />
         <BitmapImage x:Key="RunFailedTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
         <BitmapImage x:Key="RepeatLastRunImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-repeat.png" />
+
+        <BitmapImage x:Key="ResetResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
 
         <BitmapImage x:Key="AddIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--plus.png" />
         <BitmapImage x:Key="AddTestMethodIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask.png" />
@@ -37,7 +39,7 @@
         <BitmapImage x:Key="GroupByCategoryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tag-label-gray.png" />
 
         <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
-        
+
         <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
 
@@ -255,51 +257,60 @@
                 <Separator />
 
                 <Menu Background="Transparent">
-                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunButtonText}">
+                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuButtonText}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource RunImage}" />
                         </MenuItem.Icon>
-                        <MenuItem Command="{Binding RunAllTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunAllTests}">
+                        <MenuItem Command="{Binding RunAllTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuAllTests}">
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunAllTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunNotRunTests}" >
+                        <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuNotRunTests}" >
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunNotRunTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem Command="{Binding RunSelectedTestsCommand}" 
                                   CommandParameter="{Binding ElementName=TestGrid, Path=SelectedItems}"
-                                  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer ,Key=TestExplorer_RunSelectedTests}" >
+                                  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer ,Key=TestExplorer_RunMenuSelectedTests}" >
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunSelectedTestImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding RunInconclusiveTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunInconclusiveTests}" >
+                        <MenuItem Command="{Binding RunInconclusiveTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuInconclusiveTests}" >
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunInconclusiveTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunPassedTests}" >
+                        <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuPassedTests}" >
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunPassedTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunFailedTests}">
+                        <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuFailedTests}">
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunFailedTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunLastRunTests}">
+                        <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuLastRunTests}">
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RepeatLastRunImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                     </MenuItem>
                 </Menu>
+
+                <Separator />
+
+                <Button Command="{Binding ResetResultsCommand}">
+                    <Image Source="{StaticResource ResetResultsImage}" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=TestExplorer_ResetButtonTooltip}" />
+                    </Button.ToolTip>
+                </Button>
 
                 <Separator />
 
@@ -378,7 +389,6 @@
             <Grid>
                 <controls:GroupingGrid x:Name="TestGrid"
                                        ItemsSource="{Binding Tests}"
-                                       SelectedItem="{Binding SelectedTest}"
                                        SelectionMode="Extended"
                                        ShowGroupingItemCount="True">
                     <DataGrid.Columns>
@@ -389,12 +399,74 @@
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedName.QualifiedModuleName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}" Binding="{Binding Method.Declaration.IdentifierName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}" Binding="{Binding Method.Category.Name}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="vm:TestMethodViewModel">
+                                    <TextBlock></TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="vm:TestMethodViewModel">
+                                    <TextBlock Text="{Binding Method.Declaration.IdentifierName}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="vm:TestMethodViewModel">
+                                    <TextBlock Text="{Binding Method.Category.Name}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="vm:TestMethodViewModel">
+                                    <TextBlock Text="{Binding Result.Output}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="vm:TestMethodViewModel">
+                                    <TextBlock Text="{Binding Result.Duration, StringFormat={}{0}ms}" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="{Binding RunSingleTestCommand}" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunSingle}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource RunSingleTestImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
+                                      Command="{Binding RunSelectedTestsCommand}" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunSelected}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource RunSelectedTestImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="{Binding RunSelectedGroupCommand}" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunGroup}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource RunSelectedGroupImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="{Binding RunAllTestsCommand}" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunAll}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource RunAllTestsImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <i:Interaction.Behaviors>
+                        <local:TestExplorerRowMouseOverBehavior MouseOverTest="{Binding MouseOverTest, Mode=TwoWay}" MouseOverGroup="{Binding MouseOverGroup, Mode=TwoWay}" />
+                    </i:Interaction.Behaviors>
                 </controls:GroupingGrid>
             </Grid>
         </Border>
