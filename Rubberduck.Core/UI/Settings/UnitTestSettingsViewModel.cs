@@ -3,6 +3,7 @@ using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using Rubberduck.Resources.Settings;
+using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.UI.Settings
 {
@@ -107,7 +108,7 @@ namespace Rubberduck.UI.Settings
             TransferSettingsToView(config.UserSettings.UnitTestSettings);
         }
 
-        private void TransferSettingsToView(Rubberduck.Settings.UnitTestSettings toLoad)
+        private void TransferSettingsToView(Rubberduck.UnitTesting.Settings.UnitTestSettings toLoad)
         {
             BindingMode = toLoad.BindingMode;
             AssertMode = toLoad.AssertMode;
@@ -126,8 +127,8 @@ namespace Rubberduck.UI.Settings
             {
                 dialog.ShowDialog();
                 if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.UnitTestSettings> { FilePath = dialog.FileName };
-                var loaded = service.Load(new Rubberduck.Settings.UnitTestSettings());
+                var service = new XmlPersistanceService<Rubberduck.UnitTesting.Settings.UnitTestSettings> { FilePath = dialog.FileName };
+                var loaded = service.Load(new Rubberduck.UnitTesting.Settings.UnitTestSettings());
                 TransferSettingsToView(loaded);
             }
         }
@@ -142,8 +143,8 @@ namespace Rubberduck.UI.Settings
             {
                 dialog.ShowDialog();
                 if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.UnitTestSettings> { FilePath = dialog.FileName };
-                service.Save(new Rubberduck.Settings.UnitTestSettings(BindingMode, AssertMode, ModuleInit, MethodInit, DefaultTestStubInNewModule));
+                var service = new XmlPersistanceService<Rubberduck.UnitTesting.Settings.UnitTestSettings> { FilePath = dialog.FileName };
+                service.Save(new Rubberduck.UnitTesting.Settings.UnitTestSettings(BindingMode, AssertMode, ModuleInit, MethodInit, DefaultTestStubInNewModule));
             }
         }
     }

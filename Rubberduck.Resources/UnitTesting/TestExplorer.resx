@@ -249,4 +249,46 @@
   <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
     <value>Reset all test results</value>
   </data>
+  <data name="UnitTest_NewMethod_Act" xml:space="preserve">
+    <value>Act</value>
+  </data>
+  <data name="UnitTest_NewMethod_Arrange" xml:space="preserve">
+    <value>Arrange</value>
+  </data>
+  <data name="UnitTest_NewMethod_Assert" xml:space="preserve">
+    <value>Assert</value>
+  </data>
+  <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
+    <value>TestMethod</value>
+  </data>
+  <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
+    <value>ExpectedError</value>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleCleanupMethod" xml:space="preserve">
+    <value>ModuleCleanup</value>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleInitializeMethod" xml:space="preserve">
+    <value>ModuleInitialize</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestCleanupMethod" xml:space="preserve">
+    <value>TestCleanup</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestExitLabel" xml:space="preserve">
+    <value>TestExit</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
+    <value>TestFail</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestInitializeMethod" xml:space="preserve">
+    <value>TestInitialize</value>
+  </data>
+  <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
+    <value>TestModule</value>
+  </data>
+  <data name="UnitTest_NewModule_DefaultFolder" xml:space="preserve">
+    <value>Tests</value>
+  </data>
+  <data name="UnitTest_NewModule_LateBindConstant" xml:space="preserve">
+    <value>LateBind</value>
+  </data>
 </root>

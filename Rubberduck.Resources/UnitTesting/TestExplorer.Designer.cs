@@ -383,7 +383,43 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_Unknown", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Act.
+        /// </summary>
+        public static string UnitTest_NewMethod_Act {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_Act", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Arrange.
+        /// </summary>
+        public static string UnitTest_NewMethod_Arrange {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_Arrange", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Assert.
+        /// </summary>
+        public static string UnitTest_NewMethod_Assert {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_Assert", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to TestMethod.
+        /// </summary>
+        public static string UnitTest_NewMethod_BaseName {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_BaseName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Change to expected error number.
         /// </summary>
@@ -401,7 +437,34 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_ErrorNotRaised", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to ExpectedError.
+        /// </summary>
+        public static string UnitTest_NewMethod_ExpectedError {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_ExpectedError", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ModuleCleanup.
+        /// </summary>
+        public static string UnitTest_NewMethod_ModuleCleanupMethod {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_ModuleCleanupMethod", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ModuleInitialize.
+        /// </summary>
+        public static string UnitTest_NewMethod_ModuleInitializeMethod {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_ModuleInitializeMethod", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Test raised an error.
         /// </summary>
@@ -419,7 +482,70 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_Rename", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to TestInitialize.
+        /// </summary>
+        public static string UnitTest_NewMethod_TestInitializeMethod {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_TestInitializeMethod", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to TestCleanup.
+        /// </summary>
+        public static string UnitTest_NewMethod_TestCleanupMethod {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_TestCleanupMethod", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to TestExit.
+        /// </summary>
+        public static string UnitTest_NewMethod_TestExitLabel {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_TestExitLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to TestFail.
+        /// </summary>
+        public static string UnitTest_NewMethod_TestFailLabel {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_TestFailLabel", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to TestModule.
+        /// </summary>
+        public static string UnitTest_NewModule_BaseName {
+            get {
+                return ResourceManager.GetString("UnitTest_NewModule_BaseName", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Tests.
+        /// </summary>
+        public static string UnitTest_NewModule_DefaultFolder {
+            get {
+                return ResourceManager.GetString("UnitTest_NewModule_DefaultFolder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to LateBind.
+        /// </summary>
+        public static string UnitTest_NewModule_LateBindConstant {
+            get {
+                return ResourceManager.GetString("UnitTest_NewModule_LateBindConstant", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to this method runs after every test in the module.
         /// </summary>

@@ -9,7 +9,6 @@ using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using Rubberduck.AddRemoveReferences;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
@@ -53,6 +52,7 @@ using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.UI.AddRemoveReferences;
+using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.Root
 {
@@ -230,6 +230,10 @@ namespace Rubberduck.Root
 
             container.Register(Component.For<IConfigProvider<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
+                .LifestyleSingleton());
+
+            container.Register(Component.For<IConfigProvider<UnitTestSettings>>()
+                .ImplementedBy<UnitTestConfigProvider>()
                 .LifestyleSingleton());
         }
 
