@@ -1,7 +1,8 @@
 using NUnit.Framework;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
-using UnitTestSettings = Rubberduck.Settings.UnitTestSettings;
+using Rubberduck.UnitTesting.Settings;
+using UnitTestSettings = Rubberduck.UnitTesting.Settings.UnitTestSettings;
 
 namespace RubberduckTests.Settings
 {
