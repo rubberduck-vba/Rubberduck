@@ -31,6 +31,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _state = state;
             _rewritingManager = rewritingManager;
             _msgBox = msgBox;
+            _factory = factory;
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
