@@ -12,7 +12,7 @@ using Rubberduck.UnitTesting.Settings;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UnitTesting.UnitTesting
+namespace Rubberduck.UnitTesting.CodeGeneration
 {
     public partial class TestCodeGenerator : ITestCodeGenerator
     {
@@ -56,7 +56,6 @@ namespace Rubberduck.UnitTesting.UnitTesting
 
             if (settings.BindingMode == BindingMode.EarlyBinding)
             {
-                // FIXME: Push the actual adding of TestModules into UnitTesting, which sidesteps VBEInteraction being inaccessble here
                 _interaction.EnsureProjectReferencesUnitTesting(project);
             }
 
@@ -115,7 +114,9 @@ namespace Rubberduck.UnitTesting.UnitTesting
                 return GetNewTestModuleCode(component);
             }
 
-            var module = string.Join(Environment.NewLine + Environment.NewLine, new [] { GetBaseTestModule() }.Concat(stubs.Select(GetNewTestStubMethod)));
+            var baseCode = GetBaseTestModule();
+            var stubMethods = stubs.Select(GetNewTestStubMethod);
+            var module = string.Join(Environment.NewLine + Environment.NewLine, new [] { baseCode }.Concat(stubMethods));
 
             return string.Join(Environment.NewLine, _indenter.Indent(module));
         }
@@ -129,7 +130,7 @@ namespace Rubberduck.UnitTesting.UnitTesting
 
             string declaration;
             string initialization;
-            var asserts = settings.AssertMode == AssertMode.PermissiveAssert ? "PermissiveAssertClass" : "AssertClass";
+            var asserts = settings.AssertMode == AssertMode.PermissiveAssert ? PermissiveAssertClassName : AssertClassName;
 
             switch (settings.BindingMode)
             {

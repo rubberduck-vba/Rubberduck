@@ -5,7 +5,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.UI.Command;
-using Rubberduck.UnitTesting.UnitTesting;
+using Rubberduck.UnitTesting.CodeGeneration;
 
 namespace Rubberduck.UI.UnitTesting.Commands
 {

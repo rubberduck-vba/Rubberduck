@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.UnitTesting.Commands;
-using Rubberduck.UnitTesting.UnitTesting;
+using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands

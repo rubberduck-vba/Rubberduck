@@ -1,10 +1,15 @@
 ﻿using System;
 using Rubberduck.Resources.UnitTesting;
 
-namespace Rubberduck.UnitTesting.UnitTesting
+namespace Rubberduck.UnitTesting.CodeGeneration
 {
     public partial class TestCodeGenerator
     {
+        // These have to match the names of the exposed classes on the RD interface. They're only public here to facilitate a unit test that
+        // ensures this (and hey - they're constants so it's not hurting anything, right?).
+        public const string AssertClassName = "AssertClass";
+        public const string PermissiveAssertClassName = "PermissiveAssertClass";
+
         private static string TestModuleBaseName => TestExplorer.UnitTest_NewModule_BaseName;
         private static string TestMethodBaseName => TestExplorer.UnitTest_NewMethod_BaseName;
 
