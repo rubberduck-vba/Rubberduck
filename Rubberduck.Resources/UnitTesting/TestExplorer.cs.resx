@@ -225,7 +225,7 @@
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>tato metoda běží jedenkrát v modulu</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Celkové Trvání</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">

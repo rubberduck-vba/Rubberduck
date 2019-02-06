@@ -225,7 +225,7 @@
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Impossible de créer le module de test. L'application hôte peut ne pas permettre la création de nouveaux modules, ou le projet peut être verrouillé. Vérifiez les journaux pour les détails.</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Durée totale</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">

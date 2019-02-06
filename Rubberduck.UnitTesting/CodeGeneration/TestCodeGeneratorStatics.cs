@@ -27,6 +27,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
 
         private static string AccessCompareOption => $"Option Compare Database{Environment.NewLine}";
         private static string LateBindConstName => TestExplorer.UnitTest_NewModule_LateBindConstant;
+        private static string LateBindDirectiveName => TestExplorer.UnitTest_NewModule_LateBindDirective;
         private static string DefaultTestFolder => TestExplorer.UnitTest_NewModule_DefaultFolder;
         private static string ModuleInitializeMethod => TestExplorer.UnitTest_NewMethod_ModuleInitializeMethod;
         private static string ModuleInitializeComment => $"'{TestExplorer.UnitTest_NewModule_RunOnce}.";
@@ -87,7 +88,7 @@ End Sub";
     Private Fakes As Rubberduck.FakesProvider";
 
         private static string DualBindingDeclarations =>
-$@"#Const {LateBindConstName} = 0
+$@"#Const {LateBindConstName} = {LateBindDirectiveName}
 
 #If {LateBindConstName} Then
 {LateBindingDeclarations}

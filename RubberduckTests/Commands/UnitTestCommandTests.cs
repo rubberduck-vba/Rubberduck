@@ -1,31 +1,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Windows.Input;
 using NUnit.Framework;
 using Moq;
-using Rubberduck.Inspections.Inspections.Concrete;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.UnitTesting;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
 using RubberduckTests.Settings;
-using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Commands
 {
@@ -464,10 +460,13 @@ End Enum
         {
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var settings = new Mock<IConfigProvider<UnitTestSettings>>();
+            var arguments = new Mock<ICompilationArgumentsProvider>();
 
             settings.Setup(s => s.Create()).Returns(new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false));
+            arguments.Setup(m => m.UserDefinedCompilationArguments(It.IsAny<string>()))
+                .Returns(new Dictionary<string, short>());
 
-            return new TestCodeGenerator(vbe, state, new Mock<IMessageBox>().Object, new Mock<IVBEInteraction>().Object, settings.Object, indenter);           
+            return new TestCodeGenerator(vbe, state, new Mock<IMessageBox>().Object, new Mock<IVBEInteraction>().Object, settings.Object, indenter, arguments.Object);           
         }
     }
 }

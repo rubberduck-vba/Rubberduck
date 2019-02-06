@@ -278,7 +278,7 @@ namespace RubberduckTests.CodeExplorer
         public MockedCodeExplorer ImplementAddTestModuleCommand()
         {
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var codeGenerator = new TestCodeGenerator(Vbe.Object, State, MessageBox.Object, _interaction.Object, _unitTestSettingsProvider.Object, indenter);
+            var codeGenerator = new TestCodeGenerator(Vbe.Object, State, MessageBox.Object, _interaction.Object, _unitTestSettingsProvider.Object, indenter, null);
             ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, codeGenerator);
             return this;
         }

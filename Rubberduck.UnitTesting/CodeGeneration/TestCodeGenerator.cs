@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources.UnitTesting;
@@ -24,8 +25,16 @@ namespace Rubberduck.UnitTesting.CodeGeneration
         private readonly IMessageBox _messageBox;
         private readonly IIndenter _indenter;
         private readonly IVBEInteraction _interaction;
+        private readonly ICompilationArgumentsProvider _argumentsProvider;
 
-        public TestCodeGenerator(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IVBEInteraction interaction, IConfigProvider<UnitTestSettings> settings, IIndenter indenter)
+        public TestCodeGenerator(
+            IVBE vbe, 
+            RubberduckParserState state, 
+            IMessageBox messageBox, 
+            IVBEInteraction interaction, 
+            IConfigProvider<UnitTestSettings> settings, 
+            IIndenter indenter, 
+            ICompilationArgumentsProvider argumentsProvider)
         {
             _isAccess = "AccessApp".Equals(vbe?.HostApplication()?.GetType().Name);
             _state = state;
@@ -33,6 +42,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
             _interaction = interaction;
             _settings = settings;           
             _indenter = indenter;
+            _argumentsProvider = argumentsProvider;
         }
 
         public void AddTestModuleToProject(IVBProject project)
@@ -54,10 +64,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
 
             var settings = _settings.Create();
 
-            if (settings.BindingMode == BindingMode.EarlyBinding)
-            {
-                _interaction.EnsureProjectReferencesUnitTesting(project);
-            }
+            AddReferenceIfNeeded(project, settings);
 
             try
             {
@@ -91,6 +98,36 @@ namespace Rubberduck.UnitTesting.CodeGeneration
                 _messageBox.Message(TestExplorer.Command_AddTestModule_Error);
                 Logger.Warn("Unable to add test module. An exception was thrown.");
                 Logger.Warn(ex);
+            }
+        }
+
+        private void AddReferenceIfNeeded(IVBProject project, IUnitTestSettings settings)
+        {
+            switch (settings.BindingMode)
+            {
+                case BindingMode.EarlyBinding:
+                    _interaction.EnsureProjectReferencesUnitTesting(project);
+                    return;
+                case BindingMode.LateBinding:
+                    return;
+                case BindingMode.DualBinding:
+                    var precompile = _argumentsProvider.UserDefinedCompilationArguments(project.ProjectId);
+                    if (precompile is null)
+                    {
+                        return;
+                    }
+
+                    var setting = precompile.FirstOrDefault(option =>
+                        option.Key.Equals(LateBindDirectiveName, StringComparison.CurrentCultureIgnoreCase));
+
+                    if (!string.IsNullOrEmpty(setting.Key) && setting.Value != 0)
+                    {
+                        _interaction.EnsureProjectReferencesUnitTesting(project);
+                    }
+
+                    return;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
