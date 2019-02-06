@@ -38,7 +38,7 @@ namespace Rubberduck.UI.UnitTesting.Commands
 
             using (var activePane = _vbe.ActiveCodePane)
             {
-                if (activePane == null || activePane.IsWrappingNullReference)
+                if (activePane?.IsWrappingNullReference ?? true)
                 {
                     return false;
                 }
@@ -69,7 +69,7 @@ namespace Rubberduck.UI.UnitTesting.Commands
         {
             using (var pane = _vbe.ActiveCodePane)
             {
-                if (pane.IsWrappingNullReference)
+                if (pane?.IsWrappingNullReference ?? true)
                 {
                     return;
                 }
