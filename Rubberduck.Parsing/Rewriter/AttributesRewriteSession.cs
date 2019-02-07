@@ -9,9 +9,9 @@ namespace Rubberduck.Parsing.Rewriter
     {
         private readonly IParseManager _parseManager;
 
-        public AttributesRewriteSession(IParseManager parseManager, IRewriterProvider rewriterProvider,
+        public AttributesRewriteSession(IParseManager parseManager, IRewriterProvider rewriterProvider, ISelectionRecoverer selectionRecoverer,
             Func<IRewriteSession, bool> rewritingAllowed)
-            : base(rewriterProvider, rewritingAllowed)
+            : base(rewriterProvider, selectionRecoverer, rewritingAllowed)
         {
             _parseManager = parseManager;
         }

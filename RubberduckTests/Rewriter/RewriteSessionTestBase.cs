@@ -249,17 +249,119 @@ namespace RubberduckTests.Rewriter
             Assert.AreEqual(expectedCodeKind, actualCodeKind);
         }
 
+        [Test]
+        [Category("Rewriter")]
+        public void CallsRecoverSelectionOnNextParseOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.RecoverSavedSelectionsOnNextParse());
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.TryRewrite();
+
+            selectionRecovererMock.Verify(m => m.RecoverSavedSelectionsOnNextParse(), Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void SavesSelectionForCheckedOutModulesOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.SaveSelections(It.IsAny<IEnumerable<QualifiedModuleName>>()));
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+            var module2 = new QualifiedModuleName("TestProject", string.Empty, "TestModule2");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.CheckOutModuleRewriter(module2);
+            rewriteSession.TryRewrite();
+            
+            selectionRecovererMock.Verify(m => m.SaveSelections(It.Is<IEnumerable<QualifiedModuleName>>(modules => modules.Count() == 2 && modules.Contains(module) && modules.Contains(module2))));
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void AdjustsSelectionForCheckedOutModulesOnRewriteWhoseRewriterHasASelectionOffsetSet()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.AdjustSavedSelection(It.IsAny<QualifiedModuleName>(), It.IsAny<Selection>()));
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+            var module2 = new QualifiedModuleName("TestProject", string.Empty, "TestModule2");
+
+            var selectionOffset = new Selection(2,3);
+
+            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
+            rewriter.SelectionOffset = selectionOffset;
+            rewriteSession.CheckOutModuleRewriter(module2);
+            rewriteSession.TryRewrite();
+
+            selectionRecovererMock.Verify(m => m.AdjustSavedSelection(module, selectionOffset), Times.Once);
+            selectionRecovererMock.Verify(m => m.AdjustSavedSelection(module2, It.IsAny<Selection>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void ReplacesSelectionForCheckedOutModulesOnRewriteWhoseRewriterHasASelectionSet()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            var moduleSelection = new Selection(4,3);
+            selectionRecovererMock.Setup(m => m.ReplaceSavedSelection(It.IsAny<QualifiedModuleName>(), It.IsAny<Selection>())).Callback((QualifiedModuleName qmn, Selection selection) => moduleSelection = selection);
+            selectionRecovererMock.Setup(m => m.AdjustSavedSelection(It.IsAny<QualifiedModuleName>(), It.IsAny<Selection>())).Callback((QualifiedModuleName qmn, Selection selection) => moduleSelection = moduleSelection.Offset(selection));
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            var selectionReplacement = new Selection(2, 3);
+            var selectionOffset = new Selection(42,42);
+
+            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
+            rewriter.Selection = selectionReplacement;
+            rewriter.SelectionOffset = selectionOffset;
+            rewriteSession.TryRewrite();
+
+            Assert.AreEqual(selectionReplacement, moduleSelection);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void FirstAppliesOffsetAndThenReplacesSelectionForCheckedOutModulesOnRewriteWhoseRewriterHasASelectionAndASelectionOffsetSet()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.ReplaceSavedSelection(It.IsAny<QualifiedModuleName>(), It.IsAny<Selection>()));
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+            var module2 = new QualifiedModuleName("TestProject", string.Empty, "TestModule2");
+
+            var selectionReplacement = new Selection(2, 3);
+
+            var rewriter = rewriteSession.CheckOutModuleRewriter(module);
+            rewriter.Selection = selectionReplacement;
+            rewriteSession.CheckOutModuleRewriter(module2);
+            rewriteSession.TryRewrite();
+
+            selectionRecovererMock.Verify(m => m.ReplaceSavedSelection(module, selectionReplacement), Times.Once);
+            selectionRecovererMock.Verify(m => m.ReplaceSavedSelection(module2, It.IsAny<Selection>()), Times.Never);
+        }
+
+
         protected IRewriteSession RewriteSession(Func<IRewriteSession, bool> rewritingAllowed,
-            out MockRewriterProvider mockProvider, bool rewritersAreDirty = false)
+            out MockRewriterProvider mockProvider, bool rewritersAreDirty = false, ISelectionRecoverer selectionRecoverer = null)
         {
             var parseManager = new Mock<IParseManager>();
             parseManager.Setup(m => m.OnSuspendParser(It.IsAny<object>(), It.IsAny<IEnumerable<ParserState>>(), It.IsAny<Action>(), It.IsAny<int>()))
                 .Callback((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => suspendAction())
                 .Returns((object requestor, IEnumerable<ParserState> allowedStates, Action suspendAction, int timeout) => SuspensionResult.Completed);
-            return RewriteSession(parseManager.Object, rewritingAllowed, out mockProvider, rewritersAreDirty);
+            return RewriteSession(parseManager.Object, rewritingAllowed, out mockProvider, rewritersAreDirty, selectionRecoverer);
         }
 
-        protected abstract IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false);
+        protected abstract IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false, ISelectionRecoverer selectionRecoverer = null);
     }
 
 
@@ -286,6 +388,8 @@ namespace RubberduckTests.Rewriter
             var mock = new Mock<IExecutableModuleRewriter>();
             mock.Setup(m => m.Rewrite());
             mock.Setup(m => m.IsDirty).Returns(_createdRewritersAreDirty);
+            mock.SetupProperty(m => m.SelectionOffset);
+            mock.SetupProperty(m => m.Selection);
 
             return mock;
         }
