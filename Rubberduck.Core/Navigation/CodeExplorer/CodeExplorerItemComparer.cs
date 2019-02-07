@@ -192,7 +192,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                 return 1;
             }
 
-            return SortOrder[first.Value].CompareTo(SortOrder[second.Value]);
+            var component = SortOrder[first.Value].CompareTo(SortOrder[second.Value]);
+
+            return component == 0 ? CodeExplorerItemComparer.Name.Compare(x, y) : component;
         }
     }
 
