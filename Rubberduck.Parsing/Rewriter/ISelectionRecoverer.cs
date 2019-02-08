@@ -10,5 +10,9 @@ namespace Rubberduck.Parsing.Rewriter
         void ReplaceSavedSelection(QualifiedModuleName module, Selection replacementSelection);
         void RecoverSavedSelections();
         void RecoverSavedSelectionsOnNextParse();
+
+        void SaveActiveCodePane();
+        void RecoverActiveCodePane();
+        void RecoverActiveCodePaneOnNextParse();
     }
 }

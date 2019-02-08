@@ -329,6 +329,94 @@ namespace RubberduckTests.Rewriter
             selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, expectedAdjustedSelection), Times.Once);
         }
 
+        [Test]
+        [Category("Rewriting")]
+        public void ActivatesSavedActiveCodePaneOnRecoverActiveCodePane_ActiveSelectionExists()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            var activeSelection = _testModuleSelections[1];
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(activeSelection);
+
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            selectionRecoverer.SaveActiveCodePane();
+            selectionRecoverer.RecoverActiveCodePane();
+
+            selectionServiceMock.Verify(m => m.TryActivate(activeSelection.QualifiedName), Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriting")]
+        public void DoesNotActivateAnythingOnRecoverActiveCodePane_ActiveSelectionDoesNotExist()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns((QualifiedSelection?)null);
+
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            selectionRecoverer.SaveActiveCodePane();
+            selectionRecoverer.RecoverActiveCodePane();
+
+            selectionServiceMock.Verify(m => m.TryActivate(It.IsAny<QualifiedModuleName>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriting")]
+        public void ActivatesSavedActiveCodePaneOnNextParseAfterOnRecoverActiveCodePaneOnNextParse_ActiveSelectionExists()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            var activeSelection = _testModuleSelections[1];
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(activeSelection);
+
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            selectionRecoverer.SaveActiveCodePane();
+            selectionRecoverer.RecoverActiveCodePaneOnNextParse();
+
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
+
+            selectionServiceMock.Verify(m => m.TryActivate(activeSelection.QualifiedName), Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriting")]
+        public void DoesNotActivateAnythingOnNextParseAfterOnRecoverActiveCodePaneOnNextParse_ActiveSelectionDoesNotExist()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns((QualifiedSelection?)null);
+
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            selectionRecoverer.SaveActiveCodePane();
+            selectionRecoverer.RecoverActiveCodePaneOnNextParse();
+
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
+
+            selectionServiceMock.Verify(m => m.TryActivate(It.IsAny<QualifiedModuleName>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriting")]
+        public void RecoverActiveCodePaneOnNextParseDoesNotDoAnythingImmediately()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            var activeSelection = _testModuleSelections[1];
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(activeSelection);
+
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            selectionRecoverer.SaveActiveCodePane();
+            selectionRecoverer.RecoverActiveCodePaneOnNextParse();
+
+            selectionServiceMock.Verify(m => m.TryActivate(activeSelection.QualifiedName), Times.Never);
+        }
 
         private Mock<ISelectionService> TestSelectionServiceMock()
         {
@@ -339,6 +427,7 @@ namespace RubberduckTests.Rewriter
             }
 
             mock.Setup(m => m.TrySetSelection(It.IsAny<QualifiedModuleName>(), It.IsAny<Selection>()));
+            mock.Setup(m => m.TryActivate(It.IsAny<QualifiedModuleName>()));
             return mock;
         }
 
