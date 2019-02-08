@@ -350,6 +350,56 @@ namespace RubberduckTests.Rewriter
             selectionRecovererMock.Verify(m => m.ReplaceSavedSelection(module2, It.IsAny<Selection>()), Times.Never);
         }
 
+        [Test]
+        [Category("Rewriter")]
+        public void CallsRecoverActiveCodePaneOnNextParseOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.RecoverActiveCodePaneOnNextParse());
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.TryRewrite();
+
+            selectionRecovererMock.Verify(m => m.RecoverActiveCodePaneOnNextParse(), Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void SavesActiveCodePaneOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.SaveActiveCodePane());
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.TryRewrite();
+
+            selectionRecovererMock.Verify(m => m.SaveActiveCodePane(), Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void SavesActiveCodePaneBeforeRestoringItOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            var lastOperation = string.Empty;
+            selectionRecovererMock.Setup(m => m.SaveActiveCodePane()).Callback(() => lastOperation = "SaveActiveCodePane");
+            selectionRecovererMock.Setup(m => m.RecoverActiveCodePaneOnNextParse()).Callback(() => lastOperation = "RecoverActiveCodePaneOnNextParse");
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.TryRewrite();
+
+            Assert.AreEqual("RecoverActiveCodePaneOnNextParse", lastOperation);
+        }
+
 
         protected IRewriteSession RewriteSession(Func<IRewriteSession, bool> rewritingAllowed,
             out MockRewriterProvider mockProvider, bool rewritersAreDirty = false, ISelectionRecoverer selectionRecoverer = null)
