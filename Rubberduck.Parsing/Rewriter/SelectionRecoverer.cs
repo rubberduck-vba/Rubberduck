@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -7,7 +8,7 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public class SelectionRecoverer : ISelectionRecoverer
+    public sealed class SelectionRecoverer : ISelectionRecoverer, IDisposable
     {
         private readonly ISelectionService _selectionService;
         private readonly IParseManager _parseManager;
@@ -69,6 +70,11 @@ namespace Rubberduck.Parsing.Rewriter
                 _parseManager.StateChanged -= ExecuteSelectionRecovery;
                 RecoverSavedSelections();
             }
+        }
+
+        public void Dispose()
+        {
+            _parseManager.StateChanged -= ExecuteSelectionRecovery;
         }
     }
 }
