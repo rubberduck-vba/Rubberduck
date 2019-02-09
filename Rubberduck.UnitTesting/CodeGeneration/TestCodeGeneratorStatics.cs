@@ -40,7 +40,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
 
         private static string TestMethodTemplate =>
 $@"'@TestMethod(""{DefaultTestCategory}"")
-Public Sub {{0}}() {RenameTestTodoComment}
+Private Sub {{0}}() {RenameTestTodoComment}
     On Error GoTo {TestFailLabel}
     
     {ArrangeComment}
@@ -58,7 +58,7 @@ End Sub";
 
         private static string TestMethodExpectedErrorTemplate =>
 $@"'@TestMethod(""{DefaultTestCategory}"")
-Public Sub {{0}}() {RenameTestTodoComment}
+Private Sub {{0}}() {RenameTestTodoComment}
     Const {ExpectedErrorConstant} As Long = 0 {ExpectedErrorTodoComment}
     On Error GoTo {TestFailLabel}
     
@@ -121,25 +121,25 @@ Option Private Module
 {{1}}
 
 '@ModuleInitialize
-Public Sub {ModuleInitializeMethod}()
+Private Sub {ModuleInitializeMethod}()
 {ModuleInitializeComment}
 {{2}}
 End Sub
 
 '@ModuleCleanup
-Public Sub {ModuleCleanupMethod}()
+Private Sub {ModuleCleanupMethod}()
     {ModuleCleanupComment}
     Set Assert = Nothing
     Set Fakes = Nothing
 End Sub
 
 '@TestInitialize
-Public Sub {TestInitializeMethod}()
+Private Sub {TestInitializeMethod}()
     {TestInitializeComment}
 End Sub
 
 '@TestCleanup
-Public Sub {TestCleanupMethod}()
+Private Sub {TestCleanupMethod}()
     {TestCleanupComment}
 End Sub";
     }
