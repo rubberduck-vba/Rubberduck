@@ -1,18 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
-using System.IO;
 using System.Windows.Data;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Rubberduck.UnitTesting;
 using Rubberduck.Resources;
+using Rubberduck.UI.UnitTesting.ViewModels;
+using ImageSourceConverter = Rubberduck.UI.Converters.ImageSourceConverter;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    public class TestOutcomeImageSourceConverter : IValueConverter
+    public class TestOutcomeImageSourceConverter : ImageSourceConverter, IMultiValueConverter
     {
+        private static readonly ImageSource QueuedIcon = ToImageSource(RubberduckUI.clock);
+        private static readonly ImageSource RunningIcon = ToImageSource(RubberduckUI.hourglass);
+
         private static readonly IDictionary<TestOutcome,ImageSource> Icons = 
             new Dictionary<TestOutcome, ImageSource>
             {
@@ -20,36 +22,33 @@ namespace Rubberduck.UI.UnitTesting
                 { TestOutcome.Succeeded, ToImageSource(RubberduckUI.tick_circle) },
                 { TestOutcome.Failed, ToImageSource(RubberduckUI.cross_circle) },
                 { TestOutcome.Inconclusive, ToImageSource(RubberduckUI.exclamation) },
-                { TestOutcome.Ignored, ToImageSource(RubberduckUI.minus_white) },
+                { TestOutcome.Ignored, ToImageSource(RubberduckUI.minus_white) }
             };
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value?.GetType() != typeof(TestOutcome))
+            if (!(value is TestMethodViewModel test))
             {
                 return null;
             }
 
-            var outcome = (TestOutcome)value;
+            if (test.RunState != TestRunState.Stopped)
+            {
+                return test.RunState == TestRunState.Running ? RunningIcon : QueuedIcon;
+            }
+
+            var outcome = test.Result.Outcome;
             return Icons[outcome];
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            return values.Length == 0 ? null : Convert(values[0], targetType, parameter, culture);
         }
 
-        private static ImageSource ToImageSource(Image source)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            var ms = new MemoryStream();
-            ((Bitmap)source).Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-            var image = new BitmapImage();
-            image.BeginInit();
-            ms.Seek(0, SeekOrigin.Begin);
-            image.StreamSource = ms;
-            image.EndInit();
-
-            return image;
+            throw new NotImplementedException();
         }
     }
 }

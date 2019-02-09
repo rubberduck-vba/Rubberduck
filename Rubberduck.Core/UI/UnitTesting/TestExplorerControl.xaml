@@ -378,8 +378,8 @@
                      Grid.Row="1"
                      Margin="2"
                      Background="DimGray" 
-                     Maximum="{Binding Model.Tests.Count, Mode=OneWay}" 
-                     Value="{Binding Model.ExecutedCount, Mode=OneWay}">
+                     Maximum="{Binding Model.CurrentRunTestCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Value="{Binding Model.ExecutedCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             <ProgressBar.Foreground>
                 <SolidColorBrush Color="{Binding Model.ProgressBarColor, UpdateSourceTrigger=PropertyChanged}" />
             </ProgressBar.Foreground>
@@ -395,14 +395,26 @@
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
+                                    <Grid>
+                                        <Image Height="16" Width="16">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource OutcomeIconConverter}">
+                                                    <MultiBinding.Bindings>
+                                                        <Binding RelativeSource="{RelativeSource Self}" Path="DataContext"/>
+                                                        <Binding Path="Result.Outcome" />
+                                                        <Binding Path="RunState" />
+                                                    </MultiBinding.Bindings>
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <TextBlock></TextBlock>
+                                    <TextBlock Text="{Binding Method.Declaration.QualifiedModuleName}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

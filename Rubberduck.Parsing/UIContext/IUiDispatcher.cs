@@ -14,7 +14,7 @@ namespace Rubberduck.Parsing.UIContext
 
         /// <summary>
         /// Executes an action on the UI thread. If this method is called
-        /// from the UI thread, the action is executed immendiately. If the
+        /// from the UI thread, the action is executed immediately. If the
         /// method is called from another thread, the action will be enqueued
         /// on the UI thread's dispatcher and executed asynchronously.
         /// <para>For additional operations on the UI thread, you can get a
@@ -26,8 +26,16 @@ namespace Rubberduck.Parsing.UIContext
         void Invoke(Action action);
 
         /// <summary>
+        /// Flushes all pending messages on the UI thread. If called from the UI thread, it will immediately yield to
+        /// any other UI activity ala DoEvents. If called from a non-UI thread, it will queue on the UI thread (and then
+        /// basically do nothing because... it should be the only thing left at that point) - the capability for this to
+        /// be "asynchronously executed" is only provided to ensure it is never executed out of context.
+        /// </summary>
+        void FlushMessageQueue();
+
+        /// <summary>
         /// Raises a COM-visible event on the UI thread. This will use <see cref="UiDispatcher.Invoke()" /> internally
-        /// but with additional error handling & retry logic for transisent failure to fire COM event due to the host
+        /// but with additional error handling & retry logic for transient failure to fire COM event due to the host
         /// being too busy to accept event.
         /// </summary>
         /// <param name="comEventHandler">The handler for setting up and firing the COM event on the UI thread</param>

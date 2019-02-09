@@ -29,7 +29,6 @@ namespace Rubberduck.UI.UnitTesting
 
     internal sealed class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
-        private readonly RubberduckParserState _state;
         private readonly ITestEngine _testEngine;
         private readonly IClipboardWriter _clipboard;
         private readonly ISettingsFormFactory _settingsFormFactory;
@@ -41,13 +40,12 @@ namespace Rubberduck.UI.UnitTesting
              IGeneralConfigService configService,
              ISettingsFormFactory settingsFormFactory)
         {
-            _state = state;
             _testEngine = testEngine;
             _testEngine.TestCompleted += TestEngineTestCompleted;
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
 
-            NavigateCommand = new NavigateCommand(_state.ProjectsProvider);  
+            NavigateCommand = new NavigateCommand(state.ProjectsProvider);  
             RunSingleTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSingleTestCommand, CanExecuteSingleTest);
             RunSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestsCommand, CanExecuteSelectedTestsCommand);
             RunSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedGroupCommand, CanExecuteSelectedGroupCommand);
@@ -190,7 +188,7 @@ namespace Rubberduck.UI.UnitTesting
                 return;
             }
 
-            ExecuteTests(new[] { MouseOverTest.Method });
+            Model.ExecuteTests(new List<TestMethodViewModel> { MouseOverTest });
         }
 
         private void ExecuteSelectedTestsCommand(object obj)
@@ -200,14 +198,14 @@ namespace Rubberduck.UI.UnitTesting
                 return;
             }
 
-            var models = viewModels.OfType<TestMethodViewModel>().Select(model => model.Method).ToArray();
+            var models = viewModels.OfType<TestMethodViewModel>().ToList();
 
             if (!models.Any())
             {
                 return;
             }
 
-            ExecuteTests(models);
+            Model.ExecuteTests(models);
         }
 
         private void ExecuteRunSelectedGroupCommand(object obj)
@@ -221,14 +219,7 @@ namespace Rubberduck.UI.UnitTesting
                 return;
             }
 
-            ExecuteTests(tests.Items.OfType<TestMethodViewModel>().Select(t => t.Method));
-        }
-
-        private void ExecuteTests(IEnumerable<TestMethod> tests)
-        {
-            Model.IsBusy = true;
-            _testEngine.Run(tests);
-            Model.IsBusy = false;
+            Model.ExecuteTests(tests.Items.OfType<TestMethodViewModel>().ToList());
         }
 
         private void ExecuteResetResultsCommand(object parameter)
@@ -300,6 +291,7 @@ namespace Rubberduck.UI.UnitTesting
 
         public void Dispose()
         {
+            _testEngine.TestCompleted -= TestEngineTestCompleted;
             Model.Dispose();
         }
     }

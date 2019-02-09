@@ -11,9 +11,9 @@ namespace Rubberduck.UnitTesting
             Duration = duration;
         }
 
-        public long Duration { get; private set; }
-        public TestOutcome Outcome { get; private set; }
-        public string Output { get; private set; }
+        public long Duration { get; }
+        public TestOutcome Outcome { get; }
+        public string Output { get; }
 
         public override int GetHashCode() => HashCode.Compute(Outcome, Output);
         public override string ToString() => $"{Outcome} ({Duration} ms) {Output}";
