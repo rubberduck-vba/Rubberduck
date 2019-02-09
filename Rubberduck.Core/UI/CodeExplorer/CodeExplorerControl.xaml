@@ -595,6 +595,7 @@
                                             <Binding RelativeSource="{RelativeSource Self}" Path="DataContext"/>
                                             <Binding Path="Declaration" />
                                             <Binding Path="IsExpanded" />
+                                            <Binding ElementName="CodeExplorer" Path="DataContext.ParserReady" />
                                         </MultiBinding.Bindings>
                                     </MultiBinding>
                                 </Image.Source>

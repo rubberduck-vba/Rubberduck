@@ -92,7 +92,8 @@ namespace Rubberduck.UI.Converters
                         return ExceptionIcon;
                     }
 
-                    if (component.Declaration is ClassModuleDeclaration classModule && classModule.IsInterface)
+                    if (component.Declaration is ClassModuleDeclaration classModule && 
+                        (classModule.IsInterface || classModule.Annotations.Any(annotation => annotation is InterfaceAnnotation)))
                     {
                         return InterfaceIcon;
                     }
