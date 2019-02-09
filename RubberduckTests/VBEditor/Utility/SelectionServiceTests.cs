@@ -53,6 +53,36 @@ namespace RubberduckTests.VBEditor.Utility
         }
 
         [Test]
+        public void OpenModulesReturnsTheModulesOfActiveCodePanes()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var project = vbeBuilder.ProjectBuilder("test", ProjectProtection.Unprotected)
+                .AddComponent("activeModule", ComponentType.ClassModule, string.Empty)
+                .AddComponent("otherActiveModule", ComponentType.ClassModule, string.Empty)
+                .AddComponent("otherModule", ComponentType.ClassModule, string.Empty)
+                .Build();
+            var openCodePanes = project.Object.VBComponents
+                .Where(component => component.Name == "activeModule" || component.Name == "otherActiveModule")
+                .Select(component => component.CodeModule.CodePane)
+                .ToList();
+            var vbe = vbeBuilder.AddProject(project)
+                .SetOpenCodePanes(openCodePanes)
+                .Build()
+                .Object;
+            var projectsProvider = new Mock<IProjectsProvider>().Object;
+            var selectionService = new SelectionService(vbe, projectsProvider);
+
+            var expectedOpenModules = openCodePanes.Select(pane => pane.QualifiedModuleName).ToList();
+            var actualOpenModules = selectionService.OpenModules();
+
+            Assert.AreEqual(expectedOpenModules.Count, actualOpenModules.Count);
+            foreach (var module in expectedOpenModules)
+            {
+                Assert.IsTrue(actualOpenModules.Contains(module));
+            }
+        }
+
+        [Test]
         public void ComponentExists_SelectionReturnsSelection()
         {
             var vbe = MockVbeBuilder.BuildFromStdModules(new[]

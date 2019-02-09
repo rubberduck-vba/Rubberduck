@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NLog;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -25,6 +26,28 @@ namespace Rubberduck.VBEditor.Utility
             {
                 return activeCodePane?.GetQualifiedSelection();
             }
+        }
+
+        public ICollection<QualifiedModuleName> OpenModules()
+        {
+            var openModules = new HashSet<QualifiedModuleName>();
+            using (var openCodePanes = _vbe.CodePanes)
+            {
+                if (openCodePanes == null || openCodePanes.IsWrappingNullReference)
+                {
+                    return new HashSet<QualifiedModuleName>();
+                }
+
+                foreach (var openCodePane in openCodePanes)
+                {
+                    using (openCodePane)
+                    {
+                        openModules.Add(openCodePane.QualifiedModuleName);
+                    }
+                }
+            }
+
+            return openModules;
         }
 
         public Selection? Selection(QualifiedModuleName module)

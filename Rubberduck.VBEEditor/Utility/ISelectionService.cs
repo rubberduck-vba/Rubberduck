@@ -1,8 +1,11 @@
-﻿namespace Rubberduck.VBEditor.Utility
+﻿using System.Collections.Generic;
+
+namespace Rubberduck.VBEditor.Utility
 {
     public interface ISelectionService
     {
         QualifiedSelection? ActiveSelection();
+        ICollection<QualifiedModuleName> OpenModules();
         Selection? Selection(QualifiedModuleName module);
         bool TryActivate(QualifiedModuleName module);
         bool TrySetActiveSelection(QualifiedSelection selection);
