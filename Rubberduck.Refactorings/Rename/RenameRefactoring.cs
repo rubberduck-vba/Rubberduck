@@ -31,7 +31,6 @@ namespace Rubberduck.Refactorings.Rename
         private readonly IProjectsProvider _projectsProvider;
         private readonly IRewritingManager _rewritingManager;
         private RenameModel _model;
-        private QualifiedSelection? _initialSelection;
         private readonly IDictionary<DeclarationType, Action<IRewriteSession>> _renameActions;
         private readonly List<string> _neverRenameIdentifiers;
 
@@ -47,10 +46,7 @@ namespace Rubberduck.Refactorings.Rename
             _projectsProvider = projectsProvider;
             _rewritingManager = rewritingManager;
             _model = null;
-            using (var activeCodePane = _vbe.ActiveCodePane)
-            {
-                _initialSelection = activeCodePane.GetQualifiedSelection();
-            }
+
             _renameActions = new Dictionary<DeclarationType, Action<IRewriteSession>>
             {
                 {DeclarationType.Member, RenameMember},
@@ -73,7 +69,6 @@ namespace Rubberduck.Refactorings.Rename
 
         public void Refactor(QualifiedSelection qualifiedSelection)
         {
-            CacheInitialSelection(qualifiedSelection);
             Refactor();
         }
 
@@ -91,7 +86,6 @@ namespace Rubberduck.Refactorings.Rename
                 if (presenter != null)
                 {
                     RefactorImpl(presenter.Model.Target, presenter);
-                    RestoreInitialSelection();
                 }
             }
         }
@@ -109,7 +103,6 @@ namespace Rubberduck.Refactorings.Rename
                 var presenter = container.Value;
 
                 RefactorImpl(target, presenter);
-                RestoreInitialSelection();
             }
         }
 
@@ -583,40 +576,6 @@ namespace Rubberduck.Refactorings.Rename
                     .Where(ev => ev.Scope.StartsWith($"{control.ParentScope}.{control.IdentifierName}_"));
             }
             return Enumerable.Empty<Declaration>();
-        }
-
-        private void CacheInitialSelection(QualifiedSelection qSelection)
-        {
-            var component = _projectsProvider.Component(qSelection.QualifiedName);
-            using (var codeModule = component.CodeModule)
-            using (var codePane = codeModule.CodePane)
-            {
-                if (!codePane.IsWrappingNullReference)
-                {
-                    _initialSelection = codePane.GetQualifiedSelection();
-                }
-            }
-        }
-
-        private void RestoreInitialSelection()
-        {
-            if (!_initialSelection.HasValue)
-            {
-                return;
-            }
-            
-            var qualifiedSelection = _initialSelection.Value;
-            var component = _projectsProvider.Component(qualifiedSelection.QualifiedName);
-            using (var codeModule = component.CodeModule)
-            {
-                using (var codePane = codeModule.CodePane)
-                {
-                    if (!codePane.IsWrappingNullReference)
-                    {
-                        codePane.Selection = qualifiedSelection.Selection;
-                    }
-                }
-            }
         }
 
         private void PresentRenameErrorMessage(string errorMsg)

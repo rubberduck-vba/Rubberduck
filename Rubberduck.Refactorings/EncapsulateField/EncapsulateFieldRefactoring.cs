@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -23,8 +22,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
         private readonly IRewritingManager _rewritingManager;
         private readonly IRefactoringPresenterFactory _factory;
         private EncapsulateFieldModel _model;
-
-        private readonly HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
         
         public EncapsulateFieldRefactoring(RubberduckParserState state, IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
         {
@@ -69,7 +66,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     return;
                 }
 
-                var target = _model.TargetDeclaration;
                 var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
                 AddProperty(rewriteSession);
                 rewriteSession.TryRewrite();
