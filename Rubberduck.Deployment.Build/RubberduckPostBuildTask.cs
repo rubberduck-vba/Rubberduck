@@ -240,11 +240,40 @@ namespace Rubberduck.Deployment.Build
 
         private void CompileWithMidl(DllFileParameters parameters, string batchPath)
         {
-            var targetPath = TargetDir.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var targetPath = Path.Combine(Path.GetTempPath(), "RubberduckMidl");
+            if (Directory.Exists(targetPath))
+            {
+                Directory.Delete(targetPath, true);
+            }
+            Directory.CreateDirectory(targetPath);
+
+            targetPath = targetPath.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
             var command = $"call \"{batchPath}\"{Environment.NewLine}" +
                           $"midl.exe /win32 /tlb \"{parameters.Tlb32File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"{Environment.NewLine}" +
                           $"midl.exe /amd64 /tlb \"{parameters.Tlb64File}\" \"{parameters.IdlFile}\" /out \"{targetPath}\"";
             ExecuteTask(command, SourceDir);
+
+            MoveFileWithOverwrite(Path.Combine(targetPath, parameters.Tlb32File), Path.Combine(TargetDir, parameters.Tlb32File));
+            MoveFileWithOverwrite(Path.Combine(targetPath, parameters.Tlb64File), Path.Combine(TargetDir, parameters.Tlb64File));
+
+            try
+            {
+                Directory.Delete(targetPath, true);
+            }
+            catch (Exception ex)
+            {
+                this.LogMessage($"Unable to delete temporary working directory: {targetPath}. Exception: {ex}");
+            }
+        }
+
+        private static void MoveFileWithOverwrite(string sourceFile, string destFile)
+        {
+            if (File.Exists(destFile))
+            {
+                File.Delete(destFile);
+            }
+            File.Move(sourceFile, destFile);
         }
 
         private void CompileWithTlbExp(DllFileParameters parameters)
