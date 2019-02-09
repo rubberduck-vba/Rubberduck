@@ -40,8 +40,17 @@ namespace Rubberduck.Inspections.Concrete
 
                 var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
 
-
-                nodes.AddRange(tree.GetIdentifierReferences());
+                var references = tree.GetIdentifierReferences();
+                nodes.AddRange(references.Where(r =>
+                {
+                    switch(r.Context.Parent) 
+                    {
+                        case VBAParser.SetStmtContext setStmtContext:
+                            return setStmtContext.expression().GetText() != "Nothing";
+                        default:
+                            return true;
+                    }
+                }));
             }
 
             return nodes
