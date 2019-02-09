@@ -55,12 +55,15 @@ namespace Rubberduck.Parsing.Rewriter
 
         private void ExecuteAllRewriters()
         {
+            //Attribute rewrites close the affected code panes, so we have to recover the open state. 
+            SelectionRecoverer.SaveOpenState(CheckedOutModuleRewriters.Keys);
             foreach (var module in CheckedOutModuleRewriters.Keys)
             {
                 //We have to mark the modules explicitly as modified because attributes only changes do not alter the code pane code.
                 _parseManager.MarkAsModified(module);
                 CheckedOutModuleRewriters[module].Rewrite();
             }
+            SelectionRecoverer.RecoverOpenState();
         }
     }
 }

@@ -14,7 +14,7 @@ namespace Rubberduck.Parsing.Rewriter
         protected readonly IDictionary<QualifiedModuleName, IExecutableModuleRewriter> CheckedOutModuleRewriters = new Dictionary<QualifiedModuleName, IExecutableModuleRewriter>();
         protected readonly IRewriterProvider RewriterProvider;
 
-        private readonly ISelectionRecoverer _selectionRecoverer;
+        protected readonly ISelectionRecoverer SelectionRecoverer;
         private readonly Func<IRewriteSession, bool> _rewritingAllowed;
 
         protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -26,7 +26,7 @@ namespace Rubberduck.Parsing.Rewriter
         {
             RewriterProvider = rewriterProvider;
             _rewritingAllowed = rewritingAllowed;
-            _selectionRecoverer = selectionRecoverer;
+            SelectionRecoverer = selectionRecoverer;
         }
 
         public IReadOnlyCollection<QualifiedModuleName> CheckedOutModules => CheckedOutModuleRewriters.Keys.ToHashSet();
@@ -104,27 +104,27 @@ namespace Rubberduck.Parsing.Rewriter
 
         private void PrimeSelectionRecovery()
         {
-            _selectionRecoverer.SaveSelections(CheckedOutModuleRewriters.Keys);
+            SelectionRecoverer.SaveSelections(CheckedOutModuleRewriters.Keys);
 
             foreach (var (module, rewriter) in CheckedOutModuleRewriters)
             {
                 if (rewriter.SelectionOffset.HasValue)
                 {
-                    _selectionRecoverer.AdjustSavedSelection(module, rewriter.SelectionOffset.Value);
+                    SelectionRecoverer.AdjustSavedSelection(module, rewriter.SelectionOffset.Value);
                 }
                 if (rewriter.Selection.HasValue)
                 {
-                    _selectionRecoverer.ReplaceSavedSelection(module, rewriter.Selection.Value);
+                    SelectionRecoverer.ReplaceSavedSelection(module, rewriter.Selection.Value);
                 }
             }
 
-            _selectionRecoverer.RecoverSavedSelectionsOnNextParse();
+            SelectionRecoverer.RecoverSavedSelectionsOnNextParse();
         }
 
         private void PrimeActiveCodePaneRecovery()
         {
-            _selectionRecoverer.SaveActiveCodePane();
-            _selectionRecoverer.RecoverActiveCodePaneOnNextParse();
+            SelectionRecoverer.SaveActiveCodePane();
+            SelectionRecoverer.RecoverActiveCodePaneOnNextParse();
         }
     }
 }
