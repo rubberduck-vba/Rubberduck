@@ -1,63 +1,57 @@
 using System;
-using NLog;
+using System.Collections.Generic;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.Command;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class RenameCommand : CommandBase, IDisposable
+    public sealed class RenameCommand : CodeExplorerCommandBase
     {
+        private static readonly Type[] ApplicableNodes =
+        {
+            typeof(CodeExplorerProjectViewModel),
+            typeof(CodeExplorerComponentViewModel),
+            typeof(CodeExplorerMemberViewModel)
+        };
+
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly IRefactoringDialog<RenameViewModel> _view;
+        private readonly IRefactoringPresenterFactory _factory;
         private readonly IMessageBox _msgBox;
+        private readonly IRewritingManager _rewritingManager;
 
-        public RenameCommand(IVBE vbe, IRefactoringDialog<RenameViewModel> view, RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager) : base(LogManager.GetCurrentClassLogger())
+        public RenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
         {
             _vbe = vbe;
             _state = state;
             _rewritingManager = rewritingManager;
-            _view = view;
             _msgBox = msgBox;
+            _factory = factory;
         }
+
+        public override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _state.Status == ParserState.Ready && parameter is ICodeExplorerDeclarationViewModel;
+            return base.EvaluateCanExecute(parameter) && _state.Status == ParserState.Ready;
         }
 
         protected override void OnExecute(object parameter)
         {
-            var factory = new RenamePresenterFactory(_vbe, _view, _state);
-            var refactoring = new RenameRefactoring(_vbe, factory, _msgBox, _state, _state.ProjectsProvider, _rewritingManager);
-
-            refactoring.Refactor(((ICodeExplorerDeclarationViewModel)parameter).Declaration);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private bool _isDisposed;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_isDisposed || !disposing)
+            if (!EvaluateCanExecute(parameter) ||
+                !(parameter is CodeExplorerItemViewModel node) ||
+                node.Declaration == null)
             {
                 return;
             }
 
-            _view?.Dispose();
-            _isDisposed = true;
+            var refactoring = new RenameRefactoring(_vbe, _factory, _msgBox, _state, _state.ProjectsProvider, _rewritingManager);
+            refactoring.Refactor(node.Declaration);
         }
     }
 }

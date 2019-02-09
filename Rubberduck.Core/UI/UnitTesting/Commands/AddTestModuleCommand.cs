@@ -22,7 +22,6 @@ namespace Rubberduck.UI.UnitTesting.Commands
     [ComVisible(false)]
     public class AddTestModuleCommand : CommandBase
     {
-        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configLoader;
         private readonly IMessageBox _messageBox;
@@ -31,12 +30,14 @@ namespace Rubberduck.UI.UnitTesting.Commands
         public AddTestModuleCommand(IVBE vbe, RubberduckParserState state, IGeneralConfigService configLoader, IMessageBox messageBox, IVBEInteraction interaction)
             : base(LogManager.GetCurrentClassLogger())
         {
-            _vbe = vbe;
+            Vbe = vbe;
             _state = state;
             _configLoader = configLoader;
             _messageBox = messageBox;
             _interaction = interaction;
         }
+
+        protected IVBE Vbe { get; }
 
         private readonly string _testModuleEmptyTemplate = new StringBuilder()
             .AppendLine("'@TestModule")
@@ -126,14 +127,14 @@ namespace Rubberduck.UI.UnitTesting.Commands
         private IVBProject GetProject()
         {
             //No using because the wrapper gets returned potentially. 
-            var activeProject = _vbe.ActiveVBProject;
+            var activeProject = Vbe.ActiveVBProject;
             if (!activeProject.IsWrappingNullReference)
             {
                 return activeProject;
             }
             activeProject.Dispose();
             
-            using (var projects = _vbe.VBProjects)
+            using (var projects = Vbe.VBProjects)
             {
                 return projects.Count == 1
                     ? projects[1] // because VBA-Side indexing

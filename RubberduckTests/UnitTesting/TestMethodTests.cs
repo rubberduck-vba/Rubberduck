@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using Rubberduck.Resources.UnitTesting;
 using Rubberduck.UnitTesting;
 using RubberduckTests.Mocks;
 
@@ -38,7 +39,7 @@ End Sub";
                 var testMethodDeclaration = state.AllUserDeclarations.First(declaration => declaration.IdentifierName == "Foo");
                 var testMethod = new TestMethod(testMethodDeclaration);
 
-                Assert.AreEqual("Uncategorized", testMethod.Category.Name);
+                Assert.AreEqual(TestExplorer.TestExplorer_Uncategorized, testMethod.Category.Name);
             }
         }
 
@@ -55,7 +56,7 @@ End Sub";
                 var testMethodDeclaration = state.AllUserDeclarations.First(declaration => declaration.IdentifierName == "Foo");
                 var testMethod = new TestMethod(testMethodDeclaration);
 
-                Assert.AreEqual("Uncategorized", testMethod.Category.Name);
+                Assert.AreEqual(TestExplorer.TestExplorer_Uncategorized, testMethod.Category.Name);
             }
         }
     }

@@ -3,16 +3,41 @@ using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Command;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
-    public class RemoveParametersViewModel : ViewModelBase
+    public class RemoveParametersViewModel : RefactoringViewModelBase<RemoveParametersModel>
     {
+        private readonly IMessageBox _messageBox;
+
+        public RemoveParametersViewModel(RubberduckParserState state, RemoveParametersModel model, IMessageBox messageBox) : base(model)
+        {
+            State = state;
+            RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((ParameterViewModel)param));
+            RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((ParameterViewModel)param));
+            _messageBox = messageBox;
+            model.ConfirmRemoveParameter += ConfirmRemoveParameterHandler;
+
+            Parameters = model.Parameters.Select(p => p.ToViewModel()).ToList();
+        }
+
+        private void ConfirmRemoveParameterHandler(object sender, RefactoringConfirmEventArgs e)
+        {
+            e.Confirm = _messageBox.ConfirmYesNo(e.Message, RubberduckUI.ReorderParamsDialog_TitleText);
+        }
+
         public RubberduckParserState State { get; }
+
+        private void UpdateModelParameters()
+        {
+            Model.RemoveParameters = Parameters.Where(m => m.IsRemoved).Select(vm => vm.ToModel()).ToList();
+        }
 
         private List<ParameterViewModel> _parameters;
         public List<ParameterViewModel> Parameters
@@ -21,6 +46,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             set
             {
                 _parameters = value;
+                UpdateModelParameters();
                 OnPropertyChanged();
             }
         }
@@ -129,20 +155,12 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             return signature + string.Join(", ", selectedParams) + ")";
         }
 
-        public RemoveParametersViewModel(RubberduckParserState state)
-        {
-            State = state;
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
-            RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((ParameterViewModel)param));
-            RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((ParameterViewModel)param));
-        }
-
         private void RemoveParameter(ParameterViewModel parameter)
         {
             if (parameter != null)
             {
                 parameter.IsRemoved = true;
+                UpdateModelParameters();
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
@@ -152,16 +170,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             if (parameter != null)
             {
                 parameter.IsRemoved = false;
+                UpdateModelParameters();
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
 
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
-        
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
         public CommandBase RemoveParameterCommand { get; }
         public CommandBase RestoreParameterCommand { get; }
     }

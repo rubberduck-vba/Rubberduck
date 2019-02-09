@@ -9,15 +9,15 @@ namespace Rubberduck.UI.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            (string templateName, CodeExplorerItemViewModel model) data = (
+            (string templateName, ICodeExplorerNode model) data = (
                 values[0] as string,
-                values[1] as CodeExplorerItemViewModel);
+                values[1] as ICodeExplorerNode);
             return data;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            var data = ((string templateName, CodeExplorerItemViewModel model))value;
+            var data = ((string templateName, ICodeExplorerNode model))value;
             return new[] {(object) data.templateName, data.model};
         }
     }

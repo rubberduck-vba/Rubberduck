@@ -20,6 +20,11 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _clipboard = new ClipboardWriter();
         }
 
+        protected override bool EvaluateCanExecute(object parameter)
+        {
+            return _state.Status == ParserState.Ready;
+        }
+
         protected override void OnExecute(object parameter)
         {
             const string XML_SPREADSHEET_DATA_FORMAT = "XML Spreadsheet";

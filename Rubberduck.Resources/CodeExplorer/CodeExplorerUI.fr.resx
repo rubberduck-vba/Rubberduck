@@ -261,4 +261,28 @@
   <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
     <value>Lancer au démarrage</value>
   </data>
+  <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
+    <value>Modèles</value>
+  </data>
+  <data name="CodeExplorer_FontSizeToolTip" xml:space="preserve">
+    <value>Taille du texte</value>
+  </data>
+  <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
+    <value>Bibliothèques</value>
+  </data>
+  <data name="CodeExplorer_ProjectReferences" xml:space="preserve">
+    <value>Projets</value>
+  </data>
+  <data name="CodeExplorer_SearchPlaceholder" xml:space="preserve">
+    <value>Rechercher...</value>
+  </data>
+  <data name="CodeExplorer_SyncCodePaneToolTip" xml:space="preserve">
+    <value>Synchroniser la sélection courante</value>
+  </data>
+  <data name="ExportError_Caption" xml:space="preserve">
+    <value>Erreur lors de l'exportation de '{0}'</value>
+  </data>
+  <data name="RemoveError_Caption" xml:space="preserve">
+    <value>Erreur lors de la suppression de '{0}'</value>
+  </data>
 </root>

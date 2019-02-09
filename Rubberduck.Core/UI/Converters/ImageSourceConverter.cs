@@ -13,12 +13,14 @@ namespace Rubberduck.UI.Converters
         protected static ImageSource ToImageSource(Image source)
         {
             var ms = new MemoryStream();
+
             ((Bitmap)source).Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             var image = new BitmapImage();
             image.BeginInit();
             ms.Seek(0, SeekOrigin.Begin);
             image.StreamSource = ms;
             image.EndInit();
+            image.Freeze();
 
             return image;
         }

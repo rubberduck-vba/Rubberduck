@@ -1,100 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NLog;
-using Rubberduck.Navigation.Folders;
-using Rubberduck.Parsing;
-using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
-using Rubberduck.Resources;
 using Rubberduck.UI;
 using Rubberduck.UI.CodeExplorer.Commands;
 using Rubberduck.UI.Command;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using System.Windows;
+using System.Windows.Input;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Templates;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-// ReSharper disable CanBeReplacedWithTryCastAndCheckForNull
-// ReSharper disable ExplicitCallerInfoArgument
-
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public sealed class CodeExplorerViewModel : ViewModelBase, IDisposable
+    [Flags]
+    public enum CodeExplorerSortOrder
     {
-        private readonly FolderHelper _folderHelper;
+        Undefined = 0,
+        Name = 1,
+        CodeLine = 1 << 1,
+        DeclarationType = 1 << 2,
+        DeclarationTypeThenName = DeclarationType | Name,
+        DeclarationTypeThenCodeLine = DeclarationType | CodeLine
+    }
+
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public sealed class CodeExplorerViewModel : ViewModelBase
+    {
+        // ReSharper disable NotAccessedField.Local - The settings providers aren't used, but several enhancement requests will need them.
         private readonly RubberduckParserState _state;
+        private readonly RemoveCommand _externalRemoveCommand;
+        private readonly IConfigProvider<GeneralSettings> _generalSettingsProvider;      
         private readonly IConfigProvider<WindowSettings> _windowSettingsProvider;
-        private readonly GeneralSettings _generalSettings;
-        private readonly WindowSettings _windowSettings;
         private readonly IUiDispatcher _uiDispatcher;
         private readonly IVBE _vbe;
         private readonly ITemplateProvider _templateProvider;
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        // ReSharper restore NotAccessedField.Local
 
         public CodeExplorerViewModel(
-            FolderHelper folderHelper,
             RubberduckParserState state,
             RemoveCommand removeCommand,
             IConfigProvider<GeneralSettings> generalSettingsProvider, 
             IConfigProvider<WindowSettings> windowSettingsProvider, 
             IUiDispatcher uiDispatcher,
             IVBE vbe,
-            ITemplateProvider templateProvider)
+            ITemplateProvider templateProvider,
+            ICodeExplorerSyncProvider syncProvider)
         {
-            _folderHelper = folderHelper;
             _state = state;
             _state.StateChanged += HandleStateChanged;
             _state.ModuleStateChanged += ParserState_ModuleStateChanged;
+
+            _externalRemoveCommand = removeCommand;
+            _generalSettingsProvider = generalSettingsProvider;
             _windowSettingsProvider = windowSettingsProvider;
             _uiDispatcher = uiDispatcher;
             _vbe = vbe;
             _templateProvider = templateProvider;
 
-            if (generalSettingsProvider != null)
-            {
-                _generalSettings = generalSettingsProvider.Create();
-            }
-
-            if (windowSettingsProvider != null)
-            {
-                _windowSettings = windowSettingsProvider.Create();
-            }
-            CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes);
-            ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes);
-
-            _externalRemoveCommand = removeCommand;
+            CollapseAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseNodes, EvaluateCanSwitchNodeState);
+            ExpandAllSubnodesCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandNodes, EvaluateCanSwitchNodeState);
+            ClearSearchCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteClearSearchCommand);
             if (_externalRemoveCommand != null)
             {
-                RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveComand, _externalRemoveCommand.CanExecute);
+                RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, _externalRemoveCommand.CanExecute);
             }
 
-            SetNameSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                if ((bool)param)
-                {
-                    SortByName = (bool)param;
-                    SortByCodeOrder = !(bool)param;
-                }
-            }, param => !SortByName);
+            OnPropertyChanged(nameof(Projects));
 
-            SetCodeOrderSortCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                if ((bool)param)
-                {
-                    SortByCodeOrder = (bool)param;
-                    SortByName = !(bool)param;
-                }
-            }, param => !SortByCodeOrder);
+            SyncCodePaneCommand = syncProvider.GetSyncCommand(this);
+            // Force a call to EvaluateCanExecute
+            OnPropertyChanged(nameof(SyncCodePaneCommand));
         }
+
+        public ObservableCollection<ICodeExplorerNode> Projects { get; } = new ObservableCollection<ICodeExplorerNode>();
 
         public ObservableCollection<Template> BuiltInTemplates =>
             new ObservableCollection<Template>(_templateProvider.GetTemplates().Where(t => !t.IsUserDefined)
@@ -104,90 +91,54 @@ namespace Rubberduck.Navigation.CodeExplorer
             new ObservableCollection<Template>(_templateProvider.GetTemplates().Where(t => t.IsUserDefined)
                 .OrderBy(t => t.Name));
 
-        private CodeExplorerItemViewModel _selectedItem;
-        public CodeExplorerItemViewModel SelectedItem
+        private ICodeExplorerNode _selectedItem;
+        public ICodeExplorerNode SelectedItem
         {
             get => _selectedItem;
             set
             {
+                if (_selectedItem == value)
+                {
+                    return;
+                }
+
+                ExpandToNode(value);
                 _selectedItem = value;
+
                 OnPropertyChanged();
 
-                OnPropertyChanged("CanExecuteIndenterCommand");
-                OnPropertyChanged("CanExecuteRenameCommand");
-                OnPropertyChanged("CanExecuteFindAllReferencesCommand");
-                OnPropertyChanged("ExportVisibility");
-                OnPropertyChanged("ExportAllVisibility");
-                OnPropertyChanged("PanelTitle");
-                OnPropertyChanged("Description");
+                OnPropertyChanged(nameof(ExportVisibility));
+                OnPropertyChanged(nameof(ExportAllVisibility));
             }
         }
 
-        public bool SortByName
+        public bool AnyTemplatesCanExecute =>
+            BuiltInTemplates.Concat(UserDefinedTemplates)
+                .Any(template => AddTemplateCommand.CanExecuteForNode(SelectedItem));
+
+        private CodeExplorerSortOrder _sortOrder = CodeExplorerSortOrder.Name;
+        public CodeExplorerSortOrder SortOrder
         {
-            get => _windowSettings.CodeExplorer_SortByName;
+            get => _sortOrder;
             set
             {
-                if (_windowSettings.CodeExplorer_SortByName == value)
+                if (_sortOrder == value)
                 {
                     return;
                 }
 
-                _windowSettings.CodeExplorer_SortByName = value;
-                _windowSettings.CodeExplorer_SortByCodeOrder = !value;
-                _windowSettingsProvider.Save(_windowSettings);
-                OnPropertyChanged();
-                OnPropertyChanged("SortByCodeOrder");
+                _sortOrder = value;
 
-                ReorderChildNodes(Projects);
-            }
-        }
-
-        public bool SortByCodeOrder
-        {
-            get => _windowSettings.CodeExplorer_SortByCodeOrder;
-            set
-            {
-                if (_windowSettings.CodeExplorer_SortByCodeOrder == value)
+                foreach (var project in Projects.OfType<CodeExplorerProjectViewModel>())
                 {
-                    return;
+                    project.SortOrder = _sortOrder;
                 }
 
-                _windowSettings.CodeExplorer_SortByCodeOrder = value;
-                _windowSettings.CodeExplorer_SortByName = !value;
-                _windowSettingsProvider.Save(_windowSettings);
                 OnPropertyChanged();
-                OnPropertyChanged("SortByName");
-
-                ReorderChildNodes(Projects);
-            }
-        }
-
-        public CopyResultsCommand CopyResultsCommand { get; }
-
-        public CommandBase SetNameSortCommand { get; }
-
-        public CommandBase SetCodeOrderSortCommand { get; }
-
-        public bool GroupByType
-        {
-            get => _windowSettings.CodeExplorer_GroupByType;
-            set
-            {
-                if (_windowSettings.CodeExplorer_GroupByType != value)
-                {
-                    _windowSettings.CodeExplorer_GroupByType = value;
-                    _windowSettingsProvider.Save(_windowSettings);
-
-                    OnPropertyChanged();
-
-                    ReorderChildNodes(Projects);
-                }
             }
         }
 
         private bool _canSearch;
-
         public bool CanSearch
         {
             get => _canSearch;
@@ -206,273 +157,179 @@ namespace Rubberduck.Navigation.CodeExplorer
             {
                 _isBusy = value;
                 OnPropertyChanged();
-                // If the window is "busy" then hide the Refresh message
-                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
             }
         }
 
-        public string PanelTitle
+        private bool _unparsed = true;
+        public bool Unparsed
         {
-            get
-            {
-                if (SelectedItem == null)
-                {
-                    return string.Empty;
-                }
-
-                if (!(SelectedItem is ICodeExplorerDeclarationViewModel))
-                {
-                    return SelectedItem.Name;
-                }
-
-                var declaration = SelectedItem.GetSelectedDeclaration();
-                
-                var nameWithDeclarationType = declaration.IdentifierName +
-                                              $" - ({RubberduckUI.ResourceManager.GetString("DeclarationType_" + declaration.DeclarationType, CultureInfo.CurrentUICulture)})";
-
-                if (string.IsNullOrEmpty(declaration.AsTypeName))
-                {
-                    return nameWithDeclarationType;
-                }
-
-                var typeName = declaration.HasTypeHint
-                    ? SymbolList.TypeHintToTypeName[declaration.TypeHint]
-                    : declaration.AsTypeName;
-
-                return nameWithDeclarationType + ": " + typeName;
-            }
-        }
-
-        public string Description
-        {
-            get
-            {
-                if (SelectedItem is ICodeExplorerDeclarationViewModel)
-                {
-                    return ((ICodeExplorerDeclarationViewModel)SelectedItem).Declaration.DescriptionString;
-                }
-
-                if (SelectedItem is CodeExplorerCustomFolderViewModel)
-                {
-                    return ((CodeExplorerCustomFolderViewModel)SelectedItem).FolderAttribute;
-                }
-
-                return string.Empty;
-            }
-        }
-
-        public bool CanExecuteIndenterCommand => IndenterCommand?.CanExecute(SelectedItem) ?? false;
-        public bool CanExecuteRenameCommand => RenameCommand?.CanExecute(SelectedItem) ?? false;
-        public bool CanExecuteFindAllReferencesCommand => FindAllReferencesCommand?.CanExecute(SelectedItem) ?? false;
-
-        private ObservableCollection<CodeExplorerItemViewModel> _projects;
-        public ObservableCollection<CodeExplorerItemViewModel> Projects
-        {
-            get => _projects;
+            get => _unparsed;
             set
             {
-                _projects = ForceProjectsRefresh(value);
-
+                if (_unparsed == value)
+                {
+                    return;
+                }
+                _unparsed = value;
                 OnPropertyChanged();
-                // Once a Project has been set, show the TreeView
-                OnPropertyChanged("TreeViewVisibility");
-                OnPropertyChanged("CanSearch");
             }
         }
 
-        private ObservableCollection<CodeExplorerItemViewModel> ForceProjectsRefresh(ObservableCollection<CodeExplorerItemViewModel> projects)
+        private string _filterText = string.Empty;
+        public string Search
         {
-            ReorderChildNodes(projects);
-            CanSearch = projects.Any();
+            get => _filterText;
+            set
+            {
+                var input = value ?? string.Empty;
+                if (_filterText.Equals(input))
+                {
+                    return;
+                }
 
-            return new ObservableCollection<CodeExplorerItemViewModel>(projects.OrderBy(o => o.NameWithSignature));
+                _filterText = value;
+
+                foreach (var project in Projects)
+                {
+                    project.Filter = _filterText;
+                }
+
+                OnPropertyChanged();
+            }
+        }
+
+        private double? _fontSize = 12;
+        public double? FontSize
+        {
+            get => _fontSize ?? 12;
+            set
+            {
+                if (!value.HasValue || value.Equals(_fontSize))
+                {
+                    return;
+                }
+
+                _fontSize = value;
+                OnPropertyChanged();
+            }
+        }
+
+        // This is just a binding hack to force the icon binding to re-evaluate. It has no other functionality and should
+        // not be used for anything else.
+        public bool ParserReady
+        {
+            get => true;
+            // ReSharper disable once ValueParameterNotUsed
+            set => OnPropertyChanged();
         }
 
         private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
-            if (Projects == null)
+            Unparsed = false;
+
+            if (e.State == ParserState.Ready)
             {
-                Projects = new ObservableCollection<CodeExplorerItemViewModel>();
+                // Finished up resolving references, so we can now update the reference nodes.
+                _uiDispatcher.Invoke(() =>
+                {
+                    var referenceFolders = Projects.SelectMany(node =>
+                        node.Children.OfType<CodeExplorerReferenceFolderViewModel>());
+                    foreach (var library in referenceFolders)
+                    {
+                        library.UpdateChildren();
+                    }
+
+                    Unparsed = !Projects.Any();
+                    IsBusy = false;
+                    ParserReady = true;
+                });
+                return;
             }
 
             IsBusy = _state.Status != ParserState.Pending && _state.Status <= ParserState.ResolvedDeclarations;
 
-            if (e.State != ParserState.ResolvedDeclarations)
+            if (e.State == ParserState.ResolvedDeclarations)
             {
-                return;
+                Synchronize(_state.DeclarationFinder.AllUserDeclarations);
             }
-
-            var userDeclarations = _state.DeclarationFinder.AllUserDeclarations
-                .GroupBy(declaration => declaration.ProjectId)
-                .Where(grouping => grouping.Any(declaration => declaration.DeclarationType == DeclarationType.Project))
-                .ToList();
-
-            if (userDeclarations.Any(
-                    grouping => grouping.All(declaration => declaration.DeclarationType != DeclarationType.Project)))
-            {
-                return;
-            }
-
-            var newProjects = userDeclarations.Select(grouping =>
-                new CodeExplorerProjectViewModel(_folderHelper,
-                    grouping.SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.Project),
-                    grouping,
-                    _vbe,
-                    true)).ToList();
-
-            UpdateNodes(Projects, newProjects);
-            
-            Projects = new ObservableCollection<CodeExplorerItemViewModel>(newProjects);
-
-            FilterByName(Projects, _filterText);
         }
 
-        private void UpdateNodes(IEnumerable<CodeExplorerItemViewModel> oldList, IEnumerable<CodeExplorerItemViewModel> newList)
+        /// <summary>
+        /// Updates the ViewModel tree to reflect changes in user declarations after a reparse.
+        /// </summary>
+        /// <param name="declarations">
+        /// The new declarations. This should always be the complete declaration set, and materializing
+        /// the IEnumerable should be deferred to UI thread.
+        /// </param>
+        private void Synchronize(IEnumerable<Declaration> declarations)
         {
-            foreach (var item in newList)
+            _uiDispatcher.Invoke(() =>
             {
-                CodeExplorerItemViewModel oldItem;
+                var updates = declarations.ToList();
+                var existing = Projects.OfType<CodeExplorerProjectViewModel>().ToList();
 
-                if (item is CodeExplorerCustomFolderViewModel)
+                foreach (var project in existing)
                 {
-                    oldItem = oldList.FirstOrDefault(i => i.Name == item.Name);
-                }
-                else
-                {
-                    oldItem = oldList.FirstOrDefault(i =>
-                        item.QualifiedSelection != null && i.QualifiedSelection != null &&
-                        i.QualifiedSelection.Value.QualifiedName.ProjectId ==
-                        item.QualifiedSelection.Value.QualifiedName.ProjectId &&
-                        i.QualifiedSelection.Value.QualifiedName.ComponentName ==
-                        item.QualifiedSelection.Value.QualifiedName.ComponentName &&
-                        i.QualifiedSelection.Value.Selection == item.QualifiedSelection.Value.Selection);
-                }
-
-                if (oldItem != null)
-                {
-                    item.IsExpanded = oldItem.IsExpanded;
-                    item.IsSelected = oldItem.IsSelected;
-
-                    if (oldItem.Items.Any() && item.Items.Any())
+                    project.Synchronize(ref updates);
+                    if (project.Declaration is null)
                     {
-                        UpdateNodes(oldItem.Items, item.Items);
+                        Projects.Remove(project);
                     }
                 }
-            }
+
+                var adding = updates.OfType<ProjectDeclaration>().ToList();
+
+                foreach (var project in adding)
+                {
+                    var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe) { Filter = Search };
+                    Projects.Add(model);
+                }
+
+                CanSearch = Projects.Any();
+            });
         }
 
         private void ParserState_ModuleStateChanged(object sender, ParseProgressEventArgs e)
         {
             // if we are resolving references, we already have the declarations and don't need to display error
             if (!(e.State == ParserState.Error ||
-                (e.State == ParserState.ResolverError &&
-                e.OldState == ParserState.ResolvingDeclarations)))
+                e.State == ParserState.ResolverError &&
+                e.OldState == ParserState.ResolvingDeclarations))
             {
                 return;
             }
 
             var componentProject = _state.ProjectsProvider.Project(e.Module.ProjectId);
             
-            var projectNode = Projects.OfType<CodeExplorerProjectViewModel>()
-                .FirstOrDefault(p => p.Declaration.Project?.Equals(componentProject) ?? false);
+            var module = Projects.OfType<CodeExplorerProjectViewModel>()
+                .FirstOrDefault(p => p.Declaration.Project?.Equals(componentProject) ?? false)?.Children
+                .OfType<CodeExplorerComponentViewModel>().FirstOrDefault(component =>
+                    component.QualifiedSelection?.QualifiedName.Equals(e.Module) ?? false);
 
-            if (projectNode == null)
+            if (module == null)
             {
                 return;
             }
 
-            SetErrorState(projectNode, e.Module);
-
-            if (_errorStateSet) { return; }
-
-            // at this point, we know the node is newly added--we have to add a new node, not just change the icon of the old one.
-            var projectName = componentProject.Name;
-            var folderNode = projectNode.Items.FirstOrDefault(f => f is CodeExplorerCustomFolderViewModel && f.Name == projectName);
-
-            _uiDispatcher.Invoke(() =>
-            {
-                try
-                {
-                    if (folderNode == null)
-                    {
-                        folderNode = new CodeExplorerCustomFolderViewModel(projectNode, projectName, projectName, _state.ProjectsProvider, _vbe);
-                        projectNode.AddChild(folderNode);
-                    }
-
-                    var declaration = CreateDeclaration(e.Module);
-                    var newNode =
-                        new CodeExplorerComponentViewModel(folderNode, declaration, new List<Declaration>(), _state.ProjectsProvider, _vbe)
-                        {
-                            IsErrorState = true
-                        };
-
-                    folderNode.AddChild(newNode);
-
-                    // Force a refresh. OnPropertyChanged("Projects") didn't work.
-                    ForceProjectsRefresh(Projects);
-                }
-                catch (Exception exception)
-                {
-                    Logger.Error(exception, "Exception thrown trying to refresh the code explorer view on the UI thread.");
-                }
-            });
+            module.IsErrorState = true;
         }
 
-        private Declaration CreateDeclaration(QualifiedModuleName module)
+        private void ExecuteClearSearchCommand(object parameter)
         {
-            var projectDeclaration =
-                _state.DeclarationFinder.UserDeclarations(DeclarationType.Project)
-                    .FirstOrDefault(item => item.ProjectId == module.ProjectId);
-
-            if (module.ComponentType == ComponentType.StandardModule)
+            if (!string.IsNullOrEmpty(Search))
             {
-                return new ProceduralModuleDeclaration(
-                        new QualifiedMemberName(module, module.ComponentName), projectDeclaration,
-                        module.ComponentName, true, new List<IAnnotation>(), null);
-            }
-
-            return new ClassModuleDeclaration(new QualifiedMemberName(module, module.ComponentName),
-                    projectDeclaration, module.ComponentName, true, new List<IAnnotation>(), null);
-        }
-
-        private void ReorderChildNodes(IEnumerable<CodeExplorerItemViewModel> nodes)
-        {
-            foreach (var node in nodes)
-            {
-                node.ReorderItems(SortByName, GroupByType);
-                ReorderChildNodes(node.Items);
+                Search = string.Empty;
             }
         }
 
-        private bool _errorStateSet;
-        private void SetErrorState(CodeExplorerItemViewModel itemNode, QualifiedModuleName module)
+        private bool EvaluateCanSwitchNodeState(object parameter)
         {
-            _errorStateSet = false;
-
-            foreach (var node in itemNode.Items)
-            {
-                if (node is CodeExplorerCustomFolderViewModel)
-                {
-                    SetErrorState(node, module);
-                }
-
-                if (_errorStateSet)
-                {
-                    return;
-                }
-
-                var componentNode = node as CodeExplorerComponentViewModel;
-                if (componentNode?.GetSelectedDeclaration().QualifiedName.QualifiedModuleName.Equals(module) == true)
-                {
-                    componentNode.IsErrorState = true;
-                    _errorStateSet = true;
-                }
-            }
+            return SelectedItem?.Children?.Any() ?? false;
         }
 
         private void ExecuteCollapseNodes(object parameter)
         {
-            if (!(parameter is CodeExplorerItemViewModel node))
+            if (!(parameter is ICodeExplorerNode node))
             {
                 return;
             }
@@ -482,7 +339,7 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         private void ExecuteExpandNodes(object parameter)
         {
-            if (!(parameter is CodeExplorerItemViewModel node))
+            if (!(parameter is ICodeExplorerNode node))
             {
                 return;
             }
@@ -490,52 +347,18 @@ namespace Rubberduck.Navigation.CodeExplorer
             SwitchNodeState(node, true);
         }
 
-        private void SwitchNodeState(CodeExplorerItemViewModel node, bool expandedState)
+        // this is a special case--we have to reset SelectedItem to prevent a crash
+        private void ExecuteRemoveCommand(object param)
         {
-            node.IsExpanded = expandedState;
+            var node = (CodeExplorerComponentViewModel)SelectedItem;
+            SelectedItem = Projects.FirstOrDefault(p => p.QualifiedSelection.HasValue
+                                                        && p.QualifiedSelection.Value.QualifiedName.ProjectId == node.Declaration.ProjectId);
 
-            foreach (var item in node.Items)
-            {
-                item.IsExpanded = expandedState;
-                SwitchNodeState(item, expandedState);
-            }
-        }
-        
-        private string _filterText;
-        public string FilterText
-        {
-            get => _filterText;
-            set
-            {
-                if (!_filterText?.Equals(value) ?? true)
-                {
-                    _filterText = value;
-                    OnPropertyChanged();
-                    FilterByName(Projects, _filterText);
-                }
-            }
+            _externalRemoveCommand.Execute(param);
         }
 
-        public ObservableCollection<double> FontSizes { get; } = new ObservableCollection<double> { 8, 10, 12, 14, 16 };
-
-        private double _fontSize = 10;
-        public double FontSize
-        {
-            get => _fontSize;
-            set
-            {
-                if (!_fontSize.Equals(value))
-                {
-                    _fontSize = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        
         public ReparseCommand RefreshCommand { get; set; }
-
         public OpenCommand OpenCommand { get; set; }
-
         public AddVBFormCommand AddVBFormCommand { get; set; }
         public AddMDIFormCommand AddMDIFormCommand { get; set; }
         public AddUserFormCommand AddUserFormCommand { get; set; }
@@ -544,17 +367,18 @@ namespace Rubberduck.Navigation.CodeExplorer
         public AddUserControlCommand AddUserControlCommand { get; set; }
         public AddPropertyPageCommand AddPropertyPageCommand { get; set; }
         public AddUserDocumentCommand AddUserDocumentCommand { get; set; }
-        public AddTestModuleCommand AddTestModuleCommand { get; set; }
+        public AddTestComponentCommand AddTestModuleCommand { get; set; }
         public AddTestModuleWithStubsCommand AddTestModuleWithStubsCommand { get; set; }
-		public AddTemplateCommand AddTemplateCommand { get; set; }
+        public AddTemplateCommand AddTemplateCommand { get; set; }
         public OpenDesignerCommand OpenDesignerCommand { get; set; }
         public OpenProjectPropertiesCommand OpenProjectPropertiesCommand { get; set; }
         public SetAsStartupProjectCommand SetAsStartupProjectCommand { get; set; }
         public RenameCommand RenameCommand { get; set; }
         public IndentCommand IndenterCommand { get; set; }
-        public FindAllReferencesCommand FindAllReferencesCommand { get; set; }
-        public FindAllImplementationsCommand FindAllImplementationsCommand { get; set; }
-        public CommandBase CollapseAllSubnodesCommand { get; }
+        public CodeExplorerFindAllReferencesCommand FindAllReferencesCommand { get; set; }
+        public CodeExplorerFindAllImplementationsCommand FindAllImplementationsCommand { get; set; }
+        public CommandBase CollapseAllSubnodesCommand { get; } 
+        public CopyResultsCommand CopyResultsCommand { get; set; }
         public CommandBase ExpandAllSubnodesCommand { get; }
         public ImportCommand ImportCommand { get; set; }
         public ExportCommand ExportCommand { get; set; }
@@ -562,17 +386,72 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CommandBase RemoveCommand { get; }
         public PrintCommand PrintCommand { get; set; }
         public AddRemoveReferencesCommand AddRemoveReferencesCommand { get; set; }
+        public ICommand ClearSearchCommand { get; }
+        public CommandBase SyncCodePaneCommand { get; }
 
-        private readonly RemoveCommand _externalRemoveCommand;
-
-        // this is a special case--we have to reset SelectedItem to prevent a crash
-        private void ExecuteRemoveComand(object param)
+        public ICodeExplorerNode FindVisibleNodeForDeclaration(Declaration declaration)
         {
-            var node = (CodeExplorerComponentViewModel)SelectedItem;
-            SelectedItem = Projects.FirstOrDefault(p => p.QualifiedSelection.HasValue 
-                && p.QualifiedSelection.Value.QualifiedName.ProjectId == node.Declaration.ProjectId);
+            if (declaration == null)
+            {
+                return null;
+            }
 
-            _externalRemoveCommand.Execute(param);
+            var project = Projects.OfType<CodeExplorerProjectViewModel>().FirstOrDefault(proj =>
+                (proj.Declaration?.ProjectId ?? string.Empty).Equals(declaration.ProjectId));
+
+            if (declaration.DeclarationType == DeclarationType.Project)
+            {
+                return project;
+            }
+
+            var child = FindChildNodeForDeclaration(project, declaration);
+            return child;
+        }
+
+        private ICodeExplorerNode FindChildNodeForDeclaration(ICodeExplorerNode node, Declaration declaration)
+        {
+            if (node is null || declaration is null)
+            {
+                return null;
+            }
+
+            if (node.Declaration.DeclarationType == declaration.DeclarationType &&
+                node.Declaration.QualifiedName.Equals(declaration.QualifiedName))
+            {
+                return node;
+            }
+
+            return node.Children.OfType<CodeExplorerItemViewModel>()
+                .Select(child => FindChildNodeForDeclaration(child, declaration))
+                .FirstOrDefault(child => child != null);
+        }
+
+        private void SwitchNodeState(ICodeExplorerNode node, bool expandedState)
+        {
+            node.IsExpanded = expandedState;
+
+            foreach (var item in node.Children)
+            {
+                item.IsExpanded = expandedState;
+                SwitchNodeState(item, expandedState);
+            }
+        }
+
+        /// <summary>
+        /// Works backward from the passed node and expands all parents to make it visible.
+        /// </summary>
+        /// <param name="node"></param>
+        private void ExpandToNode(ICodeExplorerNode node)
+        {
+            while (true)
+            {
+                node = node.Parent;
+                if (node == null)
+                {
+                    return;
+                }
+                node.IsExpanded = true;
+            }
         }
 
         private bool CanExecuteExportAllCommand => ExportAllCommand?.CanExecute(SelectedItem) ?? false;
@@ -581,30 +460,9 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public Visibility ExportAllVisibility => CanExecuteExportAllCommand ? Visibility.Visible : Visibility.Collapsed;
 
-        public Visibility TreeViewVisibility => Projects == null || Projects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
-
-        public Visibility EmptyUIRefreshMessageVisibility => _isBusy ? Visibility.Hidden : Visibility.Visible;
-
         public Visibility VB6Visibility => _vbe.Kind == VBEKind.Standalone ? Visibility.Visible : Visibility.Collapsed;
 
         public Visibility VBAVisibility => _vbe.Kind == VBEKind.Hosted ? Visibility.Visible : Visibility.Collapsed;
-
-        public void FilterByName(IEnumerable<CodeExplorerItemViewModel> nodes, string searchString)
-        {
-            foreach (var item in nodes)
-            {
-                if (item == null) { continue; }
-                
-                if (item.Items.Any())
-                {
-                    FilterByName(item.Items, searchString);
-                }
-
-                item.IsVisible = string.IsNullOrEmpty(searchString) ||
-                                 item.Items.Any(c => c.IsVisible) ||
-                                 item.Name.ToLowerInvariant().Contains(searchString.ToLowerInvariant());
-            }
-        }
 
         public void Dispose()
         {

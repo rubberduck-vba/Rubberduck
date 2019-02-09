@@ -1481,4 +1481,25 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="References_RemoveToolTip" xml:space="preserve">
     <value>Remove from project</value>
   </data>
+  <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
+    <value>Failed to recover member attributes.</value>
+  </data>
+  <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
+    <value>Member Attribute Recovery Failure </value>
+  </data>
+  <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
+    <value>Member attributes for the following modules could not be recovered because they could no longer be found. {0}</value>
+    <comment>{0} = Missing member list</comment>
+  </data>
+  <data name="AllReferences_NoneFoundReference" xml:space="preserve">
+    <value>No uses were found for project reference '{0}'.</value>
+    <comment>{0} = reference name</comment>
+  </data>
+  <data name="AllReferences_PerformanceWarning" xml:space="preserve">
+    <value>Search for uses of reference '{0}' has returned {1} results. Displaying them may negatively impact performance. Continue?</value>
+    <comment>{0} = reference name, {1} = number of uses</comment>
+  </data>
+  <data name="PerformanceWarningCaption" xml:space="preserve">
+    <value>Performance Warning</value>
+  </data>
 </root>

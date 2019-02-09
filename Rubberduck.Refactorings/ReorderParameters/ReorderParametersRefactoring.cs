@@ -10,58 +10,68 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+ using Rubberduck.Parsing.VBA;
+ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersRefactoring : IRefactoring
     {
+        private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
-        private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
+        private readonly IRefactoringPresenterFactory _factory;
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
         private readonly IRewritingManager _rewritingManager;
 
-        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory,
-            IMessageBox messageBox, IRewritingManager rewritingManager)
+        public ReorderParametersRefactoring(RubberduckParserState state, IVBE vbe, IRefactoringPresenterFactory factory, IMessageBox messageBox, IRewritingManager rewritingManager)
         {
+            _state = state;
             _vbe = vbe;
             _factory = factory;
             _messageBox = messageBox;
             _rewritingManager = rewritingManager;
         }
 
+        private ReorderParametersModel InitializeModel()
+        {
+            var selection = _vbe.GetActiveSelection();
+            if (!selection.HasValue)
+            {
+                return null;
+            }
+
+            return new ReorderParametersModel(_state, selection.Value);
+        }
+
         public void Refactor()
         {
-            var presenter = _factory.Create();
-            if (presenter == null)
+            _model = InitializeModel();
+            if (_model == null)
             {
                 return;
             }
 
-            _model = presenter.Show();
-            if (_model == null || !_model.Parameters.Where((param, index) => param.Index != index).Any() || !IsValidParamOrder())
+            using (var container = DisposalActionContainer.Create(_factory.Create<IReorderParametersPresenter, ReorderParametersModel>(_model), p => _factory.Release(p)))
             {
-                return;
-            }
-
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane.IsWrappingNullReference)
+                var presenter = container.Value;
+                if (presenter == null)
                 {
                     return;
                 }
 
-                var oldSelection = pane.GetQualifiedSelection();
-
+                _model = presenter.Show();
+                if (_model == null || !_model.Parameters.Where((param, index) => param.Index != index).Any() ||
+                    !IsValidParamOrder())
+                {
+                    return;
+                }
+                
                 var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
                 AdjustReferences(_model.TargetDeclaration.References, rewriteSession);
                 AdjustSignatures(rewriteSession);
                 rewriteSession.TryRewrite();
-
-                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                } 
+                _model.State.OnParseRequested(this);
             }
         }
 

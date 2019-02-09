@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Forms;
 using NLog;
 using Rubberduck.AddRemoveReferences;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 using Rubberduck.VBEditor;
@@ -75,7 +76,7 @@ namespace Rubberduck.UI.AddRemoveReferences
         }
 
         public event EventHandler<DialogResult> OnWindowClosed;
-        private void CloseWindowOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
+        private void CloseWindowOk() => OnWindowClosed?.Invoke(this, IsProjectDirty ? DialogResult.OK : DialogResult.Cancel);
         private void CloseWindowCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
 
         private readonly List<(int?, ReferenceInfo)> _clean;
@@ -110,7 +111,7 @@ namespace Rubberduck.UI.AddRemoveReferences
            
             OkCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseWindowOk());
             CancelCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => CloseWindowCancel());
-            ApplyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteApplyCommand);
+            ApplyCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteApplyCommand, ApplyCanExecute);
         }
 
         public string ProjectCaption => string.IsNullOrEmpty(Model?.Project?.IdentifierName)
@@ -292,14 +293,25 @@ namespace Rubberduck.UI.AddRemoveReferences
         /// <param name="parameter">Ignored</param>
         private void ExecuteApplyCommand(object parameter)
         {
-            var changed = _reconciler.ReconcileReferences(Model, _available.ToList());
+            var changed = _reconciler.ReconcileReferences(Model, _project.ToList());
             foreach (var reference in changed.Where(reference => !_project.Contains(reference)).ToList())
             {
                 _project.Add(reference);
             }
             
+            Model.State.OnParseRequested(this);
+
+            _clean.Clear();
+            _clean.AddRange(new List<(int?, ReferenceInfo)>(_project.Select(reference => (reference.Priority, reference.ToReferenceInfo()))));
+            IsProjectDirty = false;
+
             AvailableReferences.Refresh();
             ProjectReferences.Refresh();
+        }
+
+        private bool ApplyCanExecute(object parameter)
+        {
+            return Model.State.Status == ParserState.Ready;
         }
 
         /// <summary>

@@ -1347,4 +1347,22 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="References_MoveUpToolTip" xml:space="preserve">
     <value>Abwärts bewegen</value>
   </data>
+  <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
+    <value>Das Wiederherstellen der Elementattribute ist fehlgeschlagen.</value>
+  </data>
+  <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
+    <value>Wiederherstellen der Elementattribute fehlgeschlagen</value>
+  </data>
+  <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
+    <value>Die Elementattribute für die folgenden Elemente konnten nicht wiederhergestellt werden, da sie nicht mehr aufgefunden wurden: {0} </value>
+  </data>
+  <data name="AllReferences_NoneFoundReference" xml:space="preserve">
+    <value>Es wurden keine Verwendungen der Projektreferenz '{0}' gefunden.</value>
+  </data>
+  <data name="AllReferences_PerformanceWarning" xml:space="preserve">
+    <value>Die Suche nach Verwendungen von Referenz '{0}' hat {1} Ergebnisse geliefert. Sie anzuzeigen könnte die Performance beeinträchtigen. Fortfahren?</value>
+  </data>
+  <data name="PerformanceWarningCaption" xml:space="preserve">
+    <value>Performancewarnung</value>
+  </data>
 </root>

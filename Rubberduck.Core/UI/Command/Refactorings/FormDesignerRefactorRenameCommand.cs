@@ -4,8 +4,8 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -17,13 +17,15 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
+        private readonly IRefactoringPresenterFactory _factory;
 
-        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager) 
+        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager) 
             : base (vbe)
         {
             _state = state;
             _rewritingManager = rewritingManager;
             _messageBox = messageBox;
+            _factory = factory;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -34,18 +36,13 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            using (var view = new RenameDialog(new RenameViewModel(_state)))
+            var refactoring = new RenameRefactoring(Vbe, _factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager);
+            var target = GetTarget();
+            if (target != null)
             {
-                var factory = new RenamePresenterFactory(Vbe, view, _state);
-                var refactoring = new RenameRefactoring(Vbe, factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager);
-
-                var target = GetTarget();
-
-                if (target != null)
-                {
-                    refactoring.Refactor(target);
-                }
+                refactoring.Refactor(target);
             }
+            
         }
 
         private Declaration GetTarget(QualifiedModuleName? qualifiedModuleName = null)
