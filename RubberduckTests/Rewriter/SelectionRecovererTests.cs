@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -20,14 +21,18 @@ namespace RubberduckTests.Rewriter
             var parseManager = new Mock<IParseManager>().Object;
             var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManager);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.RecoverSavedSelections();
 
             foreach (var qualifiedSelection in _testModuleSelections.Take(2))
             {
-                selectionServiceMock.Verify(m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
+                selectionServiceMock.Verify(
+                    m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
             }
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
+
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
@@ -38,15 +43,20 @@ namespace RubberduckTests.Rewriter
             var parseManager = new Mock<IParseManager>().Object;
             var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManager);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Skip(1));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Skip(1));
             selectionRecoverer.RecoverSavedSelections();
 
             foreach (var qualifiedSelection in _testModuleSelections.Skip(1))
             {
-                selectionServiceMock.Verify(m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
+                selectionServiceMock.Verify(
+                    m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
             }
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, It.IsAny<Selection>()), Times.Never);
+
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
@@ -57,17 +67,22 @@ namespace RubberduckTests.Rewriter
             var parseManager = new Mock<IParseManager>().Object;
             var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManager);
 
-            var selectionOffset = new Selection(0,2,4,5);
-            
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            var selectionOffset = new Selection(0, 2, 4, 5);
+
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.AdjustSavedSelection(_testModuleSelections[0].QualifiedName, selectionOffset);
             selectionRecoverer.RecoverSavedSelections();
 
             var expectedAdjustedSelection = _testModuleSelections[0].Selection.Offset(selectionOffset);
 
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, expectedAdjustedSelection), Times.Once);
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection), Times.Once);
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, expectedAdjustedSelection), Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection),
+                Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
@@ -80,15 +95,19 @@ namespace RubberduckTests.Rewriter
 
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[2].QualifiedName, selectionReplacement);
             selectionRecoverer.RecoverSavedSelections();
 
             foreach (var qualifiedSelection in _testModuleSelections.Take(2))
             {
-                selectionServiceMock.Verify(m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
+                selectionServiceMock.Verify(
+                    m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
             }
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, selectionReplacement), Times.Once);
+
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, selectionReplacement), Times.Once);
         }
 
         [Test]
@@ -101,13 +120,18 @@ namespace RubberduckTests.Rewriter
 
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[0].QualifiedName, selectionReplacement);
             selectionRecoverer.RecoverSavedSelections();
 
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, selectionReplacement), Times.Once);
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection), Times.Once);
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, selectionReplacement), Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection),
+                Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
@@ -121,12 +145,14 @@ namespace RubberduckTests.Rewriter
             var selectionOffset = new Selection(0, 2, 4, 5);
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(1));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(1));
             selectionRecoverer.AdjustSavedSelection(_testModuleSelections[0].QualifiedName, selectionOffset);
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[0].QualifiedName, selectionReplacement);
             selectionRecoverer.RecoverSavedSelections();
 
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, selectionReplacement), Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, selectionReplacement), Times.Once);
         }
 
         [Test]
@@ -140,14 +166,16 @@ namespace RubberduckTests.Rewriter
             var selectionOffset = new Selection(0, 2, 4, 5);
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(1));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(1));
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[0].QualifiedName, selectionReplacement);
             selectionRecoverer.AdjustSavedSelection(_testModuleSelections[0].QualifiedName, selectionOffset);
             selectionRecoverer.RecoverSavedSelections();
 
             var expectedAdjustedSelection = selectionReplacement.Offset(selectionOffset);
 
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, expectedAdjustedSelection), Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, expectedAdjustedSelection), Times.Once);
         }
 
         [Test]
@@ -161,14 +189,17 @@ namespace RubberduckTests.Rewriter
             var selectionOffset = new Selection(0, 2, 4, 5);
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[2].QualifiedName, selectionReplacement);
             selectionRecoverer.AdjustSavedSelection(_testModuleSelections[0].QualifiedName, selectionOffset);
             selectionRecoverer.RecoverSavedSelectionsOnNextParse();
 
             foreach (var qualifiedSelection in _testModuleSelections)
             {
-                selectionServiceMock.Verify(m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Never);
+                selectionServiceMock.Verify(
+                    m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection),
+                    Times.Never);
             }
         }
 
@@ -181,17 +212,22 @@ namespace RubberduckTests.Rewriter
             var parseManagerMock = new Mock<IParseManager>();
             var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.RecoverSavedSelectionsOnNextParse();
 
-            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
             parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
 
             foreach (var qualifiedSelection in _testModuleSelections.Take(2))
             {
-                selectionServiceMock.Verify(m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
+                selectionServiceMock.Verify(
+                    m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
             }
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
+
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
@@ -202,18 +238,24 @@ namespace RubberduckTests.Rewriter
             var parseManagerMock = new Mock<IParseManager>();
             var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Skip(1));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Skip(1));
             selectionRecoverer.RecoverSavedSelectionsOnNextParse();
 
-            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
             parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
 
             foreach (var qualifiedSelection in _testModuleSelections.Skip(1))
             {
-                selectionServiceMock.Verify(m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
+                selectionServiceMock.Verify(
+                    m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
             }
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, It.IsAny<Selection>()), Times.Never);
+
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
@@ -226,18 +268,24 @@ namespace RubberduckTests.Rewriter
 
             var selectionOffset = new Selection(0, 2, 4, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.AdjustSavedSelection(_testModuleSelections[0].QualifiedName, selectionOffset);
             selectionRecoverer.RecoverSavedSelectionsOnNextParse();
 
-            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
             parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
 
             var expectedAdjustedSelection = _testModuleSelections[0].Selection.Offset(selectionOffset);
 
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, expectedAdjustedSelection), Times.Once);
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection), Times.Once);
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, expectedAdjustedSelection), Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection),
+                Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
@@ -250,15 +298,19 @@ namespace RubberduckTests.Rewriter
 
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[2].QualifiedName, selectionReplacement);
             selectionRecoverer.RecoverSavedSelections();
 
             foreach (var qualifiedSelection in _testModuleSelections.Take(2))
             {
-                selectionServiceMock.Verify(m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
+                selectionServiceMock.Verify(
+                    m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
             }
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, selectionReplacement), Times.Once);
+
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, selectionReplacement), Times.Once);
         }
 
         [Test]
@@ -271,16 +323,22 @@ namespace RubberduckTests.Rewriter
 
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[0].QualifiedName, selectionReplacement);
             selectionRecoverer.RecoverSavedSelectionsOnNextParse();
 
-            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
             parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
 
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, selectionReplacement), Times.Once);
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection), Times.Once);
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, selectionReplacement), Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection),
+                Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
@@ -294,15 +352,18 @@ namespace RubberduckTests.Rewriter
             var selectionOffset = new Selection(0, 2, 4, 5);
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(1));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(1));
             selectionRecoverer.AdjustSavedSelection(_testModuleSelections[0].QualifiedName, selectionOffset);
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[0].QualifiedName, selectionReplacement);
             selectionRecoverer.RecoverSavedSelectionsOnNextParse();
 
-            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
             parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
 
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, selectionReplacement), Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, selectionReplacement), Times.Once);
         }
 
         [Test]
@@ -316,17 +377,20 @@ namespace RubberduckTests.Rewriter
             var selectionOffset = new Selection(0, 2, 4, 5);
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(1));
+            selectionRecoverer.SaveSelections(_testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(1));
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[0].QualifiedName, selectionReplacement);
             selectionRecoverer.AdjustSavedSelection(_testModuleSelections[0].QualifiedName, selectionOffset);
             selectionRecoverer.RecoverSavedSelectionsOnNextParse();
 
-            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
             parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
 
             var expectedAdjustedSelection = selectionReplacement.Offset(selectionOffset);
 
-            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, expectedAdjustedSelection), Times.Once);
+            selectionServiceMock.Verify(
+                m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, expectedAdjustedSelection), Times.Once);
         }
 
         [Test]
@@ -351,7 +415,7 @@ namespace RubberduckTests.Rewriter
         public void DoesNotActivateAnythingOnRecoverActiveCodePane_ActiveSelectionDoesNotExist()
         {
             var selectionServiceMock = TestSelectionServiceMock();
-            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns((QualifiedSelection?)null);
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns((QualifiedSelection?) null);
 
             var parseManagerMock = new Mock<IParseManager>();
             var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
@@ -364,7 +428,8 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriting")]
-        public void ActivatesSavedActiveCodePaneOnNextParseAfterOnRecoverActiveCodePaneOnNextParse_ActiveSelectionExists()
+        public void
+            ActivatesSavedActiveCodePaneOnNextParseAfterOnRecoverActiveCodePaneOnNextParse_ActiveSelectionExists()
         {
             var selectionServiceMock = TestSelectionServiceMock();
             var activeSelection = _testModuleSelections[1];
@@ -376,7 +441,8 @@ namespace RubberduckTests.Rewriter
             selectionRecoverer.SaveActiveCodePane();
             selectionRecoverer.RecoverActiveCodePaneOnNextParse();
 
-            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
             parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
 
             selectionServiceMock.Verify(m => m.TryActivate(activeSelection.QualifiedName), Times.Once);
@@ -384,10 +450,11 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriting")]
-        public void DoesNotActivateAnythingOnNextParseAfterOnRecoverActiveCodePaneOnNextParse_ActiveSelectionDoesNotExist()
+        public void
+            DoesNotActivateAnythingOnNextParseAfterOnRecoverActiveCodePaneOnNextParse_ActiveSelectionDoesNotExist()
         {
             var selectionServiceMock = TestSelectionServiceMock();
-            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns((QualifiedSelection?)null);
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns((QualifiedSelection?) null);
 
             var parseManagerMock = new Mock<IParseManager>();
             var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
@@ -395,7 +462,8 @@ namespace RubberduckTests.Rewriter
             selectionRecoverer.SaveActiveCodePane();
             selectionRecoverer.RecoverActiveCodePaneOnNextParse();
 
-            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending, CancellationToken.None);
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
             parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
 
             selectionServiceMock.Verify(m => m.TryActivate(It.IsAny<QualifiedModuleName>()), Times.Never);
@@ -418,10 +486,36 @@ namespace RubberduckTests.Rewriter
             selectionServiceMock.Verify(m => m.TryActivate(activeSelection.QualifiedName), Times.Never);
         }
 
+        [Test]
+        [Category("Rewriting")]
+        public void ActivatesOpenModulesWithSavedOpenStateOnRecoverOpenState()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            var openModules = _testModuleSelections.Take(3)
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName)
+                .ToHashSet();
+            selectionServiceMock.Setup(m => m.OpenModules()).Returns(openModules);
+
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            var modulesForWhichToSaveOpenState = _testModuleSelections.Skip(1)
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName)
+                .ToHashSet();
+
+            selectionRecoverer.SaveOpenState(modulesForWhichToSaveOpenState);
+            selectionRecoverer.RecoverOpenState();
+
+            selectionServiceMock.Verify(m => m.TryActivate(_testModuleSelections[1].QualifiedName), Times.Once);
+            selectionServiceMock.Verify(m => m.TryActivate(_testModuleSelections[2].QualifiedName), Times.Once);
+            selectionServiceMock.Verify(m => m.TryActivate(_testModuleSelections[0].QualifiedName), Times.Never);
+            selectionServiceMock.Verify(m => m.TryActivate(_testModuleSelections[3].QualifiedName), Times.Never);
+        }
+
         private Mock<ISelectionService> TestSelectionServiceMock()
         {
             var mock = new Mock<ISelectionService>();
-            foreach(var qualifiedSelection in _testModuleSelections)
+            foreach (var qualifiedSelection in _testModuleSelections)
             {
                 mock.Setup(m => m.Selection(qualifiedSelection.QualifiedName)).Returns(qualifiedSelection.Selection);
             }
@@ -440,7 +534,9 @@ namespace RubberduckTests.Rewriter
             new QualifiedSelection(new QualifiedModuleName("testProject", string.Empty, "module2"),
                 new Selection(3, 9)),
             new QualifiedSelection(new QualifiedModuleName("testProject", string.Empty, "module3"),
-                new Selection(15, 17, 1, 4))
+                new Selection(15, 17, 1, 4)),
+            new QualifiedSelection(new QualifiedModuleName("testProject", string.Empty, "module4"),
+                Selection.Home)
         };
     }
 }

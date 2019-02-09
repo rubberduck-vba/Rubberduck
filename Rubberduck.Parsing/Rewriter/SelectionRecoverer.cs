@@ -14,6 +14,7 @@ namespace Rubberduck.Parsing.Rewriter
         private readonly IParseManager _parseManager;
 
         private readonly IDictionary<QualifiedModuleName, Selection> _savedSelections = new Dictionary<QualifiedModuleName, Selection>();
+        private readonly HashSet<QualifiedModuleName> _savedOpenModules = new HashSet<QualifiedModuleName>();
         private QualifiedModuleName? _savedActiveModule = null;
         private const ParserState ParserStateOnWhichToTriggerRecovery = ParserState.LoadingReference;
 
@@ -100,6 +101,22 @@ namespace Rubberduck.Parsing.Rewriter
                 _parseManager.StateChanged -= ExecuteActiveCodePaneRecovery;
                 RecoverActiveCodePane();
             }
+        }
+
+        public void SaveOpenState(IEnumerable<QualifiedModuleName> modules)
+        {
+            _savedOpenModules.Clear();
+            var openModules = _selectionService.OpenModules();
+            _savedOpenModules.UnionWith(modules.Where(module => openModules.Contains(module)));
+        }
+
+        public void RecoverOpenState()
+        {
+            foreach (var module in _savedOpenModules)
+            {
+                _selectionService.TryActivate(module);
+            }
+            _savedOpenModules.Clear();
         }
 
         public void Dispose()
