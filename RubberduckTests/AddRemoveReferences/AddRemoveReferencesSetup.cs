@@ -257,7 +257,7 @@ namespace RubberduckTests.AddRemoveReferences
                 allReferences.AddRange(projects);
             }
 
-            var model = new AddRemoveReferencesModel(declaration, allReferences, settings);
+            var model = new AddRemoveReferencesModel(null, declaration, allReferences, settings);
             var reconciler = ArrangeReferenceReconciler(settings, out _, out libraryProvider);
             browserFactory = new Mock<IFileSystemBrowserFactory>();
 

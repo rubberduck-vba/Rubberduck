@@ -1,36 +1,30 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Forms;
-using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.Command;
+using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.Rename
 {
-    public class RenameViewModel : ViewModelBase
+    public class RenameViewModel : RefactoringViewModelBase<RenameModel>
     {
         public RubberduckParserState State { get; }
 
-        public RenameViewModel(RubberduckParserState state)
+        public RenameViewModel(RubberduckParserState state, RenameModel model) : base(model)
         {
             State = state;
-
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
         }
 
-        private Declaration _target;
         public Declaration Target
         {
-            get => _target;
+            get => Model.Target;
             set
             {
-                _target = value;
-                NewName = _target.IdentifierName;
+                Model.Target = value;
+                NewName = Model.Target.IdentifierName;
 
                 OnPropertyChanged(nameof(Instructions));
             }
@@ -50,13 +44,12 @@ namespace Rubberduck.UI.Refactorings.Rename
             }
         }
 
-        private string _newName;
         public string NewName
         {
-            get => _newName;
+            get => Model.NewName;
             set
             {
-                _newName = value;
+                Model.NewName = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidName));
             }
@@ -77,12 +70,5 @@ namespace Rubberduck.UI.Refactorings.Rename
                        NewName.Length <= (Target.DeclarationType.HasFlag(DeclarationType.Module) ? Declaration.MaxModuleNameLength : Declaration.MaxMemberNameLength);
             }
         }
-
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
-        
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
     }
 }

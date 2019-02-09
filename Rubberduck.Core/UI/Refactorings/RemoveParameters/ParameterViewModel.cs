@@ -5,12 +5,11 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
     public class ParameterViewModel : ViewModelBase
     {
-        private Parameter wrapped;
-        internal Parameter Wrapped { get => wrapped; }
+        internal Parameter Wrapped { get; }
 
         public ParameterViewModel(Parameter wrapped)
         {
-            this.wrapped = wrapped;
+            Wrapped = wrapped;
         }
 
         private bool _isRemoved;
@@ -24,8 +23,8 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
             }
         }
 
-        public string Name { get => wrapped.Name; }
-        public Declaration Declaration { get => wrapped.Declaration; }
+        public string Name { get => Wrapped.Name; }
+        public Declaration Declaration { get => Wrapped.Declaration; }
 
     }
 

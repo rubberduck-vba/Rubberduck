@@ -1,11 +1,19 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.UIContext;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.UI.CodeExplorer.Commands;
+using Rubberduck.UI.Command;
+using RubberduckTests.Mocks;
+using MessageBox = System.Windows.MessageBox;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -837,6 +845,29 @@ End Sub";
                 Assert.IsTrue(GetNodeExpandedStates(expanded).All(state => state));
                 Assert.IsFalse(GetNodeExpandedStates(collapsed).All(state => state));
             }
+        }
+
+        [Category("Code Explorer")]
+        [Test]
+        public void UnparsedSetToTrue_NoProjects()
+        {
+            var builder = new MockVbeBuilder();
+            var vbe = builder.Build();
+            var parser = MockParser.Create(vbe.Object, null, MockVbeEvents.CreateMockVbeEvents(vbe));
+            var state = parser.State;
+            var dispatcher = new Mock<IUiDispatcher>();
+
+            dispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
+
+            var viewModel = new CodeExplorerViewModel(state, null, null, null, dispatcher.Object, vbe.Object, null, new CodeExplorerSyncProvider(vbe.Object, state));
+
+            parser.Parse(new CancellationTokenSource());
+            if (parser.State.Status >= ParserState.Error)
+            {
+                Assert.Inconclusive("Parser Error");
+            }
+
+            Assert.IsTrue(viewModel.Unparsed);
         }
     }
 }

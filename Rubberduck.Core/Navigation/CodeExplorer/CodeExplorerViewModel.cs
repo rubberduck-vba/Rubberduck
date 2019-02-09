@@ -102,8 +102,8 @@ namespace Rubberduck.Navigation.CodeExplorer
                     return;
                 }
 
-                _selectedItem = value;
                 ExpandToNode(value);
+                _selectedItem = value;
 
                 OnPropertyChanged();
 
@@ -214,6 +214,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             }
         }
 
+        // This is just a binding hack to force the icon binding to re-evaluate. It has no other functionality and should
+        // not be used for anything else.
+        public bool ParserReady
+        {
+            get => true;
+            // ReSharper disable once ValueParameterNotUsed
+            set => OnPropertyChanged();
+        }
+
         private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
             Unparsed = false;
@@ -230,7 +239,9 @@ namespace Rubberduck.Navigation.CodeExplorer
                         library.UpdateChildren();
                     }
 
+                    Unparsed = !Projects.Any();
                     IsBusy = false;
+                    ParserReady = true;
                 });
                 return;
             }
@@ -434,12 +445,12 @@ namespace Rubberduck.Navigation.CodeExplorer
         {
             while (true)
             {
+                node = node.Parent;
                 if (node == null)
                 {
                     return;
                 }
                 node.IsExpanded = true;
-                node = node.Parent;
             }
         }
 

@@ -354,4 +354,13 @@
   <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
     <value>Caractère de soulignement dans le nom d'un membre d'un module de classe</value>
   </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>La valeur de l'attribut diffère de celle suggérée par l'annotation.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Annotation manquante</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Annotation manquante (module)</value>
+  </data>
 </root>

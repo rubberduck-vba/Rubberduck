@@ -337,10 +337,10 @@
     <value>On Local Error statement</value>
   </data>
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
-    <value>Inappropriate use of 'IsMissing' function</value>
+    <value>Inappropriate use of 'IsMissing' - Parameter is not 'Variant'</value>
   </data>
   <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
-    <value>Inappropriate use of 'IsMissing' function</value>
+    <value>Inappropriate use of 'IsMissing' - Parameter is local variable</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Assignment is not used</value>
