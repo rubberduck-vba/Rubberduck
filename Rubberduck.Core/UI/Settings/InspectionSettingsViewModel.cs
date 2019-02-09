@@ -21,7 +21,7 @@ namespace Rubberduck.UI.Settings
         {
             InspectionSettings = new ListCollectionView(
                         config.UserSettings.CodeInspectionSettings.CodeInspections
-                                        .OrderBy(inspection => inspection.TypeLabel)
+                                        .OrderBy(inspection => inspection.InspectionType)
                                         .ThenBy(inspection => inspection.Description)
                                         .ToList());
 
@@ -30,7 +30,7 @@ namespace Rubberduck.UI.Settings
 
             RunInspectionsOnSuccessfulParse = config.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("TypeLabel"));
+            InspectionSettings.GroupDescriptions?.Add(new PropertyGroupDescription("InspectionType"));
             ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
                 ExportSettings(new CodeInspectionSettings
                 {

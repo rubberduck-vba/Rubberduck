@@ -1502,4 +1502,19 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Performance Warning</value>
   </data>
+  <data name="GroupingGrid_Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="GroupingStyle_ByName" xml:space="preserve">
+    <value>By inspection</value>
+  </data>
+  <data name="GroupingStyle_BySeverity" xml:space="preserve">
+    <value>By severity</value>
+  </data>
+  <data name="InspectionResults_CollapseAll" xml:space="preserve">
+    <value>Collapse all</value>
+  </data>
+  <data name="InspectionResults_ExpandAll" xml:space="preserve">
+    <value>Expand all</value>
+  </data>
 </root>
