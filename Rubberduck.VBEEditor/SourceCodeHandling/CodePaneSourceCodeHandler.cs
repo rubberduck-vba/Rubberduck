@@ -30,20 +30,6 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public void SetSelection(QualifiedModuleName module, Selection selection)
-        {
-            var component = _projectsProvider.Component(module);
-            if (component == null)
-            {
-                return;
-            }
-
-            using (var codeModule = component.CodeModule)
-            {
-                SetSelection(codeModule, selection);
-            }
-        }
-
         public void SetSelection(ICodeModule module, Selection selection)
         {
             using (var pane = module.CodePane)
@@ -263,31 +249,6 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                         break;
                     }
                 }
-            }
-        }
-
-        public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
-        {
-            var component = _projectsProvider.Component(module);
-            if (component == null)
-            {
-                return null;
-            }
-
-            using (var codeModule = component.CodeModule)
-            {
-                return GetCurrentLogicalLine(codeModule);
-            }
-        }
-
-        public Selection GetSelection(QualifiedModuleName module)
-        {
-            var component = _projectsProvider.Component(module);
-
-            using (var codeModule = component.CodeModule)
-            using (var pane = codeModule.CodePane)
-            {
-                return pane.Selection;
             }
         }
     }
