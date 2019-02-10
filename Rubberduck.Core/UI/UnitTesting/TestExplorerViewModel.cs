@@ -15,6 +15,7 @@ using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -35,7 +36,8 @@ namespace Rubberduck.UI.UnitTesting
              IGeneralConfigService configService,
              ISettingsFormFactory settingsFormFactory,
              IMessageBox messageBox,
-             ReparseCommand reparseCommand)
+             ReparseCommand reparseCommand,
+             ISelectionService selectionService)
         {
             _vbe = vbe;
             _state = state;
@@ -46,7 +48,7 @@ namespace Rubberduck.UI.UnitTesting
             _settingsFormFactory = settingsFormFactory;
             _messageBox = messageBox;
 
-            _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
+            _navigateCommand = new NavigateCommand(selectionService);
             
             RunSelectedTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestCommand, CanExecuteSelectedTestCommand);
             RunSelectedCategoryTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedCategoryTestsCommand, CanExecuteRunSelectedCategoryTestsCommand);

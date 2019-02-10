@@ -8,6 +8,7 @@ using Rubberduck.UI.ToDoItems;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.TodoExplorer
 {
@@ -24,6 +25,8 @@ namespace RubberduckTests.TodoExplorer
 ' Bug this is a bug comment
 ";
 
+            var selectionService = new Mock<ISelectionService>().Object;
+
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -34,7 +37,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, null);
+                var vm = new ToDoExplorerViewModel(state, cs, null, selectionService);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -59,6 +62,8 @@ namespace RubberduckTests.TodoExplorer
 ' bUg this is a bug comment
 ";
 
+            var selectionService = new Mock<ISelectionService>().Object;
+
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -69,7 +74,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, null);
+                var vm = new ToDoExplorerViewModel(state, cs, null, selectionService);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -94,6 +99,8 @@ namespace RubberduckTests.TodoExplorer
 ' bug: this should not be seen due to the colon
 ";
 
+            var selectionService = new Mock<ISelectionService>().Object;
+
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -104,7 +111,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TO-DO", "N@TE", "BUG " });
-                var vm = new ToDoExplorerViewModel(state, cs, null);
+                var vm = new ToDoExplorerViewModel(state, cs, null, selectionService);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -128,6 +135,8 @@ namespace RubberduckTests.TodoExplorer
 ' Denoted 
 ";
 
+            var selectionService = new Mock<ISelectionService>().Object;
+
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -138,7 +147,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, null);
+                var vm = new ToDoExplorerViewModel(state, cs, null, selectionService);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -162,6 +171,8 @@ namespace RubberduckTests.TodoExplorer
             const string expected =
                 @"Dim d As Variant  ";
 
+            var selectionService = new Mock<ISelectionService>().Object;
+
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
                 .AddComponent("Module1", ComponentType.StandardModule, inputCode)
@@ -173,7 +184,7 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, null);
+                var vm = new ToDoExplorerViewModel(state, cs, null, selectionService);
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
