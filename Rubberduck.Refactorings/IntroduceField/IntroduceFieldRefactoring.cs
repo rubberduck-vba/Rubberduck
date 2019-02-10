@@ -10,40 +10,41 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.IntroduceField
 {
     public class IntroduceFieldRefactoring : IRefactoring
     {
         private readonly IList<Declaration> _declarations;
-        private readonly IVBE _vbe;
+        private readonly ISelectionService _selectionService;
         private readonly RubberduckParserState _state;
         private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceFieldRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
+        public IntroduceFieldRefactoring(RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             _declarations = state.AllUserDeclarations
                 .Where(i => i.DeclarationType == DeclarationType.Variable)
                 .ToList();
 
-            _vbe = vbe;
             _state = state;
             _rewritingManager = rewritingManager;
             _messageBox = messageBox;
+            _selectionService = selectionService;
         }
 
         public void Refactor()
         {
-            var selection = _vbe.GetActiveSelection();
+            var activeSelection = _selectionService.ActiveSelection();
 
-            if (!selection.HasValue)
+            if (!activeSelection.HasValue)
             {
                 _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_Caption);
                 return;
             }
 
-            Refactor(selection.Value);
+            Refactor(activeSelection.Value);
         }
 
         public void Refactor(QualifiedSelection selection)
@@ -78,8 +79,6 @@ namespace Rubberduck.Refactorings.IntroduceField
                 return;
             }
 
-            var oldSelection = _vbe.GetActiveSelection();
-
             var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
@@ -87,18 +86,6 @@ namespace Rubberduck.Refactorings.IntroduceField
             AddField(rewriter, target);
 
             rewriteSession.TryRewrite();
-
-            if (oldSelection.HasValue)
-            {
-                var component = _state.ProjectsProvider.Component(oldSelection.Value.QualifiedName);
-                using (var module = component.CodeModule)
-                {
-                    using (var pane = module.CodePane)
-                    {
-                        pane.Selection = oldSelection.Value.Selection;
-                    }
-                }
-            }
         }
 
         private void AddField(IModuleRewriter rewriter, Declaration target)

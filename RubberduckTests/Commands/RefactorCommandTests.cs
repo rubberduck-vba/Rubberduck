@@ -416,9 +416,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceFieldCommand = TestRefactorIntroduceFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -434,8 +432,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceFieldCommand = TestRefactorIntroduceFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -448,9 +445,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceFieldCommand = TestRefactorIntroduceFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -468,11 +463,17 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceFieldCommand = TestRefactorIntroduceFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(introduceFieldCommand.CanExecute(null));
             }
+        }
+
+        private RefactorIntroduceFieldCommand TestRefactorIntroduceFieldCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var factory = new Mock<IRefactoringPresenterFactory>().Object;
+            var selectionService = MockedSelectionService(vbe);
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorIntroduceFieldCommand(vbe, state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]

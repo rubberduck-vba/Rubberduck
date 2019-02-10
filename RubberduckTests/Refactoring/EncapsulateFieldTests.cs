@@ -56,7 +56,7 @@ End Property
                     PropertyName = "Name"
                 };
                 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -107,7 +107,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -155,7 +155,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -199,7 +199,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -261,7 +261,7 @@ End Function";
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -329,7 +329,7 @@ End Property";
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -379,7 +379,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -439,7 +439,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -491,7 +491,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -543,7 +543,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -591,7 +591,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -655,7 +655,7 @@ End Sub";
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -741,7 +741,7 @@ End Sub";
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode1 = module1.Content();
@@ -790,7 +790,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
@@ -841,7 +841,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, null, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -894,7 +894,7 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
@@ -954,7 +954,7 @@ End Sub";
 
         #region setup
 
-        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, EncapsulateFieldModel model, QualifiedSelection selection)
+        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, EncapsulateFieldModel model)
         {
             var selectionService = MockedSelectionService();
             var indenter = CreateIndenter(vbe);
