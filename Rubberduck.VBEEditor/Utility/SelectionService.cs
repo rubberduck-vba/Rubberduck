@@ -90,22 +90,27 @@ namespace Rubberduck.VBEditor.Utility
             }
         }
 
-        public bool TrySetActiveSelection(QualifiedSelection selection)
+        public bool TrySetActiveSelection(QualifiedModuleName module, Selection selection)
         {
             var activeCodePane = _vbe.ActiveCodePane;
 
-            if (!TryActivate(selection.QualifiedName))
+            if (!TryActivate(module))
             {
                 return false;
             }
 
-            if (!TrySetSelection(selection))
+            if (!TrySetSelection(module, selection))
             {
                 TryActivate(activeCodePane.QualifiedModuleName);
                 return false;
             }
 
             return true;
+        }
+
+        public bool TrySetActiveSelection(QualifiedSelection selection)
+        {
+            return TrySetActiveSelection(selection.QualifiedName, selection.Selection);
         }
 
         public bool TrySetSelection(QualifiedModuleName module, Selection selection)
