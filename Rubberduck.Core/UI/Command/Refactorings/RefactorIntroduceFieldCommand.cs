@@ -38,7 +38,9 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var target = _state.AllUserDeclarations.FindVariable(activeSelection.Value);
+            var target = _state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Variable)
+                .FindVariable(activeSelection.Value);
 
             return target != null 
                 && !_state.IsNewOrModified(target.QualifiedModuleName)
