@@ -42,9 +42,13 @@ namespace Rubberduck.UI.UnitTesting
             catch (Exception ex)
             {
                 Logger.Warn(ex, "Test engine exception caught in TestExplorerModel.");
+                IsBusy = false;
             }
+        }
 
-            IsBusy = false;
+        public void CancelTestRun()
+        {
+            _testEngine.RequestCancellation();
         }
 
         private void HandleTestRunStarted(object sender, TestRunStartedEventArgs e)
@@ -53,6 +57,9 @@ namespace Rubberduck.UI.UnitTesting
             {
                 return;
             }
+
+            // This also needs to be set in the handler - the test engine has other entry points.
+            IsBusy = true;
 
             UpdateProgressBar(TestOutcome.Unknown, true);
 

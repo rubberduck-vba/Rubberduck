@@ -107,12 +107,13 @@ namespace Rubberduck.UnitTesting
 
         private void OnTestRunStarted(IReadOnlyList<TestMethod> tests)
         {
+            CancellationRequested = false;
             TestRunStarted?.Invoke(this, new TestRunStartedEventArgs(tests));
             _uiDispatcher.FlushMessageQueue(); 
         }
 
         private void OnTestStarted(TestMethod test)
-        {
+        {           
             TestStarted?.Invoke(this, new TestStartedEventArgs(test));
             _uiDispatcher.FlushMessageQueue();
         }
@@ -150,6 +151,13 @@ namespace Rubberduck.UnitTesting
         public void RepeatLastRun()
         {
             Run(_lastRun);
+        }
+
+        private bool CancellationRequested { get; set; }
+
+        public void RequestCancellation()
+        {
+            CancellationRequested = true;
         }
 
         private void RunInternal(IEnumerable<TestMethod> tests)
@@ -260,23 +268,23 @@ namespace Rubberduck.UnitTesting
 
                                 _uiDispatcher.FlushMessageQueue();
 
+                                if (CancellationRequested)
+                                {
+                                    RunTestCleanup(typeLibWrapper, testCleanup);
+                                    fakes.StopTest();
+                                    break;
+                                }
+
                                 var result = RunTestMethod(typeLibWrapper, test);
+
                                 // we can trigger this event, because cleanup can fail without affecting the result
                                 OnTestCompleted(test, result);
 
-                                try
-                                {
-                                    _declarationRunner.RunDeclarations(typeLibWrapper, testCleanup);
-                                }
-                                catch (COMException cleanupFail)
-                                {
-                                    // Apparently the user doesn't need to know when test results for subsequent tests could be incorrect
-                                    Logger.Trace(cleanupFail, "Unexpected COMException when running TestCleanup");
-                                }
+                                RunTestCleanup(typeLibWrapper, testCleanup);
                             }
                             finally
                             {
-                                fakes.StopTest();
+                                fakes.StopTest();                               
                             }
                         }
                         try
@@ -299,9 +307,24 @@ namespace Rubberduck.UnitTesting
                 // FIXME somehow notify the user of this mess
                 Logger.Error(ex, "Unexpected expection while running unit tests; unit tests will be aborted");
             }
+
+            CancellationRequested = false;
             overallTime.Stop();
 
             TestRunCompleted?.Invoke(this, new TestRunCompletedEventArgs(overallTime.ElapsedMilliseconds));
+        }
+
+        private void RunTestCleanup(ITypeLibWrapper wrapper, List<Declaration> cleanupMethods)
+        {
+            try
+            {
+                _declarationRunner.RunDeclarations(wrapper, cleanupMethods);
+            }
+            catch (COMException cleanupFail)
+            {
+                // Apparently the user doesn't need to know when test results for subsequent tests could be incorrect
+                Logger.Trace(cleanupFail, "Unexpected COMException when running TestCleanup");
+            }
         }
 
         private TestResult RunTestMethod(ITypeLibWrapper typeLib, TestMethod test)

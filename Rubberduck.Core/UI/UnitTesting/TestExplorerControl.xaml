@@ -8,6 +8,7 @@
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              Language="{UICulture}"
              mc:Ignorable="d" 
              d:DesignHeight="255" d:DesignWidth="455"
@@ -29,6 +30,7 @@
         <BitmapImage x:Key="RepeatLastRunImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-repeat.png" />
 
         <BitmapImage x:Key="ResetResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
+        <BitmapImage x:Key="StopImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/control-stop-square.png" />
 
         <BitmapImage x:Key="AddIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--plus.png" />
         <BitmapImage x:Key="AddTestMethodIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask.png" />
@@ -38,14 +40,23 @@
         <BitmapImage x:Key="GroupByLocationImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
         <BitmapImage x:Key="GroupByCategoryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tag-label-gray.png" />
 
+        <BitmapImage x:Key="ExpandAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/expand-all.png" />
+        <BitmapImage x:Key="CollapseAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/collapse-all.png" />
+
         <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
 
         <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:BoolToHiddenVisibilityConverter x:Key="BoolToCollapsed"/>
 
         <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="Transparent" />
         <SolidColorBrush x:Key="ToolBarButtonHover" Color="#210080FF"/>
         <SolidColorBrush x:Key="ToolBarGripper" Color="#FF6D6D6D"/>
+        <SolidColorBrush x:Key="ToolBarVerticalBackground" Color="#FFEEF5FD"/>
+        <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackground" Color="#FFEEF5FD"/>
+        <SolidColorBrush x:Key="ToolBarMenuBorder" Color="#FFB6BDC5"/>
+        <SolidColorBrush x:Key="ToolBarSubMenuBackground" Color="#FFEEF5FD"/>
+
         <Style x:Key="ToolBarVerticalOverflowButtonStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Background" Value="{StaticResource ToolBarToggleButtonVerticalBackground}"/>
             <Setter Property="MinHeight" Value="0"/>
@@ -81,8 +92,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <SolidColorBrush x:Key="ToolBarVerticalBackground" Color="#FFEEF5FD"/>
-        <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackground" Color="#FFEEF5FD"/>
+
         <Style x:Key="ToolBarHorizontalOverflowButtonStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Background" Value="{StaticResource ToolBarToggleButtonHorizontalBackground}"/>
             <Setter Property="MinHeight" Value="0"/>
@@ -118,8 +128,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <SolidColorBrush x:Key="ToolBarMenuBorder" Color="#FFB6BDC5"/>
-        <SolidColorBrush x:Key="ToolBarSubMenuBackground" Color="#FFEEF5FD"/>
+
         <Style x:Key="ToolBarThumbStyle" TargetType="{x:Type Thumb}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -147,6 +156,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
         <Style x:Key="ToolBarMainPanelBorderStyle" TargetType="{x:Type Border}">
             <Setter Property="Margin" Value="0,0,11,0"/>
             <Setter Property="CornerRadius" Value="3,3,3,3"/>
@@ -156,6 +166,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
         <Style x:Key="ToolBarWithOverflowOnlyShowingWhenNeededStyle" TargetType="{x:Type ToolBar}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -224,6 +235,17 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="ToolbarImageOpacity" TargetType="Image" >
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Margin" Value="2,0,2,0" />
+            <Style.Triggers>
+                <Trigger Property="IsEnabled"  Value="False">
+                    <Setter Property="Opacity" Value="0.3" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -250,8 +272,8 @@
                     </Style>
                 </ToolBar.Resources>
 
-                <Button Command="{Binding RefreshCommand}">
-                    <Image Source="{StaticResource RefreshImage}" />
+                <Button Command="{Binding RefreshCommand}" >
+                    <Image Source="{StaticResource RefreshImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Separator />
@@ -259,7 +281,7 @@
                 <Menu Background="Transparent">
                     <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuButtonText}">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource RunImage}" />
+                            <Image Source="{StaticResource RunImage}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
                         <MenuItem Command="{Binding RunAllTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuAllTests}">
                             <MenuItem.Icon>
@@ -305,10 +327,16 @@
 
                 <Separator />
 
-                <Button Command="{Binding ResetResultsCommand}">
-                    <Image Source="{StaticResource ResetResultsImage}" />
+                <Button Command="{Binding CancelTestRunCommand}" >
+                    <Image Source="{StaticResource StopImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                </Button>
+
+                <Separator />
+
+                <Button Command="{Binding ResetResultsCommand}" >
+                    <Image Source="{StaticResource ResetResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
-                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=TestExplorer_ResetButtonTooltip}" />
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ResetButtonTooltip}" />
                     </Button.ToolTip>
                 </Button>
 
@@ -317,7 +345,7 @@
                 <Menu Background="Transparent">
                     <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource AddIcon}" />
+                            <Image Source="{StaticResource AddIcon}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
                         <MenuItem Command="{Binding AddTestModuleCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_AddTestModule}">
                         </MenuItem>
@@ -359,8 +387,20 @@
 
                 <Separator />
 
+                <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
+                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
+                    <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                </Button>
+
+                <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}" Margin="2"
+                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
+                    <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                </Button>
+
+                <Separator />
+
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Source="{StaticResource CopyResultsImage}" />
+                    <Image Source="{StaticResource CopyResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
@@ -478,6 +518,7 @@
                     </DataGrid.ContextMenu>
                     <i:Interaction.Behaviors>
                         <local:TestExplorerRowMouseOverBehavior MouseOverTest="{Binding MouseOverTest, Mode=TwoWay}" MouseOverGroup="{Binding MouseOverGroup, Mode=TwoWay}" />
+                        <controls:GroupItemExpandedBehavior ExpandedState="{Binding ExpandedState, Mode=TwoWay}" />
                     </i:Interaction.Behaviors>
                 </controls:GroupingGrid>
             </Grid>

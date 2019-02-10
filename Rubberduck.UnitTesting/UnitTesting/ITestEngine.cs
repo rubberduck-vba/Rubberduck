@@ -17,6 +17,7 @@ namespace Rubberduck.UnitTesting
         void Run(IEnumerable<TestMethod> tests);
         void RunByOutcome(TestOutcome outcome);
         void RepeatLastRun();
+        void RequestCancellation();
     }
 
     public class TestRunStartedEventArgs : EventArgs

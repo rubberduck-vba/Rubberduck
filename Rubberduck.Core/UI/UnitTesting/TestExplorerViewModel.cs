@@ -8,13 +8,13 @@ using System.Windows.Data;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
+using Rubberduck.VBEditor.ComManagement;
 using DataFormats = System.Windows.DataFormats;
 
 namespace Rubberduck.UI.UnitTesting
@@ -29,29 +29,28 @@ namespace Rubberduck.UI.UnitTesting
 
     internal sealed class TestExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
-        private readonly ITestEngine _testEngine;
         private readonly IClipboardWriter _clipboard;
         private readonly ISettingsFormFactory _settingsFormFactory;
 
-        public TestExplorerViewModel(RubberduckParserState state,
-             ITestEngine testEngine,
+        public TestExplorerViewModel(IProjectsProvider projectsProvider,
              TestExplorerModel model,
              IClipboardWriter clipboard,
              IGeneralConfigService configService,
              ISettingsFormFactory settingsFormFactory)
         {
-            _testEngine = testEngine;
-            _testEngine.TestCompleted += TestEngineTestCompleted;
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
 
-            NavigateCommand = new NavigateCommand(state.ProjectsProvider);  
+            NavigateCommand = new NavigateCommand(projectsProvider);  
             RunSingleTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSingleTestCommand, CanExecuteSingleTest);
             RunSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestsCommand, CanExecuteSelectedTestsCommand);
             RunSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedGroupCommand, CanExecuteSelectedGroupCommand);
+            CancelTestRunCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCancelTestRunCommand, CanExecuteCancelTestRunCommand);
             ResetResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteResetResultsCommand, CanExecuteResetResultsCommand);
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand);
             OpenTestSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
+            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
+            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
 
             Model = model;
             if (CollectionViewSource.GetDefaultView(Model.Tests) is ListCollectionView tests)
@@ -68,14 +67,6 @@ namespace Rubberduck.UI.UnitTesting
         public TestExplorerModel Model { get; }
 
         public ICollectionView Tests { get; }
-
-        public event EventHandler<TestCompletedEventArgs> TestCompleted;
-        private void TestEngineTestCompleted(object sender, TestCompletedEventArgs e)
-        {
-            // Propagate the event
-            TestCompleted?.Invoke(sender, e);
-            Tests.Refresh();
-        }
 
         public INavigateSource SelectedItem => MouseOverTest;
 
@@ -136,6 +127,17 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        private bool _expanded;
+        public bool ExpandedState
+        {
+            get => _expanded;
+            set
+            {
+                _expanded = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ReparseCommand RefreshCommand { get; set; }
 
         public RunAllTestsCommand RunAllTestsCommand { get; set; }
@@ -149,6 +151,7 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase RunSelectedTestsCommand { get; }
         public CommandBase RunSelectedGroupCommand { get; }
 
+        public CommandBase CancelTestRunCommand { get; }
         public CommandBase ResetResultsCommand { get; }
 
         public AddTestModuleCommand AddTestModuleCommand { get; set; }
@@ -160,6 +163,9 @@ namespace Rubberduck.UI.UnitTesting
         public CommandBase OpenTestSettingsCommand { get; }
 
         public INavigateCommand NavigateCommand { get; }
+
+        public CommandBase CollapseAllCommand { get; }
+        public CommandBase ExpandAllCommand { get; }
 
         private bool CanExecuteSingleTest(object obj)
         {
@@ -179,6 +185,21 @@ namespace Rubberduck.UI.UnitTesting
         private bool CanExecuteResetResultsCommand(object obj)
         {
             return !Model.IsBusy && Tests.OfType<TestMethodViewModel>().Any(test => test.Result.Outcome != TestOutcome.Unknown);
+        }
+
+        private bool CanExecuteCancelTestRunCommand(object obj)
+        {
+            return Model.IsBusy;
+        }
+
+        private void ExecuteCollapseAll(object parameter)
+        {
+            ExpandedState = false;
+        }
+
+        private void ExecuteExpandAll(object parameter)
+        {
+            ExpandedState = true;
         }
 
         private void ExecuteSingleTestCommand(object obj)
@@ -220,6 +241,11 @@ namespace Rubberduck.UI.UnitTesting
             }
 
             Model.ExecuteTests(tests.Items.OfType<TestMethodViewModel>().ToList());
+        }
+
+        private void ExecuteCancelTestRunCommand(object parameter)
+        {
+            Model.CancelTestRun();
         }
 
         private void ExecuteResetResultsCommand(object parameter)
@@ -291,7 +317,6 @@ namespace Rubberduck.UI.UnitTesting
 
         public void Dispose()
         {
-            _testEngine.TestCompleted -= TestEngineTestCompleted;
             Model.Dispose();
         }
     }
