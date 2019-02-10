@@ -36,7 +36,6 @@ namespace RubberduckTests.Commands
         [Test]
         public void EncapsulateField_CanExecute_NonReadyState()
         {
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(string.Empty, out _);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
@@ -93,7 +92,7 @@ End Sub";
 Sub Foo()
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 5, 1, 5));
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component, new Selection(1, 5, 1, 5));
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -105,7 +104,7 @@ End Sub";
         private RefactorEncapsulateFieldCommand TestRefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
         {
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
-            var selectionService = new Mock<ISelectionService>().Object;
+            var selectionService = MockedSelectionService(vbe);
             return new RefactorEncapsulateFieldCommand(vbe, state, null, factory, rewritingManager, selectionService);
         }
 
@@ -937,8 +936,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -954,8 +952,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -970,8 +967,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -988,9 +984,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1007,9 +1001,7 @@ End Function";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1026,9 +1018,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1045,9 +1035,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1064,9 +1052,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1082,9 +1068,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1101,9 +1085,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1120,9 +1102,7 @@ End Function";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1139,9 +1119,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1158,9 +1136,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1177,11 +1153,25 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, factory.Object, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
+        }
+
+        private RefactorReorderParametersCommand TestRefactorReorderParametersCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var factory = new Mock<IRefactoringPresenterFactory>().Object;
+            var selectionService = MockedSelectionService(vbe);
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorReorderParametersCommand(vbe, state, factory, msgBox, rewritingManager, selectionService);
+        }
+
+        private ISelectionService MockedSelectionService(IVBE vbe)
+        {
+            var selectionServiceMock = new Mock<ISelectionService>();
+            var activeSelection = vbe.ActiveCodePane?.GetQualifiedSelection();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            return selectionServiceMock.Object;
         }
     }
 }
