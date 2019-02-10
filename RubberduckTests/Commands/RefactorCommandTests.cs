@@ -8,7 +8,9 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Commands
 {
@@ -25,8 +27,7 @@ namespace RubberduckTests.Commands
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -41,9 +42,8 @@ namespace RubberduckTests.Commands
             using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
-                
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -61,8 +61,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -80,8 +79,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -99,11 +97,18 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(encapsulateFieldCommand.CanExecute(null));
             }
         }
+
+        private RefactorEncapsulateFieldCommand TestRefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var factory = new Mock<IRefactoringPresenterFactory>().Object;
+            var selectionService = new Mock<ISelectionService>().Object;
+            return new RefactorEncapsulateFieldCommand(vbe, state, null, factory, rewritingManager, selectionService);
+        }
+
 
         [Category("Commands")]
         [Test]

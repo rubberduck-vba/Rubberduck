@@ -1,17 +1,16 @@
-using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
 {
@@ -56,11 +55,8 @@ End Property
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
-
-                //SetupFactory
-                var factory = SetupFactory(model);
                 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -111,9 +107,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -161,9 +155,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -207,10 +199,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-                
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -272,10 +261,7 @@ End Function";
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-                
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -343,10 +329,7 @@ End Property";
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-                
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -396,10 +379,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-                
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -459,10 +439,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -514,10 +491,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -569,10 +543,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -620,10 +591,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -687,10 +655,7 @@ End Sub";
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -776,10 +741,7 @@ End Sub";
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode1 = module1.Content();
@@ -828,10 +790,7 @@ End Property
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
@@ -852,13 +811,12 @@ End Property
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
-                var vbeWrapper = vbe.Object;
+                var selectionServiceMock = new Mock<ISelectionService>();
                 var factory = new Mock<IRefactoringPresenterFactory>();
                 factory.Setup(f => f.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(It.IsAny<EncapsulateFieldModel>()))
                     .Returns(() => null); // resolves ambiguous method overload
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbeWrapper, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = new EncapsulateFieldRefactoring(state, CreateIndenter(vbe.Object), factory.Object, rewritingManager, selectionServiceMock.Object);
                 refactoring.Refactor();
 
                 var actualCode = component.CodeModule.Content();
@@ -883,10 +841,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                //SetupFactory
-                var factory = SetupFactory(null);
-
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, null, qualifiedSelection);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -939,7 +894,7 @@ End Property
                 //SetupFactory
                 var factory = SetupFactory(model);
 
-                var refactoring = new EncapsulateFieldRefactoring(state, vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model, qualifiedSelection);
                 refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
@@ -998,6 +953,25 @@ End Sub";
         }
 
         #region setup
+
+        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, EncapsulateFieldModel model, QualifiedSelection selection)
+        {
+            var selectionService = MockedSelectionService();
+            var indenter = CreateIndenter(vbe);
+            var factory = SetupFactory(model);
+            return new EncapsulateFieldRefactoring(state, indenter, factory.Object, rewritingManager, selectionService);
+        }
+
+        private static ISelectionService MockedSelectionService()
+        {
+            QualifiedSelection? activeSelection = null;
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
+        }
+
         private static Mock<IRefactoringPresenterFactory> SetupFactory(EncapsulateFieldModel model)
         {
             var presenter = new Mock<IEncapsulateFieldPresenter>();
