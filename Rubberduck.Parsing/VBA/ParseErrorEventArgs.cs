@@ -23,10 +23,7 @@ namespace Rubberduck.Parsing.VBA
         public void Navigate(ISelectionService selectionService)
         {
             var selection = new Selection(Exception.LineNumber, Exception.Position, Exception.LineNumber, Exception.Position + Exception.OffendingSymbol.Text.Length - 1);
-            if (selectionService.TrySetSelection(_moduleName, selection))
-            {
-                selectionService.TryActivate(_moduleName);
-            }
+            selectionService.TrySetActiveSelection(_moduleName, selection);
         }
     }
 }

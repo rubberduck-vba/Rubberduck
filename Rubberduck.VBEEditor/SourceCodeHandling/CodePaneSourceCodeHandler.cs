@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Reflection;
 using System.Diagnostics;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling

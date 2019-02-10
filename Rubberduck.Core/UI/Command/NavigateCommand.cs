@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command
@@ -28,10 +29,7 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            if (_selectionService.TrySetSelection(param.QualifiedName, param.Selection))
-            {
-                _selectionService.TryActivate(param.QualifiedName);
-            }
+            _selectionService.TrySetActiveSelection(param.QualifiedName, param.Selection);
         }
     }
 }

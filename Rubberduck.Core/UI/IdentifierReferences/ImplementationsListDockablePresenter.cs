@@ -33,10 +33,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         private void OnNavigateImplementation(Declaration implementation)
         {
-            if (_selectionService.TrySetSelection(implementation.QualifiedModuleName, implementation.Selection))
-            {
-                _selectionService.TryActivate(implementation.QualifiedModuleName);
-            }
+            _selectionService.TrySetActiveSelection(implementation.QualifiedModuleName, implementation.Selection);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)
