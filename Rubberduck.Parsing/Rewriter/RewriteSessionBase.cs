@@ -95,7 +95,6 @@ namespace Rubberduck.Parsing.Rewriter
             }
 
             PrimeSelectionRecovery();
-            PrimeActiveCodePaneRecovery();
 
             return TryRewriteInternal();
         }
@@ -119,12 +118,6 @@ namespace Rubberduck.Parsing.Rewriter
             }
 
             SelectionRecoverer.RecoverSavedSelectionsOnNextParse();
-        }
-
-        private void PrimeActiveCodePaneRecovery()
-        {
-            SelectionRecoverer.SaveActiveCodePane();
-            SelectionRecoverer.RecoverActiveCodePaneOnNextParse();
         }
     }
 }

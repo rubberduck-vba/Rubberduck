@@ -27,6 +27,8 @@ namespace Rubberduck.Parsing.Rewriter
         {
             //The suspension ensures that only one parse gets executed instead of two for each rewritten module.
             GuaranteeReparseAfterRewrite();
+            PrimeActiveCodePaneRecovery();
+
             var result = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready, ParserState.ResolvedDeclarations}, ExecuteAllRewriters);
             if(result != SuspensionResult.Completed)
             {
@@ -51,6 +53,12 @@ namespace Rubberduck.Parsing.Rewriter
 
             _parseManager.StateChanged -= ReparseOnSuspension;
             _parseManager.OnParseRequested(this);
+        }
+
+        private void PrimeActiveCodePaneRecovery()
+        {
+            SelectionRecoverer.SaveActiveCodePane();
+            SelectionRecoverer.RecoverActiveCodePaneOnNextParse();
         }
 
         private void ExecuteAllRewriters()
