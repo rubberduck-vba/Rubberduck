@@ -124,6 +124,12 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
                 );
             }
 
+            if (original.CaretLine.EndsWith(" ") && 
+                string.Equals(original.CaretLine, prettified.CaretLine + " ", StringComparison.InvariantCultureIgnoreCase))
+            {
+                prettified = original;
+            }
+
             // if executing the SCP against the prettified code yields no result, we need to bail out.
             if (!_scpService.Execute(pair, prettified, e.Character, out result))
             {
