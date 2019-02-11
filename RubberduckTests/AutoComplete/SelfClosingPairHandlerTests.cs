@@ -44,14 +44,14 @@ namespace RubberduckTests.AutoComplete
         }
 
         [Test]
-        public void GivenOpeningParenthesisOnOtherwiseNonEmptyLine_ReturnsFalseAndSwallowsKeypress()
+        public void GivenOpeningParenthesisOnOtherwiseNonEmptyLine_ReturnsTrueAndSwallowsKeypress()
         {
             var input = '(';
             var original = "foo = DateSerial(Year|)".ToCodeString();
             var rePrettified = "foo = DateSerial(Year(|))".ToCodeString();
             var info = new SelfClosingPairTestInfo(original, input, rePrettified);
 
-            Assert.IsFalse(Run(info));
+            Assert.IsTrue(Run(info));
             Assert.IsTrue(info.Args.Handled);
         }
 
