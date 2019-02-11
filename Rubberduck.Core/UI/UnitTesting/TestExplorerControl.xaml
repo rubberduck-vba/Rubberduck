@@ -11,7 +11,7 @@
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="255" d:DesignWidth="455"
+             d:DesignHeight="400" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
 
     <UserControl.Resources>
@@ -47,7 +47,8 @@
 
         <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
-        <converters:BoolToHiddenVisibilityConverter x:Key="BoolToCollapsed"/>
+        <converters:MillisecondToTimeMagnitudeConverter x:Key="FormattedTime" />
+        <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
 
         <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="Transparent" />
         <SolidColorBrush x:Key="ToolBarButtonHover" Color="#210080FF"/>
@@ -246,12 +247,14 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -279,7 +282,8 @@
                 <Separator />
 
                 <Menu Background="Transparent">
-                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuButtonText}">
+                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuButtonText}"
+                              IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource RunImage}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
@@ -343,7 +347,8 @@
                 <Separator />
 
                 <Menu Background="Transparent">
-                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}">
+                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}"
+                              IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource AddIcon}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
@@ -426,11 +431,64 @@
         </ProgressBar>
 
         <Border Grid.Row="2" Padding="2">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <converters:NonZeroToVisibilityConverter x:Key="NonZeroToVisibility"/>
+                    <BitmapImage x:Key="IgnoredTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/minus-white.png" />
+                    <BitmapImage x:Key="InconclusiveTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
+                    <Style x:Key="ResultsTestOutcomeStyle" TargetType="TextBlock" >
+                        <Setter Property="Margin" Value="4,0,12,0"/>
+                        <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                    <Style x:Key="TestOutcomeIconStyle" TargetType="Image">
+                        <Setter Property="Height" Value="16"/>
+                        <Setter Property="Width" Value="16" />
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="3"/>
+                    </Style>
+                </StackPanel.Resources>
+                <TextBlock Margin="2" Padding="4,2,4,2" FontWeight="Bold" VerticalAlignment="Center"
+                           Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_SummaryCaption}"/>
+                <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}" Text="{Binding Model.LastTestRunSummary, Mode=OneWay}"/>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestFailedCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}" >
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource RunFailedTestsImage}" Margin="4,0,4,0"/>
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestFailedCount, Mode=OneWay}"/>
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Failed}"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestIgnoredCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource IgnoredTestImage}" />
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestIgnoredCount, Mode=OneWay}"/>
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Ignored}"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestInconclusiveCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource InconclusiveTestImage}" />
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestInconclusiveCount, Mode=OneWay}" />
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Inconclusive}"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestSucceededCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource RunPassedTestsImage}" />
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestSucceededCount, Mode=OneWay}"/>
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Succeeded}"/>
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Padding="2">
             <Grid>
                 <controls:GroupingGrid x:Name="TestGrid"
                                        ItemsSource="{Binding Tests}"
                                        SelectionMode="Extended"
-                                       ShowGroupingItemCount="True">
+                                       ShowGroupingItemCount="True"
+                                       InitialExpandedState="True">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
@@ -454,35 +512,35 @@
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <TextBlock Text="{Binding Method.Declaration.QualifiedModuleName}" />
+                                    <TextBlock Text="{Binding Method.Declaration.QualifiedModuleName}" Margin="0,0,4,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <TextBlock Text="{Binding Method.Declaration.IdentifierName}" />
+                                    <TextBlock Text="{Binding Method.Declaration.IdentifierName}" Margin="0,0,4,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <TextBlock Text="{Binding Method.Category.Name}" />
+                                    <TextBlock Text="{Binding Method.Category.Name}" Margin="0,0,4,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <TextBlock Text="{Binding Result.Output}" />
+                                    <TextBlock Text="{Binding Result.Output}" Margin="0,0,4,0" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <TextBlock Text="{Binding Result.Duration, StringFormat={}{0}ms}" />
+                                    <TextBlock Text="{Binding Result.Duration, Converter={StaticResource FormattedTime}}" TextAlignment="Right" Margin="0,0,4,0" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -523,6 +581,6 @@
                 </controls:GroupingGrid>
             </Grid>
         </Border>
-        <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="3" Width="120" Height="120" Visibility="{Binding Model.IsRefreshing, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>

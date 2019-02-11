@@ -348,7 +348,43 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorerWindow_Caption", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to hr.
+        /// </summary>
+        public static string TestOutcome_DurationHour {
+            get {
+                return ResourceManager.GetString("TestOutcome_DurationHour", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to ms.
+        /// </summary>
+        public static string TestOutcome_DurationMillisecond {
+            get {
+                return ResourceManager.GetString("TestOutcome_DurationMillisecond", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to min.
+        /// </summary>
+        public static string TestOutcome_DurationMinute {
+            get {
+                return ResourceManager.GetString("TestOutcome_DurationMinute", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to sec.
+        /// </summary>
+        public static string TestOutcome_DurationSecond {
+            get {
+                return ResourceManager.GetString("TestOutcome_DurationSecond", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Failed.
         /// </summary>
@@ -375,7 +411,16 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_Inconclusive", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} of {1} Tests Run (Total Run Time: {2:g}).
+        /// </summary>
+        public static string TestOutcome_RunSummaryFormat {
+            get {
+                return ResourceManager.GetString("TestOutcome_RunSummaryFormat", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Succeeded.
         /// </summary>
@@ -384,7 +429,16 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_Succeeded", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Summary:.
+        /// </summary>
+        public static string TestOutcome_SummaryCaption {
+            get {
+                return ResourceManager.GetString("TestOutcome_SummaryCaption", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>

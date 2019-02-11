@@ -9,9 +9,11 @@ namespace Rubberduck.UnitTesting
         event EventHandler<TestStartedEventArgs> TestStarted;
         event EventHandler<TestCompletedEventArgs> TestCompleted;
         event EventHandler<TestRunCompletedEventArgs> TestRunCompleted;
+        event EventHandler TestsRefreshStarted;
         event EventHandler TestsRefreshed;
 
         IEnumerable<TestMethod> Tests { get; }
+        IReadOnlyList<TestMethod> LastRunTests { get; }
         bool CanRun { get; }
         bool CanRepeatLastRun { get; }
         void Run(IEnumerable<TestMethod> tests);

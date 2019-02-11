@@ -316,4 +316,27 @@
     <value>LateBindTests</value>
     <comment>Precompiler directive, as in "#Const LateBind = LateBindTests". Localize as an indentifier.</comment>
   </data>
+  <data name="TestOutcome_DurationHour" xml:space="preserve">
+    <value>hr</value>
+    <comment>Abbreviation for hours</comment>
+  </data>
+  <data name="TestOutcome_DurationMillisecond" xml:space="preserve">
+    <value>ms</value>
+    <comment>Abbreviation for milliseconds</comment>
+  </data>
+  <data name="TestOutcome_DurationMinute" xml:space="preserve">
+    <value>min</value>
+    <comment>Abbreviation for minutes</comment>
+  </data>
+  <data name="TestOutcome_DurationSecond" xml:space="preserve">
+    <value>sec</value>
+    <comment>Abbreviation for seconds</comment>
+  </data>
+  <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
+    <value>{0} of {1} Tests Run (Total Run Time: {2:g})</value>
+    <comment>{0} is number of tests in the test run, {1} is total tests, {2} is total duration</comment>
+  </data>
+  <data name="TestOutcome_SummaryCaption" xml:space="preserve">
+    <value>Summary:</value>
+  </data>
 </root>

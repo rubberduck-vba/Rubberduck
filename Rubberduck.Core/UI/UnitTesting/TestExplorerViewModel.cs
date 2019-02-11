@@ -33,10 +33,11 @@ namespace Rubberduck.UI.UnitTesting
         private readonly ISettingsFormFactory _settingsFormFactory;
 
         public TestExplorerViewModel(IProjectsProvider projectsProvider,
-             TestExplorerModel model,
-             IClipboardWriter clipboard,
-             IGeneralConfigService configService,
-             ISettingsFormFactory settingsFormFactory)
+            TestExplorerModel model,
+            IClipboardWriter clipboard,
+            // ReSharper disable once UnusedParameter.Local - left in place because it will likely be needed for app wide font settings, etc.
+            IGeneralConfigService configService,
+            ISettingsFormFactory settingsFormFactory)
         {
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
@@ -53,6 +54,8 @@ namespace Rubberduck.UI.UnitTesting
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
 
             Model = model;
+            Model.TestCompleted += HandleTestCompletion;
+
             if (CollectionViewSource.GetDefaultView(Model.Tests) is ListCollectionView tests)
             {
                 tests.SortDescriptions.Add(new SortDescription("QualifiedName.QualifiedModuleName.Name", ListSortDirection.Ascending));
@@ -138,6 +141,18 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        private void HandleTestCompletion(object sender, TestCompletedEventArgs e)
+        {
+            if (TestGrouping != TestExplorerGrouping.Outcome)
+            {
+                return;
+            }
+
+            Tests.Refresh();
+        }
+
+        #region Commands
+
         public ReparseCommand RefreshCommand { get; set; }
 
         public RunAllTestsCommand RunAllTestsCommand { get; set; }
@@ -166,6 +181,10 @@ namespace Rubberduck.UI.UnitTesting
 
         public CommandBase CollapseAllCommand { get; }
         public CommandBase ExpandAllCommand { get; }
+
+        #endregion
+
+        #region Delegates
 
         private bool CanExecuteSingleTest(object obj)
         {
@@ -315,8 +334,11 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        #endregion
+
         public void Dispose()
         {
+            Model.TestCompleted -= HandleTestCompletion;
             Model.Dispose();
         }
     }

@@ -40,6 +40,8 @@ namespace Rubberduck.UnitTesting
 
         public IEnumerable<TestMethod> Tests => _tests;
 
+        public IReadOnlyList<TestMethod> LastRunTests => _lastRun;
+
         public bool CanRun => AllowedRunStates.Contains(_state.Status) && _vbe.IsInDesignMode;
         public bool CanRepeatLastRun => _lastRun.Any();
         
@@ -66,6 +68,12 @@ namespace Rubberduck.UnitTesting
 
         private void StateChangedHandler(object sender, ParserStateEventArgs e)
         {
+            if (e.OldState == ParserState.Started)
+            {
+                _uiDispatcher.InvokeAsync(() => TestsRefreshStarted?.Invoke(this, EventArgs.Empty));
+                return;
+            }
+
             if (!CanRun || e.IsError)
             {
                 _refreshBackoff = false;
@@ -103,6 +111,7 @@ namespace Rubberduck.UnitTesting
         public event EventHandler<TestStartedEventArgs> TestStarted;
         public event EventHandler<TestCompletedEventArgs> TestCompleted;
         public event EventHandler<TestRunCompletedEventArgs> TestRunCompleted;
+        public event EventHandler TestsRefreshStarted;
         public event EventHandler TestsRefreshed;
 
         private void OnTestRunStarted(IReadOnlyList<TestMethod> tests)

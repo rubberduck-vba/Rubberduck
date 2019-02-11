@@ -9,6 +9,12 @@ namespace Rubberduck.UI.Controls
     // Courtesy of @aKzenT - this is a heavily refactored implementation of https://stackoverflow.com/a/15924044/4088852
     public class PersistGroupExpandedStateBehavior : Behavior<Expander>
     {
+        public static readonly DependencyProperty InitialExpandedStateProperty = DependencyProperty.Register(
+            "InitialExpandedState",
+            typeof(bool),
+            typeof(PersistGroupExpandedStateBehavior),
+            new PropertyMetadata(default(bool)));
+
         public static readonly DependencyProperty GroupNameProperty = DependencyProperty.Register(
             "GroupName",
             typeof(object),
@@ -21,6 +27,12 @@ namespace Rubberduck.UI.Controls
                 typeof(IDictionary<object, bool>),
                 typeof(PersistGroupExpandedStateBehavior),
                 new PropertyMetadata(default(IDictionary<object, bool>)));
+
+        public bool InitialExpandedState
+        {
+            get => (bool)GetValue(InitialExpandedStateProperty);
+            set => SetValue(InitialExpandedStateProperty, value);
+        }
 
         public object GroupName
         {
@@ -37,7 +49,7 @@ namespace Rubberduck.UI.Controls
 
             if (expanded != null)
             {
-                AssociatedObject.IsExpanded = expanded.Value;
+                AssociatedObject.IsExpanded = InitialExpandedState;
             }
 
             AssociatedObject.Expanded += OnExpanded;

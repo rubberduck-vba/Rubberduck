@@ -62,7 +62,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
-                        <Expander Background="WhiteSmoke" Foreground="Black" FontWeight="SemiBold">
+                        <Expander Background="WhiteSmoke" Foreground="Black" FontWeight="SemiBold" 
+                                  IsExpanded="{Binding InitialExpandedState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GroupingGrid}}}">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Margin="4" 
