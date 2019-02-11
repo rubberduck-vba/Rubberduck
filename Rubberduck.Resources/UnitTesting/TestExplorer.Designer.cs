@@ -422,7 +422,7 @@ namespace Rubberduck.Resources.UnitTesting {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Spectactular Failure.
+        ///   Looks up a localized string similar to Spectacular Failure.
         /// </summary>
         public static string TestOutcome_SpectacularFail {
             get {
