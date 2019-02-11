@@ -24,12 +24,12 @@ namespace Rubberduck.Refactorings.Rename
         private const string AppendUnderscoreFormat = "{0}_";
         private const string PrependUnderscoreFormat = "_{0}";
 
-        private readonly IVBE _vbe;
         private readonly IRefactoringPresenterFactory _factory;
         private readonly IMessageBox _messageBox;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IProjectsProvider _projectsProvider;
         private readonly IRewritingManager _rewritingManager;
+        private readonly ISelectionService _selectionService;
         private RenameModel _model;
         private readonly IDictionary<DeclarationType, Action<IRewriteSession>> _renameActions;
         private readonly List<string> _neverRenameIdentifiers;
@@ -37,14 +37,14 @@ namespace Rubberduck.Refactorings.Rename
         private bool IsInterfaceMemberRename { set; get; }
         private bool IsControlEventHandlerRename { set; get; }
         private bool IsUserEventHandlerRename { set; get; }
-        public RenameRefactoring(IVBE vbe, IRefactoringPresenterFactory factory, IMessageBox messageBox, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager)
+        public RenameRefactoring(IRefactoringPresenterFactory factory, IMessageBox messageBox, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
-            _vbe = vbe;
             _factory = factory;
             _messageBox = messageBox;
             _declarationFinderProvider = declarationFinderProvider;
             _projectsProvider = projectsProvider;
             _rewritingManager = rewritingManager;
+            _selectionService = selectionService;
             _model = null;
 
             _renameActions = new Dictionary<DeclarationType, Action<IRewriteSession>>
@@ -62,7 +62,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private RenameModel InitializeModel(Declaration target)
         {
-            var targetSelection = target?.QualifiedSelection ?? _vbe.GetActiveSelection();
+            var targetSelection = target?.QualifiedSelection ?? _selectionService.ActiveSelection();
 
             return targetSelection == null ? null : new RenameModel(_declarationFinderProvider.DeclarationFinder, targetSelection.Value);
         }
@@ -476,19 +476,23 @@ namespace Rubberduck.Refactorings.Rename
                     }
                 default:
                     {
-                        if (_vbe.Kind == VBEKind.Hosted)
+                        using (var vbe = component.VBE)
                         {
-                            // VBA - rename code module
-                            using (var codeModule = component.CodeModule)
+                            if (vbe.Kind == VBEKind.Hosted)
                             {
-                                Debug.Assert(!codeModule.IsWrappingNullReference, "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
-                                codeModule.Name = _model.NewName;
+                                // VBA - rename code module
+                                using (var codeModule = component.CodeModule)
+                                {
+                                    Debug.Assert(!codeModule.IsWrappingNullReference,
+                                        "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
+                                    codeModule.Name = _model.NewName;
+                                }
                             }
-                        }
-                        else
-                        {
-                            // VB6 - rename component
-                            component.Name = _model.NewName;
+                            else
+                            {
+                                // VB6 - rename component
+                                component.Name = _model.NewName;
+                            }
                         }
                         break;
                     }
@@ -498,29 +502,12 @@ namespace Rubberduck.Refactorings.Rename
         //The parameter is not used, but it is required for the _renameActions dictionary.
         private void RenameProject(IRewriteSession rewriteSession)
         {
-            var project = ProjectById(_vbe, _model.Target.ProjectId);
+            var project = _projectsProvider.Project(_model.Target.ProjectId);
 
             if (project != null)
             {
                 project.Name = _model.NewName;
-                project.Dispose();
             }
-        }
-
-        private IVBProject ProjectById(IVBE vbe, string projectId)
-        {
-            using (var projects = vbe.VBProjects)
-            {
-                foreach (var project in projects)
-                {
-                    if (project.ProjectId == projectId)
-                    {
-                        return project;
-                    }
-                    project.Dispose();
-                }
-            }
-            return null;
         }
 
         private void RenameDefinedFormatMembers(IReadOnlyCollection<Declaration> members, string underscoreFormat, IRewriteSession rewriteSession)

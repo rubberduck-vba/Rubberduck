@@ -6,8 +6,8 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -18,14 +18,18 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _msgBox;
         private readonly IRefactoringPresenterFactory _factory;
+        private readonly ISelectionService _selectionService;
+        private readonly IVBE _vbe;
 
-        public ProjectExplorerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
+        public ProjectExplorerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
             : base(vbe)
         {
             _state = state;
             _rewritingManager = rewritingManager;
             _msgBox = msgBox;
             _factory = factory;
+            _selectionService = selectionService;
+            _vbe = vbe;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -35,7 +39,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var refactoring = new RenameRefactoring(Vbe, _factory, _msgBox, _state, _state.ProjectsProvider, _rewritingManager);
+            var refactoring = new RenameRefactoring(_factory, _msgBox, _state, _state.ProjectsProvider, _rewritingManager, _selectionService);
             var target = GetTarget();
             if (target != null)
             {
@@ -46,13 +50,13 @@ namespace Rubberduck.UI.Command.Refactorings
         private Declaration GetTarget()
         {
             string selectedComponentName;
-            using (var selectedComponent = Vbe.SelectedVBComponent)
+            using (var selectedComponent = _vbe.SelectedVBComponent)
             {
                 selectedComponentName = selectedComponent?.Name;
             }
 
             string activeProjectId;
-            using (var activeProject = Vbe.ActiveVBProject)
+            using (var activeProject = _vbe.ActiveVBProject)
             {
                 activeProjectId = activeProject?.ProjectId;
             }
