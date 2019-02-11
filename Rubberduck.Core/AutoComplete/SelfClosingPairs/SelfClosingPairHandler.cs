@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
@@ -130,14 +131,21 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
             }
 
             var reprettified = CodePaneHandler.Prettify(e.Module, result);
-            if (pair.OpeningChar == '(' && e.Character == pair.OpeningChar && !reprettified.Equals(result))
+            if (pair.OpeningChar == '(' && e.Character == pair.OpeningChar)
             {
+                if (string.Equals(reprettified.Code, result.Code, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    e.Handled = true;
+                    result = reprettified;
+                    return true;
+                }
+
                 // VBE eats it. bail out but don't swallow the keypress.
                 e.Handled = false;
                 result = null;
                 return false;
             }
-            
+
             var currentLine = reprettified.Lines[reprettified.CaretPosition.StartLine];
             if (!string.IsNullOrWhiteSpace(currentLine) &&
                 currentLine.EndsWith(" ") &&
