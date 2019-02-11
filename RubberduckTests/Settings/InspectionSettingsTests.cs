@@ -60,8 +60,8 @@ namespace RubberduckTests.Settings
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
 
-            Assert.IsTrue(config.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(
-                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
+            Assert.IsTrue(config.UserSettings.CodeInspectionSettings.CodeInspections.OrderBy(setting => setting.InspectionType).SequenceEqual(
+                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().OrderBy(setting => setting.InspectionType)));
         }
 
         [Category("Settings")]
@@ -73,8 +73,8 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
 
-            Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(
-                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
+            Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.OrderBy(setting => setting.InspectionType).SequenceEqual(
+                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().OrderBy(setting => setting.InspectionType)));
         }
 
         [Category("Settings")]
@@ -84,8 +84,8 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             var viewModel = new InspectionSettingsViewModel(defaultConfig);
 
-            Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(
-                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
+            Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.OrderBy(setting => setting.InspectionType).SequenceEqual(
+                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().OrderBy(setting => setting.InspectionType)));
         }
 
         [Category("Settings")]
@@ -102,8 +102,8 @@ namespace RubberduckTests.Settings
             updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections.First().Severity =
                 GetNondefaultConfig().UserSettings.CodeInspectionSettings.CodeInspections.First().Severity;
 
-            Assert.IsTrue(updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections.SequenceEqual(
-                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>()));
+            Assert.IsTrue(updatedConfig.UserSettings.CodeInspectionSettings.CodeInspections.OrderBy(setting => setting.InspectionType).SequenceEqual(
+                    viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().OrderBy(setting => setting.InspectionType)));
         }
     }
 }

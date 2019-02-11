@@ -369,7 +369,7 @@
     <value>'IsMissing' will always return false with the passed argument.</value>
   </data>
   <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
-    <value>'IsMissing' is passed an expresssion that is not an argument to the enclosing procedure.</value>
+    <value>'IsMissing' is passed an expression that is not an argument to the enclosing procedure.</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>An assignment is immediately overridden by another assignment or is never referenced.</value>

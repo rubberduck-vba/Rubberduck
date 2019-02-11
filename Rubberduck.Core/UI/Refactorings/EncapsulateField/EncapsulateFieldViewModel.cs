@@ -1,40 +1,33 @@
 ﻿using System;
 using System.Linq;
-using System.Windows.Forms;
-using NLog;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldViewModel : ViewModelBase
+    public class EncapsulateFieldViewModel : RefactoringViewModelBase<EncapsulateFieldModel>
     {
         public RubberduckParserState State { get; }
         public IIndenter Indenter { get; }
 
-        public EncapsulateFieldViewModel(RubberduckParserState state, IIndenter indenter)
+        public EncapsulateFieldViewModel(EncapsulateFieldModel model, RubberduckParserState state, IIndenter indenter) : base(model)
         {
             State = state;
             Indenter = indenter;
 
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
-
             IsLetSelected = true;
-            CanHaveLet = true;
+            PropertyName = model.TargetDeclaration.IdentifierName;
         }
 
-        private Declaration _targetDeclaration;
         public Declaration TargetDeclaration
         {
-            get => _targetDeclaration;
+            get => Model.TargetDeclaration;
             set
             {
-                _targetDeclaration = value;
+                Model.TargetDeclaration = value;
                 PropertyName = value.IdentifierName;
             }
         }
@@ -51,59 +44,37 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        private bool _canHaveLet;
-        public bool CanHaveLet
-        {
-            get => _canHaveLet;
-            set
-            {
-                _canHaveLet = value;
-                OnPropertyChanged();
-            }
-        }
+        public bool CanHaveLet => Model.CanImplementLet;
+        public bool CanHaveSet => Model.CanImplementSet;
 
-        private bool _canHaveSet;
-        public bool CanHaveSet
-        {
-            get => _canHaveSet;
-            set
-            {
-                _canHaveSet = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _isLetSelected;
         public bool IsLetSelected
         {
-            get => _isLetSelected;
+            get => Model.ImplementLetSetterType;
             set
             {
-                _isLetSelected = value;
+                Model.ImplementLetSetterType = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(PropertyPreview));
             }
         }
 
-        private bool _isSetSelected;
         public bool IsSetSelected
         {
-            get => _isSetSelected;
+            get => Model.ImplementSetSetterType;
             set
             {
-                _isSetSelected = value;
+                Model.ImplementSetSetterType = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(PropertyPreview));
             }
         }
 
-        private string _propertyName;
         public string PropertyName
         {
-            get => _propertyName;
+            get => Model.PropertyName;
             set
             {
-                _propertyName = value;
+                Model.PropertyName = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidPropertyName));
                 OnPropertyChanged(nameof(HasValidNames));
@@ -111,13 +82,12 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        private string _parameterName = "value";
         public string ParameterName
         {
-            get => _parameterName;
+            get => Model.ParameterName;
             set
             {
-                _parameterName = value;
+                Model.ParameterName = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidParameterName));
                 OnPropertyChanged(nameof(HasValidNames));
@@ -183,14 +153,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
             }
         }
 
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
-
         public event EventHandler<bool> ExpansionStateChanged;
         private void OnExpansionStateChanged(bool value) => ExpansionStateChanged?.Invoke(this, value);
-
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
     }
 }

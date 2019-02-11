@@ -133,7 +133,7 @@ namespace RubberduckTests.AddRemoveReferences
         {
             var declaration = AddRemoveReferencesSetup.ArrangeMocksAndGetProject();
             var settings = AddRemoveReferencesSetup.GetNonDefaultReferenceSettings();
-            var model = new AddRemoveReferencesModel(declaration, SearchReferencesList, settings);
+            var model = new AddRemoveReferencesModel(null, declaration, SearchReferencesList, settings);
             var reconciler = AddRemoveReferencesSetup.ArrangeReferenceReconciler(settings);
 
             var viewModel = new AddRemoveReferencesViewModel(model, reconciler, new Mock<IFileSystemBrowserFactory>().Object);

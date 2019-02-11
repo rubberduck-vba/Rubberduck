@@ -21,8 +21,8 @@ namespace Rubberduck.UI.CodeExplorer
             if (ViewModel != null && ViewModel.OpenCommand.CanExecute(ViewModel.SelectedItem))
             {
                 ViewModel.OpenCommand.Execute(ViewModel.SelectedItem);
+                e.Handled = true;
             }
-            e.Handled = true;
         }
 
         private void TreeView_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)

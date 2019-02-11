@@ -61,8 +61,6 @@ namespace Rubberduck.Navigation.CodeExplorer
 
         public override Comparer<ICodeExplorerNode> SortComparer => CodeExplorerItemComparer.Name;
 
-        public override bool Filtered => false;
-
         protected override void AddNewChildren(ref List<Declaration> declarations)
         {
             var children = declarations.Where(declaration => declaration.IsInFolderOrSubFolder(FullPath)).ToList();

@@ -141,21 +141,93 @@ namespace RubberduckTests.CodeExplorer
 
         [Test]
         [Category("Code Explorer")]
-        public void FilteredIsFalseForAnyCharacter()
+        public void FilteredIsTrueForCharactersNotInName()
         {
-            const string folderName = "Foo";
             const string testCharacters = "abcdefghijklmnopqrstuwxyz";
+            const string folderName = "Asdf";
+
+            var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
+            var children = declarations.SelectMany(declaration => declaration.IdentifierName.ToCharArray()).Distinct().ToList();
+
+            var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
+
+            var nonMatching = testCharacters.ToCharArray().Except(folderName.ToLowerInvariant().ToCharArray().Union(children));
+
+            foreach (var character in nonMatching.Select(letter => letter.ToString()))
+            {
+                folder.Filter = character;
+                Assert.IsTrue(folder.Filtered);
+            }
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        public void FilteredIsFalseForSubsetsOfName()
+        {
+            const string folderName = "Foobar";
 
             var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
             var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
 
             var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
 
-            foreach (var character in testCharacters.ToCharArray().Select(letter => letter.ToString()))
+            for (var characters = 1; characters <= folderName.Length; characters++)
             {
-                folder.Filter = character;
+                folder.Filter = folderName.Substring(0, characters);
                 Assert.IsFalse(folder.Filtered);
             }
+
+            for (var position = folderName.Length - 2; position > 0; position--)
+            {
+                folder.Filter = folderName.Substring(position);
+                Assert.IsFalse(folder.Filtered);
+            }
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        public void FilteredIsFalseIfChildMatches()
+        {
+            const string folderName = "Foobar";
+
+            var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
+
+            var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
+            var childName = folder.Children.First().Name;
+
+            for (var characters = 1; characters <= childName.Length; characters++)
+            {
+                folder.Filter = childName.Substring(0, characters);
+                Assert.IsFalse(folder.Filtered);
+            }
+
+            for (var position = childName.Length - 2; position > 0; position--)
+            {
+                folder.Filter = childName.Substring(position);
+                Assert.IsFalse(folder.Filtered);
+            }
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        public void UnfilteredStateIsRestored()
+        {
+            const string folderName = "Foobar";
+
+            var testFolder = (Name: CodeExplorerTestSetup.TestModuleName, Folder: folderName);
+            var declarations = CodeExplorerTestSetup.TestProjectWithFolderStructure(new List<(string Name, string Folder)> { testFolder }, out _);
+
+            var folder = new CodeExplorerCustomFolderViewModel(null, folderName, folderName, null, ref declarations);
+            var childName = folder.Children.First().Name;
+
+            folder.IsExpanded = false;
+            folder.Filter = childName;
+            Assert.IsTrue(folder.IsExpanded);
+
+            folder.Filter = string.Empty;
+            Assert.IsFalse(folder.IsExpanded);
         }
 
         [Test]

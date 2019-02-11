@@ -1,44 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows.Forms;
 using NLog;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
-using Rubberduck.UI.Refactorings.ExtractInterface;
 
 namespace Rubberduck.UI.Refactorings
 {
-    internal class ExtractInterfaceViewModel : ViewModelBase
+    public class ExtractInterfaceViewModel : RefactoringViewModelBase<ExtractInterfaceModel>
     {
-        public ExtractInterfaceViewModel()
+        public ExtractInterfaceViewModel(ExtractInterfaceModel model) : base(model)
         {
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
-            CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
+
+            ComponentNames = Model.State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Module)
+                .Where(moduleDeclaration => moduleDeclaration.ProjectId == Model.TargetDeclaration.ProjectId)
+                .Select(module => module.ComponentName)
+                .ToList();
         }
 
-        private List<InterfaceMemberViewModel> _members;
-        public List<InterfaceMemberViewModel> Members
+        public ObservableCollection<InterfaceMember> Members
         {
-            get => _members;
+            get => Model.Members;
             set
             {
-                _members = value;
+                Model.Members = value;
                 OnPropertyChanged();
             }
         }
 
         public List<string> ComponentNames { get; set; }
 
-        private string _interfaceName;
         public string InterfaceName
         {
-            get => _interfaceName;
+            get => Model.InterfaceName;
             set
             {
-                _interfaceName = value;
+                Model.InterfaceName = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(IsValidInterfaceName));
             }
@@ -58,20 +61,15 @@ namespace Rubberduck.UI.Refactorings
             }
         }
 
-        public event EventHandler<DialogResult> OnWindowClosed;
-        private void DialogCancel() => OnWindowClosed?.Invoke(this, DialogResult.Cancel);
-        private void DialogOk() => OnWindowClosed?.Invoke(this, DialogResult.OK);
-
         private void ToggleSelection(bool value)
         {
             foreach (var item in Members)
             {
                 item.IsSelected = value;
             }
+            OnPropertyChanged(nameof(Members));
         }
 
-        public CommandBase OkButtonCommand { get; }
-        public CommandBase CancelButtonCommand { get; }
         public CommandBase SelectAllCommand { get; }
         public CommandBase DeselectAllCommand { get; }
     }

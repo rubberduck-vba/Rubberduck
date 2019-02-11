@@ -176,6 +176,34 @@ namespace RubberduckTests.CodeExplorer
         [TestCase(CodeExplorerTestSetup.TestModuleName)]
         [TestCase(CodeExplorerTestSetup.TestClassName)]
         [TestCase(CodeExplorerTestSetup.TestUserFormName)]
+        public void FilteredIsFalseIfMemberMatches(string name)
+        {
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestComponentDeclarations(name);
+            var componentDeclaration = declarations
+                .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
+
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
+            var childName = component.Children.First().Name;
+
+            for (var characters = 1; characters <= childName.Length; characters++)
+            {
+                component.Filter = childName.Substring(0, characters);
+                Assert.IsFalse(component.Filtered);
+            }
+
+            for (var position = childName.Length - 2; position > 0; position--)
+            {
+                component.Filter = childName.Substring(position);
+                Assert.IsFalse(component.Filtered);
+            }
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestSetup.TestDocumentName)]
+        [TestCase(CodeExplorerTestSetup.TestModuleName)]
+        [TestCase(CodeExplorerTestSetup.TestClassName)]
+        [TestCase(CodeExplorerTestSetup.TestUserFormName)]
         public void FilteredIsTrueForCharactersNotInName(string name)
         {
             const string testCharacters = "abcdefghijklmnopqrstuwxyz";
@@ -193,6 +221,29 @@ namespace RubberduckTests.CodeExplorer
                 component.Filter = character;
                 Assert.IsTrue(component.Filtered);
             }
+        }
+
+        [Test]
+        [Category("Code Explorer")]
+        [TestCase(CodeExplorerTestSetup.TestDocumentName)]
+        [TestCase(CodeExplorerTestSetup.TestModuleName)]
+        [TestCase(CodeExplorerTestSetup.TestClassName)]
+        [TestCase(CodeExplorerTestSetup.TestUserFormName)]
+        public void UnfilteredStateIsRestored(string name)
+        {
+            var declarations = CodeExplorerTestSetup.TestProjectOneDeclarations.TestComponentDeclarations(name);
+            var componentDeclaration = declarations
+                .First(declaration => declaration.DeclarationType.HasFlag(DeclarationType.Module) && declaration.IdentifierName.Equals(name));
+
+            var component = new CodeExplorerComponentViewModel(null, componentDeclaration, ref declarations, null);
+            var childName = component.Children.First().Name;
+
+            component.IsExpanded = false;
+            component.Filter = childName;
+            Assert.IsTrue(component.IsExpanded);
+
+            component.Filter = string.Empty;
+            Assert.IsFalse(component.IsExpanded);
         }
 
         [Test]

@@ -69,6 +69,7 @@ namespace Rubberduck.Parsing.VBA
             _rewritingManager = rewritingManager;
 
             state.ParseRequest += ReparseRequested;
+            state.ParseCancellationRequested += ParseCancellationRequested;
             state.SuspendRequest += SuspendRequested;
 
             _requestorStack = new ConcurrentStack<object>();
@@ -97,6 +98,14 @@ namespace Rubberduck.Parsing.VBA
             }
 
             BeginParse(sender);
+        }
+
+        private void ParseCancellationRequested(object requestor, EventArgs e)
+        {
+            lock (CancellationSyncObject)
+            {
+                Cancel();
+            }
         }
 
         public void SuspendRequested(object sender, RubberduckStatusSuspendParserEventArgs e)

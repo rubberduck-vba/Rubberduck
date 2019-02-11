@@ -8,9 +8,8 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -21,13 +20,15 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
-
-        public RefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
+        private readonly IRefactoringPresenterFactory _factory;
+        
+        public RefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
             :base(vbe)
         {
             _state = state;
             _rewritingManager = rewritingManager;
             _messageBox = messageBox;
+            _factory = factory;
         }
 
         private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[] 
@@ -85,12 +86,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 }
             }
 
-            using (var view = new ExtractInterfaceDialog(new ExtractInterfaceViewModel()))
-            {
-                var factory = new ExtractInterfacePresenterFactory(Vbe, _state, view);
-                var refactoring = new ExtractInterfaceRefactoring(Vbe, _messageBox, factory, _rewritingManager);
-                refactoring.Refactor();
-            }
+            var refactoring = new ExtractInterfaceRefactoring(_state, Vbe, _messageBox, _factory, _rewritingManager);
+            refactoring.Refactor();
         }
     }
 }

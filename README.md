@@ -17,6 +17,8 @@ If you like this project and would like to thank its contributors, you are welco
 [masterBuildStatus]:https://ci.appveyor.com/api/projects/status/we3pdnkeebo4nlck/branch/master?svg=true
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/Rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/Rubberduck-vba/rubberduck "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/Rubberduck-vba/rubberduck.svg)](http://isitmaintained.com/project/Rubberduck-vba/rubberduck "Percentage of issues still open")
+[![Chat on stackexchange](https://img.shields.io/badge/chat-on%20stackexchange-blue.svg)](https://chat.stackexchange.com/rooms/14929/vba-rubberducking)
+[![License](https://img.shields.io/github/license/rubberduck-vba/Rubberduck.svg)](https://github.com/rubberduck-vba/Rubberduck/blob/next/LICENSE)
 
 > **[rubberduckvba.com](http://rubberduckvba.com)** [Wiki](https://github.com/rubberduck-vba/Rubberduck/wiki) [Rubberduck News](https://rubberduckvba.wordpress.com/) 
 > devs@rubberduckvba.com  
@@ -36,7 +38,7 @@ If you like this project and would like to thank its contributors, you are welco
 
 Rubberduck is a COM add-in for the VBA IDE (VBE).
 
-Copyright (C) 2014-2018 Rubberduck project contributors
+Copyright (C) 2014-2019 Rubberduck project contributors
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

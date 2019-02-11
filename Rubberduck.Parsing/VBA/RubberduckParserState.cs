@@ -127,6 +127,7 @@ namespace Rubberduck.Parsing.VBA
             new ConcurrentDictionary<QualifiedModuleName, ModuleState>();
 
         public event EventHandler<EventArgs> ParseRequest;
+        public event EventHandler<EventArgs> ParseCancellationRequested;
         public event EventHandler<RubberduckStatusSuspendParserEventArgs> SuspendRequest;
         public event EventHandler<RubberduckStatusMessageEventArgs> StatusMessageUpdate;
 
@@ -963,14 +964,7 @@ namespace Rubberduck.Parsing.VBA
             return _moduleStates[key].Declarations.TryRemove(declaration, out _);
         }
 
-        /// <summary>
-        /// Ensures parser state accounts for built-in declarations.
-        /// </summary>
-        /// <summary>
-        /// Requests reparse for specified component.
-        /// Omit parameter to request a full reparse.
-        /// </summary>
-        /// <param name="requestor">The object requesting a reparse.</param>
+        /// <inheritdoc />
         public void OnParseRequested(object requestor)
         {
             var handler = ParseRequest;
@@ -981,6 +975,18 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
+        /// <inheritdoc />
+        public void OnParseCancellationRequested(object requestor)
+        {
+            var handler = ParseCancellationRequested;
+            if (handler != null && IsEnabled)
+            {
+                var args = EventArgs.Empty;
+                handler.Invoke(requestor, args);
+            }
+        }
+
+        /// <inheritdoc />
         public SuspensionResult OnSuspendParser(object requestor, IEnumerable<ParserState> allowedRunStates, Action busyAction, int millisecondsTimeout = NoTimeout)
         {
             if (millisecondsTimeout < NoTimeout)

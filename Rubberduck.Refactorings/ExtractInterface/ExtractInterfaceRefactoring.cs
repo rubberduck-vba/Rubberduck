@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Rubberduck.Interaction;
@@ -11,59 +10,84 @@ using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceRefactoring : IRefactoring
     {
+        private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly IMessageBox _messageBox;
+        private readonly IRefactoringPresenterFactory _factory;
         private readonly IRewritingManager _rewritingManager;
-        private readonly IRefactoringPresenterFactory<IExtractInterfacePresenter> _factory;
         private ExtractInterfaceModel _model;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ExtractInterfaceRefactoring(IVBE vbe, IMessageBox messageBox, IRefactoringPresenterFactory<IExtractInterfacePresenter> factory, IRewritingManager rewritingManager)
+        public ExtractInterfaceRefactoring(RubberduckParserState state, IVBE vbe, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
         {
+            _state = state;
             _vbe = vbe;
             _rewritingManager = rewritingManager;
             _messageBox = messageBox;
             _factory = factory;
         }
 
-        public void Refactor()
+        private ExtractInterfaceModel InitializeModel()
         {
-            var presenter = _factory.Create();
-            if (presenter == null)
+            var selection = _vbe.GetActiveSelection();
+
+            if (selection == null)
             {
-                return;
+                return null;
             }
 
-            _model = presenter.Show();
+            return new ExtractInterfaceModel(_state, selection.Value);
+        }
+
+        public void Refactor()
+        {
+            _model = InitializeModel();
+
             if (_model == null)
             {
                 return;
             }
 
-            using (var pane = _vbe.ActiveCodePane)
+            using (var container = DisposalActionContainer.Create(_factory.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(_model), p => _factory.Release(p)))
             {
-                if (pane.IsWrappingNullReference)
+                var presenter = container.Value;
+                if (presenter == null)
                 {
                     return;
                 }
 
-                var oldSelection = pane.GetQualifiedSelection();
-
-                AddInterface();
-
-                if (oldSelection.HasValue)
+                _model = presenter.Show();
+                if (_model == null)
                 {
-                    pane.Selection = oldSelection.Value.Selection;
+                    return;
                 }
-            }
 
-            _model.State.OnParseRequested(this);
+                using (var pane = _vbe.ActiveCodePane)
+                {
+                    if (pane.IsWrappingNullReference)
+                    {
+                        return;
+                    }
+
+                    var oldSelection = pane.GetQualifiedSelection();
+
+                    AddInterface();
+
+                    if (oldSelection.HasValue)
+                    {
+                        pane.Selection = oldSelection.Value.Selection;
+                    }
+                }
+
+                _model.State.OnParseRequested(this);
+            }
         }
 
         public void Refactor(QualifiedSelection target)
@@ -150,12 +174,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private void AddInterfaceMembersToClass(IModuleRewriter rewriter)
         {
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_vbe, _model.State, _messageBox, _rewritingManager);
-            implementInterfaceRefactoring.Refactor(_model.Members.Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);
+            implementInterfaceRefactoring.Refactor(_model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);
         }
 
         private string GetInterfaceModuleBody()
         {
-            return string.Join(Environment.NewLine, _model.Members.Select(m => m.Body));
+            return string.Join(Environment.NewLine, _model.SelectedMembers.Select(m => m.Body));
         }
     }
 }
