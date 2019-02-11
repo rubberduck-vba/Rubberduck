@@ -1,5 +1,5 @@
 ﻿using Moq;
-using Rubberduck.AutoComplete.Service;
+using Rubberduck.AutoComplete.SelfClosingPairs;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;

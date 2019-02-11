@@ -130,6 +130,7 @@
                                        MaxNumber="{Binding Path=DataContext.ConcatMaxLinesMaxValue, RelativeSource={RelativeSource Self}}">
                     
                 </controls:NumberPicker>-->
+                <!--
                 <Label Margin="10" 
                        Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=BlockCompletion}"
                        FontWeight="Bold" />
@@ -145,6 +146,7 @@
                           IsEnabled="{Binding EnableBlockCompletion}"
                           IsChecked="{Binding CompleteBlockOnTab}" 
                           Content="{Resx ResxName=Rubberduck.Resources.Settings.AutoCompletesPage, Key=CompleteBlockOnTab}" />
+                -->
             </StackPanel>
         </ScrollViewer>
     </Grid>
