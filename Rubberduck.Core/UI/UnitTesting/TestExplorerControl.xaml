@@ -436,6 +436,7 @@
                     <converters:NonZeroToVisibilityConverter x:Key="NonZeroToVisibility"/>
                     <BitmapImage x:Key="IgnoredTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/minus-white.png" />
                     <BitmapImage x:Key="InconclusiveTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
+                    <BitmapImage x:Key="EasterEggTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/skull-mad.png" />
                     <Style x:Key="ResultsTestOutcomeStyle" TargetType="TextBlock" >
                         <Setter Property="Margin" Value="4,0,12,0"/>
                         <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
@@ -451,6 +452,13 @@
                 <TextBlock Margin="2" Padding="4,2,4,2" FontWeight="Bold" VerticalAlignment="Center"
                            Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_SummaryCaption}"/>
                 <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}" Text="{Binding Model.LastTestRunSummary, Mode=OneWay}"/>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestSpectacularFailCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}" >
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource EasterEggTestImage}" Margin="4,0,4,0"/>
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestSpectacularFailCount, Mode=OneWay}"/>
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_SpectacularFail}"/>
+                    </TextBlock>
+                </StackPanel>
                 <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestFailedCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}" >
                     <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource RunFailedTestsImage}" Margin="4,0,4,0"/>
                     <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">

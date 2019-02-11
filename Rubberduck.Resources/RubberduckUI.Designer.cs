@@ -1691,7 +1691,7 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("Go", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Filter.
         /// </summary>
@@ -1700,7 +1700,7 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("GroupingGrid_Filter", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Filter by.
         /// </summary>
@@ -1754,16 +1754,16 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("GroupingStyle_ByMarker", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to By name.
+        ///   Looks up a localized string similar to By inspection.
         /// </summary>
         public static string GroupingStyle_ByName {
             get {
                 return ResourceManager.GetString("GroupingStyle_ByName", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to By outcome.
         /// </summary>
@@ -1772,7 +1772,7 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("GroupingStyle_ByOutcome", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to By severity.
         /// </summary>
@@ -1781,7 +1781,7 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("GroupingStyle_BySeverity", resourceCulture);
             }
         }
-    
+        
         /// <summary>
         ///   Looks up a localized string similar to Home.
         /// </summary>
@@ -2110,25 +2110,25 @@ namespace Rubberduck.Resources {
                 return ResourceManager.GetString("Inspect", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Collapse all.
         /// </summary>
-        public static string InspectionSettings_CollapseAll {
+        public static string InspectionResults_CollapseAll {
             get {
-                return ResourceManager.GetString("InspectionSettings_CollapseAll", resourceCulture);
+                return ResourceManager.GetString("InspectionResults_CollapseAll", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Expand all.
         /// </summary>
-        public static string InspectionSettings_ExpandAll {
+        public static string InspectionResults_ExpandAll {
             get {
-                return ResourceManager.GetString("InspectionSettings_ExpandAll", resourceCulture);
+                return ResourceManager.GetString("InspectionResults_ExpandAll", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
@@ -3818,6 +3818,16 @@ namespace Rubberduck.Resources {
         public static string SeverityLabelText {
             get {
                 return ResourceManager.GetString("SeverityLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap skull_mad {
+            get {
+                object obj = ResourceManager.GetObject("skull_mad", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

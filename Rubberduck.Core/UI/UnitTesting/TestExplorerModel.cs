@@ -100,6 +100,8 @@ namespace Rubberduck.UI.UnitTesting
         public string LastTestRunSummary =>
             string.Format(Resources.UnitTesting.TestExplorer.TestOutcome_RunSummaryFormat, CurrentRunTestCount, Tests.Count, TimeSpan.FromMilliseconds(TotalDuration));
 
+        public int LastTestSpectacularFailCount => Tests.Count(test => test.Result.Outcome == TestOutcome.SpectacularFail && _testEngine.LastRunTests.Contains(test.Method));
+
         public int LastTestFailedCount => Tests.Count(test => test.Result.Outcome == TestOutcome.Failed && _testEngine.LastRunTests.Contains(test.Method));
 
         public int LastTestInconclusiveCount => Tests.Count(test => test.Result.Outcome == TestOutcome.Inconclusive && _testEngine.LastRunTests.Contains(test.Method));
@@ -179,6 +181,7 @@ namespace Rubberduck.UI.UnitTesting
             IsBusy = false;
 
             OnPropertyChanged(nameof(LastTestRunSummary));
+            OnPropertyChanged(nameof(LastTestSpectacularFailCount));
             OnPropertyChanged(nameof(LastTestFailedCount));
             OnPropertyChanged(nameof(LastTestIgnoredCount));
             OnPropertyChanged(nameof(LastTestInconclusiveCount));
@@ -242,15 +245,16 @@ namespace Rubberduck.UI.UnitTesting
             { TestOutcome.Succeeded, Colors.LimeGreen },
             { TestOutcome.Inconclusive, Colors.Gold },
             { TestOutcome.Ignored, Colors.Orange },
-            { TestOutcome.Failed, Colors.Red }
+            { TestOutcome.Failed, Colors.Red },
+            { TestOutcome.SpectacularFail, Colors.Black }
         };
 
-        private TestOutcome _bestOutcome = TestOutcome.Unknown;
+        private TestOutcome _worstOutcome = TestOutcome.Unknown;
         private void UpdateProgressBar(TestOutcome output, bool reset = false)
         {
             if (reset)
             {
-                _bestOutcome = TestOutcome.Unknown;
+                _worstOutcome = TestOutcome.Unknown;
                 ExecutedCount = 0;
                 CurrentRunTestCount = 0;
                 ProgressBarColor = OutcomeColors[TestOutcome.Unknown];
@@ -259,12 +263,12 @@ namespace Rubberduck.UI.UnitTesting
 
             ExecutedCount++;
 
-            if (_bestOutcome != TestOutcome.Unknown && output >= _bestOutcome)
+            if (_worstOutcome != TestOutcome.Unknown && output >= _worstOutcome)
             {
                 return;
             }
 
-            _bestOutcome = output;
+            _worstOutcome = output;
             ProgressBarColor = OutcomeColors[output];
         }
 

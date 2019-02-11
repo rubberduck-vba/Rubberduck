@@ -339,4 +339,8 @@
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">
     <value>Summary:</value>
   </data>
+  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
+    <value>Spectactular Failure</value>
+    <comment>Easter egg status.</comment>
+  </data>
 </root>
