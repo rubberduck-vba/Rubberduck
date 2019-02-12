@@ -15,11 +15,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         private const string ReportClassName = "Access.Report";
 
         private readonly Lazy<IVBProject> _dbcProject;
-        private readonly Logger _logger;
-
+        
         public AccessApp(IVBE vbe) : base(vbe, "Access", true)
         {
-            _logger = LogManager.GetCurrentClassLogger();
             _dbcProject = new Lazy<IVBProject>(() =>
             {
                 using (var wizHook = new SafeIDispatchWrapper<WizHook>(Application.WizHook))
@@ -30,9 +28,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             });
         }
 
-        public override bool TryGetDocument(QualifiedModuleName moduleName, out HostDocument document)
+        public HostDocument GetDocument(QualifiedModuleName moduleName)
         {
-            document = null;
             try
             {
                 if (moduleName.ComponentName.StartsWith(FormNamePrefix))
@@ -42,7 +39,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     using (var allForms = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllForms))
                     using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allForms.Target[name]))
                     {
-                        document = LoadHostDocument(moduleName, FormClassName, accessObject);
+                        return LoadHostDocument(moduleName, FormClassName, accessObject);
                     }
                 }
 
@@ -53,7 +50,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                     using (var allReports = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllReports))
                     using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allReports.Target[name]))
                     {
-                        document = LoadHostDocument(moduleName, name, accessObject);
+                        return LoadHostDocument(moduleName, name, accessObject);
                     }
                 }
             }
@@ -63,7 +60,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                 _logger.Log(LogLevel.Info, ex, $"Failed to get host document {moduleName.ToString()}");
             }
 
-            return document != null;
+            return null;
         }
 
         public override IEnumerable<HostDocument> GetDocuments()
@@ -98,7 +95,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override bool CanOpenDocumentDesigner(QualifiedModuleName moduleName)
         {
-            return TryGetDocument(moduleName, out _);
+            return GetDocument(moduleName) != null;
         }
 
         public override bool TryOpenDocumentDesigner(QualifiedModuleName moduleName)

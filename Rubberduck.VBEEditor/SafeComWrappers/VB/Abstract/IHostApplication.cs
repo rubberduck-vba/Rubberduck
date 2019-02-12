@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         /// <param name="document"><see cref="HostDocument"/> representing the document module</param>
         /// <returns>True if able to get the document, false otherwise</returns>
         /// <inheritdoc cref="GetDocuments"/>
-        bool TryGetDocument(QualifiedModuleName moduleName, out HostDocument document);
+        HostDocument GetDocument(QualifiedModuleName moduleName);
 
         /// <summary>
         /// Indicate if the host is able to open the document in design view

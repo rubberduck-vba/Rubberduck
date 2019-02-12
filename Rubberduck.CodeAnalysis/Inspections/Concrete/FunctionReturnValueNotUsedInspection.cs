@@ -76,12 +76,12 @@ namespace Rubberduck.Inspections.Concrete
         private bool IsReturnValueUsed(Declaration function)
         {
             return (from usage in function.References
-                    where !IsAddressOfCall(usage)
-                    where !IsTypeOfExpression(usage)
-                    where !IsCallStmt(usage)
-                    where !IsLet(usage)
-                    where !IsSet(usage)
-                    select usage).Any(usage => !IsReturnStatement(function, usage));
+                where !IsLet(usage)
+                where !IsSet(usage)
+                where !IsCallStmt(usage)
+                where !IsTypeOfExpression(usage)
+                where !IsAddressOfCall(usage)
+                select usage).Any(usage => !IsReturnStatement(function, usage));
         }
 
         private bool IsAddressOfCall(IdentifierReference usage)
@@ -93,15 +93,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return usage.Context.IsDescendentOf<VBAParser.TypeofexprContext>();
         }
-
-        /*
-        private bool IsMemberAccess(IdentifierReference usage)
-        {
-            return usage.Context.TryGetAncestor(out VBAParser.MemberAccessExprContext context) &&
-                   context.SourceInterval.ProperlyContains(usage.Context.SourceInterval);
-        }
-        */
-
+        
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
         {
             return assignment.ParentScoping.Equals(function) && assignment.Declaration.Equals(function);

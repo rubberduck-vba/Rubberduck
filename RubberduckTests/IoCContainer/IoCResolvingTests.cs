@@ -6,7 +6,6 @@ using Moq;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Root;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;

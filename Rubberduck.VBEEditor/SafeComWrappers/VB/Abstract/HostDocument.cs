@@ -30,7 +30,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         /// </summary>
         ActiveView
     }
-
+    
     public interface IHostDocument
     {
         QualifiedModuleName QualifiedName { get; }
@@ -38,7 +38,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         string ClassName { get; }
         DocumentState State { get; }
         bool TryGetTarget(out SafeIDispatchWrapper iDispatch);
-    }
+    } 
 
     public class HostDocument : IHostDocument
     {

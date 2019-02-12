@@ -99,6 +99,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         /// <param name="specialCaseDocumentModules">If reimport of a document file is required later, it has to receive special treatment.</param>
         public string ExportAsSourceFile(string folder, bool tempFile = false, bool specialCaseDocumentModules = true)
         {
+            //TODO: this entire thign needs to be reworked. IO is not the class' concern.
+            //We probably need to leverage IPersistancePathProvider? ITempSourceFileHandler? 
+            //Just not here.
             var fullPath = tempFile
                 ? Path.Combine(folder, Path.GetRandomFileName())
                 : Path.Combine(folder, SafeName + Type.FileExtension());

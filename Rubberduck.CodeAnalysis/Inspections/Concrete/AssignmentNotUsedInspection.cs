@@ -6,9 +6,7 @@ using Rubberduck.Inspections.CodePathAnalysis;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
-using Rubberduck.Inspections.CodePathAnalysis.Nodes;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections.Concrete
@@ -42,15 +40,8 @@ namespace Rubberduck.Inspections.Concrete
 
                 var references = tree.GetIdentifierReferences();
                 nodes.AddRange(references.Where(r =>
-                {
-                    switch(r.Context.Parent) 
-                    {
-                        case VBAParser.SetStmtContext setStmtContext:
-                            return setStmtContext.expression().GetText() != "Nothing";
-                        default:
-                            return true;
-                    }
-                }));
+                    !(r.Context.Parent is VBAParser.SetStmtContext setStmtContext &&
+                    setStmtContext.expression().GetText().Equals(Tokens.Nothing))));
             }
 
             return nodes

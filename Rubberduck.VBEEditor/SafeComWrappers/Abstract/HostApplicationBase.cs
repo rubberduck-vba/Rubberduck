@@ -149,9 +149,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             return result;
         }
 
-        public virtual bool TryGetDocument(QualifiedModuleName moduleName, out HostDocument document)
+        public virtual HostDocument GetDocument(QualifiedModuleName moduleName)
         {
-            document = null;
             using (var projects = Vbe.VBProjects)
             {
                 foreach (var project in projects)
@@ -166,13 +165,12 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
                     using (var component = components[moduleName.ComponentName])
                     {
                         var name = GetName(component);
-                        document = new HostDocument(moduleName, name, ComponentName, DocumentState.DesignView, null);
-                        return true;
+                        return new HostDocument(moduleName, name, ComponentName, DocumentState.DesignView, null);
                     }
                 }
             }
 
-            return false;
+            return null;
         }
 
         public virtual bool CanOpenDocumentDesigner(QualifiedModuleName moduleName)

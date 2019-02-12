@@ -43,7 +43,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     return false;
                 }
 
-                var qualifiedModuleName = declaration.QualifiedName.QualifiedModuleName;
+                var qualifiedModuleName = declaration.QualifiedModuleName;
 
                 // ReSharper disable once SwitchStatementMissingSomeCases
                 switch (declaration.DeclarationType)
@@ -53,7 +53,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                     case DeclarationType.ClassModule:
                         using (var app = _vbe.HostApplication())
                         {
-                            return app != null && app.CanOpenDocumentDesigner(qualifiedModuleName);
+                            return app?.CanOpenDocumentDesigner(qualifiedModuleName) ?? false;
                         }
                     default:
                         return false;
@@ -68,13 +68,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) || !(parameter is CodeExplorerItemViewModel node) ||
-                node.Declaration == null)
-            {
-                return;
-            }
-
-            if (node.Declaration.DeclarationType != DeclarationType.ClassModule)
+            if (!base.EvaluateCanExecute(parameter) || 
+                !(parameter is CodeExplorerItemViewModel node) ||
+                node.Declaration == null ||
+                node.Declaration.DeclarationType != DeclarationType.ClassModule)
             {
                 return;
             }
@@ -83,7 +80,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             {
                 using (var app = _vbe.HostApplication())
                 {
-                    if (app != null && app.TryOpenDocumentDesigner(node.Declaration.QualifiedModuleName))
+                    if (app?.TryOpenDocumentDesigner(node.Declaration.QualifiedModuleName) ?? false)
                     {
                         return;
                     }

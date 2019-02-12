@@ -9,10 +9,9 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         public FallbackApp(IVBE vbe) { }
         public string ApplicationName => "(unknown)";
         public IEnumerable<HostDocument> GetDocuments() => null;
-        public bool TryGetDocument(QualifiedModuleName moduleName, out HostDocument document)
+        public HostDocument GetDocument(QualifiedModuleName moduleName)
         {
-            document = null;
-            return false;
+            return null;
         }
         public bool CanOpenDocumentDesigner(QualifiedModuleName moduleName) => false;
         public bool TryOpenDocumentDesigner(QualifiedModuleName moduleName) => false;
