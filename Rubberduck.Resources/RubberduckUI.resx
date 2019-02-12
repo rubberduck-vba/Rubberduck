@@ -1502,4 +1502,24 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Performance Warning</value>
   </data>
+  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' is built-in.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+    <value>'{0}' is not defined in the same project it is used.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>'{0}' is defined neither in the component component it is used not in a standard module. </value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' is a non-private module variable outside a standard module.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
+  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>The method using '{0}' already has another declaration of the same name in scope.</value>
+    <comment>{0}: Variable Name</comment>
+  </data>
 </root>

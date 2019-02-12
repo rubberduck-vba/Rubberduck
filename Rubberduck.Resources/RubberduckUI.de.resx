@@ -1365,4 +1365,19 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Performancewarnung</value>
   </data>
+  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' ist keine Nutzerdeklaration.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+    <value>Die Variable '{0}' ist nicht im selben Projekt definiert, in dem sie verwendet wird.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>Die Variable '{0}' ist weder in der Komponente definiert, in der sie verwendet wir, noch in einem Standardmodul.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' ist eine nicht private Modulvariable außerhalb eines Standardmoduls.</value>
+  </data>
+  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>In der Methode, die '{0}' verwendet, referenziert der Name dieser Variable bereits eine andere Deklaration.</value>
+  </data>
 </root>

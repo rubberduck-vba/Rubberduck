@@ -555,7 +555,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -571,7 +571,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -585,7 +585,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -604,7 +604,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -618,7 +618,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -638,7 +638,7 @@ End Sub";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -658,7 +658,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -679,9 +679,17 @@ End Sub";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
             }
+        }
+
+        private RefactorMoveCloserToUsageCommand TestRefactorMoveCloserToUsageCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var factory = new Mock<IRefactoringPresenterFactory>().Object;
+            var selectionService = MockedSelectionService(vbe);
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorMoveCloserToUsageCommand(vbe, state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
