@@ -7,6 +7,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -16,13 +17,15 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IRefactoringPresenterFactory _factory;
         private readonly IRewritingManager _rewritingManager;
+        private readonly ISelectionService _selectionService;
 
-        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager) 
+        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
             : base (vbe)
         {
             _state = state;
             _factory = factory;
             _rewritingManager = rewritingManager;
+            _selectionService = selectionService;
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
@@ -42,14 +45,14 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.GetActiveSelection();
+            var activeSelection = _selectionService.ActiveSelection();
 
-            if (!selection.HasValue)
+            if (!activeSelection.HasValue)
             {
                 return false;
             }
 
-            var member = _state.AllUserDeclarations.FindTarget(selection.Value, ValidDeclarationTypes);
+            var member = _state.DeclarationFinder.AllUserDeclarations.FindTarget(activeSelection.Value, ValidDeclarationTypes);
             if (member == null)
             {
                 return false;
@@ -66,15 +69,18 @@ namespace Rubberduck.UI.Command.Refactorings
                     || member.DeclarationType == DeclarationType.PropertySet
                         ? parameters.Count > 1
                         : parameters.Any();
-            
         }
 
         protected override void OnExecute(object parameter)
         {
-            var selection = Vbe.GetActiveSelection();
-            
-            var refactoring = new RemoveParametersRefactoring(_state, Vbe, _factory, _rewritingManager);
-            refactoring.Refactor(selection.Value);
+            var activeSelection = _selectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
+            {
+                return;
+            }
+
+            var refactoring = new RemoveParametersRefactoring(_state, _factory, _rewritingManager, _selectionService);
+            refactoring.Refactor(activeSelection.Value);
         }
     }
 }

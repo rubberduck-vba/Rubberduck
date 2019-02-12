@@ -9,32 +9,31 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersRefactoring : IRefactoring
     {
-        private readonly RubberduckParserState _state;
-        private readonly IVBE _vbe;
-        private readonly IRefactoringPresenterFactory _factory;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly ISelectionService _selectionService;
+        private readonly Func<RemoveParametersModel, IDisposalActionContainer<IRemoveParametersPresenter>> _presenterFactory;
         private readonly IRewritingManager _rewritingManager;
         private RemoveParametersModel _model;
 
-        public RemoveParametersRefactoring(RubberduckParserState state, IVBE vbe, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
+        public RemoveParametersRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
-            _state = state;
-            _vbe = vbe;
+            _declarationFinderProvider = declarationFinderProvider;
+            _selectionService = selectionService;
             _rewritingManager = rewritingManager;
-            _factory = factory;
+            _presenterFactory = (model => DisposalActionContainer.Create(factory.Create<IRemoveParametersPresenter, RemoveParametersModel>(model), factory.Release));
         }
 
         private RemoveParametersModel InitializeModel()
         {
-            var selection = _vbe.GetActiveSelection();
+            var activeSelection = _selectionService.ActiveSelection();
 
-            return !selection.HasValue ? null : new RemoveParametersModel(_state, selection.Value);
+            return !activeSelection.HasValue ? null : new RemoveParametersModel(_declarationFinderProvider, activeSelection.Value);
         }
 
         public void Refactor()
@@ -45,9 +44,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return;
             }
 
-            using (var container = DisposalActionContainer.Create(_factory.Create<IRemoveParametersPresenter, RemoveParametersModel>(_model), p => _factory.Release(p)))
+            using (var presenterContainer = _presenterFactory(_model))
             {
-                var presenter = container.Value;
+                var presenter = presenterContainer.Value;
                 if (presenter == null)
                 {
                     return;
@@ -59,33 +58,18 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     return;
                 }
 
-                using (var pane = _vbe.ActiveCodePane)
-                {
-                    var oldSelection = pane.GetQualifiedSelection();
-
-                    RemoveParameters();
-
-                    if (oldSelection.HasValue && !pane.IsWrappingNullReference)
-                    {
-                        pane.Selection = oldSelection.Value.Selection;
-                    }
-                }
-
-                _model.State.OnParseRequested(this);
+                RemoveParameters();
             }
         }
 
         public void Refactor(QualifiedSelection target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            if (!_selectionService.TrySetActiveSelection(target))
             {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-                pane.Selection = target.Selection;
-                Refactor();
+                return;
             }
+
+            Refactor();
         }
 
         public void Refactor(Declaration target)
@@ -95,20 +79,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-                pane.Selection = target.QualifiedSelection.Selection;
-                Refactor();
-            }
+            Refactor(target.QualifiedSelection);
         }
 
-        public void QuickFix(RubberduckParserState state, QualifiedSelection selection)
+        public void QuickFix(QualifiedSelection selection)
         {
-            _model = new RemoveParametersModel(state, selection);
+            _model = new RemoveParametersModel(_declarationFinderProvider, selection);
             
             var target = _model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
             Debug.Assert(target != null, "Target was not found");
@@ -259,10 +235,10 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 RemoveSignatureParameters(eventImplementation, rewriteSession);
             }
 
-            var interfaceImplementations = _model.State.DeclarationFinder.FindAllInterfaceImplementingMembers().Where(item =>
-                item.ProjectId == _model.TargetDeclaration.ProjectId
-                &&
-                item.IdentifierName == $"{_model.TargetDeclaration.ComponentName}_{_model.TargetDeclaration.IdentifierName}");
+            var interfaceImplementations = _declarationFinderProvider.DeclarationFinder
+                .FindAllInterfaceImplementingMembers()
+                .Where(item => item.ProjectId == _model.TargetDeclaration.ProjectId 
+                               && item.IdentifierName == $"{_model.TargetDeclaration.ComponentName}_{_model.TargetDeclaration.IdentifierName}");
 
             foreach (var interfaceImplentation in interfaceImplementations)
             {

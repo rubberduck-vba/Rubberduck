@@ -6,30 +6,31 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class RemoveUnusedParameterQuickFix : QuickFixBase
     {
-        private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IRefactoringPresenterFactory _factory;
         private readonly IRewritingManager _rewritingManager;
+        private readonly ISelectionService _selectionService;
 
-        public RemoveUnusedParameterQuickFix(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
+        public RemoveUnusedParameterQuickFix(IDeclarationFinderProvider declarationFinderProvider, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
             : base(typeof(ParameterNotUsedInspection))
         {
-            _vbe = vbe;
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
             _factory = factory;
             _rewritingManager = rewritingManager;
+            _selectionService = selectionService;
         }
 
         //The rewriteSession is optional since it is not used in this particular quickfix because it is a refactoring quickfix.
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
-            var refactoring = new RemoveParametersRefactoring(_state, _vbe, _factory, _rewritingManager);
-            refactoring.QuickFix(_state, result.QualifiedSelection);
+            var refactoring = new RemoveParametersRefactoring(_declarationFinderProvider, _factory, _rewritingManager, _selectionService);
+            refactoring.QuickFix(result.QualifiedSelection);
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveUnusedParameterQuickFix;
