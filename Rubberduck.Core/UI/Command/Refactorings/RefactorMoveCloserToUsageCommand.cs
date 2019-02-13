@@ -4,7 +4,6 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -12,17 +11,13 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorMoveCloserToUsageCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _msgbox;
-        private readonly ISelectionService _selectionService;
 
-        public RefactorMoveCloserToUsageCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox, IRewritingManager rewritingManager, ISelectionService selectionService)
-            :base(vbe)
+        public RefactorMoveCloserToUsageCommand(RubberduckParserState state, IMessageBox msgbox, IRewritingManager rewritingManager, ISelectionService selectionService)
+            :base(rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _msgbox = msgbox;
-            _selectionService = selectionService;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -32,7 +27,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return false;
@@ -48,11 +43,10 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var activeSelection = _selectionService.ActiveSelection();
-
+            var activeSelection = SelectionService.ActiveSelection();
             if (activeSelection.HasValue)
             {
-                var refactoring = new MoveCloserToUsageRefactoring(_state, _msgbox, _rewritingManager, _selectionService);
+                var refactoring = new MoveCloserToUsageRefactoring(_state, _msgbox, RewritingManager, SelectionService);
                 refactoring.Refactor(activeSelection.Value);
             }
         }

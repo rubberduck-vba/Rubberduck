@@ -1,12 +1,10 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -15,17 +13,13 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorImplementInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _msgBox;
-        private readonly ISelectionService _selectionService;
 
-        public RefactorImplementInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager, ISelectionService selectionService)
-            : base(vbe)
+        public RefactorImplementInterfaceCommand(RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+            : base(rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _msgBox = msgBox;
-            _selectionService = selectionService;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -35,7 +29,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var activeSelection = _selectionService.ActiveSelection();        
+            var activeSelection = SelectionService.ActiveSelection();        
             if (!activeSelection.HasValue)
             {
                 return false;
@@ -54,13 +48,13 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return;
             }
 
-            var refactoring = new ImplementInterfaceRefactoring(_state, _msgBox, _rewritingManager, _selectionService);
+            var refactoring = new ImplementInterfaceRefactoring(_state, _msgBox, RewritingManager, SelectionService);
             refactoring.Refactor(activeSelection.Value);
         }
     }

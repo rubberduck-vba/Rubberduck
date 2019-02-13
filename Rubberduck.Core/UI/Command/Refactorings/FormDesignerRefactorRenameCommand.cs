@@ -16,20 +16,16 @@ namespace Rubberduck.UI.Command.Refactorings
     public class FormDesignerRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
-        private readonly ISelectionService _selectionService;
         private readonly IVBE _vbe;
 
         public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (vbe)
+            : base (rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
             _factory = factory;
-            _selectionService = selectionService;
             _vbe = vbe;
         }
 
@@ -46,7 +42,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager, _selectionService);
+            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
             var target = GetTarget();
             if (target != null)
             {

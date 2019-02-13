@@ -5,7 +5,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -14,19 +13,15 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorEncapsulateFieldCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly ISelectionService _selectionService;
         private readonly Indenter _indenter;
         private readonly IRefactoringPresenterFactory _factory;
 
-        public RefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, Indenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-            : base(vbe)
+        public RefactorEncapsulateFieldCommand(RubberduckParserState state, Indenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+            : base(rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _indenter = indenter;
             _factory = factory;
-            _selectionService = selectionService;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -37,7 +32,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return false;
@@ -53,12 +48,12 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            if(!_selectionService.ActiveSelection().HasValue)
+            if(!SelectionService.ActiveSelection().HasValue)
             {
                 return;
             }
 
-            var refactoring = new EncapsulateFieldRefactoring(_state, _indenter, _factory, _rewritingManager, _selectionService);
+            var refactoring = new EncapsulateFieldRefactoring(_state, _indenter, _factory, RewritingManager, SelectionService);
             refactoring.Refactor();
         }
     }

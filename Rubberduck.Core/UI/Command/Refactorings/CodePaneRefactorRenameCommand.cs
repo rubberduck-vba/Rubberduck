@@ -1,12 +1,9 @@
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.Refactorings.Rename;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -15,19 +12,15 @@ namespace Rubberduck.UI.Command.Refactorings
     public class CodePaneRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
-        private readonly ISelectionService _selectionService;
 
-        public CodePaneRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (vbe)
+        public CodePaneRefactorRenameCommand(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
+            : base (rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
             _factory = factory;
-            _selectionService = selectionService;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -37,7 +30,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return false;
@@ -52,7 +45,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return;
@@ -65,7 +58,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
             
-            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager, _selectionService);
+            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
             refactoring.Refactor(target);
         }
     }

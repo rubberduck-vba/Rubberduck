@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -16,16 +15,12 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IRefactoringPresenterFactory _factory;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly ISelectionService _selectionService;
 
-        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (vbe)
+        public RefactorRemoveParametersCommand(RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
+            : base (rewritingManager, selectionService)
         {
             _state = state;
             _factory = factory;
-            _rewritingManager = rewritingManager;
-            _selectionService = selectionService;
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
@@ -45,7 +40,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
 
             if (!activeSelection.HasValue)
             {
@@ -73,13 +68,13 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return;
             }
 
-            var refactoring = new RemoveParametersRefactoring(_state, _factory, _rewritingManager, _selectionService);
+            var refactoring = new RemoveParametersRefactoring(_state, _factory, RewritingManager, SelectionService);
             refactoring.Refactor(activeSelection.Value);
         }
     }

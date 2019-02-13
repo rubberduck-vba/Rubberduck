@@ -105,7 +105,7 @@ End Sub";
         {
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var selectionService = MockedSelectionService(vbe);
-            return new RefactorEncapsulateFieldCommand(vbe, state, null, factory, rewritingManager, selectionService);
+            return new RefactorEncapsulateFieldCommand(state, null, factory, rewritingManager, selectionService);
         }
 
 
@@ -334,7 +334,7 @@ End Property";
             var selectionService = MockedSelectionService(vbe);
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorExtractInterfaceCommand(vbe, state, msgBox, factory, rewritingManager, selectionService);
+            return new RefactorExtractInterfaceCommand(state, msgBox, factory, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -404,7 +404,7 @@ End Property";
         {
             var selectionService = MockedSelectionService(vbe);
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorImplementInterfaceCommand(vbe, state, msgBox, rewritingManager, selectionService);
+            return new RefactorImplementInterfaceCommand(state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -472,7 +472,7 @@ End Property";
         {
             var selectionService = MockedSelectionService(vbe);
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorIntroduceFieldCommand(vbe, state, msgBox, rewritingManager, selectionService);
+            return new RefactorIntroduceFieldCommand(state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -540,7 +540,7 @@ End Property";
         {
             var selectionService = MockedSelectionService(vbe);
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorIntroduceParameterCommand(vbe, state, msgBox, rewritingManager, selectionService);
+            return new RefactorIntroduceParameterCommand(state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -686,7 +686,7 @@ End Sub";
         {
             var selectionService = MockedSelectionService(vbe);
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorMoveCloserToUsageCommand(vbe, state, msgBox, rewritingManager, selectionService);
+            return new RefactorMoveCloserToUsageCommand(state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -937,7 +937,7 @@ End Property";
         {
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var selectionService = MockedSelectionService(vbe);
-            return new RefactorRemoveParametersCommand(vbe, state, factory, rewritingManager, selectionService);
+            return new RefactorRemoveParametersCommand(state, factory, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -1176,7 +1176,7 @@ End Property";
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var selectionService = MockedSelectionService(vbe);
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorReorderParametersCommand(vbe, state, factory, msgBox, rewritingManager, selectionService);
+            return new RefactorReorderParametersCommand(state, factory, msgBox, rewritingManager, selectionService);
         }
 
         private ISelectionService MockedSelectionService(IVBE vbe)
