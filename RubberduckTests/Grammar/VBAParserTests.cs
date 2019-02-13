@@ -2955,6 +2955,101 @@ End Sub
 
         [Category("Parser")]
         [Test]
+        public void ParserDoesNotFailDoubleBracketForgeignIdentifierWithTypeHint()
+        {
+            const string code = @"
+Sub Test()  
+Dim x
+x = [[bar]]!
+x = [bar]!
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 2);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnBangOperatorFollowedByForeignIdentifier()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict![a]
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnBangOperator()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict!a
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        [Ignore("This cannot work with the current setup of identifiers bacause the SLL parser confuses the bang for a type hint.")]
+        public void ParserDoesNotFailOnBangOperatorOnForeignIdentifier()
+        {
+            const string code = @"
+Sub Test()   
+Dim x
+x = [dict]!a
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void ParserDoesNotFailOnStackedBangOperator()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict!a!b!c
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
+        [Ignore("This cannot work with the current setup of identifiers bacause the SLL parser confuses the bang for a type hint.")]
+        public void ParserDoesNotFailOnStackedBangOperator_ForeignIdentifier()
+        {
+            const string code = @"
+Sub Test()   
+Dim dict As Scripting.Dictionary
+
+Dim x
+x = dict![a]!b!c
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//typeHint", matches => matches.Count == 0);
+        }
+
+        [Category("Parser")]
+        [Test]
         public void ParserDoesNotFailOnLineContinuedBangOperator1()
         {
             const string code = @"

@@ -1683,6 +1683,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string GroupingGrid_Filter {
+            get {
+                return ResourceManager.GetString("GroupingGrid_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter by.
         /// </summary>
         public static string GroupingGrid_FilterBy {
@@ -1737,11 +1746,29 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By inspection.
+        /// </summary>
+        public static string GroupingStyle_ByName {
+            get {
+                return ResourceManager.GetString("GroupingStyle_ByName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By outcome.
         /// </summary>
         public static string GroupingStyle_ByOutcome {
             get {
                 return ResourceManager.GetString("GroupingStyle_ByOutcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By severity.
+        /// </summary>
+        public static string GroupingStyle_BySeverity {
+            get {
+                return ResourceManager.GetString("GroupingStyle_BySeverity", resourceCulture);
             }
         }
         
@@ -2061,6 +2088,24 @@ namespace Rubberduck.Resources {
         public static string Inspect {
             get {
                 return ResourceManager.GetString("Inspect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collapse all.
+        /// </summary>
+        public static string InspectionResults_CollapseAll {
+            get {
+                return ResourceManager.GetString("InspectionResults_CollapseAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand all.
+        /// </summary>
+        public static string InspectionResults_ExpandAll {
+            get {
+                return ResourceManager.GetString("InspectionResults_ExpandAll", resourceCulture);
             }
         }
         

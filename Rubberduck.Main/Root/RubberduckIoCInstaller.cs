@@ -41,7 +41,6 @@ using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.AutoComplete;
-using Rubberduck.AutoComplete.Service;
 using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.ComReferenceLoading;
