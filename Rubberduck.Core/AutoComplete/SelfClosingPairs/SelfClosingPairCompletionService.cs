@@ -8,7 +8,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
 
-namespace Rubberduck.AutoComplete.Service
+namespace Rubberduck.AutoComplete.SelfClosingPairs
 {
     public class SelfClosingPairCompletionService
     {
