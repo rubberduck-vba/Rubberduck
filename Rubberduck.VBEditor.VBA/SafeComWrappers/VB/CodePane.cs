@@ -1,6 +1,4 @@
-﻿using System;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.WindowsApi;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
