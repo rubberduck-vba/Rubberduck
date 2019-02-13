@@ -119,8 +119,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -135,8 +134,7 @@ End Sub";
             using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -149,8 +147,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -166,8 +163,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -180,8 +176,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -216,8 +211,7 @@ End Sub
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -244,8 +238,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -262,8 +255,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 var canExecute = extractInterfaceCommand.CanExecute(null);
                 Assert.IsTrue(canExecute);
             }
@@ -281,8 +273,7 @@ End Function";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -299,8 +290,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -317,8 +307,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -335,10 +324,17 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var factory = new Mock<IRefactoringPresenterFactory>();
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, factory.Object, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
+        }
+
+        private RefactorExtractInterfaceCommand TestRefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var selectionService = MockedSelectionService(vbe);
+            var factory = new Mock<IRefactoringPresenterFactory>().Object;
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorExtractInterfaceCommand(vbe, state, msgBox, factory, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -351,7 +347,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var implementInterfaceCommand = TestRefactorImplementInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -367,7 +363,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var implementInterfaceCommand = TestRefactorImplementInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -380,7 +376,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var implementInterfaceCommand = TestRefactorImplementInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -399,10 +395,16 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var implementInterfaceCommand = TestRefactorImplementInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(implementInterfaceCommand.CanExecute(null));
             }
+        }
+
+        private RefactorImplementInterfaceCommand TestRefactorImplementInterfaceCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var selectionService = MockedSelectionService(vbe);
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorImplementInterfaceCommand(vbe, state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]

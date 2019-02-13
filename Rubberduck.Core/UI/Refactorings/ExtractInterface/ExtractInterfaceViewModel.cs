@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Refactorings
             SelectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(true));
             DeselectAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ToggleSelection(false));
 
-            ComponentNames = Model.State.DeclarationFinder
+            ComponentNames = Model.DeclarationFinderProvider.DeclarationFinder
                 .UserDeclarations(DeclarationType.Module)
                 .Where(moduleDeclaration => moduleDeclaration.ProjectId == Model.TargetDeclaration.ProjectId)
                 .Select(module => module.ComponentName)

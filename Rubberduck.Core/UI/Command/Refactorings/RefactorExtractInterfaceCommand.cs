@@ -11,6 +11,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -21,14 +22,16 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
+        private readonly ISelectionService _selectionService;
         
-        public RefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
+        public RefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
             :base(vbe)
         {
             _state = state;
             _rewritingManager = rewritingManager;
             _messageBox = messageBox;
             _factory = factory;
+            _selectionService = selectionService;
         }
 
         private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[] 
@@ -40,15 +43,19 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            var selection = Vbe.GetActiveSelection();
+            if (_state.Status != ParserState.Ready)
+            {
+                return false;
+            }
 
-            if (!selection.HasValue)
+            var activeSelection = _selectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
                 return false;
             }
 
             var interfaceClass = _state.AllUserDeclarations.SingleOrDefault(item =>
-                item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName)
+                item.QualifiedName.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName)
                 && ModuleTypes.Contains(item.DeclarationType));
 
             if (interfaceClass == null)
@@ -73,21 +80,19 @@ namespace Rubberduck.UI.Command.Refactorings
             // true if active code pane is for a class/document/form module
             return !context.Any() 
                 && !_state.IsNewOrModified(interfaceClass.QualifiedModuleName) 
-                && !_state.IsNewOrModified(selection.Value.QualifiedName);
+                && !_state.IsNewOrModified(activeSelection.Value.QualifiedName);
         }
 
         protected override void OnExecute(object parameter)
         {
-            using(var activePane = Vbe.ActiveCodePane)
+            var activeSelection = _selectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
-                if (activePane == null || activePane.IsWrappingNullReference)
-                {
-                    return;
-                }
+                return;
             }
 
-            var refactoring = new ExtractInterfaceRefactoring(_state, Vbe, _messageBox, _factory, _rewritingManager);
-            refactoring.Refactor();
+            var refactoring = new ExtractInterfaceRefactoring(_state, _state, _messageBox, _factory, _rewritingManager, _selectionService);
+            refactoring.Refactor(activeSelection.Value);
         }
     }
 }

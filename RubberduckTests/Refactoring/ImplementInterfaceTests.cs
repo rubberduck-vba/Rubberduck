@@ -1,7 +1,14 @@
+using Moq;
 using NUnit.Framework;
+using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
@@ -45,7 +52,7 @@ End Sub
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -95,7 +102,7 @@ End Sub
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -159,7 +166,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -203,7 +210,7 @@ End Sub
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -247,7 +254,7 @@ End Function
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -291,7 +298,7 @@ End Function
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -335,7 +342,7 @@ End Function
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -379,7 +386,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -423,7 +430,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -467,7 +474,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -511,7 +518,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -555,7 +562,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -599,7 +606,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -643,7 +650,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -708,7 +715,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -780,7 +787,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -821,7 +828,7 @@ End Sub
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -862,7 +869,7 @@ End Sub
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -907,7 +914,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -952,7 +959,7 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -1003,12 +1010,32 @@ End Property
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
 
-                var refactoring = new ImplementInterfaceRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(expectedCode, actualCode);
             }
+        }
+
+        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null)
+        {
+            var selectionService = MockedSelectionService(vbe.GetActiveSelection());
+            if (msgBox == null)
+            {
+                msgBox = new Mock<IMessageBox>().Object;
+            }
+            return new ImplementInterfaceRefactoring(state, msgBox, rewritingManager, selectionService);
+        }
+
+        private static ISelectionService MockedSelectionService(QualifiedSelection? initialSelection)
+        {
+            QualifiedSelection? activeSelection = initialSelection;
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
         }
     }
 }
