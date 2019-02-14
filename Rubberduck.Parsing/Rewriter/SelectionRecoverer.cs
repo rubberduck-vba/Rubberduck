@@ -62,16 +62,14 @@ namespace Rubberduck.Parsing.Rewriter
 
         public void RecoverSavedSelectionsOnNextParse()
         {
-            _parseManager.StateChanged += ExecuteSelectionRecovery;
+            PrimeRecoveryOnNextParse();
+            _selectionRecoveryPrimed = true;
         }
 
-        private void ExecuteSelectionRecovery(object sender, ParserStateEventArgs e)
+        private void ExecuteSelectionRecovery()
         {
-            if (e.State == ParserStateOnWhichToTriggerRecovery)
-            {
-                _parseManager.StateChanged -= ExecuteSelectionRecovery;
-                RecoverSavedSelections();
-            }
+            _selectionRecoveryPrimed = false;
+            RecoverSavedSelections();
         }
 
 
@@ -91,16 +89,14 @@ namespace Rubberduck.Parsing.Rewriter
 
         public void RecoverActiveCodePaneOnNextParse()
         {
-            _parseManager.StateChanged += ExecuteActiveCodePaneRecovery;
+            PrimeRecoveryOnNextParse();
+            _activeCodePaneRecoveryPrimed = true;
         }
 
-        private void ExecuteActiveCodePaneRecovery(object sender, ParserStateEventArgs e)
+        private void ExecuteActiveCodePaneRecovery()
         {
-            if (e.State == ParserStateOnWhichToTriggerRecovery)
-            {
-                _parseManager.StateChanged -= ExecuteActiveCodePaneRecovery;
-                RecoverActiveCodePane();
-            }
+            _activeCodePaneRecoveryPrimed = false;
+            RecoverActiveCodePane();
         }
 
         public void SaveOpenState(IEnumerable<QualifiedModuleName> modules)
@@ -119,10 +115,62 @@ namespace Rubberduck.Parsing.Rewriter
             _savedOpenModules.Clear();
         }
 
+        public void RecoverOpenStateOnNextParse()
+        {
+            PrimeRecoveryOnNextParse();
+            _openStateRecoveryPrimed = true;
+        }
+
+        private void ExecuteOpenStateRecovery()
+        {
+            _openStateRecoveryPrimed = false;
+            RecoverOpenState();
+        }
+
+        private bool _selectionRecoveryPrimed;
+        private bool _openStateRecoveryPrimed;
+        private bool _activeCodePaneRecoveryPrimed;
+
+        private bool RecoveryPrimed => _selectionRecoveryPrimed || _openStateRecoveryPrimed || _activeCodePaneRecoveryPrimed;
+
+        private void ExecuteRecovery(object sender, ParserStateEventArgs e)
+        {
+            if (e.State != ParserStateOnWhichToTriggerRecovery)
+            {
+                return;
+            }
+
+            _parseManager.StateChanged -= ExecuteRecovery;
+
+            if (_openStateRecoveryPrimed)
+            {
+                ExecuteOpenStateRecovery();
+            }
+
+            if (_selectionRecoveryPrimed)
+            {
+                ExecuteSelectionRecovery();
+            }
+
+            if (_activeCodePaneRecoveryPrimed)
+            {
+                ExecuteActiveCodePaneRecovery();
+            }
+        }
+
+        private void PrimeRecoveryOnNextParse()
+        {
+            if (RecoveryPrimed)
+            {
+                return;
+            }
+
+            _parseManager.StateChanged += ExecuteRecovery;
+        }
+
         public void Dispose()
         {
-            _parseManager.StateChanged -= ExecuteSelectionRecovery;
-            _parseManager.StateChanged -= ExecuteActiveCodePaneRecovery;
+            _parseManager.StateChanged -= ExecuteRecovery;
         }
     }
 }

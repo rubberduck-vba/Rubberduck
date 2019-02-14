@@ -512,6 +512,105 @@ namespace RubberduckTests.Rewriter
             selectionServiceMock.Verify(m => m.TryActivate(_testModuleSelections[3].QualifiedName), Times.Never);
         }
 
+        [Test]
+        [Category("Rewriting")]
+        public void ActivatesOpenModulesWithSavedOpenStateOnNextParseAfterRecoverOpenStateOnNextParse()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            var openModules = _testModuleSelections.Take(3)
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName)
+                .ToHashSet();
+            selectionServiceMock.Setup(m => m.OpenModules()).Returns(openModules);
+
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            var modulesForWhichToSaveOpenState = _testModuleSelections.Skip(1)
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName)
+                .ToHashSet();
+
+            selectionRecoverer.SaveOpenState(modulesForWhichToSaveOpenState);
+            selectionRecoverer.RecoverOpenStateOnNextParse();
+
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
+            parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
+
+            selectionServiceMock.Verify(m => m.TryActivate(_testModuleSelections[1].QualifiedName), Times.Once);
+            selectionServiceMock.Verify(m => m.TryActivate(_testModuleSelections[2].QualifiedName), Times.Once);
+            selectionServiceMock.Verify(m => m.TryActivate(_testModuleSelections[0].QualifiedName), Times.Never);
+            selectionServiceMock.Verify(m => m.TryActivate(_testModuleSelections[3].QualifiedName), Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriting")]
+        public void OnNextParseAfterSetupOpenModulesWithSavedOpenStateBeforeSettingSelection()
+        {
+            var lastCalledMethod = string.Empty;
+            var selectionServiceMock = TestSelectionServiceMock();
+            selectionServiceMock.Setup(m => m.TryActivate(It.IsAny<QualifiedModuleName>()))
+                .Callback((QualifiedModuleName module) => lastCalledMethod = "TryActivate");
+            selectionServiceMock.Setup(m => m.TrySetSelection(It.IsAny<QualifiedModuleName>(), It.IsAny<Selection>()))
+                .Callback((QualifiedModuleName module, Selection selection) => lastCalledMethod = "TrySetSelection");
+
+            var openModules = _testModuleSelections.Take(3)
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName)
+                .ToHashSet();
+
+            selectionServiceMock.Setup(m => m.OpenModules()).Returns(openModules);
+
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            var modulesForWhichToSaveOpenState = _testModuleSelections.Skip(1)
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName)
+                .ToHashSet();
+            var selectionRecoveryModules = _testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2);
+
+            selectionRecoverer.SaveSelections(selectionRecoveryModules);
+            selectionRecoverer.RecoverSavedSelectionsOnNextParse();
+            selectionRecoverer.SaveOpenState(modulesForWhichToSaveOpenState);
+            selectionRecoverer.RecoverOpenStateOnNextParse();
+
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
+            parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
+
+            Assert.AreEqual("TrySetSelection", lastCalledMethod);
+        }
+
+        [Test]
+        [Category("Rewriting")]
+        public void OnNextParseAfterSetupSetsSelectionsBeforeReactivatingTheActiveCodePane()
+        {
+            var lastCalledMethod = string.Empty;
+            var selectionServiceMock = TestSelectionServiceMock();
+            selectionServiceMock.Setup(m => m.TryActivate(It.IsAny<QualifiedModuleName>()))
+                .Callback((QualifiedModuleName module) => lastCalledMethod = "TryActivate");
+            selectionServiceMock.Setup(m => m.TrySetSelection(It.IsAny<QualifiedModuleName>(), It.IsAny<Selection>()))
+                .Callback((QualifiedModuleName module, Selection selection) => lastCalledMethod = "TrySetSelection");
+
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => _testModuleSelections[1]);
+
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            var selectionRecoveryModules = _testModuleSelections
+                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2);
+
+            selectionRecoverer.SaveSelections(selectionRecoveryModules);
+            selectionRecoverer.RecoverSavedSelectionsOnNextParse();
+            selectionRecoverer.SaveActiveCodePane();
+            selectionRecoverer.RecoverActiveCodePaneOnNextParse();
+
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
+            parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
+
+            Assert.AreEqual("TryActivate", lastCalledMethod);
+        }
+
         private Mock<ISelectionService> TestSelectionServiceMock()
         {
             var mock = new Mock<ISelectionService>();
@@ -519,6 +618,7 @@ namespace RubberduckTests.Rewriter
             {
                 mock.Setup(m => m.Selection(qualifiedSelection.QualifiedName)).Returns(qualifiedSelection.Selection);
             }
+            mock.Setup(m => m.OpenModules()).Returns(() => _testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).ToList());
 
             mock.Setup(m => m.TrySetSelection(It.IsAny<QualifiedModuleName>(), It.IsAny<Selection>()));
             mock.Setup(m => m.TryActivate(It.IsAny<QualifiedModuleName>()));

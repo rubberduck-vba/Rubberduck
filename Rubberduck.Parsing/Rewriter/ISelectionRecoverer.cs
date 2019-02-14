@@ -17,5 +17,6 @@ namespace Rubberduck.Parsing.Rewriter
 
         void SaveOpenState(IEnumerable<QualifiedModuleName> modules);
         void RecoverOpenState();
+        void RecoverOpenStateOnNextParse();
     }
 }
