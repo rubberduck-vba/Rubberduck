@@ -28,7 +28,9 @@ namespace Rubberduck.Parsing.Rewriter
         public void SaveSelections(IEnumerable<QualifiedModuleName> modules)
         {
             _savedSelections.Clear();
-            foreach (var module in modules.Distinct())
+            var openModules = _selectionService.OpenModules();
+
+            foreach (var module in modules.Where(module => openModules.Contains(module)).Distinct())
             {
                 var selection = _selectionService.Selection(module);
                 if (selection.HasValue)
@@ -48,7 +50,10 @@ namespace Rubberduck.Parsing.Rewriter
 
         public void ReplaceSavedSelection(QualifiedModuleName module, Selection replacementSelection)
         {
-            _savedSelections[module] = replacementSelection;
+            if (_savedSelections.ContainsKey(module) || _selectionService.OpenModules().Contains(module))
+            {
+                _savedSelections[module] = replacementSelection;
+            }
         }
 
         public void RecoverSavedSelections()

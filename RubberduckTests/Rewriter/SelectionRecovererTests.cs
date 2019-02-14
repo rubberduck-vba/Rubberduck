@@ -37,6 +37,25 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriting")]
+        public void SavesSelectionsOnlyForOpenCodePanes()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            var parseManager = new Mock<IParseManager>().Object;
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManager);
+
+            selectionServiceMock.Setup(m => m.OpenModules())
+                .Returns(() => _testModuleSelections.Skip(1).Select(qs => qs.QualifiedName).ToList());
+
+            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[0].QualifiedName), Times.Never);
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[1].QualifiedName), Times.Once);
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[2].QualifiedName), Times.Never);
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[3].QualifiedName), Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriting")]
         public void SetsExactlyLastSavedSelectionsOnRecoverSelectionsAfterMultipleSaves()
         {
             var selectionServiceMock = TestSelectionServiceMock();
@@ -97,31 +116,6 @@ namespace RubberduckTests.Rewriter
 
             selectionRecoverer.SaveSelections(_testModuleSelections
                 .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
-            selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[2].QualifiedName, selectionReplacement);
-            selectionRecoverer.RecoverSavedSelections();
-
-            foreach (var qualifiedSelection in _testModuleSelections.Take(2))
-            {
-                selectionServiceMock.Verify(
-                    m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
-            }
-
-            selectionServiceMock.Verify(
-                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, selectionReplacement), Times.Once);
-        }
-
-        [Test]
-        [Category("Rewriting")]
-        public void SetsReplacementSelectionOnRecoverSelections_SelectionNotSavedPreviously()
-        {
-            var selectionServiceMock = TestSelectionServiceMock();
-            var parseManager = new Mock<IParseManager>().Object;
-            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManager);
-
-            var selectionReplacement = new Selection(22, 2, 44, 5);
-
-            selectionRecoverer.SaveSelections(_testModuleSelections
-                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[0].QualifiedName, selectionReplacement);
             selectionRecoverer.RecoverSavedSelections();
 
@@ -132,6 +126,54 @@ namespace RubberduckTests.Rewriter
                 Times.Once);
             selectionServiceMock.Verify(
                 m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriting")]
+        public void SetReplacementSelectionOnRecoverSelections_SelectionNotSavedPreviously_ModuleOpen()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            var parseManager = new Mock<IParseManager>().Object;
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManager);
+
+            var selectionReplacement = new Selection(22, 2, 44, 5);
+
+            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[2].QualifiedName, selectionReplacement);
+            selectionRecoverer.RecoverSavedSelections();
+
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, _testModuleSelections[0].Selection), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, selectionReplacement), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[3].QualifiedName, It.IsAny<Selection>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriting")]
+        public void DoesNotSaveOrSetReplacementSelectionOnRecoverSelections_SelectionNotSavedPreviously_ModuleNotOpen()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            var parseManager = new Mock<IParseManager>().Object;
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManager);
+
+            selectionServiceMock.Setup(m => m.OpenModules())
+                .Returns(() => _testModuleSelections.Take(2).Select(qs => qs.QualifiedName).ToList());
+
+            var selectionReplacement = new Selection(22, 2, 44, 5);
+
+            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[2].QualifiedName, selectionReplacement);
+            selectionRecoverer.RecoverSavedSelections();
+
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[0].QualifiedName), Times.Once);
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[1].QualifiedName), Times.Once);
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[2].QualifiedName), Times.Never);
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[3].QualifiedName), Times.Never);
+
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, _testModuleSelections[0].Selection), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[3].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
@@ -288,9 +330,11 @@ namespace RubberduckTests.Rewriter
                 m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
+
+
         [Test]
         [Category("Rewriting")]
-        public void SetsReplacementSelectionOnParseAfterRecoverSelectionsOnNextParse_SelectionSavedPreviously()
+        public void SetReplacementSelectionOnNextParseAfterRecoverSelectionsOnNextParse_SelectionNotSavedPreviously_ModuleOpen()
         {
             var selectionServiceMock = TestSelectionServiceMock();
             var parseManagerMock = new Mock<IParseManager>();
@@ -298,24 +342,55 @@ namespace RubberduckTests.Rewriter
 
             var selectionReplacement = new Selection(22, 2, 44, 5);
 
-            selectionRecoverer.SaveSelections(_testModuleSelections
-                .Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
             selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[2].QualifiedName, selectionReplacement);
-            selectionRecoverer.RecoverSavedSelections();
+            selectionRecoverer.RecoverSavedSelectionsOnNextParse();
 
-            foreach (var qualifiedSelection in _testModuleSelections.Take(2))
-            {
-                selectionServiceMock.Verify(
-                    m => m.TrySetSelection(qualifiedSelection.QualifiedName, qualifiedSelection.Selection), Times.Once);
-            }
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
+            parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
 
-            selectionServiceMock.Verify(
-                m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, selectionReplacement), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, _testModuleSelections[0].Selection), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, selectionReplacement), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[3].QualifiedName, It.IsAny<Selection>()), Times.Never);
         }
 
         [Test]
         [Category("Rewriting")]
-        public void SetsReplacementSelectionOnParseAfterRecoverSelectionsOnNextParse_SelectionNotSavedPreviously()
+        public void DoesNotSaveOrSetReplacementSelectionOnOnNextParseAfterRecoverSelectionsOnNextParse_SelectionNotSavedPreviously_ModuleNotOpen()
+        {
+            var selectionServiceMock = TestSelectionServiceMock();
+            var parseManagerMock = new Mock<IParseManager>();
+            var selectionRecoverer = new SelectionRecoverer(selectionServiceMock.Object, parseManagerMock.Object);
+
+            selectionServiceMock.Setup(m => m.OpenModules())
+                .Returns(() => _testModuleSelections.Take(2).Select(qs => qs.QualifiedName).ToList());
+
+            var selectionReplacement = new Selection(22, 2, 44, 5);
+
+            selectionRecoverer.SaveSelections(_testModuleSelections.Select(qualifiedSelection => qualifiedSelection.QualifiedName).Take(2));
+            selectionRecoverer.ReplaceSavedSelection(_testModuleSelections[2].QualifiedName, selectionReplacement);
+            selectionRecoverer.RecoverSavedSelectionsOnNextParse();
+
+            var stateEventArgs = new ParserStateEventArgs(_stateExpectedToTriggerTheRecovery, ParserState.Pending,
+                CancellationToken.None);
+            parseManagerMock.Raise(m => m.StateChanged += null, stateEventArgs);
+
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[0].QualifiedName), Times.Once);
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[1].QualifiedName), Times.Once);
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[2].QualifiedName), Times.Never);
+            selectionServiceMock.Verify(m => m.Selection(_testModuleSelections[3].QualifiedName), Times.Never);
+
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[0].QualifiedName, _testModuleSelections[0].Selection), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[1].QualifiedName, _testModuleSelections[1].Selection), Times.Once);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[2].QualifiedName, It.IsAny<Selection>()), Times.Never);
+            selectionServiceMock.Verify(m => m.TrySetSelection(_testModuleSelections[3].QualifiedName, It.IsAny<Selection>()), Times.Never);
+        }
+
+        [Test]
+        [Category("Rewriting")]
+        public void SetsReplacementSelectionOnParseAfterRecoverSelectionsOnNextParse_SelectionSavedPreviously()
         {
             var selectionServiceMock = TestSelectionServiceMock();
             var parseManagerMock = new Mock<IParseManager>();

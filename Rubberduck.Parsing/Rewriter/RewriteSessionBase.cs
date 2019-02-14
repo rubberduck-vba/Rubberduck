@@ -103,7 +103,7 @@ namespace Rubberduck.Parsing.Rewriter
 
         private void PrimeSelectionRecovery()
         {
-            SelectionRecoverer.SaveSelections(CheckedOutModuleRewriters.Keys);
+            SelectionRecoverer.SaveSelections(CheckedOutModules);
 
             foreach (var (module, rewriter) in CheckedOutModuleRewriters)
             {

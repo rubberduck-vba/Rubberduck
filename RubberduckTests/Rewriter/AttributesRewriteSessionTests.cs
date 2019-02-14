@@ -91,10 +91,10 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriter")]
-        public void CallsRecoverOpenStateOnRewrite()
+        public void CallsRecoverOpenStateOnNextParseOnRewrite()
         {
             var selectionRecovererMock = new Mock<ISelectionRecoverer>();
-            selectionRecovererMock.Setup(m => m.RecoverOpenState());
+            selectionRecovererMock.Setup(m => m.RecoverOpenStateOnNextParse());
 
             var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
@@ -102,7 +102,7 @@ namespace RubberduckTests.Rewriter
             rewriteSession.CheckOutModuleRewriter(module);
             rewriteSession.TryRewrite();
 
-            selectionRecovererMock.Verify(m => m.RecoverOpenState(), Times.Once);
+            selectionRecovererMock.Verify(m => m.RecoverOpenStateOnNextParse(), Times.Once);
         }
 
         [Test]
@@ -125,12 +125,12 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriter")]
-        public void SavesOpenStateBeforeRestoringItOnRewrite()
+        public void SavesOpenStateBeforeRecoverOpenStateOnNextParseOnRewrite()
         {
             var selectionRecovererMock = new Mock<ISelectionRecoverer>();
             var lastOperation = string.Empty;
             selectionRecovererMock.Setup(m => m.SaveOpenState(It.IsAny<IEnumerable<QualifiedModuleName>>())).Callback(() => lastOperation = "SaveOpenState");
-            selectionRecovererMock.Setup(m => m.RecoverOpenState()).Callback(() => lastOperation = "RecoverOpenState");
+            selectionRecovererMock.Setup(m => m.RecoverOpenStateOnNextParse()).Callback(() => lastOperation = "RecoverOpenStateOnNextParse");
 
             var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
@@ -138,7 +138,7 @@ namespace RubberduckTests.Rewriter
             rewriteSession.CheckOutModuleRewriter(module);
             rewriteSession.TryRewrite();
 
-            Assert.AreEqual("RecoverOpenState", lastOperation);
+            Assert.AreEqual("RecoverOpenStateOnNextParse", lastOperation);
         }
 
         [Test]
