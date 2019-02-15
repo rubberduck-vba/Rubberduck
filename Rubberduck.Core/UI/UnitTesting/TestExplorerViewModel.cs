@@ -19,7 +19,7 @@ using DataFormats = System.Windows.DataFormats;
 
 namespace Rubberduck.UI.UnitTesting
 {
-    internal enum TestExplorerGrouping
+    public enum TestExplorerGrouping
     {
         None,
         Outcome,
