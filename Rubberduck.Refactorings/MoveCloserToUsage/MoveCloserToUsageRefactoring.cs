@@ -262,13 +262,13 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
 
                 return $"{declarationText}{Environment.NewLine}";
             }
-            //This is the first statement, which actually should not happen.
+            //This is the very first statement. In the context of this refactoring, this should not happen since we move a declaration into or inside a method.
+            //We will handle this edge-case nonetheless and return the result with the proper indentation for this special case.
             if (blockStmtContext.TryGetPrecedingContext(out VBAParser.WhiteSpaceContext startingWhitespace))
             {
                 return $"{declarationText}{Environment.NewLine}{startingWhitespace?.GetText()}";
             }
 
-            //We are at the start of the module, which should not be possible.
             return $"{declarationText}{Environment.NewLine}";
         }
 
