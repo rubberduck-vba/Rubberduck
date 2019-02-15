@@ -420,8 +420,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             return FindAllUserInterfaces()
                 .FirstOrDefault(declaration => declaration.References
-                    .Any(reference => reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>() != null 
-                                      && ReferenceEquals(reference.Declaration, declaration)));
+                    .Where(reference => reference.QualifiedModuleName.Equals(selection.QualifiedName))
+                    .Select(reference => reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>())
+                    .Where(context => context != null)
+                    .Select(context => context.GetSelection())
+                    .Any(contextSelection => contextSelection.Contains(selection.Selection) 
+                                             || selection.Selection.Contains(contextSelection)));
         }
 
         /// <summary>

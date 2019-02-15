@@ -63,6 +63,49 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]
+        public void DoesNotImplementInterface_SelectionNotOnImplementsStatement()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Sub Foo()
+End Sub";
+
+            const string inputCode2 =
+                @"Implements Class1
+   
+";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Class1
+   
+";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents[1];
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), new Selection(2,2));
+
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
+                refactoring.Refactor(qualifiedSelection);
+
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
         public void ImplementInterface_Procedure_ClassHasOtherProcedure()
         {
             //Input
@@ -1009,6 +1052,57 @@ End Property
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
+
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
+                refactoring.Refactor(qualifiedSelection);
+
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void ImplementsCorrectInterface_MultipleInterfaces()
+        {
+            //Input
+            const string inputCode1 =
+                @"Public Sub Foo()
+End Sub";
+
+            const string inputCode2 =
+                @"Implements Class1
+Implements Class3";
+
+            const string inputCode3 =
+                @"Public Sub Foo()
+End Sub";
+
+            //Expectation
+            const string expectedCode =
+                @"Implements Class1
+Implements Class3
+
+Private Sub Class1_Foo()
+    Err.Raise 5 'TODO implement interface member
+End Sub
+";
+
+            var builder = new MockVbeBuilder();
+            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
+                .AddComponent("Class1", ComponentType.ClassModule, inputCode1)
+                .AddComponent("Class2", ComponentType.ClassModule, inputCode2)
+                .AddComponent("Class3", ComponentType.ClassModule, inputCode3)
+                .Build();
+            var vbe = builder.AddProject(project).Build();
+            var component = project.Object.VBComponents[1];
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
+            {
+
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), new Selection(1,1));
 
                 var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
