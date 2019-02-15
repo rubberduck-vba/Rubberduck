@@ -9,34 +9,25 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.IntroduceField
 {
-    public class IntroduceFieldRefactoring : IRefactoring
+    public class IntroduceFieldRefactoring : RefactoringBase
     {
-        private readonly IList<Declaration> _declarations;
-        private readonly ISelectionService _selectionService;
-        private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IMessageBox _messageBox;
 
-        public IntroduceFieldRefactoring(RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public IntroduceFieldRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService)
         {
-            _declarations = state.AllUserDeclarations
-                .Where(i => i.DeclarationType == DeclarationType.Variable)
-                .ToList();
-
-            _state = state;
-            _rewritingManager = rewritingManager;
+            _declarationFinderProvider = declarationFinderProvider;
             _messageBox = messageBox;
-            _selectionService = selectionService;
         }
 
-        public void Refactor()
+        public override void Refactor()
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
 
             if (!activeSelection.HasValue)
             {
@@ -47,9 +38,11 @@ namespace Rubberduck.Refactorings.IntroduceField
             Refactor(activeSelection.Value);
         }
 
-        public void Refactor(QualifiedSelection selection)
+        public override void Refactor(QualifiedSelection selection)
         {
-            var target = _declarations.FindVariable(selection);
+            var target = _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(DeclarationType.Variable)
+                .FindVariable(selection);
 
             if (target == null)
             {
@@ -60,7 +53,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             PromoteVariable(target);
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
@@ -79,7 +72,7 @@ namespace Rubberduck.Refactorings.IntroduceField
                 return;
             }
 
-            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
             rewriter.Remove(target);
@@ -91,7 +84,7 @@ namespace Rubberduck.Refactorings.IntroduceField
         private void AddField(IModuleRewriter rewriter, Declaration target)
         {
             var content = $"{Tokens.Private} {target.IdentifierName} {Tokens.As} {target.AsTypeName}\r\n";
-            var members = _state.DeclarationFinder.Members(target.QualifiedName.QualifiedModuleName)
+            var members = _declarationFinderProvider.DeclarationFinder.Members(target.QualifiedName.QualifiedModuleName)
                 .Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
                 .OrderByDescending(item => item.Selection);
 

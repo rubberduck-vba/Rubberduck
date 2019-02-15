@@ -8,18 +8,15 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.IntroduceParameter
 {
-    public class IntroduceParameterRefactoring : IRefactoring
+    public class IntroduceParameterRefactoring : RefactoringBase
     {
-        private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IList<Declaration> _declarations;
         private readonly IMessageBox _messageBox;
-        private readonly ISelectionService _selectionService;
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
         {
@@ -30,19 +27,18 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameterRefactoring(RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public IntroduceParameterRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService)
         {
-            _state = state;
-            _rewritingManager = rewritingManager;
-            //TODO: Make this use the DeclarationFinder and inject an IDeclarationFinderProvider instead of the RubberduckParserState. (Does not affect the callers.)
-            _declarations = state.AllDeclarations.ToList();
+            _declarationFinderProvider = declarationFinderProvider;
+            //TODO: Refactor to use the declaration finder exclusively.
+            _declarations = declarationFinderProvider.DeclarationFinder.AllUserDeclarations.ToList();
             _messageBox = messageBox;
-            _selectionService = selectionService;
         }
 
-        public void Refactor()
+        public override void Refactor()
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
@@ -52,9 +48,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             Refactor(activeSelection.Value);
         }
 
-        public void Refactor(QualifiedSelection selection)
+        public override void Refactor(QualifiedSelection selection)
         {
-            var target = _declarations.FindVariable(selection);
+            var target = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable).FindVariable(selection);
 
             if (target == null)
             {
@@ -65,7 +61,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             PromoteVariable(target);
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             if (target == null || target.DeclarationType != DeclarationType.Variable)
             {
@@ -89,7 +85,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
             UpdateSignature(target, rewriteSession);
@@ -146,7 +142,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
             UpdateSignature(interfaceImplementation, targetVariable, rewriteSession);
 
-            var interfaceImplementations = _state.DeclarationFinder.FindInterfaceImplementationMembers(functionDeclaration.InterfaceMemberImplemented)
+            var interfaceImplementations = _declarationFinderProvider.DeclarationFinder.FindInterfaceImplementationMembers(functionDeclaration.InterfaceMemberImplemented)
                 .Where(member => !ReferenceEquals(member, functionDeclaration));
 
             foreach (var implementation in interfaceImplementations)
@@ -187,20 +183,22 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private void UpdateProperties(Declaration knownProperty, Declaration targetVariable, IRewriteSession rewriteSession)
         {
-            var propertyGet = _declarations.FirstOrDefault(d =>
-                    d.DeclarationType == DeclarationType.PropertyGet &&
-                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName) &&
-                    d.IdentifierName == knownProperty.IdentifierName);
+            var declarationFinder = _declarationFinderProvider.DeclarationFinder;
 
-            var propertyLet = _declarations.FirstOrDefault(d =>
-                    d.DeclarationType == DeclarationType.PropertyLet &&
-                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName) &&
-                    d.IdentifierName == knownProperty.IdentifierName);
+            var propertyGet = declarationFinder.UserDeclarations(DeclarationType.PropertyGet)
+                .FirstOrDefault(d =>
+                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName)
+                    && d.IdentifierName == knownProperty.IdentifierName);
 
-            var propertySet = _declarations.FirstOrDefault(d =>
-                    d.DeclarationType == DeclarationType.PropertySet &&
-                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName) &&
-                    d.IdentifierName == knownProperty.IdentifierName);
+            var propertyLet = declarationFinder.UserDeclarations(DeclarationType.PropertyLet)
+                .FirstOrDefault(d =>
+                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName)
+                    && d.IdentifierName == knownProperty.IdentifierName);
+
+            var propertySet = declarationFinder.UserDeclarations(DeclarationType.PropertySet)
+                .FirstOrDefault(d =>
+                    d.QualifiedModuleName.Equals(knownProperty.QualifiedModuleName)
+                    && d.IdentifierName == knownProperty.IdentifierName);
 
             var properties = new List<Declaration>();
 

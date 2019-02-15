@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,27 +14,22 @@ using System.Linq;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public class ReorderParametersRefactoring : IRefactoring
+    public class ReorderParametersRefactoring : InteractiveRefactoringBase<IReorderParametersPresenter, ReorderParametersModel>
     {
         private readonly RubberduckParserState _state;
-        private readonly IRefactoringPresenterFactory _factory;
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly ISelectionService _selectionService;
 
         public ReorderParametersRefactoring(RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService, factory)
         {
             _state = state;
-            _selectionService = selectionService;
-            _factory = factory;
             _messageBox = messageBox;
-            _rewritingManager = rewritingManager;
         }
 
         private ReorderParametersModel InitializeModel()
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return null;
@@ -44,7 +38,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             return new ReorderParametersModel(_state, activeSelection.Value);
         }
 
-        public void Refactor()
+        public override void Refactor()
         {
             _model = InitializeModel();
             if (_model == null)
@@ -52,7 +46,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 return;
             }
 
-            using (var container = DisposalActionContainer.Create(_factory.Create<IReorderParametersPresenter, ReorderParametersModel>(_model), p => _factory.Release(p)))
+            using (var container = PresenterFactory(_model))
             {
                 var presenter = container.Value;
                 if (presenter == null)
@@ -67,7 +61,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                     return;
                 }
                 
-                var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+                var rewriteSession = RewritingManager.CheckOutCodePaneSession();
                 AdjustReferences(_model.TargetDeclaration.References, rewriteSession);
                 AdjustSignatures(rewriteSession);
                 rewriteSession.TryRewrite();
@@ -75,16 +69,16 @@ namespace Rubberduck.Refactorings.ReorderParameters
             }
         }
 
-        public void Refactor(QualifiedSelection target)
+        public override void Refactor(QualifiedSelection target)
         {
-            if (!_selectionService.TrySetActiveSelection(target))
+            if (!SelectionService.TrySetActiveSelection(target))
             {
                 return;
             }
             Refactor();
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             if (!ReorderParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType))
             {

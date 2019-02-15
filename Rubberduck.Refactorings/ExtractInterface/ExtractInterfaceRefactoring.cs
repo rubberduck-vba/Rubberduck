@@ -13,31 +13,26 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class ExtractInterfaceRefactoring : IRefactoring
+    public class ExtractInterfaceRefactoring : InteractiveRefactoringBase<IExtractInterfacePresenter, ExtractInterfaceModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IParseManager _parseManager;
         private readonly IMessageBox _messageBox;
-        private readonly Func<ExtractInterfaceModel, IDisposalActionContainer<IExtractInterfacePresenter>> _presenterFactory;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly ISelectionService _selectionService;
         private ExtractInterfaceModel _model;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ExtractInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IParseManager parseManager, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;
-            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
-            _selectionService = selectionService;
-            _presenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(model), factory.Release));
         }
 
         private ExtractInterfaceModel InitializeModel()
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 return null;
@@ -46,7 +41,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             return new ExtractInterfaceModel(_declarationFinderProvider, activeSelection.Value);
         }
 
-        public void Refactor()
+        public override void Refactor()
         {
             _model = InitializeModel();
 
@@ -55,7 +50,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
                 return;
             }
 
-            using (var presenterContainer = _presenterFactory(_model))
+            using (var presenterContainer = PresenterFactory(_model))
             {
                 var presenter = presenterContainer.Value;
                 if (presenter == null)
@@ -73,9 +68,9 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        public void Refactor(QualifiedSelection target)
+        public override void Refactor(QualifiedSelection target)
         {
-            if (!_selectionService.TrySetActiveSelection(target))
+            if (!SelectionService.TrySetActiveSelection(target))
             {
                 return;
             }
@@ -83,7 +78,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             Refactor();
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             if (target == null)
             {
@@ -113,7 +108,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             AddInterfaceClass(_model.TargetDeclaration, _model.InterfaceName, GetInterfaceModuleBody());
 
-            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(_model.TargetDeclaration.QualifiedModuleName);
 
             var firstNonFieldMember = _declarationFinderProvider.DeclarationFinder.Members(_model.TargetDeclaration)
@@ -150,7 +145,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private void AddInterfaceMembersToClass(IModuleRewriter rewriter)
         {
-            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, _messageBox, _rewritingManager, _selectionService);
+            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, _messageBox, RewritingManager, SelectionService);
             implementInterfaceRefactoring.Refactor(_model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);
         }
 

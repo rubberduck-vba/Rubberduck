@@ -8,43 +8,37 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using Rubberduck.SmartIndenter;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using Environment = System.Environment;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldRefactoring : IRefactoring
+    public class EncapsulateFieldRefactoring : InteractiveRefactoringBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly ISelectionService _selectionService;
-        private readonly IRefactoringPresenterFactory _factory;
         private EncapsulateFieldModel _model;
         
         public EncapsulateFieldRefactoring(RubberduckParserState state, IIndenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService, factory)
         {
             _state = state;
             _indenter = indenter;
-            _factory = factory;
-            _rewritingManager = rewritingManager;
-            _selectionService = selectionService;
         }
 
         private EncapsulateFieldModel InitializeModel()
         {
-            var selection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
 
-            if (!selection.HasValue)
+            if (!activeSelection.HasValue)
             {
                 return null;
             }
 
-            return new EncapsulateFieldModel(_state, selection.Value);
+            return new EncapsulateFieldModel(_state, activeSelection.Value);
         }
 
-        public void Refactor()
+        public override void Refactor()
         {
             _model = InitializeModel();
             if (_model == null)
@@ -52,7 +46,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 return;
             }
 
-            using (var container = DisposalActionContainer.Create(_factory.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(_model), p => _factory.Release(p)))
+            using (var container = PresenterFactory(_model))
             {
                 var presenter = container.Value;
                 if (presenter == null)
@@ -66,22 +60,22 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     return;
                 }
 
-                var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+                var rewriteSession = RewritingManager.CheckOutCodePaneSession();
                 AddProperty(rewriteSession);
                 rewriteSession.TryRewrite();
             }
         }
 
-        public void Refactor(QualifiedSelection target)
+        public override void Refactor(QualifiedSelection target)
         {
-            if (!_selectionService.TrySetActiveSelection(target))
+            if (!SelectionService.TrySetActiveSelection(target))
             {
                 return;
             }
             Refactor();
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             Refactor(target.QualifiedSelection);
         }

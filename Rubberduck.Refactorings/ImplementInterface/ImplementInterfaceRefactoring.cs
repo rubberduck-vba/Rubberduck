@@ -12,12 +12,10 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ImplementInterface
 {
-    public class ImplementInterfaceRefactoring : IRefactoring
+    public class ImplementInterfaceRefactoring : RefactoringBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
-        private readonly ISelectionService _selectionService;
 
         private readonly List<Declaration> _declarations;
         private ClassModuleDeclaration _targetInterface;
@@ -26,17 +24,16 @@ namespace Rubberduck.Refactorings.ImplementInterface
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
         public ImplementInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _rewritingManager = rewritingManager;
             _declarations = declarationFinderProvider.DeclarationFinder.AllUserDeclarations.ToList();
             _messageBox = messageBox;
-            _selectionService = selectionService;
         }
 
-        public void Refactor()
+        public override void Refactor()
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 _messageBox.NotifyWarn(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption);
@@ -53,7 +50,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
             DeclarationType.Document, 
         };
 
-        public void Refactor(QualifiedSelection selection)
+        public override void Refactor(QualifiedSelection selection)
         {
             _targetInterface = _declarationFinderProvider.DeclarationFinder.FindInterface(selection);
 
@@ -68,13 +65,13 @@ namespace Rubberduck.Refactorings.ImplementInterface
             }
 
 
-            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(_targetClass.QualifiedModuleName);
             ImplementMissingMembers(rewriter);
             rewriteSession.TryRewrite();     
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             throw new NotSupportedException();
         }

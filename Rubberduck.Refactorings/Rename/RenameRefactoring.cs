@@ -5,7 +5,6 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.Interaction;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using System;
 using System.Diagnostics;
 using Microsoft.CSharp.RuntimeBinder;
@@ -19,17 +18,14 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.Rename
 {
-    public class RenameRefactoring : IRefactoring
+    public class RenameRefactoring : InteractiveRefactoringBase<IRenamePresenter, RenameModel>
     {
         private const string AppendUnderscoreFormat = "{0}_";
         private const string PrependUnderscoreFormat = "_{0}";
 
-        private readonly Func<RenameModel, IDisposalActionContainer<IRenamePresenter>> _presenterFactory;
         private readonly IMessageBox _messageBox;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IProjectsProvider _projectsProvider;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly ISelectionService _selectionService;
         private RenameModel _model;
         private readonly IDictionary<DeclarationType, Action<IRewriteSession>> _renameActions;
         private readonly List<string> _neverRenameIdentifiers;
@@ -38,14 +34,12 @@ namespace Rubberduck.Refactorings.Rename
         private bool IsControlEventHandlerRename { set; get; }
         private bool IsUserEventHandlerRename { set; get; }
         public RenameRefactoring(IRefactoringPresenterFactory factory, IMessageBox messageBox, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService, factory)
         {
             _messageBox = messageBox;
             _declarationFinderProvider = declarationFinderProvider;
             _projectsProvider = projectsProvider;
-            _rewritingManager = rewritingManager;
-            _selectionService = selectionService;
             _model = null;
-            _presenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<IRenamePresenter, RenameModel>(model), factory.Release));
 
             _renameActions = new Dictionary<DeclarationType, Action<IRewriteSession>>
             {
@@ -62,17 +56,17 @@ namespace Rubberduck.Refactorings.Rename
 
         private RenameModel InitializeModel(Declaration target)
         {
-            var targetSelection = target?.QualifiedSelection ?? _selectionService.ActiveSelection();
+            var targetSelection = target?.QualifiedSelection ?? SelectionService.ActiveSelection();
 
             return targetSelection == null ? null : new RenameModel(_declarationFinderProvider.DeclarationFinder, targetSelection.Value);
         }
 
-        public void Refactor(QualifiedSelection qualifiedSelection)
+        public override void Refactor(QualifiedSelection qualifiedSelection)
         {
             Refactor();
         }
 
-        public void Refactor()
+        public override void Refactor()
         {
             _model = InitializeModel(null);
             if (_model == null)
@@ -80,7 +74,7 @@ namespace Rubberduck.Refactorings.Rename
                 return;
             }
 
-            using (var presenterContainer = _presenterFactory(_model))
+            using (var presenterContainer = PresenterFactory(_model))
             {
                 var presenter = presenterContainer.Value;
                 if (presenter != null)
@@ -90,7 +84,7 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             _model = InitializeModel(target);
             if (_model == null)
@@ -98,7 +92,7 @@ namespace Rubberduck.Refactorings.Rename
                 return;
             }
 
-            using (var presenterContainer = _presenterFactory(_model))
+            using (var presenterContainer = PresenterFactory(_model))
             {
                 var presenter = presenterContainer.Value;
 
@@ -117,7 +111,7 @@ namespace Rubberduck.Refactorings.Rename
 
                 if (TrySetNewName(presenter))
                 {
-                    var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+                    var rewriteSession = RewritingManager.CheckOutCodePaneSession();
                     Rename(rewriteSession);
                     rewriteSession.TryRewrite();
                 }

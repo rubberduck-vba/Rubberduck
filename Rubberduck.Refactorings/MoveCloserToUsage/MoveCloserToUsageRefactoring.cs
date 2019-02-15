@@ -13,25 +13,22 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
-    public class MoveCloserToUsageRefactoring : IRefactoring
+    public class MoveCloserToUsageRefactoring : RefactoringBase
     {
-        private readonly ISelectionService _selectionService;
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
         private Declaration _target;
 
         public MoveCloserToUsageRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService)
         {
-            _selectionService = selectionService;
             _declarationFinderProvider = declarationFinderProvider;
-            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
         }
 
-        public void Refactor()
+        public override void Refactor()
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
                 _messageBox.NotifyWarn(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.MoveCloserToUsage_Caption);
@@ -41,7 +38,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             Refactor(activeSelection.Value);
         }
 
-        public void Refactor(QualifiedSelection selection)
+        public override void Refactor(QualifiedSelection selection)
         {
             var target = _declarationFinderProvider.DeclarationFinder
                 .UserDeclarations(DeclarationType.Variable)
@@ -56,7 +53,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             Refactor(target);
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             if (target.DeclarationType != DeclarationType.Variable)
             {
@@ -211,7 +208,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 return;
             }
 
-            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             InsertNewDeclaration(rewriteSession);
             RemoveOldDeclaration(rewriteSession);
             UpdateQualifiedCalls(rewriteSession);

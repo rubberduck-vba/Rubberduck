@@ -13,30 +13,29 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public class RemoveParametersRefactoring : IRefactoring
+    public class RemoveParametersRefactoring : InteractiveRefactoringBase<IRemoveParametersPresenter, RemoveParametersModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly ISelectionService _selectionService;
-        private readonly Func<RemoveParametersModel, IDisposalActionContainer<IRemoveParametersPresenter>> _presenterFactory;
-        private readonly IRewritingManager _rewritingManager;
         private RemoveParametersModel _model;
 
         public RemoveParametersRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+        :base(rewritingManager, selectionService, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _selectionService = selectionService;
-            _rewritingManager = rewritingManager;
-            _presenterFactory = (model => DisposalActionContainer.Create(factory.Create<IRemoveParametersPresenter, RemoveParametersModel>(model), factory.Release));
         }
 
         private RemoveParametersModel InitializeModel()
         {
-            var activeSelection = _selectionService.ActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
+            {
+                return null;
+            }
 
-            return !activeSelection.HasValue ? null : new RemoveParametersModel(_declarationFinderProvider, activeSelection.Value);
+            return new RemoveParametersModel(_declarationFinderProvider, activeSelection.Value);
         }
 
-        public void Refactor()
+        public override void Refactor()
         {
             _model = InitializeModel();
             if (_model == null)
@@ -44,7 +43,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return;
             }
 
-            using (var presenterContainer = _presenterFactory(_model))
+            using (var presenterContainer = PresenterFactory(_model))
             {
                 var presenter = presenterContainer.Value;
                 if (presenter == null)
@@ -62,9 +61,9 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
         }
 
-        public void Refactor(QualifiedSelection target)
+        public override void Refactor(QualifiedSelection target)
         {
-            if (!_selectionService.TrySetActiveSelection(target))
+            if (!SelectionService.TrySetActiveSelection(target))
             {
                 return;
             }
@@ -72,7 +71,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             Refactor();
         }
 
-        public void Refactor(Declaration target)
+        public override void Refactor(Declaration target)
         {
             if (!RemoveParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType) && target.DeclarationType != DeclarationType.Parameter)
             {
@@ -107,7 +106,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new NullReferenceException("Parameter is null");
             }
 
-            var rewritingSession = _rewritingManager.CheckOutCodePaneSession();
+            var rewritingSession = RewritingManager.CheckOutCodePaneSession();
 
             AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration, rewritingSession);
             AdjustSignatures(rewritingSession);
