@@ -198,57 +198,56 @@ namespace RubberduckTests.UnitTesting
             }
         }
 
-        [Test]
-        [NonParallelizable]
-        [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Failed })]
-        [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Succeeded, TestOutcome.Succeeded })]
-        [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Inconclusive, TestOutcome.Failed })]
-        [TestCase(new object[] { TestOutcome.Inconclusive, TestOutcome.Inconclusive, TestOutcome.Inconclusive })]
-        [TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
-        [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
-        [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        [Category("Unit Testing")]
-        public void TestEngine_RunByOutcome_RunsAppropriateTests(params TestOutcome[] tests)
-        {
-            var underTest = tests.Select(test => DummyOutcomes[test]).ToList();
+        //[Test]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Failed })]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Succeeded, TestOutcome.Succeeded })]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Inconclusive, TestOutcome.Failed })]
+        //[TestCase(new object[] { TestOutcome.Inconclusive, TestOutcome.Inconclusive, TestOutcome.Inconclusive })]
+        //[TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
+        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
+        //[Category("Unit Testing")]
+        //public void TestEngine_RunByOutcome_RunsAppropriateTests(params TestOutcome[] tests)
+        //{
+        //    var underTest = tests.Select(test => DummyOutcomes[test]).ToList();
 
-            using (var engine = new MockedTestEngine(underTest))
-            {
-                engine.TestEngine.Run(engine.TestEngine.Tests);
+        //    using (var engine = new MockedTestEngine(underTest))
+        //    {
+        //        engine.TestEngine.Run(engine.TestEngine.Tests);
 
-                var completionEvents = new List<EventArgs>();
-                engine.TestEngine.TestCompleted += (source, args) => completionEvents.Add(args);
+        //        var completionEvents = new List<EventArgs>();
+        //        engine.TestEngine.TestCompleted += (source, args) => completionEvents.Add(args);
 
-                var outcomes = Enum.GetValues(typeof(TestOutcome)).Cast<TestOutcome>().Where(outcome => outcome != TestOutcome.Unknown);
+        //        var outcomes = Enum.GetValues(typeof(TestOutcome)).Cast<TestOutcome>().Where(outcome => outcome != TestOutcome.Unknown);
 
-                foreach (var outcome in outcomes)
-                {
-                    completionEvents.Clear();
-                    engine.TestEngine.RunByOutcome(outcome);
+        //        foreach (var outcome in outcomes)
+        //        {
+        //            completionEvents.Clear();
+        //            engine.TestEngine.RunByOutcome(outcome);
 
-                    Thread.SpinWait(25);
+        //            Thread.SpinWait(25);
 
-                    var expected = tests.Count(result => result == outcome);
-                    Assert.AreEqual(expected, completionEvents.Count);
+        //            var expected = tests.Count(result => result == outcome);
+        //            Assert.AreEqual(expected, completionEvents.Count);
 
-                    if (expected == 0)
-                    {
-                        continue;
-                    }
+        //            if (expected == 0)
+        //            {
+        //                continue;
+        //            }
 
-                    var actual = new List<TestMethod>();
-                    for (var index = 0; index < underTest.Count; index++)
-                    {
-                        if (tests[index] == outcome)
-                        {
-                            actual.Add(engine.TestEngine.Tests.ElementAt(index));
-                        }
-                    }
+        //            var actual = new List<TestMethod>();
+        //            for (var index = 0; index < underTest.Count; index++)
+        //            {
+        //                if (tests[index] == outcome)
+        //                {
+        //                    actual.Add(engine.TestEngine.Tests.ElementAt(index));
+        //                }
+        //            }
 
-                    CollectionAssert.AreEqual(actual, engine.TestEngine.LastRunTests);
-                }
-            }
-        }
+        //            CollectionAssert.AreEqual(actual, engine.TestEngine.LastRunTests);
+        //        }
+        //    }
+        //}
 
     }
 }
