@@ -5,11 +5,13 @@ using Rubberduck.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.UnitTesting
 {
-    [TestFixture]
+    [NonParallelizable]
+    [TestFixture, Apartment(ApartmentState.STA)]  
     public class EngineTests
     {
         [Test]
@@ -155,6 +157,7 @@ namespace RubberduckTests.UnitTesting
                 }
 
                 engine.TestEngine.Run(engine.TestEngine.Tests);
+                Thread.SpinWait(25);
 
                 Mock.Verify(engine.Dispatcher, engine.VbeInteraction, engine.WrapperProvider, engine.TypeLib);
                 Assert.AreEqual(1, completionEvents.Count);
@@ -162,17 +165,17 @@ namespace RubberduckTests.UnitTesting
             }
         }
 
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
         private static readonly Dictionary<TestOutcome, (TestOutcome Outcome, string Output, long Duration)> DummyOutcomes = new Dictionary<TestOutcome, (TestOutcome, string, long)>
         {
             { TestOutcome.Succeeded,  (TestOutcome.Succeeded, "", 0)  },
             { TestOutcome.Inconclusive,  (TestOutcome.Inconclusive, "", 0)  },
             { TestOutcome.Failed,  (TestOutcome.Failed, "", 0)  },
-            //{ TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", 0)  },
+            { TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", 0)  },
             { TestOutcome.Ignored,  (TestOutcome.Ignored, "", 0)  }
         };
 
         [Test]
+        [NonParallelizable]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Failed })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Succeeded, TestOutcome.Succeeded })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Inconclusive, TestOutcome.Failed })]
@@ -180,8 +183,7 @@ namespace RubberduckTests.UnitTesting
         [TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
+        [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         [Category("Unit Testing")]
         public void TestEngine_LastTestRun_UpdatesAfterRun(params TestOutcome[] tests)
         {
@@ -190,11 +192,14 @@ namespace RubberduckTests.UnitTesting
             using (var engine = new MockedTestEngine(underTest))
             {
                 engine.TestEngine.Run(engine.TestEngine.Tests);
+                Thread.SpinWait(25);
+
                 Assert.AreEqual(underTest.Count, engine.TestEngine.LastRunTests.Count);
             }
         }
 
         [Test]
+        [NonParallelizable]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Failed })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Succeeded, TestOutcome.Succeeded })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Inconclusive, TestOutcome.Failed })]
@@ -220,6 +225,8 @@ namespace RubberduckTests.UnitTesting
                 {
                     completionEvents.Clear();
                     engine.TestEngine.RunByOutcome(outcome);
+
+                    Thread.SpinWait(25);
 
                     var expected = tests.Count(result => result == outcome);
                     Assert.AreEqual(expected, completionEvents.Count);

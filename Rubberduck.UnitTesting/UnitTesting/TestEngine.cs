@@ -45,7 +45,7 @@ namespace Rubberduck.UnitTesting
         public bool CanRun => AllowedRunStates.Contains(_state.Status) && _vbe.IsInDesignMode;
         public bool CanRepeatLastRun => _lastRun.Any();
         
-        private bool _refreshBackoff;
+        private bool _listening = true;
 
         public TestEngine(
             RubberduckParserState state, 
@@ -76,12 +76,12 @@ namespace Rubberduck.UnitTesting
 
             if (!CanRun || e.IsError)
             {
-                _refreshBackoff = false;
+                _listening = true;
             }
             // CanRun returned true already, only refresh tests if we're not backed off
-            else if (!_refreshBackoff && e.OldState != ParserState.Busy)
+            else if (_listening && e.OldState != ParserState.Busy)
             {
-                _refreshBackoff = true;
+                _listening = false;
                 var updates = TestDiscovery.GetAllTests(_state).ToList();
                 var run = new List<TestMethod>();
                 var known = new Dictionary<TestMethod, TestOutcome>();
@@ -118,12 +118,14 @@ namespace Rubberduck.UnitTesting
         {
             CancellationRequested = false;
             TestRunStarted?.Invoke(this, new TestRunStartedEventArgs(tests));
+            // This call is safe - OnTestRunStarted cannot be called from outside RD's context.
             _uiDispatcher.FlushMessageQueue(); 
         }
 
         private void OnTestStarted(TestMethod test)
         {           
             TestStarted?.Invoke(this, new TestStartedEventArgs(test));
+            // This call is safe - OnTestStarted cannot be called from outside RD's context.
             _uiDispatcher.FlushMessageQueue();
         }
 
@@ -133,6 +135,7 @@ namespace Rubberduck.UnitTesting
             _knownOutcomes.Add(test, result.Outcome);
 
             TestCompleted?.Invoke(this, new TestCompletedEventArgs(test, result));
+            // This call is safe - OnTestCompleted cannot be called from outside RD's context.
             _uiDispatcher.FlushMessageQueue();
         }
 
@@ -275,6 +278,9 @@ namespace Rubberduck.UnitTesting
                                     continue;
                                 }
 
+                                // The message pump is flushed here to catch cancellation requests. This is the only place inside the main test running
+                                // loop where this is "safe" to do - any other location risks either potentially misses test teardown or risks not knowing
+                                // what teardown needs to be done via VBA.
                                 _uiDispatcher.FlushMessageQueue();
 
                                 if (CancellationRequested)

@@ -46,6 +46,16 @@ namespace Rubberduck.Parsing.UIContext
         {
             CheckInitialization();
 
+            if (_contextProvider.UiContext == SynchronizationContext.Current)
+            {
+                PumpMessages();
+            }
+            else
+            {
+                InvokeAsync(PumpMessages);
+            }
+
+            // This should remain a local function - messages should not be pumped out outside of FlushMessageQueue.
             void PumpMessages()
             {
                 var message = new NativeMethods.NativeMessage();
@@ -58,15 +68,6 @@ namespace Rubberduck.Parsing.UIContext
                 }
 
                 handle.Free();
-            }
-
-            if (_contextProvider.UiContext == SynchronizationContext.Current)
-            {
-                PumpMessages();
-            }
-            else
-            {
-                InvokeAsync(PumpMessages);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Media;
 using Moq;
 using NUnit.Framework;
@@ -8,7 +9,8 @@ using Rubberduck.UnitTesting;
 
 namespace RubberduckTests.UnitTesting
 {
-    [TestFixture]
+    [NonParallelizable]
+    [TestFixture, Apartment(ApartmentState.STA)]
     public class TestExplorerModelTests
     {
         [Test]
@@ -45,13 +47,12 @@ namespace RubberduckTests.UnitTesting
 
         private const int DummyTestDuration = 10;
 
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
         private static readonly Dictionary<TestOutcome, (TestOutcome Outcome, string Output, long Duration)> DummyOutcomes = new Dictionary<TestOutcome, (TestOutcome, string, long)>
         {
             { TestOutcome.Succeeded,  (TestOutcome.Succeeded, "", DummyTestDuration)  },
             { TestOutcome.Inconclusive,  (TestOutcome.Inconclusive, "", DummyTestDuration)  },
             { TestOutcome.Failed,  (TestOutcome.Failed, "", DummyTestDuration)  },
-            //{ TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", DummyTestDuration)  },
+            { TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", DummyTestDuration)  },
             { TestOutcome.Ignored,  (TestOutcome.Ignored, "", DummyTestDuration)  }
         };
 
@@ -63,8 +64,7 @@ namespace RubberduckTests.UnitTesting
         [TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
+        [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         [Category("Unit Testing")]
         public void LastTestSucceededCount_CountIsCorrect(params TestOutcome[] tests)
         {
@@ -74,6 +74,7 @@ namespace RubberduckTests.UnitTesting
             {
                 model.Engine.ParserState.OnParseRequested(model);
                 model.Model.ExecuteTests(model.Model.Tests);
+                Thread.SpinWait(25);
 
                 var expected = tests.Count(outcome => outcome == TestOutcome.Succeeded);
                 Assert.AreEqual(expected, model.Model.LastTestSucceededCount);
@@ -88,8 +89,7 @@ namespace RubberduckTests.UnitTesting
         [TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
+        [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         [Category("Unit Testing")]
         public void LastTestIgnoredCount_CountIsCorrect(params TestOutcome[] tests)
         {
@@ -99,6 +99,7 @@ namespace RubberduckTests.UnitTesting
             {
                 model.Engine.ParserState.OnParseRequested(model);
                 model.Model.ExecuteTests(model.Model.Tests);
+                Thread.SpinWait(25);
 
                 var expected = tests.Count(outcome => outcome == TestOutcome.Ignored);
                 Assert.AreEqual(expected, model.Model.LastTestIgnoredCount);
@@ -113,8 +114,7 @@ namespace RubberduckTests.UnitTesting
         [TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
+        [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         [Category("Unit Testing")]
         public void LastTestInconclusiveCount_CountIsCorrect(params TestOutcome[] tests)
         {
@@ -124,6 +124,7 @@ namespace RubberduckTests.UnitTesting
             {
                 model.Engine.ParserState.OnParseRequested(model);
                 model.Model.ExecuteTests(model.Model.Tests);
+                Thread.SpinWait(25);
 
                 var expected = tests.Count(outcome => outcome == TestOutcome.Inconclusive);
                 Assert.AreEqual(expected, model.Model.LastTestInconclusiveCount);
@@ -138,8 +139,7 @@ namespace RubberduckTests.UnitTesting
         [TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
+        [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         [Category("Unit Testing")]
         public void LastTestFailedCount_CountIsCorrect(params TestOutcome[] tests)
         {
@@ -149,6 +149,7 @@ namespace RubberduckTests.UnitTesting
             {
                 model.Engine.ParserState.OnParseRequested(model);
                 model.Model.ExecuteTests(model.Model.Tests);
+                Thread.SpinWait(25);
 
                 var expected = tests.Count(outcome => outcome == TestOutcome.Failed);
                 Assert.AreEqual(expected, model.Model.LastTestFailedCount);
@@ -162,9 +163,8 @@ namespace RubberduckTests.UnitTesting
         [TestCase(new object[] { TestOutcome.Inconclusive, TestOutcome.Inconclusive, TestOutcome.Inconclusive })]
         [TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         [TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
-        //[TestCase(new object[] { TestOutcome.SpectacularFail, TestOutcome.SpectacularFail, TestOutcome.Ignored })]
-        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
+        [TestCase(new object[] { TestOutcome.SpectacularFail, TestOutcome.SpectacularFail, TestOutcome.Ignored })]
+        [TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         [Category("Unit Testing")]
         public void LastTestSpectacularFailCount_CountIsCorrect(params TestOutcome[] tests)
         {
@@ -174,6 +174,7 @@ namespace RubberduckTests.UnitTesting
             {
                 model.Engine.ParserState.OnParseRequested(model);
                 model.Model.ExecuteTests(model.Model.Tests);
+                Thread.SpinWait(25);
 
                 var expected = tests.Count(outcome => outcome == TestOutcome.SpectacularFail);
                 Assert.AreEqual(expected, model.Model.LastTestSpectacularFailCount);
@@ -201,7 +202,7 @@ namespace RubberduckTests.UnitTesting
             { "Gold", Colors.Gold },
             { "Orange", Colors.Orange },
             { "Red", Colors.Red },
-            //{ "Black", Colors.Black }
+            { "Black", Colors.Black }
         };
 
         [Test]
@@ -212,8 +213,7 @@ namespace RubberduckTests.UnitTesting
         [TestCase("Gold", new [] { TestOutcome.Inconclusive, TestOutcome.Inconclusive, TestOutcome.Succeeded })]
         [TestCase("Red", new [] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         [TestCase("Orange", new [] { TestOutcome.Succeeded, TestOutcome.Ignored })]
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
-        //[TestCase("Black", new [] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
+        [TestCase("Black", new[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         [Category("Unit Testing")]
         public void ProgressBarColor_CorrectGivenTestResult(params object[] args)
         {
@@ -226,6 +226,7 @@ namespace RubberduckTests.UnitTesting
             {
                 model.Engine.ParserState.OnParseRequested(model);
                 model.Model.ExecuteTests(model.Model.Tests);
+                Thread.SpinWait(25);
 
                 Assert.AreEqual(ColorLookup[expectedColor], model.Model.ProgressBarColor);
             }

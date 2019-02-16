@@ -307,6 +307,7 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        // TODO - FIXME
         //KEEP THIS, AS IT MAKES FOR THE BASIS OF A USEFUL *SUMMARY* REPORT
         //private void ExecuteCopyResultsCommand(object parameter)
         //{

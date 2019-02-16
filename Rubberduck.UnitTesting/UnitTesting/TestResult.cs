@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UnitTesting
 {
-    public struct TestResult
+    public readonly struct TestResult
     {
         public TestResult(TestOutcome outcome, string output = "", long duration = 0)
         {

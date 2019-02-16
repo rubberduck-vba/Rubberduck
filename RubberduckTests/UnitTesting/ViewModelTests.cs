@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Windows.Data;
 using NUnit.Framework;
 using Rubberduck.UI.UnitTesting;
@@ -9,7 +10,8 @@ using Rubberduck.UnitTesting;
 
 namespace RubberduckTests.UnitTesting
 {
-    [TestFixture]
+    [NonParallelizable]
+    [TestFixture, Apartment(ApartmentState.STA)]
     public class ViewModelTests
     {
         [Test]
@@ -69,19 +71,18 @@ namespace RubberduckTests.UnitTesting
             }
         }
 
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
         private static readonly Dictionary<TestOutcome, (TestOutcome Outcome, string Output, long Duration)> DummyOutcomes = new Dictionary<TestOutcome, (TestOutcome, string, long)>
         {
             { TestOutcome.Succeeded,  (TestOutcome.Succeeded, "", 0)  },
             { TestOutcome.Inconclusive,  (TestOutcome.Inconclusive, "", 0)  },
             { TestOutcome.Failed,  (TestOutcome.Failed, "", 0)  },
-            //{ TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", 0)  },
+            { TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", 0)  },
             { TestOutcome.Ignored,  (TestOutcome.Ignored, "", 0)  }
         };
 
 
         [Test]
-        [Category("Unit Testing")]
+        [NonParallelizable]
         [TestCase(new[] { TestOutcome.Succeeded, TestOutcome.Failed })]
         [TestCase(new[] { TestOutcome.Succeeded, TestOutcome.Succeeded, TestOutcome.Succeeded })]
         [TestCase(new[] { TestOutcome.Succeeded, TestOutcome.Inconclusive, TestOutcome.Failed })]
@@ -89,8 +90,7 @@ namespace RubberduckTests.UnitTesting
         [TestCase(new[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
         [TestCase(new[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
         [TestCase(new[] { TestOutcome.Succeeded, TestOutcome.Ignored, TestOutcome.Failed })]
-        // See comment in MockedTestEngine.SetupAssertCompleted re. commented code.
-        //[TestCase(new [] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
+        [TestCase(new[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
         public void TestGrouping_GroupsByOutcome(params TestOutcome[] tests)
         {
             var underTest = tests.Select(test => DummyOutcomes[test]).ToList();
@@ -102,7 +102,8 @@ namespace RubberduckTests.UnitTesting
 
                 model.Engine.ParserState.OnParseRequested(model);
                 model.Model.ExecuteTests(model.Model.Tests);
-                
+                Thread.SpinWait(25);
+
                 var actual = viewModel.ViewModel.Tests.Groups.Count;
                 var expected = tests.Distinct().Count();
 

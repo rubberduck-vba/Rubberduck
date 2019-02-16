@@ -160,25 +160,38 @@ End Sub";
                 // there is no STA boundary being crossed, so the internal implementation of the AssertHandler is not constrained by
                 // the rental context that would normally be managed by Interop. These tests *do* pass as of the commit that adds them,
                 // but only if the context is force by running them through the debugger. Leaving these in as commented code mainly for
-                // the purpose of documenting this. Single asserts are fine.
+                // the purpose of documenting this. Single asserts are fine. Update - added spin wait instead. This may still be a FIXME?
 
-                //case TestOutcome.SpectacularFail:
-                //    action = () =>
-                //    {
-                //        for (var failure = 0; failure < 10; failure++)
-                //        {
-                //            AssertHandler.OnAssertFailed(result.Output, testMethod.Declaration.IdentifierName);
-                //        }
-                //    };
-                //    break;
+                case TestOutcome.SpectacularFail:
+                    action = () =>
+                    {
+                        var assert = new AssertClass();
+                        for (var failure = 0; failure < 10; failure++)
+                        {
+                            assert.Fail(result.Output);
+                        }
+                    };
+                    break;
                 case TestOutcome.Failed:
-                    action = () => AssertHandler.OnAssertFailed(result.Output, testMethod.Declaration.IdentifierName);
+                    action = () =>
+                    {
+                        var assert = new AssertClass();
+                        assert.Fail(result.Output);
+                    };
                     break;
                 case TestOutcome.Inconclusive:
-                    action = () => AssertHandler.OnAssertInconclusive(result.Output);
+                    action = () =>
+                    {
+                        var assert = new AssertClass();
+                        assert.Inconclusive(result.Output);
+                    };
                     break;
                 case TestOutcome.Succeeded:
-                    action = AssertHandler.OnAssertSucceeded;
+                    action = () =>
+                    {
+                        var assert = new AssertClass();
+                        assert.Succeed();
+                    };
                     break;
                 default:
                     action = () => { };
