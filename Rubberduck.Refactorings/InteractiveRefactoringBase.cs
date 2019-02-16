@@ -6,7 +6,9 @@ using System;
 
 namespace Rubberduck.Refactorings
 {
-    public abstract class InteractiveRefactoringBase<TPresenter, TModel> : RefactoringBase where TPresenter : class where TModel : class
+    public abstract class InteractiveRefactoringBase<TPresenter, TModel> : RefactoringBase 
+        where TPresenter : class, IRefactoringPresenter<TModel>
+        where TModel : class, IRefactoringModel
     {
         protected readonly Func<TModel, IDisposalActionContainer<TPresenter>> PresenterFactory;
 

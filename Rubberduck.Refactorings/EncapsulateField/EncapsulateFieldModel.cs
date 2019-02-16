@@ -10,7 +10,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldModel
+    public class EncapsulateFieldModel : IRefactoringModel
     {
         public RubberduckParserState State { get; }
 

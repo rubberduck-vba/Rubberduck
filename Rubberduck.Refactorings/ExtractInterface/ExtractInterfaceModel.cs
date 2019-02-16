@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
-    public class ExtractInterfaceModel
+    public class ExtractInterfaceModel : IRefactoringModel
     {
         public Declaration TargetDeclaration { get; }
         public IDeclarationFinderProvider DeclarationFinderProvider { get; }

@@ -7,7 +7,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.Rename
 {
-    public class RenameModel
+    public class RenameModel : IRefactoringModel
     {
         private Declaration _target;
         public Declaration Target

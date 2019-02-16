@@ -9,7 +9,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
-    public class ReorderParametersModel
+    public class ReorderParametersModel : IRefactoringModel
     {
         public RubberduckParserState State { get; }
         public IEnumerable<Declaration> Declarations { get; }

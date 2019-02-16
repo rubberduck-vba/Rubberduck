@@ -9,7 +9,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.RemoveParameters
 {
-    public class RemoveParametersModel
+    public class RemoveParametersModel : IRefactoringModel
     {
         public IEnumerable<Declaration> Declarations { get; }
 
