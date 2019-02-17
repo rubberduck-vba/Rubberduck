@@ -6,7 +6,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
  using Rubberduck.Parsing.VBA;
@@ -17,7 +16,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
     public class ReorderParametersRefactoring : InteractiveRefactoringBase<IReorderParametersPresenter, ReorderParametersModel>
     {
         private readonly RubberduckParserState _state;
-        private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
 
         public ReorderParametersRefactoring(RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
@@ -27,26 +25,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
             _messageBox = messageBox;
         }
 
-        private ReorderParametersModel InitializeModel()
+        public override void Refactor(QualifiedSelection target)
         {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                return null;
-            }
-
-            return new ReorderParametersModel(_state, activeSelection.Value);
-        }
-
-        public override void Refactor()
-        {
-            _model = InitializeModel();
-            if (_model == null)
+            Model = InitializeModel(target);
+            if (Model == null)
             {
                 return;
             }
 
-            using (var container = PresenterFactory(_model))
+            using (var container = PresenterFactory(Model))
             {
                 var presenter = container.Value;
                 if (presenter == null)
@@ -54,48 +41,58 @@ namespace Rubberduck.Refactorings.ReorderParameters
                     return;
                 }
 
-                _model = presenter.Show();
-                if (_model == null || !_model.Parameters.Where((param, index) => param.Index != index).Any() ||
-                    !IsValidParamOrder())
+                Model = presenter.Show();
+                if (Model == null)
                 {
                     return;
                 }
-                
-                var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-                AdjustReferences(_model.TargetDeclaration.References, rewriteSession);
-                AdjustSignatures(rewriteSession);
-                rewriteSession.TryRewrite();
-                _model.State.OnParseRequested(this);
+
+                RefactorImpl(presenter);
             }
         }
 
-        public override void Refactor(QualifiedSelection target)
+        private ReorderParametersModel InitializeModel(QualifiedSelection targetSelection)
         {
-            if (!SelectionService.TrySetActiveSelection(target))
+            return new ReorderParametersModel(_state, targetSelection);
+        }
+
+        protected override void RefactorImpl(IReorderParametersPresenter presenter)
+        {
+            if (!Model.Parameters.Where((param, index) => param.Index != index).Any()
+                || !IsValidParamOrder())
             {
                 return;
             }
-            Refactor();
+
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
+            AdjustReferences(Model.TargetDeclaration.References, rewriteSession);
+            AdjustSignatures(rewriteSession);
+            rewriteSession.TryRewrite();
         }
 
-        public override void Refactor(Declaration target)
+        protected override ReorderParametersModel InitializeModel(Declaration target)
         {
-            if (!ReorderParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType))
+            if (target == null)
             {
-                throw new ArgumentException("Invalid declaration type");
+                return null;
             }
 
-            Refactor(target.QualifiedSelection);
+            if (!ReorderParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType))
+            {
+                return null;
+            }
+
+            return InitializeModel(target.QualifiedSelection);
         }
 
         private bool IsValidParamOrder()
         {
-            var indexOfFirstOptionalParam = _model.Parameters.FindIndex(param => param.IsOptional);
+            var indexOfFirstOptionalParam = Model.Parameters.FindIndex(param => param.IsOptional);
             if (indexOfFirstOptionalParam >= 0)
             {
-                for (var index = indexOfFirstOptionalParam + 1; index < _model.Parameters.Count; index++)
+                for (var index = indexOfFirstOptionalParam + 1; index < Model.Parameters.Count; index++)
                 {
-                    if (!_model.Parameters.ElementAt(index).IsOptional)
+                    if (!Model.Parameters.ElementAt(index).IsOptional)
                     {
                         _messageBox.NotifyWarn(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText);
                         return false;
@@ -103,8 +100,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 }
             }
 
-            var indexOfParamArray = _model.Parameters.FindIndex(param => param.IsParamArray);
-            if (indexOfParamArray < 0 || indexOfParamArray == _model.Parameters.Count - 1)
+            var indexOfParamArray = Model.Parameters.FindIndex(param => param.IsParamArray);
+            if (indexOfParamArray < 0 || indexOfParamArray == Model.Parameters.Count - 1)
             {
                 return true;
             }
@@ -115,7 +112,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references, IRewriteSession rewriteSession)
         {
-            foreach (var reference in references.Where(item => item.Context != _model.TargetDeclaration.Context))
+            foreach (var reference in references.Where(item => item.Context != Model.TargetDeclaration.Context))
             {
                 VBAParser.ArgumentListContext argumentList = null;
                 var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
@@ -148,7 +145,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var rewriter = rewriteSession.CheckOutModuleRewriter(module);
 
             var args = argList.argument().Select((s, i) => new { Index = i, Text = s.GetText() }).ToList();
-            for (var i = 0; i < _model.Parameters.Count; i++)
+            for (var i = 0; i < Model.Parameters.Count; i++)
             {
                 if (argList.argument().Length <= i)
                 {
@@ -156,20 +153,20 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 }
 
                 var arg = argList.argument()[i];
-                rewriter.Replace(arg, args.Single(s => s.Index == _model.Parameters[i].Index).Text);
+                rewriter.Replace(arg, args.Single(s => s.Index == Model.Parameters[i].Index).Text);
             }
         }
 
         private void AdjustSignatures(IRewriteSession rewriteSession)
         {
-            var proc = (dynamic)_model.TargetDeclaration.Context;
+            var proc = (dynamic)Model.TargetDeclaration.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
 
             // if we are reordering a property getter, check if we need to reorder a letter/setter too
-            if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
+            if (Model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = _model.Declarations.FirstOrDefault(item => item.ParentScope == _model.TargetDeclaration.ParentScope &&
-                                              item.IdentifierName == _model.TargetDeclaration.IdentifierName &&
+                var setter = Model.Declarations.FirstOrDefault(item => item.ParentScope == Model.TargetDeclaration.ParentScope &&
+                                              item.IdentifierName == Model.TargetDeclaration.IdentifierName &&
                                               item.DeclarationType == DeclarationType.PropertySet);
 
                 if (setter != null)
@@ -178,8 +175,8 @@ namespace Rubberduck.Refactorings.ReorderParameters
                     AdjustReferences(setter.References, rewriteSession);
                 }
 
-                var letter = _model.Declarations.FirstOrDefault(item => item.ParentScope == _model.TargetDeclaration.ParentScope &&
-                              item.IdentifierName == _model.TargetDeclaration.IdentifierName &&
+                var letter = Model.Declarations.FirstOrDefault(item => item.ParentScope == Model.TargetDeclaration.ParentScope &&
+                              item.IdentifierName == Model.TargetDeclaration.IdentifierName &&
                               item.DeclarationType == DeclarationType.PropertyLet);
 
                 if (letter != null)
@@ -189,25 +186,25 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 }
             }
 
-            RewriteSignature(_model.TargetDeclaration, paramList, rewriteSession);
+            RewriteSignature(Model.TargetDeclaration, paramList, rewriteSession);
 
-            foreach (var withEvents in _model.Declarations.Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName))
+            foreach (var withEvents in Model.Declarations.Where(item => item.IsWithEvents && item.AsTypeName == Model.TargetDeclaration.ComponentName))
             {
-                foreach (var reference in _model.Declarations.FindEventProcedures(withEvents))
+                foreach (var reference in Model.Declarations.FindEventProcedures(withEvents))
                 {
                     AdjustReferences(reference.References, rewriteSession);
                     AdjustSignatures(reference, rewriteSession);
                 }
             }
 
-            if (!(_model.TargetDeclaration is ModuleBodyElementDeclaration member) 
+            if (!(Model.TargetDeclaration is ModuleBodyElementDeclaration member) 
                 || !(member.IsInterfaceImplementation || member.IsInterfaceMember))
             {
                 return;
             }
 
             var implementations =
-                _model.State.DeclarationFinder.FindInterfaceImplementationMembers(member.IsInterfaceMember
+                Model.State.DeclarationFinder.FindInterfaceImplementationMembers(member.IsInterfaceMember
                     ? member
                     : member.InterfaceMemberImplemented);
 
@@ -241,10 +238,10 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
             var parameters = paramList.arg().Select((s, i) => new { Index = i, Text = s.GetText() }).ToList();
-            for (var i = 0; i < _model.Parameters.Count; i++)
+            for (var i = 0; i < Model.Parameters.Count; i++)
             {
                 var param = paramList.arg()[i];
-                rewriter.Replace(param, parameters.SingleOrDefault(s => s.Index == _model.Parameters[i].Index)?.Text);
+                rewriter.Replace(param, parameters.SingleOrDefault(s => s.Index == Model.Parameters[i].Index)?.Text);
             }
         }
     }

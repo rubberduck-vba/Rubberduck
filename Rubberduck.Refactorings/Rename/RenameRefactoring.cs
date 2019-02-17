@@ -54,7 +54,7 @@ namespace Rubberduck.Refactorings.Rename
             _neverRenameIdentifiers = NeverRenameList();
         }
 
-        private RenameModel InitializeModel(Declaration target)
+        protected override RenameModel InitializeModel(Declaration target)
         {
             var targetSelection = target?.QualifiedSelection ?? SelectionService.ActiveSelection();
 
@@ -64,6 +64,11 @@ namespace Rubberduck.Refactorings.Rename
         public override void Refactor(QualifiedSelection qualifiedSelection)
         {
             Refactor();
+        }
+
+        protected override void RefactorImpl(IRenamePresenter presenter)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Refactor()

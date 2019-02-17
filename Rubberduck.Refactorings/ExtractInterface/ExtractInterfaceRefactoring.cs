@@ -18,7 +18,6 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IParseManager _parseManager;
         private readonly IMessageBox _messageBox;
-        private ExtractInterfaceModel _model;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -30,27 +29,16 @@ namespace Rubberduck.Refactorings.ExtractInterface
             _messageBox = messageBox;
         }
 
-        private ExtractInterfaceModel InitializeModel()
+        public override void Refactor(QualifiedSelection target)
         {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                return null;
-            }
+            Model = InitializeModel(target);
 
-            return new ExtractInterfaceModel(_declarationFinderProvider, activeSelection.Value);
-        }
-
-        public override void Refactor()
-        {
-            _model = InitializeModel();
-
-            if (_model == null)
+            if (Model == null)
             {
                 return;
             }
 
-            using (var presenterContainer = PresenterFactory(_model))
+            using (var presenterContainer = PresenterFactory(Model))
             {
                 var presenter = presenterContainer.Value;
                 if (presenter == null)
@@ -58,24 +46,24 @@ namespace Rubberduck.Refactorings.ExtractInterface
                     return;
                 }
 
-                _model = presenter.Show();
-                if (_model == null)
+                Model = presenter.Show();
+                if (Model == null)
                 {
                     return;
                 }
 
-                AddInterface();
+                RefactorImpl(presenter);
             }
         }
 
-        public override void Refactor(QualifiedSelection target)
+        private ExtractInterfaceModel InitializeModel(QualifiedSelection targetSelection)
         {
-            if (!SelectionService.TrySetActiveSelection(target))
-            {
-                return;
-            }
+            return new ExtractInterfaceModel(_declarationFinderProvider, targetSelection);
+        }
 
-            Refactor();
+        protected override void RefactorImpl(IExtractInterfacePresenter presenter)
+        {
+            AddInterface();
         }
 
         public override void Refactor(Declaration target)
@@ -86,6 +74,16 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
 
             Refactor(target.QualifiedSelection);
+        }
+
+        protected override ExtractInterfaceModel InitializeModel(Declaration target)
+        {
+            if (target == null)
+            {
+                return null;
+            }
+
+            return InitializeModel(target.QualifiedSelection);
         }
 
         private void AddInterface()
@@ -100,21 +98,21 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private void AddInterfaceInternal()
         {
-            var targetProject = _model.TargetDeclaration.Project;
+            var targetProject = Model.TargetDeclaration.Project;
             if (targetProject == null)
             {
                 return; //The target project is not available.
             }
 
-            AddInterfaceClass(_model.TargetDeclaration, _model.InterfaceName, GetInterfaceModuleBody());
+            AddInterfaceClass(Model.TargetDeclaration, Model.InterfaceName, GetInterfaceModuleBody());
 
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            var rewriter = rewriteSession.CheckOutModuleRewriter(_model.TargetDeclaration.QualifiedModuleName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(Model.TargetDeclaration.QualifiedModuleName);
 
-            var firstNonFieldMember = _declarationFinderProvider.DeclarationFinder.Members(_model.TargetDeclaration)
+            var firstNonFieldMember = _declarationFinderProvider.DeclarationFinder.Members(Model.TargetDeclaration)
                                             .OrderBy(o => o.Selection)
                                             .First(m => ExtractInterfaceModel.MemberTypes.Contains(m.DeclarationType));
-            rewriter.InsertBefore(firstNonFieldMember.Context.Start.TokenIndex, $"Implements {_model.InterfaceName}{Environment.NewLine}{Environment.NewLine}");
+            rewriter.InsertBefore(firstNonFieldMember.Context.Start.TokenIndex, $"Implements {Model.InterfaceName}{Environment.NewLine}{Environment.NewLine}");
 
             AddInterfaceMembersToClass(rewriter);
 
@@ -146,12 +144,12 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private void AddInterfaceMembersToClass(IModuleRewriter rewriter)
         {
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, _messageBox, RewritingManager, SelectionService);
-            implementInterfaceRefactoring.Refactor(_model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, _model.InterfaceName);
+            implementInterfaceRefactoring.Refactor(Model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, Model.InterfaceName);
         }
 
         private string GetInterfaceModuleBody()
         {
-            return string.Join(Environment.NewLine, _model.SelectedMembers.Select(m => m.Body));
+            return string.Join(Environment.NewLine, Model.SelectedMembers.Select(m => m.Body));
         }
     }
 }

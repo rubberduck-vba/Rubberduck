@@ -16,7 +16,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
     public class RemoveParametersRefactoring : InteractiveRefactoringBase<IRemoveParametersPresenter, RemoveParametersModel>
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private RemoveParametersModel _model;
 
         public RemoveParametersRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
         :base(rewritingManager, selectionService, factory)
@@ -24,26 +23,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
             _declarationFinderProvider = declarationFinderProvider;
         }
 
-        private RemoveParametersModel InitializeModel()
+        public override void Refactor(QualifiedSelection target)
         {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                return null;
-            }
-
-            return new RemoveParametersModel(_declarationFinderProvider, activeSelection.Value);
-        }
-
-        public override void Refactor()
-        {
-            _model = InitializeModel();
-            if (_model == null)
+            Model = InitializeModel(target);
+            if (Model == null)
             {
                 return;
             }
 
-            using (var presenterContainer = PresenterFactory(_model))
+            using (var presenterContainer = PresenterFactory(Model))
             {
                 var presenter = presenterContainer.Value;
                 if (presenter == null)
@@ -51,46 +39,51 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     return;
                 }
 
-                _model = presenter.Show();
-                if (_model == null || !_model.Parameters.Any())
+                Model = presenter.Show();
+                if (Model == null || !Model.Parameters.Any())
                 {
                     return;
                 }
 
-                RemoveParameters();
+                RefactorImpl(presenter);
             }
         }
 
-        public override void Refactor(QualifiedSelection target)
+        private RemoveParametersModel InitializeModel(QualifiedSelection targetSelection)
         {
-            if (!SelectionService.TrySetActiveSelection(target))
+            return new RemoveParametersModel(_declarationFinderProvider, targetSelection);
+        }
+
+        protected override void RefactorImpl(IRemoveParametersPresenter presenter)
+        {
+            RemoveParameters();
+        }
+
+        protected override RemoveParametersModel InitializeModel(Declaration target)
+        {
+            if (target == null)
             {
-                return;
+                return null;
             }
 
-            Refactor();
-        }
-
-        public override void Refactor(Declaration target)
-        {
             if (!RemoveParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType) && target.DeclarationType != DeclarationType.Parameter)
             {
-                throw new ArgumentException("Invalid declaration type");
+                return null;
             }
 
-            Refactor(target.QualifiedSelection);
+            return InitializeModel(target.QualifiedSelection);
         }
 
         public void QuickFix(QualifiedSelection selection)
         {
-            _model = new RemoveParametersModel(_declarationFinderProvider, selection);
+            Model = InitializeModel(selection);
             
-            var target = _model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
+            var target = Model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
             Debug.Assert(target != null, "Target was not found");
             
             if (target != null)
             {
-                _model.RemoveParameters.Add(target);
+                Model.RemoveParameters.Add(target);
             }
             else
             {
@@ -101,14 +94,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private void RemoveParameters()
         {
-            if (_model.TargetDeclaration == null)
+            if (Model.TargetDeclaration == null)
             {
                 throw new NullReferenceException("Parameter is null");
             }
 
             var rewritingSession = RewritingManager.CheckOutCodePaneSession();
 
-            AdjustReferences(_model.TargetDeclaration.References, _model.TargetDeclaration, rewritingSession);
+            AdjustReferences(Model.TargetDeclaration.References, Model.TargetDeclaration, rewritingSession);
             AdjustSignatures(rewritingSession);
 
             rewritingSession.TryRewrite();
@@ -160,15 +153,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             var usesNamedArguments = false;
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
-            for (var i = 0; i < _model.Parameters.Count; i++)
+            for (var i = 0; i < Model.Parameters.Count; i++)
             {
                 // only remove params from RemoveParameters
-                if (!_model.RemoveParameters.Contains(_model.Parameters[i]))
+                if (!Model.RemoveParameters.Contains(Model.Parameters[i]))
                 {
                     continue;
                 }
                 
-                if (_model.Parameters[i].IsParamArray)
+                if (Model.Parameters[i].IsParamArray)
                 {
                     //The following code works because it is neither allowed to use both named arguments
                     //and a ParamArray nor optional arguments and a ParamArray.
@@ -190,7 +183,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     var arg = args.Where(a => a.namedArgument() != null)
                                   .SingleOrDefault(a =>
                                         a.namedArgument().unrestrictedIdentifier().GetText() ==
-                                        _model.Parameters[i].Declaration.IdentifierName);
+                                        Model.Parameters[i].Declaration.IdentifierName);
 
                     if (arg != null)
                     {
@@ -205,16 +198,16 @@ namespace Rubberduck.Refactorings.RemoveParameters
         private void AdjustSignatures(IRewriteSession rewriteSession)
         {
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
-            if (_model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
+            if (Model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertySet);
+                var setter = GetLetterOrSetter(Model.TargetDeclaration, DeclarationType.PropertySet);
                 if (setter != null)
                 {
                     RemoveSignatureParameters(setter, rewriteSession);
                     AdjustReferences(setter.References, setter, rewriteSession);
                 }
 
-                var letter = GetLetterOrSetter(_model.TargetDeclaration, DeclarationType.PropertyLet);
+                var letter = GetLetterOrSetter(Model.TargetDeclaration, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
                     RemoveSignatureParameters(letter, rewriteSession);
@@ -222,11 +215,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 }
             }
 
-            RemoveSignatureParameters(_model.TargetDeclaration, rewriteSession);
+            RemoveSignatureParameters(Model.TargetDeclaration, rewriteSession);
 
-            var eventImplementations = _model.Declarations
-                .Where(item => item.IsWithEvents && item.AsTypeName == _model.TargetDeclaration.ComponentName)
-                .SelectMany(withEvents => _model.Declarations.FindEventProcedures(withEvents));
+            var eventImplementations = Model.Declarations
+                .Where(item => item.IsWithEvents && item.AsTypeName == Model.TargetDeclaration.ComponentName)
+                .SelectMany(withEvents => Model.Declarations.FindEventProcedures(withEvents));
 
             foreach (var eventImplementation in eventImplementations)
             {
@@ -236,8 +229,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             var interfaceImplementations = _declarationFinderProvider.DeclarationFinder
                 .FindAllInterfaceImplementingMembers()
-                .Where(item => item.ProjectId == _model.TargetDeclaration.ProjectId 
-                               && item.IdentifierName == $"{_model.TargetDeclaration.ComponentName}_{_model.TargetDeclaration.IdentifierName}");
+                .Where(item => item.ProjectId == Model.TargetDeclaration.ProjectId 
+                               && item.IdentifierName == $"{Model.TargetDeclaration.ComponentName}_{Model.TargetDeclaration.IdentifierName}");
 
             foreach (var interfaceImplentation in interfaceImplementations)
             {
@@ -248,7 +241,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return _model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName) 
+            return Model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName) 
                 && item.IdentifierName == declaration.IdentifierName 
                 && item.DeclarationType == declarationType);
         }
@@ -259,7 +252,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
             
-            foreach (var index in _model.RemoveParameters.Select(rem => _model.Parameters.IndexOf(rem)))
+            foreach (var index in Model.RemoveParameters.Select(rem => Model.Parameters.IndexOf(rem)))
             {
                 rewriter.Remove(parameters[index]);
             }
@@ -272,7 +265,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         //the last 'kept' argument.
         private void RemoveTrailingComma(IModuleRewriter rewriter, VBAParser.ArgumentListContext argList = null, bool usesNamedParams = false)
         {
-            var commaLocator = RetrieveTrailingCommaInfo(_model.RemoveParameters, _model.Parameters);
+            var commaLocator = RetrieveTrailingCommaInfo(Model.RemoveParameters, Model.Parameters);
             if (!commaLocator.RequiresTrailingCommaRemoval)
             {
                 return;
