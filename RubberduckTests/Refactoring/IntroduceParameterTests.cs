@@ -11,13 +11,13 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
-using Rubberduck.Refactorings.IntroduceField;
-using Rubberduck.VBEditor.Utility;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
 
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class IntroduceParameterTests
+    public class IntroduceParameterTests : RefactoringTestBase
     {
         [Test]
         [Category("Refactorings")]
@@ -334,7 +334,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForField()
+        public void IntroduceParameterRefactoring_ThrowsTargetDeclarationIsNotContainedInAMethodExceptionAndDoesNothingForField()
         {
             //Input
             const string inputCode =
@@ -353,9 +353,7 @@ End Sub";
                 var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz");
-                refactoring.Refactor(target);
-
-                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                Assert.Throws<TargetDeclarationIsNotContainedInAMethodException>(() => refactoring.Refactor(target));
 
                 const string expectedCode = inputCode;
                 var actualCode = component.CodeModule.Content();
@@ -366,7 +364,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_DisplaysInvalidSelectionAndDoesNothingForInvalidSelection()
+        public void IntroduceParameterRefactoring_ThrowsNoDeclarationForSelectionExceptionAndDoesNothingForInvalidSelection()
         {
             //Input
             const string inputCode =
@@ -379,15 +377,11 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var messageBox = new Mock<IMessageBox>();
-
                 var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
 
-                var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz");
-                refactoring.Refactor(target);
-
-                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                var targetSelection = new QualifiedSelection(component.QualifiedModuleName, new Selection(3, 1));
+                Assert.Throws<NoDeclarationForSelectionException>(() => refactoring.Refactor(targetSelection));
 
                 const string expectedCode = inputCode;
                 var actualCode = component.CodeModule.Content();
@@ -692,7 +686,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Introduce Parameter")]
-        public void IntroduceParameterRefactoring_PassInTarget_Nonvariable()
+        public void IntroduceParameterRefactoring_PassInTarget_NonVariable()
         {
             //Input
             const string inputCode =
@@ -708,35 +702,27 @@ End Sub";
                 var messageBox = new Mock<IMessageBox>();
 
                 var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
-                refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
-
-                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
-
+                Assert.Throws<InvalidDeclarationTypeException>(() => refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable)));
+                
                 const string expectedCode = inputCode;
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-
-        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null)
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, QualifiedSelection? initialSelection = null)
         {
-            var selectionService = MockedSelectionService();
+            return TestRefactoring(rewritingManager, state, null, initialSelection);
+        }
+
+        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null, QualifiedSelection? initialSelection = null)
+        {
+            var selectionService = MockedSelectionService(initialSelection);
             if (msgBox == null)
             {
                 msgBox = new Mock<IMessageBox>().Object;
             }
             return new IntroduceParameterRefactoring(state, msgBox, rewritingManager, selectionService);
-        }
-
-        private static ISelectionService MockedSelectionService()
-        {
-            QualifiedSelection? activeSelection = null;
-            var selectionServiceMock = new Mock<ISelectionService>();
-            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
-            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
-                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
-            return selectionServiceMock.Object;
         }
     }
 }

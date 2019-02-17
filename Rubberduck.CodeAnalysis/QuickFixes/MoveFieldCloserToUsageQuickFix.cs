@@ -4,6 +4,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -30,8 +31,16 @@ namespace Rubberduck.Inspections.QuickFixes
         //The rewriteSession is optional since it is not used in this particular quickfix because it is a refactoring quickfix.
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
-            var refactoring = new MoveCloserToUsageRefactoring(_state, _messageBox, _rewritingManager, _selectionService);
-            refactoring.Refactor(result.Target);
+            var refactoring = new MoveCloserToUsageRefactoring(_state, _rewritingManager, _selectionService);
+            try
+            {
+                refactoring.Refactor(result.Target);
+            }
+            catch (RefactoringException exception)
+            {
+                //This is an error: the inspection returned an invalid result. 
+                Logger.Error(exception);
+            }
         }
 
         public override string Description(IInspectionResult result)

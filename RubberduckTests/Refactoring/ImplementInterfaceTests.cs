@@ -1,9 +1,9 @@
 using Moq;
 using NUnit.Framework;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions.ImplementInterface;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -96,7 +96,7 @@ End Sub";
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), new Selection(2,2));
 
                 var refactoring = TestRefactoring(vbe.Object, rewritingManager, state);
-                refactoring.Refactor(qualifiedSelection);
+                Assert.Throws<NoImplementsStatementSelectedException>(() => refactoring.Refactor(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(expectedCode, actualCode);
@@ -1112,14 +1112,10 @@ End Sub
             }
         }
 
-        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null)
+        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state)
         {
             var selectionService = MockedSelectionService(vbe.GetActiveSelection());
-            if (msgBox == null)
-            {
-                msgBox = new Mock<IMessageBox>().Object;
-            }
-            return new ImplementInterfaceRefactoring(state, msgBox, rewritingManager, selectionService);
+            return new ImplementInterfaceRefactoring(state, rewritingManager, selectionService);
         }
 
         private static ISelectionService MockedSelectionService(QualifiedSelection? initialSelection)

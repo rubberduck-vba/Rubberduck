@@ -15,14 +15,14 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorReorderParametersCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _msgbox;
+        private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
 
-        public RefactorReorderParametersCommand(RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox msgbox, IRewritingManager rewritingManager, ISelectionService selectionService) 
+        public RefactorReorderParametersCommand(RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService) 
             : base (rewritingManager, selectionService)
         {
             _state = state;
-            _msgbox = msgbox;
+            _messageBox = messageBox;
             _factory = factory;
         }
 
@@ -71,7 +71,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var refactoring = new ReorderParametersRefactoring(_state, _factory, _msgbox, RewritingManager, SelectionService);
+            var refactoring = new ReorderParametersRefactoring(_state, _factory, RewritingManager, SelectionService);
             refactoring.Refactor(activeSelection.Value);
         }
     }

@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
@@ -77,7 +78,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             if (target == null)
             {
-                return null;
+                throw new TargetDeclarationIsNullException(target);
             }
 
             return InitializeModel(target.QualifiedSelection);

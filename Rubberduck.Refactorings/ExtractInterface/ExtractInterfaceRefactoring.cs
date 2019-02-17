@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -17,16 +18,14 @@ namespace Rubberduck.Refactorings.ExtractInterface
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IParseManager _parseManager;
-        private readonly IMessageBox _messageBox;
 
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public ExtractInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IParseManager parseManager, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public ExtractInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IParseManager parseManager, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
         :base(rewritingManager, selectionService, factory)
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;
-            _messageBox = messageBox;
         }
 
         public override void Refactor(QualifiedSelection target)
@@ -53,7 +52,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             if (target == null)
             {
-                return null;
+                throw new TargetDeclarationIsNullException(target);
             }
 
             return InitializeModel(target.QualifiedSelection);
@@ -116,7 +115,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private void AddInterfaceMembersToClass(IModuleRewriter rewriter)
         {
-            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, _messageBox, RewritingManager, SelectionService);
+            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, RewritingManager, SelectionService);
             implementInterfaceRefactoring.Refactor(Model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, Model.InterfaceName);
         }
 

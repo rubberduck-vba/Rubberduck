@@ -9,6 +9,8 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
 using static RubberduckTests.Refactoring.Rename.RenameTestExecution;
 
@@ -2576,27 +2578,24 @@ End Sub"
                 @"Private Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
+                var qualifiedSelection = new QualifiedSelection(component.QualifiedModuleName, Selection.Home);
                 var codePaneMock = new Mock<ICodePane>();
                 codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
                 codePaneMock.Setup(c => c.Selection);
                 vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
 
                 var vbeWrapper = vbe.Object;
-                var presenter = new Mock<IRenamePresenter>();
-                var factory = GetFactoryMock(m => {
-                    presenter.Setup(p => p.Model).Returns(m);
-                    return null;
-                }, out var creator);
+                var factory = new Mock<IRefactoringPresenterFactory>();
+                factory.Setup(m => m.Create<IRenamePresenter, RenameModel>(It.IsAny<RenameModel>())).Returns((RenameModel model) => null);
                 var msgbox = new Mock<IMessageBox>();
                 var selectionService = MockedSelectionService(vbeWrapper);
                 var refactoring = new RenameRefactoring(factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager, selectionService);
-                refactoring.Refactor();
+
+                Assert.Throws<InvalidRefactoringPresenterException>(() => refactoring.Refactor(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);

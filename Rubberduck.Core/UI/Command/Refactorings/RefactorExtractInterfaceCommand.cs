@@ -86,7 +86,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var refactoring = new ExtractInterfaceRefactoring(_state, _state, _messageBox, _factory, RewritingManager, SelectionService);
+            var refactoring = new ExtractInterfaceRefactoring(_state, _state, _factory, RewritingManager, SelectionService);
             refactoring.Refactor(activeSelection.Value);
         }
     }

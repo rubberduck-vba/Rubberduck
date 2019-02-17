@@ -12,6 +12,8 @@ using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.ReorderParameters;
 using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
@@ -69,8 +71,7 @@ End Sub";
                 @"Private Sub Foo(ba, a)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -112,8 +113,7 @@ Sub Goo()
     Foo 121, 1
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -147,8 +147,7 @@ End Sub";
                 @"Private Sub Foo(ByVal arg2 As String, ByVal arg1 As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -169,7 +168,6 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Reorder Parameters")]
-        [Ignore("Temporarily ignore until a common failure handling is established.")]
         public void ReorderParams_RefactorDeclaration_FailsInvalidTarget()
         {
             //Input
@@ -178,12 +176,10 @@ End Sub";
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
@@ -192,19 +188,8 @@ End Sub";
 
                 var refactoring = TestRefactoring(rewritingManager, state, model);
 
-                try
-                {
-                    refactoring.Refactor(
-                        model.Declarations.FirstOrDefault(
-                            i => i.DeclarationType == Rubberduck.Parsing.Symbols.DeclarationType.ProceduralModule));
-                }
-                catch (ArgumentException e)
-                {
-                    Assert.AreEqual("Invalid declaration type", e.Message);
-                    return;
-                }
-
-                Assert.Fail();
+                Assert.Throws<InvalidDeclarationTypeException>(() => refactoring.Refactor(
+                        model.Declarations.FirstOrDefault(i => i.DeclarationType == Rubberduck.Parsing.Symbols.DeclarationType.ProceduralModule)));
             }
         }
 
@@ -224,8 +209,7 @@ End Sub";
                 @"Private Sub Foo(ByVal arg2 As String, ByVal arg1 As Integer, Optional ByVal arg3 As Boolean = True)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -276,8 +260,7 @@ Private Sub Bar()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -329,8 +312,7 @@ Private Function foo(ByVal b As Integer, ByRef a As Integer) As Integer
     foo = a + b
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -374,8 +356,7 @@ Public Sub Goo()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -418,8 +399,7 @@ End Function";
     Foo = True
 End Function";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -463,8 +443,7 @@ Public Sub Goo()
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -505,8 +484,7 @@ End Property";
                 @"Private Property Get Foo(ByVal arg2 As String, ByVal arg3 As Date, ByVal arg1 As Integer) As Boolean
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -547,8 +525,7 @@ End Property";
                 @"Private Property Let Foo(ByVal arg2 As String, ByVal arg1 As Integer, ByVal arg3 As Date)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -582,8 +559,7 @@ End Property";
                 @"Private Property Set Foo(ByVal arg2 As String, ByVal arg1 As Integer, ByVal arg3 As Date)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -612,8 +588,7 @@ End Property";
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -637,12 +612,10 @@ End Property";
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var model = new ReorderParametersModel(state, qualifiedSelection);
@@ -671,8 +644,7 @@ End Sub";
                   ByVal arg1 As Integer)
 End Sub";   // note: IDE removes excess spaces
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -724,8 +696,7 @@ Private Sub Goo(ByVal arg1 as Integer, ByVal arg2 As String, ByVal arg3 As Date)
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -765,22 +736,18 @@ End Sub
 ";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
                 var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
-                var messageBox = new Mock<IMessageBox>();
-
-                var refactoring = TestRefactoring(rewritingManager, state, model, messageBox.Object);
-                refactoring.Refactor(qualifiedSelection);
+                var refactoring = TestRefactoring(rewritingManager, state, model);
+                Assert.Throws<ParamArrayIsNotLastParameterException>(() => refactoring.Refactor(qualifiedSelection));
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
             }
@@ -826,8 +793,7 @@ Public Sub Goo(ByVal arg As Date, _
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -845,9 +811,7 @@ End Sub
 
                 model.Parameters = reorderedParams;
 
-                var messageBox = new Mock<IMessageBox>();
-
-                var refactoring = TestRefactoring(rewritingManager, state, model, messageBox.Object);
+                var refactoring = TestRefactoring(rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -857,7 +821,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Reorder Parameters")]
-        public void ReorderParametersRefactoring_ClientReferencesAreUpdated_ParamArray_CallOnMultiplelines()
+        public void ReorderParametersRefactoring_ClientReferencesAreUpdated_ParamArray_CallOnMultipleLines()
         {
             //Input
             const string inputCode =
@@ -908,12 +872,10 @@ Public Sub Goo(ByVal arg As Date, _
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to reorder
@@ -927,9 +889,7 @@ End Sub
 
                 model.Parameters = reorderedParams;
 
-                var messageBox = new Mock<IMessageBox>();
-
-                var refactoring = TestRefactoring(rewritingManager, state, model, messageBox.Object);
+                var refactoring = TestRefactoring(rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
@@ -947,12 +907,10 @@ End Sub
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //set up model
@@ -966,10 +924,8 @@ End Sub";
 
                 model.Parameters = reorderedParams;
 
-                var messageBox = new Mock<IMessageBox>();
-
-                var refactoring = TestRefactoring(rewritingManager, state, model, messageBox.Object);
-                refactoring.Refactor(qualifiedSelection);
+                var refactoring = TestRefactoring(rewritingManager, state, model);
+                Assert.Throws<OptionalParameterNotAtTheEndException>(() => refactoring.Refactor(qualifiedSelection));
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
             }
@@ -1001,8 +957,7 @@ Private Sub Goo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -1049,8 +1004,7 @@ End Property
 Private Property Set Foo(ByVal arg2 As String, ByVal arg1 As Integer, ByVal arg3 As Date)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -1090,8 +1044,7 @@ End Property
 Private Property Let Foo(ByVal arg2 As String, ByVal arg1 As Integer, ByVal arg3 As Date)
 End Property";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
@@ -1119,18 +1072,18 @@ End Property";
                 @"Private Sub Foo()
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
+                var qualifiedSelection = new QualifiedSelection(component.QualifiedModuleName, Selection.Home);
                 var factory = new Mock<IRefactoringPresenterFactory>();
                 factory.Setup(f => f.Create<IReorderParametersPresenter, ReorderParametersModel>(It.IsAny<ReorderParametersModel>()))
                     .Returns(() => null); // resolves ambiguous method resolution
 
                 var refactoring = TestRefactoring(rewritingManager, state, factory.Object);
-                refactoring.Refactor();
+
+                Assert.Throws<InvalidRefactoringPresenterException>(() => refactoring.Refactor(qualifiedSelection));
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
             }
@@ -1358,14 +1311,11 @@ End Sub";
                 vbe.Setup(v => v.ActiveCodePane).Returns(module1.CodePane);
                 var module2 = project.Object.VBComponents[1].CodeModule;
 
-                var messageBox = new Mock<IMessageBox>();
-                messageBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(true);
-
                 //Specify Params to remove
                 var model = new ReorderParametersModel(state, qualifiedSelection);
                 model.Parameters.Reverse();
 
-                var refactoring = TestRefactoring(rewritingManager, state, model, messageBox.Object);
+                var refactoring = TestRefactoring(rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedCode1, module1.Content());
@@ -1608,20 +1558,16 @@ End Sub";   // note: IDE removes excess spaces
         }
 
         #region setup
-        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ReorderParametersModel model, IMessageBox msgBox = null)
+        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ReorderParametersModel model)
         {
             var factory = SetupFactory(model).Object;
-            return TestRefactoring(rewritingManager, state, factory, msgBox);
+            return TestRefactoring(rewritingManager, state, factory);
         }
 
-        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox msgBox = null)
+        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory)
         {
             var selectionService = MockedSelectionService();
-            if (msgBox == null)
-            {
-                msgBox = new Mock<IMessageBox>().Object;
-            }
-            return new ReorderParametersRefactoring(state, factory, msgBox, rewritingManager, selectionService);
+            return new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService);
         }
 
         private static ISelectionService MockedSelectionService()

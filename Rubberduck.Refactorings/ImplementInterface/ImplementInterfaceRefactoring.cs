@@ -6,6 +6,8 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.ImplementInterface;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
@@ -15,7 +17,6 @@ namespace Rubberduck.Refactorings.ImplementInterface
     public class ImplementInterfaceRefactoring : RefactoringBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IMessageBox _messageBox;
 
         private readonly List<Declaration> _declarations;
         private ClassModuleDeclaration _targetInterface;
@@ -23,24 +24,10 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
-        public ImplementInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public ImplementInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
         :base(rewritingManager, selectionService)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _declarations = declarationFinderProvider.DeclarationFinder.AllUserDeclarations.ToList();
-            _messageBox = messageBox;
-        }
-
-        public override void Refactor()
-        {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                _messageBox.NotifyWarn(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption);
-                return;
-            }
-
-            Refactor(activeSelection.Value);
         }
 
         private static readonly IReadOnlyList<DeclarationType> ImplementingModuleTypes = new[]
@@ -50,20 +37,31 @@ namespace Rubberduck.Refactorings.ImplementInterface
             DeclarationType.Document, 
         };
 
-        public override void Refactor(QualifiedSelection selection)
+        public override void Refactor(QualifiedSelection target)
         {
-            _targetInterface = _declarationFinderProvider.DeclarationFinder.FindInterface(selection);
+            _targetInterface = _declarationFinderProvider.DeclarationFinder.FindInterface(target);
 
-            _targetClass = _declarations.SingleOrDefault(d =>
-                        ImplementingModuleTypes.Contains(d.DeclarationType) &&
-                        d.QualifiedSelection.QualifiedName.Equals(selection.QualifiedName)) as ClassModuleDeclaration;
-
-            if (_targetClass == null || _targetInterface == null)
+            if (_targetInterface == null)
             {
-                _messageBox.NotifyWarn(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption);
-                return;
+                throw new NoImplementsStatementSelectedException(target);
             }
 
+            var targetModule = _declarationFinderProvider.DeclarationFinder
+                .ModuleDeclaration(target.QualifiedName);
+            
+            if (!ImplementingModuleTypes.Contains(targetModule.DeclarationType))
+            {
+                throw new InvalidDeclarationTypeException(targetModule);
+            }
+
+            _targetClass = targetModule as ClassModuleDeclaration;
+
+            if (_targetClass == null)
+            {
+                //This really should never happen. If it happens the declaration type enum value
+                //and the type of the declaration are inconsistent.
+                throw new InvalidTargetDeclarationException(targetModule);
+            }
 
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(_targetClass.QualifiedModuleName);

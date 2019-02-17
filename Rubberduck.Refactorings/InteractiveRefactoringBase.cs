@@ -3,6 +3,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 using System;
+using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.Refactorings
 {
@@ -24,7 +25,7 @@ namespace Rubberduck.Refactorings
             Model = initialModel;
             if (Model == null)
             {
-                return;
+                throw new InvalidRefactoringModelException();
             }
 
             using (var presenterContainer = PresenterFactory(Model))
@@ -32,13 +33,13 @@ namespace Rubberduck.Refactorings
                 var presenter = presenterContainer.Value;
                 if (presenter == null)
                 {
-                    return;
+                    throw new InvalidRefactoringPresenterException();
                 }
 
                 Model = presenter.Show();
                 if (Model == null)
                 {
-                    return;
+                    throw new InvalidRefactoringModelException();
                 }
 
                 RefactorImpl(presenter);

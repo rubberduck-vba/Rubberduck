@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Resources;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.IntroduceField;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -16,49 +15,47 @@ namespace Rubberduck.Refactorings.IntroduceField
     public class IntroduceFieldRefactoring : RefactoringBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IMessageBox _messageBox;
 
-        public IntroduceFieldRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public IntroduceFieldRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
         :base(rewritingManager, selectionService)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            _messageBox = messageBox;
         }
 
-        public override void Refactor()
+        public override void Refactor(QualifiedSelection target)
         {
-            var activeSelection = SelectionService.ActiveSelection();
+            var targetDeclaration = FindTarget(target);
 
-            if (!activeSelection.HasValue)
+            if (targetDeclaration == null)
             {
-                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceField_Caption);
-                return;
+                throw new NoDeclarationForSelectionException(target);
             }
 
-            Refactor(activeSelection.Value);
+            Refactor(targetDeclaration);
         }
 
-        public override void Refactor(QualifiedSelection selection)
+        private Declaration FindTarget(QualifiedSelection targetSelection)
         {
-            var target = _declarationFinderProvider.DeclarationFinder
+            return _declarationFinderProvider.DeclarationFinder
                 .UserDeclarations(DeclarationType.Variable)
-                .FindVariable(selection);
-
-            if (target == null)
-            {
-                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
-                return;
-            }
-
-            PromoteVariable(target);
+                .FindVariable(targetSelection);
         }
 
         public override void Refactor(Declaration target)
         {
+            if (target == null)
+            {
+                throw new TargetDeclarationIsNullException(target);
+            }
+
             if (target.DeclarationType != DeclarationType.Variable)
             {
-                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
-                throw new ArgumentException(@"Invalid declaration type", nameof(target));
+                throw new InvalidDeclarationTypeException(target);
+            }
+
+            if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
+            {
+                throw new TargetIsAlreadyAFieldException(target);
             }
 
             PromoteVariable(target);
@@ -66,12 +63,6 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         private void PromoteVariable(Declaration target)
         {
-            if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
-            {
-                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
-                return;
-            }
-
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
@@ -83,10 +74,10 @@ namespace Rubberduck.Refactorings.IntroduceField
 
         private void AddField(IModuleRewriter rewriter, Declaration target)
         {
-            var content = $"{Tokens.Private} {target.IdentifierName} {Tokens.As} {target.AsTypeName}\r\n";
+            var content = $"{Tokens.Private} {target.IdentifierName} {Tokens.As} {target.AsTypeName}{Environment.NewLine}";
             var members = _declarationFinderProvider.DeclarationFinder.Members(target.QualifiedName.QualifiedModuleName)
                 .Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
-                .OrderByDescending(item => item.Selection);
+                .OrderBy(item => item.Selection);
 
             var firstMember = members.FirstOrDefault();
             rewriter.InsertBefore(firstMember?.Context.Start.TokenIndex ?? 0, content);

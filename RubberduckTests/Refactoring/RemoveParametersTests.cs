@@ -12,6 +12,7 @@ using RubberduckTests.Mocks;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
@@ -1570,7 +1571,6 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
-        [Ignore("Temporarily ignore until a common failure handling is established.")]
         public void RemoveParams_RefactorDeclaration_FailsInvalidTarget()
         {
             //Input
@@ -1591,19 +1591,8 @@ End Sub";
 
                 var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
 
-                try
-                {
-                    refactoring.Refactor(
-                        model.Declarations.FirstOrDefault(
-                            i => i.DeclarationType == DeclarationType.ProceduralModule));
-                }
-                catch (ArgumentException e)
-                {
-                    Assert.AreEqual("Invalid declaration type", e.Message);
-                    return;
-                }
-
-                Assert.Fail();
+                Assert.Throws<InvalidDeclarationTypeException>(() =>refactoring.Refactor(
+                    model.Declarations.FirstOrDefault(i => i.DeclarationType == DeclarationType.ProceduralModule)));
             }
         }
 
@@ -1622,12 +1611,14 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
+                var qualifiedSelection = new QualifiedSelection(component.QualifiedModuleName, Selection.Home);
                 var factory = new Mock<IRefactoringPresenterFactory>();
                 factory.Setup(f => f.Create<IRemoveParametersPresenter, RemoveParametersModel>(It.IsAny<RemoveParametersModel>()))
                     .Returns(() => null); // resolves method overload resolution error
 
                 var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, factory.Object);
-                refactoring.Refactor();
+
+                Assert.Throws<InvalidRefactoringPresenterException>(() => refactoring.Refactor(qualifiedSelection));
 
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
             }

@@ -4,8 +4,8 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -30,7 +30,15 @@ namespace Rubberduck.Inspections.QuickFixes
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
             var refactoring = new RemoveParametersRefactoring(_declarationFinderProvider, _factory, _rewritingManager, _selectionService);
-            refactoring.QuickFix(result.QualifiedSelection);
+            try
+            {
+                refactoring.QuickFix(result.QualifiedSelection);
+            }
+            catch (RefactoringException exception)
+            {
+                //The selection in the inspection result was malformed.
+                Logger.Error(exception);
+            }
         }
 
         public override string Description(IInspectionResult result) => Resources.Inspections.QuickFixes.RemoveUnusedParameterQuickFix;

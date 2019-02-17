@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -8,6 +7,8 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.RemoveParameter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -25,7 +26,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public override void Refactor(QualifiedSelection target)
         {
-            Refactor(InitializeModel(target));
+            CheckAndRefactor(InitializeModel(target));
         }
 
         private RemoveParametersModel InitializeModel(QualifiedSelection targetSelection)
@@ -33,21 +34,36 @@ namespace Rubberduck.Refactorings.RemoveParameters
             return new RemoveParametersModel(_declarationFinderProvider, targetSelection);
         }
 
+        private void CheckAndRefactor(RemoveParametersModel model)
+        {
+            if (model == null)
+            {
+                throw new InvalidRefactoringModelException();
+            }
+
+            if (model.TargetDeclaration == null)
+            {
+                throw new TargetDeclarationIsNullException(null);
+            }
+
+            Refactor(model);
+        }
+
         public override void Refactor(Declaration target)
         {
-            Refactor(InitializeModel(target));
+            CheckAndRefactor(InitializeModel(target));
         }
 
         private RemoveParametersModel InitializeModel(Declaration target)
         {
             if (target == null)
             {
-                return null;
+                throw new TargetDeclarationIsNullException(target);
             }
 
             if (!RemoveParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType) && target.DeclarationType != DeclarationType.Parameter)
             {
-                return null;
+                throw new InvalidDeclarationTypeException(target);
             }
 
             return InitializeModel(target.QualifiedSelection);
@@ -62,17 +78,21 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             Model = InitializeModel(selection);
             
-            var target = Model.Parameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
-            Debug.Assert(target != null, "Target was not found");
+            var selectedParameters = Model.Parameters.Where(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection)).ToList();
+
+            if (selectedParameters.Count > 1)
+            {
+                throw new MultipleParametersSelectedException(selectedParameters);
+            }
+
+            var target = selectedParameters.SingleOrDefault(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection));
+
+            if (target == null)
+            {
+                throw new NoParameterSelectedException();
+            }
             
-            if (target != null)
-            {
-                Model.RemoveParameters.Add(target);
-            }
-            else
-            {
-                return;
-            }
+            Model.RemoveParameters.Add(target);
             RemoveParameters();
         }
 
@@ -80,7 +100,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             if (Model.TargetDeclaration == null)
             {
-                throw new NullReferenceException("Parameter is null");
+                throw new TargetDeclarationIsNullException(null);
             }
 
             var rewritingSession = RewritingManager.CheckOutCodePaneSession();
@@ -213,7 +233,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
             var interfaceImplementations = _declarationFinderProvider.DeclarationFinder
                 .FindAllInterfaceImplementingMembers()
-                .Where(item => item.ProjectId == Model.TargetDeclaration.ProjectId 
+                .Where(item => item.ProjectId == Model.TargetDeclaration.ProjectId
                                && item.IdentifierName == $"{Model.TargetDeclaration.ComponentName}_{Model.TargetDeclaration.IdentifierName}");
 
             foreach (var interfaceImplentation in interfaceImplementations)
@@ -225,8 +245,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return Model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName) 
-                && item.IdentifierName == declaration.IdentifierName 
+            return Model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName)
+                && item.IdentifierName == declaration.IdentifierName
                 && item.DeclarationType == declarationType);
         }
 
@@ -234,8 +254,8 @@ namespace Rubberduck.Refactorings.RemoveParameters
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
-            var parameters = ((IParameterizedDeclaration) target).Parameters.OrderBy(o => o.Selection).ToList();
-            
+            var parameters = ((IParameterizedDeclaration)target).Parameters.OrderBy(o => o.Selection).ToList();
+
             foreach (var index in Model.RemoveParameters.Select(rem => Model.Parameters.IndexOf(rem)))
             {
                 rewriter.Remove(parameters[index]);
@@ -253,7 +273,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             if (!commaLocator.RequiresTrailingCommaRemoval)
             {
                 return;
-    }
+            }
 
             var tokenStart = 0;
             var tokenStop = 0;
@@ -265,7 +285,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 tokenStop = commaLocator.FirstOfRemovedArgSeries.Param.Declaration.Context.Start.TokenIndex - 1;
                 rewriter.RemoveRange(tokenStart, tokenStop);
                 return;
-}
+            }
 
 
             //Handles References

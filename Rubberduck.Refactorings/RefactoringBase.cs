@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -21,7 +22,7 @@ namespace Rubberduck.Refactorings
             var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
-                return;
+                throw new NoActiveSelectionException();
             }
 
             Refactor(activeSelection.Value);

@@ -50,7 +50,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            var refactoring = new IntroduceFieldRefactoring(_state, _messageBox, RewritingManager, SelectionService);
+            var refactoring = new IntroduceFieldRefactoring(_state, RewritingManager, SelectionService);
             refactoring.Refactor(activeSelection.Value);
         }
     }

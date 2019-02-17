@@ -11,13 +11,13 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorMoveCloserToUsageCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _msgbox;
+        private readonly IMessageBox _messageBox;
 
-        public RefactorMoveCloserToUsageCommand(RubberduckParserState state, IMessageBox msgbox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public RefactorMoveCloserToUsageCommand(RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
             :base(rewritingManager, selectionService)
         {
             _state = state;
-            _msgbox = msgbox;
+            _messageBox = messageBox;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
@@ -46,7 +46,7 @@ namespace Rubberduck.UI.Command.Refactorings
             var activeSelection = SelectionService.ActiveSelection();
             if (activeSelection.HasValue)
             {
-                var refactoring = new MoveCloserToUsageRefactoring(_state, _msgbox, RewritingManager, SelectionService);
+                var refactoring = new MoveCloserToUsageRefactoring(_state, RewritingManager, SelectionService);
                 refactoring.Refactor(activeSelection.Value);
             }
         }

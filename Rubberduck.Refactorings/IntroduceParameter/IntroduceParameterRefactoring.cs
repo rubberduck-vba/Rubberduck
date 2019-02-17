@@ -6,6 +6,8 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
@@ -15,7 +17,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
     public class IntroduceParameterRefactoring : RefactoringBase
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
-        private readonly IList<Declaration> _declarations;
         private readonly IMessageBox _messageBox;
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
@@ -31,42 +32,43 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         :base(rewritingManager, selectionService)
         {
             _declarationFinderProvider = declarationFinderProvider;
-            //TODO: Refactor to use the declaration finder exclusively.
-            _declarations = declarationFinderProvider.DeclarationFinder.AllUserDeclarations.ToList();
             _messageBox = messageBox;
         }
 
-        public override void Refactor()
+        public override void Refactor(QualifiedSelection target)
         {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
+            var targetDeclaration = FindTargetDeclaration(target);
+
+            if (targetDeclaration == null)
             {
-                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
-                return;
+                throw new NoDeclarationForSelectionException(target);
             }
 
-            Refactor(activeSelection.Value);
+            Refactor(targetDeclaration);
         }
 
-        public override void Refactor(QualifiedSelection selection)
+        private Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            var target = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable).FindVariable(selection);
-
-            if (target == null)
-            {
-                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
-                return;
-            }
-
-            PromoteVariable(target);
+            return _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(DeclarationType.Variable)
+                .FindVariable(targetSelection);
         }
 
         public override void Refactor(Declaration target)
         {
-            if (target == null || target.DeclarationType != DeclarationType.Variable)
+            if (target == null)
             {
-                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
-                return;
+                throw new TargetDeclarationIsNullException(target);
+            }
+
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new InvalidDeclarationTypeException(target);
+            }
+
+            if (!target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
+            {
+                throw new TargetDeclarationIsNotContainedInAMethodException(target);
             }
 
             PromoteVariable(target);
@@ -76,12 +78,6 @@ namespace Rubberduck.Refactorings.IntroduceParameter
         {
             if (!PromptIfMethodImplementsInterface(target))
             {
-                return;
-            }
-
-            if (new[] { DeclarationType.ClassModule, DeclarationType.ProceduralModule }.Contains(target.ParentDeclaration.DeclarationType))
-            {
-                _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
                 return;
             }
 
@@ -96,7 +92,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)
         {
-            var functionDeclaration = (ModuleBodyElementDeclaration)_declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+            var functionDeclaration = (ModuleBodyElementDeclaration)_declarationFinderProvider.DeclarationFinder
+                .AllUserDeclarations
+                .FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
             if (functionDeclaration == null || !functionDeclaration.IsInterfaceImplementation)
             {
@@ -119,7 +117,9 @@ namespace Rubberduck.Refactorings.IntroduceParameter
 
         private void UpdateSignature(Declaration targetVariable, IRewriteSession rewriteSession)
         {
-            var functionDeclaration = (ModuleBodyElementDeclaration)_declarations.FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
+            var functionDeclaration = (ModuleBodyElementDeclaration)_declarationFinderProvider.DeclarationFinder
+                .AllUserDeclarations
+                .FindTarget(targetVariable.QualifiedSelection, ValidDeclarationTypes);
 
             var proc = (dynamic) functionDeclaration.Context;
             var paramList = (VBAParser.ArgListContext) proc.argList();

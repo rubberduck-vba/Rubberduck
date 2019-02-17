@@ -10,6 +10,7 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
@@ -811,13 +812,15 @@ End Property
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
                 var selectionServiceMock = new Mock<ISelectionService>();
                 var factory = new Mock<IRefactoringPresenterFactory>();
                 factory.Setup(f => f.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(It.IsAny<EncapsulateFieldModel>()))
                     .Returns(() => null); // resolves ambiguous method overload
 
                 var refactoring = new EncapsulateFieldRefactoring(state, CreateIndenter(vbe.Object), factory.Object, rewritingManager, selectionServiceMock.Object);
-                refactoring.Refactor();
+
+                Assert.Throws<InvalidRefactoringPresenterException>(() => refactoring.Refactor(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);
@@ -838,11 +841,11 @@ End Property
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, null);
-                refactoring.Refactor(qualifiedSelection);
+
+                Assert.Throws<InvalidRefactoringModelException>(() => refactoring.Refactor(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);

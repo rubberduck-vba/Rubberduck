@@ -10,6 +10,8 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.MoveCloserToUsage;
 using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
@@ -600,15 +602,10 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var messageBox = new Mock<IMessageBox>();
-
-                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
-                refactoring.Refactor(qualifiedSelection);
-
-                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+                var refactoring = TestRefactoring(rewritingManager, state);
+                Assert.Throws<TargetDeclarationNotUsedException>(() => refactoring.Refactor(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);
@@ -635,15 +632,11 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var messageBox = new Mock<IMessageBox>();
-
-                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
-                refactoring.Refactor(qualifiedSelection);
-
-                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
+                var refactoring = TestRefactoring(rewritingManager, state);
+                Assert.Throws<TargetDeclarationUsedInMultipleMethodsException>(() => refactoring.Refactor(qualifiedSelection));
+                
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);
             }
@@ -884,7 +877,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Move Closer")]
-        public void IntroduceFieldRefactoring_PassInTarget_Nonvariable()
+        public void IntroduceFieldRefactoring_PassInTarget_NonVariable()
         {
             //Input
             const string inputCode =
@@ -900,19 +893,18 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
-                refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
+                var refactoring = TestRefactoring(rewritingManager, state);
+                Assert.Throws<InvalidDeclarationTypeException>(() => refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable)));
+
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);
-
-                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             }
         }
 
         [Test]
         [Category("Refactorings")]
         [Category("Move Closer")]
-        public void IntroduceFieldRefactoring_InvalidSelection()
+        public void IntroduceFieldRefactoring_DeclarationOfInvalidTypeSelected()
         {
             //Input
             const string inputCode =
@@ -926,15 +918,10 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
-                var messageBox = new Mock<IMessageBox>();
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
-                refactoring.Refactor(qualifiedSelection);
-
-                messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+                var refactoring = TestRefactoring(rewritingManager, state);
+                Assert.Throws<NoDeclarationForSelectionException>(() => refactoring.Refactor(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);
@@ -1060,8 +1047,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-                var messageBox = new Mock<IMessageBox>();
-                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(expectedCode, actualCode);
@@ -1245,19 +1231,15 @@ End Sub";
             }
         }
 
-        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, IDeclarationFinderProvider declarationFinderProvider, IMessageBox msgBox = null)
+        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, IDeclarationFinderProvider declarationFinderProvider, QualifiedSelection? initialSelection = null)
         {
-            var selectionService = MockedSelectionService();
-            if (msgBox == null)
-            {
-                msgBox = new Mock<IMessageBox>().Object;
-            }
-            return new MoveCloserToUsageRefactoring(declarationFinderProvider, msgBox, rewritingManager, selectionService);
+            var selectionService = MockedSelectionService(initialSelection);
+            return new MoveCloserToUsageRefactoring(declarationFinderProvider, rewritingManager, selectionService);
         }
 
-        private static ISelectionService MockedSelectionService()
+        private static ISelectionService MockedSelectionService(QualifiedSelection? initialSelection)
         {
-            QualifiedSelection? activeSelection = null;
+            QualifiedSelection? activeSelection = initialSelection;
             var selectionServiceMock = new Mock<ISelectionService>();
             selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
             selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))

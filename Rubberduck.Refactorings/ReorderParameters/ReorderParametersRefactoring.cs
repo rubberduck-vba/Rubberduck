@@ -1,14 +1,14 @@
 ﻿﻿using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
 using System.Collections.Generic;
 using System.Linq;
  using Rubberduck.Parsing.VBA;
+ using Rubberduck.Refactorings.Exceptions;
+ using Rubberduck.Refactorings.Exceptions.ReorderParameters;
  using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ReorderParameters
@@ -16,18 +16,16 @@ namespace Rubberduck.Refactorings.ReorderParameters
     public class ReorderParametersRefactoring : InteractiveRefactoringBase<IReorderParametersPresenter, ReorderParametersModel>
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
 
-        public ReorderParametersRefactoring(RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public ReorderParametersRefactoring(RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
         :base(rewritingManager, selectionService, factory)
         {
             _state = state;
-            _messageBox = messageBox;
         }
 
         public override void Refactor(QualifiedSelection target)
         {
-            Refactor(InitializeModel(target));
+            CheckAndRefactor(InitializeModel(target));
         }
 
         private ReorderParametersModel InitializeModel(QualifiedSelection targetSelection)
@@ -35,21 +33,36 @@ namespace Rubberduck.Refactorings.ReorderParameters
             return new ReorderParametersModel(_state, targetSelection);
         }
 
+        private void CheckAndRefactor(ReorderParametersModel model)
+        {
+            if (model == null)
+            {
+                throw new InvalidRefactoringModelException();
+            }
+
+            if (model.TargetDeclaration == null)
+            {
+                throw new TargetDeclarationIsNullException(null);
+            }
+
+            Refactor(model);
+        }
+
         public override void Refactor(Declaration target)
         {
-            Refactor(InitializeModel(target));
+            CheckAndRefactor(InitializeModel(target));
         }
 
         protected ReorderParametersModel InitializeModel(Declaration target)
         {
             if (target == null)
             {
-                return null;
+                throw new TargetDeclarationIsNullException(target);
             }
 
             if (!ReorderParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType))
             {
-                return null;
+                throw new InvalidDeclarationTypeException(target);
             }
 
             return InitializeModel(target.QualifiedSelection);
@@ -57,10 +70,15 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         protected override void RefactorImpl(IReorderParametersPresenter presenter)
         {
-            if (!Model.Parameters.Where((param, index) => param.Index != index).Any()
-                || !IsValidParamOrder())
+            if (!Model.Parameters.Where((param, index) => param.Index != index).Any())
             {
+                //This is not an error: the user chose to leave everything as-is.
                 return;
+            }
+
+            if (!IsValidParamOrder())
+            {
+                throw new InvalidParameterOrderException();
             }
 
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
@@ -78,20 +96,18 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 {
                     if (!Model.Parameters.ElementAt(index).IsOptional)
                     {
-                        _messageBox.NotifyWarn(RubberduckUI.ReorderPresenter_OptionalParametersMustBeLastError, RubberduckUI.ReorderParamsDialog_TitleText);
-                        return false;
+                        throw new OptionalParameterNotAtTheEndException();
                     }
                 }
             }
 
             var indexOfParamArray = Model.Parameters.FindIndex(param => param.IsParamArray);
-            if (indexOfParamArray < 0 || indexOfParamArray == Model.Parameters.Count - 1)
+            if (indexOfParamArray >= 0 && indexOfParamArray != Model.Parameters.Count - 1)
             {
-                return true;
+                throw new ParamArrayIsNotLastParameterException();
             }
-
-            _messageBox.NotifyWarn(RubberduckUI.ReorderPresenter_ParamArrayError, RubberduckUI.ReorderParamsDialog_TitleText);
-            return false;
+            
+            return true;
         }
 
         private void AdjustReferences(IEnumerable<IdentifierReference> references, IRewriteSession rewriteSession)

@@ -7,8 +7,8 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -309,7 +309,6 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 //Specify Params to remove
@@ -320,7 +319,8 @@ End Sub";
                 factory.Setup(f => f.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(It.IsAny<ExtractInterfaceModel>())).Returns(value: null);
 
                 var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, factory.Object);
-                refactoring.Refactor();
+
+                Assert.Throws<InvalidRefactoringPresenterException>(() => refactoring.Refactor(qualifiedSelection));
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -341,8 +341,10 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
+                var qualifiedSelection = new QualifiedSelection(component.QualifiedModuleName, selection);
                 var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model: null);
-                refactoring.Refactor();
+
+                Assert.Throws<InvalidRefactoringModelException>(() => refactoring.Refactor(qualifiedSelection));
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
                 Assert.AreEqual(inputCode, component.CodeModule.Content());
@@ -402,20 +404,16 @@ End Sub
         }
 
         #region setup
-        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, ExtractInterfaceModel model, IMessageBox msgBox = null)
+        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, ExtractInterfaceModel model)
         {
             var factory = SetupFactory(model);
-            return TestRefactoring(vbe, rewritingManager, state, factory.Object, msgBox);
+            return TestRefactoring(vbe, rewritingManager, state, factory.Object);
         }
 
-        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox msgBox = null)
+        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory)
         {
             var selectionService = MockedSelectionService(vbe.GetActiveSelection());
-            if (msgBox == null)
-            {
-                msgBox = new Mock<IMessageBox>().Object;
-            }
-            return new ExtractInterfaceRefactoring(state, state, msgBox, factory, rewritingManager, selectionService);
+            return new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService);
         }
 
         private static ISelectionService MockedSelectionService(QualifiedSelection? initialSelection)
