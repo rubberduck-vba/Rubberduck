@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
 
@@ -22,7 +20,6 @@ namespace Rubberduck.Refactorings.Rename
 
         public QualifiedSelection Selection { get; }
         
-
         public string NewName { get; set; }
 
         public RenameModel(DeclarationFinder declarationFinder, QualifiedSelection selection)
@@ -34,8 +31,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private void AcquireTarget(out Declaration target, DeclarationFinder declarationFinder, QualifiedSelection selection)
         {
-            target = declarationFinder.AllUserDeclarations
-                .FirstOrDefault(item => item.IsSelected(selection) || item.References.Any(r => r.IsSelected(selection)));
+            target = declarationFinder.FindSelectedDeclaration(selection);
         }
     }
 }

@@ -12,8 +12,6 @@ using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring

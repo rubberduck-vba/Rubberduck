@@ -2606,7 +2606,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Rename")]
-        public void Model_TargetIsNull()
+        public void Model_NoTargetAtSelection_TakesModule()
         {
             const string inputCode =
                 @"
@@ -2616,13 +2616,13 @@ End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var codePaneMock = new Mock<ICodePane>();
-                codePaneMock.Setup(c => c.CodeModule).Returns(component.CodeModule);
-                codePaneMock.Setup(c => c.Selection);
-                vbe.Setup(v => v.ActiveCodePane).Returns(codePaneMock.Object);
+                var moduleDeclaration = state.DeclarationFinder
+                    .UserDeclarations(DeclarationType.ProceduralModule)
+                    .Single();
+
                 var model = new RenameModel(state.DeclarationFinder, new QualifiedSelection(component.QualifiedModuleName, Selection.Empty));
 
-                Assert.AreEqual(null, model.Target);
+                Assert.AreEqual(moduleDeclaration, model.Target);
             }
         }
 

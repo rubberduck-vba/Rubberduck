@@ -27,28 +27,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public override void Refactor(QualifiedSelection target)
         {
-            Model = InitializeModel(target);
-            if (Model == null)
-            {
-                return;
-            }
-
-            using (var container = PresenterFactory(Model))
-            {
-                var presenter = container.Value;
-                if (presenter == null)
-                {
-                    return;
-                }
-
-                Model = presenter.Show();
-                if (Model == null)
-                {
-                    return;
-                }
-
-                RefactorImpl(presenter);
-            }
+            Refactor(InitializeModel(target));
         }
 
         private EncapsulateFieldModel InitializeModel(QualifiedSelection targetSelection)
@@ -63,7 +42,12 @@ namespace Rubberduck.Refactorings.EncapsulateField
             rewriteSession.TryRewrite();
         }
 
-        protected override EncapsulateFieldModel InitializeModel(Declaration target)
+        public override void Refactor(Declaration target)
+        {
+            Refactor(InitializeModel(target));
+        }
+
+        private EncapsulateFieldModel InitializeModel(Declaration target)
         {
             if (target == null)
             {

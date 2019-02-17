@@ -27,33 +27,32 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
         public override void Refactor(QualifiedSelection target)
         {
-            Model = InitializeModel(target);
-            if (Model == null)
-            {
-                return;
-            }
-
-            using (var container = PresenterFactory(Model))
-            {
-                var presenter = container.Value;
-                if (presenter == null)
-                {
-                    return;
-                }
-
-                Model = presenter.Show();
-                if (Model == null)
-                {
-                    return;
-                }
-
-                RefactorImpl(presenter);
-            }
+            Refactor(InitializeModel(target));
         }
 
         private ReorderParametersModel InitializeModel(QualifiedSelection targetSelection)
         {
             return new ReorderParametersModel(_state, targetSelection);
+        }
+
+        public override void Refactor(Declaration target)
+        {
+            Refactor(InitializeModel(target));
+        }
+
+        protected ReorderParametersModel InitializeModel(Declaration target)
+        {
+            if (target == null)
+            {
+                return null;
+            }
+
+            if (!ReorderParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType))
+            {
+                return null;
+            }
+
+            return InitializeModel(target.QualifiedSelection);
         }
 
         protected override void RefactorImpl(IReorderParametersPresenter presenter)
@@ -68,21 +67,6 @@ namespace Rubberduck.Refactorings.ReorderParameters
             AdjustReferences(Model.TargetDeclaration.References, rewriteSession);
             AdjustSignatures(rewriteSession);
             rewriteSession.TryRewrite();
-        }
-
-        protected override ReorderParametersModel InitializeModel(Declaration target)
-        {
-            if (target == null)
-            {
-                return null;
-            }
-
-            if (!ReorderParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType))
-            {
-                return null;
-            }
-
-            return InitializeModel(target.QualifiedSelection);
         }
 
         private bool IsValidParamOrder()

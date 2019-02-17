@@ -19,9 +19,9 @@ namespace Rubberduck.Refactorings
             PresenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<TPresenter, TModel>(model), factory.Release));
         }
 
-        public override void Refactor(Declaration target)
+        protected void Refactor(TModel initialModel)
         {
-            Model = InitializeModel(target);
+            Model = initialModel;
             if (Model == null)
             {
                 return;
@@ -45,11 +45,9 @@ namespace Rubberduck.Refactorings
             }
         }
 
-        protected abstract TModel InitializeModel(Declaration target);
         protected abstract void RefactorImpl(TPresenter presenter);
 
         public abstract override void Refactor(QualifiedSelection target);
-
-
+        public abstract override void Refactor(Declaration target);
     }
 }

@@ -25,28 +25,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public override void Refactor(QualifiedSelection target)
         {
-            Model = InitializeModel(target);
-            if (Model == null)
-            {
-                return;
-            }
-
-            using (var presenterContainer = PresenterFactory(Model))
-            {
-                var presenter = presenterContainer.Value;
-                if (presenter == null)
-                {
-                    return;
-                }
-
-                Model = presenter.Show();
-                if (Model == null || !Model.Parameters.Any())
-                {
-                    return;
-                }
-
-                RefactorImpl(presenter);
-            }
+            Refactor(InitializeModel(target));
         }
 
         private RemoveParametersModel InitializeModel(QualifiedSelection targetSelection)
@@ -54,12 +33,12 @@ namespace Rubberduck.Refactorings.RemoveParameters
             return new RemoveParametersModel(_declarationFinderProvider, targetSelection);
         }
 
-        protected override void RefactorImpl(IRemoveParametersPresenter presenter)
+        public override void Refactor(Declaration target)
         {
-            RemoveParameters();
+            Refactor(InitializeModel(target));
         }
 
-        protected override RemoveParametersModel InitializeModel(Declaration target)
+        private RemoveParametersModel InitializeModel(Declaration target)
         {
             if (target == null)
             {
@@ -72,6 +51,11 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             return InitializeModel(target.QualifiedSelection);
+        }
+
+        protected override void RefactorImpl(IRemoveParametersPresenter presenter)
+        {
+            RemoveParameters();
         }
 
         public void QuickFix(QualifiedSelection selection)

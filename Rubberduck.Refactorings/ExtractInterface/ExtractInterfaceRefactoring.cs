@@ -31,29 +31,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public override void Refactor(QualifiedSelection target)
         {
-            Model = InitializeModel(target);
-
-            if (Model == null)
-            {
-                return;
-            }
-
-            using (var presenterContainer = PresenterFactory(Model))
-            {
-                var presenter = presenterContainer.Value;
-                if (presenter == null)
-                {
-                    return;
-                }
-
-                Model = presenter.Show();
-                if (Model == null)
-                {
-                    return;
-                }
-
-                RefactorImpl(presenter);
-            }
+            Refactor(InitializeModel(target));
         }
 
         private ExtractInterfaceModel InitializeModel(QualifiedSelection targetSelection)
@@ -68,15 +46,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         public override void Refactor(Declaration target)
         {
-            if (target == null)
-            {
-                return;
-            }
-
-            Refactor(target.QualifiedSelection);
+            Refactor(InitializeModel(target));
         }
 
-        protected override ExtractInterfaceModel InitializeModel(Declaration target)
+        private ExtractInterfaceModel InitializeModel(Declaration target)
         {
             if (target == null)
             {
