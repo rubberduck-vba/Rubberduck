@@ -2,12 +2,13 @@
 using System.Configuration;
 using System.Xml.Serialization;
 
-namespace Rubberduck.Settings
+namespace Rubberduck.UnitTesting.Settings
 {
     public enum BindingMode
     {
         EarlyBinding,
-        LateBinding
+        LateBinding,
+        DualBinding
     }
 
     public enum AssertMode

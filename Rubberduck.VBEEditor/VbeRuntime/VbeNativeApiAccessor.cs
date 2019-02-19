@@ -1,70 +1,63 @@
 ﻿using System;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using NLog;
 using Rubberduck.VBEditor.VBERuntime;
 
 namespace Rubberduck.VBEditor.VbeRuntime
 {
     public class VbeNativeApiAccessor : IVbeNativeApi
     {
-        private static DllVersion _version;
-        private readonly IVbeNativeApi _runtime;
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        private static readonly DllVersion Version;
+        private IVbeNativeApi _runtime;
         
         static VbeNativeApiAccessor()
         {
-            _version = DllVersion.Unknown;
+            Version = DllVersion.Unknown;
         }
         
-        public VbeNativeApiAccessor(IVBE vbe)
+        private static readonly List<(string Name, Type ApiType, DllVersion Version)> VbeApis =new List<(string Dll, Type ApiType, DllVersion Version)>
         {
-            if (_version == DllVersion.Unknown)
-            {
-                try
-                {
-                    _version = VbeDllVersion.GetCurrentVersion(vbe);
-                }
-                catch
-                {
-                    _version = DllVersion.Unknown;
-                }
-            }
-            _runtime = InitializeRuntime();
+            ( "vbe6.dll", typeof(VbeNativeApi6), DllVersion.Vbe6),
+            ( "vbe7.dll", typeof(VbeNativeApi7), DllVersion.Vbe7),
+            ( "vba6.dll", typeof(Vb6NativeApi), DllVersion.Vb98)
+        };
+
+        public VbeNativeApiAccessor()
+        {
+            DetermineVersion();
         }
 
-        private static IVbeNativeApi InitializeRuntime()
+        private IVbeNativeApi DetermineVersion()
         {
-            switch (_version)
+            try
             {
-                case DllVersion.Vbe7:
-                    return new VbeNativeApi7();
-                case DllVersion.Vbe6:
-                    return new VbeNativeApi6();
-                case DllVersion.Vb98:
-                    return new Vb6NativeApi();
-                default:
-                    return DetermineVersion();
+                var modules = Process.GetCurrentProcess().Modules.OfType<ProcessModule>()
+                    .Select(module => module.ModuleName.ToLowerInvariant())
+                    .ToList();
+
+                var api = VbeApis.FirstOrDefault(dll => modules.Contains(dll.Name));
+
+                if (api.ApiType is null)
+                {
+                    // Yay! VBE8 must have been released! Duck out.
+                    throw new InvalidOperationException("Cannot execute library function; the VBE dll could not be located.");
+                }
+
+                _runtime = (IVbeNativeApi)Activator.CreateInstance(api.ApiType);
             }
+            catch (Exception ex)
+            {
+                Logger.Warn(ex, "Exception during location of the VBE dll version. Resolution deferred.");
+            }
+
+            return null;
         }
 
-        private static IVbeNativeApi DetermineVersion()
-        {
-            foreach (var type in new[] {typeof(VbeNativeApi7), typeof(VbeNativeApi6), typeof(Vb6NativeApi)})
-            {
-                try
-                {
-                    var runtime = (IVbeNativeApi)Activator.CreateInstance(type);
-                    runtime.GetTimer();
-                    return runtime;
-                }
-                catch
-                {
-                    // ignored
-                }
-            }
-            // we shouldn't be here.... Rubberduck is a VBE add-in, so how the heck could it have loaded without a runtime dll?!?
-            throw new InvalidOperationException("Cannot execute library function; the VBE dll could not be located.");
-        }
-
-        public string DllName => _runtime.DllName;
+        public string DllName => _runtime?.DllName ?? DetermineVersion()?.DllName;
 
         public float GetTimer()
         {

@@ -324,6 +324,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return FindSelectedDeclaration(qualifiedSelection.Value);
         }
 
+        /// <summary>
+        /// Finds all declarations contained within the passed selection.
+        /// </summary>
+        /// <param name="selection">The QualifiedSelection to find declarations for.</param>
+        /// <returns>An IEnumerable of matches.</returns>
+        public IEnumerable<Declaration> FindDeclarationsForSelection(QualifiedSelection selection)
+        {
+            return _declarationsBySelection.Keys
+                .Where(key => key.Contains(selection))
+                .SelectMany(key => _declarationsBySelection[key]).Distinct();
+        }
+
         public IEnumerable<Declaration> FreshUndeclared => _newUndeclared.AllValues();
 
         //This does not need a lock because enumerators over a ConcurrentBag uses a snapshot.    

@@ -221,6 +221,16 @@ namespace Rubberduck.SmartIndenter
         }
 
         /// <summary>
+        /// Indents the code contained in the passed string. NOTE: This overload should only be used on procedures or modules.
+        /// </summary>
+        /// <param name="code">The code block to indent</param>
+        /// <returns>Indented code lines</returns>
+        public IEnumerable<string> Indent(string code)
+        {
+            return Indent(code.Replace("\r", string.Empty).Split('\n'), false);
+        }
+
+        /// <summary>
         /// Indents a range of code lines. NOTE: If inserting procedures, use the forceTrailingNewLines overload to preserve vertical spacing in the module.
         /// Do not call directly on selections. Use Indent(IVBComponent, Selection) instead.
         /// </summary>

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using Rubberduck.Settings;
 using Rubberduck.Resources.Settings;
+using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.UI.Settings.Converters
 {
@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Settings.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var mode = (Rubberduck.Settings.AssertMode)value;
+            var mode = (AssertMode)value;
             switch (mode)
             {
                 case AssertMode.StrictAssert:

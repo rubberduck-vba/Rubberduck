@@ -6,12 +6,12 @@
              xmlns:local="clr-namespace:Rubberduck.UI.UnitTesting"
              xmlns:vm="clr-namespace:Rubberduck.UI.UnitTesting.ViewModels"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
              Language="{UICulture}"
              mc:Ignorable="d" 
-             d:DesignHeight="255" d:DesignWidth="455"
+             d:DesignHeight="400" d:DesignWidth="600"
              d:DataContext="{d:DesignInstance local:TestExplorerViewModel}">
 
     <UserControl.Resources>
@@ -21,293 +21,43 @@
         <BitmapImage x:Key="RunImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/control.png" />
         <BitmapImage x:Key="RunAllTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--arrow.png" />
         <BitmapImage x:Key="RunNotRunTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/question-white.png" />
+        <BitmapImage x:Key="RunSingleTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask.png" />
         <BitmapImage x:Key="RunSelectedTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--arrow.png" />
-        <BitmapImage x:Key="RunSelectedCategoryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--arrow.png" />
+        <BitmapImage x:Key="RunSelectedGroupImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-tag.png" />
         <BitmapImage x:Key="RunInconclusiveTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--exclamation.png" />
         <BitmapImage x:Key="RunPassedTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tick-circle.png" />
         <BitmapImage x:Key="RunFailedTestsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/cross-circle.png" />
         <BitmapImage x:Key="RepeatLastRunImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/arrow-repeat.png" />
 
+        <BitmapImage x:Key="ResetResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-undo.png" />
+        <BitmapImage x:Key="StopImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/control-stop-square.png" />
+
         <BitmapImage x:Key="AddIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--plus.png" />
         <BitmapImage x:Key="AddTestMethodIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask.png" />
         <BitmapImage x:Key="AddErrorTestMethodIcon" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask--exclamation.png" />
 
-        <BitmapImage x:Key="GroupByImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/GroupBy.png" />
+        <BitmapImage x:Key="GroupByOutcomeImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/flask-question.png" />
+        <BitmapImage x:Key="GroupByLocationImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Custom/PNG/ObjectClass.png" />
+        <BitmapImage x:Key="GroupByCategoryImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/tag-label-gray.png" />
+
+        <BitmapImage x:Key="ExpandAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/expand-all.png" />
+        <BitmapImage x:Key="CollapseAllImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/collapse-all.png" />
+
         <BitmapImage x:Key="CopyResultsImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/document-copy.png" />
-        
+
         <local:TestOutcomeImageSourceConverter x:Key="OutcomeIconConverter" />
-        <local:TestResultToOutcomeTextConverter x:Key="OutcomeTextConverter" />
-        
         <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+        <converters:MillisecondToTimeMagnitudeConverter x:Key="FormattedTime" />
         <converters:InvertBoolValueConverter x:Key="InvertBoolValue" />
 
-        <Style x:Key="MenuItemStyle" TargetType="{x:Type MenuItem}">
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}"/>
-            <Setter Property="VerticalContentAlignment" Value="{Binding VerticalContentAlignment, RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ItemsControl}}}"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Margin" Value="0,1,0,0"/>
-            <Setter Property="Padding" Value="8,3"/>
-            <Setter Property="DockPanel.Dock" Value="Top"/>
-            <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
-            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                        <Grid Background="Transparent" SnapsToDevicePixels="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition MinWidth="24" SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition SharedSizeGroup="MenuItemIGTColumnGroup" Width="Auto"/>
-                                <ColumnDefinition Width="14"/>
-                            </Grid.ColumnDefinitions>
-                            <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Margin="1,0"/>
-                            <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" ContentSource="Icon" Margin="0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
-                            <Border x:Name="GlyphPanel" BorderBrush="#80DADADA" BorderThickness="1" Background="GhostWhite" Height="20" Margin="0,1" Visibility="Hidden" Width="20">
-                                <Path Data="M0,2.5L2.5,5 7,0.5" FlowDirection="LeftToRight" HorizontalAlignment="Center" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.2" VerticalAlignment="Center"/>
-                            </Border>
-                            <ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Grid.Column="1" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                            <TextBlock Grid.Column="2" HorizontalAlignment="Right" Margin="4,3,2,3" Text="{TemplateBinding InputGestureText}"/>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="Icon" Value="{x:Null}">
-                                <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
-                                <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
-                            </Trigger>
-                            <Trigger Property="IsHighlighted" Value="True">
-                                <Setter Property="BorderBrush" TargetName="Border" Value="#80DADADA"/>
-                                <Setter Property="Background" TargetName="Border" Value="#210080FF"/>
-                                <Setter Property="BorderBrush" TargetName="GlyphPanel" Value="#90006CD9"/>
-                                <Setter Property="Background" TargetName="GlyphPanel" Value="#FFEEF5FD"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="Role" Value="TopLevelHeader">
-                    <Setter Property="Padding" Value="6,2,7,2"/>
-                    <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type MenuItem}">
-                                <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                                    <DockPanel x:Name="Header">
-                                        <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" ContentSource="Icon" Margin="4,0,6,0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
-                                        <Path x:Name="GlyphPanel" Data="M0,2.5L2.5,5 7,0.5" FlowDirection="LeftToRight" Margin="4,0,6,0" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.2" Visibility="Collapsed" VerticalAlignment="Center"/>
-                                        <ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                        <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False" HorizontalOffset="-1" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Bottom">
-                                            <themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
-                                                <Border x:Name="SubMenuBorder" BorderBrush="#FFB6BDC5" BorderThickness="1" Background="#FFEEF5FD">
-                                                    <Grid>
-                                                        <Rectangle Fill="#FFEEF5FD" HorizontalAlignment="Left" Height="1" Margin="0,-1,0,0" VerticalAlignment="Top" Width="{Binding ActualWidth, ElementName=Header}"/>
-                                                        <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                                            <Grid RenderOptions.ClearTypeHint="Enabled" Grid.IsSharedSizeScope="True">
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition MinWidth="24" SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
-                                                                    <ColumnDefinition Width="*"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
-                                                                    <Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=SubMenuBorder}" Height="{Binding ActualHeight, ElementName=SubMenuBorder}" Width="{Binding ActualWidth, ElementName=SubMenuBorder}"/>
-                                                                </Canvas>
-                                                                <Rectangle Fill="#FFEEF5FD" Margin="0,1"/>
-                                                                <ItemsPresenter x:Name="ItemsPresenter" Grid.ColumnSpan="2" KeyboardNavigation.DirectionalNavigation="Cycle" Margin="0,0,0,1" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle"/>
-                                                            </Grid>
-                                                        </ScrollViewer>
-                                                    </Grid>
-                                                </Border>
-                                            </themes:SystemDropShadowChrome>
-                                        </Popup>
-                                    </DockPanel>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSuspendingPopupAnimation" Value="True">
-                                        <Setter Property="PopupAnimation" TargetName="PART_Popup" Value="None"/>
-                                    </Trigger>
-                                    <Trigger Property="Icon" Value="{x:Null}">
-                                        <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
-                                    </Trigger>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
-                                        <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
-                                    </Trigger>
-                                    <Trigger Property="IsHighlighted" Value="True">
-                                        <Setter Property="BorderBrush" TargetName="Border" Value="#80DADADA"/>
-                                        <Setter Property="Background" TargetName="Border" Value="#210080FF"/>
-                                    </Trigger>
-                                    <Trigger Property="IsSubmenuOpen" Value="True">
-                                        <Setter Property="BorderBrush" TargetName="Border" Value="#FFB6BDC5"/>
-                                        <Setter Property="Background" TargetName="Border" Value="#FFEEF5FD"/>
-                                    </Trigger>
-                                    <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="True">
-                                        <Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
-                                        <Setter Property="SnapsToDevicePixels" TargetName="Shdw" Value="True"/>
-                                        <Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                    </Trigger>
-                                    <Trigger Property="CanContentScroll" SourceName="SubMenuScrollViewer" Value="False">
-                                        <Setter Property="Canvas.Top" TargetName="OpaqueRect" Value="{Binding VerticalOffset, ElementName=SubMenuScrollViewer}"/>
-                                        <Setter Property="Canvas.Left" TargetName="OpaqueRect" Value="{Binding HorizontalOffset, ElementName=SubMenuScrollViewer}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-                <Trigger Property="Role" Value="TopLevelItem">
-                    <Setter Property="Margin" Value="0,1"/>
-                    <Setter Property="Padding" Value="7,1,8,2"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type MenuItem}">
-                                <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
-                                    <DockPanel>
-                                        <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" ContentSource="Icon" Margin="4,0,6,0" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
-                                        <Path x:Name="GlyphPanel" Data="M0,2.5L2.5,5 7,0.5" FlowDirection="LeftToRight" Margin="4,0,6,0" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.2" Visibility="Collapsed" VerticalAlignment="Center"/>
-                                        <ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                    </DockPanel>
-                                </Border>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="Icon" Value="{x:Null}">
-                                        <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
-                                    </Trigger>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
-                                        <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
-                                    </Trigger>
-                                    <Trigger Property="IsHighlighted" Value="True">
-                                        <Setter Property="BorderBrush" TargetName="Border" Value="#80DADADA"/>
-                                        <Setter Property="Background" TargetName="Border" Value="#210080FF"/>
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-                <Trigger Property="Role" Value="SubmenuHeader">
-                    <Setter Property="DockPanel.Dock" Value="Top"/>
-                    <Setter Property="Padding" Value="8,3"/>
-                    <Setter Property="Grid.IsSharedSizeScope" Value="True"/>
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="{x:Type MenuItem}">
-                                <Grid Background="Transparent" SnapsToDevicePixels="True">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition MinWidth="24" SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition SharedSizeGroup="MenuItemIGTColumnGroup" Width="Auto"/>
-                                        <ColumnDefinition Width="14"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border x:Name="Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="4" Margin="1,0"/>
-                                    <ContentPresenter x:Name="Icon" Content="{TemplateBinding Icon}" ContentSource="Icon" Margin="3" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
-                                    <Border x:Name="GlyphPanel" BorderBrush="#80DADADA" BorderThickness="1" Background="#FF212121" Height="20" Margin="0,1" Visibility="Hidden" Width="20">
-                                        <Path Data="M0,2.5L2.5,5 7,0.5" FlowDirection="LeftToRight" HorizontalAlignment="Center" Stroke="{TemplateBinding Foreground}" StrokeThickness="1.2" VerticalAlignment="Center"/>
-                                    </Border>
-                                    <ContentPresenter ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Grid.Column="1" ContentStringFormat="{TemplateBinding HeaderStringFormat}" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-                                    <Path Grid.Column="3" DockPanel.Dock="Right" Data="M0,0L4,3.5 0,7z" Fill="{TemplateBinding Foreground}" Margin="4,0,6,0" VerticalAlignment="Center"/>
-                                    <Popup x:Name="PART_Popup" AllowsTransparency="True" Focusable="False" IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" Placement="Right">
-                                        <themes:SystemDropShadowChrome x:Name="Shdw" Color="Transparent">
-                                            <Border x:Name="SubMenuBorder" BorderBrush="#FFB6BDC5" BorderThickness="1" Background="#FFEEF5FD" Grid.IsSharedSizeScope="True">
-                                                <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer, TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                                    <Grid RenderOptions.ClearTypeHint="Enabled">
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition MinWidth="24" SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Canvas HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
-                                                            <Rectangle x:Name="OpaqueRect" Fill="{Binding Background, ElementName=SubMenuBorder}" Height="{Binding ActualHeight, ElementName=SubMenuBorder}" Width="{Binding ActualWidth, ElementName=SubMenuBorder}"/>
-                                                        </Canvas>
-                                                        <Rectangle Fill="#FFEEF5FD" Margin="0,1"/>
-                                                        <ItemsPresenter x:Name="ItemsPresenter" Grid.ColumnSpan="2" KeyboardNavigation.DirectionalNavigation="Cycle" Margin="0,0,0,1" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" KeyboardNavigation.TabNavigation="Cycle"/>
-                                                    </Grid>
-                                                </ScrollViewer>
-                                            </Border>
-                                        </themes:SystemDropShadowChrome>
-                                    </Popup>
-                                </Grid>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsSuspendingPopupAnimation" Value="True">
-                                        <Setter Property="PopupAnimation" TargetName="PART_Popup" Value="None"/>
-                                    </Trigger>
-                                    <Trigger Property="Icon" Value="{x:Null}">
-                                        <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
-                                    </Trigger>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
-                                        <Setter Property="Visibility" TargetName="Icon" Value="Collapsed"/>
-                                    </Trigger>
-                                    <Trigger Property="IsHighlighted" Value="True">
-                                        <Setter Property="BorderBrush" TargetName="Border" Value="#80DADADA"/>
-                                        <Setter Property="Background" TargetName="Border" Value="#210080FF"/>
-                                        <Setter Property="BorderBrush" TargetName="GlyphPanel" Value="#90006CD9"/>
-                                        <Setter Property="Background" TargetName="GlyphPanel" Value="#FFEEF5FD"/>
-                                    </Trigger>
-                                    <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="True">
-                                        <Setter Property="Margin" TargetName="Shdw" Value="0,0,5,5"/>
-                                        <Setter Property="SnapsToDevicePixels" TargetName="Shdw" Value="True"/>
-                                        <Setter Property="Color" TargetName="Shdw" Value="#71000000"/>
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
-                                    </Trigger>
-                                    <Trigger Property="CanContentScroll" SourceName="SubMenuScrollViewer" Value="False">
-                                        <Setter Property="Canvas.Top" TargetName="OpaqueRect" Value="{Binding VerticalOffset, ElementName=SubMenuScrollViewer}"/>
-                                        <Setter Property="Canvas.Left" TargetName="OpaqueRect" Value="{Binding HorizontalOffset, ElementName=SubMenuScrollViewer}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-        <CollectionViewSource x:Key="ResultsByModule" Source="{Binding Model.Tests}">
-            <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="QualifiedName.QualifiedModuleName.Name" />
-                <componentModel:SortDescription PropertyName="QualifiedName.MemberName" />
-            </CollectionViewSource.SortDescriptions>
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="QualifiedName.QualifiedModuleName.Name" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
-
-        <CollectionViewSource x:Key="ResultsByOutcome" Source="{Binding Model.Tests}">
-            <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="QualifiedName.QualifiedModuleName.Name" />
-                <componentModel:SortDescription PropertyName="QualifiedName.MemberName" />
-            </CollectionViewSource.SortDescriptions>
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Result.Outcome" Converter="{StaticResource OutcomeTextConverter}" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
-
-        <CollectionViewSource x:Key="ResultsByCategory" Source="{Binding Model.Tests}">
-            <CollectionViewSource.SortDescriptions>
-                <componentModel:SortDescription PropertyName="QualifiedName.QualifiedModuleName.Name" />
-                <componentModel:SortDescription PropertyName="QualifiedName.MemberName" />
-            </CollectionViewSource.SortDescriptions>
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Method.Category.Name" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
-
-        <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="#FFEEF5FD"/>
+        <SolidColorBrush x:Key="ToolBarToggleButtonVerticalBackground" Color="Transparent" />
         <SolidColorBrush x:Key="ToolBarButtonHover" Color="#210080FF"/>
         <SolidColorBrush x:Key="ToolBarGripper" Color="#FF6D6D6D"/>
+        <SolidColorBrush x:Key="ToolBarVerticalBackground" Color="#FFEEF5FD"/>
+        <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackground" Color="#FFEEF5FD"/>
+        <SolidColorBrush x:Key="ToolBarMenuBorder" Color="#FFB6BDC5"/>
+        <SolidColorBrush x:Key="ToolBarSubMenuBackground" Color="#FFEEF5FD"/>
+
         <Style x:Key="ToolBarVerticalOverflowButtonStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Background" Value="{StaticResource ToolBarToggleButtonVerticalBackground}"/>
             <Setter Property="MinHeight" Value="0"/>
@@ -343,8 +93,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <SolidColorBrush x:Key="ToolBarVerticalBackground" Color="#FFEEF5FD"/>
-        <SolidColorBrush x:Key="ToolBarToggleButtonHorizontalBackground" Color="#FFEEF5FD"/>
+
         <Style x:Key="ToolBarHorizontalOverflowButtonStyle" TargetType="{x:Type ToggleButton}">
             <Setter Property="Background" Value="{StaticResource ToolBarToggleButtonHorizontalBackground}"/>
             <Setter Property="MinHeight" Value="0"/>
@@ -380,8 +129,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
-        <SolidColorBrush x:Key="ToolBarMenuBorder" Color="#FFB6BDC5"/>
-        <SolidColorBrush x:Key="ToolBarSubMenuBackground" Color="#FFEEF5FD"/>
+
         <Style x:Key="ToolBarThumbStyle" TargetType="{x:Type Thumb}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -409,6 +157,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
         <Style x:Key="ToolBarMainPanelBorderStyle" TargetType="{x:Type Border}">
             <Setter Property="Margin" Value="0,0,11,0"/>
             <Setter Property="CornerRadius" Value="3,3,3,3"/>
@@ -418,6 +167,7 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
         <Style x:Key="ToolBarWithOverflowOnlyShowingWhenNeededStyle" TargetType="{x:Type ToolBar}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -486,12 +236,25 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="ToolbarImageOpacity" TargetType="Image" >
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Margin" Value="2,0,2,0" />
+            <Style.Triggers>
+                <Trigger Property="IsEnabled"  Value="False">
+                    <Setter Property="Opacity" Value="0.3" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -500,68 +263,94 @@
         <ToolBarTray Grid.Row="0" IsLocked="True">
             <ToolBar Style="{StaticResource ToolBarWithOverflowOnlyShowingWhenNeededStyle}">
                 <ToolBar.Resources>
+                    <local:TestExplorerGroupingBooleanConverter x:Key="OutcomeConverter" />
+                    <local:TestExplorerGroupingBooleanConverter x:Key="LocationConverter" />
+                    <local:TestExplorerGroupingBooleanConverter x:Key="CategoryConverter" />
+                    <Style x:Key="ToolBarToggleStyle" TargetType="ToggleButton">
+                        <Setter Property="Margin" Value="2" />
+                        <Setter Property="BorderBrush" Value="{x:Static SystemColors.ActiveBorderBrush}" />
+                    </Style>
                     <Style TargetType="Image">
                         <Setter Property="Height" Value="16" />
                     </Style>
                 </ToolBar.Resources>
 
-                <Button Command="{Binding RefreshCommand}">
-                    <Image Source="{StaticResource RefreshImage}" />
+                <Button Command="{Binding RefreshCommand}" >
+                    <Image Source="{StaticResource RefreshImage}" Style="{StaticResource ToolbarImageOpacity}" />
                 </Button>
 
                 <Separator />
-                <Menu>
-                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunButtonText}">
+
+                <Menu Background="Transparent">
+                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuButtonText}"
+                              IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource RunImage}" />
+                            <Image Source="{StaticResource RunImage}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
-                        <MenuItem Command="{Binding RunAllTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunAllTests}">
+                        <MenuItem Command="{Binding RunAllTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuAllTests}">
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunAllTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunNotRunTests}" >
+                        <MenuItem Command="{Binding RunNotExecutedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuNotRunTests}" >
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunNotRunTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding RunSelectedTestCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer ,Key=TestExplorer_RunSelectedTests}" >
+                        <MenuItem Command="{Binding RunSelectedTestsCommand}" 
+                                  CommandParameter="{Binding ElementName=TestGrid, Path=SelectedItems}"
+                                  Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer ,Key=TestExplorer_RunMenuSelectedTests}" >
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunSelectedTestImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding RunSelectedCategoryTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer ,Key=TestExplorer_RunSelectedCategoryTests}" >
-                            <MenuItem.Icon>
-                                <Image Source="{StaticResource RunSelectedCategoryImage}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Command="{Binding RunInconclusiveTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunInconclusiveTests}" >
+                        <MenuItem Command="{Binding RunInconclusiveTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuInconclusiveTests}" >
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunInconclusiveTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunPassedTests}" >
+                        <MenuItem Command="{Binding RunPassedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuPassedTests}" >
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunPassedTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunFailedTests}">
+                        <MenuItem Command="{Binding RunFailedTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuFailedTests}">
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunFailedTestsImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
-                        <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunLastRunTests}">
+                        <MenuItem Command="{Binding RepeatLastRunCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuLastRunTests}">
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RepeatLastRunImage}" />
                             </MenuItem.Icon>
                         </MenuItem>
-
                     </MenuItem>
-                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}">
+                </Menu>
+
+                <Separator />
+
+                <Button Command="{Binding CancelTestRunCommand}" >
+                    <Image Source="{StaticResource StopImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                </Button>
+
+                <Separator />
+
+                <Button Command="{Binding ResetResultsCommand}" >
+                    <Image Source="{StaticResource ResetResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                    <Button.ToolTip>
+                        <TextBlock Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ResetButtonTooltip}" />
+                    </Button.ToolTip>
+                </Button>
+
+                <Separator />
+
+                <Menu Background="Transparent">
+                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}"
+                              IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
-                            <Image Source="{StaticResource AddIcon}" />
+                            <Image Source="{StaticResource AddIcon}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
                         <MenuItem Command="{Binding AddTestModuleCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_AddTestModule}">
                         </MenuItem>
@@ -578,50 +367,52 @@
                         </MenuItem>
                     </MenuItem>
                 </Menu>
+
                 <Separator />
 
-                <Menu>
-                    <MenuItem Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}">
-                        <MenuItem.Icon>
-                            <Image Source="{StaticResource GroupByImage}" />
-                        </MenuItem.Icon>
+                <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingGrid_GroupingStyle}" VerticalContentAlignment="Center" />
 
-                        <MenuItem x:Name="GroupByOutcome"
-                                  Style="{DynamicResource MenuItemStyle}"
-                                  VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByOutcome}"
-                                  IsChecked="{Binding GroupByOutcome, UpdateSourceTrigger=PropertyChanged}" 
-                                  IsCheckable="True"
-                                  Command="{Binding SetOutcomeGroupingCommand}"
-                                  CommandParameter="{Binding ElementName=GroupByOutcome, Path=IsChecked}"
-                                  controls:MenuItemGroup.GroupName="TestExplorer_GroupingStyle" />
-                        <MenuItem x:Name="GroupByLocation"
-                                  Style="{DynamicResource MenuItemStyle}"
-                                  VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}" 
-                                  IsChecked="{Binding GroupByLocation, UpdateSourceTrigger=PropertyChanged}" 
-                                  IsCheckable="True"
-                                  Command="{Binding SetLocationGroupingCommand}"
-                                  CommandParameter="{Binding ElementName=GroupByLocation, Path=IsChecked}"
-                                  controls:MenuItemGroup.GroupName="TestExplorer_GroupingStyle" />
-                        <MenuItem x:Name="GroupByCategory"
-                                  Style="{DynamicResource MenuItemStyle}"
-                                  VerticalAlignment="Center" 
-                                  Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByCategory}" 
-                                  IsChecked="{Binding GroupByCategory, UpdateSourceTrigger=PropertyChanged}" 
-                                  IsCheckable="True"
-                                  Command="{Binding SetCategoryGroupingCommand}"
-                                  CommandParameter="{Binding ElementName=GroupByCategory, Path=IsChecked}"
-                                  controls:MenuItemGroup.GroupName="TestExplorer_GroupingStyle" />
-                    </MenuItem>
-                </Menu>
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByOutcome}"
+                              IsChecked="{Binding Path=TestGrouping, Converter={StaticResource OutcomeConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Outcome}}">
+                    <Image Source="{StaticResource GroupByOutcomeImage}" />
+                </ToggleButton>
+
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByLocation}"
+                              IsChecked="{Binding Path=TestGrouping, Converter={StaticResource LocationConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Location}}">
+                    <Image Source="{StaticResource GroupByLocationImage}" />
+                </ToggleButton>
+
+                <ToggleButton Style="{StaticResource ToolBarToggleStyle}"
+                              ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GroupingStyle_ByCategory}"
+                              IsChecked="{Binding Path=TestGrouping, Converter={StaticResource CategoryConverter}, ConverterParameter={x:Static local:TestExplorerGrouping.Category}}">
+                    <Image Source="{StaticResource GroupByCategoryImage}" />
+                </ToggleButton>
+
+                <Separator />
+
+                <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
+                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
+                    <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                </Button>
+
+                <Button Name="ExpandAll" Command="{Binding ExpandAllCommand}" Margin="2"
+                        ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_ExpandAll}">
+                    <Image Source="{StaticResource ExpandAllImage}" Style="{StaticResource ToolbarImageOpacity}" />
+                </Button>
+
+                <Separator />
 
                 <Button Command="{Binding CopyResultsCommand}">
-                    <Image Source="{StaticResource CopyResultsImage}" />
+                    <Image Source="{StaticResource CopyResultsImage}" Style="{StaticResource ToolbarImageOpacity}" />
                     <Button.ToolTip>
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_CopyToolTip}" />
                     </Button.ToolTip>
                 </Button>
+
+                <Separator />
+
                 <Button ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Settings}" Command="{Binding OpenTestSettingsCommand}" BorderThickness="0" Background="Transparent">
                     <Image Source="{StaticResource SettingsImage}" />
                 </Button>
@@ -632,77 +423,172 @@
                      Grid.Row="1"
                      Margin="2"
                      Background="DimGray" 
-                     Maximum="{Binding Model.Tests.Count, Mode=OneWay}" 
-                     Value="{Binding Model.ExecutedCount, Mode=OneWay}">
+                     Maximum="{Binding Model.CurrentRunTestCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" 
+                     Value="{Binding Model.ExecutedCount, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             <ProgressBar.Foreground>
                 <SolidColorBrush Color="{Binding Model.ProgressBarColor, UpdateSourceTrigger=PropertyChanged}" />
             </ProgressBar.Foreground>
         </ProgressBar>
 
         <Border Grid.Row="2" Padding="2">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel.Resources>
+                    <converters:NonZeroToVisibilityConverter x:Key="NonZeroToVisibility"/>
+                    <BitmapImage x:Key="IgnoredTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/minus-white.png" />
+                    <BitmapImage x:Key="InconclusiveTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/exclamation.png" />
+                    <BitmapImage x:Key="EasterEggTestImage" UriSource="pack://application:,,,/Rubberduck.Resources;component/Icons/Fugue/skull-mad.png" />
+                    <Style x:Key="ResultsTestOutcomeStyle" TargetType="TextBlock" >
+                        <Setter Property="Margin" Value="4,0,12,0"/>
+                        <Setter Property="TextWrapping" Value="WrapWithOverflow"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                    <Style x:Key="TestOutcomeIconStyle" TargetType="Image">
+                        <Setter Property="Height" Value="16"/>
+                        <Setter Property="Width" Value="16" />
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="Margin" Value="3"/>
+                    </Style>
+                </StackPanel.Resources>
+                <TextBlock Margin="2" Padding="4,2,4,2" FontWeight="Bold" VerticalAlignment="Center"
+                           Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_SummaryCaption}"/>
+                <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}" Text="{Binding Model.LastTestRunSummary, Mode=OneWay}"/>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestSpectacularFailCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}" >
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource EasterEggTestImage}" Margin="4,0,4,0"/>
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestSpectacularFailCount, Mode=OneWay}"/>
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_SpectacularFail}"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestFailedCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}" >
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource RunFailedTestsImage}" Margin="4,0,4,0"/>
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestFailedCount, Mode=OneWay}"/>
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Failed}"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestIgnoredCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource IgnoredTestImage}" />
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestIgnoredCount, Mode=OneWay}"/>
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Ignored}"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestInconclusiveCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource InconclusiveTestImage}" />
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestInconclusiveCount, Mode=OneWay}" />
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Inconclusive}"/>
+                    </TextBlock>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Visibility="{Binding Model.LastTestSucceededCount, Mode=OneWay, Converter={StaticResource NonZeroToVisibility}}">
+                    <Image Style="{StaticResource TestOutcomeIconStyle}" Source="{StaticResource RunPassedTestsImage}" />
+                    <TextBlock Style="{StaticResource ResultsTestOutcomeStyle}">
+                        <Run Text="{Binding Model.LastTestSucceededCount, Mode=OneWay}"/>
+                        <Run Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestOutcome_Succeeded}"/>
+                    </TextBlock>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Padding="2">
             <Grid>
-                <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByOutcome}}"
-                                           SelectedItem="{Binding SelectedTest}"
-                                           ShowGroupingItemCount="True"
-                                           Visibility="{Binding GroupByOutcome, Converter={StaticResource BoolToVisibility}}"
-                                           IsVisibleChanged="ResultsGroupingGrid_IsVisibleChanged">
+                <controls:GroupingGrid x:Name="TestGrid"
+                                       ItemsSource="{Binding Tests}"
+                                       SelectionMode="Extended"
+                                       ShowGroupingItemCount="True"
+                                       InitialExpandedState="True">
                     <DataGrid.Columns>
                         <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
+                                    <Grid>
+                                        <Image Height="16" Width="16">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource OutcomeIconConverter}">
+                                                    <MultiBinding.Bindings>
+                                                        <Binding RelativeSource="{RelativeSource Self}" Path="DataContext"/>
+                                                        <Binding Path="Result.Outcome" />
+                                                        <Binding Path="RunState" />
+                                                    </MultiBinding.Bindings>
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedName.QualifiedModuleName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}" Binding="{Binding Method.Declaration.IdentifierName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}" Binding="{Binding Method.Category.Name}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
-                    </DataGrid.Columns>
-                </controls:GroupingGrid>
-                <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByModule}}"
-                                           SelectedItem="{Binding SelectedTest}"
-                                           ShowGroupingItemCount="True"
-                                           Visibility="{Binding GroupByLocation, Converter={StaticResource BoolToVisibility}}"
-                                           IsVisibleChanged="ResultsGroupingGrid_IsVisibleChanged">
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
+                                    <TextBlock Text="{Binding Method.Declaration.QualifiedModuleName}" Margin="0,0,4,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedName.QualifiedModuleName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedName.MemberName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}" Binding="{Binding Method.Category.Name}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
-                    </DataGrid.Columns>
-                </controls:GroupingGrid>
-                <controls:GroupingGrid ItemsSource="{Binding Source={StaticResource ResultsByCategory}}"
-                                           SelectedItem="{Binding SelectedTest}"
-                                           ShowGroupingItemCount="True"
-                                           Visibility="{Binding GroupByCategory, Converter={StaticResource BoolToVisibility}}"
-                                           IsVisibleChanged="ResultsGroupingGrid_IsVisibleChanged">
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Outcome}">
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate DataType="vm:TestMethodViewModel">
-                                    <Image Source="{Binding Result.Outcome, Converter={StaticResource OutcomeIconConverter}}" Height="16" />
+                                    <TextBlock Text="{Binding Method.Declaration.IdentifierName}" Margin="0,0,4,0"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_QualifiedModuleName}" Binding="{Binding QualifiedName.QualifiedModuleName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_MethodName}" Binding="{Binding QualifiedName.MemberName}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}" Binding="{Binding Method.Category.Name}" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}" Binding="{Binding Result.Output}" Width="*" />
-                        <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}" Binding="{Binding Result.Duration, StringFormat={}{0}ms}" />
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_CategoryName}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="vm:TestMethodViewModel">
+                                    <TextBlock Text="{Binding Method.Category.Name}" Margin="0,0,4,0"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Message}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="vm:TestMethodViewModel">
+                                    <TextBlock Text="{Binding Result.Output}" Margin="0,0,4,0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_Duration}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate DataType="vm:TestMethodViewModel">
+                                    <TextBlock Text="{Binding Result.Duration, Converter={StaticResource FormattedTime}}" TextAlignment="Right" Margin="0,0,4,0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Command="{Binding RunSingleTestCommand}" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunSingle}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource RunSingleTestImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItems}"
+                                      Command="{Binding RunSelectedTestsCommand}" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunSelected}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource RunSelectedTestImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="{Binding RunSelectedGroupCommand}" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunGroup}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource RunSelectedGroupImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <MenuItem Command="{Binding RunAllTestsCommand}" 
+                                      Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_ContextMenuRunAll}">
+                                <MenuItem.Icon>
+                                    <Image Source="{StaticResource RunAllTestsImage}" />
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                    <i:Interaction.Behaviors>
+                        <local:TestExplorerRowMouseOverBehavior MouseOverTest="{Binding MouseOverTest, Mode=TwoWay}" MouseOverGroup="{Binding MouseOverGroup, Mode=TwoWay}" />
+                        <controls:GroupItemExpandedBehavior ExpandedState="{Binding ExpandedState, Mode=TwoWay}" />
+                    </i:Interaction.Behaviors>
                 </controls:GroupingGrid>
             </Grid>
         </Border>
-        <controls:BusyIndicator Grid.Row="2" Width="120" Height="120" Visibility="{Binding Model.IsBusy, Converter={StaticResource BoolToVisibility}}" />
+        <controls:BusyIndicator Grid.Row="3" Width="120" Height="120" Visibility="{Binding Model.IsRefreshing, Converter={StaticResource BoolToVisibility}}" />
     </Grid>
 </UserControl>

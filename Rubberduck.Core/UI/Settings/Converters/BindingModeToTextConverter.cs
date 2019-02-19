@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using Rubberduck.Resources.Settings;
+using BindingMode = Rubberduck.UnitTesting.Settings.BindingMode;
 
 
 namespace Rubberduck.UI.Settings.Converters
@@ -12,7 +13,7 @@ namespace Rubberduck.UI.Settings.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var modes = (IEnumerable<Rubberduck.Settings.BindingMode>)value;
+            var modes = (IEnumerable<BindingMode>)value;
             return modes.Select(s => UnitTestingPage.ResourceManager.GetString("UnitTestSettings_" + s, CultureInfo.CurrentUICulture)).ToArray();
         }
 

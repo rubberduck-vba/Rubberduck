@@ -156,25 +156,25 @@
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
     <value>Modul</value>
   </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
     <value>Všechny testy</value>
   </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
     <value>Spustit</value>
   </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
     <value>Spustit poslední běh</value>
   </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
     <value>Testy, které prošly</value>
   </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
     <value>Vybrané testy</value>
   </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
     <value>Testy, které neproběhly</value>
   </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
     <value>Testy, které neprošly</value>
   </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
@@ -183,7 +183,7 @@
   <data name="TestExplorer_Outcome" xml:space="preserve">
     <value>Výsledek</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
     <value>Neprůkazné testy</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
@@ -225,14 +225,11 @@
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>tato metoda běží jedenkrát v modulu</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Celkové Trvání</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
     <value>Kategorie</value>
-  </data>
-  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
-    <value>Vybraná Kategorie</value>
   </data>
   <data name="TestExplorer_Uncategorized" xml:space="preserve">
     <value>Bez kategorie</value>

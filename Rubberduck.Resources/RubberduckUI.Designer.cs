@@ -324,6 +324,16 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap clock {
+            get {
+                object obj = ResourceManager.GetObject("clock", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap clock_select {
             get {
                 object obj = ResourceManager.GetObject("clock_select", resourceCulture);
@@ -1778,6 +1788,16 @@ namespace Rubberduck.Resources {
         public static string Home {
             get {
                 return ResourceManager.GetString("Home", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap hourglass {
+            get {
+                object obj = ResourceManager.GetObject("hourglass", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -3843,6 +3863,16 @@ namespace Rubberduck.Resources {
         public static string SeverityLabelText {
             get {
                 return ResourceManager.GetString("SeverityLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap skull_mad {
+            get {
+                object obj = ResourceManager.GetObject("skull_mad", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

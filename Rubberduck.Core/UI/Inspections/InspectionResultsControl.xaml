@@ -217,7 +217,7 @@
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime}" />
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
-                <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}">
+                <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}" Visibility="Collapsed">
                     <ContextMenu.Resources>
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="Icon">
@@ -235,6 +235,7 @@
             </DataGrid.ContextMenu>
             <i:Interaction.Behaviors>
                 <controls:GroupItemExpandedBehavior ExpandedState="{Binding ExpandedState, Mode=TwoWay}" />
+                <codeInspections:InspectionContextMenuBehavior />
             </i:Interaction.Behaviors>
         </controls:GroupingGrid>
 
