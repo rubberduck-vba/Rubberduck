@@ -29,11 +29,42 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
         public ICodePane ActiveCodePane
         {
             get => new CodePane(IsWrappingNullReference ? null : Target.ActiveCodePane);
-            set
+            set => SetActiveCodePane(value);
+        }
+
+        private void SetActiveCodePane(ICodePane codePane)
+        {
+            if (IsWrappingNullReference || !(codePane is CodePane pane))
             {
-                if (!IsWrappingNullReference)
+                return;
+            }
+
+            Target.ActiveCodePane = pane.Target;
+            ForceFocus(codePane);
+        }
+
+        private void ForceFocus(ICodePane codePane)
+        {
+            if (codePane.IsWrappingNullReference)
+            {
+                return;
+            }
+
+            codePane.Show();
+
+            using (var mainWindow = MainWindow)
+            using (var window = codePane.Window)
+            {
+                var mainWindowHandle = mainWindow.Handle();
+                var handle = mainWindow.Handle().FindChildWindow(window.Caption);
+
+                if (handle != IntPtr.Zero)
                 {
-                    Target.ActiveCodePane = (VB.CodePane)value.Target;
+                    NativeMethods.ActivateWindow(handle, mainWindowHandle);
+                }
+                else
+                {
+                    _logger.Debug("VBE.ForceFocus() failed to get a handle on the MainWindow.");
                 }
             }
         }

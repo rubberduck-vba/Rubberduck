@@ -5,14 +5,16 @@ using NLog;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Parsing.VBA.Parsing;
 using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.Rewriter
 {
     public abstract class RewriteSessionBase : IRewriteSession
     {
         protected readonly IDictionary<QualifiedModuleName, IExecutableModuleRewriter> CheckedOutModuleRewriters = new Dictionary<QualifiedModuleName, IExecutableModuleRewriter>();
-        protected readonly IRewriterProvider RewriterProvider; 
+        protected readonly IRewriterProvider RewriterProvider;
 
+        protected readonly ISelectionRecoverer SelectionRecoverer;
         private readonly Func<IRewriteSession, bool> _rewritingAllowed;
 
         protected readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -20,10 +22,11 @@ namespace Rubberduck.Parsing.Rewriter
 
         public abstract CodeKind TargetCodeKind { get; }
 
-        protected RewriteSessionBase(IRewriterProvider rewriterProvider, Func<IRewriteSession, bool> rewritingAllowed)
+        protected RewriteSessionBase(IRewriterProvider rewriterProvider, ISelectionRecoverer selectionRecoverer, Func<IRewriteSession, bool> rewritingAllowed)
         {
             RewriterProvider = rewriterProvider;
             _rewritingAllowed = rewritingAllowed;
+            SelectionRecoverer = selectionRecoverer;
         }
 
         public IReadOnlyCollection<QualifiedModuleName> CheckedOutModules => CheckedOutModuleRewriters.Keys.ToHashSet();
@@ -91,9 +94,30 @@ namespace Rubberduck.Parsing.Rewriter
                 return false;
             }
 
+            PrimeSelectionRecovery();
+
             return TryRewriteInternal();
         }
 
         protected abstract bool TryRewriteInternal();
+
+        private void PrimeSelectionRecovery()
+        {
+            SelectionRecoverer.SaveSelections(CheckedOutModules);
+
+            foreach (var (module, rewriter) in CheckedOutModuleRewriters)
+            {
+                if (rewriter.SelectionOffset.HasValue)
+                {
+                    SelectionRecoverer.AdjustSavedSelection(module, rewriter.SelectionOffset.Value);
+                }
+                if (rewriter.Selection.HasValue)
+                {
+                    SelectionRecoverer.ReplaceSavedSelection(module, rewriter.Selection.Value);
+                }
+            }
+
+            SelectionRecoverer.RecoverSavedSelectionsOnNextParse();
+        }
     }
 }

@@ -10,25 +10,26 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class RenameDeclarationQuickFix : QuickFixBase
     {
-        private readonly IVBE _vbe;
+        private readonly ISelectionService _selectionService;
         private readonly RubberduckParserState _state;
         private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
         
-        public RenameDeclarationQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
+        public RenameDeclarationQuickFix(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
             : base(typeof(HungarianNotationInspection), 
                 typeof(UseMeaningfulNameInspection),
                 typeof(DefaultProjectNameInspection), 
                 typeof(UnderscoreInPublicClassModuleMemberInspection),
                 typeof(ExcelUdfNameIsValidCellReferenceInspection))
         {
-            _vbe = vbe;
+            _selectionService = selectionService;
             _state = state;
             _rewritingManager = rewritingManager;
             _messageBox = messageBox;
@@ -38,7 +39,7 @@ namespace Rubberduck.Inspections.QuickFixes
         //The rewriteSession is optional since it is not used in this particular quickfix because it is a refactoring quickfix.
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
-            var refactoring = new RenameRefactoring(_vbe, _factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager);
+            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager, _selectionService);
             refactoring.Refactor(result.Target);
         }
 

@@ -8,6 +8,11 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.IntroduceField;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
 {
@@ -38,7 +43,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -72,7 +77,7 @@ End Function";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -104,7 +109,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -139,7 +144,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -173,7 +178,7 @@ End Sub";   // note: the VBE removes extra spaces
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -211,7 +216,7 @@ End Sub";   // note: the VBE removes extra spaces
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -248,7 +253,7 @@ End Sub";
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bat");
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, new Mock<IMessageBox>().Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(target);
 
                 var actualCode = component.CodeModule.Content();
@@ -284,7 +289,7 @@ End Sub";
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bap");
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(target);
 
                 var actualCode = component.CodeModule.Content();
@@ -318,7 +323,7 @@ End Sub";
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bar");
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(target);
 
                 var actualCode = component.CodeModule.Content();
@@ -345,7 +350,7 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz");
                 refactoring.Refactor(target);
@@ -377,7 +382,7 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz");
                 refactoring.Refactor(target);
@@ -419,7 +424,7 @@ End Property";
             using(state)
             {
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bar");
                 refactoring.Refactor(target);
@@ -458,7 +463,7 @@ End Property";
             using(state)
             {
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bar");
                 refactoring.Refactor(target);
@@ -512,7 +517,7 @@ End Sub";
                 var messageBox = new Mock<IMessageBox>();
                 messageBox.Setup(m => m.Question(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz" && e.DeclarationType == DeclarationType.Variable);
                 refactoring.Refactor(target);
@@ -586,7 +591,7 @@ End Sub";
                 var messageBox = new Mock<IMessageBox>();
                 messageBox.Setup(m => m.Question(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz" && e.DeclarationType == DeclarationType.Variable);
                 refactoring.Refactor(target);
@@ -638,7 +643,7 @@ End Sub";
                 var messageBox = new Mock<IMessageBox>();
                 messageBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(false);
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz" && e.DeclarationType == DeclarationType.Variable);
                 refactoring.Refactor(target);
@@ -674,7 +679,7 @@ End Sub";
             using(state)
             {
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bar" && e.DeclarationType == DeclarationType.Variable);
                 refactoring.Refactor(target);
@@ -702,7 +707,7 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new IntroduceParameterRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
                 refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
 
                 messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -711,6 +716,27 @@ End Sub";
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(expectedCode, actualCode);
             }
+        }
+
+
+        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null)
+        {
+            var selectionService = MockedSelectionService();
+            if (msgBox == null)
+            {
+                msgBox = new Mock<IMessageBox>().Object;
+            }
+            return new IntroduceParameterRefactoring(state, msgBox, rewritingManager, selectionService);
+        }
+
+        private static ISelectionService MockedSelectionService()
+        {
+            QualifiedSelection? activeSelection = null;
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
         }
     }
 }

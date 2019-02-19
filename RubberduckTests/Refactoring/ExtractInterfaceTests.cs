@@ -2,12 +2,17 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using NUnit.Framework;
 using Moq;
+using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
+using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
+using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
@@ -61,10 +66,7 @@ End Sub
                     interfaceMember.IsSelected = true;
                 }
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
                 var actualCode = component.CodeModule.Content();
 
@@ -172,10 +174,7 @@ End Property
                     interfaceMember.IsSelected = true;
                 }
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -260,11 +259,8 @@ End Function
                 {
                     interfaceMember.IsSelected = true;
                 }
-                
-                //SetupFactory
-                var factory = SetupFactory(model);
 
-                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -323,7 +319,7 @@ End Sub";
                 var factory = new Mock<IRefactoringPresenterFactory>();
                 factory.Setup(f => f.Create<IExtractInterfacePresenter, ExtractInterfaceModel>(It.IsAny<ExtractInterfaceModel>())).Returns(value: null);
 
-                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, factory.Object);
                 refactoring.Refactor();
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -345,14 +341,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
-                //SetupFactory
-                var factory = SetupFactory(null);
-
-                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model: null);
                 refactoring.Refactor();
 
                 Assert.AreEqual(1, vbe.Object.ActiveVBProject.VBComponents.Count());
@@ -404,10 +393,7 @@ End Sub
                 model.Members.ElementAt(0).IsSelected = true;
                 model.Members = new ObservableCollection<InterfaceMember>(new[] {model.Members.ElementAt(0)}.ToList());
                 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new ExtractInterfaceRefactoring(state, vbe.Object, null, factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(state.AllUserDeclarations.Single(s => s.DeclarationType == DeclarationType.ClassModule));
 
                 Assert.AreEqual(expectedInterfaceCode, component.Collection[1].CodeModule.Content());
@@ -416,6 +402,32 @@ End Sub
         }
 
         #region setup
+        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, ExtractInterfaceModel model, IMessageBox msgBox = null)
+        {
+            var factory = SetupFactory(model);
+            return TestRefactoring(vbe, rewritingManager, state, factory.Object, msgBox);
+        }
+
+        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox msgBox = null)
+        {
+            var selectionService = MockedSelectionService(vbe.GetActiveSelection());
+            if (msgBox == null)
+            {
+                msgBox = new Mock<IMessageBox>().Object;
+            }
+            return new ExtractInterfaceRefactoring(state, state, msgBox, factory, rewritingManager, selectionService);
+        }
+
+        private static ISelectionService MockedSelectionService(QualifiedSelection? initialSelection)
+        {
+            QualifiedSelection? activeSelection = initialSelection;
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
+        }
+
         private static Mock<IRefactoringPresenterFactory> SetupFactory(ExtractInterfaceModel model)
         {
             var presenter = new Mock<IExtractInterfacePresenter>();

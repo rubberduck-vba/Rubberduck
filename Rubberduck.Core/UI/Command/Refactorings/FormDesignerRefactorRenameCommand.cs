@@ -8,6 +8,7 @@ using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -15,28 +16,33 @@ namespace Rubberduck.UI.Command.Refactorings
     public class FormDesignerRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
+        private readonly IVBE _vbe;
 
-        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager) 
-            : base (vbe)
+        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
+            : base (rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
             _factory = factory;
+            _vbe = vbe;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
+            if (_state.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
             var target = GetTarget();
-            return _state.Status == ParserState.Ready && target != null && !_state.IsNewOrModified(target.QualifiedModuleName);
+            return target != null && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 
         protected override void OnExecute(object parameter)
         {
-            var refactoring = new RenameRefactoring(Vbe, _factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager);
+            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
             var target = GetTarget();
             if (target != null)
             {
@@ -45,48 +51,43 @@ namespace Rubberduck.UI.Command.Refactorings
             
         }
 
-        private Declaration GetTarget(QualifiedModuleName? qualifiedModuleName = null)
+        private Declaration GetTarget()
         {
-            if (qualifiedModuleName.HasValue)
-            {
-                return GetTarget(qualifiedModuleName.Value);
-            }
-
             string projectId;
-            using (var activeProject = Vbe.ActiveVBProject)
+            using (var activeProject = _vbe.ActiveVBProject)
             {
                 projectId = activeProject.ProjectId;
             }
 
-            using (var component = Vbe.SelectedVBComponent)
+            using (var component = _vbe.SelectedVBComponent)
             {
-                if (component?.HasDesigner ?? false)
+                if (!(component?.HasDesigner ?? false))
                 {
-                    DeclarationType selectedType;
-                    string selectedName;
-                    using (var selectedControls = component.SelectedControls)
-                    {
-                        var selectedCount = selectedControls.Count;
-                        if (selectedCount > 1)
-                        {
-                            return null;
-                        }
+                    return null;
+                }
 
-                        // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
-                        (selectedType, selectedName) = selectedCount == 0
-                            ? (DeclarationType.ClassModule, component.Name)
-                            : (DeclarationType.Control, selectedControls[0].Name);
+                DeclarationType selectedType;
+                string selectedName;
+                using (var selectedControls = component.SelectedControls)
+                {
+                    var selectedCount = selectedControls.Count;
+                    if (selectedCount > 1)
+                    {
+                        return null;
                     }
 
-                    return _state.DeclarationFinder
-                        .MatchName(selectedName)
-                        .SingleOrDefault(m => m.ProjectId == projectId
-                                              && m.DeclarationType.HasFlag(selectedType)
-                                              && m.ComponentName == component.Name);
+                    // Cannot use DeclarationType.UserForm, parser only assigns UserForms the ClassModule flag
+                    (selectedType, selectedName) = selectedCount == 0
+                        ? (DeclarationType.ClassModule, component.Name)
+                        : (DeclarationType.Control, selectedControls[0].Name);
                 }
-            }
 
-            return null;
+                return _state.DeclarationFinder
+                    .MatchName(selectedName)
+                    .SingleOrDefault(m => m.ProjectId == projectId
+                                          && m.DeclarationType.HasFlag(selectedType)
+                                          && m.ComponentName == component.Name);
+            }
         }
 
         private Declaration GetTarget(QualifiedModuleName qualifiedModuleName)

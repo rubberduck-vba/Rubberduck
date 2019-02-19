@@ -10,6 +10,7 @@ using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring.Rename
@@ -97,8 +98,19 @@ namespace RubberduckTests.Refactoring.Rename
                     .Returns(m);
                 return presenter;
             }, out var creator);
+            var selectionService = MockedSelectionService(tdo.VBE);
 
-            tdo.RenameRefactoringUnderTest = new RenameRefactoring(tdo.VBE, factory.Object, tdo.MsgBox.Object, tdo.ParserState, tdo.ParserState.ProjectsProvider, tdo.RewritingManager);
+            tdo.RenameRefactoringUnderTest = new RenameRefactoring(factory.Object, tdo.MsgBox.Object, tdo.ParserState, tdo.ParserState.ProjectsProvider, tdo.RewritingManager, selectionService);
+        }
+
+        private static ISelectionService MockedSelectionService(IVBE vbe)
+        {
+            QualifiedSelection? activeSelection = vbe.GetActiveSelection();
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
         }
 
         private static void AddTestModuleDefinition(RenameTestsDataObject tdo, RenameTestModuleDefinition inputOutput)

@@ -1,6 +1,4 @@
-﻿using System;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.WindowsApi;
+﻿using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using VB = Microsoft.Vbe.Interop.VB6;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -90,35 +88,6 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
                 return;
             }
             Target.SetSelection(startLine, startColumn, endLine, endColumn);
-            ForceFocus();
-        }
-
-        private void ForceFocus()
-        {
-            if (IsWrappingNullReference)
-            {
-                return;
-            }
-
-            Show();
-
-            using (var vbe = VBE)
-            using (var mainWindow = vbe.MainWindow)
-            using (var window = Window)
-            {
-                var mainWindowHandle = mainWindow.Handle();
-                var handle = mainWindow.Handle().FindChildWindow(window.Caption);
-
-                if (handle != IntPtr.Zero)
-                {
-                    NativeMethods.ActivateWindow(handle, mainWindowHandle);
-                }
-                else
-                {
-                    _logger.Debug(
-                        "CodePane.ForceFocus() failed to get a handle on the MainWindow.");
-                }
-            }
         }
 
         public void Show()
