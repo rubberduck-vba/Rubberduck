@@ -15,6 +15,8 @@ namespace Rubberduck.SettingsProvider
             RootNamespace = XmlDictionaryString.Empty            
         };
 
+        public XmlContractPersistanceService(IPersistancePathProvider pathProvider) : base(pathProvider) { }
+
         private string _filePath;
         public override string FilePath
         {
@@ -22,17 +24,17 @@ namespace Rubberduck.SettingsProvider
             set => _filePath = value;
         }
 
-        public override T Load(T toDeserialize)
+        public override T Load(T toDeserialize, string nonDefaultFilePath = null)
         {
-            var defaultOutput = CachedOrNotFound();
-            if (defaultOutput != null)
+            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
+            if (!File.Exists(filePath))
             {
-                return defaultOutput;
+                return Cached;
             }
-
+            
             try
             {
-                using (var stream = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
+                using (var stream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 using (var reader = XmlReader.Create(stream))
                 {
                     var serializer = new DataContractSerializer(typeof(T));
@@ -45,11 +47,12 @@ namespace Rubberduck.SettingsProvider
             }
         }
 
-        public override void Save(T toSerialize)
+        public override void Save(T toSerialize, string nonDefaultFilePath = null)
         {
-            EnsurePathExists();
+            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
+            EnsurePathExists(filePath);
 
-            using (var stream = new FileStream(FilePath, FileMode.Create, FileAccess.Write))
+            using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
             using (var writer = XmlWriter.Create(stream, OutputXmlSettings))
             {
                 var serializer = new DataContractSerializer(typeof(T), SerializerSettings);

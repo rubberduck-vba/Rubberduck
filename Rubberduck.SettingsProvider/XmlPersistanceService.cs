@@ -7,21 +7,19 @@ using System.Xml.Serialization;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class XmlPersistanceService<T> : XmlPersistanceServiceBase<T> where T : class, IEquatable<T>, new()
+    public class XmlPersistanceService<T> : XmlPersistanceServiceBase<T> 
+        where T : class, IEquatable<T>, new()
     {
-        public override T Load(T toDeserialize)
-        {
-            var defaultOutput = CachedOrNotFound();
-            if (defaultOutput != null)
-            {
-                return defaultOutput;
-            }
+        public XmlPersistanceService(IPersistancePathProvider pathProvider) : base(pathProvider) { }
 
-            var doc = GetConfigurationDoc(FilePath);
+        public override T Load(T toDeserialize, string nonDefaultFilePath = null)
+        {
+            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
+            var doc = GetConfigurationDoc(filePath);
             var node = GetNodeByName(doc, typeof(T).Name);
             if (node == null)
             {
-                return FailedLoadReturnValue();
+                return Cached;
             }
 
             using (var reader = node.CreateReader())
@@ -29,7 +27,7 @@ namespace Rubberduck.SettingsProvider
                 var deserializer = new XmlSerializer(typeof(T));
                 try
                 {
-                    Cached = (T)Convert.ChangeType(deserializer.Deserialize(reader), typeof(T));
+                    Cached = (T)deserializer.Deserialize(reader);
                     return Cached;
                 }
                 catch
@@ -40,9 +38,10 @@ namespace Rubberduck.SettingsProvider
         }
 
         [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times")] //This is fine. StreamWriter disposes the MemoryStream, but calling twice is a NOP.
-        public override void Save(T toSerialize)
+        public override void Save(T toSerialize, string nonDefaultFilePath = null)
         {
-            var doc = GetConfigurationDoc(FilePath);
+            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
+            var doc = GetConfigurationDoc(filePath);
             var node = GetNodeByName(doc, typeof(T).Name);
 
             using (var stream = new MemoryStream())

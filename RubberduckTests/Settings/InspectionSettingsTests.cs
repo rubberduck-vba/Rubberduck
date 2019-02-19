@@ -55,7 +55,7 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
-            var viewModel = new InspectionSettingsViewModel(customConfig);
+            var viewModel = new InspectionSettingsViewModel(customConfig, null);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
@@ -68,7 +68,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void SetDefaultsWorks()
         {
-            var viewModel = new InspectionSettingsViewModel(GetNondefaultConfig());
+            var viewModel = new InspectionSettingsViewModel(GetNondefaultConfig(), null);
 
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
@@ -82,7 +82,7 @@ namespace RubberduckTests.Settings
         public void InspectionsAreSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new InspectionSettingsViewModel(defaultConfig);
+            var viewModel = new InspectionSettingsViewModel(defaultConfig, null);
 
             Assert.IsTrue(defaultConfig.UserSettings.CodeInspectionSettings.CodeInspections.OrderBy(setting => setting.InspectionType).SequenceEqual(
                     viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().OrderBy(setting => setting.InspectionType)));
@@ -93,7 +93,7 @@ namespace RubberduckTests.Settings
         public void InspectionSeveritiesAreUpdated()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new InspectionSettingsViewModel(defaultConfig);
+            var viewModel = new InspectionSettingsViewModel(defaultConfig, null);
 
             viewModel.InspectionSettings.SourceCollection.OfType<CodeInspectionSetting>().First().Severity =
                 GetNondefaultConfig().UserSettings.CodeInspectionSettings.CodeInspections.First().Severity;
