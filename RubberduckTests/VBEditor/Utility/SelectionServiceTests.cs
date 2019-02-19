@@ -53,6 +53,36 @@ namespace RubberduckTests.VBEditor.Utility
         }
 
         [Test]
+        public void OpenModulesReturnsTheModulesOfActiveCodePanes()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var project = vbeBuilder.ProjectBuilder("test", ProjectProtection.Unprotected)
+                .AddComponent("activeModule", ComponentType.ClassModule, string.Empty)
+                .AddComponent("otherActiveModule", ComponentType.ClassModule, string.Empty)
+                .AddComponent("otherModule", ComponentType.ClassModule, string.Empty)
+                .Build();
+            var openCodePanes = project.Object.VBComponents
+                .Where(component => component.Name == "activeModule" || component.Name == "otherActiveModule")
+                .Select(component => component.CodeModule.CodePane)
+                .ToList();
+            var vbe = vbeBuilder.AddProject(project)
+                .SetOpenCodePanes(openCodePanes)
+                .Build()
+                .Object;
+            var projectsProvider = new Mock<IProjectsProvider>().Object;
+            var selectionService = new SelectionService(vbe, projectsProvider);
+
+            var expectedOpenModules = openCodePanes.Select(pane => pane.QualifiedModuleName).ToList();
+            var actualOpenModules = selectionService.OpenModules();
+
+            Assert.AreEqual(expectedOpenModules.Count, actualOpenModules.Count);
+            foreach (var module in expectedOpenModules)
+            {
+                Assert.IsTrue(actualOpenModules.Contains(module));
+            }
+        }
+
+        [Test]
         public void ComponentExists_SelectionReturnsSelection()
         {
             var vbe = MockVbeBuilder.BuildFromStdModules(new[]
@@ -171,7 +201,7 @@ namespace RubberduckTests.VBEditor.Utility
         }
 
         [Test]
-        public void ComponentExists_TrySetActiveSelectionSetsActiveSelectionAndReturnsTrue()
+        public void ComponentExists_TrySetActiveSelectionSetsActiveSelectionAndReturnsTrue_QualifiedSelection()
         {
             var vbe = MockVbeBuilder.BuildFromStdModules(new[]
             {
@@ -202,7 +232,7 @@ namespace RubberduckTests.VBEditor.Utility
         }
 
         [Test]
-        public void ComponentDoesNotExist_TrySetActiveSelectionDoesNotChangeTheActiveSelectionAndReturnsFalse()
+        public void ComponentDoesNotExist_TrySetActiveSelectionDoesNotChangeTheActiveSelectionAndReturnsFalse_QualifiedSelection()
         {
             var vbe = MockVbeBuilder.BuildFromStdModules(new[]
             {
@@ -233,7 +263,7 @@ namespace RubberduckTests.VBEditor.Utility
         }
 
         [Test]
-        public void VbeThrowsExceptionOnComponentActivation_TrySetActiveSelectionDoesNotChangeTheActiveSelectionAndReturnsFalse()
+        public void VbeThrowsExceptionOnComponentActivation_TrySetActiveSelectionDoesNotChangeTheActiveSelectionAndReturnsFalse_QualifiedSelection()
         {
             var vbeMock = MockVbeBuilder.BuildFromStdModules(new[]
             {
@@ -267,7 +297,7 @@ namespace RubberduckTests.VBEditor.Utility
         }
 
         [Test]
-        public void SomeCodePaneOpen_ThrowsExceptionOnSelectionChange_TrySetActiveSelectionDoesNotChangeTheActiveCodePaneAndReturnsFalse()
+        public void SomeCodePaneOpen_ThrowsExceptionOnSelectionChange_TrySetActiveSelectionDoesNotChangeTheActiveCodePaneAndReturnsFalse_QualifiedSelection()
         {
             var vbeBuilder = new MockVbeBuilder();
             var activeSelection = new Selection(2, 1);
@@ -291,6 +321,133 @@ namespace RubberduckTests.VBEditor.Utility
             var newQualifiedSelection = new QualifiedSelection(otherModule, newSelection);
 
             var success = selectionService.TrySetActiveSelection(newQualifiedSelection);
+
+            var expectedActiveModule = activeCodePane.QualifiedModuleName;
+            var actualActiveModule = vbe.ActiveCodePane.QualifiedModuleName;
+            var actualSelection = vbe.ActiveCodePane.Selection;
+
+            Assert.IsFalse(success);
+            Assert.AreEqual(expectedActiveModule, actualActiveModule);
+            Assert.AreEqual(activeSelection, actualSelection); ;
+        }
+
+        [Test]
+        public void ComponentExists_TrySetActiveSelectionSetsActiveSelectionAndReturnsTrue_QualifiedModuleNameAndSelection()
+        {
+            var vbe = MockVbeBuilder.BuildFromStdModules(new[]
+            {
+                ("activeModule", $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}"),
+                ("otherModule", $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}")
+            }).Object;
+            var activeCodePane = vbe.VBProjects.Single().VBComponents.Single(comp => comp.Name.Equals("activeModule")).CodeModule.CodePane;
+            var activeSelection = new Selection(2, 1);
+            activeCodePane.Selection = activeSelection;
+            vbe.ActiveCodePane = activeCodePane;
+            var projectsProvider = new ProjectsRepository(vbe);
+            projectsProvider.Refresh();
+            var selectionService = new SelectionService(vbe, projectsProvider);
+
+            var otherModule = vbe.VBProjects.Single().VBComponents.Single(comp => comp.Name.Equals("otherModule")).QualifiedModuleName;
+            var newSelection = new Selection(3, 1);
+
+            var success = selectionService.TrySetActiveSelection(otherModule, newSelection);
+
+            var expectedActiveModule = otherModule;
+            var actualActiveModule = vbe.ActiveCodePane.QualifiedModuleName;
+            var actualSelection = vbe.ActiveCodePane.Selection;
+
+            Assert.IsTrue(success);
+            Assert.AreEqual(expectedActiveModule, actualActiveModule);
+            Assert.AreEqual(newSelection, actualSelection);
+        }
+
+        [Test]
+        public void ComponentDoesNotExist_TrySetActiveSelectionDoesNotChangeTheActiveSelectionAndReturnsFalse_QualifiedModuleNameAndSelection()
+        {
+            var vbe = MockVbeBuilder.BuildFromStdModules(new[]
+            {
+                ("activeModule", $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}"),
+                ("otherModule", $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}")
+            }).Object;
+            var activeCodePane = vbe.VBProjects.Single().VBComponents.Single(comp => comp.Name.Equals("activeModule")).CodeModule.CodePane;
+            var activeSelection = new Selection(2, 1);
+            activeCodePane.Selection = activeSelection;
+            vbe.ActiveCodePane = activeCodePane;
+            var projectsProvider = new ProjectsRepository(vbe);
+            projectsProvider.Refresh();
+            var selectionService = new SelectionService(vbe, projectsProvider);
+
+            var nonExistentModule = new QualifiedModuleName("test", string.Empty, "nonExistentModule");
+            var newSelection = new Selection(3, 1);
+
+            var success = selectionService.TrySetActiveSelection(nonExistentModule, newSelection);
+
+            var expectedActiveModule = activeCodePane.QualifiedModuleName;
+            var actualActiveModule = vbe.ActiveCodePane.QualifiedModuleName;
+            var actualSelection = vbe.ActiveCodePane.Selection;
+
+            Assert.IsFalse(success);
+            Assert.AreEqual(expectedActiveModule, actualActiveModule);
+            Assert.AreEqual(activeSelection, actualSelection);
+        }
+
+        [Test]
+        public void VbeThrowsExceptionOnComponentActivation_TrySetActiveSelectionDoesNotChangeTheActiveSelectionAndReturnsFalse_QualifiedModuleNameAndSelection()
+        {
+            var vbeMock = MockVbeBuilder.BuildFromStdModules(new[]
+            {
+                ("activeModule", $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}"),
+                ("otherModule", $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}")
+            });
+            var vbe = vbeMock.Object;
+            var activeCodePane = vbe.VBProjects.Single().VBComponents.Single(comp => comp.Name.Equals("activeModule")).CodeModule.CodePane;
+            var activeSelection = new Selection(2, 1);
+            activeCodePane.Selection = activeSelection;
+            vbe.ActiveCodePane = activeCodePane;
+            var projectsProvider = new ProjectsRepository(vbe);
+            projectsProvider.Refresh();
+            var selectionService = new SelectionService(vbe, projectsProvider);
+
+            var otherCodePane = vbe.VBProjects.Single().VBComponents.Single(comp => comp.Name.Equals("otherModule")).CodeModule.CodePane;
+            var otherModule = otherCodePane.QualifiedModuleName;
+            var newSelection = new Selection(3, 1);
+            vbeMock.SetupSet(m => m.ActiveCodePane = otherCodePane).Callback(() => throw new COMException());
+
+            var success = selectionService.TrySetActiveSelection(otherModule, newSelection);
+
+            var expectedActiveModule = activeCodePane.QualifiedModuleName;
+            var actualActiveModule = vbe.ActiveCodePane.QualifiedModuleName;
+            var actualSelection = vbe.ActiveCodePane.Selection;
+
+            Assert.IsFalse(success);
+            Assert.AreEqual(expectedActiveModule, actualActiveModule);
+            Assert.AreEqual(activeSelection, actualSelection);
+        }
+
+        [Test]
+        public void SomeCodePaneOpen_ThrowsExceptionOnSelectionChange_TrySetActiveSelectionDoesNotChangeTheActiveCodePaneAndReturnsFalse_QualifiedModuleNameAndSelection()
+        {
+            var vbeBuilder = new MockVbeBuilder();
+            var activeSelection = new Selection(2, 1);
+            var projectBuilder = vbeBuilder.ProjectBuilder("test", ProjectProtection.Unprotected)
+                .AddComponent("activeModule", ComponentType.StandardModule, $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}", activeSelection)
+                .AddComponent("otherModule", ComponentType.StandardModule, $"{Environment.NewLine}{Environment.NewLine}{Environment.NewLine}");
+
+            var vbe = projectBuilder.AddProjectToVbeBuilder().Build().Object;
+            var activeCodePane = vbe.VBProjects.Single().VBComponents.Single(comp => comp.Name.Equals("activeModule")).CodeModule.CodePane;
+            vbe.ActiveCodePane = activeCodePane;
+            var projectsProvider = new ProjectsRepository(vbe);
+            projectsProvider.Refresh();
+            var selectionService = new SelectionService(vbe, projectsProvider);
+
+            var otherCodeModuleMock = projectBuilder.MockCodeModules.Single(mock => mock.Object.Name.Equals("otherModule"));
+            var otherPaneMock = new Mock<ICodePane>();
+            otherPaneMock.SetupSet(m => m.Selection = It.IsAny<Selection>()).Callback(() => throw new COMException());
+            otherCodeModuleMock.SetupGet(m => m.CodePane).Returns(otherPaneMock.Object);
+            var otherModule = otherCodeModuleMock.Object.QualifiedModuleName;
+            var newSelection = new Selection(3, 1);
+
+            var success = selectionService.TrySetActiveSelection(otherModule, newSelection);
 
             var expectedActiveModule = activeCodePane.QualifiedModuleName;
             var actualActiveModule = vbe.ActiveCodePane.QualifiedModuleName;

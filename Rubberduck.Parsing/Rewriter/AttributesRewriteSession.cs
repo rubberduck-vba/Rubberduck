@@ -9,9 +9,9 @@ namespace Rubberduck.Parsing.Rewriter
     {
         private readonly IParseManager _parseManager;
 
-        public AttributesRewriteSession(IParseManager parseManager, IRewriterProvider rewriterProvider,
+        public AttributesRewriteSession(IParseManager parseManager, IRewriterProvider rewriterProvider, ISelectionRecoverer selectionRecoverer,
             Func<IRewriteSession, bool> rewritingAllowed)
-            : base(rewriterProvider, rewritingAllowed)
+            : base(rewriterProvider, selectionRecoverer, rewritingAllowed)
         {
             _parseManager = parseManager;
         }
@@ -27,6 +27,10 @@ namespace Rubberduck.Parsing.Rewriter
         {
             //The suspension ensures that only one parse gets executed instead of two for each rewritten module.
             GuaranteeReparseAfterRewrite();
+            PrimeActiveCodePaneRecovery();
+            //Attribute rewrites close the affected code panes, so we have to recover the open state.
+            PrimeOpenStateRecovery();
+
             var result = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready, ParserState.ResolvedDeclarations}, ExecuteAllRewriters);
             if(result != SuspensionResult.Completed)
             {
@@ -51,6 +55,18 @@ namespace Rubberduck.Parsing.Rewriter
 
             _parseManager.StateChanged -= ReparseOnSuspension;
             _parseManager.OnParseRequested(this);
+        }
+
+        private void PrimeActiveCodePaneRecovery()
+        {
+            SelectionRecoverer.SaveActiveCodePane();
+            SelectionRecoverer.RecoverActiveCodePaneOnNextParse();
+        }
+
+        private void PrimeOpenStateRecovery()
+        {
+            SelectionRecoverer.SaveOpenState(CheckedOutModules);
+            SelectionRecoverer.RecoverOpenStateOnNextParse();
         }
 
         private void ExecuteAllRewriters()

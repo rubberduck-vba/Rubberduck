@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -18,26 +17,24 @@ namespace Rubberduck.Refactorings.EncapsulateField
     public class EncapsulateFieldRefactoring : IRefactoring
     {
         private readonly RubberduckParserState _state;
-        private readonly IVBE _vbe;
         private readonly IIndenter _indenter;
         private readonly IRewritingManager _rewritingManager;
+        private readonly ISelectionService _selectionService;
         private readonly IRefactoringPresenterFactory _factory;
         private EncapsulateFieldModel _model;
-
-        private readonly HashSet<IModuleRewriter> _referenceRewriters = new HashSet<IModuleRewriter>();
         
-        public EncapsulateFieldRefactoring(RubberduckParserState state, IVBE vbe, IIndenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager)
+        public EncapsulateFieldRefactoring(RubberduckParserState state, IIndenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             _state = state;
-            _vbe = vbe;
             _indenter = indenter;
             _factory = factory;
             _rewritingManager = rewritingManager;
+            _selectionService = selectionService;
         }
 
         private EncapsulateFieldModel InitializeModel()
         {
-            var selection = _vbe.GetActiveSelection();
+            var selection = _selectionService.ActiveSelection();
 
             if (!selection.HasValue)
             {
@@ -69,7 +66,6 @@ namespace Rubberduck.Refactorings.EncapsulateField
                     return;
                 }
 
-                var target = _model.TargetDeclaration;
                 var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
                 AddProperty(rewriteSession);
                 rewriteSession.TryRewrite();
@@ -78,29 +74,16 @@ namespace Rubberduck.Refactorings.EncapsulateField
 
         public void Refactor(QualifiedSelection target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            if (!_selectionService.TrySetActiveSelection(target))
             {
-                if (pane == null || pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-                pane.Selection = target.Selection;
+                return;
             }
             Refactor();
         }
 
         public void Refactor(Declaration target)
         {
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane == null || pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                pane.Selection = target.QualifiedSelection.Selection;
-            }
-            Refactor();
+            Refactor(target.QualifiedSelection);
         }
 
         private void AddProperty(IRewriteSession rewriteSession)

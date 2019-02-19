@@ -9,16 +9,17 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.IntroduceParameter
 {
     public class IntroduceParameterRefactoring : IRefactoring
     {
-        private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly IRewritingManager _rewritingManager;
         private readonly IList<Declaration> _declarations;
         private readonly IMessageBox _messageBox;
+        private readonly ISelectionService _selectionService;
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
         {
@@ -29,28 +30,26 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             DeclarationType.PropertySet
         };
 
-        public IntroduceParameterRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
+        public IntroduceParameterRefactoring(RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
-            _vbe = vbe;
             _state = state;
             _rewritingManager = rewritingManager;
             //TODO: Make this use the DeclarationFinder and inject an IDeclarationFinderProvider instead of the RubberduckParserState. (Does not affect the callers.)
             _declarations = state.AllDeclarations.ToList();
             _messageBox = messageBox;
+            _selectionService = selectionService;
         }
 
         public void Refactor()
         {
-            var selection = _vbe.GetActiveSelection();
-            
-            if (!selection.HasValue)
+            var activeSelection = _selectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
                 _messageBox.NotifyWarn(RubberduckUI.PromoteVariable_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
                 return;
             }
 
-            Refactor(selection.Value);
-            
+            Refactor(activeSelection.Value);
         }
 
         public void Refactor(QualifiedSelection selection)
@@ -90,27 +89,13 @@ namespace Rubberduck.Refactorings.IntroduceParameter
                 return;
             }
 
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                QualifiedSelection? oldSelection = null;
-                if (pane != null && !pane.IsWrappingNullReference)
-                {
-                    oldSelection = pane.GetQualifiedSelection();
-                }
+            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
-                var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            UpdateSignature(target, rewriteSession);
+            rewriter.Remove(target);
 
-                var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
-                UpdateSignature(target, rewriteSession);
-                rewriter.Remove(target);
-
-                rewriteSession.TryRewrite();
-
-                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
-            }
+            rewriteSession.TryRewrite();
         }
 
         private bool PromptIfMethodImplementsInterface(Declaration targetVariable)

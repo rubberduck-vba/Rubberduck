@@ -6,6 +6,10 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
     {
         IVBE VBE { get; }
         IVBComponent Parent { get; }
+        /// <summary>
+        /// Returns the code pane associated with the cod module.
+        /// Accessing this property will open the code pane if it is not open already.
+        /// </summary>
         ICodePane CodePane { get; }
         int CountOfDeclarationLines { get; }
         int CountOfLines { get; }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using System.Reflection;
 using System.Diagnostics;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
@@ -28,20 +27,6 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             using (var codeModule = component.CodeModule)
             {
                 return codeModule.Content() ?? string.Empty;
-            }
-        }
-
-        public void SetSelection(QualifiedModuleName module, Selection selection)
-        {
-            var component = _projectsProvider.Component(module);
-            if (component == null)
-            {
-                return;
-            }
-
-            using (var codeModule = component.CodeModule)
-            {
-                SetSelection(codeModule, selection);
             }
         }
 
@@ -264,31 +249,6 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                         break;
                     }
                 }
-            }
-        }
-
-        public CodeString GetCurrentLogicalLine(QualifiedModuleName module)
-        {
-            var component = _projectsProvider.Component(module);
-            if (component == null)
-            {
-                return null;
-            }
-
-            using (var codeModule = component.CodeModule)
-            {
-                return GetCurrentLogicalLine(codeModule);
-            }
-        }
-
-        public Selection GetSelection(QualifiedModuleName module)
-        {
-            var component = _projectsProvider.Component(module);
-
-            using (var codeModule = component.CodeModule)
-            using (var pane = codeModule.CodePane)
-            {
-                return pane.Selection;
             }
         }
     }

@@ -1,12 +1,10 @@
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
-using Rubberduck.UI.Refactorings.Rename;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -14,64 +12,53 @@ namespace Rubberduck.UI.Command.Refactorings
     public class CodePaneRefactorRenameCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
 
-        public CodePaneRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager) 
-            : base (vbe)
+        public CodePaneRefactorRenameCommand(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
+            : base (rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
             _factory = factory;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            Declaration target;
-            using (var activePane = Vbe.ActiveCodePane)
+            if (_state.Status != ParserState.Ready)
             {
-                if (activePane == null || activePane.IsWrappingNullReference)
-                {
-                    return false;
-                }
-            
-                target = _state.FindSelectedDeclaration(activePane);
+                return false;
             }
 
-            return _state.Status == ParserState.Ready 
-                && target != null 
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
+            {
+                return false;
+            }
+
+            var target = _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
+
+            return target != null 
                 && target.IsUserDefined 
                 && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 
         protected override void OnExecute(object parameter)
         {
-            Declaration target;
-            using (var activePane = Vbe.ActiveCodePane)
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
-                if (activePane == null || activePane.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                if (parameter != null)
-                {
-                    target = parameter as Declaration;
-                }
-                else
-                {
-                    target = _state.FindSelectedDeclaration(activePane);
-                }
+                return;
             }
+
+            var target = _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
 
             if (target == null || !target.IsUserDefined)
             {
                 return;
             }
             
-            var refactoring = new RenameRefactoring(Vbe, _factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager);
+            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
             refactoring.Refactor(target);
         }
     }

@@ -9,8 +9,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
 {
     public class ExtractInterfaceModel
     {
-        public RubberduckParserState State { get; }
         public Declaration TargetDeclaration { get; }
+        public IDeclarationFinderProvider DeclarationFinderProvider { get; }
 
         public string InterfaceName { get; set; }
 
@@ -34,10 +34,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
             DeclarationType.PropertySet,
         };
 
-        public ExtractInterfaceModel(RubberduckParserState state, QualifiedSelection selection)
+        public ExtractInterfaceModel(IDeclarationFinderProvider declarationFinderProvider, QualifiedSelection selection)
         {
-            State = state;
-            var declarations = state.AllUserDeclarations.ToList();
+            DeclarationFinderProvider = declarationFinderProvider;
+            var declarations = declarationFinderProvider.DeclarationFinder.AllUserDeclarations.ToList();
             var candidates = declarations.Where(item => ModuleTypes.Contains(item.DeclarationType)).ToList();
 
             TargetDeclaration = candidates.SingleOrDefault(item => 

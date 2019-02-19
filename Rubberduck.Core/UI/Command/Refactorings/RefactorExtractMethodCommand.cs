@@ -17,18 +17,20 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
+        private readonly IVBE _vbe;
 
         public RefactorExtractMethodCommand(IVBE vbe, RubberduckParserState state, IIndenter indenter)
-            : base (vbe)
+            : base (null, null)
         {
             _state = state;
             _indenter = indenter;
+            _vbe = vbe;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
 
-            var qualifiedSelection = Vbe.GetActiveSelection();
+            var qualifiedSelection = _vbe.GetActiveSelection();
             if (!qualifiedSelection.HasValue)
             {
                 return false;
@@ -49,7 +51,7 @@ namespace Rubberduck.UI.Command.Refactorings
         protected override void OnExecute(object parameter)
         {
             var declarations = _state.AllDeclarations;
-            var qualifiedSelection = Vbe.GetActiveSelection();
+            var qualifiedSelection = _vbe.GetActiveSelection();
 
             var extractMethodValidation = new ExtractMethodSelectionValidation(declarations);
             var canExecute = extractMethodValidation.withinSingleProcedure(qualifiedSelection.Value);
@@ -58,7 +60,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            using (var pane = Vbe.ActiveCodePane)
+            using (var pane = _vbe.ActiveCodePane)
             using (var module = pane.CodeModule)
             {
                 var extraction = new ExtractMethodExtraction();

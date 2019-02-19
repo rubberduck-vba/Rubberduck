@@ -7,20 +7,21 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class MoveFieldCloserToUsageQuickFix : QuickFixBase
     {
-        private readonly IVBE _vbe;
+        private readonly ISelectionService _selectionService;
         private readonly RubberduckParserState _state;
         private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
 
-        public MoveFieldCloserToUsageQuickFix(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
+        public MoveFieldCloserToUsageQuickFix(RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
             : base(typeof(MoveFieldCloserToUsageInspection))
         {
-            _vbe = vbe;
+            _selectionService = selectionService;
             _state = state;
             _rewritingManager = rewritingManager;
             _messageBox = messageBox;
@@ -29,7 +30,7 @@ namespace Rubberduck.Inspections.QuickFixes
         //The rewriteSession is optional since it is not used in this particular quickfix because it is a refactoring quickfix.
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
-            var refactoring = new MoveCloserToUsageRefactoring(_vbe, _state, _messageBox, _rewritingManager);
+            var refactoring = new MoveCloserToUsageRefactoring(_state, _messageBox, _rewritingManager, _selectionService);
             refactoring.Refactor(result.Target);
         }
 
