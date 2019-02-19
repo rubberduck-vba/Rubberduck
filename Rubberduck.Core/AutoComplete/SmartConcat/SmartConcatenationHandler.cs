@@ -4,7 +4,7 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SourceCodeHandling;
 
-namespace Rubberduck.AutoComplete.Service
+namespace Rubberduck.AutoComplete.SmartConcat
 {
     /// <summary>
     /// Adds a line continuation when {ENTER} is pressed when inside a string literal.

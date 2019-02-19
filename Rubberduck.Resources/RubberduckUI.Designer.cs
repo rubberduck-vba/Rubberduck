@@ -1683,6 +1683,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter.
+        /// </summary>
+        public static string GroupingGrid_Filter {
+            get {
+                return ResourceManager.GetString("GroupingGrid_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Filter by.
         /// </summary>
         public static string GroupingGrid_FilterBy {
@@ -1737,11 +1746,29 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to By inspection.
+        /// </summary>
+        public static string GroupingStyle_ByName {
+            get {
+                return ResourceManager.GetString("GroupingStyle_ByName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to By outcome.
         /// </summary>
         public static string GroupingStyle_ByOutcome {
             get {
                 return ResourceManager.GetString("GroupingStyle_ByOutcome", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By severity.
+        /// </summary>
+        public static string GroupingStyle_BySeverity {
+            get {
+                return ResourceManager.GetString("GroupingStyle_BySeverity", resourceCulture);
             }
         }
         
@@ -2065,6 +2092,24 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collapse all.
+        /// </summary>
+        public static string InspectionResults_CollapseAll {
+            get {
+                return ResourceManager.GetString("InspectionResults_CollapseAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expand all.
+        /// </summary>
+        public static string InspectionResults_ExpandAll {
+            get {
+                return ResourceManager.GetString("InspectionResults_ExpandAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string InspectionResults_FilterByError {
@@ -2340,11 +2385,56 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The method using &apos;{0}&apos; already has another declaration of the same name in scope..
+        /// </summary>
+        public static string MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; is not used anywhere..
         /// </summary>
         public static string MoveCloserToUsage_TargetHasNoReferences {
             get {
                 return ResourceManager.GetString("MoveCloserToUsage_TargetHasNoReferences", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not defined in the same project it is used..
+        /// </summary>
+        public static string MoveCloserToUsage_TargetIsInDifferentProject {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_TargetIsInDifferentProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used not in a standard module. .
+        /// </summary>
+        public static string MoveCloserToUsage_TargetIsInOtherNonStandardModule {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_TargetIsInOtherNonStandardModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is a non-private module variable outside a standard module..
+        /// </summary>
+        public static string MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is built-in..
+        /// </summary>
+        public static string MoveCloserToUsage_TargetIsNotUserDefined {
+            get {
+                return ResourceManager.GetString("MoveCloserToUsage_TargetIsNotUserDefined", resourceCulture);
             }
         }
         

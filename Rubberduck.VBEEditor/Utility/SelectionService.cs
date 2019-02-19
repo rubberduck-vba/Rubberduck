@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NLog;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -25,6 +26,28 @@ namespace Rubberduck.VBEditor.Utility
             {
                 return activeCodePane?.GetQualifiedSelection();
             }
+        }
+
+        public ICollection<QualifiedModuleName> OpenModules()
+        {
+            var openModules = new HashSet<QualifiedModuleName>();
+            using (var openCodePanes = _vbe.CodePanes)
+            {
+                if (openCodePanes == null || openCodePanes.IsWrappingNullReference)
+                {
+                    return new HashSet<QualifiedModuleName>();
+                }
+
+                foreach (var openCodePane in openCodePanes)
+                {
+                    using (openCodePane)
+                    {
+                        openModules.Add(openCodePane.QualifiedModuleName);
+                    }
+                }
+            }
+
+            return openModules;
         }
 
         public Selection? Selection(QualifiedModuleName module)
@@ -67,22 +90,27 @@ namespace Rubberduck.VBEditor.Utility
             }
         }
 
-        public bool TrySetActiveSelection(QualifiedSelection selection)
+        public bool TrySetActiveSelection(QualifiedModuleName module, Selection selection)
         {
             var activeCodePane = _vbe.ActiveCodePane;
 
-            if (!TryActivate(selection.QualifiedName))
+            if (!TryActivate(module))
             {
                 return false;
             }
 
-            if (!TrySetSelection(selection))
+            if (!TrySetSelection(module, selection))
             {
                 TryActivate(activeCodePane.QualifiedModuleName);
                 return false;
             }
 
             return true;
+        }
+
+        public bool TrySetActiveSelection(QualifiedSelection selection)
+        {
+            return TrySetActiveSelection(selection.QualifiedName, selection.Selection);
         }
 
         public bool TrySetSelection(QualifiedModuleName module, Selection selection)

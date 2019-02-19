@@ -11,17 +11,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
 {
     public class RemoveParametersModel
     {
-        public RubberduckParserState State { get; }
         public IEnumerable<Declaration> Declarations { get; }
 
         public Declaration TargetDeclaration { get; private set; }
         public List<Parameter> Parameters { get; private set; }
         public List<Parameter> RemoveParameters { get; set; }
 
-        public RemoveParametersModel(RubberduckParserState state, QualifiedSelection selection)
+        public RemoveParametersModel(IDeclarationFinderProvider declarationFinderProvider, QualifiedSelection selection)
         {
-            State = state;
-            Declarations = state.AllDeclarations.ToList();
+            Declarations = declarationFinderProvider.DeclarationFinder.AllUserDeclarations.ToList();
 
             AcquireTarget(selection);
             LoadParameters();

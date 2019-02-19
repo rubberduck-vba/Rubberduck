@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
+using System.Windows.Input;
 using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
@@ -22,19 +26,41 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.UI.Inspections
 {
+    [Flags]
+    public enum InspectionResultsFilter
+    {
+        None = 0,
+        Hint = 1,
+        Suggestion = 1 << 1,
+        Warning = 1 << 2,
+        Error = 1 << 3,
+        All = Hint | Suggestion | Warning | Error
+    }
+
+    public enum InspectionResultGrouping
+    {
+        None,
+        Type,
+        Name,
+        Location,
+        Severity
+    };
+
     public class DisplayQuickFix
     {
         public IQuickFix Fix { get; }
         public string Description { get; }
+        public ICommand Command { get; }
 
-        public DisplayQuickFix(IQuickFix fix, IInspectionResult result)
+        public DisplayQuickFix(IQuickFix fix, IInspectionResult result, ICommand command)
         {
+            Command = command;
             Fix = fix;
             Description = fix.Description(result);
         }
     }
 
-    public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IDisposable
+    public sealed class InspectionResultsViewModel : ViewModelBase, INavigateSelection, IComparer<IInspectionResult>, IComparer, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IInspector _inspector;
@@ -71,7 +97,12 @@ namespace Rubberduck.UI.Inspections
                 {
                     IsRefreshing = true;
                     IsBusy = true;
-                    reparseCommand.Execute(o);
+                    var cancellation = new ReparseCancellationFlag();
+                    reparseCommand.Execute(cancellation);
+                    if (cancellation.Canceled)
+                    {
+                        IsBusy = false;
+                    }
                 },
                 o => !IsBusy && reparseCommand.CanExecute(o));
 
@@ -83,23 +114,23 @@ namespace Rubberduck.UI.Inspections
             QuickFixInAllProjectsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteQuickFixInAllProjectsCommand, _ => SelectedItem != null && _state.Status == ParserState.Ready);
             CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
             OpenInspectionSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), OpenSettings);
+            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
+            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
 
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             // todo: remove I/O work in constructor
             _runInspectionsOnReparse = _configService.LoadConfiguration().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            SetInspectionTypeGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
+            if (CollectionViewSource.GetDefaultView(_results) is ListCollectionView results)
             {
-                GroupByInspectionType = (bool)param;
-                GroupByLocation = !(bool)param;
-            });
+                results.Filter = inspection => InspectionFilter((IInspectionResult)inspection);
+                results.CustomSort = this;
+                Results = results;
+            }
 
-            SetLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                GroupByLocation = (bool)param;
-                GroupByInspectionType = !(bool)param;
-            });
+            OnPropertyChanged(nameof(Results));
+            Grouping = InspectionResultGrouping.Type;
 
             _state.StateChanged += HandleStateChanged;
         }
@@ -113,22 +144,17 @@ namespace Rubberduck.UI.Inspections
         {            
             if (e.InspectionSettingsChanged)
             {
-                RefreshCommand.Execute(null);
+                _uiDispatcher.Invoke(() =>
+                {
+                    RefreshCommand.Execute(null);
+                });
             }
             _runInspectionsOnReparse = e.RunInspectionsOnReparse;
         }
 
-        private ObservableCollection<IInspectionResult> _resultsAll = new ObservableCollection<IInspectionResult>();
-        private ObservableCollection<IInspectionResult> _resultsGroupedAndFiltered = new ObservableCollection<IInspectionResult>();
-        public ObservableCollection<IInspectionResult> Results
-        {
-            get => _resultsGroupedAndFiltered;
-            private set
-            {
-                _resultsGroupedAndFiltered = value;
-                OnPropertyChanged();
-            }
-        }
+        private readonly ObservableCollection<IInspectionResult> _results = new ObservableCollection<IInspectionResult>();
+
+        public ICollectionView Results { get; }
 
         private IQuickFix _defaultFix;
 
@@ -141,10 +167,6 @@ namespace Rubberduck.UI.Inspections
                 _selectedItem = value; 
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(QuickFixes));
-                OnPropertyChanged(nameof(SelectedDescription));
-                OnPropertyChanged(nameof(SelectedMeta));
-                OnPropertyChanged(nameof(SelectedSeverity));
-
                 SelectedInspection = null;
                 CanQuickFix = false;
                 CanExecuteQuickFixInProcedure = false;
@@ -154,8 +176,7 @@ namespace Rubberduck.UI.Inspections
                 if (_selectedItem is IInspectionResult inspectionResult)
                 {
                     SelectedInspection = inspectionResult.Inspection;
-                    SelectedSelection = inspectionResult.QualifiedSelection;
-                    
+
                     CanQuickFix = _quickFixProvider.HasQuickFixes(inspectionResult);
                     _defaultFix = _quickFixProvider.QuickFixes(inspectionResult).FirstOrDefault();
                     CanExecuteQuickFixInProcedure = _defaultFix != null && _defaultFix.CanFixInProcedure;
@@ -176,17 +197,8 @@ namespace Rubberduck.UI.Inspections
             {
                 _selectedInspection = value;
                 OnPropertyChanged();
-                OnPropertyChanged(nameof(SelectedSelection));
             }
         }
-
-        public string SelectedDescription => SelectedInspection?.Description ?? string.Empty;
-
-        public string SelectedMeta => SelectedInspection?.Meta ?? string.Empty;
-
-        public CodeInspectionSeverity SelectedSeverity => SelectedInspection?.Severity ?? CodeInspectionSeverity.DoNotShow;
-
-        public QualifiedSelection SelectedSelection { get; private set; }
 
         public IEnumerable<DisplayQuickFix> QuickFixes
         {
@@ -198,140 +210,74 @@ namespace Rubberduck.UI.Inspections
                 }
 
                 return _quickFixProvider.QuickFixes(SelectedItem as IInspectionResult)
-                    .Select(fix => new DisplayQuickFix(fix, (IInspectionResult) _selectedItem));
+                    .Select(fix => new DisplayQuickFix(fix, (IInspectionResult)_selectedItem, QuickFixCommand));
             }
         }
 
-        private bool _groupByInspectionType = true;
-        public bool GroupByInspectionType
+        private static readonly Dictionary<InspectionResultGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<InspectionResultGrouping, PropertyGroupDescription>
         {
-            get => _groupByInspectionType;
+            { InspectionResultGrouping.Type, new PropertyGroupDescription("Inspection", new InspectionTypeConverter()) },
+            { InspectionResultGrouping.Name, new PropertyGroupDescription("Inspection.Name") },
+            { InspectionResultGrouping.Location, new PropertyGroupDescription("QualifiedSelection.QualifiedName") },
+            { InspectionResultGrouping.Severity, new PropertyGroupDescription("Inspection.Severity") }
+        };
+
+        private InspectionResultGrouping _grouping;
+        public InspectionResultGrouping Grouping
+        {
+            get => _grouping;
             set
             {
-                if (_groupByInspectionType == value) { return; }
-
-                if (value)
+                if (value == _grouping)
                 {
-                    Results = new ObservableCollection<IInspectionResult>(
-                            Results.OrderBy(o => o.Inspection.InspectionType)
-                                .ThenBy(t => t.Inspection.Name)
-                                .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                                .ToList());
-
+                    return;
                 }
 
-                _groupByInspectionType = value;
+                _grouping = value;
+                Results.GroupDescriptions.Clear();
+                Results.GroupDescriptions.Add(GroupDescriptions[_grouping]);
+                Results.Refresh();
                 OnPropertyChanged();
             }
         }
 
-        private bool _groupByLocation;
-        public bool GroupByLocation
+        private InspectionResultsFilter _filters = InspectionResultsFilter.All;
+        public InspectionResultsFilter SelectedFilters
         {
-            get => _groupByLocation;
+            get => _filters;
             set
             {
-                if (_groupByLocation == value) { return; }
-
-                if (value)
+                if (value == _filters)
                 {
-                    Results = new ObservableCollection<IInspectionResult>(
-                            Results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
-                                .ThenBy(t => t.Inspection.Name)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                                .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                                .ToList());
+                    return;
                 }
 
-                _groupByLocation = value;
+                _filters = value;
                 OnPropertyChanged();
+                Results.Refresh();
             }
         }
 
-        private readonly List<CodeInspectionSeverity> _filterCriteria = new List<CodeInspectionSeverity>();
-
-        public bool FilterInspectionsByHint
+        private bool InspectionFilter(IInspectionResult result)
         {
-            get => _filterCriteria.Contains(CodeInspectionSeverity.Hint);
-            set
+            switch (result.Inspection.Severity)
             {
-                UpdateFilterCriteria(value, CodeInspectionSeverity.Hint);
-
-                FilterResults(_filterCriteria);
-                OnPropertyChanged();
-            }
-        }
-
-        public bool FilterInspectionsBySuggestion
-        {
-            get => _filterCriteria.Contains(CodeInspectionSeverity.Suggestion);
-            set
-            {
-                UpdateFilterCriteria(value, CodeInspectionSeverity.Suggestion);
-
-                FilterResults(_filterCriteria);
-                OnPropertyChanged();
-            }
-        }
-
-        public bool FilterInspectionsByWarning
-        {
-            get => _filterCriteria.Contains(CodeInspectionSeverity.Warning);
-            set
-            {
-                UpdateFilterCriteria(value, CodeInspectionSeverity.Warning);
-
-                FilterResults(_filterCriteria);
-                OnPropertyChanged();
-            }
-        }
-
-        public bool FilterInspectionsByError
-        {
-            get => _filterCriteria.Contains(CodeInspectionSeverity.Error);
-            set
-            {
-                UpdateFilterCriteria(value, CodeInspectionSeverity.Error);
-
-                FilterResults(_filterCriteria);
-                OnPropertyChanged();
-            }
-        }
-
-        private void UpdateFilterCriteria(bool isCriteria ,CodeInspectionSeverity criteria)
-        {
-            if (_filterCriteria.Contains(criteria) == isCriteria) { return; }
-
-            if (isCriteria)
-            {
-                _filterCriteria.Add(criteria);
-            }
-            else
-            {
-                _filterCriteria.Remove(criteria);
-            }
-        }
-
-        public void FilterResults(IEnumerable<CodeInspectionSeverity> inspections)
-        {
-            if (_filterCriteria.Any())
-            {
-                Results = new ObservableCollection<IInspectionResult>(_resultsAll
-                    .GroupBy(result => result.Inspection.Severity)
-                    .Where(group => _filterCriteria.Contains(group.Key))
-                    .SelectMany(x => x));
-            }
-            else
-            {
-                Results = _resultsAll;
-            }
+                case CodeInspectionSeverity.DoNotShow:
+                    return false;
+                case CodeInspectionSeverity.Hint:
+                    return SelectedFilters.HasFlag(InspectionResultsFilter.Hint);
+                case CodeInspectionSeverity.Suggestion:
+                    return SelectedFilters.HasFlag(InspectionResultsFilter.Suggestion);
+                case CodeInspectionSeverity.Warning:
+                    return SelectedFilters.HasFlag(InspectionResultsFilter.Warning);
+                case CodeInspectionSeverity.Error:
+                    return SelectedFilters.HasFlag(InspectionResultsFilter.Error);
+                default:
+                    return true;    // Not in the enum...
+            }     
         }
 
         public INavigateCommand NavigateCommand { get; }
-        public CommandBase SetInspectionTypeGroupingCommand { get; }
-        public CommandBase SetLocationGroupingCommand { get; }
         public CommandBase RefreshCommand { get; }
         public CommandBase QuickFixCommand { get; }
         public CommandBase QuickFixInProcedureCommand { get; }
@@ -341,6 +287,18 @@ namespace Rubberduck.UI.Inspections
         public CommandBase DisableInspectionCommand { get; }
         public CommandBase CopyResultsCommand { get; }
         public CommandBase OpenInspectionSettings { get; }
+        public CommandBase CollapseAllCommand { get; }
+        public CommandBase ExpandAllCommand { get; }
+
+        private void ExecuteCollapseAll(object parameter)
+        {
+            ExpandedState = false;
+        }
+
+        private void ExecuteExpandAll(object parameter)
+        {
+            ExpandedState = true;
+        }
 
         private void OpenSettings(object param)
         {
@@ -371,14 +329,39 @@ namespace Rubberduck.UI.Inspections
             {
                 _isBusy = value;
                 OnPropertyChanged();
-                OnPropertyChanged("EmptyUIRefreshMessageVisibility");
             } 
+        }
+
+        private bool _unparsed = true;
+        public bool Unparsed
+        {
+            get => _unparsed;
+            set
+            {
+                if (_unparsed == value)
+                {
+                    return;
+                }
+                _unparsed = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private bool _expanded;
+        public bool ExpandedState
+        {
+            get => _expanded;
+            set
+            {
+                _expanded = value;
+                OnPropertyChanged();
+            }
         }
 
         private bool _runInspectionsOnReparse;
         private void HandleStateChanged(object sender, ParserStateEventArgs e)
         {
-            if(!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
+            if (!IsRefreshing && (_state.Status == ParserState.Pending || _state.Status == ParserState.Error || _state.Status == ParserState.ResolverError))
             {
                 IsBusy = false;
                 return;
@@ -420,58 +403,54 @@ namespace Rubberduck.UI.Inspections
             catch (OperationCanceledException)
             {
                 Logger.Debug("Inspections got canceled.");
+                IsBusy = false;
                 return; //We throw away the partial results.
             }
 
-            if (GroupByInspectionType)
-            {
-                results = results.OrderBy(o => o.Inspection.InspectionType)
-                    .ThenBy(t => t.Inspection.Name)
-                    .ThenBy(t => t.QualifiedSelection.QualifiedName.Name)
-                    .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                    .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                    .ToList();
-            }
-            else
-            {
-                results = results.OrderBy(o => o.QualifiedSelection.QualifiedName.Name)
-                    .ThenBy(t => t.Inspection.Name)
-                    .ThenBy(t => t.QualifiedSelection.Selection.StartLine)
-                    .ThenBy(t => t.QualifiedSelection.Selection.StartColumn)
-                    .ToList();
-            }
+            stopwatch.Stop();
+            LogManager.GetCurrentClassLogger().Trace("Inspection results returned in {0}ms", stopwatch.ElapsedMilliseconds);
 
-            _resultsAll = new ObservableCollection<IInspectionResult>(results);
-            Results = _resultsAll;
+            Unparsed = false;
 
             _uiDispatcher.Invoke(() =>
             {
+                stopwatch = Stopwatch.StartNew();
                 try
                 {
-                    IsBusy = false;
-                    OnPropertyChanged("EmptyUIRefreshVisibility");
-                    IsRefreshing = false;
+                    _results.Clear();
+                    foreach (var result in results)
+                    {
+                        _results.Add(result);
+                    }
+
+                    Results.Refresh();
                     SelectedItem = null;
                 }
                 catch (Exception exception)
                 {
                     Logger.Error(exception, "Exception thrown trying to refresh the inspection results view on th UI thread.");
                 }
-            });
+                finally
+                {
+                    IsBusy = false;
+                    IsRefreshing = false;
+                }
 
-            stopwatch.Stop();
-            LogManager.GetCurrentClassLogger().Trace("Inspections loaded in {0}ms", stopwatch.ElapsedMilliseconds);
+                stopwatch.Stop();
+                LogManager.GetCurrentClassLogger().Trace("Inspection results rendered in {0}ms", stopwatch.ElapsedMilliseconds);
+            });
         }
 
         private void InvalidateStaleInspectionResults(ICollection<QualifiedModuleName> modifiedModules)
         {
-            var staleResults = Results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
+            var staleResults = _results.Where(result => result.ChangesInvalidateResult(modifiedModules)).ToList();
             _uiDispatcher.Invoke(() =>
             {
                 foreach (var staleResult in staleResults)
                 {
-                    Results.Remove(staleResult);
+                    _results.Remove(staleResult);
                 }
+                Results.Refresh();
             });
         }
 
@@ -483,8 +462,7 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteQuickFixCommand(object parameter)
         {
-            var quickFix = parameter as IQuickFix;
-            return !IsBusy && quickFix != null && _state.Status == ParserState.Ready;
+            return !IsBusy && parameter is IQuickFix && _state.Status == ParserState.Ready;
         }
 
         private bool _canExecuteQuickFixInProcedure;
@@ -512,7 +490,7 @@ namespace Rubberduck.UI.Inspections
             }
 
             _quickFixProvider.FixInProcedure(_defaultFix, selectedResult.QualifiedMemberName,
-                selectedResult.Inspection.GetType(), Results);
+                selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
 
         private bool _canExecuteQuickFixInModule;
@@ -540,7 +518,7 @@ namespace Rubberduck.UI.Inspections
             }
             
             _quickFixProvider.FixInModule(_defaultFix, selectedResult.QualifiedSelection,
-                selectedResult.Inspection.GetType(), Results);
+                selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
 
         private bool _canExecuteQuickFixInProject;
@@ -566,7 +544,12 @@ namespace Rubberduck.UI.Inspections
             var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == _selectedInspection.Name);
             setting.Severity = CodeInspectionSeverity.DoNotShow;
 
-            Task.Run(() => _configService.SaveConfiguration(config)).ContinueWith(t => RefreshCommand.Execute(null));
+            Task.Run(() => _configService.SaveConfiguration(config));
+
+            _uiDispatcher.Invoke(() =>
+            {
+                RefreshCommand.Execute(null);
+            });
         }
 
         private bool _canDisableInspection;
@@ -588,14 +571,13 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
 
             _quickFixProvider.FixInProject(_defaultFix, selectedResult.QualifiedSelection,
-                selectedResult.Inspection.GetType(), Results);
+                selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
 
         private void ExecuteQuickFixInAllProjectsCommand(object parameter)
@@ -605,39 +587,49 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var selectedResult = SelectedItem as IInspectionResult;
-            if (selectedResult == null)
+            if (!(SelectedItem is IInspectionResult selectedResult))
             {
                 return;
             }
 
-            _quickFixProvider.FixAll(_defaultFix, selectedResult.Inspection.GetType(), Results);
+            _quickFixProvider.FixAll(_defaultFix, selectedResult.Inspection.GetType(), Results.OfType<IInspectionResult>());
         }
+
+        private static readonly List<(string Name, hAlignment alignment)> ResultColumns = new List<(string Name, hAlignment alignment)>
+        {
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Type, hAlignment.Left),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Project, hAlignment.Left),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Component, hAlignment.Left),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Issue, hAlignment.Left),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Line, hAlignment.Right),
+            (Resources.Inspections.InspectionsUI.ExportColumnHeader_Column, hAlignment.Right)
+        };
+
+        private static readonly ColumnInfo[] ColumnInformation = ResultColumns.Select(column => new ColumnInfo(column.Name, column.alignment)).ToArray();
 
         private void ExecuteCopyResultsCommand(object parameter)
         {
             const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-            if (_resultsAll == null)
+            if (_results == null)
             {
                 return;
             }
-            ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Issue"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
 
-            var resultArray = _resultsAll.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+            var resultArray = _results.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
 
-            var resource = _resultsAll.Count == 1
+            var resource = _results.Count == 1
                 ? Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Singular
                 : Resources.RubberduckUI.CodeInspections_NumberOfIssuesFound_Plural;
 
-            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _resultsAll.Count);
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _results.Count);
 
-            var textResults = title + Environment.NewLine + string.Join("", _resultsAll.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
-            var csvResults = ExportFormatter.Csv(resultArray, title,columnInfos);
-            var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title,columnInfos);
+            var textResults = title + Environment.NewLine + string.Join("", _results.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var csvResults = ExportFormatter.Csv(resultArray, title, ColumnInformation);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, ColumnInformation);
             var rtfResults = ExportFormatter.RTF(resultArray, title);
 
             // todo: verify that this disposing this stream breaks the xmlSpreadsheetDataFormat
-            var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
+            var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, ColumnInformation);
             //Add the formats from richest formatting to least formatting
             _clipboard.AppendStream(DataFormats.GetDataFormat(xmlSpreadsheetDataFormat).Name, stream);
             _clipboard.AppendString(DataFormats.Rtf, rtfResults);
@@ -650,12 +642,71 @@ namespace Rubberduck.UI.Inspections
 
         private bool CanExecuteCopyResultsCommand(object parameter)
         {
-            return !IsBusy && _resultsAll != null && _resultsAll.Any();
+            return !IsBusy && _results != null && _results.Any();
         }
 
-        public Visibility EmptyUIRefreshVisibility => _state.ProjectsProvider.Projects().Any() ? Visibility.Hidden : Visibility.Visible;
+        private static readonly Dictionary<InspectionResultGrouping, List<Comparer<IInspectionResult>>> GroupSorts =
+            new Dictionary<InspectionResultGrouping, List<Comparer<IInspectionResult>>>
+        {
+            { InspectionResultGrouping.Type,
+                new List<Comparer<IInspectionResult>>
+                {
+                    InspectionResultComparer.InspectionType,
+                    InspectionResultComparer.Location,
+                    InspectionResultComparer.Severity,
+                    InspectionResultComparer.Name
+                }
+            },
+            { InspectionResultGrouping.Name,
+                new List<Comparer<IInspectionResult>>
+                {
+                    InspectionResultComparer.Name,
+                    InspectionResultComparer.Location,
+                    InspectionResultComparer.Severity
+                }
+            },
+            { InspectionResultGrouping.Location,
+                new List<Comparer<IInspectionResult>>
+                {
+                    InspectionResultComparer.Location,
+                    InspectionResultComparer.Severity,
+                    InspectionResultComparer.Name
+                }
+            },
+            { InspectionResultGrouping.Severity,
+                new List<Comparer<IInspectionResult>>
+                {
+                    InspectionResultComparer.Severity,
+                    InspectionResultComparer.Location,
+                    InspectionResultComparer.Name
+                }
+            }
+        };
 
-        public Visibility EmptyUIRefreshMessageVisibility => IsBusy ? Visibility.Hidden : Visibility.Visible;
+        public int Compare(IInspectionResult x, IInspectionResult y)
+        {
+            return x == y ? 0 : GroupSorts[Grouping].Select(comp => comp.Compare(x, y)).FirstOrDefault(result => result != 0);
+        }
+
+        public int Compare(object x, object y)
+        {
+            if (x == y)
+            {
+                return 0;
+            }
+
+            if (!(x is IInspectionResult first))
+            {
+                return -1;
+            }
+
+            if (!(y is IInspectionResult second))
+            {
+                return -1;
+            }
+
+            return Compare(first, second);
+        }
 
         public void Dispose()
         {

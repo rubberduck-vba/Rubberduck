@@ -269,25 +269,14 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return handlersByWithEventsField;
         }
 
-        public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
+        public Declaration FindSelectedDeclaration(QualifiedSelection qualifiedSelection)
         {
-            if (activeCodePane == null || activeCodePane.IsWrappingNullReference)
-            {
-                return null;
-            }
-            
-            var qualifiedSelection = activeCodePane.GetQualifiedSelection();
-            if (!qualifiedSelection.HasValue || qualifiedSelection.Value.Equals(default))
-            {
-                return null;
-            }
-
-            var selection = qualifiedSelection.Value.Selection;
+            var selection = qualifiedSelection.Selection;
 
             // statistically we'll be on an IdentifierReference more often than on a Declaration:
             var matches = _referencesBySelection
-                .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.Value.QualifiedName)
-                    && kvp.Key.Selection.ContainsFirstCharacter(qualifiedSelection.Value.Selection))
+                .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.QualifiedName)
+                              && kvp.Key.Selection.ContainsFirstCharacter(qualifiedSelection.Selection))
                 .SelectMany(kvp => kvp.Value)
                 .OrderByDescending(reference => reference.Declaration.DeclarationType)
                 .Select(reference => reference.Declaration)
@@ -297,8 +286,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             if (!matches.Any())
             {
                 matches = _declarationsBySelection
-                    .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.Value.QualifiedName)
-                        && kvp.Key.Selection.ContainsFirstCharacter(selection))
+                    .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.QualifiedName)
+                                  && kvp.Key.Selection.ContainsFirstCharacter(selection))
                     .SelectMany(kvp => kvp.Value)
                     .OrderByDescending(declaration => declaration.DeclarationType)
                     .Distinct()
@@ -308,7 +297,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             switch (matches.Length)
             {
                 case 0:
-                    return ModuleDeclaration(qualifiedSelection.Value.QualifiedName);
+                    return ModuleDeclaration(qualifiedSelection.QualifiedName);
 
                 case 1:
                     return matches.Single();
@@ -317,6 +306,22 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                     // they're sorted by type, so a local comes before the procedure it's in
                     return matches.FirstOrDefault();
             }
+        }
+
+        public Declaration FindSelectedDeclaration(ICodePane activeCodePane)
+        {
+            if (activeCodePane == null || activeCodePane.IsWrappingNullReference)
+            {
+                return null;
+            }
+
+            var qualifiedSelection = activeCodePane.GetQualifiedSelection();
+            if (!qualifiedSelection.HasValue || qualifiedSelection.Value.Equals(default))
+            {
+                return null;
+            }
+
+            return FindSelectedDeclaration(qualifiedSelection.Value);
         }
 
         public IEnumerable<Declaration> FreshUndeclared => _newUndeclared.AllValues();
@@ -415,8 +420,12 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
         {
             return FindAllUserInterfaces()
                 .FirstOrDefault(declaration => declaration.References
-                    .Any(reference => reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>() != null 
-                                      && ReferenceEquals(reference.Declaration, declaration)));
+                    .Where(reference => reference.QualifiedModuleName.Equals(selection.QualifiedName))
+                    .Select(reference => reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>())
+                    .Where(context => context != null)
+                    .Select(context => context.GetSelection())
+                    .Any(contextSelection => contextSelection.Contains(selection.Selection) 
+                                             || selection.Selection.Contains(contextSelection)));
         }
 
         /// <summary>

@@ -23,22 +23,4 @@ namespace Rubberduck.UI.Inspections
             throw new NotImplementedException();
         }
     }
-
-    public class InspectionDescriptionConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var inspection = value as IInspection;
-            if (inspection == null)
-            {
-                return null;
-            }
-            return InspectionsUI.ResourceManager.GetString(inspection.Name + "Name", CultureInfo.CurrentUICulture);
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

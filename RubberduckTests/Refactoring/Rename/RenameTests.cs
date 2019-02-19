@@ -9,13 +9,13 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.UI.Refactorings.Rename;
 using Rubberduck.Interaction;
-
+using Rubberduck.VBEditor.Utility;
 using static RubberduckTests.Refactoring.Rename.RenameTestExecution;
 
 namespace RubberduckTests.Refactoring.Rename
 {
     [TestFixture]
-    public partial class RenameTests
+    public class RenameTests
     {
         internal const char FAUX_CURSOR = '|';
 
@@ -1909,8 +1909,8 @@ End Sub";
                         .Returns(m);
                     return presenter;
                     }, out var creator);
-
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
+                var selectionService = MockedSelectionService(vbeWrapper);
+                var refactoring = new RenameRefactoring(factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager, selectionService);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -1955,8 +1955,8 @@ End Sub";
                         .Returns(m);
                     return presenter;
                 }, out var creator);
-
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
+                var selectionService = MockedSelectionService(vbeWrapper);
+                var refactoring = new RenameRefactoring(factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager, selectionService);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreEqual(newName, vbe.Object.VBProjects[0].Name);
@@ -2593,8 +2593,9 @@ End Sub";
                     presenter.Setup(p => p.Model).Returns(m);
                     return null;
                 }, out var creator);
-
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, null, state, state.ProjectsProvider, rewritingManager);
+                var msgbox = new Mock<IMessageBox>();
+                var selectionService = MockedSelectionService(vbeWrapper);
+                var refactoring = new RenameRefactoring(factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager, selectionService);
                 refactoring.Refactor();
 
                 var actualCode = component.CodeModule.Content();
@@ -2722,7 +2723,8 @@ End Property";
                         .Returns(m);
                     return presenter;
                 }, out var creator);
-                var refactoring = new RenameRefactoring(vbeWrapper, factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager);
+                var selectionService = MockedSelectionService(vbeWrapper);
+                var refactoring = new RenameRefactoring(factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager, selectionService);
                 refactoring.Refactor(model.Target);
 
                 Assert.AreSame(newName, component.CodeModule.Name);
@@ -2731,5 +2733,15 @@ End Property";
 
         }
         #endregion
+
+        private static ISelectionService MockedSelectionService(IVBE vbe)
+        {
+            QualifiedSelection? activeSelection = vbe.GetActiveSelection();
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
+        }
     }
 }

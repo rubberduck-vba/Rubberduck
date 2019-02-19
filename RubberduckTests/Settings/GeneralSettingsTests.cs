@@ -8,6 +8,7 @@ using Rubberduck.Common;
 using Moq;
 using Rubberduck.VBEditor.VbeRuntime.Settings;
 using System;
+using System.Collections.ObjectModel;
 using Rubberduck.Interaction;
 using Rubberduck.SettingsProvider;
 
@@ -29,6 +30,13 @@ namespace RubberduckTests.Settings
         private Mock<IVbeSettings> GetVbeSettingsMock()
         {
             return new Mock<IVbeSettings>();
+        }
+
+        private Mock<IExperimentalTypesProvider> GetExperimentalTypesProviderMock()
+        {
+            var mock = new Mock<IExperimentalTypesProvider>();
+            mock.Setup(x => x.ExperimentalTypes).Returns(new List<Type>());
+            return mock;
         }
 
         private Configuration GetDefaultConfig()
@@ -83,7 +91,7 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(customConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, new List<Type>());
+            var viewModel = new GeneralSettingsViewModel(customConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, GetExperimentalTypesProviderMock().Object, null, null);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
@@ -101,7 +109,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void SetDefaultsWorks()
         {
-            var viewModel = new GeneralSettingsViewModel(GetNondefaultConfig(), GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, new List<Type>());
+            var viewModel = new GeneralSettingsViewModel(GetNondefaultConfig(), GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, GetExperimentalTypesProviderMock().Object, null, null);
 
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
@@ -120,7 +128,7 @@ namespace RubberduckTests.Settings
         public void LanguageIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, new List<Type>());
+            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, GetExperimentalTypesProviderMock().Object, null, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage);
         }
@@ -130,7 +138,7 @@ namespace RubberduckTests.Settings
         public void HotkeysAreSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, new List<Type>());
+            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, GetExperimentalTypesProviderMock().Object, null, null);
 
             Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys));
         }
@@ -140,7 +148,7 @@ namespace RubberduckTests.Settings
         public void AutoSaveEnabledIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, new List<Type>());
+            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, GetExperimentalTypesProviderMock().Object, null, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.IsAutoSaveEnabled, viewModel.AutoSaveEnabled);
         }
@@ -150,7 +158,7 @@ namespace RubberduckTests.Settings
         public void AutoSavePeriodIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, new List<Type>());
+            var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, GetExperimentalTypesProviderMock().Object, null, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
         }
@@ -159,10 +167,13 @@ namespace RubberduckTests.Settings
         [Test]
         public void UserSettingsLoadedUsingDefaultWhenMissingFile()
         {
+            var pathProviderMock = new Mock<IPersistancePathProvider>();
+            pathProviderMock.Setup(x => x.DataRootPath).Returns("C:\\rubberduck\\");
+            pathProviderMock.Setup(x => x.DataFolderPath(It.IsAny<string>())).Returns<string>(x => x);
             // For this test, we need to use the actual object. Fortunately, the path is virtual, so we
             // can override that property and force it to use an non-existent path to prove that settings
             // will be still created using defaults without the file present. 
-            var persisterMock = new Mock<XmlPersistanceService<GeneralSettings>>();
+            var persisterMock = new Mock<XmlPersistanceService<GeneralSettings>>(pathProviderMock.Object);
             persisterMock.Setup(x => x.FilePath).Returns("C:\\some\\non\\existent\\path\\rubberduck");
             persisterMock.CallBase = true;
             var configProvider = new GeneralConfigProvider(persisterMock.Object);
