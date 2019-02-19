@@ -241,7 +241,7 @@ namespace Rubberduck.Root
                 .ImplementedBy<IndenterConfigProvider>()
                 .LifestyleSingleton());
 
-            container.Register(Component.For<IConfigProvider<UnitTestSettings>>()
+            container.Register(Component.For<IConfigProvider<UnitTesting.Settings.UnitTestSettings>>()
                 .ImplementedBy<UnitTestConfigProvider>()
                 .LifestyleSingleton());
         }
