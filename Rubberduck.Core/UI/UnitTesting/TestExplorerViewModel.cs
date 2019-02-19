@@ -15,6 +15,7 @@ using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UI.UnitTesting.ViewModels;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor.Utility;
 using DataFormats = System.Windows.DataFormats;
 
 namespace Rubberduck.UI.UnitTesting
@@ -32,7 +33,7 @@ namespace Rubberduck.UI.UnitTesting
         private readonly IClipboardWriter _clipboard;
         private readonly ISettingsFormFactory _settingsFormFactory;
 
-        public TestExplorerViewModel(IProjectsProvider projectsProvider,
+        public TestExplorerViewModel(ISelectionService selectionService,
             TestExplorerModel model,
             IClipboardWriter clipboard,
             // ReSharper disable once UnusedParameter.Local - left in place because it will likely be needed for app wide font settings, etc.
@@ -42,7 +43,7 @@ namespace Rubberduck.UI.UnitTesting
             _clipboard = clipboard;
             _settingsFormFactory = settingsFormFactory;
 
-            NavigateCommand = new NavigateCommand(projectsProvider);  
+            NavigateCommand = new NavigateCommand(selectionService);  
             RunSingleTestCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSingleTestCommand, CanExecuteSingleTest);
             RunSelectedTestsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteSelectedTestsCommand, CanExecuteSelectedTestsCommand);
             RunSelectedGroupCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRunSelectedGroupCommand, CanExecuteSelectedGroupCommand);

@@ -53,7 +53,7 @@ namespace Rubberduck.UI.Settings
                 },
                 new SettingsView
                 {
-                    Control = new UnitTestSettings(viewModelFactory.Create<Rubberduck.Settings.UnitTestSettings>(config)),
+                    Control = new UnitTestSettings(viewModelFactory.Create<Rubberduck.UnitTesting.Settings.UnitTestSettings>(config)),
                     View = SettingsViews.UnitTestSettings
                 },
                 new SettingsView
