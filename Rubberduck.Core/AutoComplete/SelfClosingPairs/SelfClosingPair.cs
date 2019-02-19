@@ -1,7 +1,7 @@
-﻿using Rubberduck.VBEditor;
-using System;
+﻿using System;
+using Rubberduck.VBEditor;
 
-namespace Rubberduck.AutoComplete.Service
+namespace Rubberduck.AutoComplete.SelfClosingPairs
 {
     public class SelfClosingPair : IEquatable<SelfClosingPair>
     {

@@ -5,8 +5,12 @@ using NLog;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor.Events;
 
-namespace Rubberduck.AutoComplete.Service
+namespace Rubberduck.AutoComplete
 {
+    /// <summary>
+    /// A service responsible for dispatching CodePane work to more specialized autocompletion services.
+    /// Handles changes in configuration settings.
+    /// </summary>
     public class AutoCompleteService : IDisposable
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
@@ -151,6 +155,7 @@ namespace Rubberduck.AutoComplete.Service
                     return false;
                 }
 
+                Logger.Debug($"Keypress was handled by {handler.GetType().Name}.");
                 e.Handled = true;
                 return true;
 
@@ -169,7 +174,8 @@ namespace Rubberduck.AutoComplete.Service
         }
 
         private bool _isDisposed;
-        protected virtual void Dispose(bool disposing)
+
+        private void Dispose(bool disposing)
         {
             if (_isDisposed || !disposing)
             {

@@ -7,16 +7,19 @@ using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.UI.Settings
 {
-    public class UnitTestSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
+    public sealed class UnitTestSettingsViewModel : SettingsViewModelBase<Rubberduck.Settings.UnitTestSettings>, ISettingsViewModel<Rubberduck.Settings.UnitTestSettings>
     {
-        public UnitTestSettingsViewModel(Configuration config)
+        public UnitTestSettingsViewModel(Configuration config, IFilePersistanceService<Rubberduck.Settings.UnitTestSettings> service) 
+            : base(service)
         {
             BindingMode = config.UserSettings.UnitTestSettings.BindingMode;
             AssertMode = config.UserSettings.UnitTestSettings.AssertMode;
             ModuleInit = config.UserSettings.UnitTestSettings.ModuleInit;
             MethodInit = config.UserSettings.UnitTestSettings.MethodInit;
             DefaultTestStubInNewModule = config.UserSettings.UnitTestSettings.DefaultTestStubInNewModule;
-            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
+                _ => ExportSettings(new Rubberduck.Settings.UnitTestSettings(BindingMode, AssertMode, ModuleInit,
+                    MethodInit, DefaultTestStubInNewModule)));
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
@@ -79,6 +82,7 @@ namespace Rubberduck.UI.Settings
         }
 
         private bool _defaultTestStubInNewModule;
+
         public bool DefaultTestStubInNewModule
         {
             get => _defaultTestStubInNewModule;
@@ -108,7 +112,9 @@ namespace Rubberduck.UI.Settings
             TransferSettingsToView(config.UserSettings.UnitTestSettings);
         }
 
-        private void TransferSettingsToView(Rubberduck.UnitTesting.Settings.UnitTestSettings toLoad)
+        protected override string DialogLoadTitle => SettingsUI.DialogCaption_LoadUnitTestSettings;
+        protected override string DialogSaveTitle => SettingsUI.DialogCaption_SaveUnitTestSettings;
+        protected override void TransferSettingsToView(Rubberduck.Settings.UnitTestSettings toLoad)
         {
             BindingMode = toLoad.BindingMode;
             AssertMode = toLoad.AssertMode;
