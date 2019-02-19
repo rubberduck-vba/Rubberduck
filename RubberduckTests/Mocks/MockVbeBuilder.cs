@@ -79,10 +79,9 @@ namespace RubberduckTests.Mocks
 
             _projects.Add(project.Object);
 
-            foreach (var component in _projects.SelectMany(vbProject => vbProject.VBComponents))
-            {
-                _codePanes.Add(component.CodeModule.CodePane);
-            }
+            var allCodePanes = _projects.SelectMany(vbProject => vbProject.VBComponents)
+                .Select(component => component.CodeModule.CodePane);
+            AddOpenCodePanes(allCodePanes);
 
             _vbe.SetupGet(vbe => vbe.ActiveVBProject).Returns(project.Object);
             _vbe.SetupGet(m => m.VBProjects).Returns(() => _vbProjects.Object);
@@ -197,6 +196,23 @@ namespace RubberduckTests.Mocks
             vbe.Object.ActiveCodePane = component.CodeModule.CodePane;
 
             return vbe;
+        }
+
+        public MockVbeBuilder SetOpenCodePanes(IEnumerable<ICodePane> openCodePanes)
+        {
+            _codePanes.Clear();
+            AddOpenCodePanes(openCodePanes);
+            return this;
+        }
+
+        public MockVbeBuilder AddOpenCodePanes(IEnumerable<ICodePane> openCodePanes)
+        {
+            foreach (var codePane in openCodePanes)
+            {
+                _codePanes.Add(codePane);
+            }
+
+            return this;
         }
 
         private Mock<IVBE> CreateVbeMock()

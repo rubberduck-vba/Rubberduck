@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Linq;
+using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.CodeExplorer;
@@ -37,7 +38,7 @@ namespace Rubberduck.UI.Command
             }
 
             var declaration = parameter is CodeExplorerItemViewModel explorerItem
-                ? GetDeclaration(explorerItem)
+                ? explorerItem.Declaration
                 : GetDeclaration();
 
             if (!(Declaration.GetProjectParent(declaration) is ProjectDeclaration project))
@@ -46,7 +47,8 @@ namespace Rubberduck.UI.Command
             }
 
             var dialog = _factory.Create(project);
-            var model = dialog.Show();
+
+            var model = dialog?.Show();
             if (model is null)
             {
                 return;
@@ -65,23 +67,13 @@ namespace Rubberduck.UI.Command
 
             if (parameter is CodeExplorerItemViewModel explorerNode)
             {
-                return GetDeclaration(explorerNode) is ProjectDeclaration;
+                return explorerNode.Declaration is ProjectDeclaration;
             }
 
             using (var project = _vbe.ActiveVBProject)
             {
                 return !(project is null);
             }
-        }
-
-        private Declaration GetDeclaration(CodeExplorerItemViewModel node)
-        {
-            while (node != null && !(node is ICodeExplorerDeclarationViewModel))
-            {
-                node = node.Parent;
-            }
-
-            return (node as ICodeExplorerDeclarationViewModel)?.Declaration;
         }
 
         private Declaration GetDeclaration()
@@ -92,7 +84,9 @@ namespace Rubberduck.UI.Command
                 {
                     return null;
                 }
-                return _state.DeclarationFinder.FindProject(project.Name);
+
+                return _state.DeclarationFinder.Projects.OfType<ProjectDeclaration>()
+                    .FirstOrDefault(declaration => project.ProjectId.Equals(declaration.ProjectId));
             }           
         }
     }

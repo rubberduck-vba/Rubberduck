@@ -1,14 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -19,132 +22,205 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var declarations = UserDeclarations.ToArray();
-            var issues = new List<IInspectionResult>();
+            var parameters = State.DeclarationFinder
+                .UserDeclarations(DeclarationType.Parameter)
+                .OfType<ParameterDeclaration>().ToList();
+            var parametersThatCanBeChangedToBePassedByVal = new List<ParameterDeclaration>();
 
-            var interfaceDeclarationMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToArray();
-            var interfaceScopes = State.DeclarationFinder.FindAllInterfaceImplementingMembers().Concat(interfaceDeclarationMembers).Select(s => s.Scope).ToArray();
+            var interfaceDeclarationMembers = State.DeclarationFinder.FindAllInterfaceMembers().ToList();
+            var interfaceScopeDeclarations = State.DeclarationFinder
+                .FindAllInterfaceImplementingMembers()
+                .Concat(interfaceDeclarationMembers)
+                .ToHashSet();
 
-            issues.AddRange(GetResults(declarations, interfaceDeclarationMembers));
+            parametersThatCanBeChangedToBePassedByVal.AddRange(InterFaceMembersThatCanBeChangedToBePassedByVal(interfaceDeclarationMembers));
 
-            var eventMembers = declarations.Where(item => item.DeclarationType == DeclarationType.Event).ToArray();
-            var formEventHandlerScopes = State.FindFormEventHandlers().Select(handler => handler.Scope).ToArray();
-            var eventHandlerScopes = State.DeclarationFinder.FindEventHandlers().Concat(declarations.FindUserEventHandlers()).Select(e => e.Scope).ToArray();
-            var eventScopes = eventMembers.Select(s => s.Scope)
-                .Concat(formEventHandlerScopes)
-                .Concat(eventHandlerScopes)
-                .ToArray();
+            var eventMembers = State.DeclarationFinder.UserDeclarations(DeclarationType.Event).ToList();
+            var formEventHandlerScopeDeclarations = State.FindFormEventHandlers();
+            var eventHandlerScopeDeclarations = State.DeclarationFinder.FindEventHandlers().Concat(parameters.FindUserEventHandlers());
+            var eventScopeDeclarations = eventMembers
+                .Concat(formEventHandlerScopeDeclarations)
+                .Concat(eventHandlerScopeDeclarations)
+                .ToHashSet();
 
-            issues.AddRange(GetResults(declarations, eventMembers));
+            parametersThatCanBeChangedToBePassedByVal.AddRange(EventMembersThatCanBeChangedToBePassedByVal(eventMembers));
 
-            var declareScopes = declarations.Where(item =>
-                    item.DeclarationType == DeclarationType.LibraryFunction
-                    || item.DeclarationType == DeclarationType.LibraryProcedure)
-                .Select(e => e.Scope)
-                .ToArray();
-            
-            issues.AddRange(declarations.OfType<ParameterDeclaration>()
-                .Where(declaration => IsIssue(declaration, declarations, declareScopes, eventScopes, interfaceScopes))
-                .Select(issue => new DeclarationInspectionResult(this, string.Format(InspectionResults.ParameterCanBeByValInspection, issue.IdentifierName), issue)));
+            parametersThatCanBeChangedToBePassedByVal
+                .AddRange(parameters.Where(parameter => CanBeChangedToBePassedByVal(parameter, eventScopeDeclarations, interfaceScopeDeclarations)));
 
-            return issues;
+            return parametersThatCanBeChangedToBePassedByVal
+                .Where(parameter => !IsIgnoringInspectionResultFor(parameter, AnnotationName))
+                .Select(parameter => new DeclarationInspectionResult(this, string.Format(InspectionResults.ParameterCanBeByValInspection, parameter.IdentifierName), parameter));
         }
 
-        private bool IsIssue(ParameterDeclaration declaration, Declaration[] userDeclarations, string[] declareScopes, string[] eventScopes, string[] interfaceScopes)
+        private bool CanBeChangedToBePassedByVal(ParameterDeclaration parameter, HashSet<Declaration> eventScopeDeclarations, HashSet<Declaration> interfaceScopeDeclarations)
         {
-            var isIssue = 
-                !declaration.IsArray
-                && !declaration.IsParamArray
-                && (declaration.IsByRef || declaration.IsImplicitByRef)
-                && (declaration.AsTypeDeclaration == null || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.ClassModule && declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType && declaration.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration)
-                && !declareScopes.Contains(declaration.ParentScope)
-                && !eventScopes.Contains(declaration.ParentScope)
-                && !interfaceScopes.Contains(declaration.ParentScope)
-                && !IsUsedAsByRefParam(userDeclarations, declaration)
-                && (!declaration.References.Any() || !declaration.References.Any(reference => reference.IsAssignment));
+            var enclosingMember = parameter.ParentScopeDeclaration;
+            var isIssue = !interfaceScopeDeclarations.Contains(enclosingMember)
+                          && !eventScopeDeclarations.Contains(enclosingMember)
+                          && CanBeChangedToBePassedByValIndividually(parameter);
             return isIssue;
         }
 
-        private IEnumerable<IInspectionResult> GetResults(Declaration[] declarations, Declaration[] declarationMembers)
+        private bool CanBeChangedToBePassedByValIndividually(ParameterDeclaration parameter)
         {
-            foreach (var declaration in declarationMembers)
+            var canPossiblyBeChangedToBePassedByVal =
+                !parameter.IsArray
+                && !parameter.IsParamArray
+                && (parameter.IsByRef || parameter.IsImplicitByRef)
+                && !IsParameterOfDeclaredLibraryFunction(parameter)
+                && (parameter.AsTypeDeclaration == null 
+                    || (parameter.AsTypeDeclaration.DeclarationType != DeclarationType.ClassModule 
+                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
+                        && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration))
+                && !parameter.References.Any(reference => reference.IsAssignment)
+                && !IsPotentiallyUsedAsByRefParameter(parameter);
+            return canPossiblyBeChangedToBePassedByVal;
+        }
+
+        private static bool IsParameterOfDeclaredLibraryFunction(ParameterDeclaration parameter)
+        {
+            var parentMember = parameter.ParentScopeDeclaration;
+            return parentMember.DeclarationType == DeclarationType.LibraryFunction
+                   || parentMember.DeclarationType == DeclarationType.LibraryProcedure;
+        }
+
+        private IEnumerable<ParameterDeclaration> InterFaceMembersThatCanBeChangedToBePassedByVal(List<Declaration> interfaceMembers)
+        {
+            foreach (var memberDeclaration in interfaceMembers.OfType<ModuleBodyElementDeclaration>())
             {
-                var declarationParameters = declarations.OfType<ParameterDeclaration>()
-                    .Where(d => Equals(d.ParentDeclaration, declaration))
-                    .OrderBy(o => o.Selection.StartLine)
-                    .ThenBy(t => t.Selection.StartColumn)
-                    .ToList();
-
-                if (!declarationParameters.Any()) { continue; }
-                var parametersAreByRef = declarationParameters.Select(s => true).ToList();
-
-                var members = declarationMembers.Any(a => a.DeclarationType == DeclarationType.Event)
-                    ? declarations.FindHandlersForEvent(declaration).Select(s => s.Item2).ToList()
-                    : State.DeclarationFinder.FindInterfaceImplementationMembers(declaration).Cast<Declaration>().ToList();
-
-                foreach (var member in members)
+                var interfaceParameters = memberDeclaration.Parameters.ToList();
+                if (!interfaceParameters.Any())
                 {
-                    var parameters = declarations.OfType<ParameterDeclaration>()
-                        .Where(d => Equals(d.ParentDeclaration, member))
-                        .OrderBy(o => o.Selection.StartLine)
-                        .ThenBy(t => t.Selection.StartColumn)
-                        .ToList();
+                    continue;
+                }
+
+                var parameterCanBeChangedToBeByVal = interfaceParameters.Select(parameter => CanBeChangedToBePassedByValIndividually(parameter)).ToList();
+
+                var implementingMembers = State.DeclarationFinder.FindInterfaceImplementationMembers(memberDeclaration);
+                foreach (var implementingMember in implementingMembers)
+                {
+                    var implementationParameters = implementingMember.Parameters.ToList();
 
                     //If you hit this assert, reopen https://github.com/rubberduck-vba/Rubberduck/issues/3906
-                    Debug.Assert(parametersAreByRef.Count == parameters.Count);
+                    Debug.Assert(parameterCanBeChangedToBeByVal.Count == implementationParameters.Count);
 
-                    for (var i = 0; i < parameters.Count; i++)
+                    for (var i = 0; i < implementationParameters.Count; i++)
                     {
-                        parametersAreByRef[i] = parametersAreByRef[i] &&
-                                                !IsUsedAsByRefParam(declarations, parameters[i]) &&
-                                                ((VBAParser.ArgContext) parameters[i].Context).BYVAL() == null &&
-                                                !parameters[i].References.Any(reference => reference.IsAssignment);
+                        parameterCanBeChangedToBeByVal[i] = parameterCanBeChangedToBeByVal[i]
+                                                            && CanBeChangedToBePassedByValIndividually(implementationParameters[i]);
                     }
                 }
 
-                for (var i = 0; i < declarationParameters.Count; i++)
+                for (var i = 0; i < parameterCanBeChangedToBeByVal.Count; i++)
                 {
-                    if (parametersAreByRef[i])
+                    if (parameterCanBeChangedToBeByVal[i])
                     {
-                        yield return new DeclarationInspectionResult(this,
-                                                          string.Format(InspectionResults.ParameterCanBeByValInspection, declarationParameters[i].IdentifierName),
-                                                          declarationParameters[i]);
+                        yield return interfaceParameters[i];
                     }
                 }
             }
         }
 
-        private static bool IsUsedAsByRefParam(IEnumerable<Declaration> declarations, Declaration parameter)
+        private IEnumerable<ParameterDeclaration> EventMembersThatCanBeChangedToBePassedByVal(IEnumerable<Declaration> eventMembers)
         {
-            // find the procedure calls in the procedure of the parameter.
-            // note: works harder than it needs to when procedure has more than a single procedure call...
-            //       ...but caching [declarations] would be a memory leak
-            var items = declarations as List<Declaration> ?? declarations.ToList();
-
-            var procedureCalls = items.Where(item => item.DeclarationType.HasFlag(DeclarationType.Member))
-                .SelectMany(member => member.References.Where(reference => reference.ParentScoping.Equals(parameter.ParentScopeDeclaration)))
-                .GroupBy(call => call.Declaration)
-                .ToList(); // only check a procedure once. its declaration doesn't change if it's called 20 times anyway.
-
-            foreach (var item in procedureCalls)
+            foreach (var memberDeclaration in eventMembers)
             {
-                var calledProcedureArgs = items
-                    .Where(arg => arg.DeclarationType == DeclarationType.Parameter && arg.ParentScope == item.Key.Scope)
-                    .OrderBy(arg => arg.Selection.StartLine)
-                    .ThenBy(arg => arg.Selection.StartColumn)
-                    .ToArray();
-
-                foreach (var declaration in calledProcedureArgs)
+                var eventParameters = (memberDeclaration as IParameterizedDeclaration)?.Parameters.ToList();
+                if (!eventParameters?.Any() ?? false)
                 {
-                    if (((VBAParser.ArgContext) declaration.Context).BYVAL() != null)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    if (declaration.References.Any(reference => reference.IsAssignment))
+                var parameterCanBeChangedToBeByVal = eventParameters.Select(parameter => parameter.IsByRef).ToList();
+
+                //todo: Find a better way to find the handlers.
+                var eventHandlers = State.DeclarationFinder
+                    .AllUserDeclarations
+                    .FindHandlersForEvent(memberDeclaration)
+                    .Select(s => s.Item2)
+                    .ToList();
+
+                foreach (var eventHandler in eventHandlers.OfType<IParameterizedDeclaration>())
+                {
+                    var handlerParameters = eventHandler.Parameters.ToList();
+
+                    //If you hit this assert, reopen https://github.com/rubberduck-vba/Rubberduck/issues/3906
+                    Debug.Assert(parameterCanBeChangedToBeByVal.Count == handlerParameters.Count);
+
+                    for (var i = 0; i < handlerParameters.Count; i++)
                     {
-                        return true;
+                        parameterCanBeChangedToBeByVal[i] = parameterCanBeChangedToBeByVal[i] 
+                                                            && CanBeChangedToBePassedByValIndividually(handlerParameters[i]);
                     }
+                }
+
+                for (var i = 0; i < parameterCanBeChangedToBeByVal.Count; i++)
+                {
+                    if (parameterCanBeChangedToBeByVal[i])
+                    {
+                        yield return eventParameters[i];
+                    }
+                }
+            }
+        }
+
+        private bool IsPotentiallyUsedAsByRefParameter(ParameterDeclaration parameter)
+        {
+            return IsPotentiallyUsedAsByRefMethodParameter(parameter) 
+                   || IsPotentiallyUsedAsByRefEventParameter(parameter);
+        }
+
+        private bool IsPotentiallyUsedAsByRefMethodParameter(ParameterDeclaration parameter)
+        {
+            //The condition on the text of the argument context excludes the cases where the argument is either passed explicitly by value 
+            //or used inside a non-trivial expression, e.g. an arithmetic expression.
+            var argumentsBeingTheParameter = parameter.References
+                .Select(reference => reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>())
+                .Where(context => context != null && context.GetText().Equals(parameter.IdentifierName, StringComparison.OrdinalIgnoreCase));
+
+            foreach (var argument in argumentsBeingTheParameter)
+            {
+                var parameterCorrespondingToArgument = State.DeclarationFinder
+                    .FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argument, parameter.QualifiedModuleName);
+
+                if (parameterCorrespondingToArgument == null)
+                {
+                    //We have no idea what parameter it is passed to ar argument. So, we have to err on the safe side and assume it is passed by reference.
+                    return true;
+                }
+
+                if (parameterCorrespondingToArgument.IsByRef)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool IsPotentiallyUsedAsByRefEventParameter(ParameterDeclaration parameter)
+        {
+            //The condition on the text of the eventArgument context excludes the cases where the argument is either passed explicitly by value 
+            //or used inside a non-trivial expression, e.g. an arithmetic expression.
+            var argumentsBeingTheParameter = parameter.References
+                .Select(reference => reference.Context.GetAncestor<VBAParser.EventArgumentContext>())
+                .Where(context => context != null && context.GetText().Equals(parameter.IdentifierName, StringComparison.OrdinalIgnoreCase));
+
+            foreach (var argument in argumentsBeingTheParameter)
+            {
+                var parameterCorrespondingToArgument = State.DeclarationFinder
+                    .FindParameterFromSimpleEventArgumentNotPassedByValExplicitly(argument, parameter.QualifiedModuleName);
+
+                if (parameterCorrespondingToArgument == null)
+                {
+                    //We have no idea what parameter it is passed to ar argument. So, we have to err on the safe side and assume it is passed by reference.
+                    return true;
+                }
+
+                if (parameterCorrespondingToArgument.IsByRef)
+                {
+                    return true;
                 }
             }
 

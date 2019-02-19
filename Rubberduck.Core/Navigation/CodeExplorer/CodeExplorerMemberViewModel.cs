@@ -1,87 +1,113 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Media.Imaging;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
-using resx = Rubberduck.Resources.CodeExplorer.CodeExplorerUI;
 
 namespace Rubberduck.Navigation.CodeExplorer
 {
-    public class CodeExplorerMemberViewModel : CodeExplorerItemViewModel, ICodeExplorerDeclarationViewModel
+    public sealed class CodeExplorerMemberViewModel : CodeExplorerItemViewModel
     {
-        public Declaration Declaration { get; }
-
-        private static readonly DeclarationType[] SubMemberTypes =
+        public CodeExplorerMemberViewModel(ICodeExplorerNode parent, Declaration declaration, ref List<Declaration> declarations) : base(parent, declaration)
         {
-            DeclarationType.EnumerationMember, 
-            DeclarationType.UserDefinedTypeMember            
-        };
-
-        private static readonly IDictionary<Tuple<DeclarationType,Accessibility>,BitmapImage> Mappings =
-            new Dictionary<Tuple<DeclarationType, Accessibility>, BitmapImage>
-            {
-                { Tuple.Create(DeclarationType.Constant, Accessibility.Private), GetImageSource(resx.ObjectConstantPrivate)},
-                { Tuple.Create(DeclarationType.Constant, Accessibility.Public), GetImageSource(resx.ObjectConstant)},
-                { Tuple.Create(DeclarationType.Enumeration, Accessibility.Public), GetImageSource(resx.ObjectEnum)},
-                { Tuple.Create(DeclarationType.Enumeration, Accessibility.Private ), GetImageSource(resx.ObjectEnumPrivate)},
-                { Tuple.Create(DeclarationType.EnumerationMember, Accessibility.Public), GetImageSource(resx.ObjectEnumItem)},
-                { Tuple.Create(DeclarationType.Event, Accessibility.Public), GetImageSource(resx.ObjectEvent)},
-                { Tuple.Create(DeclarationType.Event, Accessibility.Private ), GetImageSource(resx.ObjectEventPrivate)},
-                { Tuple.Create(DeclarationType.Function, Accessibility.Public), GetImageSource(resx.ObjectMethod)},
-                { Tuple.Create(DeclarationType.Function, Accessibility.Friend ), GetImageSource(resx.ObjectMethodFriend)},
-                { Tuple.Create(DeclarationType.Function, Accessibility.Private ), GetImageSource(resx.ObjectMethodPrivate)},
-                { Tuple.Create(DeclarationType.LibraryFunction, Accessibility.Public), GetImageSource(resx.ObjectMethodShortcut)},
-                { Tuple.Create(DeclarationType.LibraryProcedure, Accessibility.Public), GetImageSource(resx.ObjectMethodShortcut)},
-                { Tuple.Create(DeclarationType.LibraryFunction, Accessibility.Private), GetImageSource(resx.ObjectMethodShortcut)},
-                { Tuple.Create(DeclarationType.LibraryProcedure, Accessibility.Private), GetImageSource(resx.ObjectMethodShortcut)},
-                { Tuple.Create(DeclarationType.LibraryFunction, Accessibility.Friend), GetImageSource(resx.ObjectMethodShortcut)},
-                { Tuple.Create(DeclarationType.LibraryProcedure, Accessibility.Friend), GetImageSource(resx.ObjectMethodShortcut)},
-                { Tuple.Create(DeclarationType.Procedure, Accessibility.Public), GetImageSource(resx.ObjectMethod)},
-                { Tuple.Create(DeclarationType.Procedure, Accessibility.Friend ), GetImageSource(resx.ObjectMethodFriend)},
-                { Tuple.Create(DeclarationType.Procedure, Accessibility.Private ), GetImageSource(resx.ObjectMethodPrivate)},
-                { Tuple.Create(DeclarationType.PropertyGet, Accessibility.Public), GetImageSource(resx.ObjectProperties)},
-                { Tuple.Create(DeclarationType.PropertyGet, Accessibility.Friend ), GetImageSource(resx.ObjectPropertiesFriend)},
-                { Tuple.Create(DeclarationType.PropertyGet, Accessibility.Private ), GetImageSource(resx.ObjectPropertiesPrivate)},
-                { Tuple.Create(DeclarationType.PropertyLet, Accessibility.Public), GetImageSource(resx.ObjectProperties)},
-                { Tuple.Create(DeclarationType.PropertyLet, Accessibility.Friend ), GetImageSource(resx.ObjectPropertiesFriend)},
-                { Tuple.Create(DeclarationType.PropertyLet, Accessibility.Private ), GetImageSource(resx.ObjectPropertiesPrivate)},
-                { Tuple.Create(DeclarationType.PropertySet, Accessibility.Public), GetImageSource(resx.ObjectProperties)},
-                { Tuple.Create(DeclarationType.PropertySet, Accessibility.Friend ), GetImageSource(resx.ObjectPropertiesFriend)},
-                { Tuple.Create(DeclarationType.PropertySet, Accessibility.Private ), GetImageSource(resx.ObjectPropertiesPrivate)},
-                { Tuple.Create(DeclarationType.UserDefinedType, Accessibility.Public), GetImageSource(resx.ObjectValueType)},
-                { Tuple.Create(DeclarationType.UserDefinedType, Accessibility.Private ), GetImageSource(resx.ObjectValueTypePrivate)},
-                { Tuple.Create(DeclarationType.UserDefinedTypeMember, Accessibility.Public), GetImageSource(resx.ObjectField)},
-                { Tuple.Create(DeclarationType.Variable, Accessibility.Private), GetImageSource(resx.ObjectFieldPrivate)},
-                { Tuple.Create(DeclarationType.Variable, Accessibility.Public ), GetImageSource(resx.ObjectField)},
-            };
-
-        public CodeExplorerMemberViewModel(CodeExplorerItemViewModel parent, Declaration declaration, IEnumerable<Declaration> declarations)
-        {
-            Parent = parent;
-
-            Declaration = declaration;
-            if (declarations != null)
-            {
-                Items = declarations.Where(item => SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(declaration))
-                                    .OrderBy(item => item.Selection.StartLine)
-                                    .Select(item => new CodeExplorerMemberViewModel(this, item, null))
-                                    .ToList<CodeExplorerItemViewModel>();
-            }
-
-            var modifier = declaration.Accessibility == Accessibility.Global || declaration.Accessibility == Accessibility.Implicit
-                ? Accessibility.Public
-                : declaration.Accessibility;
-            var key = Tuple.Create(declaration.DeclarationType, modifier);
-
+            AddNewChildren(ref declarations);
             Name = DetermineMemberName(declaration);
-            _icon = Mappings[key];
         }
 
-        private string RemoveExtraWhiteSpace(string value)
+        public override string Name { get; }
+
+        private string _signature;
+        public override string NameWithSignature
+        {
+            get
+            {
+                if (_signature != null)
+                {
+                    return _signature;
+                }
+
+                if (Declaration is ValuedDeclaration value && !string.IsNullOrEmpty(value.Expression))
+                {
+                    _signature = $"{Name} = {value.Expression}";
+                    return _signature;
+                }
+
+                if (!(Declaration.Context.children.FirstOrDefault(d => d is VBAParser.ArgListContext) is VBAParser.ArgListContext context))
+                {
+                    _signature = Name;
+                }
+                else if (Declaration is PropertyDeclaration)
+                {
+                    // 6 being the three-letter "get/let/set" + parens + space
+                    _signature = Name.Insert(Name.Length - 6, RemoveExtraWhiteSpace(context.GetText()));
+                }
+                else
+                {
+                    _signature = Name + RemoveExtraWhiteSpace(context.GetText());
+                }
+                return _signature;
+            }
+        }
+
+        public override bool IsObsolete =>
+            Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.Obsolete);
+
+        public static readonly DeclarationType[] SubMemberTypes =
+        {
+            DeclarationType.EnumerationMember,
+            DeclarationType.UserDefinedTypeMember
+        };
+
+        public override void Synchronize(ref List<Declaration> updated)
+        {
+            base.Synchronize(ref updated);
+            if (Declaration is null)
+            {
+                return;
+            }
+
+            // Parameter list might have changed - invalidate the signature.
+            _signature = null;
+            OnNameChanged();
+        }
+
+        protected override void AddNewChildren(ref List<Declaration> updated)
+        {
+            if (updated == null)
+            {
+                return;
+            }
+
+            var updates = updated.Where(item =>
+                SubMemberTypes.Contains(item.DeclarationType) && item.ParentDeclaration.Equals(Declaration)).ToList();
+
+            updated = updated.Except(updates.Concat(new[] { Declaration })).ToList();
+
+            AddChildren(updates.Select(item => new CodeExplorerSubMemberViewModel(this, item)));
+        }
+
+        public override Comparer<ICodeExplorerNode> SortComparer
+        {
+            get
+            {
+                switch (SortOrder)
+                {
+                    case CodeExplorerSortOrder.Name:
+                        return CodeExplorerItemComparer.Name;
+                    case CodeExplorerSortOrder.CodeLine:
+                        return CodeExplorerItemComparer.CodeLine;
+                    case CodeExplorerSortOrder.DeclarationTypeThenName:
+                        return CodeExplorerItemComparer.DeclarationTypeThenName;
+                    case CodeExplorerSortOrder.DeclarationTypeThenCodeLine:
+                        return CodeExplorerItemComparer.DeclarationTypeThenCodeLine;
+                    default:
+                        return CodeExplorerItemComparer.Name;
+                }
+            }
+        }
+
+        private static string RemoveExtraWhiteSpace(string value)
         {
             var newStr = new StringBuilder();
             var trimmedJoinedString = value.Replace(" _\r\n", " ").Trim();
@@ -100,84 +126,21 @@ namespace Rubberduck.Navigation.CodeExplorer
             return newStr.ToString();
         }
 
-        public override string Name { get; }
-
-        public override CodeExplorerItemViewModel Parent { get; }
-
-        private string _signature = null;
-        public override string NameWithSignature
-        {
-            get
-            {
-                if (_signature != null)
-                {
-                    return _signature;
-                }
-
-                var context =
-                    Declaration.Context.children.FirstOrDefault(d => d is VBAParser.ArgListContext) as VBAParser.ArgListContext;
-
-                if (context == null)
-                {
-                    _signature = Name;
-                }
-                else if (Declaration.DeclarationType == DeclarationType.PropertyGet 
-                      || Declaration.DeclarationType == DeclarationType.PropertyLet 
-                      || Declaration.DeclarationType == DeclarationType.PropertySet)
-                {
-                    // 6 being the three-letter "get/let/set" + parens + space
-                    _signature = Name.Insert(Name.Length - 6, RemoveExtraWhiteSpace(context.GetText())); 
-                }
-                else
-                {
-                    _signature = Name + RemoveExtraWhiteSpace(context.GetText());
-                }
-                return _signature;
-            }
-        }
-
-        public override QualifiedSelection? QualifiedSelection => Declaration.QualifiedSelection;
-
         private static string DetermineMemberName(Declaration declaration)
         {
-            var type = declaration.DeclarationType;
-            switch (type)
+            switch (declaration.DeclarationType)
             {
                 case DeclarationType.PropertyGet:
-                    return declaration.IdentifierName + " (Get)";
+                    return $"{declaration.IdentifierName} ({Tokens.Get})";
                 case DeclarationType.PropertyLet:
-                    return declaration.IdentifierName + " (Let)";
+                    return $"{declaration.IdentifierName} ({Tokens.Let})";
                 case DeclarationType.PropertySet:
-                    return declaration.IdentifierName + " (Set)";
+                    return $"{declaration.IdentifierName} ({Tokens.Set})";
                 case DeclarationType.Variable:
-                    if (declaration.IsArray)
-                    {
-                        return declaration.IdentifierName + "()";
-                    }
-                    return declaration.IdentifierName;
-                case DeclarationType.EnumerationMember:
-                case DeclarationType.Constant:
-                    var valuedDeclaration = (ValuedDeclaration)declaration;
-                    return (!string.IsNullOrEmpty(valuedDeclaration.Expression))
-                        ? valuedDeclaration.IdentifierName + " = " + valuedDeclaration.Expression
-                        : valuedDeclaration.IdentifierName;
+                    return declaration.IsArray ? $"{declaration.IdentifierName}()" : declaration.IdentifierName;
                 default:
                     return declaration.IdentifierName;
             }
         }
-
-        public void ParentComponentHasError()
-        {
-            _icon = GetImageSource(resx.exclamation);
-            OnPropertyChanged("CollapsedIcon");
-            OnPropertyChanged("ExpandedIcon");
-        }
-
-        private BitmapImage _icon;
-        public override BitmapImage CollapsedIcon => _icon;
-        public override BitmapImage ExpandedIcon => _icon;
-
-        public bool IsObsolete =>
-            Declaration.Annotations.Any(annotation => annotation.AnnotationType == AnnotationType.Obsolete);
     }
 }

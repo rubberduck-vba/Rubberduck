@@ -15,9 +15,9 @@ namespace Rubberduck.UI.AddRemoveReferences
 
     public class AddRemoveReferencesPresenter : IAddRemoveReferencesPresenter
     {
-        private readonly IRefactoringDialog<AddRemoveReferencesViewModel> _view;
+        private readonly AddRemoveReferencesDialog _view;
 
-        public AddRemoveReferencesPresenter(IRefactoringDialog<AddRemoveReferencesViewModel> view)
+        public AddRemoveReferencesPresenter(AddRemoveReferencesDialog view)
         {
             _view = view;
             Model = _view.ViewModel.Model;

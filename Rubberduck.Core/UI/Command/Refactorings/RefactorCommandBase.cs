@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Windows.Forms;
 using NLog;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCommandBase : CommandBase
     {
-        protected readonly IVBE Vbe;
+        protected readonly IRewritingManager RewritingManager;
+        protected readonly ISelectionService SelectionService;
 
-        protected RefactorCommandBase(IVBE vbe)
+        protected RefactorCommandBase(IRewritingManager rewritingManager, ISelectionService selectionService)
             : base (LogManager.GetCurrentClassLogger())
         {
-            Vbe = vbe;
+            RewritingManager = rewritingManager;
+            SelectionService = selectionService;
         }
 
         protected void HandleInvalidSelection(object sender, EventArgs e)

@@ -4,21 +4,19 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceField;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     public class RefactorIntroduceFieldCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
 
-        public RefactorIntroduceFieldCommand (IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
-            :base(vbe)
+        public RefactorIntroduceFieldCommand (RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+            :base(rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
         }
 
@@ -29,14 +27,15 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.GetActiveSelection();
-
-            if (!selection.HasValue)
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
                 return false;
             }
 
-            var target = _state.AllUserDeclarations.FindVariable(selection.Value);
+            var target = _state.DeclarationFinder
+                .UserDeclarations(DeclarationType.Variable)
+                .FindVariable(activeSelection.Value);
 
             return target != null 
                 && !_state.IsNewOrModified(target.QualifiedModuleName)
@@ -45,15 +44,14 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var selection = Vbe.GetActiveSelection();
-
-            if (!selection.HasValue)
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
                 return;
             }
 
-            var refactoring = new IntroduceFieldRefactoring(Vbe, _state, _messageBox, _rewritingManager);
-            refactoring.Refactor(selection.Value);
+            var refactoring = new IntroduceFieldRefactoring(_state, _messageBox, RewritingManager, SelectionService);
+            refactoring.Refactor(activeSelection.Value);
         }
     }
 }

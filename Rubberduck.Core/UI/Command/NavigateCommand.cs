@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
-using System.Windows.Input;
 using NLog;
 using Rubberduck.Interaction.Navigation;
-using Rubberduck.VBEditor.ComManagement;
+using Rubberduck.VBEditor;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command
 {
@@ -13,12 +13,12 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class NavigateCommand : CommandBase, INavigateCommand
     {
-        private readonly IProjectsProvider _projectsProvider;
+        private readonly ISelectionService _selectionService;
 
-        public NavigateCommand(IProjectsProvider projectsProvider)
+        public NavigateCommand(ISelectionService selectionService)
             : base(LogManager.GetCurrentClassLogger())
         {
-            _projectsProvider = projectsProvider;
+            _selectionService = selectionService;
         }
 
         protected override void OnExecute(object parameter)
@@ -29,20 +29,7 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            try
-            {
-                var component = _projectsProvider.Component(param.QualifiedName);
-                using (var codeModule = component.CodeModule)
-                {
-                    using (var codePane = codeModule.CodePane)
-                    {
-                        codePane.Selection = param.Selection;
-                    }
-                }
-            }
-            catch (COMException)
-            {
-            }
+            _selectionService.TrySetActiveSelection(param.QualifiedName, param.Selection);
         }
     }
 }

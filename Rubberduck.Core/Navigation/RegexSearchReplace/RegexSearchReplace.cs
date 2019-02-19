@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Navigation.RegexSearchReplace
 {
@@ -15,11 +16,13 @@ namespace Rubberduck.Navigation.RegexSearchReplace
     {
         private readonly IVBE _vbe;
         private readonly IParseCoordinator _parser;
+        private readonly ISelectionService _selectionService;
 
-        public RegexSearchReplace(IVBE vbe, IParseCoordinator parser)
+        public RegexSearchReplace(IVBE vbe, IParseCoordinator parser, ISelectionService selectionService)
         {
             _vbe = vbe;
             _parser = parser;
+            _selectionService = selectionService;
             _search = new Dictionary<RegexSearchReplaceScope, Func<string, IEnumerable<RegexSearchResult>>>
             {
                 { RegexSearchReplaceScope.Selection, SearchSelection},
@@ -89,11 +92,7 @@ namespace Rubberduck.Navigation.RegexSearchReplace
 
         private void SetSelection(RegexSearchResult item)
         {
-            var module = item.Module;
-            using (var codePane = module.CodePane)
-            {
-                codePane.Selection = item.Selection;
-            }
+            _selectionService.TrySetActiveSelection(item.Module.QualifiedModuleName, item.Selection);
         }
 
         private List<RegexSearchResult> SearchSelection(string searchPattern)

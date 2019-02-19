@@ -135,7 +135,7 @@ Option Explicit
 '@PredeclaredId</value>
   </data>
   <data name="PredeclaredClassModule_Description" xml:space="preserve">
-    <value>Adds a class module that is predeclared and thus can be used without newing it up.</value>
+    <value>Adds a class module that is predeclared and thus can be used without first creating a new instance.</value>
   </data>
   <data name="PredeclaredClassModule_Name" xml:space="preserve">
     <value>PredeclaredClassModule</value>

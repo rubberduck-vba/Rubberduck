@@ -9,6 +9,11 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.EncapsulateField;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
 {
@@ -41,7 +46,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -77,7 +82,7 @@ End Function";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -113,7 +118,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -152,7 +157,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -192,7 +197,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -232,7 +237,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -270,7 +275,7 @@ End Sub";
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bat");
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, new Mock<IMessageBox>().Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(target);
 
                 var actualCode = component.CodeModule.Content();
@@ -310,7 +315,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -347,7 +352,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -378,7 +383,7 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -407,12 +412,11 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -446,10 +450,9 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new IntroduceFieldRefactoring((vbe.Object), state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
@@ -473,10 +476,9 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new IntroduceFieldRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
 
                 try
                 {
@@ -494,6 +496,27 @@ End Sub";
 
                 Assert.Fail();
             }
+        }
+
+
+        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null)
+        {
+            var selectionService = MockedSelectionService();
+            if (msgBox == null)
+            {
+                msgBox = new Mock<IMessageBox>().Object;
+            }
+            return new IntroduceFieldRefactoring(state, msgBox, rewritingManager, selectionService);
+        }
+
+        private static ISelectionService MockedSelectionService()
+        {
+            QualifiedSelection? activeSelection = null;
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
         }
     }
 }

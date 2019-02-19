@@ -20,36 +20,48 @@ namespace Rubberduck.UI.Settings
         Slash = 47
     }
 
-    public class GeneralSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
+    public sealed class GeneralSettingsViewModel : SettingsViewModelBase<Rubberduck.Settings.GeneralSettings>, ISettingsViewModel<Rubberduck.Settings.GeneralSettings>
     {
         private readonly IOperatingSystem _operatingSystem;
         private readonly IMessageBox _messageBox;
         private readonly IVbeSettings _vbeSettings;
+        private readonly IFilePersistanceService<HotkeySettings> _hotkeyService;
 
         private bool _indenterPrompted;
-        private readonly ReadOnlyCollection<Type> _experimentalFeatureTypes;
+        private readonly IReadOnlyList<Type> _experimentalFeatureTypes;
 
-        public GeneralSettingsViewModel(Configuration config, IOperatingSystem operatingSystem, IMessageBox messageBox, IVbeSettings vbeSettings, IEnumerable<Type> experimentalFeatureTypes)
+        public GeneralSettingsViewModel(
+            Configuration config, 
+            IOperatingSystem operatingSystem, 
+            IMessageBox messageBox,
+            IVbeSettings vbeSettings,
+            IExperimentalTypesProvider experimentalTypesProvider,
+            IFilePersistanceService<Rubberduck.Settings.GeneralSettings> service,
+            IFilePersistanceService<HotkeySettings> hotkeyService) 
+            : base(service)
         {
             _operatingSystem = operatingSystem;
             _messageBox = messageBox;
             _vbeSettings = vbeSettings;
-            _experimentalFeatureTypes = experimentalFeatureTypes.ToList().AsReadOnly();
+            _experimentalFeatureTypes = experimentalTypesProvider.ExperimentalTypes;
             Languages = new ObservableCollection<DisplayLanguageSetting>(
-                new[] 
-            {
-                new DisplayLanguageSetting("en-US"),
-                new DisplayLanguageSetting("fr-CA"),
-                new DisplayLanguageSetting("de-DE"),
-                new DisplayLanguageSetting("cs-CZ")
-            });
+                new[]
+                {
+                    new DisplayLanguageSetting("en-US"),
+                    new DisplayLanguageSetting("fr-CA"),
+                    new DisplayLanguageSetting("de-DE"),
+                    new DisplayLanguageSetting("cs-CZ")
+                });
 
-            LogLevels = new ObservableCollection<MinimumLogLevel>(LogLevelHelper.LogLevels.Select(l => new MinimumLogLevel(l.Ordinal, l.Name)));
+            LogLevels = new ObservableCollection<MinimumLogLevel>(
+                LogLevelHelper.LogLevels.Select(l => new MinimumLogLevel(l.Ordinal, l.Name)));
             TransferSettingsToView(config.UserSettings.GeneralSettings, config.UserSettings.HotkeySettings);
 
             ShowLogFolderCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ShowLogFolder());
-            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings(GetCurrentGeneralSettings()));
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
+
+            _hotkeyService = hotkeyService;
         }
 
         public List<ExperimentalFeatures> ExperimentalFeatures { get; set; }
@@ -147,7 +159,7 @@ namespace Rubberduck.UI.Settings
 
                 if (value && _vbeSettings.CompileOnDemand)
                 {
-                    if(!SynchronizeVBESettings())
+                    if(!SynchronizeVbeSettings())
                     {
                         return;
                     }
@@ -181,7 +193,7 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private bool SynchronizeVBESettings()
+        private bool SynchronizeVbeSettings()
         {
             if (!_messageBox.ConfirmYesNo(RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled,
                 RubberduckUI.GeneralSettings_CompileBeforeParse_WarnCompileOnDemandEnabled_Caption, true))
@@ -276,10 +288,17 @@ namespace Rubberduck.UI.Settings
             };
         }
 
+        protected override void TransferSettingsToView(Rubberduck.Settings.GeneralSettings toLoad)
+        {
+            TransferSettingsToView(toLoad, null);
+        }
+
         private void TransferSettingsToView(IGeneralSettings general, IHotkeySettings hottkey)
         {
             SelectedLanguage = Languages.First(l => l.Code == general.Language.Code);
-            Hotkeys = new ObservableCollection<HotkeySetting>(hottkey.Settings);
+            Hotkeys = hottkey == null
+                ? new ObservableCollection<HotkeySetting>()
+                : new ObservableCollection<HotkeySetting>(hottkey.Settings);
             ShowSplashAtStartup = general.CanShowSplash;
             CheckVersionAtStartup = general.CanCheckVersion;
             CompileBeforeParse = general.CompileBeforeParse;
@@ -297,7 +316,10 @@ namespace Rubberduck.UI.Settings
                 .ToList();
         }
 
-        private void ImportSettings()
+        protected override string DialogLoadTitle => SettingsUI.DialogCaption_LoadGeneralSettings;
+        protected override string DialogSaveTitle => SettingsUI.DialogCaption_SaveGeneralSettings;
+
+        protected override void ImportSettings()
         {
             using (var dialog = new OpenFileDialog
             {
@@ -307,17 +329,15 @@ namespace Rubberduck.UI.Settings
             {
                 dialog.ShowDialog();
                 if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.GeneralSettings> { FilePath = dialog.FileName };
-                var general = service.Load(new Rubberduck.Settings.GeneralSettings());
-                var hkService = new XmlPersistanceService<HotkeySettings> { FilePath = dialog.FileName };
-                var hotkey = hkService.Load(new HotkeySettings());
+                var general = Service.Load(new Rubberduck.Settings.GeneralSettings(), dialog.FileName);
+                var hotkey = _hotkeyService.Load(new HotkeySettings(), dialog.FileName);
                 //Always assume Smart Indenter registry import has been prompted if importing.
                 general.IsSmartIndenterPrompted = true;
                 TransferSettingsToView(general, hotkey);
             }
         }
 
-        private void ExportSettings()
+        protected override void ExportSettings(Rubberduck.Settings.GeneralSettings settings)
         {
             using (var dialog = new SaveFileDialog
             {
@@ -327,10 +347,8 @@ namespace Rubberduck.UI.Settings
             {
                 dialog.ShowDialog();
                 if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<Rubberduck.Settings.GeneralSettings> { FilePath = dialog.FileName };
-                service.Save(GetCurrentGeneralSettings());
-                var hkService = new XmlPersistanceService<HotkeySettings> { FilePath = dialog.FileName };
-                hkService.Save(new HotkeySettings { Settings = Hotkeys.ToArray() });
+                Service.Save(settings, dialog.FileName);
+                _hotkeyService.Save(new HotkeySettings { Settings = Hotkeys.ToArray() }, dialog.FileName);
             }
         }
     }

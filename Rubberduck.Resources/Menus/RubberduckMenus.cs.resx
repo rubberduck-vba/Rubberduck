@@ -234,4 +234,7 @@
   <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
     <value>Regex &amp;Asistent</value>
   </data>
+  <data name="AddRemoveReferences" xml:space="preserve">
+    <value>Přidat/Odebrat Reference...</value>
+  </data>
 </root>

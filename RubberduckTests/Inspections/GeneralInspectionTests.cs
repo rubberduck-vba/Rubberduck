@@ -54,6 +54,18 @@ namespace RubberduckTests.Inspections
 
         [Test]
         [Category("Inspections")]
+        public void InspectionNameStringsAreUnique()
+        {
+            var inspections = typeof(InspectionBase).Assembly.GetTypes()
+                .Where(type => GetAllBaseTypes(type).Contains(typeof(InspectionBase)) && !type.IsAbstract)
+                .Select(i => i.Name)
+                .ToList();
+
+            Assert.AreEqual(inspections.Count, inspections.Distinct().Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
         public void InspectionMetaStringsExist()
         {
             var inspections = typeof(InspectionBase).Assembly.GetTypes()

@@ -234,4 +234,7 @@
   <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
     <value>Vybraná Kategorie</value>
   </data>
+  <data name="TestExplorer_Uncategorized" xml:space="preserve">
+    <value>Bez kategorie</value>
+  </data>
 </root>

@@ -24,6 +24,7 @@ using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Mocks
 {
@@ -133,8 +134,11 @@ namespace RubberduckTests.Mocks
                 codePaneSourceCodeHandler,
                 attributesSourceCodeHandler);
             var rewriterProvider = new RewriterProvider(tokenStreamCache, moduleRewriterFactory);
-            var rewriteSessionFactory = new RewriteSessionFactory(state, rewriterProvider);
-            var rewritingManager = new RewritingManager(rewriteSessionFactory); 
+            var selectionService = new SelectionService(vbe, projectRepository);
+            var selectionRecoverer = new SelectionRecoverer(selectionService, state);
+            var rewriteSessionFactory = new RewriteSessionFactory(state, rewriterProvider, selectionRecoverer);
+            var stubMembersAttributeRecoverer = new Mock<IMemberAttributeRecovererWithSettableRewritingManager>().Object;
+            var rewritingManager = new RewritingManager(rewriteSessionFactory, stubMembersAttributeRecoverer); 
 
             var parser = new SynchronousParseCoordinator(
                 state,

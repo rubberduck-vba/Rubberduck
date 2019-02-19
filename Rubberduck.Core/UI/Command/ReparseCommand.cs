@@ -16,6 +16,12 @@ using Rubberduck.VBEditor.VbeRuntime.Settings;
 namespace Rubberduck.UI.Command
 {
     [ComVisible(false)]
+    public class ReparseCancellationFlag
+    {
+        public bool Canceled { get;  set; }
+    }
+
+    [ComVisible(false)]
     public class ReparseCommand : CommandBase
     {
         private readonly IVBE _vbe;
@@ -46,10 +52,22 @@ namespace Rubberduck.UI.Command
 
         protected override void OnExecute(object parameter)
         {
+            // WPF binds to EvaluateCanExecute asychronously, which means that in some instances the bound refresh control will
+            // enable itself based on a "stale" ParserState. There's no easy way to test for race conditions inside WPF, so we
+            // need to make this test again...
+            if (!EvaluateCanExecute(parameter))
+            {
+                return;
+            }
+
             if (_settings.CompileBeforeParse)
             {
                 if (!VerifyCompileOnDemand())
                 {
+                    if (parameter is ReparseCancellationFlag cancellation)
+                    {
+                        cancellation.Canceled = true;
+                    }
                     return;
                 }
 
@@ -57,6 +75,10 @@ namespace Rubberduck.UI.Command
                 {
                     if (!PromptUserToContinue(failedNames))
                     {
+                        if (parameter is ReparseCancellationFlag cancellation)
+                        {
+                            cancellation.Canceled = true;
+                        }
                         return;
                     }
                 }

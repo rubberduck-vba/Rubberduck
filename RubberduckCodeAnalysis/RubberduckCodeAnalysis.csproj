@@ -10,10 +10,8 @@
     <!-- default to release, since this is code analysis. we want it fast -->
     <Configuration>Release</Configuration>
     <ProjectGuid>{F83B6746-49A6-4CFD-9A29-3D7BBD4F0323}</ProjectGuid>
-    
-    <UnifyOutputPath>true</UnifyOutputPath>
   </PropertyGroup>
-  <Import Project="..\RubberduckBaseProject.csproj" />
+  <Import Project="..\RubberduckBaseMetaProject.csproj" />
   
   <ItemGroup>
     <None Include="app.config" />

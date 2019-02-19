@@ -8,7 +8,6 @@ using Rubberduck.AddRemoveReferences;
 using Rubberduck.Parsing.ComReflection.TypeLibReflection;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor;
@@ -17,7 +16,7 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.AddRemoveReferences
 {
-    public interface IAddRemoveReferencesPresenterFactory : IRefactoringPresenterFactory<AddRemoveReferencesPresenter>
+    public interface IAddRemoveReferencesPresenterFactory
     {
         AddRemoveReferencesPresenter Create(ProjectDeclaration project);
     }
@@ -88,6 +87,13 @@ namespace Rubberduck.UI.AddRemoveReferences
                     foreach (var reference in references)
                     {
                         var guid = Guid.TryParse(reference.Guid, out var result) ? result : Guid.Empty;
+
+                        // This avoids collisions when the parse actually succeeds, but the result is empty.
+                        if (guid.Equals(Guid.Empty))
+                        {
+                            guid = new Guid(priority, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                        }
+
                         var libraryId = new RegisteredLibraryKey(guid, reference.Major, reference.Minor);
 
                         // TODO: If for some reason the VBA reference is broken, we could technically use this to repair it. Just a thought...
@@ -112,7 +118,7 @@ namespace Rubberduck.UI.AddRemoveReferences
                 }
 
                 var settings = _settings.Create();
-                model = new AddRemoveReferencesModel(project, models.Values, settings);
+                model = new AddRemoveReferencesModel(_state, project, models.Values, settings);
                 if (AddRemoveReferencesViewModel.HostHasProjects)
                 {
                     model.References.AddRange(GetUserProjectFolderModels(model.Settings).Where(proj =>

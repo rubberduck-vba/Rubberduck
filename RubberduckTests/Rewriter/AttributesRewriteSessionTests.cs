@@ -89,10 +89,116 @@ namespace RubberduckTests.Rewriter
             Assert.AreEqual(CodeKind.AttributesCode, rewriteSession.TargetCodeKind);
         }
 
-        protected override IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false)
+        [Test]
+        [Category("Rewriter")]
+        public void CallsRecoverOpenStateOnNextParseOnRewrite()
         {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.RecoverOpenStateOnNextParse());
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.TryRewrite();
+
+            selectionRecovererMock.Verify(m => m.RecoverOpenStateOnNextParse(), Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void SavesOpenStateForCheckedOutModulesOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.SaveOpenState(It.IsAny<IEnumerable<QualifiedModuleName>>()));
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+            var module2 = new QualifiedModuleName("TestProject", string.Empty, "TestModule2");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.CheckOutModuleRewriter(module2);
+            rewriteSession.TryRewrite();
+
+            selectionRecovererMock.Verify(m => m.SaveOpenState(It.Is<IEnumerable<QualifiedModuleName>>(modules => modules.Count() == 2 && modules.Contains(module) && modules.Contains(module2))));
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void SavesOpenStateBeforeRecoverOpenStateOnNextParseOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            var lastOperation = string.Empty;
+            selectionRecovererMock.Setup(m => m.SaveOpenState(It.IsAny<IEnumerable<QualifiedModuleName>>())).Callback(() => lastOperation = "SaveOpenState");
+            selectionRecovererMock.Setup(m => m.RecoverOpenStateOnNextParse()).Callback(() => lastOperation = "RecoverOpenStateOnNextParse");
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.TryRewrite();
+
+            Assert.AreEqual("RecoverOpenStateOnNextParse", lastOperation);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void CallsRecoverActiveCodePaneOnNextParseOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.RecoverActiveCodePaneOnNextParse());
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.TryRewrite();
+
+            selectionRecovererMock.Verify(m => m.RecoverActiveCodePaneOnNextParse(), Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void SavesActiveCodePaneOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            selectionRecovererMock.Setup(m => m.SaveActiveCodePane());
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.TryRewrite();
+
+            selectionRecovererMock.Verify(m => m.SaveActiveCodePane(), Times.Once);
+        }
+
+        [Test]
+        [Category("Rewriter")]
+        public void SavesActiveCodePaneBeforeRestoringItOnRewrite()
+        {
+            var selectionRecovererMock = new Mock<ISelectionRecoverer>();
+            var lastOperation = string.Empty;
+            selectionRecovererMock.Setup(m => m.SaveActiveCodePane()).Callback(() => lastOperation = "SaveActiveCodePane");
+            selectionRecovererMock.Setup(m => m.RecoverActiveCodePaneOnNextParse()).Callback(() => lastOperation = "RecoverActiveCodePaneOnNextParse");
+
+            var rewriteSession = RewriteSession(session => true, out var mockRewriterProvider, selectionRecoverer: selectionRecovererMock.Object);
+            var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
+
+            rewriteSession.CheckOutModuleRewriter(module);
+            rewriteSession.TryRewrite();
+
+            Assert.AreEqual("RecoverActiveCodePaneOnNextParse", lastOperation);
+        }
+
+        protected override IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false, ISelectionRecoverer selectionRecoverer = null)
+        {
+            if (selectionRecoverer == null)
+            {
+                selectionRecoverer = new Mock<ISelectionRecoverer>().Object;
+            }
             mockProvider = new MockRewriterProvider(rewritersAreDirty);
-            return new AttributesRewriteSession(parseManager, mockProvider, rewritingAllowed);
+            return new AttributesRewriteSession(parseManager, mockProvider, selectionRecoverer, rewritingAllowed);
         }
     }
 }

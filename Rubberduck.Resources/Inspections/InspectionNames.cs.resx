@@ -327,4 +327,40 @@
   <data name="ObsoleteCallingConventionInspection" xml:space="preserve">
     <value>Použití zastaralé 'CDecl' volací konvence</value>
   </data>
+  <data name="DuplicatedAnnotationInspection" xml:space="preserve">
+    <value>Anotace je duplikována.</value>
+  </data>
+  <data name="ModuleWithoutFolderInspection" xml:space="preserve">
+    <value>Modul bez '@Folder' anotace</value>
+  </data>
+  <data name="OnLocalErrorInspection" xml:space="preserve">
+    <value>On Local Error statement</value>
+  </data>
+  <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
+    <value>Nevhodné použití funkce 'IsMissing'</value>
+  </data>
+  <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
+    <value>Nevhodné použití funkce 'IsMissing'</value>
+  </data>
+  <data name="AssignmentNotUsedInspection" xml:space="preserve">
+    <value>Přiřazení není použito</value>
+  </data>
+  <data name="UnderscoreInPublicClassModuleMemberInspection" xml:space="preserve">
+    <value>Podtržítko ve členu modulu veřejné třídy</value>
+  </data>
+  <data name="ExcelMemberMayReturnNothingInspection" xml:space="preserve">
+    <value>Je možné, že členský přístup může vrátit 'Nothing'</value>
+  </data>
+  <data name="AttributeValueOutOfSyncInspection" xml:space="preserve">
+    <value>Hodnota nesedí mezi atributem a anotací.</value>
+  </data>
+  <data name="MissingMemberAnnotationInspection" xml:space="preserve">
+    <value>Chybějící anotace členu</value>
+  </data>
+  <data name="MissingModuleAnnotationInspection" xml:space="preserve">
+    <value>Chybějící anotace modulu</value>
+  </data>
+  <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
+    <value>Funkce je schována referencí Excelovské buňky</value>
+  </data>
 </root>

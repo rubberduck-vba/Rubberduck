@@ -2,19 +2,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.IdentifierReferences
 {
     public class ImplementationsListDockablePresenter : DockableToolwindowPresenter
     {
-        private readonly IProjectsProvider _projectsProvider;
+        private readonly ISelectionService _selectionService;
 
-        public ImplementationsListDockablePresenter(IVBE vbe, IAddIn addin, IDockableUserControl control, IProjectsProvider projectsProvider, IEnumerable<Declaration> implementations)
+        public ImplementationsListDockablePresenter(IVBE vbe, IAddIn addin, IDockableUserControl control, ISelectionService selectionService, IEnumerable<Declaration> implementations)
             : base(vbe, addin, control, null)
         {
-            _projectsProvider = projectsProvider;
+            _selectionService = selectionService;
 
             BindTarget(implementations);
         }
@@ -33,14 +33,7 @@ namespace Rubberduck.UI.IdentifierReferences
 
         private void OnNavigateImplementation(Declaration implementation)
         {
-            var component = _projectsProvider.Component(implementation.QualifiedName.QualifiedModuleName);
-            using (var codeModule = component.CodeModule)
-            {
-                using (var codePane = codeModule.CodePane)
-                {
-                    codePane.Selection = implementation.Selection;
-                }
-            }
+            _selectionService.TrySetActiveSelection(implementation.QualifiedModuleName, implementation.Selection);
         }
 
         private void ControlNavigate(object sender, ListItemActionEventArgs e)

@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.UI;
 
 namespace Rubberduck.Refactorings.ExtractInterface
 {
@@ -19,13 +20,23 @@ namespace Rubberduck.Refactorings.ExtractInterface
         }
     }
 
-    public class InterfaceMember
+    public class InterfaceMember : INotifyPropertyChanged
     {
         public Declaration Member { get; }
         public IEnumerable<Parameter> MemberParams { get; }
         private string Type { get; }
-
         private string MemberType { get; set; }
+
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set
+            {
+                _isSelected = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string Identifier { get; }
 
@@ -103,5 +114,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
         }
 
         public string Body => string.Format("Public {0}{1}End {2}{1}", FullMemberSignature, Environment.NewLine, MemberType.Split(' ').First());
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 }

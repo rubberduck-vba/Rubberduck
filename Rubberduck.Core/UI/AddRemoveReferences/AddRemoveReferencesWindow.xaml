@@ -46,11 +46,13 @@
                                                 UpdateSourceTrigger=PropertyChanged}"
                                      x:Name="textSource" 
                                      Background="Transparent" 
-                                     Panel.ZIndex="2" />
+                                     Panel.ZIndex="2" 
+                                     VerticalContentAlignment="Center" />
                             <TextBox Text="{TemplateBinding Tag}" Background="{TemplateBinding Background}" Panel.ZIndex="1">
                                 <TextBox.Style>
                                     <Style TargetType="{x:Type TextBox}">
                                         <Setter Property="Foreground" Value="Transparent"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Path=Text, Source={x:Reference textSource}}" Value="">
                                                 <Setter Property="Foreground" Value="LightGray"/>
@@ -220,10 +222,12 @@
                                 <Button Name="SearchButton"  Grid.Column="1" Command="{Binding ClearSearchCommand}" 
                                         BorderBrush="{x:Static SystemColors.ControlLightBrush}"
                                         Background="Transparent"
-                                        Width="20" Height="20" Padding="0" Margin="0,1"
-                                        controls:EventFocusAttachment.ElementToFocus="{Binding ElementName=SearchBox}">
-                                    <Image Margin="2" Width="16" Height="16" 
-                                           Source="{Binding Search, Converter={StaticResource SearchToIcon}, UpdateSourceTrigger=PropertyChanged}" />
+                                        Width="20" Height="20" Padding="0" Margin="0,1">
+                                    <Image VerticalAlignment="Center" HorizontalAlignment="Center" 
+                                           Width="16" Height="16" Source="{Binding Search, Converter={StaticResource SearchToIcon}, UpdateSourceTrigger=PropertyChanged}" />
+                                    <i:Interaction.Behaviors>
+                                        <controls:FocusElementAfterClickBehavior FocusElement="{Binding ElementName=SearchBox, Mode=OneWay}"/>
+                                    </i:Interaction.Behaviors>
                                 </Button>
                             </Grid>
                         </Border>

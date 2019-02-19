@@ -10,71 +10,76 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+ using Rubberduck.Parsing.VBA;
+ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersRefactoring : IRefactoring
     {
-        private readonly IVBE _vbe;
-        private readonly IRefactoringPresenterFactory<IReorderParametersPresenter> _factory;
+        private readonly RubberduckParserState _state;
+        private readonly IRefactoringPresenterFactory _factory;
         private ReorderParametersModel _model;
         private readonly IMessageBox _messageBox;
         private readonly IRewritingManager _rewritingManager;
+        private readonly ISelectionService _selectionService;
 
-        public ReorderParametersRefactoring(IVBE vbe, IRefactoringPresenterFactory<IReorderParametersPresenter> factory,
-            IMessageBox messageBox, IRewritingManager rewritingManager)
+        public ReorderParametersRefactoring(RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
-            _vbe = vbe;
+            _state = state;
+            _selectionService = selectionService;
             _factory = factory;
             _messageBox = messageBox;
             _rewritingManager = rewritingManager;
         }
 
+        private ReorderParametersModel InitializeModel()
+        {
+            var activeSelection = _selectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
+            {
+                return null;
+            }
+
+            return new ReorderParametersModel(_state, activeSelection.Value);
+        }
+
         public void Refactor()
         {
-            var presenter = _factory.Create();
-            if (presenter == null)
+            _model = InitializeModel();
+            if (_model == null)
             {
                 return;
             }
 
-            _model = presenter.Show();
-            if (_model == null || !_model.Parameters.Where((param, index) => param.Index != index).Any() || !IsValidParamOrder())
+            using (var container = DisposalActionContainer.Create(_factory.Create<IReorderParametersPresenter, ReorderParametersModel>(_model), p => _factory.Release(p)))
             {
-                return;
-            }
-
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane.IsWrappingNullReference)
+                var presenter = container.Value;
+                if (presenter == null)
                 {
                     return;
                 }
 
-                var oldSelection = pane.GetQualifiedSelection();
-
+                _model = presenter.Show();
+                if (_model == null || !_model.Parameters.Where((param, index) => param.Index != index).Any() ||
+                    !IsValidParamOrder())
+                {
+                    return;
+                }
+                
                 var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
                 AdjustReferences(_model.TargetDeclaration.References, rewriteSession);
                 AdjustSignatures(rewriteSession);
                 rewriteSession.TryRewrite();
-
-                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                } 
+                _model.State.OnParseRequested(this);
             }
         }
 
         public void Refactor(QualifiedSelection target)
         {
-            using (var pane = _vbe.ActiveCodePane)
+            if (!_selectionService.TrySetActiveSelection(target))
             {
-                if (pane == null || pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-
-                pane.Selection = target.Selection;
+                return;
             }
             Refactor();
         }
@@ -86,15 +91,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 throw new ArgumentException("Invalid declaration type");
             }
 
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                if (pane == null || pane.IsWrappingNullReference)
-                {
-                    return;
-                }
-                pane.Selection = target.QualifiedSelection.Selection;
-            }
-            Refactor();
+            Refactor(target.QualifiedSelection);
         }
 
         private bool IsValidParamOrder()

@@ -17,7 +17,7 @@ namespace RubberduckTests.Settings
     {
         private static AddRemoveReferencesUserSettingsViewModel GetSettingsViewModel(ReferenceSettings settings)
         {
-            return new AddRemoveReferencesUserSettingsViewModel(AddRemoveReferencesSetup.GetReferenceSettingsProvider(settings), new Mock<IFileSystemBrowserFactory>().Object);
+            return new AddRemoveReferencesUserSettingsViewModel(AddRemoveReferencesSetup.GetReferenceSettingsProvider(settings), new Mock<IFileSystemBrowserFactory>().Object, null);
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace RubberduckTests.Settings
         {
             var clean = AddRemoveReferencesSetup.GetDefaultReferenceSettings();
             var provider = AddRemoveReferencesSetup.GetMockReferenceSettingsProvider(clean);
-            var viewModel = new AddRemoveReferencesUserSettingsViewModel(provider.Object, new Mock<IFileSystemBrowserFactory>().Object);
+            var viewModel = new AddRemoveReferencesUserSettingsViewModel(provider.Object, new Mock<IFileSystemBrowserFactory>().Object, null);
 
             viewModel.UpdateConfig(null);
             provider.Verify(m => m.Save(It.IsAny<ReferenceSettings>()), Times.Once);
@@ -272,7 +272,7 @@ namespace RubberduckTests.Settings
         {
             var clean = AddRemoveReferencesSetup.GetDefaultReferenceSettings();
             var provider = AddRemoveReferencesSetup.GetMockReferenceSettingsProvider(clean);
-            var viewModel = new AddRemoveReferencesUserSettingsViewModel(provider.Object, new Mock<IFileSystemBrowserFactory>().Object);
+            var viewModel = new AddRemoveReferencesUserSettingsViewModel(provider.Object, new Mock<IFileSystemBrowserFactory>().Object, null);
 
             viewModel.UpdateConfig(null);
             provider.Verify(m => m.Save(clean), Times.Once);

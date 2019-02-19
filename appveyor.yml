@@ -1,4 +1,4 @@
-version: '2.3.1.{build}'
+version: '2.4.0.{build}'
 
 # add nuget api to hosts file, making sure we can actually nuget restore for the build
 hosts:
@@ -54,7 +54,8 @@ before_build:
   - cinst innosetup
   - cinst codecov
   - cinst opencover.portable
-  - nuget restore
+  - nuget restore RubberduckMeta.sln
+  - nuget restore Rubberduck.sln
 build:
   verbosity: minimal
   project: Rubberduck.sln

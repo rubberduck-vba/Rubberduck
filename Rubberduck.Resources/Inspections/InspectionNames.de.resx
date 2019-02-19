@@ -337,10 +337,10 @@
     <value>'On Local Error'-Direktive</value>
   </data>
   <data name="IsMissingOnInappropriateArgumentInspection" xml:space="preserve">
-    <value>Unpassende Verwendung der 'IsMissing'-Funktion</value>
+    <value>Unpassende Verwendung der 'IsMissing'-Funktion - Parameter ist nicht vom Typ Variant</value>
   </data>
   <data name="IsMissingWithNonArgumentParameterInspection" xml:space="preserve">
-    <value>Unpassende Verwendung der 'IsMissing'-Funktion</value>
+    <value>Unpassende Verwendung der 'IsMissing'-Funktion - Lokale Variable kann nie fehlen</value>
   </data>
   <data name="AssignmentNotUsedInspection" xml:space="preserve">
     <value>Zuweisung wird nie gelesen</value>

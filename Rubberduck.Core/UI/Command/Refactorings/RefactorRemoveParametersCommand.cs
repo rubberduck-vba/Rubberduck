@@ -1,30 +1,26 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.UI.Refactorings.RemoveParameters;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
     public class RefactorRemoveParametersCommand : RefactorCommandBase
     {
-        private readonly IMessageBox _msgbox;
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
+        private readonly IRefactoringPresenterFactory _factory;
 
-        public RefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgbox, IRewritingManager rewritingManager) 
-            : base (vbe)
+        public RefactorRemoveParametersCommand(RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
+            : base (rewritingManager, selectionService)
         {
-            _msgbox = msgbox;
             _state = state;
-            _rewritingManager = rewritingManager;
+            _factory = factory;
         }
 
         private static readonly DeclarationType[] ValidDeclarationTypes =
@@ -44,14 +40,14 @@ namespace Rubberduck.UI.Command.Refactorings
                 return false;
             }
 
-            var selection = Vbe.GetActiveSelection();
+            var activeSelection = SelectionService.ActiveSelection();
 
-            if (!selection.HasValue)
+            if (!activeSelection.HasValue)
             {
                 return false;
             }
 
-            var member = _state.AllUserDeclarations.FindTarget(selection.Value, ValidDeclarationTypes);
+            var member = _state.DeclarationFinder.AllUserDeclarations.FindTarget(activeSelection.Value, ValidDeclarationTypes);
             if (member == null)
             {
                 return false;
@@ -68,19 +64,18 @@ namespace Rubberduck.UI.Command.Refactorings
                     || member.DeclarationType == DeclarationType.PropertySet
                         ? parameters.Count > 1
                         : parameters.Any();
-            
         }
 
         protected override void OnExecute(object parameter)
         {
-            var selection = Vbe.GetActiveSelection();
-
-            using (var view = new RemoveParametersDialog(new RemoveParametersViewModel(_state)))
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
-                var factory = new RemoveParametersPresenterFactory(Vbe, view, _state, _msgbox);
-                var refactoring = new RemoveParametersRefactoring(Vbe, factory, _rewritingManager);
-                refactoring.Refactor(selection.Value);
+                return;
             }
+
+            var refactoring = new RemoveParametersRefactoring(_state, _factory, RewritingManager, SelectionService);
+            refactoring.Refactor(activeSelection.Value);
         }
     }
 }

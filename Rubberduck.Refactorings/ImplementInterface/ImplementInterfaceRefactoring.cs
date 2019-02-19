@@ -8,16 +8,16 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ImplementInterface
 {
     public class ImplementInterfaceRefactoring : IRefactoring
     {
-        private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
+        private readonly ISelectionService _selectionService;
 
         private readonly List<Declaration> _declarations;
         private ClassModuleDeclaration _targetInterface;
@@ -25,35 +25,25 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
-        public ImplementInterfaceRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
+        public ImplementInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
-            _vbe = vbe;
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
             _rewritingManager = rewritingManager;
-            _declarations = state.AllUserDeclarations.ToList();
+            _declarations = declarationFinderProvider.DeclarationFinder.AllUserDeclarations.ToList();
             _messageBox = messageBox;
+            _selectionService = selectionService;
         }
 
         public void Refactor()
         {
-            QualifiedSelection? qualifiedSelection;
-            using (var activePane = _vbe.ActiveCodePane)
+            var activeSelection = _selectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
-                if (activePane == null || activePane.IsWrappingNullReference)
-                {
-                    _messageBox.NotifyWarn(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption);
-                    return;
-                }
-
-                qualifiedSelection = activePane.GetQualifiedSelection();
-                if (!qualifiedSelection.HasValue)
-                {
-                    _messageBox.NotifyWarn(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption);
-                    return;
-                }
+                _messageBox.NotifyWarn(RubberduckUI.ImplementInterface_InvalidSelectionMessage, RubberduckUI.ImplementInterface_Caption);
+                return;
             }
 
-            Refactor(qualifiedSelection.Value);
+            Refactor(activeSelection.Value);
         }
 
         private static readonly IReadOnlyList<DeclarationType> ImplementingModuleTypes = new[]
@@ -65,7 +55,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         public void Refactor(QualifiedSelection selection)
         {
-            _targetInterface = _state.DeclarationFinder.FindInterface(selection);
+            _targetInterface = _declarationFinderProvider.DeclarationFinder.FindInterface(selection);
 
             _targetClass = _declarations.SingleOrDefault(d =>
                         ImplementingModuleTypes.Contains(d.DeclarationType) &&
@@ -77,26 +67,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
                 return;
             }
 
-            var oldSelection = _vbe.GetActiveSelection();
 
             var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(_targetClass.QualifiedModuleName);
             ImplementMissingMembers(rewriter);
-            rewriteSession.TryRewrite();
-
-            if (oldSelection.HasValue)
-            {
-                var component = _state.ProjectsProvider.Component(oldSelection.Value.QualifiedName);
-                using (var module = component.CodeModule)
-                {
-                    using (var pane = module.CodePane)
-                    {
-                        pane.Selection = oldSelection.Value.Selection;
-                    }
-                }
-            }
-
-            _state.OnParseRequested(this);
+            rewriteSession.TryRewrite();     
         }
 
         public void Refactor(Declaration target)

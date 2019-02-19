@@ -15,6 +15,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -24,12 +25,14 @@ namespace Rubberduck.UI.ToDoItems
         private readonly IGeneralConfigService _configService;
         private readonly ISettingsFormFactory _settingsFormFactory;
 
-        public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService, ISettingsFormFactory settingsFormFactory)
+        public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService, ISettingsFormFactory settingsFormFactory, ISelectionService selectionService)
         {
             _state = state;
             _configService = configService;
             _settingsFormFactory = settingsFormFactory;
             _state.StateChanged += HandleStateChanged;
+
+            _navigateCommand = new Lazy<NavigateCommand>(() => new NavigateCommand(selectionService));
 
             SetMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
             {
@@ -233,18 +236,8 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private NavigateCommand _navigateCommand;
-        public INavigateCommand NavigateCommand
-        {
-            get
-            {
-                if (_navigateCommand != null)
-                {
-                    return _navigateCommand;
-                }
-                return _navigateCommand = new NavigateCommand(_state.ProjectsProvider);
-            }
-        }
+        private readonly Lazy<NavigateCommand> _navigateCommand;
+        public INavigateCommand NavigateCommand => _navigateCommand.Value;
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
