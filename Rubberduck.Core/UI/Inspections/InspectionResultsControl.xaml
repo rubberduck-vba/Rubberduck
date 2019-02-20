@@ -197,15 +197,15 @@
                                SelectionUnit="FullRow"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
                                VirtualizingPanel.IsVirtualizingWhenGrouping="False">
-                <DataGrid.RowDetailsTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Rectangle Fill="Transparent" />
-                            <GridViewRowPresenter/>
-                        </Grid>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Rectangle Fill="Transparent" />
+                        <GridViewRowPresenter/>
+                    </Grid>
                 </DataTemplate>
-                </DataGrid.RowDetailsTemplate>
-                <DataGrid.Columns>
+            </DataGrid.RowDetailsTemplate>
+            <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
@@ -217,7 +217,7 @@
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Location}" Binding="{Binding QualifiedSelection.QualifiedName, Mode=OneTime}" />
             </DataGrid.Columns>
             <DataGrid.ContextMenu>
-                <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}" Visibility="Collapsed">
+                <ContextMenu ItemsSource="{Binding PlacementTarget.DataContext.QuickFixes, RelativeSource={RelativeSource Self}}">
                     <ContextMenu.Resources>
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="Icon">
@@ -235,7 +235,6 @@
             </DataGrid.ContextMenu>
             <i:Interaction.Behaviors>
                 <controls:GroupItemExpandedBehavior ExpandedState="{Binding ExpandedState, Mode=TwoWay}" />
-                <codeInspections:InspectionContextMenuBehavior />
             </i:Interaction.Behaviors>
         </controls:GroupingGrid>
 
@@ -249,7 +248,7 @@
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
             <StackPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
-                
+
                 <Grid Margin="4" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="25" />
@@ -287,6 +286,6 @@
                 </WrapPanel>
             </StackPanel>
         </Border>
-        
+
     </Grid>
 </UserControl>
