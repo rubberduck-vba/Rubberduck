@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Settings;
 using Rubberduck.UI.UnitTesting.Commands;
-using Rubberduck.UnitTesting;
+using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -21,8 +19,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerMemberViewModel)
         };
 
-        public AddTestComponentCommand(IVBE vbe, RubberduckParserState state, IGeneralConfigService configLoader, IMessageBox messageBox, IVBEInteraction interaction) 
-            : base(vbe, state, configLoader, messageBox, interaction) { }
+        public AddTestComponentCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator) 
+            : base(vbe, state, codeGenerator) { }
 
         protected override bool EvaluateCanExecute(object parameter)
         {

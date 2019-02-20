@@ -55,6 +55,7 @@ using Rubberduck.VBEditor.Utility;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
 using Rubberduck.VBEditor.VbeRuntime;
+using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.Root
 {
@@ -241,6 +242,10 @@ namespace Rubberduck.Root
 
             container.Register(Component.For<IConfigProvider<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
+                .LifestyleSingleton());
+
+            container.Register(Component.For<IConfigProvider<UnitTesting.Settings.UnitTestSettings>>()
+                .ImplementedBy<UnitTestConfigProvider>()
                 .LifestyleSingleton());
         }
 
@@ -454,7 +459,9 @@ namespace Rubberduck.Root
                 typeof(SmartIndenterParentMenu),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
-                typeof(FindAllImplementationsCommandMenuItem)
+                typeof(FindAllImplementationsCommandMenuItem),
+                typeof(RunSelectedTestModuleCommandMenuItem),
+                typeof(RunSelectedTestMethodCommandMenuItem)
             };
         }
 

@@ -422,9 +422,9 @@ namespace Rubberduck.Properties {
   <MethodInit>true</MethodInit>
   <DefaultTestStubInNewModule>false</DefaultTestStubInNewModule>
 </UnitTestSettings>")]
-        public global::Rubberduck.Settings.UnitTestSettings UnitTestSettings {
+        public global::Rubberduck.UnitTesting.Settings.UnitTestSettings UnitTestSettings {
             get {
-                return ((global::Rubberduck.Settings.UnitTestSettings)(this["UnitTestSettings"]));
+                return ((global::Rubberduck.UnitTesting.Settings.UnitTestSettings)(this["UnitTestSettings"]));
             }
         }
         

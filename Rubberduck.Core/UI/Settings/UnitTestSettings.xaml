@@ -4,10 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:settings="clr-namespace:Rubberduck.UI.Settings"
-             xmlns:settingsConfig="clr-namespace:Rubberduck.Settings"
              xmlns:converters="clr-namespace:Rubberduck.UI.Settings.Converters"
              xmlns:core="clr-namespace:System;assembly=mscorlib"
              xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:settingsConfig="clr-namespace:Rubberduck.UnitTesting.Settings;assembly=Rubberduck.UnitTesting"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type settings:UnitTestSettingsViewModel}, IsDesignTimeCreatable=False}">

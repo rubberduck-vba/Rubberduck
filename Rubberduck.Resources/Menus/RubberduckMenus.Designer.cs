@@ -95,7 +95,25 @@ namespace Rubberduck.Resources.Menus {
                 return ResourceManager.GetString("ContextMenu_GoToImplementation", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Run selected test.
+        /// </summary>
+        public static string ContextMenu_RunSelectedTest {
+            get {
+                return ResourceManager.GetString("ContextMenu_RunSelectedTest", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Run tests in module.
+        /// </summary>
+        public static string ContextMenu_RunSelectedTestModule {
+            get {
+                return ResourceManager.GetString("ContextMenu_RunSelectedTestModule", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Re&amp;name.
         /// </summary>

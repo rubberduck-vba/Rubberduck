@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:Rubberduck.UI.Controls" x:Class="Rubberduck.UI.Controls.GroupingGrid"
+             xmlns:local="clr-namespace:Rubberduck.UI.Controls"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             x:Class="Rubberduck.UI.Controls.GroupingGrid"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <DataGrid.Resources>
@@ -60,7 +62,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate>
-                        <Expander Background="WhiteSmoke" Foreground="Black" FontWeight="SemiBold">
+                        <Expander Background="WhiteSmoke" Foreground="Black" FontWeight="SemiBold" 
+                                  IsExpanded="{Binding InitialExpandedState, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GroupingGrid}}}">
                             <Expander.Header>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Margin="4" 
@@ -76,6 +79,9 @@
                                 </StackPanel>
                             </Expander.Header>
                             <ItemsPresenter Margin="25,0,0,0" />
+                            <i:Interaction.Behaviors>
+                                <local:PersistGroupExpandedStateBehavior GroupName="{Binding Name}" />
+                            </i:Interaction.Behaviors>
                         </Expander>
                     </ControlTemplate>
                 </Setter.Value>

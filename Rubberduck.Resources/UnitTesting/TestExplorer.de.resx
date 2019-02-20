@@ -156,25 +156,25 @@
   <data name="TestExplorer_MethodName" xml:space="preserve">
     <value>Methodenname</value>
   </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
     <value>Alle Tests</value>
   </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
     <value>Ausführen</value>
   </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
     <value>Fehlgeschlagene Tests</value>
   </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
     <value>Wiederhole letzten Testlauf</value>
   </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
     <value>Nicht ausgeführte Tests</value>
   </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
     <value>Bestanden Tests</value>
   </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
     <value>Ausgewählte Tests</value>
   </data>
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
@@ -216,10 +216,10 @@
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ingoriert</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Gesamtdauer</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
     <value>Nicht aussagekräftige Tests</value>
   </data>
   <data name="TestExplorer_Outcome" xml:space="preserve">
@@ -227,9 +227,6 @@
   </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Konnte Testmodul nicht erzeugen. Die Hostanwendung könnte die Erzeugung nicht unterstützen oder das Projekt könnte versiegelt sein. Bitte prüfen Sie die Logdatei für weitere Informationen.</value>
-  </data>
-  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
-    <value>Gewählte Kategorie</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
     <value>Kategorie</value>

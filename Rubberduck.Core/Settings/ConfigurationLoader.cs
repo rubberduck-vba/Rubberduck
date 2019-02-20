@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.Settings
 {

@@ -1,10 +1,16 @@
 ﻿using Rubberduck.Interaction.Navigation;
 using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor;
-using System.Collections.Generic;
 
 namespace Rubberduck.UI.UnitTesting.ViewModels
 {
+    public enum TestRunState
+    {
+        Stopped,
+        Queued,
+        Running
+    }
+
     public class TestMethodViewModel : ViewModelBase, INavigateSource
     {
         public TestMethodViewModel(TestMethod test)
@@ -12,7 +18,7 @@ namespace Rubberduck.UI.UnitTesting.ViewModels
             Method = test;
         }
 
-        public TestMethod Method { get; private set; }
+        public TestMethod Method { get; }
 
         private TestResult _result = new TestResult(TestOutcome.Unknown);
 
@@ -20,6 +26,13 @@ namespace Rubberduck.UI.UnitTesting.ViewModels
         {
             get => _result;
             set { _result = value; OnPropertyChanged(); }
+        }
+
+        private TestRunState _state;
+        public TestRunState RunState
+        {
+            get => _state;
+            set { _state = value; OnPropertyChanged(); }
         }
 
         public QualifiedMemberName QualifiedName => Method.Declaration.QualifiedName;
