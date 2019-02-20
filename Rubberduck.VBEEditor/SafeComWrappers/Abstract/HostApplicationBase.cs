@@ -183,6 +183,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             return false;
         }
 
+        public virtual IEnumerable<HostAutoMacro> AutoMacroIdentifiers => null;
+
         private static string GetName(IVBComponent component)
         {
             var name = string.Empty;

@@ -15,6 +15,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         }
         public bool CanOpenDocumentDesigner(QualifiedModuleName moduleName) => false;
         public bool TryOpenDocumentDesigner(QualifiedModuleName moduleName) => false;
+        public IEnumerable<HostAutoMacro> AutoMacroIdentifiers => null;
         public void Dispose() { }
     }
 }

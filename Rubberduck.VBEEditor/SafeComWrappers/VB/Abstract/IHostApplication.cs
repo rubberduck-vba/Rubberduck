@@ -47,5 +47,14 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         /// <param name="moduleName">The qualified name of the document module</param>
         /// <returns>True if the document was opened in design view, false otherwise</returns>
         bool TryOpenDocumentDesigner(QualifiedModuleName moduleName);
+
+        /// <summary>
+        /// Get a list of host-specific auto macro identifiers where
+        /// applicable. The component type may be used as a bitmask
+        /// for where host allows multiple component types. The names
+        /// may be left null, indicating that any matches is accepted, but
+        /// only one of either may be left null. 
+        /// </summary>
+        IEnumerable<HostAutoMacro> AutoMacroIdentifiers { get; }
     }
 }
