@@ -1,10 +1,12 @@
 buildscript {
+	project.ext.antlrVersion = '4.7.2'
+
     repositories {
-        mavenCentral();
+        mavenCentral()
     }
 
     dependencies {
-        classpath group: 'org.antlr', name: 'antlr4', version: '4.7.2'
+        classpath group: 'org.antlr', name: 'antlr4', version: "${project.ext.antlrVersion}"
     }
 }
 
@@ -12,15 +14,17 @@ plugins {
     id 'java'
 }
 
+def envVersion = System.getenv("APPVEYOR_VERSION")
+
 group 'com.rubberduckvba.rubberduck.parsing'
-version '1'
+version envVersion==null?'snapshot':envVersion
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.7.2'
+    compile group: 'org.antlr', name: 'antlr4-runtime', version: "${project.ext.antlrVersion}"
 }
 
 def grammarCodeGenDest = "${projectDir}/src/main/gen"
