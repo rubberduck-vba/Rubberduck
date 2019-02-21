@@ -1360,4 +1360,7 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="TodoSettings_TextLabel" xml:space="preserve">
     <value>Texte:</value>
   </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
 </root>

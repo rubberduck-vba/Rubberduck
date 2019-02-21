@@ -1,0 +1,25 @@
+﻿; Spanish Custom Messages Include -- Must be encoded in UTF-8 BOM
+Spanish.PerUser=Usuario actual
+Spanish.Everyone=Todos los usuarios
+Spanish.RegisterAddin=Reparar registro de VBE Addin
+Spanish.ProgramOnTheWeb=Sitio web Rubberduck VBA
+Spanish.UninstallProgram=Desinstalar Rubberduck
+Spanish.NETFramework46NotInstalled=No se encontró instalación de Microsoft .NET Framework 4.6.
+Spanish.InstallPerUserOrAllUsersCaption=Elija una opción de instalación
+Spanish.InstallPerUserOrAllUsersMessage=¿Para quién debería instalarse esta aplicación?
+Spanish.InstallPerUserOrAllUsersAdminDescription=Seleccione si desea que este software esté disponible para todos los usuarios o solo para usted.
+Spanish.InstallPerUserOrAllUsersAdminButtonCaption=Cualquier person&a que utilice este equipo
+Spanish.InstallPerUserOrAllUsersUserButtonCaption=Solo &yo
+Spanish.ElevationRequiredForSelectedFolderWarning=La carpeta seleccionada requiere un privilegio administrativo para escribir. ¿Quieres instalar para todos los usuarios?
+Spanish.ElevationRequestFailMessage=Esta configuración falló. Code: %d
+Spanish.RegisterAddInCaption=Registrar el complemento VBE
+Spanish.RegisterAddInMessage=Realizar registro de usuario del complemento VBE.
+Spanish.RegisterAddInDescription=Los complementos de VBE se registran para cada usuario, incluso si el complemento de VBE se instaló para todos los usuarios. Por lo tanto, el registro debe ser ejecutado por usuario.
+Spanish.RegisterAddInButtonCaption=Registrar el complemento Rubberduck VBE
+Spanish.WillExecuteAdminInstall=El complemento de Rubberduck estará disponible para todos los usuarios.%n%nNOTA: Cada usuario individualmente debe registrar el complemento Rubberduck.%n ya que esta es una configuración por usuario y no se puede implementar a todos los usuarios.%n%nDespués de la instalación, un acceso directo llamado "Reparar registro de complemento de VBE" debajo de la carpeta del%nprograma de Rubberduck estará disponible para todos los usuarios.
+Spanish.WillLaunchAdminInstall=El instalador solicitará el privilegio de administrador para instalar para todos los usuarios y%nse reanudará después para realizar el registro de complemento para el usuario actual.
+Spanish.WillInstallForCurrentUser=El complemento Rubberduck estará disponible solo para el usuario actual y no%nrequerirá privilegios de administrador.
+Spanish.UninstallOldVersionPrompt=Parece que hay una versión anterior de Rubberduck, instalada, %s y debería ser desinstalada. ¿Proceder?
+Spanish.UninstallOldVersionFail=No se puede desinstalar la versión anterior de Rubberduck. Inténtelo y desinstálelo a través del panel de control de Programas y vuelva a ejecutar el instalador.
+Spanish.WarnInstallPerUserOverEveryone=Parece que hay una versión de Rubberduck instalada para todos los usuarios. Si continúa con la instalación por usuario, tendrá prioridad sobre la instalación original. ¿Procede de todas maneras?
+Spanish.ElevationRequestFailMessage=No se puede desinstalar la versión anterior de Rubberduck. Es posible que deba desinstalarlo directamente antes de poder instalar la nueva versión.
