@@ -7,7 +7,7 @@ namespace Rubberduck.Parsing.Grammar
         public VBABaseLexer(ICharStream input) : base(input) { }
 
         #region Semantic predicate helper methods
-        protected int LA(int i)
+        protected int CharAtRelativePosition(int i)
         {
             return _input.La(i);
         }

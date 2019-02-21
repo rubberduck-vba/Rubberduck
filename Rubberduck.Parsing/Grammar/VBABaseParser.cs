@@ -9,17 +9,17 @@ namespace Rubberduck.Parsing.Grammar
         public VBABaseParser(ITokenStream input) : base(input) { }
 
         #region Semantic predicate helper methods
-        protected int LA(int i)
+        protected int TokenTypeAtRelativePosition(int i)
         {
             return _input.La(i);
         }
 
-        protected IToken LT(int i)
+        protected IToken TokenAtRelativePosition(int i)
         {
             return _input.Lt(i);
         }
 
-        protected string Text(IToken token)
+        protected string TextOf(IToken token)
         {
             return token.Text;
         }

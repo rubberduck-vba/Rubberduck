@@ -19,6 +19,7 @@ lexer grammar VBALexer;
 
 options {
     superClass = VBABaseLexer;
+    contextSuperClass = VBABaseParser;
 }
 
 ABS : A B S;
@@ -308,7 +309,7 @@ IDENTIFIER :  ~[[\](){}\r\n\t.,'"|!@#$%^&*\-+:=; 0-9-/\\-] ~[[\](){}\r\n\t.,'"|!
 LINE_CONTINUATION : [ \t]+ UNDERSCORE [ \t]* '\r'? '\n' WS_NOT_FOLLOWED_BY_LINE_CONTINUATION*;
 // The following rule is needed in order to capture hex literals without format prefixes which start with a digit. Needed for VBForm resources.
 BARE_HEX_LITERAL : [0-9] [0-9a-fA-F]*; 
-fragment WS_NOT_FOLLOWED_BY_LINE_CONTINUATION : [ \t] {!IsChar(LA(1),'_') || !IsChar(LA(2),'\r','\n','\t',' ')}?;
+fragment WS_NOT_FOLLOWED_BY_LINE_CONTINUATION : [ \t] {!IsChar(CharAtRelativePosition(1),'_') || !IsChar(CharAtRelativePosition(2),'\r','\n','\t',' ')}?;
 fragment LETTER : [a-zA-Z_äöüÄÖÜ];
 fragment DIGIT : [0-9];
 fragment LETTERORDIGIT : [a-zA-Z0-9_äöüÄÖÜ];
