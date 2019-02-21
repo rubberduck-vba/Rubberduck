@@ -15,8 +15,8 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override IEnumerable<HostAutoMacro> AutoMacroIdentifiers => new HostAutoMacro[]
         {
-            new HostAutoMacro(new[] {ComponentType.StandardModule}, true, null, "auto_open"),
-            new HostAutoMacro(new[] {ComponentType.StandardModule}, true, null, "auto_close")
+            new HostAutoMacro(new[] {ComponentType.StandardModule}, true, null, "Auto_Open"),
+            new HostAutoMacro(new[] {ComponentType.StandardModule}, true, null, "Auto_Close")
         };
     }
 }
