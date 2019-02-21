@@ -23,14 +23,14 @@ dependencies {
     compile group: 'org.antlr', name: 'antlr4-runtime', version: '4.7.2'
 }
 
-def grammerCodeGenDest = "${projectDir}/src/main/gen"
+def grammarCodeGenDest = "${projectDir}/src/main/gen"
 def grammarSource = "${projectDir}/../../../../Rubberduck.Parsing/Grammar/"
 def grammarDest = "${projectDir}/src/main/antlr/com/rubberduckvba/rubberduck/parsing/grammar"
 
 sourceSets {
     main {
         java {
-            srcDir "${grammerCodeGenDest}"
+            srcDir "${grammarCodeGenDest}"
         }
     }
 }
@@ -45,7 +45,7 @@ task copyGrammarFiles(type: Copy) {
 task generateGrammarSources(type: JavaExec) {
     main 'org.antlr.v4.Tool'
     classpath = buildscript.configurations.classpath
-    args "-o", "${grammerCodeGenDest}", "-visitor", "-package", "com.rubberduckvba.rubberduck.parsing.grammar", "${grammarDest}/VBALexer.g4", "${grammarDest}/VBAParser.g4"
+    args "-o", "${grammarCodeGenDest}", "-visitor", "-package", "com.rubberduckvba.rubberduck.parsing.grammar", "${grammarDest}/VBALexer.g4", "${grammarDest}/VBAParser.g4"
 }
 
 generateGrammarSources.dependsOn copyGrammarFiles
