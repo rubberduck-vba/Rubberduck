@@ -37,6 +37,7 @@ platform: Any CPU
 # cache the nuget packages unless something changed there
 cache:
   - packages/ -> **/packages.config
+  - %USERPROFILE%/.gradle/wrapper/dists
 
 install:
   set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
