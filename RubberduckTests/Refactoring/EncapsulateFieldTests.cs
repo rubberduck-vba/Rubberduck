@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Moq;
 using Rubberduck.Common;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor;
@@ -949,6 +950,60 @@ End Sub";
                 var presenter = factory.Object.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(null);
 
                 Assert.AreEqual(null, presenter.Show());
+            }
+        }
+
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void Refactoring_Puts_Code_In_Correct_Place()
+        {
+            //Input
+            const string inputCode =
+                @"Option Explicit
+
+Public Foo As String";
+
+            //Output
+            const string expectedCode =
+                @"Option Explicit
+
+Private Foo As String
+
+Public Property Get bar() As String
+    bar = Foo
+End Property
+
+Public Property Let bar(ByVal value As String)
+    Foo = value
+End Property
+";
+
+            var selection = new Selection(3, 8, 3, 11);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
+            {
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+
+                var model = new EncapsulateFieldModel(state, qualifiedSelection)
+                {
+                    ImplementLetSetterType = true,
+                    ImplementSetSetterType = false,
+                    ParameterName = "value",
+                    PropertyName = "bar"
+                };
+
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
+                refactoring.Refactor(qualifiedSelection);
+
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 

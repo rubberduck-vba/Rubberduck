@@ -54,9 +54,7 @@ using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
-using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
-using Rubberduck.UI.AddRemoveReferences;
+using Rubberduck.VBEditor.VbeRuntime;
 using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.Root
@@ -66,12 +64,14 @@ namespace Rubberduck.Root
         private readonly IVBE _vbe;
         private readonly IAddIn _addin;
         private readonly GeneralSettings _initialSettings;
+        private readonly IVbeNativeApi _vbeNativeApi;
 
-        public RubberduckIoCInstaller(IVBE vbe, IAddIn addin, GeneralSettings initialSettings)
+        public RubberduckIoCInstaller(IVBE vbe, IAddIn addin, GeneralSettings initialSettings, IVbeNativeApi vbeNativeApi)
         {
             _vbe = vbe;
             _addin = addin;
             _initialSettings = initialSettings;
+            _vbeNativeApi = vbeNativeApi;
         }
 
         //Guidelines and words of caution:
@@ -959,6 +959,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
             container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler).LifestyleSingleton());
             container.Register(Component.For<IPersistancePathProvider>().Instance(PersistancePathProvider.Instance).LifestyleSingleton());
+            container.Register(Component.For<IVbeNativeApi>().Instance(_vbeNativeApi).LifestyleSingleton());
         }
     }
 }

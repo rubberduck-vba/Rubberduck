@@ -355,7 +355,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementOpenDesignerCommand()
         {
-            ViewModel.OpenDesignerCommand = new OpenDesignerCommand(State.ProjectsProvider);
+            ViewModel.OpenDesignerCommand = new OpenDesignerCommand(State.ProjectsProvider, Vbe.Object);
             return this;
         }
 

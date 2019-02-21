@@ -173,6 +173,18 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
             return null;
         }
 
+        public virtual bool CanOpenDocumentDesigner(QualifiedModuleName moduleName)
+        {
+            return false;
+        }
+
+        public virtual bool TryOpenDocumentDesigner(QualifiedModuleName moduleName)
+        {
+            return false;
+        }
+
+        public virtual IEnumerable<HostAutoMacro> AutoMacroIdentifiers => null;
+
         private static string GetName(IVBComponent component)
         {
             var name = string.Empty;

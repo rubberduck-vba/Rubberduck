@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Access;
+using NLog;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 // ReSharper disable once CheckNamespace - Special dispensation due to conflicting file vs namespace priorities
@@ -14,7 +15,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         private const string ReportClassName = "Access.Report";
 
         private readonly Lazy<IVBProject> _dbcProject;
-
+        
         public AccessApp(IVBE vbe) : base(vbe, "Access", true)
         {
             _dbcProject = new Lazy<IVBProject>(() =>
@@ -29,26 +30,34 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
 
         public override HostDocument GetDocument(QualifiedModuleName moduleName)
         {
-            if (moduleName.ComponentName.StartsWith(FormNamePrefix))
+            try
             {
-                var name = moduleName.ComponentName.Substring(FormNamePrefix.Length);
-                using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
-                using (var allForms = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllForms))
-                using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allForms.Target[name]))
-                { 
-                    return LoadHostDocument(moduleName, FormClassName, accessObject);
+                if (moduleName.ComponentName.StartsWith(FormNamePrefix))
+                {
+                    var name = moduleName.ComponentName.Substring(FormNamePrefix.Length);
+                    using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+                    using (var allForms = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllForms))
+                    using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allForms.Target[name]))
+                    {
+                        return LoadHostDocument(moduleName, FormClassName, accessObject);
+                    }
+                }
+
+                if (moduleName.ComponentName.StartsWith(ReportNamePrefix))
+                {
+                    var name = moduleName.ComponentName.Substring(ReportNamePrefix.Length);
+                    using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+                    using (var allReports = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllReports))
+                    using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allReports.Target[name]))
+                    {
+                        return LoadHostDocument(moduleName, name, accessObject);
+                    }
                 }
             }
-
-            if (moduleName.ComponentName.StartsWith(ReportNamePrefix))
+            catch(Exception ex)
             {
-                var name = moduleName.ComponentName.Substring(ReportNamePrefix.Length);
-                using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
-                using (var allReports = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllReports))
-                using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allReports.Target[name]))
-                {
-                    return LoadHostDocument(moduleName, name, accessObject);
-                }
+                //Log and ignore
+                _logger.Log(LogLevel.Info, ex, $"Failed to get host document {moduleName.ToString()}");
             }
 
             return null;
@@ -82,6 +91,71 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             }
 
             return list;
+        }
+
+        public override bool CanOpenDocumentDesigner(QualifiedModuleName moduleName)
+        {
+            return GetDocument(moduleName) != null;
+        }
+
+        public override bool TryOpenDocumentDesigner(QualifiedModuleName moduleName)
+        {
+            try
+            {
+                if (moduleName.ComponentName.StartsWith(FormNamePrefix))
+                {
+                    var name = moduleName.ComponentName.Substring(FormNamePrefix.Length);
+                    using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+                    using (var allForms = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllForms))
+                    using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allForms.Target[name]))
+                    using (var doCmd = new SafeIDispatchWrapper<DoCmd>(Application.DoCmd))
+                    {
+                        if (accessObject.Target.IsLoaded &&
+                            accessObject.Target.CurrentView != AcCurrentView.acCurViewDesign)
+                        {
+                            doCmd.Target.Close(AcObjectType.acForm, name);
+                        }
+
+                        if (!accessObject.Target.IsLoaded)
+                        {
+                            doCmd.Target.OpenForm(name, AcFormView.acDesign);
+                        }
+
+                        return accessObject.Target.IsLoaded &&
+                               accessObject.Target.CurrentView == AcCurrentView.acCurViewDesign;
+                    }
+                }
+
+                if (moduleName.ComponentName.StartsWith(ReportNamePrefix))
+                {
+                    var name = moduleName.ComponentName.Substring(ReportNamePrefix.Length);
+                    using (var currentProject = new SafeIDispatchWrapper<_CurrentProject>(Application.CurrentProject))
+                    using (var allReports = new SafeIDispatchWrapper<AllObjects>(currentProject.Target.AllReports))
+                    using (var accessObject = new SafeIDispatchWrapper<AccessObject>(allReports.Target[name]))
+                    using (var doCmd = new SafeIDispatchWrapper<DoCmd>(Application.DoCmd))
+                    {
+                        if (accessObject.Target.IsLoaded &&
+                            accessObject.Target.CurrentView != AcCurrentView.acCurViewDesign)
+                        {
+                            doCmd.Target.Close(AcObjectType.acReport, name);
+                        }
+
+                        if (!accessObject.Target.IsLoaded)
+                        {
+                            doCmd.Target.OpenReport(name, AcView.acViewDesign);
+                        }
+
+                        return accessObject.Target.IsLoaded &&
+                               accessObject.Target.CurrentView == AcCurrentView.acCurViewDesign;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Info, ex, $"Unable to open the document in design view for {moduleName.ToString()}");
+            }
+
+            return false;
         }
 
         private DocumentState GetDocumentState(IVBProject project, string name, string className)
@@ -162,3 +236,4 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
         }
     }
 }
+
