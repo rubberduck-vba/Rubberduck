@@ -39,6 +39,7 @@ namespace Rubberduck.Inspections.Concrete
                 var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
 
                 var references = tree.GetIdentifierReferences();
+                // ignore set-assignments to 'Nothing'
                 nodes.AddRange(references.Where(r =>
                     !(r.Context.Parent is VBAParser.SetStmtContext setStmtContext &&
                     setStmtContext.expression().GetText().Equals(Tokens.Nothing))));

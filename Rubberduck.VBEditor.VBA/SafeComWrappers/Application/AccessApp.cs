@@ -28,7 +28,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             });
         }
 
-        public HostDocument GetDocument(QualifiedModuleName moduleName)
+        public override HostDocument GetDocument(QualifiedModuleName moduleName)
         {
             try
             {

@@ -75,6 +75,7 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsReturnValueUsed(Declaration function)
         {
+            // TODO: This is O(MG) at work here. Need to refactor the whole shebang.
             return (from usage in function.References
                 where !IsLet(usage)
                 where !IsSet(usage)
