@@ -364,4 +364,13 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Module attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
   </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>A keyword is being used as a member in either an enumeration or an user defined type. That can lead to ambiguous resolution. Condier renaming.</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>There are line continuations between keywords. There is no good reason to put it there; consider removing them altogether</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>The identiifer contains a non-breaking space which looks very much like just an ordinary space, which obfsucates the code and makes for a confusing experience. Consider using only latin characters for the identifiers.</value>
+  </data>
 </root>
