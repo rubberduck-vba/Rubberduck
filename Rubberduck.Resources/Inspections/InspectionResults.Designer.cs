@@ -385,7 +385,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Keyword used as an identifier for the member {0}.
+        ///   Looks up a localized string similar to Keyword used as an identifier for the member &apos;{0}&apos;.
         /// </summary>
         public static string KeywordsUsedAsMemberInspection {
             get {
@@ -502,7 +502,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Non-breaking space encountered in identifier {0}.
+        ///   Looks up a localized string similar to Non-breaking space encountered in identifier &apos;{0}&apos;.
         /// </summary>
         public static string NonBreakingSpaceIdentifierInspection {
             get {

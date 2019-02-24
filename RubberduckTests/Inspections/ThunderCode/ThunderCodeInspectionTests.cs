@@ -55,7 +55,7 @@ End Enum";
         // NOTE: the inspection only covers trivial cases and is not exhaustive
         // For that reason, some of test cases which the evil continuations exists
         // may still pass without any results. To cover them all would likely be too
-        // expensie.
+        // expensive.
         [Test]
         [TestCase(1, @"Private Sub Foo()
 End _

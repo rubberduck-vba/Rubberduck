@@ -398,14 +398,14 @@
     <comment>{0} module; {1} specified attribute; {2} specified values</comment>
   </data>
   <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
-    <value>Keyword used as an identifier for the member {0}</value>
+    <value>Keyword used as an identifier for the member '{0}'</value>
     <comment>{0} Member name</comment>
   </data>
   <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
     <value>Line continuation(s) in unexpected places. </value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>Non-breaking space encountered in identifier {0}</value>
+    <value>Non-breaking space encountered in identifier '{0}'</value>
     <comment>{0} Identifier</comment>
   </data>
   <data name="ThunderCode_Base" xml:space="preserve">

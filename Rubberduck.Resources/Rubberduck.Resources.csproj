@@ -22,6 +22,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Inspections\InspectionInfo.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InspectionInfo.resx</DependentUpon>
+    </Compile>
     <Compile Update="Inspections\InspectionNames.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -39,6 +44,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="Inspections\InspectionInfo.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionInfo.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Inspections\InspectionNames.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>

@@ -111,7 +111,7 @@ EACH : E A C H;
 ELSE : E L S E;
 ELSEIF : E L S E I F;
 EMPTY : E M P T Y;
-// Apparently END_ENUM don't allow line continuations (in the VB editor)
+// Apparently END_ENUM doesn't allow line continuations (in the VB editor)
 END_ENUM : E N D WS+ E N U M;
 END_FUNCTION : E N D (WS | LINE_CONTINUATION)+ F U N C T I O N;
 // We allow "EndIf" without the whitespace as well for the preprocessor.
