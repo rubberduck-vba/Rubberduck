@@ -622,7 +622,10 @@ standaloneLineNumberLabel :
     lineNumberLabel whiteSpace? COLON
     | lineNumberLabel;
 combinedLabels : lineNumberLabel whiteSpace identifierStatementLabel;
-lineNumberLabel : numberLiteral;
+// Technically, the negative numbers are illegal but VBE can prettify a
+// &HFFFFFFFF into a -1 which becomes a legal line number. Editing the same
+// line subsequently then breaks it. 
+lineNumberLabel : MINUS? numberLiteral; 
 
 numberLiteral : HEXLITERAL | OCTLITERAL | FLOATLITERAL | INTEGERLITERAL;
 

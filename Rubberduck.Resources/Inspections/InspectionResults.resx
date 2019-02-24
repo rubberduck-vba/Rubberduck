@@ -415,4 +415,10 @@ You're seeing this inspection result because there's no way that's real code and
 In memoriam, 1972-2018</value>
     <comment>{0} ThunderCode inspection description</comment>
   </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Negative line number encountered</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>On Error GoTo -1 encountered</value>
+  </data>
 </root>

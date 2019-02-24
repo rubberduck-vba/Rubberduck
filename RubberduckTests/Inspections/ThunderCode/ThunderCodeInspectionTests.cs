@@ -150,7 +150,91 @@ End Sub")]
             ThunderCatsGo(func, inputCode, expectedCount);
         }
 
-        private void ThunderCatsGo(Func<RubberduckParserState, IInspection> inspectionFunction, string inputCode, int expectedCount)
+        [Test]
+        [TestCase(0,@"Public Sub Gogo()
+GoTo 1
+1:
+End Sub")]
+        [TestCase(0, @"Public Sub Gogo()
+GoTo 1
+1
+End Sub")]
+        [TestCase(1, @"Public Sub Gogo()
+-1:
+End Sub")]
+        [TestCase(1, @"Public Sub Gogo()
+-1
+End Sub")]
+        [TestCase(1, @"Public Sub Gogo()
+GoTo 1
+1
+-1:
+End Sub")]
+        [TestCase(2, @"Public Sub Gogo()
+GoTo -1
+1
+-1:
+End Sub")]
+        [TestCase(2, @"Public Sub Gogo()
+GoTo -1
+1:
+-1
+End Sub")]
+        [TestCase(2, @"Public Sub Gogo()
+GoTo -5
+1
+-5:
+End Sub")]
+        public void NegativeLineNumberLabel_ReturnResults(int expectedCount, string inputCode)
+        {
+            var func = new Func<RubberduckParserState, IInspection>(state =>
+                new NegativeLineNumberInspection(state));
+            ThunderCatsGo(func, inputCode, expectedCount);
+        }
+
+        [Test]
+        [TestCase(0, @"Public Sub Derp()
+  On Error GoTo 1
+  Exit Sub
+1
+  Debug.Print ""derp""
+End Sub")]
+        [TestCase(0, @"Public Sub Derp()
+  On Error GoTo 1
+  Exit Sub
+1:
+  Debug.Print ""derp""
+End Sub")]
+        [TestCase(0, @"Public Sub Derp()
+  On Error GoTo 0
+  Exit Sub
+  Debug.Print ""derp""
+End Sub")]
+        [TestCase(1, @"Public Sub Derp()
+  On Error GoTo -1
+  Exit Sub
+  Debug.Print ""derp""
+End Sub")]
+        [TestCase(0, @"Public Sub Derp()
+  On Error GoTo -2
+  Exit Sub
+-2
+  Debug.Print ""derp""
+End Sub")]
+        [TestCase(0, @"Public Sub Derp()
+  On Error GoTo -2
+  Exit Sub
+-2:
+  Debug.Print ""derp""
+End Sub")]
+        public void OnErrorGoToMinusOne_ReturnResults(int expectedCount, string inputCode)
+        {
+            var func = new Func<RubberduckParserState, IInspection>(state =>
+                new OnErrorGoToMinusOneInspection(state));
+            ThunderCatsGo(func, inputCode, expectedCount);
+        }
+
+        private static void ThunderCatsGo(Func<RubberduckParserState, IInspection> inspectionFunction, string inputCode, int expectedCount)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             using (var state = MockParser.CreateAndParse(vbe.Object))

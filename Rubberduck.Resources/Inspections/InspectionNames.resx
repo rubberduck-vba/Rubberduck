@@ -372,4 +372,10 @@
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
     <value>ThunderCode!</value>
   </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>ThunderCode!</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>ThunderCode!</value>
+  </data>
 </root>
