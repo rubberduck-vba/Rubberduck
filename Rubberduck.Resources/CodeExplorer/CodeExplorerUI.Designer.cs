@@ -59,7 +59,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -69,7 +69,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -79,7 +79,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -89,7 +89,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -99,7 +99,17 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap BrokenReference {
+            get {
+                object obj = ResourceManager.GetObject("BrokenReference", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Add.
         /// </summary>
@@ -155,20 +165,20 @@ namespace Rubberduck.Resources.CodeExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Predeclared Class module (.cls).
-        /// </summary>
-        public static string CodeExplorer_AddPredeclaredClassModuleText {
-            get {
-                return ResourceManager.GetString("CodeExplorer_AddPredeclaredClassModuleText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Standard module (.bas).
         /// </summary>
         public static string CodeExplorer_AddStdModuleText {
             get {
                 return ResourceManager.GetString("CodeExplorer_AddStdModuleText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Templates.
+        /// </summary>
+        public static string CodeExplorer_AddTemplatesSubMenu {
+            get {
+                return ResourceManager.GetString("CodeExplorer_AddTemplatesSubMenu", resourceCulture);
             }
         }
         
@@ -288,16 +298,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_ExportAll", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Font Size.
-        /// </summary>
-        public static string CodeExplorer_FontSizeToolTip {
-            get {
-                return ResourceManager.GetString("CodeExplorer_FontSizeToolTip", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Find All Implementations....
         /// </summary>
@@ -313,6 +314,15 @@ namespace Rubberduck.Resources.CodeExplorer {
         public static string CodeExplorer_FindAllReferencesText {
             get {
                 return ResourceManager.GetString("CodeExplorer_FindAllReferencesText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Font Size.
+        /// </summary>
+        public static string CodeExplorer_FontSizeToolTip {
+            get {
+                return ResourceManager.GetString("CodeExplorer_FontSizeToolTip", resourceCulture);
             }
         }
         
@@ -333,7 +343,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_Indent", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Library References.
         /// </summary>
@@ -342,7 +352,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_LibraryReferences", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Na&amp;vigate.
         /// </summary>
@@ -405,7 +415,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_Print", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Project References.
         /// </summary>
@@ -415,7 +425,6 @@ namespace Rubberduck.Resources.CodeExplorer {
             }
         }
         
-
         /// <summary>
         ///   Looks up a localized string similar to R&amp;efresh.
         /// </summary>
@@ -469,7 +478,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_SearchPlaceholder", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Set as start up.
         /// </summary>
@@ -541,7 +550,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_SortStyle_ByType", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Sync with code pane.
         /// </summary>
@@ -550,7 +559,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorer_SyncCodePaneToolTip", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Code Explorer.
         /// </summary>
@@ -568,17 +577,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("CodeExplorerDockablePresenter_ParseStarted", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap BrokenReference {
-            get {
-                object obj = ResourceManager.GetObject("BrokenReference", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -656,7 +655,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("ExportBeforeRemove_Prompt", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Error exporting &apos;{0}&apos;.
         /// </summary>
@@ -665,7 +664,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("ExportError_Caption", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -695,7 +694,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -705,7 +704,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -715,7 +714,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -725,7 +724,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -735,7 +734,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -745,7 +744,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -785,7 +784,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -795,7 +794,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -805,7 +804,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -815,7 +814,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -825,7 +824,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -835,7 +834,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -855,7 +854,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
- 
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -865,7 +864,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -875,7 +874,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -885,7 +884,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -895,7 +894,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -905,7 +904,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
- 
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -929,15 +928,13 @@ namespace Rubberduck.Resources.CodeExplorer {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap Reference
-        {
-            get
-            {
+        public static System.Drawing.Bitmap Reference {
+            get {
                 object obj = ResourceManager.GetObject("Reference", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Error removing &apos;{0}&apos;.
         /// </summary>
@@ -946,7 +943,7 @@ namespace Rubberduck.Resources.CodeExplorer {
                 return ResourceManager.GetString("RemoveError_Caption", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>

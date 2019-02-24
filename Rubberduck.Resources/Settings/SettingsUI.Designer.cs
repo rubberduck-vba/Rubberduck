@@ -257,7 +257,7 @@ namespace Rubberduck.Resources.Settings {
                 return ResourceManager.GetString("PageHeader_InspectionSettings", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Reference Settings.
         /// </summary>
@@ -266,7 +266,7 @@ namespace Rubberduck.Resources.Settings {
                 return ResourceManager.GetString("PageHeader_ReferenceSettings", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Todo Settings.
         /// </summary>
@@ -329,7 +329,7 @@ namespace Rubberduck.Resources.Settings {
                 return ResourceManager.GetString("PageInstructions_InspectionSettings", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Configure settings for adding and removing references..
         /// </summary>
@@ -338,7 +338,7 @@ namespace Rubberduck.Resources.Settings {
                 return ResourceManager.GetString("PageInstructions_ReferenceSettings", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Configure markers to be recognized in comments..
         /// </summary>

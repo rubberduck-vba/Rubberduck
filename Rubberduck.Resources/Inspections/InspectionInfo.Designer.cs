@@ -484,6 +484,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Negative line numbers are actually input as hex literal and then prettified by VBE. Editing the line again will cause it to turn red since negative line numbers are in fact illegal..
+        /// </summary>
+        public static string NegativeLineNumberInspection {
+            get {
+                return ResourceManager.GetString("NegativeLineNumberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The identiifer contains a non-breaking space which looks very much like just an ordinary space, which obfsucates the code and makes for a confusing experience. Consider using visible characters for the identifiers..
         /// </summary>
         public static string NonBreakingSpaceIdentifierInspection {
@@ -579,6 +588,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ObsoleteTypeHintInspection {
             get {
                 return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to While this is legal, this is poorly documented &quot;feature&quot; that means something different -- the error state is also cleared in addition to disabling any error handling. However, this can be ambiguous as a negative line label of -1 may end up as a target and excessively complex error handling usually indicates a need of refactoring the procedure..
+        /// </summary>
+        public static string OnErrorGoToMinusOneInspection {
+            get {
+                return ResourceManager.GetString("OnErrorGoToMinusOneInspection", resourceCulture);
             }
         }
         

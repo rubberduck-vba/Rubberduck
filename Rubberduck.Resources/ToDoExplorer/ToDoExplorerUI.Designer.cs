@@ -126,29 +126,11 @@ namespace Rubberduck.Resources.ToDoExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to TODO Explorer.
-        /// </summary>
-        public static string TodoSettings_Caption {
-            get {
-                return ResourceManager.GetString("TodoSettings_Caption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Text.
         /// </summary>
         public static string TodoSettings_Text {
             get {
                 return ResourceManager.GetString("TodoSettings_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Text:.
-        /// </summary>
-        public static string TodoSettings_TextLabel {
-            get {
-                return ResourceManager.GetString("TodoSettings_TextLabel", resourceCulture);
             }
         }
         
