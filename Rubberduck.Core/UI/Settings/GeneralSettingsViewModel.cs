@@ -50,6 +50,7 @@ namespace Rubberduck.UI.Settings
                     new DisplayLanguageSetting("en-US"),
                     new DisplayLanguageSetting("fr-CA"),
                     new DisplayLanguageSetting("de-DE"),
+                    new DisplayLanguageSetting("es-ES"),
                     new DisplayLanguageSetting("cs-CZ")
                 });
 
