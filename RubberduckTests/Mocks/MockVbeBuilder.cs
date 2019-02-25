@@ -171,7 +171,7 @@ namespace RubberduckTests.Mocks
         /// </summary>
         public static Mock<IVBE> BuildFromStdModules(params (string name, string content)[] modules)
         {
-            return BuildFromModules(modules.Select(tpl => (tpl.name, tpl.content, ComponentType.StandardModule)).ToArray());
+            return BuildFromModules(modules.Select(tpl => (tpl.name, tpl.content, ComponentType.StandardModule)));
         }
 
         /// <summary>
@@ -179,12 +179,20 @@ namespace RubberduckTests.Mocks
         /// </summary>
         public static Mock<IVBE> BuildFromModules(params (string name, string content, ComponentType componentType)[] modules)
         {
+            return BuildFromModules((IEnumerable<(string name, string content, ComponentType componentType)>)modules);
+        }
+
+        /// <summary>
+        /// Builds a mock VBE containing one project with multiple modules.
+        /// </summary>
+        public static Mock<IVBE> BuildFromModules(IEnumerable<(string name, string content, ComponentType componentType)> modules)
+        {
             var vbeBuilder = new MockVbeBuilder();
 
             var builder = vbeBuilder.ProjectBuilder(TestProjectName, ProjectProtection.Unprotected);
-            foreach (var module in modules)
+            foreach (var (name, content, componentType) in modules)
             {
-                builder.AddComponent(module.name, module.componentType, module.content);
+                builder.AddComponent(name, componentType, content);
             }
 
             var project = builder.Build();

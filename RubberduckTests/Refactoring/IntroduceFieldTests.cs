@@ -10,6 +10,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.IntroduceField;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
 {
@@ -502,9 +503,8 @@ End Sub";
             }
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, QualifiedSelection? initialSelection = null)
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
-            var selectionService = MockedSelectionService(null);
             return new IntroduceFieldRefactoring(state, rewritingManager, selectionService);
         }
     }

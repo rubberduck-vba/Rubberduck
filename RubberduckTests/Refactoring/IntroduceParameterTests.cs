@@ -13,6 +13,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
 {
@@ -347,10 +348,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
-                var messageBox = new Mock<IMessageBox>();
-
-                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
+                var refactoring = TestRefactoring(rewritingManager, state);
 
                 var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "fizz");
                 Assert.Throws<TargetDeclarationIsNotContainedInAMethodException>(() => refactoring.Refactor(target));
@@ -377,8 +375,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-                var messageBox = new Mock<IMessageBox>();
-                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
+                var refactoring = TestRefactoring(rewritingManager, state);
 
                 var targetSelection = new QualifiedSelection(component.QualifiedModuleName, new Selection(3, 1));
                 Assert.Throws<NoDeclarationForSelectionException>(() => refactoring.Refactor(targetSelection));
@@ -507,7 +504,6 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var messageBox = new Mock<IMessageBox>();
                 messageBox.Setup(m => m.Question(It.IsAny<string>(), It.IsAny<string>())).Returns(true);
 
@@ -698,10 +694,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
-                var messageBox = new Mock<IMessageBox>();
-
-                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 Assert.Throws<InvalidDeclarationTypeException>(() => refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable)));
                 
                 const string expectedCode = inputCode;
@@ -710,19 +703,24 @@ End Sub";
             }
         }
 
-        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, QualifiedSelection? initialSelection = null)
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
-            return TestRefactoring(rewritingManager, state, null, initialSelection);
+            return TestRefactoring(rewritingManager, state, selectionService);
         }
 
-        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null, QualifiedSelection? initialSelection = null)
+        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService, IMessageBox msgBox = null)
         {
-            var selectionService = MockedSelectionService(initialSelection);
             if (msgBox == null)
             {
                 msgBox = new Mock<IMessageBox>().Object;
             }
             return new IntroduceParameterRefactoring(state, msgBox, rewritingManager, selectionService);
+        }
+
+        private IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IMessageBox msgBox = null, QualifiedSelection? initialSelection = null)
+        {
+            var selectionService = MockedSelectionService(initialSelection);
+            return TestRefactoring(rewritingManager, state, selectionService, msgBox);
         }
     }
 }

@@ -6,7 +6,6 @@ using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -890,9 +889,6 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
-                var messageBox = new Mock<IMessageBox>();
-
                 var refactoring = TestRefactoring(rewritingManager, state);
                 Assert.Throws<InvalidDeclarationTypeException>(() => refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable)));
 
