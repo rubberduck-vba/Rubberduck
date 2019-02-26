@@ -238,25 +238,27 @@ namespace Rubberduck.VBEditor.Events
         /// </remarks>
         private void Dispose(bool disposing)
         {
-            if (!_disposed && _projects != null)
+            if (_disposed || _projects == null)
             {
-                EventsTerminated?.Invoke(this, EventArgs.Empty);
-
-                var projectIds = _components.Keys.ToArray();
-                foreach (var projectid in projectIds)
-                {
-                    UnregisterProjectHandlers(projectid);
-                }
-                
-                _projects.ProjectActivated -= ProjectActivatedHandler;
-                _projects.ProjectRenamed -= ProjectRenamedHandler;
-                _projects.ProjectRemoved -= ProjectRemovedHandler;
-                _projects.ProjectAdded -= ProjectAddedHandler;
-                _projects.DetachEvents();
-                _projects.Dispose();
-                
-                _disposed = true;
+                return;
             }
+
+            EventsTerminated?.Invoke(this, EventArgs.Empty);
+            EventsTerminated = delegate { };
+            var projectIds = _components.Keys.ToArray();
+            foreach (var projectid in projectIds)
+            {
+                UnregisterProjectHandlers(projectid);
+            }
+                
+            _projects.ProjectActivated -= ProjectActivatedHandler;
+            _projects.ProjectRenamed -= ProjectRenamedHandler;
+            _projects.ProjectRemoved -= ProjectRemovedHandler;
+            _projects.ProjectAdded -= ProjectAddedHandler;
+            _projects.DetachEvents();
+            _projects.Dispose();
+                
+            _disposed = true;
         }
 
         ~VBEEvents()
