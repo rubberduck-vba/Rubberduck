@@ -6,12 +6,13 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.AddRemoveReferences;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     [ComVisible(false)]
-    public class AddRemoveReferencesCommand : CommandBase
+    public class AddRemoveReferencesCommand : ComCommandBase
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
@@ -21,8 +22,9 @@ namespace Rubberduck.UI.Command
         public AddRemoveReferencesCommand(IVBE vbe, 
             RubberduckParserState state, 
             IAddRemoveReferencesPresenterFactory factory,
-            IReferenceReconciler reconciler) 
-            : base(LogManager.GetCurrentClassLogger())
+            IReferenceReconciler reconciler,
+            IVBEEvents vbeEvents) 
+            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;
             _state = state;
