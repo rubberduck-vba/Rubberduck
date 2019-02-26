@@ -2,19 +2,21 @@
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     [ComVisible(false)]
-    public class IndentCurrentProjectCommand : CommandBase
+    public class IndentCurrentProjectCommand : ComCommandBase
     {
         private readonly IVBE _vbe;
         private readonly IIndenter _indenter;
         private readonly RubberduckParserState _state;
 
-        public IndentCurrentProjectCommand(IVBE vbe, IIndenter indenter, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public IndentCurrentProjectCommand(IVBE vbe, IIndenter indenter, RubberduckParserState state,
+            IVBEEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;
             _indenter = indenter;
