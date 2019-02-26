@@ -52,7 +52,7 @@ Private Assert As Object
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, TestModuleHeader);
             using (state)
             {
-                var addTestMethodCommand = (ICommand)Activator.CreateInstance(command, vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addTestMethodCommand = ArranageAddTestMethodCommand(command, vbe, state);
 
                 addTestMethodCommand.Execute(null);
 
@@ -87,7 +87,7 @@ End Sub
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, input);
             using (state)
             {
-                var addTestMethodCommand = (ICommand)Activator.CreateInstance(command, vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addTestMethodCommand = ArranageAddTestMethodCommand(command, vbe, state);
 
                 addTestMethodCommand.Execute(null);
 
@@ -116,7 +116,7 @@ End Sub
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, input);
             using (state)
             {
-                var addTestMethodCommand = (ICommand)Activator.CreateInstance(command, vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addTestMethodCommand = ArranageAddTestMethodCommand(command, vbe, state);
 
                 addTestMethodCommand.Execute(null);
 
@@ -137,7 +137,7 @@ End Sub
             using (state)
             {
                 vbe.Setup(s => s.ActiveCodePane).Returns((ICodePane)null);
-                var addTestMethodCommand = (ICommand)Activator.CreateInstance(command, vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addTestMethodCommand = ArranageAddTestMethodCommand(command, vbe, state);
 
                 addTestMethodCommand.Execute(null);
 
@@ -159,7 +159,7 @@ End Sub
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvingReferences, CancellationToken.None);
 
-                var addTestMethodCommand = (ICommand)Activator.CreateInstance(command, vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addTestMethodCommand = ArranageAddTestMethodCommand(command, vbe, state);
 
                 Assert.IsFalse(addTestMethodCommand.CanExecute(null));
             }
@@ -174,7 +174,7 @@ End Sub
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, TestModuleHeader);
             using (state)
             {
-                var addTestMethodCommand = (ICommand)Activator.CreateInstance(command, vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addTestMethodCommand = ArranageAddTestMethodCommand(command, vbe, state);
                 Assert.IsTrue(addTestMethodCommand.CanExecute(null));
             }
         }
@@ -188,7 +188,7 @@ End Sub
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, TestModuleBaseName, string.Empty);
             using (state)
             {
-                var addTestMethodCommand = (ICommand)Activator.CreateInstance(command, vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addTestMethodCommand = ArranageAddTestMethodCommand(command, vbe, state);
                 Assert.IsFalse(addTestMethodCommand.CanExecute(null));
             }
         }
@@ -489,6 +489,26 @@ End Enum
         private AddTestModuleWithStubsCommand ArrangeAddTestModuleWithStubsCommand(Mock<IVBE> vbe, AddTestModuleCommand addTestModuleCommand, Mock<IVBEEvents> vbeEvents)
         {
             return new AddTestModuleWithStubsCommand(vbe.Object, addTestModuleCommand, vbeEvents.Object);
+        }
+
+        // TODO: Remove the temporal copuling with other Arrange*
+        private ICommand ArranageAddTestMethodCommand(Type command, Mock<IVBE> vbe, RubberduckParserState state)
+        {
+            return ArranageAddTestMethodCommand(command, vbe, state, ArrangeCodeGenerator(vbe.Object, state));
+        }
+
+        // TODO: Remove the temporal copuling with other Arrange*
+        private ICommand ArranageAddTestMethodCommand(Type command, Mock<IVBE> vbe, RubberduckParserState state,
+            ITestCodeGenerator testCodeGenerator)
+        {
+            return ArranageAddTestMethodCommand(command, vbe, state, testCodeGenerator, new Mock<IVBEEvents>());
+        }
+
+        // TODO: Remove the temporal copuling with other Arrange*
+        private ICommand ArranageAddTestMethodCommand(Type command, Mock<IVBE> vbe, RubberduckParserState state,
+            ITestCodeGenerator testCodeGenerator, Mock<IVBEEvents> vbeEvents)
+        {
+            return (ICommand) Activator.CreateInstance(command, vbe.Object, state, testCodeGenerator, vbeEvents.Object);
         }
 
         private ITestCodeGenerator ArrangeCodeGenerator(IVBE vbe, RubberduckParserState state)
