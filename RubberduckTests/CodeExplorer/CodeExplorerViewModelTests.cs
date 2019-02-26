@@ -10,10 +10,9 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI.CodeExplorer.Commands;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.VBEditor.Events;
 using RubberduckTests.Mocks;
-using MessageBox = System.Windows.MessageBox;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -859,7 +858,8 @@ End Sub";
 
             dispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
 
-            var viewModel = new CodeExplorerViewModel(state, null, null, null, dispatcher.Object, vbe.Object, null, new CodeExplorerSyncProvider(vbe.Object, state));
+            var viewModel = new CodeExplorerViewModel(state, null, null, null, dispatcher.Object, vbe.Object, null,
+                new CodeExplorerSyncProvider(vbe.Object, state, new Mock<IVBEEvents>().Object));
 
             parser.Parse(new CancellationTokenSource());
             if (parser.State.Status >= ParserState.Error)

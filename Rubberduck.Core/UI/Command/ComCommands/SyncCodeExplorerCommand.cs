@@ -1,43 +1,21 @@
 ﻿using System.Linq;
-using System.Windows;
 using NLog;
 using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
-    public interface ICodeExplorerSyncProvider
-    {
-        SyncCodeExplorerCommand GetSyncCommand(CodeExplorerViewModel explorer);
-    }
-
-    public class CodeExplorerSyncProvider : ICodeExplorerSyncProvider
-    {
-        private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
-
-        public CodeExplorerSyncProvider(IVBE vbe, RubberduckParserState state)
-        {
-            _vbe = vbe;
-            _state = state;
-        }
-
-        public SyncCodeExplorerCommand GetSyncCommand(CodeExplorerViewModel explorer)
-        {
-            return new SyncCodeExplorerCommand(_vbe, _state, explorer);
-        }
-    }
-
-    public class SyncCodeExplorerCommand : CommandBase
+    public class SyncCodeExplorerCommand : ComCommandBase
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
         private readonly CodeExplorerViewModel _explorer;
 
-        public SyncCodeExplorerCommand(IVBE vbe, RubberduckParserState state, CodeExplorerViewModel explorer) : base(LogManager.GetCurrentClassLogger())
+        public SyncCodeExplorerCommand(IVBE vbe, RubberduckParserState state, CodeExplorerViewModel explorer,
+            IVBEEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;
             _state = state;
