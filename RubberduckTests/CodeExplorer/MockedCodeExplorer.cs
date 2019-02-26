@@ -22,6 +22,7 @@ using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
+using Rubberduck.VBEditor.Events;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.CodeExplorer
@@ -81,7 +82,7 @@ namespace RubberduckTests.CodeExplorer
             VbComponent = project.MockComponents.First();
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
-
+            VbeEvents = new Mock<IVBEEvents>();
             SetupViewModelAndParse();
         }
 
@@ -143,6 +144,7 @@ namespace RubberduckTests.CodeExplorer
 
         public RubberduckParserState State { get; set; }
         public Mock<IVBE> Vbe { get; }
+        public Mock<IVBEEvents> VbeEvents { get; }
         public CodeExplorerViewModel ViewModel { get; set; }
         public Mock<IVBProject> VbProject { get; }
         public Mock<IVBComponents> VbComponents { get; }
@@ -279,7 +281,7 @@ namespace RubberduckTests.CodeExplorer
         {
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
             var codeGenerator = new TestCodeGenerator(Vbe.Object, State, MessageBox.Object, _interaction.Object, _unitTestSettingsProvider.Object, indenter, null);
-            ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, codeGenerator);
+            ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, codeGenerator, VbeEvents.Object);
             return this;
         }
 
@@ -295,7 +297,7 @@ namespace RubberduckTests.CodeExplorer
         public MockedCodeExplorer ImplementAddTestModuleWithStubsCommand()
         {
             ImplementAddTestModuleCommand();
-            ViewModel.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(Vbe.Object, ViewModel.AddTestModuleCommand);
+            ViewModel.AddTestModuleWithStubsCommand = new AddTestModuleWithStubsCommand(Vbe.Object, ViewModel.AddTestModuleCommand, VbeEvents.Object);
             return this;
         }
 

@@ -1,7 +1,6 @@
 ﻿using NLog;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command.ComCommands;
-using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 

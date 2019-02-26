@@ -22,6 +22,7 @@ using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
+using Rubberduck.VBEditor.Events;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.Commands
@@ -199,7 +200,7 @@ End Sub
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, "Module1", string.Empty);
             using (state)
             {
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addTestModuleCommand = ArrangeAddTestModuleCommand(vbe, state);
 
                 addTestModuleCommand.Execute(null);
 
@@ -217,8 +218,8 @@ End Sub
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, "Module1", string.Empty);
             using (state)
             {
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
-                var addWithStubsCommand = new AddTestModuleWithStubsCommand(vbe.Object, addTestModuleCommand);
+                var addTestModuleCommand = ArrangeAddTestModuleCommand(vbe, state);
+                var addWithStubsCommand = ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand);
 
                 addWithStubsCommand.Execute(null);
 
@@ -245,7 +246,7 @@ End Sub
             var (vbe, state) = ArrangeAndParseTestCode(TestProjectName, existing);
             using (state)
             {
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addTestModuleCommand = ArrangeAddTestModuleCommand(vbe, state, ArrangeCodeGenerator(vbe.Object, state));
 
                 addTestModuleCommand.Execute(null);
 
@@ -272,8 +273,8 @@ End Sub
             var (vbe, state) = ArrangeAndParseTestCode(TestProjectName, existing);
             using (state)
             {
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
-                var addWithStubsCommand = new AddTestModuleWithStubsCommand(vbe.Object, addTestModuleCommand);
+                var addTestModuleCommand = ArrangeAddTestModuleCommand(vbe, state);
+                var addWithStubsCommand = ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand);
 
                 addWithStubsCommand.Execute(null);
 
@@ -307,8 +308,8 @@ End Property
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, "Module1", code);
             using (state)
             {
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
-                var addWithStubsCommand = new AddTestModuleWithStubsCommand(vbe.Object, addTestModuleCommand);
+                var addTestModuleCommand = ArrangeAddTestModuleCommand(vbe, state);
+                var addWithStubsCommand = ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand);
 
                 var project = state.DeclarationFinder.FindProject(TestProjectName);
                 var target = state.DeclarationFinder.FindStdModule("Module1", project);
@@ -361,8 +362,8 @@ End Property
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, "Module1", code);
             using (state)
             {
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
-                var addWithStubsCommand = new AddTestModuleWithStubsCommand(vbe.Object, addTestModuleCommand);
+                var addTestModuleCommand = ArrangeAddTestModuleCommand(vbe, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addWithStubsCommand = ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand);
 
                 var project = state.DeclarationFinder.FindProject(TestProjectName);
                 var target = state.DeclarationFinder.FindStdModule("Module1", project);
@@ -405,8 +406,8 @@ End Enum
             var (vbe, state) = ArrangeAndParseTestCode(ComponentType.StandardModule, "Module1", code);
             using (state)
             {
-                var addTestModuleCommand = new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state));
-                var addWithStubsCommand = new AddTestModuleWithStubsCommand(vbe.Object, addTestModuleCommand);
+                var addTestModuleCommand = ArrangeAddTestModuleCommand(vbe, state, ArrangeCodeGenerator(vbe.Object, state));
+                var addWithStubsCommand = ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand);
 
                 var project = state.DeclarationFinder.FindProject(TestProjectName);
                 var target = state.DeclarationFinder.FindStdModule("Module1", project);
@@ -425,11 +426,13 @@ End Enum
             }
         }
 
+        // TODO: Remove the temporal copuling with other Arrange*
         private (Mock<IVBE> Vbe, RubberduckParserState State) ArrangeAndParseTestCode(ComponentType type, string name, string code)
         {
             return ArrangeAndParseTestCode(TestProjectName, new List<(ComponentType type, string name, string code)> {(type, name, code)});
         }
 
+        // TODO: Remove the temporal copuling with other Arrange*
         private (Mock<IVBE> Vbe, RubberduckParserState State) ArrangeAndParseTestCode(string projectName, IEnumerable<(ComponentType type, string name, string code)> components)
         {
             var builder = new MockVbeBuilder();
@@ -455,6 +458,37 @@ End Enum
             }
 
             return (vbe, state);
+        }
+
+        // TODO: Remove the temporal copuling with other Arrange*
+        private AddTestModuleCommand ArrangeAddTestModuleCommand(Mock<IVBE> vbe, RubberduckParserState state)
+        {
+            return ArrangeAddTestModuleCommand(vbe, state, ArrangeCodeGenerator(vbe.Object, state));
+        }
+
+        // TODO: Remove the temporal copuling with other Arrange*
+        private AddTestModuleCommand ArrangeAddTestModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, ITestCodeGenerator generator)
+        {
+            return ArrangeAddTestModuleCommand(vbe, state, generator, new Mock<IVBEEvents>());
+        }
+
+        // TODO: Remove the temporal copuling with other Arrange*
+        private AddTestModuleCommand ArrangeAddTestModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, ITestCodeGenerator generator, Mock<IVBEEvents> vbeEvents)
+        {
+            return new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state), vbeEvents.Object);
+        }
+
+        // TODO: Remove the temporal copuling with other Arrange*
+        private AddTestModuleWithStubsCommand ArrangeAddTestModuleWithStubsCommand(Mock<IVBE> vbe,
+            AddTestModuleCommand addTestModuleCommand)
+        {
+            return ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand, new Mock<IVBEEvents>());
+        }
+
+        // TODO: Remove the temporal copuling with other Arrange*
+        private AddTestModuleWithStubsCommand ArrangeAddTestModuleWithStubsCommand(Mock<IVBE> vbe, AddTestModuleCommand addTestModuleCommand, Mock<IVBEEvents> vbeEvents)
+        {
+            return new AddTestModuleWithStubsCommand(vbe.Object, addTestModuleCommand, vbeEvents.Object);
         }
 
         private ITestCodeGenerator ArrangeCodeGenerator(IVBE vbe, RubberduckParserState state)
