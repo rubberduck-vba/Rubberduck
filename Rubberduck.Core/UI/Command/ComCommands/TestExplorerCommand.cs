@@ -1,16 +1,17 @@
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.UI.UnitTesting;
+using Rubberduck.VBEditor.Events;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     [ComVisible(false)]
-    internal class TestExplorerCommand : CommandBase
+    internal class TestExplorerCommand : ComCommandBase
     {
         private readonly TestExplorerDockablePresenter _presenter;
 
-        public TestExplorerCommand(TestExplorerDockablePresenter presenter)
-            : base(LogManager.GetCurrentClassLogger())
+        public TestExplorerCommand(TestExplorerDockablePresenter presenter, IVBEEvents vbeEvents)
+            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _presenter = presenter;
         }
