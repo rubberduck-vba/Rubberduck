@@ -18,7 +18,7 @@ using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Interaction;
-using Rubberduck.UI.UnitTesting.Commands;
+using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
