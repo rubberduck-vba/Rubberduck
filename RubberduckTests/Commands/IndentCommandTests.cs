@@ -23,7 +23,7 @@ namespace RubberduckTests.Commands
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var noIndentAnnotationCommand = ArrangeNoIndentAnnotationCommand(vbe, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state);
                 noIndentAnnotationCommand.Execute(null);
 
                 Assert.AreEqual("'@NoIndent\r\n", component.CodeModule.Content());
@@ -54,7 +54,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var noIndentAnnotationCommand = ArrangeNoIndentAnnotationCommand(vbe, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state);
                 noIndentAnnotationCommand.Execute(null);
 
                 Assert.AreEqual(expected, component.CodeModule.Content());
@@ -72,7 +72,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var noIndentAnnotationCommand = ArrangeNoIndentAnnotationCommand(vbe, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state);
                 Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
             }
         }
@@ -88,7 +88,7 @@ End Sub";
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
-                var noIndentAnnotationCommand = ArrangeNoIndentAnnotationCommand(vbe, state);
+                var noIndentAnnotationCommand = MockIndenter.ArrangeNoIndentAnnotationCommand(vbe, state);
                 Assert.IsFalse(noIndentAnnotationCommand.CanExecute(null));
             }
         }
@@ -139,7 +139,7 @@ End Sub
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var indentCommand = ArrangeIndentCurrentModuleCommand(vbe, state);
+                var indentCommand = MockIndenter.ArrangeIndentCurrentModuleCommand(vbe, state);
                 indentCommand.Execute(null);
 
                 var module1 = project.Object.VBComponents["Comp1"].CodeModule;
@@ -160,7 +160,7 @@ End Sub
 
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var indentCommand = ArrangeIndentCurrentModuleCommand(vbe, state);
+                var indentCommand = MockIndenter.ArrangeIndentCurrentModuleCommand(vbe, state);
                 Assert.IsFalse(indentCommand.CanExecute(null));
             }
         }
@@ -173,43 +173,9 @@ End Sub
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", out component);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var indentCommand = ArrangeIndentCurrentModuleCommand(vbe, state);
+                var indentCommand = MockIndenter.ArrangeIndentCurrentModuleCommand(vbe, state);
                 Assert.IsTrue(indentCommand.CanExecute(null));
             }
-        }
-
-        private static IIndenter CreateIndenter(IVBE vbe)
-        {
-            return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
-        }
-
-        private static IndentCurrentModuleCommand ArrangeIndentCurrentModuleCommand(Mock<IVBE> vbe,
-            RubberduckParserState state)
-        {
-            return ArrangeIndentCurrentModuleCommand(vbe, state, CreateIndenter(vbe.Object));
-        }
-
-        private static IndentCurrentModuleCommand ArrangeIndentCurrentModuleCommand(Mock<IVBE> vbe,
-            RubberduckParserState state, IIndenter indenter)
-        {
-            return ArrangeIndentCurrentModuleCommand(vbe, state, indenter, new Mock<IVBEEvents>());
-        }
-
-        private static IndentCurrentModuleCommand ArrangeIndentCurrentModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, IIndenter indenter, Mock<IVBEEvents> vbeEvents)
-        {
-            return new IndentCurrentModuleCommand(vbe.Object, indenter, state, vbeEvents.Object);
-        }
-
-        private static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe,
-            RubberduckParserState state)
-        {
-            return ArrangeNoIndentAnnotationCommand(vbe, state, new Mock<IVBEEvents>());
-        }
-
-        private static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe,
-            RubberduckParserState state, Mock<IVBEEvents> vbeEvents)
-        {
-            return new NoIndentAnnotationCommand(vbe.Object, state, vbeEvents.Object);
         }
     }
 }
