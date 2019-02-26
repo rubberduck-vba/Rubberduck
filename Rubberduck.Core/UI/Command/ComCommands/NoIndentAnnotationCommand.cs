@@ -4,18 +4,19 @@ using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     [ComVisible(false)]
-    public class NoIndentAnnotationCommand : CommandBase
+    public class NoIndentAnnotationCommand : ComCommandBase
     {
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public NoIndentAnnotationCommand(IVBE vbe, RubberduckParserState state)
-            : base(LogManager.GetCurrentClassLogger())
+        public NoIndentAnnotationCommand(IVBE vbe, RubberduckParserState state, IVBEEvents vbeEvents)
+            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;
             _state = state;
