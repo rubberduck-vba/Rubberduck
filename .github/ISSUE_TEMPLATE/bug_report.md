@@ -33,7 +33,7 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Logfile**
-Rubberduck generates extensive logging in TRACE-Level. If no log was created at `%APPDATA%\Rubberduck\Logs`, check your settings. Include this Log for bugreports about the behavior of Rubbberduck
+Rubberduck generates extensive logging in TRACE-Level. If no Log was created at `%APPDATA%\Rubberduck\Logs`, check your settings. Include this Log for bug reports about the behavior of Rubberduck.
 
 **Additional context**
 Add any other context about the problem here.
