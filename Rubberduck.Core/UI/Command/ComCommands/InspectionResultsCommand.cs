@@ -1,19 +1,20 @@
 ﻿using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.UI.Inspections;
+using Rubberduck.VBEditor.Events;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     /// <summary>
     /// A command that runs all active code inspections for the active VBAProject.
     /// </summary>
     [ComVisible(false)]
-    public class InspectionResultsCommand : CommandBase
+    public class InspectionResultsCommand : ComCommandBase
     {
         private readonly InspectionResultsDockablePresenter _presenter;
 
-        public InspectionResultsCommand(InspectionResultsDockablePresenter presenter)
-            : base(LogManager.GetCurrentClassLogger())
+        public InspectionResultsCommand(InspectionResultsDockablePresenter presenter, IVBEEvents vbeEvents)
+            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _presenter = presenter;
         }
