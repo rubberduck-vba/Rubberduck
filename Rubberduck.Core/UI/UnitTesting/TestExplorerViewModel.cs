@@ -10,6 +10,7 @@ using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Settings;
 using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.UnitTesting.ComCommands;
 using Rubberduck.UI.UnitTesting.Commands;

@@ -1,6 +1,5 @@
 using NLog;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command
 {

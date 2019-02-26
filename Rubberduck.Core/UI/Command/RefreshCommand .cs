@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using NLog;
+using Rubberduck.UI.Command.ComCommands;
 
 namespace Rubberduck.UI.Command
 {
