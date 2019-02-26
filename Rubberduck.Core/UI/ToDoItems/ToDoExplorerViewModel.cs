@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Text.RegularExpressions;
+using System.Windows.Data;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -15,89 +17,86 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.ToDoItems
 {
+    public enum ToDoItemGrouping
+    {
+        None,
+        Marker,
+        Location
+    };
+
     public sealed class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configService;
         private readonly ISettingsFormFactory _settingsFormFactory;
+        private readonly IUiDispatcher _uiDispatcher;
 
-        public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService, ISettingsFormFactory settingsFormFactory, ISelectionService selectionService)
+        public ToDoExplorerViewModel(
+            RubberduckParserState state, 
+            IGeneralConfigService configService, 
+            ISettingsFormFactory settingsFormFactory, 
+            ISelectionService selectionService, 
+            IUiDispatcher uiDispatcher)
         {
             _state = state;
             _configService = configService;
             _settingsFormFactory = settingsFormFactory;
+            _uiDispatcher = uiDispatcher;
             _state.StateChanged += HandleStateChanged;
 
             _navigateCommand = new Lazy<NavigateCommand>(() => new NavigateCommand(selectionService));
+            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
+            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
 
-            SetMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                GroupByMarker = (bool)param;
-                GroupByLocation = !(bool)param;
-            });
-
-            SetLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                GroupByLocation = (bool)param;
-                GroupByMarker = !(bool)param;
-            });
+            Items = CollectionViewSource.GetDefaultView(_items);
+            OnPropertyChanged(nameof(Items));
+            Grouping = ToDoItemGrouping.Marker;
         }
 
-        private ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
-        public ObservableCollection<ToDoItem> Items
+        private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
+
+        public ICollectionView Items { get; }
+
+        private static readonly Dictionary<ToDoItemGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<ToDoItemGrouping, PropertyGroupDescription>
         {
-            get => _items;
+            { ToDoItemGrouping.Marker, new PropertyGroupDescription("Type") },
+            { ToDoItemGrouping.Location, new PropertyGroupDescription("Selection.QualifiedName.Name") }
+        };
+
+        private ToDoItemGrouping _grouping;
+        public ToDoItemGrouping Grouping
+        {
+            get => _grouping;
             set
             {
-                if (_items == value)
+                if (value == _grouping)
                 {
                     return;
                 }
 
-                _items = value;
+                _grouping = value;
+                Items.GroupDescriptions.Clear();
+                Items.GroupDescriptions.Add(GroupDescriptions[_grouping]);
+                Items.Refresh();
                 OnPropertyChanged();
             }
         }
 
-        private bool _groupByMarker = true;
-        public bool GroupByMarker
+        private bool _expanded;
+        public bool ExpandedState
         {
-            get => _groupByMarker;
+            get => _expanded;
             set
             {
-                if (_groupByMarker == value)
-                {
-                    return;
-                }
-
-                _groupByMarker = value;
+                _expanded = value;
                 OnPropertyChanged();
             }
         }
-
-        private bool _groupByLocation;
-        public bool GroupByLocation
-        {
-            get => _groupByLocation;
-            set
-            {
-                if (_groupByLocation == value)
-                {
-                    return;
-                }
-
-                _groupByLocation = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public CommandBase SetMarkerGroupingCommand { get; }
-
-        public CommandBase SetLocationGroupingCommand { get; }
 
         private CommandBase _refreshCommand;
         public CommandBase RefreshCommand
@@ -116,6 +115,19 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
+        public CommandBase CollapseAllCommand { get; }
+        public CommandBase ExpandAllCommand { get; }
+
+        private void ExecuteCollapseAll(object parameter)
+        {
+            ExpandedState = false;
+        }
+
+        private void ExecuteExpandAll(object parameter)
+        {
+            ExpandedState = true;
+        }
+
         private void HandleStateChanged(object sender, EventArgs e)
         {
             if (_state.Status != ParserState.ResolvedDeclarations)
@@ -123,7 +135,14 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
 
-            Items = new ObservableCollection<ToDoItem>(GetItems());
+            _uiDispatcher.Invoke(() =>
+            {
+                _items.Clear();
+                foreach (var item in _state.AllComments.SelectMany(GetToDoMarkers))
+                {
+                    _items.Add(item);
+                }
+            });
         }
 
         private ToDoItem _selectedItem;
@@ -245,11 +264,6 @@ namespace Rubberduck.UI.ToDoItems
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
                                          && Regex.IsMatch(comment.CommentText, @"\b" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
                            .Select(marker => new ToDoItem(marker.Text, comment));
-        }
-
-        private IEnumerable<ToDoItem> GetItems()
-        {
-            return _state.AllComments.SelectMany(GetToDoMarkers);
         }
 
         public void Dispose()
