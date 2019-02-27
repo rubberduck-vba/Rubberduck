@@ -4,20 +4,21 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
 using NLog;
+using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Resources;
 using Rubberduck.UI.Controls;
 using Rubberduck.VBEditor;
-using Rubberduck.Resources;
-using Rubberduck.Interaction.Navigation;
+using Rubberduck.VBEditor.Events;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     public interface IShowParserErrorsCommand : ICommand, IDisposable { }
 
     [ComVisible(false)]
-    public class ShowParserErrorsCommand : CommandBase, IShowParserErrorsCommand
+    public class ShowParserErrorsCommand : ComCommandBase, IShowParserErrorsCommand
     {
         private readonly INavigateCommand _navigateCommand;
         private readonly RubberduckParserState _state;
@@ -29,8 +30,9 @@ namespace Rubberduck.UI.Command
             RubberduckParserState state,
             ISearchResultsWindowViewModel viewModel,
             SearchResultPresenterInstanceManager presenterService,
-            IUiDispatcher uiDispatcher)
-            : base(LogManager.GetCurrentClassLogger())
+            IUiDispatcher uiDispatcher,
+            IVBEEvents vbeEvents)
+            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _navigateCommand = navigateCommand;
             _state = state;
