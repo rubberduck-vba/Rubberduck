@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Navigation.RegexSearchReplace;
+using Rubberduck.Parsing.Common;
 
 namespace Rubberduck.UI.Command
 {
