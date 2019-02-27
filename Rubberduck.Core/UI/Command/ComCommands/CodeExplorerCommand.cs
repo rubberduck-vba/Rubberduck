@@ -1,19 +1,20 @@
 using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.UI.CodeExplorer;
+using Rubberduck.VBEditor.Events;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     /// <summary>
     /// A command that displays the Code Explorer window.
     /// </summary>
     [ComVisible(false)]
-    public class CodeExplorerCommand : CommandBase
+    public class CodeExplorerCommand : ComCommandBase
     {
         private readonly CodeExplorerDockablePresenter _presenter;
 
-        public CodeExplorerCommand(CodeExplorerDockablePresenter presenter)
-            : base(LogManager.GetCurrentClassLogger())
+        public CodeExplorerCommand(CodeExplorerDockablePresenter presenter, IVBEEvents vbeEvents)
+            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _presenter = presenter;
         }
