@@ -1,7 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Interaction.Navigation;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command

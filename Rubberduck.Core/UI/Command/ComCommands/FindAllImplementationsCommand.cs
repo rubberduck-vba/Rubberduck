@@ -3,22 +3,24 @@ using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
-namespace Rubberduck.UI.Command
+namespace Rubberduck.UI.Command.ComCommands
 {
     /// <summary>
     /// A command that finds all implementations of a specified method, or of the active interface module.
     /// </summary>
     [ComVisible(false)]
-    public class FindAllImplementationsCommand : CommandBase
+    public class FindAllImplementationsCommand : ComCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IVBE _vbe;
         private readonly FindAllImplementationsService _finder;
 
-        public FindAllImplementationsCommand(RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel, FindAllImplementationsService finder)
-             : base(LogManager.GetCurrentClassLogger())
+        public FindAllImplementationsCommand(RubberduckParserState state, IVBE vbe,
+            ISearchResultsWindowViewModel viewModel, FindAllImplementationsService finder, IVBEEvents vbeEvents)
+            : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _finder = finder;
             _state = state;
