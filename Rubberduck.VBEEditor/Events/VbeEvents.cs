@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -9,14 +10,14 @@ namespace Rubberduck.VBEditor.Events
     public sealed class VBEEvents : IVBEEvents
     {
         private static VBEEvents _instance;
-        private static readonly object Lock = new object();
+        private static readonly object _instanceLock = new object();
         private readonly IVBProjects _projects;
         private readonly Dictionary<string, IVBComponents> _components;
         private readonly Dictionary<string, IReferences> _references;
 
         public static VBEEvents Initialize(IVBE vbe)
         {
-            lock (Lock)
+            lock (_instanceLock)
             {
                 if (_instance == null)
                 {
@@ -29,15 +30,14 @@ namespace Rubberduck.VBEditor.Events
 
         public static void Terminate()
         {
-            lock (Lock)
+            lock (_instanceLock)
             {
                 if (_instance == null)
                 {
                     return;
                 }
 
-                _instance.Dispose();
-                _instance = null;
+                _instance.TerminateInternal();
             }
         }
 
@@ -52,6 +52,11 @@ namespace Rubberduck.VBEditor.Events
             }
             
             _projects = vbe.VBProjects;
+
+            if (_projects == null)
+            {
+                return;
+            }
 
             _projects.AttachEvents();
             _projects.ProjectAdded += ProjectAddedHandler;
@@ -227,21 +232,14 @@ namespace Rubberduck.VBEditor.Events
 
         public event EventHandler EventsTerminated;
 
-        #region IDisposable
+        private long _terminated;
+        private const long _true = 1;
+        public bool Terminated => Interlocked.Read(ref _terminated) == _true;
 
-        private bool _disposed;
-        /// <remarks>
-        /// This is a not a true implementation of IDisposable pattern
-        /// because the method is made private and is available only
-        /// via the static method <see cref="Terminate"/> to provide
-        /// a single point of entry for disposing the singleton class
-        /// </remarks>
-        private void Dispose(bool disposing)
+        private void TerminateInternal()
         {
-            if (_disposed || _projects == null)
-            {
-                return;
-            }
+            // If we fail, we at least should advertise that we're now dead
+            Interlocked.Exchange(ref _terminated, _true);
 
             EventsTerminated?.Invoke(this, EventArgs.Empty);
             EventsTerminated = delegate { };
@@ -250,30 +248,18 @@ namespace Rubberduck.VBEditor.Events
             {
                 UnregisterProjectHandlers(projectid);
             }
-                
+
+            if (_projects == null)
+            {
+                return;
+            }
+
             _projects.ProjectActivated -= ProjectActivatedHandler;
             _projects.ProjectRenamed -= ProjectRenamedHandler;
             _projects.ProjectRemoved -= ProjectRemovedHandler;
             _projects.ProjectAdded -= ProjectAddedHandler;
             _projects.DetachEvents();
             _projects.Dispose();
-                
-            _disposed = true;
         }
-
-        ~VBEEvents()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(false);
-        }
-
-        // This code added to correctly implement the disposable pattern.
-        private void Dispose()
-        {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-        #endregion
     }
 }

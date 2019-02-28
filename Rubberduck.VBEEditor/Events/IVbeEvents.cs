@@ -18,5 +18,6 @@ namespace Rubberduck.VBEditor.Events
         event EventHandler<ReferenceEventArgs> ProjectReferenceAdded;
         event EventHandler<ReferenceEventArgs> ProjectReferenceRemoved;
         event EventHandler EventsTerminated;
+        bool Terminated { get; }
     }
 }
