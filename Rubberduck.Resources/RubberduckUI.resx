@@ -1549,4 +1549,7 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
 </root>

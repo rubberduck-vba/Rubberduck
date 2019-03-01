@@ -185,7 +185,7 @@
                             Command="{Binding BrowseCommand}">
                         <StackPanel Orientation="Horizontal">
                             <Image Margin="0,0,5,0" Height="16" Source="{StaticResource BrowseIcon}" />
-                            <TextBlock Background="Transparent" Text="Browse..."></TextBlock>
+                            <TextBlock Background="Transparent" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=References_BrowseButtonText}" />
                         </StackPanel>
                     </Button>
                     <Grid Grid.Row="1" Margin="10,10,10,5">
