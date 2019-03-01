@@ -111,7 +111,7 @@ EACH : E A C H;
 ELSE : E L S E;
 ELSEIF : E L S E I F;
 EMPTY : E M P T Y;
-// Apparently END_ENUM and END_TYPE don't allow line continuations (in the VB editor)
+// Apparently END_ENUM doesn't allow line continuations (in the VB editor)
 END_ENUM : E N D WS+ E N U M;
 END_FUNCTION : E N D (WS | LINE_CONTINUATION)+ F U N C T I O N;
 // We allow "EndIf" without the whitespace as well for the preprocessor.
@@ -120,7 +120,7 @@ ENDPROPERTY : E N D P R O P E R T Y; //Used in module configurations.
 END_PROPERTY : E N D (WS | LINE_CONTINUATION)+ P R O P E R T Y;
 END_SELECT : E N D (WS | LINE_CONTINUATION)+ S E L E C T;
 END_SUB : E N D (WS | LINE_CONTINUATION)+ S U B;
-END_TYPE : E N D WS+ T Y P E;
+END_TYPE : E N D (WS | LINE_CONTINUATION)+ T Y P E;
 END_WITH : E N D (WS | LINE_CONTINUATION)+ W I T H;
 END : E N D;
 ENUM : E N U M;

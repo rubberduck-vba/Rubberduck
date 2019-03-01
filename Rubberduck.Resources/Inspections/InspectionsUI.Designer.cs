@@ -59,7 +59,7 @@ namespace Rubberduck.Resources.Inspections {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Filter.
         /// </summary>
@@ -68,7 +68,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("CodeInspection_Filter", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Code Quality Issues.
         /// </summary>
@@ -196,7 +196,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Column.
         /// </summary>
@@ -205,7 +205,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("ExportColumnHeader_Column", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Component.
         /// </summary>
@@ -214,7 +214,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("ExportColumnHeader_Component", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Issue.
         /// </summary>
@@ -223,7 +223,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("ExportColumnHeader_Issue", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Line.
         /// </summary>
@@ -232,7 +232,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("ExportColumnHeader_Line", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Project.
         /// </summary>
@@ -241,7 +241,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("ExportColumnHeader_Project", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Type.
         /// </summary>
@@ -250,7 +250,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("ExportColumnHeader_Type", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -260,7 +260,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -280,7 +280,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -290,7 +290,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Declaration.
         /// </summary>
@@ -317,7 +317,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("Inspections_Usage", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -327,27 +327,7 @@ namespace Rubberduck.Resources.Inspections {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap severity {
-            get {
-                object obj = ResourceManager.GetObject("severity", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap type {
-            get {
-                object obj = ResourceManager.GetObject("type", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to {0}: {1} - {2} {3}.{4}, line {5}.
         /// </summary>
@@ -390,6 +370,26 @@ namespace Rubberduck.Resources.Inspections {
         public static string QuickFix_ThisProject {
             get {
                 return ResourceManager.GetString("QuickFix_ThisProject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap severity {
+            get {
+                object obj = ResourceManager.GetObject("severity", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap type {
+            get {
+                object obj = ResourceManager.GetObject("type", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

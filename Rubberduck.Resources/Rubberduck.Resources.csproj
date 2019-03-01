@@ -13,25 +13,45 @@
     <Resource Include="**\*.txt" Exclude="$(IntermediateOutputPath)\**" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Update="**\*.resx">
+    <EmbeddedResource Update="**\*.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>$([System.String]::Copy('%(FileName)')).Designer.cs</LastGenOutput>
-    </Resource>
+    </EmbeddedResource>
     <Compile Update="**\*.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>$([System.String]::Copy('%(Filename)').Replace('.Designer', '')).resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="RubberduckUI.Designer.cs">
+    <Compile Update="Inspections\InspectionInfo.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>RubberduckUI.resx</DependentUpon>
+      <DependentUpon>InspectionInfo.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Inspections\InspectionNames.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InspectionNames.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Inspections\InspectionResults.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>InspectionResults.resx</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="RubberduckUI.resx">
+    <EmbeddedResource Update="Inspections\InspectionInfo.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
+      <LastGenOutput>InspectionInfo.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Inspections\InspectionNames.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionNames.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Inspections\InspectionResults.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>InspectionResults.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 </Project>

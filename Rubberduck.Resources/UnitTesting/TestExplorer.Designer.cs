@@ -106,14 +106,14 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Category Name.
+        ///   Looks up a localized string similar to Category.
         /// </summary>
         public static string TestExplorer_CategoryName {
             get {
                 return ResourceManager.GetString("TestExplorer_CategoryName", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Run all tests.
         /// </summary>
@@ -122,7 +122,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_ContextMenuRunAll", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Run all tests in group.
         /// </summary>
@@ -131,7 +131,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_ContextMenuRunGroup", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Run selected tests.
         /// </summary>
@@ -140,7 +140,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_ContextMenuRunSelected", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Run single test.
         /// </summary>
@@ -149,7 +149,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_ContextMenuRunSingle", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Duration.
         /// </summary>
@@ -203,7 +203,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_QualifiedModuleName", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Reset all test results.
         /// </summary>
@@ -275,7 +275,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_RunMenuPassedTests", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Selected Tests.
         /// </summary>
@@ -311,8 +311,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_TestNumberPassed", resourceCulture);
             }
         }
-
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Total Duration.
         /// </summary>
@@ -321,7 +320,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorer_TotalDuration", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Uncategorized.
         /// </summary>
@@ -348,7 +347,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestExplorerWindow_Caption", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to hr.
         /// </summary>
@@ -357,7 +356,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_DurationHour", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to ms.
         /// </summary>
@@ -366,7 +365,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_DurationMillisecond", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to min.
         /// </summary>
@@ -375,7 +374,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_DurationMinute", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to sec.
         /// </summary>
@@ -384,7 +383,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_DurationSecond", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Failed.
         /// </summary>
@@ -411,7 +410,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_Inconclusive", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to {0} of {1} Tests Run (Total Run Time: {2:g}).
         /// </summary>
@@ -420,7 +419,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_RunSummaryFormat", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Spectacular Failure.
         /// </summary>
@@ -429,7 +428,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_SpectacularFail", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Succeeded.
         /// </summary>
@@ -438,7 +437,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_Succeeded", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Summary:.
         /// </summary>
@@ -447,7 +446,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_SummaryCaption", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Unknown.
         /// </summary>
@@ -456,7 +455,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("TestOutcome_Unknown", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Act.
         /// </summary>
@@ -465,7 +464,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_Act", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Arrange.
         /// </summary>
@@ -474,7 +473,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_Arrange", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Assert.
         /// </summary>
@@ -483,7 +482,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_Assert", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to TestMethod.
         /// </summary>
@@ -492,7 +491,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_BaseName", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Change to expected error number.
         /// </summary>
@@ -510,7 +509,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_ErrorNotRaised", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to ExpectedError.
         /// </summary>
@@ -519,7 +518,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_ExpectedError", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to ModuleCleanup.
         /// </summary>
@@ -528,7 +527,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_ModuleCleanupMethod", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to ModuleInitialize.
         /// </summary>
@@ -537,7 +536,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_ModuleInitializeMethod", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Test raised an error.
         /// </summary>
@@ -555,16 +554,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_Rename", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to TestInitialize.
-        /// </summary>
-        public static string UnitTest_NewMethod_TestInitializeMethod {
-            get {
-                return ResourceManager.GetString("UnitTest_NewMethod_TestInitializeMethod", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to TestCleanup.
         /// </summary>
@@ -573,7 +563,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_TestCleanupMethod", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to TestExit.
         /// </summary>
@@ -582,7 +572,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_TestExitLabel", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to TestFail.
         /// </summary>
@@ -591,7 +581,16 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewMethod_TestFailLabel", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to TestInitialize.
+        /// </summary>
+        public static string UnitTest_NewMethod_TestInitializeMethod {
+            get {
+                return ResourceManager.GetString("UnitTest_NewMethod_TestInitializeMethod", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to TestModule.
         /// </summary>
@@ -600,7 +599,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewModule_BaseName", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Tests.
         /// </summary>
@@ -609,7 +608,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewModule_DefaultFolder", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to LateBind.
         /// </summary>
@@ -618,7 +617,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewModule_LateBindConstant", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to LateBindTests.
         /// </summary>
@@ -627,7 +626,7 @@ namespace Rubberduck.Resources.UnitTesting {
                 return ResourceManager.GetString("UnitTest_NewModule_LateBindDirective", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to this method runs after every test in the module.
         /// </summary>
