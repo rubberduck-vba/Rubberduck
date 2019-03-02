@@ -41,7 +41,7 @@ End Sub
                 "Class2", 
                 selection, 
                 null, 
-                false, 
+                false,
                 ("Class1", inputCode1, ComponentType.ClassModule), 
                 ("Class2", inputCode2, ComponentType.ClassModule));
             Assert.AreEqual(expectedCode, actualCode["Class2"]);

@@ -18,15 +18,11 @@ namespace RubberduckTests.Refactoring.Rename
     internal static class RenameTestExecution
     {
 
-        public static void PerformExpectedVersusActualRenameTests(RenameTestsDataObject tdo
-            , RenameTestModuleDefinition? inputOutput1
-            , RenameTestModuleDefinition? inputOutput2 = null
-            , RenameTestModuleDefinition? inputOutput3 = null
-            , RenameTestModuleDefinition? inputOutput4 = null)
+        public static void PerformExpectedVersusActualRenameTests(RenameTestsDataObject tdo, params RenameTestModuleDefinition[] testModuleDefinitions)
         {
             try
             {
-                InitializeTestDataObject(tdo, inputOutput1, inputOutput2, inputOutput3, inputOutput4);
+                InitializeTestDataObject(tdo, testModuleDefinitions);
                 RunRenameRefactorScenario(tdo);
                 CheckRenameRefactorTestResults(tdo);
             }
@@ -36,34 +32,14 @@ namespace RubberduckTests.Refactoring.Rename
             }
         }
 
-        private static void InitializeTestDataObject(RenameTestsDataObject tdo
-            , RenameTestModuleDefinition? inputOutput1
-            , RenameTestModuleDefinition? inputOutput2 = null
-            , RenameTestModuleDefinition? inputOutput3 = null
-            , RenameTestModuleDefinition? inputOutput4 = null)
+        private static void InitializeTestDataObject(RenameTestsDataObject tdo, params RenameTestModuleDefinition[] testModuleDefinitions)
         {
-            var renameTMDs = new List<RenameTestModuleDefinition>();
-            bool cursorFound = false;
-            foreach (var io in new[] { inputOutput1, inputOutput2, inputOutput3, inputOutput4 })
-            {
-                if (io.HasValue)
-                {
-                    var renameTMD = io.Value;
-                    if (!renameTMD.Input_WithFauxCursor.Equals(string.Empty))
-                    {
-                        if (cursorFound) { Assert.Inconclusive($"Found multiple selection cursors ('{RenameTests.FAUX_CURSOR}') in the test input"); }
-                        cursorFound = true;
-                    }
-                    renameTMDs.Add(renameTMD);
-                }
-            }
+            VerifyExactlyOneModuleHasASelection(testModuleDefinitions);
 
-            if (!cursorFound)
+            foreach (var testModuleDefinition in testModuleDefinitions)
             {
-                Assert.Inconclusive($"Unable to determine selected target using '{RenameTests.FAUX_CURSOR}' in test input");
+                AddTestModuleDefinition(tdo, testModuleDefinition);
             }
-
-            renameTMDs.ForEach(rtmd => AddTestModuleDefinition(tdo, rtmd));
 
             if (tdo.NewName.Length == 0)
             {
@@ -77,7 +53,7 @@ namespace RubberduckTests.Refactoring.Rename
             tdo.MsgBox = new Mock<IMessageBox>();
             tdo.MsgBox.Setup(m => m.ConfirmYesNo(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(tdo.MsgBoxReturn == ConfirmationOutcome.Yes);
             
-            var activeIndex = renameTMDs.FindIndex(tmd => tmd.Input_WithFauxCursor != string.Empty);
+            var activeIndex = Array.FindIndex(testModuleDefinitions, tmd => tmd.Input_WithFauxCursor != string.Empty);
             tdo.VBE = tdo.VBE ?? BuildProject(tdo.ProjectName, tdo.ModuleTestSetupDefs, activeIndex, tdo.UseLibraries);
             tdo.AdditionalSetup?.Invoke(tdo);
             (tdo.ParserState, tdo.RewritingManager) = MockParser.CreateAndParseWithRewritingManager(tdo.VBE);
@@ -103,9 +79,33 @@ namespace RubberduckTests.Refactoring.Rename
             tdo.RenameRefactoringUnderTest = new RenameRefactoring(factory.Object, tdo.MsgBox.Object, tdo.ParserState, tdo.ParserState.ProjectsProvider, tdo.RewritingManager, selectionService);
         }
 
+        private static void VerifyExactlyOneModuleHasASelection(IEnumerable<RenameTestModuleDefinition> testModuleDefinitions)
+        {
+            var cursorFound = false;
+            foreach (var testModuleDefinition in testModuleDefinitions)
+            {
+                if (testModuleDefinition.Input_WithFauxCursor.Equals(string.Empty))
+                {
+                    continue;
+                }
+
+                if (cursorFound)
+                {
+                    Assert.Inconclusive($"Found multiple selection cursors ('{RenameTests.FAUX_CURSOR}') in the test input");
+                }
+
+                cursorFound = true;
+            }
+
+            if (!cursorFound)
+            {
+                Assert.Inconclusive($"Unable to determine selected target using '{RenameTests.FAUX_CURSOR}' in test input");
+            }
+        }
+
         private static ISelectionService MockedSelectionService(IVBE vbe)
         {
-            QualifiedSelection? activeSelection = vbe.GetActiveSelection();
+            var activeSelection = vbe.GetActiveSelection();
             var selectionServiceMock = new Mock<ISelectionService>();
             selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
             selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
@@ -115,7 +115,7 @@ namespace RubberduckTests.Refactoring.Rename
 
         private static void AddTestModuleDefinition(RenameTestsDataObject tdo, RenameTestModuleDefinition inputOutput)
         {
-            if (inputOutput.Input_WithFauxCursor.Length > 0)
+            if (inputOutput.Input_WithFauxCursor != string.Empty)
             {
                 tdo.SelectionModuleName = inputOutput.ModuleName;
                 if (inputOutput.Input_WithFauxCursor.Contains(RenameTests.FAUX_CURSOR))

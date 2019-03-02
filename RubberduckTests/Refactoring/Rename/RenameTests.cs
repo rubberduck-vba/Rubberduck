@@ -1910,7 +1910,7 @@ End Sub";
                         .Callback(() => m.NewName = newName)
                         .Returns(m);
                     return presenter;
-                    }, out var creator);
+                    }, out _);
                 var selectionService = MockedSelectionService(vbeWrapper);
                 var refactoring = new RenameRefactoring(factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager, selectionService);
                 refactoring.Refactor(model.Target);
@@ -1956,7 +1956,7 @@ End Sub";
                         .Callback(() => m.NewName = newName)
                         .Returns(m);
                     return presenter;
-                }, out var creator);
+                }, out _);
                 var selectionService = MockedSelectionService(vbeWrapper);
                 var refactoring = new RenameRefactoring(factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager, selectionService);
                 refactoring.Refactor(model.Target);
@@ -2670,11 +2670,12 @@ End Sub"
 End Sub";
             const string selected = "val1";
             const string newName = "Val1";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out var component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-                var declaration = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Variable)
-                    .Where(d => d.IdentifierName.Equals(selected)).First();
+                var declaration = state.DeclarationFinder
+                    .DeclarationsWithType(DeclarationType.Variable)
+                    .First(d => d.IdentifierName.Equals(selected));
                 var renameModel = new RenameModel(state.DeclarationFinder, declaration.QualifiedSelection);
                 var renameViewModel = new RenameViewModel(state, renameModel);
                 renameViewModel.Target = renameModel.Target;
@@ -2721,7 +2722,7 @@ End Property";
                         .Callback(() => m.NewName = newName)
                         .Returns(m);
                     return presenter;
-                }, out var creator);
+                }, out _);
                 var selectionService = MockedSelectionService(vbeWrapper);
                 var refactoring = new RenameRefactoring(factory.Object, msgbox.Object, state, state.ProjectsProvider, rewritingManager, selectionService);
                 refactoring.Refactor(model.Target);

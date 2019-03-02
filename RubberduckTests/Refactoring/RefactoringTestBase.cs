@@ -126,7 +126,7 @@ namespace RubberduckTests.Refactoring
             ISelectionService selectionService
         );
 
-        protected virtual ISelectionService MockedSelectionService(QualifiedSelection? initialSelection)
+        protected virtual ISelectionService MockedSelectionService(QualifiedSelection? initialSelection = null)
         {
             QualifiedSelection? activeSelection = null;
             var selectionServiceMock = new Mock<ISelectionService>();
