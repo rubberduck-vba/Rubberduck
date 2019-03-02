@@ -1,10 +1,7 @@
-using System.Linq;
 using NUnit.Framework;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.IntroduceField;
 using Rubberduck.VBEditor;
-using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -222,19 +219,8 @@ Dim bar As Boolean, _
 bap As Integer
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bat");
-
-                var refactoring = TestRefactoring(rewritingManager, state);
-                refactoring.Refactor(target);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(inputCode, "bat", DeclarationType.Variable);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -357,18 +343,8 @@ End Sub";
 Dim bar As Boolean
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var refactoring = TestRefactoring(rewritingManager, state);
-
-                Assert.Throws<InvalidDeclarationTypeException>(() =>
-                    refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable)));
-
-                var actual = component.CodeModule.Content();
-                Assert.AreEqual(inputCode, actual);
-            }
+            var actualCode = RefactoredCode(inputCode, "Foo", DeclarationType.Procedure, typeof(InvalidDeclarationTypeException));
+            Assert.AreEqual(inputCode, actualCode);
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)

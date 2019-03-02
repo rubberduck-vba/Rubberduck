@@ -529,19 +529,8 @@ End Sub";
                 @"Private Sub Foo(ByVal bar As Boolean)
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var refactoring = TestRefactoring(rewritingManager, state);
-
-                var target = state.AllUserDeclarations.SingleOrDefault(e => e.IdentifierName == "bar" && e.DeclarationType == DeclarationType.Variable);
-                refactoring.Refactor(target);
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(inputCode, "bar", DeclarationType.Variable);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -555,17 +544,8 @@ End Sub";
 Dim bar As Boolean
 End Sub";
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out IVBComponent component);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var refactoring = TestRefactoring(rewritingManager, state);
-                Assert.Throws<InvalidDeclarationTypeException>(() => refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable)));
-                
-                const string expectedCode = inputCode;
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var actualCode = RefactoredCode(inputCode, "Foo", DeclarationType.Procedure, typeof(InvalidDeclarationTypeException));
+            Assert.AreEqual(inputCode, actualCode);
         }
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)

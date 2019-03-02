@@ -62,6 +62,44 @@ namespace RubberduckTests.Refactoring
             }
         }
 
+        protected string RefactoredCode(string code, string declarationName, DeclarationType declarationType, Func<TModel, TModel> presenterAdjustment, Type expectedException = null)
+        {
+            var vbe = TestVbe(code, out _);
+            var componentName = vbe.SelectedVBComponent.Name;
+            var refactored = RefactoredCode(vbe, declarationName, declarationType, presenterAdjustment, expectedException);
+            return refactored[componentName];
+        }
+
+        protected IDictionary<string, string> RefactoredCode(string declarationName, DeclarationType declarationType, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, params (string componentName, string content, ComponentType componentType)[] modules)
+        {
+            var vbe = TestVbe(modules);
+            return RefactoredCode(vbe, declarationName, declarationType, presenterAdjustment, expectedException);
+        }
+
+        protected IDictionary<string, string> RefactoredCode(IVBE vbe, string declarationName, DeclarationType declarationType, Func<TModel, TModel> presenterAdjustment, Type expectedException = null)
+        {
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var target = state.DeclarationFinder.UserDeclarations(declarationType)
+                    .Single(declaration => declaration.IdentifierName == declarationName);
+
+                var refactoring = TestRefactoring(rewritingManager, state, presenterAdjustment);
+
+                if (expectedException != null)
+                {
+                    Assert.Throws(expectedException, () => refactoring.Refactor(target));
+                }
+                else
+                {
+                    refactoring.Refactor(target);
+                }
+
+                return vbe.ActiveVBProject.VBComponents
+                    .ToDictionary(component => component.Name, component => component.CodeModule.Content());
+            }
+        }
+
         protected override IRefactoring TestRefactoring(
             IRewritingManager rewritingManager, 
             RubberduckParserState state,
