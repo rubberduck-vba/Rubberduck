@@ -49,9 +49,12 @@ namespace Rubberduck.UI.ToDoItems
             _uiDispatcher = uiDispatcher;
             _state.StateChanged += HandleStateChanged;
 
-            _navigateCommand = new Lazy<NavigateCommand>(() => new NavigateCommand(selectionService));
+            NavigateCommand = new NavigateCommand(selectionService);
+            RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, CanExecuteRemoveCommand);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
             ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
+            CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+            OpenTodoSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteOpenTodoSettingsCommand);
 
             Items = CollectionViewSource.GetDefaultView(_items);
             OnPropertyChanged(nameof(Items));
@@ -98,34 +101,15 @@ namespace Rubberduck.UI.ToDoItems
             }
         }
 
-        private CommandBase _refreshCommand;
-        public CommandBase RefreshCommand
+        private ToDoItem _selectedItem;
+        public INavigateSource SelectedItem
         {
-            get
+            get => _selectedItem;
+            set
             {
-                if (_refreshCommand != null)
-                {
-                    return _refreshCommand;
-                }
-                return _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
-                {
-                    _state.OnParseRequested(this);
-                },
-                _ => _state.IsDirty());
+                _selectedItem = value as ToDoItem;
+                OnPropertyChanged();
             }
-        }
-
-        public CommandBase CollapseAllCommand { get; }
-        public CommandBase ExpandAllCommand { get; }
-
-        private void ExecuteCollapseAll(object parameter)
-        {
-            ExpandedState = false;
-        }
-
-        private void ExecuteExpandAll(object parameter)
-        {
-            ExpandedState = true;
         }
 
         private void HandleStateChanged(object sender, EventArgs e)
@@ -145,118 +129,98 @@ namespace Rubberduck.UI.ToDoItems
             });
         }
 
-        private ToDoItem _selectedItem;
-        public INavigateSource SelectedItem
+        public INavigateCommand NavigateCommand { get; }
+
+        public ReparseCommand RefreshCommand { get; set; }
+
+        public CommandBase RemoveCommand { get; }
+
+        public CommandBase CollapseAllCommand { get; }
+
+        public CommandBase ExpandAllCommand { get; }
+
+        public CommandBase CopyResultsCommand { get; }
+
+        public CommandBase OpenTodoSettingsCommand { get; }
+
+        private void ExecuteCollapseAll(object parameter)
         {
-            get => _selectedItem;
-            set
-            {
-                _selectedItem = value as ToDoItem; 
-                OnPropertyChanged();
-            }
+            ExpandedState = false;
         }
 
-        private CommandBase _removeCommand;
-        public CommandBase RemoveCommand
+        private void ExecuteExpandAll(object parameter)
         {
-            get
-            {
-                if (_removeCommand != null)
-                {
-                    return _removeCommand;
-                }
-                return _removeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
-                {
-                    if (_selectedItem == null)
-                    {
-                        return;
-                    }
-
-                    var component = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName);
-                    using (var module = component.CodeModule)
-                    {
-                        var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
-                        var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
-
-                        module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
-                    }
-
-                    RefreshCommand.Execute(null);
-                }
-                );
-            }
+            ExpandedState = true;
         }
 
-        private CommandBase _copyResultsCommand;
-        public CommandBase CopyResultsCommand
+        private bool CanExecuteRemoveCommand(object obj) => SelectedItem != null && RefreshCommand.CanExecute(obj);
+
+        private void ExecuteRemoveCommand(object obj)
         {
-            get
+            if (!CanExecuteRemoveCommand(obj))
             {
-                if (_copyResultsCommand != null)
-                {
-                    return _copyResultsCommand;
-                }
-                return _copyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
-                {
-                    const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-                    if (_items == null)
-                    {
-                        return;
-                    }
-                    ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Description"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
-
-                    var resultArray = _items.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
-
-                    var resource = _items.Count == 1
-                        ? ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Singular
-                        : ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Plural;
-
-                    var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
-
-                    var textResults = title + Environment.NewLine + string.Join("", _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
-                    var csvResults = ExportFormatter.Csv(resultArray, title, columnInfos);
-                    var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, columnInfos);
-                    var rtfResults = ExportFormatter.RTF(resultArray, title);
-
-                    // todo: verify that this disposing this stream breaks the xmlSpreadsheetDataFormat
-                    var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
-
-                    IClipboardWriter _clipboard = new ClipboardWriter();
-                    //Add the formats from richest formatting to least formatting
-                    _clipboard.AppendStream(DataFormats.GetDataFormat(xmlSpreadsheetDataFormat).Name, stream);
-                    _clipboard.AppendString(DataFormats.Rtf, rtfResults);
-                    _clipboard.AppendString(DataFormats.Html, htmlResults);
-                    _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-                    _clipboard.AppendString(DataFormats.UnicodeText, textResults);
-
-                    _clipboard.Flush();
-
-                });
+                return;
             }
+
+            var component = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName);
+            using (var module = component.CodeModule)
+            {
+                var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
+                var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
+
+                module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
+            }
+
+            RefreshCommand.Execute(null);
         }
 
-        private CommandBase _openTodoSettings;
-        public CommandBase OpenTodoSettings
+        private bool CanExecuteCopyResultsCommand(object obj) => _items.Any();
+
+        public void ExecuteCopyResultsCommand(object obj)
         {
-            get
+            const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
+            if (!CanExecuteCopyResultsCommand(obj))
             {
-                if (_openTodoSettings != null)
-                {
-                    return _openTodoSettings;
-                }
-                return _openTodoSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
-                {
-                    using (var window = _settingsFormFactory.Create(SettingsViews.TodoSettings))
-                    {
-                        window.ShowDialog();
-                        _settingsFormFactory.Release(window);
-                    }
-                });
+                return;
             }
+
+            ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Description"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
+
+            var resultArray = _items.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+
+            var resource = _items.Count == 1
+                ? ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Singular
+                : ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Plural;
+
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
+
+            var textResults = title + Environment.NewLine + string.Join("", _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var csvResults = ExportFormatter.Csv(resultArray, title, columnInfos);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, columnInfos);
+            var rtfResults = ExportFormatter.RTF(resultArray, title);
+
+            // todo: verify that this disposing this stream breaks the xmlSpreadsheetDataFormat
+            var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
+
+            IClipboardWriter _clipboard = new ClipboardWriter();
+            //Add the formats from richest formatting to least formatting
+            _clipboard.AppendStream(DataFormats.GetDataFormat(xmlSpreadsheetDataFormat).Name, stream);
+            _clipboard.AppendString(DataFormats.Rtf, rtfResults);
+            _clipboard.AppendString(DataFormats.Html, htmlResults);
+            _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
+            _clipboard.AppendString(DataFormats.UnicodeText, textResults);
+
+            _clipboard.Flush();
         }
 
-        private readonly Lazy<NavigateCommand> _navigateCommand;
-        public INavigateCommand NavigateCommand => _navigateCommand.Value;
+        public void ExecuteOpenTodoSettingsCommand(object obj)
+        {
+            using (var window = _settingsFormFactory.Create(SettingsViews.TodoSettings))
+            {
+                window.ShowDialog();
+                _settingsFormFactory.Release(window);
+            }
+        }
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
