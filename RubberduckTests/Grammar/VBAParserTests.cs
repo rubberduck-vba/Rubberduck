@@ -2004,6 +2004,129 @@ End Sub";
 
         [Category("Parser")]
         [Test]
+        public void TestSingleLineIfSingleEmptyThenEmptyElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then:: Else:
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        public void TestSingleLineIfSingleMultipleEmptyThensEmptyElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then:: _
+      :Else:
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        public void TestSingleLineIfSingleMultipleEmptyThensElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then:: _
+      :Else Bar
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestSingleLineIfSingleEmptyMultiLineThenEmptyElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then: _
+      : Else:
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestSingleLineIfSingleEmptyThenEmptyMultiLineElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then Else _
+      :
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestSingleLineIfSingleEmptyThenElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then Else _
+      : Bar
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestSingleLineIfNestedEmptyThenEmptyElse()
+        {
+            string code = @"
+Sub Test()
+      If True Then If False Then If True Then Else
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestSingleLineIfNestedThenEmptyElse()
+        {
+            string code = @"
+Sub Test()
+      If True Then If False Then If True Then Bar Else
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestSingleLineIfNestedEmptyThenElse()
+        {
+            string code = @"
+Sub Test()
+      If True Then If False Then If True Then Else Bar
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [Category("Parser")]
+        [Test]
+        public void TestSingleLineIfSingleEmptyMultiLineThenEmptyMultiLineElse()
+        {
+            string code = @"
+Sub Test()
+      If False Then: _
+      Else _
+      :
+End Sub";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//singleLineIfStmt");
+        }
+
+        [Category("Parser")]
+        [Test]
         public void TestSingleLineIfImplicitGoTo()
         {
             string code = @"
