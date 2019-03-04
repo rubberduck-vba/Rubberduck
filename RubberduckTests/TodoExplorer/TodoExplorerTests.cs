@@ -9,7 +9,9 @@ using Rubberduck.UI.ToDoItems;
 using RubberduckTests.Mocks;
 using Rubberduck.Common;
 using Rubberduck.Parsing.UIContext;
+using Rubberduck.SettingsProvider;
 using Rubberduck.ToDoItems;
+using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
 
@@ -187,7 +189,10 @@ namespace RubberduckTests.TodoExplorer
             using (var state = parser.State)
             {
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
-                var vm = new ToDoExplorerViewModel(state, cs, null, selectionService, GetMockedUiDispatcher());
+                var vm = new ToDoExplorerViewModel(state, cs, null, selectionService, GetMockedUiDispatcher())
+                {
+                    RefreshCommand = new ReparseCommand(vbe.Object, new Mock<IConfigProvider<GeneralSettings>>().Object, state, null, null, null)
+                };
 
                 parser.Parse(new CancellationTokenSource());
                 if (state.Status >= ParserState.Error)
@@ -200,7 +205,6 @@ namespace RubberduckTests.TodoExplorer
 
                 var module = project.Object.VBComponents[0].CodeModule;
                 Assert.AreEqual(expected, module.Content());
-                Assert.IsFalse(vm.Items.OfType<ToDoItem>().Any());
             }
         }
 
