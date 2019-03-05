@@ -1,7 +1,6 @@
 ﻿using Rubberduck.Interaction;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.RemoveParameters;
-using Rubberduck.Refactorings;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
@@ -34,8 +33,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
                     Model.RemoveParameters = Model.Parameters;
                     return Model;
                 default:
-                    base.Show();
-                    return DialogResult != RefactoringDialogResult.Execute ? null : Model;
+                    return base.Show();
             }
         }
     }

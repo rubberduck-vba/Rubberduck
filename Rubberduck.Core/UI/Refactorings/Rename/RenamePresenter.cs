@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.Resources;
 
@@ -26,14 +27,7 @@ namespace Rubberduck.UI.Refactorings.Rename
 
             Model.Target = target;
 
-            var model = Show();
-
-            if (DialogResult != RefactoringDialogResult.Execute)
-            {
-                return null;
-            }
-            
-            return model;
+            return Show();
         }
     }
 }

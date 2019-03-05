@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Resources;
 using Rubberduck.Interaction;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ReorderParameters;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
@@ -20,7 +19,10 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         public override ReorderParametersModel Show()
         {
-            if (Model.TargetDeclaration == null) { return null; }
+            if (Model.TargetDeclaration == null)
+            {
+                return null;
+            }
 
             if (Model.Parameters.Count < 2)
             {
@@ -29,13 +31,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 return null;
             }
 
-            base.Show();
-            if (DialogResult != RefactoringDialogResult.Execute)
-            {
-                return null;
-            }
-
-            return Model;
+            return base.Show();
         }
     }
 }
