@@ -39,7 +39,7 @@ namespace Rubberduck.Inspections.QuickFixes
         //The rewriteSession is optional since it is not used in this particular quickfix because it is a refactoring quickfix.
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
-            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, _rewritingManager, _selectionService);
+            var refactoring = new RenameRefactoring(_factory, _state, _state.ProjectsProvider, _rewritingManager, _selectionService);
             refactoring.Refactor(result.Target);
         }
 

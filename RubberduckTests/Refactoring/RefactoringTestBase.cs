@@ -30,21 +30,21 @@ namespace RubberduckTests.Refactoring
             Assert.Throws<NoActiveSelectionException>(() => refactoring.Refactor());
         }
 
-        protected string RefactoredCode(string code, Selection selection, Type expectedException = null, bool setActiveSelection = false)
+        protected string RefactoredCode(string code, Selection selection, Type expectedException = null, bool executeViaActiveSelection = false)
         {
             var vbe = TestVbe(code, out _);
             var componentName = vbe.SelectedVBComponent.Name;
-            var refactored = RefactoredCode(vbe, componentName, selection, expectedException, setActiveSelection);
+            var refactored = RefactoredCode(vbe, componentName, selection, expectedException, executeViaActiveSelection);
             return refactored[componentName];
         }
 
-        protected IDictionary<string, string> RefactoredCode(string selectedComponentName, Selection selection, Type expectedException = null, bool setActiveSelection = false, params (string componentName, string content, ComponentType componentType)[] modules)
+        protected IDictionary<string, string> RefactoredCode(string selectedComponentName, Selection selection, Type expectedException = null, bool executeViaActiveSelection = false, params (string componentName, string content, ComponentType componentType)[] modules)
         {
             var vbe = TestVbe(modules);
-            return RefactoredCode(vbe, selectedComponentName, selection, expectedException, setActiveSelection);
+            return RefactoredCode(vbe, selectedComponentName, selection, expectedException, executeViaActiveSelection);
         }
 
-        protected IDictionary<string, string> RefactoredCode(IVBE vbe, string selectedComponentName, Selection selection, Type expectedException = null, bool setActiveSelection = false)
+        protected IDictionary<string, string> RefactoredCode(IVBE vbe, string selectedComponentName, Selection selection, Type expectedException = null, bool executeViaActiveSelection = false)
         {
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
@@ -54,17 +54,33 @@ namespace RubberduckTests.Refactoring
                     .QualifiedModuleName;
                 var qualifiedSelection = new QualifiedSelection(module, selection);
 
-                var refactoring = setActiveSelection
+                var refactoring = executeViaActiveSelection
                     ? TestRefactoring(rewritingManager, state, qualifiedSelection)
                     : TestRefactoring(rewritingManager, state);
 
-                if (expectedException != null)
+                if (executeViaActiveSelection)
                 {
-                    Assert.Throws(expectedException, () => refactoring.Refactor(qualifiedSelection));
+
+                    if (expectedException != null)
+                    {
+                        Assert.Throws(expectedException, () => refactoring.Refactor());
+                    }
+                    else
+                    {
+                        refactoring.Refactor();
+                    }
                 }
                 else
                 {
-                    refactoring.Refactor(qualifiedSelection);
+
+                    if (expectedException != null)
+                    {
+                        Assert.Throws(expectedException, () => refactoring.Refactor(qualifiedSelection));
+                    }
+                    else
+                    {
+                        refactoring.Refactor(qualifiedSelection);
+                    }
                 }
 
                 return vbe.ActiveVBProject.VBComponents
@@ -128,7 +144,7 @@ namespace RubberduckTests.Refactoring
 
         protected virtual ISelectionService MockedSelectionService(QualifiedSelection? initialSelection = null)
         {
-            QualifiedSelection? activeSelection = null;
+            QualifiedSelection? activeSelection = initialSelection;
             var selectionServiceMock = new Mock<ISelectionService>();
             selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
             selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))

@@ -50,7 +50,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var refactoring = new RenameRefactoring(_factory, _msgBox, _state, _state.ProjectsProvider, _rewritingManager, _selectionService);
+            var refactoring = new RenameRefactoring(_factory, _state, _state.ProjectsProvider, _rewritingManager, _selectionService);
             refactoring.Refactor(node.Declaration);
         }
     }

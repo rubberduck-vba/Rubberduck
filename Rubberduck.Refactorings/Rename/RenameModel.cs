@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.VBEditor;
+﻿using Rubberduck.Parsing.Symbols;
 
 namespace Rubberduck.Refactorings.Rename
 {
@@ -14,24 +11,21 @@ namespace Rubberduck.Refactorings.Rename
             set
             {
                 _target = value;
-                NewName = _target.IdentifierName;
+                NewName = _target?.IdentifierName ?? string.Empty;
             }
         }
 
-        public QualifiedSelection Selection { get; }
-        
+        public Declaration InitialTarget { get; } 
+        public bool IsInterfaceMemberRename { set; get; }
+        public bool IsControlEventHandlerRename { set; get; }
+        public bool IsUserEventHandlerRename { set; get; }
+
         public string NewName { get; set; }
 
-        public RenameModel(DeclarationFinder declarationFinder, QualifiedSelection selection)
+        public RenameModel(Declaration target)
         {
-            Selection = selection;
-
-            AcquireTarget(out _target, declarationFinder, Selection);
-        }
-
-        private void AcquireTarget(out Declaration target, DeclarationFinder declarationFinder, QualifiedSelection selection)
-        {
-            target = declarationFinder.FindSelectedDeclaration(selection);
+            Target = target;
+            InitialTarget = target;
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -11,24 +13,20 @@ namespace Rubberduck.UI.Refactorings.Rename
 {
     public class RenameViewModel : RefactoringViewModelBase<RenameModel>
     {
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
+        private readonly IMessageBox _messageBox;
+
         public RubberduckParserState State { get; }
 
-        public RenameViewModel(RubberduckParserState state, RenameModel model) : base(model)
+        public RenameViewModel(RubberduckParserState state, RenameModel model, IMessageBox messageBox) 
+            : base(model)
         {
             State = state;
+            _declarationFinderProvider = state;
+            _messageBox = messageBox;
         }
 
-        public Declaration Target
-        {
-            get => Model.Target;
-            set
-            {
-                Model.Target = value;
-                NewName = Model.Target.IdentifierName;
-
-                OnPropertyChanged(nameof(Instructions));
-            }
-        }
+        public Declaration Target => Model.Target;
 
         public string Instructions
         {
@@ -59,7 +57,10 @@ namespace Rubberduck.UI.Refactorings.Rename
         {
             get
             {
-                if (Target == null) { return false; }
+                if (Target == null)
+                {
+                    return false;
+                }
 
                 var tokenValues = typeof(Tokens).GetFields().Select(item => item.GetValue(null)).Cast<string>().Select(item => item);
 
@@ -69,6 +70,31 @@ namespace Rubberduck.UI.Refactorings.Rename
                        !NewName.Any(c => !char.IsLetterOrDigit(c) && c != '_') &&
                        NewName.Length <= (Target.DeclarationType.HasFlag(DeclarationType.Module) ? Declaration.MaxModuleNameLength : Declaration.MaxMemberNameLength);
             }
+        }
+
+        protected override void DialogOk()
+        {
+            if (Target == null
+                || (DeclarationsWithConflictingName(Model.NewName, Model.Target).Any()
+                    && !UserConfirmsToProceedWithConflictingName(Model.NewName, Model.Target)))
+            {
+                base.DialogCancel();
+            }
+            else
+            {
+                base.DialogOk();
+            }
+        }
+
+        private IEnumerable<Declaration> DeclarationsWithConflictingName(string newName, Declaration target)
+        {
+            return _declarationFinderProvider.DeclarationFinder.FindNewDeclarationNameConflicts(newName, target);
+        }
+
+        private bool UserConfirmsToProceedWithConflictingName(string newName, Declaration target)
+        {
+            var message = string.Format(RubberduckUI.RenameDialog_ConflictingNames, newName, target.IdentifierName);
+            return _messageBox?.ConfirmYesNo(message, RubberduckUI.RenameDialog_Caption) ?? false;
         }
     }
 }

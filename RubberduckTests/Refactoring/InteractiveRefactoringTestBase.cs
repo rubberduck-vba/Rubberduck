@@ -20,21 +20,21 @@ namespace RubberduckTests.Refactoring
         where TPresenter : class, IRefactoringPresenter<TModel>
         where TModel : class, IRefactoringModel
     {
-        protected string RefactoredCode(string code, Selection selection, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, bool setActiveSelection = false)
+        protected string RefactoredCode(string code, Selection selection, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, bool executeViaActiveSelection = false)
         {
             var vbe = TestVbe(code, out _);
             var componentName = vbe.SelectedVBComponent.Name;
-            var refactored = RefactoredCode(vbe, componentName, selection, presenterAdjustment, expectedException, setActiveSelection);
+            var refactored = RefactoredCode(vbe, componentName, selection, presenterAdjustment, expectedException, executeViaActiveSelection);
             return refactored[componentName];
         }
 
-        protected IDictionary<string, string> RefactoredCode(string selectedComponentName, Selection selection, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, bool setActiveSelection = false, params (string componentName, string content, ComponentType componentType)[] modules)
+        protected IDictionary<string, string> RefactoredCode(string selectedComponentName, Selection selection, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, bool executeViaActiveSelection = false, params (string componentName, string content, ComponentType componentType)[] modules)
         {
             var vbe = TestVbe(modules);
-            return RefactoredCode(vbe, selectedComponentName, selection, presenterAdjustment, expectedException, setActiveSelection);
+            return RefactoredCode(vbe, selectedComponentName, selection, presenterAdjustment, expectedException, executeViaActiveSelection);
         }
 
-        protected IDictionary<string, string> RefactoredCode(IVBE vbe, string selectedComponentName, Selection selection, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, bool setActiveSelection = false)
+        protected IDictionary<string, string> RefactoredCode(IVBE vbe, string selectedComponentName, Selection selection, Func<TModel, TModel> presenterAdjustment, Type expectedException = null, bool executeViaActiveSelection = false)
         {
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
@@ -44,17 +44,33 @@ namespace RubberduckTests.Refactoring
                     .QualifiedModuleName;
                 var qualifiedSelection = new QualifiedSelection(module, selection);
 
-                var refactoring = setActiveSelection
+                var refactoring = executeViaActiveSelection
                     ? TestRefactoring(rewritingManager, state, presenterAdjustment, qualifiedSelection)
                     : TestRefactoring(rewritingManager, state, presenterAdjustment);
 
-                if (expectedException != null)
+                if (executeViaActiveSelection)
                 {
-                    Assert.Throws(expectedException, () => refactoring.Refactor(qualifiedSelection));
+
+                    if (expectedException != null)
+                    {
+                        Assert.Throws(expectedException, () => refactoring.Refactor());
+                    }
+                    else
+                    {
+                        refactoring.Refactor();
+                    }
                 }
                 else
                 {
-                    refactoring.Refactor(qualifiedSelection);
+
+                    if (expectedException != null)
+                    {
+                        Assert.Throws(expectedException, () => refactoring.Refactor(qualifiedSelection));
+                    }
+                    else
+                    {
+                        refactoring.Refactor(qualifiedSelection);
+                    }
                 }
 
                 return vbe.ActiveVBProject.VBComponents

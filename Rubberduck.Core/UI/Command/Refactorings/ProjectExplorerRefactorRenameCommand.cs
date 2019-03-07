@@ -35,7 +35,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            var refactoring = new RenameRefactoring(_factory, _msgBox, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
+            var refactoring = new RenameRefactoring(_factory, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
             var target = GetTarget();
             if (target != null)
             {

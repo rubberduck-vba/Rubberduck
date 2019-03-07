@@ -58,7 +58,7 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
             
-            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
+            var refactoring = new RenameRefactoring(_factory, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
             refactoring.Refactor(target);
         }
     }
