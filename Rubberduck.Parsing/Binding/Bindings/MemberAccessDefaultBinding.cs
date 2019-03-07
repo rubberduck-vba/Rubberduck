@@ -144,7 +144,7 @@ namespace Rubberduck.Parsing.Binding
             {
                 return null;
             }
-            if (referencedType.DeclarationType != DeclarationType.UserDefinedType && referencedType.DeclarationType != DeclarationType.ClassModule)
+            if (referencedType.DeclarationType != DeclarationType.UserDefinedType && !referencedType.DeclarationType.HasFlag(DeclarationType.ClassModule))
             {
                 return null;
             }
@@ -378,7 +378,7 @@ namespace Rubberduck.Parsing.Binding
                     -   The member is a value. In this case, the member access expression is classified as a value with 
                         the same declared type as the member. 
              */
-            bool isDefaultInstanceVariableClass = _lExpression.Classification == ExpressionClassification.Type && _lExpression.ReferencedDeclaration.DeclarationType == DeclarationType.ClassModule && ((ClassModuleDeclaration)_lExpression.ReferencedDeclaration).HasDefaultInstanceVariable;
+            bool isDefaultInstanceVariableClass = _lExpression.Classification == ExpressionClassification.Type && _lExpression.ReferencedDeclaration is ClassModuleDeclaration classModule && classModule.HasDefaultInstanceVariable;
             if (_lExpression.Classification != ExpressionClassification.ProceduralModule && !isDefaultInstanceVariableClass)
             {
                 return null;
