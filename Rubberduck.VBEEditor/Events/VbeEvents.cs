@@ -53,7 +53,7 @@ namespace Rubberduck.VBEditor.Events
             
             _projects = vbe.VBProjects;
 
-            if (_projects == null)
+            if (_projects.IsWrappingNullReference)
             {
                 return;
             }
@@ -249,7 +249,7 @@ namespace Rubberduck.VBEditor.Events
                 UnregisterProjectHandlers(projectid);
             }
 
-            if (_projects == null)
+            if (_projects.IsWrappingNullReference)
             {
                 return;
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Moq;
 using Moq.Protected;
 using NLog;
@@ -6,6 +7,7 @@ using NUnit.Framework;
 using Rubberduck.UI.Command.ComCommands;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Commands
 {
@@ -38,8 +40,7 @@ namespace RubberduckTests.Commands
         [Test]
         public void Verify_NoExecution_Terminated_BeforeCreation()
         {
-            var vbe = new Mock<IVBE>();
-            var vbeEvents = VbeEvents.Initialize(vbe.Object);
+            var vbeEvents = ArrangeVbeEvents();
             
             VbeEvents.Terminate();
             var command = ArranageComCommand(vbeEvents);
@@ -51,8 +52,7 @@ namespace RubberduckTests.Commands
         [Test]
         public void Verify_Execution_Among_Instances()
         {
-            var vbe = new Mock<IVBE>();
-            var vbeEvents = VbeEvents.Initialize(vbe.Object);
+            var vbeEvents = ArrangeVbeEvents();
 
             var command1 = ArranageComCommand(vbeEvents);
             command1.Execute(null);
@@ -64,6 +64,23 @@ namespace RubberduckTests.Commands
             command2.VerifyOnExecute(Times.Never());
         }
 
+        [Test]
+        public void Verify_Exception_Thrown_On_Null()
+        {
+            var vbe = new Mock<IVBE>();
+            
+            Assert.That(() =>
+            {
+                var vbeEvents = VbeEvents.Initialize(vbe.Object);
+            }, Throws.TypeOf<NullReferenceException>());
+        }
+
+        private static VbeEvents ArrangeVbeEvents()
+        {
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule("", "foo", out _);
+            return VbeEvents.Initialize(vbe.Object);
+        }
+        
         private static (ComCommandBase comCommand, Mock<IVbeEvents> vbeEvents) ArranageComCommand()
         {
             var vbeEvents = new Mock<IVbeEvents>();
