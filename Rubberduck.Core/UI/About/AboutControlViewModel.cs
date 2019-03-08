@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using NLog;
+using NLog.Targets;
 using Rubberduck.Resources.About;
 using Rubberduck.UI.Command;
 using Rubberduck.VersionCheck;
@@ -9,8 +10,6 @@ using System.IO;
 
 namespace Rubberduck.UI.About
 {
-    using NLog.Targets;
-
     public class AboutControlViewModel
     {
         private readonly IVersionCheck _version;
