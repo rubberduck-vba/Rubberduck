@@ -156,7 +156,7 @@ Allen Sternguckern, Likern &amp; Followern, für das warme Kribbeln
     <value>Erfolgreich Kopiert</value>
   </data>
   <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Hier klicken, um Versionsinformation in Zwischenablage zu kopieren.</value>
+    <value>Hier klicken, um Versionsinformation in Zwischenablage zu kopieren</value>
   </data>
   <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
     <value>Versionsinformation in Zwischenablage kopiert.</value>

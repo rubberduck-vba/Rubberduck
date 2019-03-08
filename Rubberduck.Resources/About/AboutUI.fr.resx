@@ -155,7 +155,7 @@ Tous ceux qui nous ont donné une étoile ou un "like"
     <value>Les informations ont été copiées dans le presse-papier.</value>
   </data>
   <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Cliquer ici pour copier les informations dans le presse-papier.</value>
+    <value>Cliquer ici pour copier les informations dans le presse-papier</value>
   </data>
   <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
     <value>Copie complétée.</value>

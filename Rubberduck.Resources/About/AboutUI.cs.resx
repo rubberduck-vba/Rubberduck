@@ -156,7 +156,7 @@ Všichni ti, co koukají na hvězdy, oblíbenci a následovníci,, pro ten tepl�
     <value>Zkopírovat informace o verzi</value>
   </data>
   <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Klikněte zde pro zkopírování informací do schánky.</value>
+    <value>Klikněte zde pro zkopírování informací do schánky</value>
   </data>
   <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
     <value>Informace o verzi byly zkopírovány do schránky.</value>
