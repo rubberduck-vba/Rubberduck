@@ -184,7 +184,4 @@ Tous ceux qui nous ont donné une étoile ou un "like"
   <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
     <value>Rapporter un problème</value>
   </data>
-  <data name="AboutWindow_ViewLogLabel" xml:space="preserve">
-    <value>Afficher le journal dans l'explorateur de fichiers</value>
-  </data>
 </root>
