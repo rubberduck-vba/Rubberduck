@@ -124,7 +124,7 @@
     <value>O Rubberducku</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 Rubberduck project contributors</value>
+    <value>© Copyright 2014-{0} Rubberduck project contributors</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Speciální Poděkování</value>
@@ -184,5 +184,8 @@ Všichni ti, co koukají na hvězdy, oblíbenci a následovníci,, pro ten tepl�
   </data>
   <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
     <value>Nahlásit problém</value>
+  </data>
+  <data name="AboutWindow_ViewLogLabel" xml:space="preserve">
+    <value>Zobrazit protokol Průzkumník souborů</value>
   </data>
 </root>

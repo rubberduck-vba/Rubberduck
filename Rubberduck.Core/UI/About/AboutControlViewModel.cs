@@ -9,6 +9,8 @@ using System.IO;
 
 namespace Rubberduck.UI.About
 {
+    using NLog.Targets;
+
     public class AboutControlViewModel
     {
         private readonly IVersionCheck _version;
@@ -30,7 +32,7 @@ namespace Rubberduck.UI.About
 
         public string HostExecutable => string.Format(AboutUI.AboutWindow_HostExecutable,
             Path.GetFileName(Application.ExecutablePath).ToUpper()); // .ToUpper() used to convert ExceL.EXE -> EXCEL.EXE
-
+            
         private CommandBase _uriCommand;
         public CommandBase UriCommand
         {
@@ -43,6 +45,29 @@ namespace Rubberduck.UI.About
                 return _uriCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), uri =>
                 {
                     Process.Start(new ProcessStartInfo(((Uri)uri).AbsoluteUri));
+                });
+            }
+        }
+
+        private CommandBase _viewLogCommand;
+        public CommandBase ViewLogCommand
+        {
+            get
+            {
+                if (_viewLogCommand != null)
+                {
+                    return _viewLogCommand;
+                }
+                return _viewLogCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
+                {
+                    var fileTarget = (FileTarget) LogManager.Configuration.FindTargetByName("file");
+                    
+                    var logEventInfo = new LogEventInfo { TimeStamp = DateTime.Now }; 
+                    var fileName = fileTarget.FileName.Render(logEventInfo);
+                    
+                    // The /select argument will only work if the path has backslashes
+                    fileName = fileName.Replace("/", "\\");
+                    Process.Start(new ProcessStartInfo("explorer.exe", $"/select, \"{fileName}\""));
                 });
             }
         }
