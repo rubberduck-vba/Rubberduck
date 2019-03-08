@@ -1,4 +1,5 @@
 ﻿using Moq;
+using Rubberduck.AutoComplete;
 using Rubberduck.AutoComplete.SelfClosingPairs;
 using Rubberduck.Settings;
 using Rubberduck.VBEditor;
@@ -11,14 +12,15 @@ namespace RubberduckTests.AutoComplete
     public class SelfClosingPairTestInfo
     {
         public SelfClosingPairTestInfo(CodeString original, char input, CodeString rePrettified)
-            : this(new Mock<SelfClosingPairCompletionService>(), original, original, input, rePrettified) { }
+            : this(new Mock<SelfClosingPairCompletionService>(ArrangeShowQuickCommand().Object), original, original, input, rePrettified) { }
         public SelfClosingPairTestInfo(CodeString original, CodeString prettified, char input, CodeString rePrettified)
-            : this(new Mock<SelfClosingPairCompletionService>(), original, prettified, input, rePrettified) { }
+            : this(new Mock<SelfClosingPairCompletionService>(ArrangeShowQuickCommand().Object), original, prettified, input, rePrettified) { }
 
         public SelfClosingPairTestInfo(CodeString original, char input)
-            : this(new Mock<SelfClosingPairCompletionService>(), original, original, input, original) { }
+            : this(new Mock<SelfClosingPairCompletionService>(ArrangeShowQuickCommand().Object), original, original, input, original) { }
 
-        public SelfClosingPairTestInfo(Mock<SelfClosingPairCompletionService> service, 
+        public SelfClosingPairTestInfo(
+            Mock<SelfClosingPairCompletionService> service, 
             CodeString original, 
             CodeString prettified, 
             char input,
@@ -52,7 +54,11 @@ namespace RubberduckTests.AutoComplete
         public CodeString RePrettified { get; set; }
         public AutoCompleteEventArgs Args { get; set; }
         public AutoCompleteSettings Settings { get; set; }
-
         public TestCodeString Result { get; set; }
+
+        public static Mock<IShowQuickInfoCommand> ArrangeShowQuickCommand()
+        {
+            return new Mock<IShowQuickInfoCommand>();
+        }
     }
 }

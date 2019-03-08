@@ -143,6 +143,7 @@ namespace Rubberduck.AutoComplete.SelfClosingPairs
                 {
                     e.Handled = true;
                     result = reprettified;
+                    _scpService.ShowIntellisense();
                     return true;
                 }
 
