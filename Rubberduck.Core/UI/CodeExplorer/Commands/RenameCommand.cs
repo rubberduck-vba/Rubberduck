@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -25,7 +26,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IRewritingManager _rewritingManager;
         private readonly ISelectionService _selectionService;
 
-        public RenameCommand(RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public RenameCommand(RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService, IVBEEvents vbeEvents) : base(vbeEvents)
         {
             _selectionService = selectionService;
             _state = state;

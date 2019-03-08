@@ -160,7 +160,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddStdModuleCommand()
         {
-            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(Vbe.Object);
+            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -175,7 +175,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddClassModuleCommand()
         {
-            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(Vbe.Object);
+            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -190,7 +190,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserFormCommand()
         {
-            ViewModel.AddUserFormCommand = new AddUserFormCommand(Vbe.Object);
+            ViewModel.AddUserFormCommand = new AddUserFormCommand(Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -205,7 +205,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddVbFormCommand()
         {
-            ViewModel.AddVBFormCommand = new AddVBFormCommand(Vbe.Object);
+            ViewModel.AddVBFormCommand = new AddVBFormCommand(Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -220,7 +220,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddMdiFormCommand()
         {
-            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(Vbe.Object);
+            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -235,7 +235,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserControlCommand()
         {
-            ViewModel.AddUserControlCommand = new AddUserControlCommand(Vbe.Object);
+            ViewModel.AddUserControlCommand = new AddUserControlCommand(Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -250,7 +250,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddPropertyPageCommand()
         {
-            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(Vbe.Object);
+            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -265,7 +265,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserDocumentCommand()
         {
-            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(Vbe.Object);
+            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -313,7 +313,7 @@ namespace RubberduckTests.CodeExplorer
 
         public void ExecuteImportCommand()
         {
-            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object);
+            ViewModel.ImportCommand = new ImportCommand(Vbe.Object, BrowserFactory.Object, VbeEvents.Object);
             ViewModel.ImportCommand.Execute(ViewModel.SelectedItem);
         }
 
@@ -358,7 +358,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementOpenDesignerCommand()
         {
-            ViewModel.OpenDesignerCommand = new OpenDesignerCommand(State.ProjectsProvider, Vbe.Object);
+            ViewModel.OpenDesignerCommand = new OpenDesignerCommand(State.ProjectsProvider, Vbe.Object, VbeEvents.Object);
             return this;
         }
 
@@ -373,7 +373,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementIndenterCommand()
         {
-            ViewModel.IndenterCommand = new IndentCommand(State, new Indenter(Vbe.Object, () => IndenterSettingsTests.GetMockIndenterSettings()), null);
+            ViewModel.IndenterCommand = new IndentCommand(State, new Indenter(Vbe.Object, () => IndenterSettingsTests.GetMockIndenterSettings()), null, VbeEvents.Object);
             return this;
         }
 

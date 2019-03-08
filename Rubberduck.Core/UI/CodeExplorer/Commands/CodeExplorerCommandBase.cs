@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
-using Rubberduck.UI.Command;
+using Rubberduck.UI.Command.ComCommands;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public abstract class CodeExplorerCommandBase : CommandBase
+    public abstract class CodeExplorerCommandBase : ComCommandBase
     {
-        protected CodeExplorerCommandBase() : base(LogManager.GetCurrentClassLogger()) { }
+        protected CodeExplorerCommandBase(IVBEEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents) { }
 
         public abstract IEnumerable<Type> ApplicableNodeTypes { get; }
 

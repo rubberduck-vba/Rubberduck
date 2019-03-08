@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Templates;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -13,7 +14,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly ITemplateProvider _provider;
 
-        public AddTemplateCommand(IVBE vbe, ITemplateProvider provider) : base(vbe)
+        public AddTemplateCommand(IVBE vbe, ITemplateProvider provider, IVBEEvents vbeEvents) : base(vbe, vbeEvents)
         {
             _provider = provider;
         }

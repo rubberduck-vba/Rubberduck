@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
+using Rubberduck.VBEditor.Events;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
@@ -17,7 +18,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly RubberduckParserState _state;
         private readonly FindAllImplementationsService _finder;
 
-        public CodeExplorerFindAllImplementationsCommand(RubberduckParserState state, FindAllImplementationsService finder)
+        public CodeExplorerFindAllImplementationsCommand(RubberduckParserState state, FindAllImplementationsService finder, IVBEEvents vbeEvents) : base(vbeEvents)
         {
             _state = state;
             _finder = finder;

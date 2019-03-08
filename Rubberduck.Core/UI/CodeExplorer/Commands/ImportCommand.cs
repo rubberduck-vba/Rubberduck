@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -21,7 +22,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IVBE _vbe;
         private readonly IFileSystemBrowserFactory _dialogFactory;
 
-        public ImportCommand(IVBE vbe, IFileSystemBrowserFactory dialogFactory)
+        public ImportCommand(IVBE vbe, IFileSystemBrowserFactory dialogFactory, IVBEEvents vbeEvents) : base(vbeEvents)
         {
             _vbe = vbe;
             _dialogFactory = dialogFactory;

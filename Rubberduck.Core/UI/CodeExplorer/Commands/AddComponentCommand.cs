@@ -5,6 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Resources;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -20,7 +21,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerMemberViewModel)
         };
 
-        protected AddComponentCommandBase(IVBE vbe)
+        protected AddComponentCommandBase(IVBE vbe, IVBEEvents vbeEvents) : base(vbeEvents)
         {
             Vbe = vbe;
         }

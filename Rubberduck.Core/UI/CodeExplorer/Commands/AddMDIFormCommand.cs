@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Rubberduck.Navigation.CodeExplorer;
+using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
@@ -11,7 +12,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly ProjectType[] Types = { ProjectType.StandardExe, ProjectType.ActiveXExe };
 
-        public AddMDIFormCommand(IVBE vbe) : base(vbe) { }
+        public AddMDIFormCommand(IVBE vbe, IVBEEvents vbeEvents) : base(vbe, vbeEvents) { }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
 
