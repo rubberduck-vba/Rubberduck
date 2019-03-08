@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Command.ComCommands
     {
         private readonly CodeExplorerDockablePresenter _presenter;
 
-        public CodeExplorerCommand(CodeExplorerDockablePresenter presenter, IVBEEvents vbeEvents)
+        public CodeExplorerCommand(CodeExplorerDockablePresenter presenter, IVbeEvents vbeEvents)
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _presenter = presenter;

@@ -19,7 +19,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly IVBE _vbe;
 
-        public OpenProjectPropertiesCommand(IVBE vbe, IVBEEvents vbeEvents) : base(vbeEvents)
+        public OpenProjectPropertiesCommand(IVBE vbe, IVbeEvents vbeEvents) : base(vbeEvents)
         {
             _vbe = vbe;
         }

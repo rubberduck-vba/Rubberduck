@@ -7,7 +7,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class AddStdModuleCommand : AddComponentCommandBase
     {
-        public AddStdModuleCommand(IVBE vbe, IVBEEvents vbeEvents) : base(vbe, vbeEvents) { }
+        public AddStdModuleCommand(IVBE vbe, IVbeEvents vbeEvents) : base(vbe, vbeEvents) { }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => ProjectTypes.All;
 

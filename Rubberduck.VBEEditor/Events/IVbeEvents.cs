@@ -3,7 +3,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.VBEditor.Events
 {
-    public interface IVBEEvents
+    public interface IVbeEvents
     {
         event EventHandler<ProjectEventArgs> ProjectAdded;
         event EventHandler<ProjectEventArgs> ProjectRemoved;

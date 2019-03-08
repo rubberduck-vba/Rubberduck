@@ -39,9 +39,9 @@ namespace RubberduckTests.Commands
         public void Verify_NoExecution_Terminated_BeforeCreation()
         {
             var vbe = new Mock<IVBE>();
-            var vbeEvents = VBEEvents.Initialize(vbe.Object);
+            var vbeEvents = VbeEvents.Initialize(vbe.Object);
             
-            VBEEvents.Terminate();
+            VbeEvents.Terminate();
             var command = ArranageComCommand(vbeEvents);
             command.Execute(null);
 
@@ -52,11 +52,11 @@ namespace RubberduckTests.Commands
         public void Verify_Execution_Among_Instances()
         {
             var vbe = new Mock<IVBE>();
-            var vbeEvents = VBEEvents.Initialize(vbe.Object);
+            var vbeEvents = VbeEvents.Initialize(vbe.Object);
 
             var command1 = ArranageComCommand(vbeEvents);
             command1.Execute(null);
-            VBEEvents.Terminate();
+            VbeEvents.Terminate();
             var command2 = ArranageComCommand(vbeEvents);
             command2.Execute(null);
 
@@ -64,13 +64,13 @@ namespace RubberduckTests.Commands
             command2.VerifyOnExecute(Times.Never());
         }
 
-        private static (ComCommandBase comCommand, Mock<IVBEEvents> vbeEvents) ArranageComCommand()
+        private static (ComCommandBase comCommand, Mock<IVbeEvents> vbeEvents) ArranageComCommand()
         {
-            var vbeEvents = new Mock<IVBEEvents>();
+            var vbeEvents = new Mock<IVbeEvents>();
             return (ArranageComCommand(vbeEvents.Object), vbeEvents);
         }
 
-        private static ComCommandBase ArranageComCommand(IVBEEvents vbeEvents)
+        private static ComCommandBase ArranageComCommand(IVbeEvents vbeEvents)
         {
             var logger = new Mock<ILogger>();
 

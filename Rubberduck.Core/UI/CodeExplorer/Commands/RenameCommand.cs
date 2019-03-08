@@ -26,7 +26,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IRewritingManager _rewritingManager;
         private readonly ISelectionService _selectionService;
 
-        public RenameCommand(RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService, IVBEEvents vbeEvents) : base(vbeEvents)
+        public RenameCommand(RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService, IVbeEvents vbeEvents) : base(vbeEvents)
         {
             _selectionService = selectionService;
             _state = state;

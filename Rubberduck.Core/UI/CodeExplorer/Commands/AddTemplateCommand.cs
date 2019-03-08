@@ -14,7 +14,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly ITemplateProvider _provider;
 
-        public AddTemplateCommand(IVBE vbe, ITemplateProvider provider, IVBEEvents vbeEvents) : base(vbe, vbeEvents)
+        public AddTemplateCommand(IVBE vbe, ITemplateProvider provider, IVbeEvents vbeEvents) : base(vbe, vbeEvents)
         {
             _provider = provider;
         }

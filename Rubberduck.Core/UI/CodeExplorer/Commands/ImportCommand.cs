@@ -22,7 +22,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IVBE _vbe;
         private readonly IFileSystemBrowserFactory _dialogFactory;
 
-        public ImportCommand(IVBE vbe, IFileSystemBrowserFactory dialogFactory, IVBEEvents vbeEvents) : base(vbeEvents)
+        public ImportCommand(IVBE vbe, IFileSystemBrowserFactory dialogFactory, IVbeEvents vbeEvents) : base(vbeEvents)
         {
             _vbe = vbe;
             _dialogFactory = dialogFactory;

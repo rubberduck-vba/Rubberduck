@@ -9,7 +9,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class AddVBFormCommand : AddComponentCommandBase
     {
-        public AddVBFormCommand(IVBE vbe, IVBEEvents vbeEvents) : base(vbe, vbeEvents) { }
+        public AddVBFormCommand(IVBE vbe, IVbeEvents vbeEvents) : base(vbe, vbeEvents) { }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => ProjectTypes.VB6;
 

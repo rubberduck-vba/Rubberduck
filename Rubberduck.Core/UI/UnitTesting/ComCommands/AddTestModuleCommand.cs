@@ -23,7 +23,7 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
             IVBE vbe, 
             RubberduckParserState state, 
             ITestCodeGenerator codeGenerator,
-            IVBEEvents vbeEvents)
+            IVbeEvents vbeEvents)
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             Vbe = vbe;

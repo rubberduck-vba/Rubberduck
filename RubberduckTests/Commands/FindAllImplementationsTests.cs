@@ -376,12 +376,12 @@ End Sub";
         private static FindAllImplementationsCommand ArrangeFindAllImplementationsCommand(RubberduckParserState state,
             Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllImplementationsService finder)
         {
-            return ArrangeFindAllImplementationsCommand(state, vbe, viewModel, finder, new Mock<IVBEEvents>());
+            return ArrangeFindAllImplementationsCommand(state, vbe, viewModel, finder, new Mock<IVbeEvents>());
         }
 
         private static FindAllImplementationsCommand ArrangeFindAllImplementationsCommand(RubberduckParserState state,
             Mock<IVBE> vbe, ISearchResultsWindowViewModel viewModel, FindAllImplementationsService finder,
-            Mock<IVBEEvents> vbeEvents)
+            Mock<IVbeEvents> vbeEvents)
         {
             return new FindAllImplementationsCommand(state, vbe.Object, viewModel, finder, vbeEvents.Object);
         }

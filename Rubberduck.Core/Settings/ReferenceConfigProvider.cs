@@ -17,10 +17,10 @@ namespace Rubberduck.Settings
 
         private readonly IPersistanceService<ReferenceSettings> _persister;
         private readonly IEnvironmentProvider _environment;
-        private readonly IVBEEvents _events;
+        private readonly IVbeEvents _events;
         private bool _listening;
 
-        public ReferenceConfigProvider(IPersistanceService<ReferenceSettings> persister, IEnvironmentProvider environment, IVBEEvents events)
+        public ReferenceConfigProvider(IPersistanceService<ReferenceSettings> persister, IEnvironmentProvider environment, IVbeEvents events)
         {
             _persister = persister;
             _environment = environment;

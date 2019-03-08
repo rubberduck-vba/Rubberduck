@@ -20,7 +20,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerMemberViewModel)
         };
 
-        public AddTestComponentCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator, IVBEEvents vbeEvents) 
+        public AddTestComponentCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator, IVbeEvents vbeEvents) 
             : base(vbe, state, codeGenerator, vbeEvents) { }
 
         protected override bool EvaluateCanExecute(object parameter)

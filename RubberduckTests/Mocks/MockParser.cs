@@ -45,7 +45,7 @@ namespace RubberduckTests.Mocks
             return parser.State;
         }
 
-        public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, string serializedComProjectsPath = null, Mock<IVBEEvents> vbeEvents = null)
+        public static (SynchronousParseCoordinator parser, IRewritingManager rewritingManager) CreateWithRewriteManager(IVBE vbe, string serializedComProjectsPath = null, Mock<IVbeEvents> vbeEvents = null)
         {
             var declarationFinderFactory = new DeclarationFinderFactory();
             var projectRepository = new ProjectsRepository(vbe);
@@ -53,7 +53,7 @@ namespace RubberduckTests.Mocks
             return CreateWithRewriteManager(vbe, state, projectRepository, serializedComProjectsPath);
         }
 
-        public static SynchronousParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null, Mock<IVBEEvents> vbeEvents = null)
+        public static SynchronousParseCoordinator Create(IVBE vbe, string serializedDeclarationsPath = null, Mock<IVbeEvents> vbeEvents = null)
         {
             return CreateWithRewriteManager(vbe, serializedDeclarationsPath, vbeEvents).parser;
         }

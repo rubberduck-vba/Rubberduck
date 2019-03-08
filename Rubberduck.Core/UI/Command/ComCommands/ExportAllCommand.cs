@@ -14,7 +14,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly IVBE _vbe;
         private readonly IFileSystemBrowserFactory _factory;
 
-        public ExportAllCommand(IVBE vbe, IFileSystemBrowserFactory folderBrowserFactory, IVBEEvents vbeEvents) : base(
+        public ExportAllCommand(IVBE vbe, IFileSystemBrowserFactory folderBrowserFactory, IVbeEvents vbeEvents) : base(
             LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;

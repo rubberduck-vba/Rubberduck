@@ -469,11 +469,11 @@ End Enum
         // TODO: Remove the temporal copuling with other Arrange*
         private AddTestModuleCommand ArrangeAddTestModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, ITestCodeGenerator generator)
         {
-            return ArrangeAddTestModuleCommand(vbe, state, generator, new Mock<IVBEEvents>());
+            return ArrangeAddTestModuleCommand(vbe, state, generator, new Mock<IVbeEvents>());
         }
 
         // TODO: Remove the temporal copuling with other Arrange*
-        private AddTestModuleCommand ArrangeAddTestModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, ITestCodeGenerator generator, Mock<IVBEEvents> vbeEvents)
+        private AddTestModuleCommand ArrangeAddTestModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, ITestCodeGenerator generator, Mock<IVbeEvents> vbeEvents)
         {
             return new AddTestModuleCommand(vbe.Object, state, ArrangeCodeGenerator(vbe.Object, state), vbeEvents.Object);
         }
@@ -482,11 +482,11 @@ End Enum
         private AddTestModuleWithStubsCommand ArrangeAddTestModuleWithStubsCommand(Mock<IVBE> vbe,
             AddTestModuleCommand addTestModuleCommand)
         {
-            return ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand, new Mock<IVBEEvents>());
+            return ArrangeAddTestModuleWithStubsCommand(vbe, addTestModuleCommand, new Mock<IVbeEvents>());
         }
 
         // TODO: Remove the temporal copuling with other Arrange*
-        private AddTestModuleWithStubsCommand ArrangeAddTestModuleWithStubsCommand(Mock<IVBE> vbe, AddTestModuleCommand addTestModuleCommand, Mock<IVBEEvents> vbeEvents)
+        private AddTestModuleWithStubsCommand ArrangeAddTestModuleWithStubsCommand(Mock<IVBE> vbe, AddTestModuleCommand addTestModuleCommand, Mock<IVbeEvents> vbeEvents)
         {
             return new AddTestModuleWithStubsCommand(vbe.Object, addTestModuleCommand, vbeEvents.Object);
         }
@@ -501,12 +501,12 @@ End Enum
         private ICommand ArranageAddTestMethodCommand(Type command, Mock<IVBE> vbe, RubberduckParserState state,
             ITestCodeGenerator testCodeGenerator)
         {
-            return ArranageAddTestMethodCommand(command, vbe, state, testCodeGenerator, new Mock<IVBEEvents>());
+            return ArranageAddTestMethodCommand(command, vbe, state, testCodeGenerator, new Mock<IVbeEvents>());
         }
 
         // TODO: Remove the temporal copuling with other Arrange*
         private ICommand ArranageAddTestMethodCommand(Type command, Mock<IVBE> vbe, RubberduckParserState state,
-            ITestCodeGenerator testCodeGenerator, Mock<IVBEEvents> vbeEvents)
+            ITestCodeGenerator testCodeGenerator, Mock<IVbeEvents> vbeEvents)
         {
             return (ICommand) Activator.CreateInstance(command, vbe.Object, state, testCodeGenerator, vbeEvents.Object);
         }

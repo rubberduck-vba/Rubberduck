@@ -14,7 +14,7 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
         public AddTestModuleWithStubsCommand(
             IVBE vbe, 
             AddTestModuleCommand newUnitTestModuleCommand,
-            IVBEEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+            IVbeEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;

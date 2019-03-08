@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Command.ComCommands
     {
         private readonly ToDoExplorerDockablePresenter _presenter;
 
-        public ToDoExplorerCommand(ToDoExplorerDockablePresenter presenter, IVBEEvents vbeEvents)
+        public ToDoExplorerCommand(ToDoExplorerDockablePresenter presenter, IVbeEvents vbeEvents)
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _presenter = presenter;

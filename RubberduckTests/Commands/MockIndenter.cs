@@ -23,10 +23,10 @@ namespace RubberduckTests.Commands
         internal static IndentCurrentModuleCommand ArrangeIndentCurrentModuleCommand(Mock<IVBE> vbe,
             RubberduckParserState state, IIndenter indenter)
         {
-            return ArrangeIndentCurrentModuleCommand(vbe, state, indenter, new Mock<IVBEEvents>());
+            return ArrangeIndentCurrentModuleCommand(vbe, state, indenter, new Mock<IVbeEvents>());
         }
 
-        internal static IndentCurrentModuleCommand ArrangeIndentCurrentModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, IIndenter indenter, Mock<IVBEEvents> vbeEvents)
+        internal static IndentCurrentModuleCommand ArrangeIndentCurrentModuleCommand(Mock<IVBE> vbe, RubberduckParserState state, IIndenter indenter, Mock<IVbeEvents> vbeEvents)
         {
             return new IndentCurrentModuleCommand(vbe.Object, indenter, state, vbeEvents.Object);
         }
@@ -34,11 +34,11 @@ namespace RubberduckTests.Commands
         internal static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe,
             RubberduckParserState state)
         {
-            return ArrangeNoIndentAnnotationCommand(vbe, state, new Mock<IVBEEvents>());
+            return ArrangeNoIndentAnnotationCommand(vbe, state, new Mock<IVbeEvents>());
         }
 
         internal static NoIndentAnnotationCommand ArrangeNoIndentAnnotationCommand(Mock<IVBE> vbe,
-            RubberduckParserState state, Mock<IVBEEvents> vbeEvents)
+            RubberduckParserState state, Mock<IVbeEvents> vbeEvents)
         {
             return new NoIndentAnnotationCommand(vbe.Object, state, vbeEvents.Object);
         }
@@ -52,11 +52,11 @@ namespace RubberduckTests.Commands
         internal static IndentCurrentProcedureCommand ArrangeIndentCurrentProcedureCommand(Mock<IVBE> vbe,
             IIndenter indenter, RubberduckParserState state)
         {
-            return ArrangeIndentCurrentProcedureCommand(vbe, indenter, state, new Mock<IVBEEvents>());
+            return ArrangeIndentCurrentProcedureCommand(vbe, indenter, state, new Mock<IVbeEvents>());
         }
 
         internal static IndentCurrentProcedureCommand ArrangeIndentCurrentProcedureCommand(Mock<IVBE> vbe,
-            IIndenter indenter, RubberduckParserState state, Mock<IVBEEvents> vbeEvents)
+            IIndenter indenter, RubberduckParserState state, Mock<IVbeEvents> vbeEvents)
         {
             return new IndentCurrentProcedureCommand(vbe.Object, indenter, state, vbeEvents.Object);
         }

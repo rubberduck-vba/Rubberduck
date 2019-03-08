@@ -10,7 +10,7 @@ namespace Rubberduck.UI.Command.ComCommands
     {
         private readonly CodeMetricsDockablePresenter _presenter;
 
-        public CodeMetricsCommand(CodeMetricsDockablePresenter presenter, IVBEEvents vbeEvents)
+        public CodeMetricsCommand(CodeMetricsDockablePresenter presenter, IVbeEvents vbeEvents)
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _presenter = presenter;

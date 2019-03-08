@@ -21,7 +21,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerMemberViewModel)
         };
 
-        protected AddComponentCommandBase(IVBE vbe, IVBEEvents vbeEvents) : base(vbeEvents)
+        protected AddComponentCommandBase(IVBE vbe, IVbeEvents vbeEvents) : base(vbeEvents)
         {
             Vbe = vbe;
         }

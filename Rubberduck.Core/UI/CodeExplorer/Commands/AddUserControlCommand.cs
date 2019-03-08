@@ -7,7 +7,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class AddUserControlCommand : AddComponentCommandBase
     {
-        public AddUserControlCommand(IVBE vbe, IVBEEvents vbeEvents) : base(vbe, vbeEvents) { }
+        public AddUserControlCommand(IVBE vbe, IVbeEvents vbeEvents) : base(vbe, vbeEvents) { }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => ProjectTypes.VB6;
 

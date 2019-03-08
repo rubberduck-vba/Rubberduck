@@ -19,7 +19,7 @@ namespace RubberduckTests.Mocks
         public const string TestProjectName = "TestProject1";
         public const string TestModuleName = "TestModule1";
         private readonly Mock<IVBE> _vbe;
-        private readonly Mock<IVBEEvents> _vbeEvents;     
+        private readonly Mock<IVbeEvents> _vbeEvents;     
 
         #region standard library paths (referenced in all VBA projects hosted in Microsoft Excel)
         public static readonly string LibraryPathVBA = @"C:\PROGRA~1\COMMON~1\MICROS~1\VBA\VBA7.1\VBE7.DLL";      // standard library, priority locked

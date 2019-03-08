@@ -19,7 +19,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly FindAllImplementationsService _finder;
 
         public FindAllImplementationsCommand(RubberduckParserState state, IVBE vbe,
-            ISearchResultsWindowViewModel viewModel, FindAllImplementationsService finder, IVBEEvents vbeEvents)
+            ISearchResultsWindowViewModel viewModel, FindAllImplementationsService finder, IVbeEvents vbeEvents)
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _finder = finder;

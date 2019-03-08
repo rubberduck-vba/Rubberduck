@@ -23,7 +23,7 @@ namespace Rubberduck.UI.Command.ComCommands
             RubberduckParserState state, 
             IAddRemoveReferencesPresenterFactory factory,
             IReferenceReconciler reconciler,
-            IVBEEvents vbeEvents) 
+            IVbeEvents vbeEvents) 
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;

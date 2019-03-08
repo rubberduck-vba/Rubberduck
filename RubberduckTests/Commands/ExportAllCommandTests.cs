@@ -412,11 +412,11 @@ namespace RubberduckTests.Commands
         private static ExportAllCommand ArrangeExportAllCommand(Mock<IVBE> vbe,
             Mock<IFileSystemBrowserFactory> mockFolderBrowserFactory)
         {
-            return ArrangeExportAllCommand(vbe, mockFolderBrowserFactory, new Mock<IVBEEvents>());
+            return ArrangeExportAllCommand(vbe, mockFolderBrowserFactory, new Mock<IVbeEvents>());
         }
 
         private static ExportAllCommand ArrangeExportAllCommand(Mock<IVBE> vbe,
-            Mock<IFileSystemBrowserFactory> mockFolderBrowserFactory, Mock<IVBEEvents> vbeEvents)
+            Mock<IFileSystemBrowserFactory> mockFolderBrowserFactory, Mock<IVbeEvents> vbeEvents)
         {
             return new ExportAllCommand(vbe.Object, mockFolderBrowserFactory.Object, vbeEvents.Object);
         }

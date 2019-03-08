@@ -141,13 +141,13 @@ namespace Rubberduck.Parsing.VBA
 
         private readonly IVBE _vbe;
         private readonly IProjectsRepository _projectRepository;
-        private readonly IVBEEvents _vbeEvents;
+        private readonly IVbeEvents _vbeEvents;
         private readonly IHostApplication _hostApp;
         private readonly IDeclarationFinderFactory _declarationFinderFactory;
 
-        /// <param name="vbeEvents">Provides event handling from the VBE. Static method <see cref="VBEEvents.Initialize"/> must be already called prior to constructing the method.</param>
+        /// <param name="vbeEvents">Provides event handling from the VBE. Static method <see cref="VbeEvents.Initialize"/> must be already called prior to constructing the method.</param>
         [SuppressMessage("ReSharper", "JoinNullCheckWithUsage")]
-        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVBEEvents vbeEvents)
+        public RubberduckParserState(IVBE vbe, IProjectsRepository projectRepository, IDeclarationFinderFactory declarationFinderFactory, IVbeEvents vbeEvents)
         {
             if (vbe == null)
             {
@@ -1090,7 +1090,7 @@ namespace Rubberduck.Parsing.VBA
             }
 
             RemoveEventHandlers();
-            VBEEvents.Terminate();
+            VbeEvents.Terminate();
 
             _moduleStates.Clear();
 

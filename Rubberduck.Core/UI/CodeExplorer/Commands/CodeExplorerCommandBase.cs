@@ -9,7 +9,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public abstract class CodeExplorerCommandBase : ComCommandBase
     {
-        protected CodeExplorerCommandBase(IVBEEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents) { }
+        protected CodeExplorerCommandBase(IVbeEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents) { }
 
         public abstract IEnumerable<Type> ApplicableNodeTypes { get; }
 

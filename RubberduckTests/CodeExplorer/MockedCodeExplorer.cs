@@ -83,7 +83,7 @@ namespace RubberduckTests.CodeExplorer
             VbComponent = project.MockComponents.First();
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
-            VbeEvents = new Mock<IVBEEvents>();
+            VbeEvents = new Mock<IVbeEvents>();
             SetupViewModelAndParse();
         }
 
@@ -116,7 +116,7 @@ namespace RubberduckTests.CodeExplorer
             VbComponent = project.MockComponents.First();
             VbProject = project.Build();
             Vbe = builder.AddProject(VbProject).Build();
-            VbeEvents = new Mock<IVBEEvents>();
+            VbeEvents = new Mock<IVbeEvents>();
             SetupViewModelAndParse();
 
             VbProject.SetupGet(m => m.VBComponents.Count).Returns(componentTypes.Count);
@@ -145,7 +145,7 @@ namespace RubberduckTests.CodeExplorer
 
         public RubberduckParserState State { get; set; }
         public Mock<IVBE> Vbe { get; }
-        public Mock<IVBEEvents> VbeEvents { get; }
+        public Mock<IVbeEvents> VbeEvents { get; }
         public CodeExplorerViewModel ViewModel { get; set; }
         public Mock<IVBProject> VbProject { get; }
         public Mock<IVBComponents> VbComponents { get; }

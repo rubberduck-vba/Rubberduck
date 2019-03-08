@@ -26,7 +26,7 @@ namespace Rubberduck.AutoComplete
 
         public ShowQuickInfoCommand(
             IVBE vbe, 
-            IVBEEvents vbeEvents, 
+            IVbeEvents vbeEvents, 
             IVbeNativeApi vbeApi, 
             IComMessagePumper pumper) 
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)

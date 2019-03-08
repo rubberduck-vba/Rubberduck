@@ -7,21 +7,21 @@ using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.VBEditor.Events
 {
-    public sealed class VBEEvents : IVBEEvents
+    public sealed class VbeEvents : IVbeEvents
     {
-        private static VBEEvents _instance;
+        private static VbeEvents _instance;
         private static readonly object _instanceLock = new object();
         private readonly IVBProjects _projects;
         private readonly Dictionary<string, IVBComponents> _components;
         private readonly Dictionary<string, IReferences> _references;
 
-        public static VBEEvents Initialize(IVBE vbe)
+        public static VbeEvents Initialize(IVBE vbe)
         {
             lock (_instanceLock)
             {
                 if (_instance == null)
                 {
-                    _instance = new VBEEvents(vbe);
+                    _instance = new VbeEvents(vbe);
                 }
             }
 
@@ -41,7 +41,7 @@ namespace Rubberduck.VBEditor.Events
             }
         }
 
-        private VBEEvents(IVBE vbe)
+        private VbeEvents(IVBE vbe)
         {
             _components = new Dictionary<string, IVBComponents>();
             _references = new Dictionary<string, IReferences>();

@@ -18,7 +18,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly RubberduckParserState _state;
         private readonly FindAllImplementationsService _finder;
 
-        public CodeExplorerFindAllImplementationsCommand(RubberduckParserState state, FindAllImplementationsService finder, IVBEEvents vbeEvents) : base(vbeEvents)
+        public CodeExplorerFindAllImplementationsCommand(RubberduckParserState state, FindAllImplementationsService finder, IVbeEvents vbeEvents) : base(vbeEvents)
         {
             _state = state;
             _finder = finder;

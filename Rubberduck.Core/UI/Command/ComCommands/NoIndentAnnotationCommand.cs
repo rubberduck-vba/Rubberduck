@@ -15,7 +15,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
 
-        public NoIndentAnnotationCommand(IVBE vbe, RubberduckParserState state, IVBEEvents vbeEvents)
+        public NoIndentAnnotationCommand(IVBE vbe, RubberduckParserState state, IVbeEvents vbeEvents)
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;

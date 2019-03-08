@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Command.ComCommands
         private readonly NavigateCommand _navigateCommand;
 
         public FindSymbolCommand(RubberduckParserState state, ISelectionService selectionService,
-            DeclarationIconCache iconCache, IVBEEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+            DeclarationIconCache iconCache, IVbeEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _state = state;
             _iconCache = iconCache;

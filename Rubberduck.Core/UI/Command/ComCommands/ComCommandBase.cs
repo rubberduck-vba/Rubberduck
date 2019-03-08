@@ -6,9 +6,9 @@ namespace Rubberduck.UI.Command.ComCommands
 {
     public abstract class ComCommandBase : CommandBase
     {
-        private readonly IVBEEvents _vbeEvents;
+        private readonly IVbeEvents _vbeEvents;
 
-        protected ComCommandBase(ILogger logger, IVBEEvents vbeEvents) : base(logger)
+        protected ComCommandBase(ILogger logger, IVbeEvents vbeEvents) : base(logger)
         {
             _vbeEvents = vbeEvents;
         }

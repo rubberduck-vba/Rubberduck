@@ -17,7 +17,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _parserState;
 
-        public SetAsStartupProjectCommand(IVBE vbe, RubberduckParserState parserState, IVBEEvents vbeEvents) : base(vbeEvents)
+        public SetAsStartupProjectCommand(IVBE vbe, RubberduckParserState parserState, IVbeEvents vbeEvents) : base(vbeEvents)
         {
             _vbe = vbe;
             _parserState = parserState;

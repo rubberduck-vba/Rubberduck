@@ -31,7 +31,7 @@ namespace Rubberduck.UI.Command.ComCommands
             ISearchResultsWindowViewModel viewModel,
             SearchResultPresenterInstanceManager presenterService,
             IUiDispatcher uiDispatcher,
-            IVBEEvents vbeEvents)
+            IVbeEvents vbeEvents)
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _navigateCommand = navigateCommand;

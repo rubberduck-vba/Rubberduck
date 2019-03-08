@@ -23,7 +23,7 @@ namespace Rubberduck.UI.UnitTesting.ComCommands
         private readonly RubberduckParserState _state;
         private readonly ITestCodeGenerator _codeGenerator;
 
-        public AddTestMethodCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator, IVBEEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
+        public AddTestMethodCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator, IVbeEvents vbeEvents) : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;
             _state = state;

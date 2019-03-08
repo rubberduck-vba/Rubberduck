@@ -12,7 +12,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly ProjectType[] Types = { ProjectType.StandardExe, ProjectType.ActiveXExe };
 
-        public AddMDIFormCommand(IVBE vbe, IVBEEvents vbeEvents) : base(vbe, vbeEvents) { }
+        public AddMDIFormCommand(IVBE vbe, IVbeEvents vbeEvents) : base(vbe, vbeEvents) { }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
 

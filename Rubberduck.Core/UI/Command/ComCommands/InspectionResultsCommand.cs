@@ -13,7 +13,7 @@ namespace Rubberduck.UI.Command.ComCommands
     {
         private readonly InspectionResultsDockablePresenter _presenter;
 
-        public InspectionResultsCommand(InspectionResultsDockablePresenter presenter, IVBEEvents vbeEvents)
+        public InspectionResultsCommand(InspectionResultsDockablePresenter presenter, IVbeEvents vbeEvents)
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _presenter = presenter;
