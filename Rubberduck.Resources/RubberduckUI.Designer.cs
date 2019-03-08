@@ -2247,6 +2247,15 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Español.
+        /// </summary>
+        public static string Language_ES {
+            get {
+                return ResourceManager.GetString("Language_ES", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to French.
         /// </summary>
         public static string Language_FR {
@@ -2926,6 +2935,15 @@ namespace Rubberduck.Resources {
         public static string References_AddToolTip {
             get {
                 return ResourceManager.GetString("References_AddToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse....
+        /// </summary>
+        public static string References_BrowseButtonText {
+            get {
+                return ResourceManager.GetString("References_BrowseButtonText", resourceCulture);
             }
         }
         
