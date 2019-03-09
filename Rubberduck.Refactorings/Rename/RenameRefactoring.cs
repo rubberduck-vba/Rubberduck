@@ -23,8 +23,7 @@ namespace Rubberduck.Refactorings.Rename
 
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IProjectsProvider _projectsProvider;
-        private readonly IDictionary<DeclarationType, Action<IRewriteSession>> _renameActions;
-        private readonly List<string> _standardEventHandlerNames;
+        private readonly IDictionary<DeclarationType, Action<RenameModel, IRewriteSession>> _renameActions;
 
 
         public RenameRefactoring(IRefactoringPresenterFactory factory, IDeclarationFinderProvider declarationFinderProvider, IProjectsProvider projectsProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
@@ -33,7 +32,7 @@ namespace Rubberduck.Refactorings.Rename
             _declarationFinderProvider = declarationFinderProvider;
             _projectsProvider = projectsProvider;
 
-            _renameActions = new Dictionary<DeclarationType, Action<IRewriteSession>>
+            _renameActions = new Dictionary<DeclarationType, Action<RenameModel, IRewriteSession>>
             {
                 {DeclarationType.Member, RenameMember},
                 {DeclarationType.Parameter, RenameParameter},
@@ -42,10 +41,6 @@ namespace Rubberduck.Refactorings.Rename
                 {DeclarationType.Module, RenameModule},
                 {DeclarationType.Project, RenameProject}
             };
-
-            _standardEventHandlerNames = _declarationFinderProvider != null
-                ? StandardEventHandlerNames()
-                : new List<string>();
         }
 
         public override void Refactor(QualifiedSelection targetSelection)
@@ -85,10 +80,10 @@ namespace Rubberduck.Refactorings.Rename
             return model;
         }
 
-        protected override void RefactorImpl(IRenamePresenter presenter)
+        protected override void RefactorImpl(RenameModel model)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            Rename(rewriteSession);
+            Rename(model, rewriteSession);
             rewriteSession.TryRewrite();
         }
 
@@ -156,7 +151,7 @@ namespace Rubberduck.Refactorings.Rename
                 }
             }
 
-            if (target is IInterfaceExposable && _standardEventHandlerNames.Contains(target.IdentifierName))
+            if (target is IInterfaceExposable && StandardEventHandlerNames().Contains(target.IdentifierName))
             {
                 throw new TargetDeclarationIsStandardEventHandlerException(target);
             }
@@ -230,148 +225,148 @@ namespace Rubberduck.Refactorings.Rename
             return null;
         }
 
-        private void Rename(IRewriteSession rewriteSession)
+        private void Rename(RenameModel model, IRewriteSession rewriteSession)
         {
-            Debug.Assert(!Model.NewName.Equals(Model.Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase),
-                            $"input validation fail: New Name equals Original Name ({Model.Target.IdentifierName})");
+            Debug.Assert(!model.NewName.Equals(model.Target.IdentifierName, StringComparison.InvariantCultureIgnoreCase),
+                            $"input validation fail: New Name equals Original Name ({model.Target.IdentifierName})");
 
-            var actionKeys = _renameActions.Keys.Where(decType => Model.Target.DeclarationType.HasFlag(decType)).ToList();
+            var actionKeys = _renameActions.Keys.Where(decType => model.Target.DeclarationType.HasFlag(decType)).ToList();
             if (actionKeys.Any())
             {
-                Debug.Assert(actionKeys.Count == 1, $"{actionKeys.Count} Rename Actions have flag '{Model.Target.DeclarationType.ToString()}'");
-                _renameActions[actionKeys.FirstOrDefault()](rewriteSession);
+                Debug.Assert(actionKeys.Count == 1, $"{actionKeys.Count} Rename Actions have flag '{model.Target.DeclarationType.ToString()}'");
+                _renameActions[actionKeys.FirstOrDefault()](model, rewriteSession);
             }
             else
             {
-                RenameStandardElements(Model.Target, Model.NewName, rewriteSession);
+                RenameStandardElements(model.Target, model.NewName, rewriteSession);
             }
         }
 
-        private void RenameMember(IRewriteSession rewriteSession)
+        private void RenameMember(RenameModel model, IRewriteSession rewriteSession)
         {
-            if (Model.Target.DeclarationType.HasFlag(DeclarationType.Property))
+            if (model.Target.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                var members = _declarationFinderProvider.DeclarationFinder.MatchName(Model.Target.IdentifierName)
-                    .Where(item => item.ProjectId == Model.Target.ProjectId
-                        && item.ComponentName == Model.Target.ComponentName
+                var members = _declarationFinderProvider.DeclarationFinder.MatchName(model.Target.IdentifierName)
+                    .Where(item => item.ProjectId == model.Target.ProjectId
+                        && item.ComponentName == model.Target.ComponentName
                         && item.DeclarationType.HasFlag(DeclarationType.Property));
 
                 foreach (var member in members)
                 {
-                    RenameStandardElements(member, Model.NewName, rewriteSession);
+                    RenameStandardElements(member, model.NewName, rewriteSession);
                 }
             }
             else
             {
-                RenameStandardElements(Model.Target, Model.NewName, rewriteSession);
+                RenameStandardElements(model.Target, model.NewName, rewriteSession);
             }
 
-            if (!Model.IsInterfaceMemberRename)
+            if (!model.IsInterfaceMemberRename)
             {
                 return;
             }
             
             var implementations = _declarationFinderProvider.DeclarationFinder.FindAllInterfaceImplementingMembers()
-                .Where(impl => ReferenceEquals(Model.Target.ParentDeclaration, impl.InterfaceImplemented)
-                               && impl.InterfaceMemberImplemented.IdentifierName.Equals(Model.Target.IdentifierName));
+                .Where(impl => ReferenceEquals(model.Target.ParentDeclaration, impl.InterfaceImplemented)
+                               && impl.InterfaceMemberImplemented.IdentifierName.Equals(model.Target.IdentifierName));
 
-            RenameDefinedFormatMembers(implementations.ToList(), PrependUnderscoreFormat, rewriteSession);
+            RenameDefinedFormatMembers(model, implementations.ToList(), PrependUnderscoreFormat, rewriteSession);
         }
 
-        private void RenameParameter(IRewriteSession rewriteSession)
+        private void RenameParameter(RenameModel model, IRewriteSession rewriteSession)
         {
-            if (Model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
+            if (model.Target.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property))
             {
-                var parameters = _declarationFinderProvider.DeclarationFinder.MatchName(Model.Target.IdentifierName).Where(param =>
+                var parameters = _declarationFinderProvider.DeclarationFinder.MatchName(model.Target.IdentifierName).Where(param =>
                    param.ParentDeclaration.DeclarationType.HasFlag(DeclarationType.Property)
                    && param.DeclarationType == DeclarationType.Parameter
-                    && param.ParentDeclaration.IdentifierName.Equals(Model.Target.ParentDeclaration.IdentifierName)
-                    && param.ParentDeclaration.ParentScopeDeclaration.Equals(Model.Target.ParentDeclaration.ParentScopeDeclaration));
+                    && param.ParentDeclaration.IdentifierName.Equals(model.Target.ParentDeclaration.IdentifierName)
+                    && param.ParentDeclaration.ParentScopeDeclaration.Equals(model.Target.ParentDeclaration.ParentScopeDeclaration));
 
                 foreach (var param in parameters)
                 {
-                    RenameStandardElements(param, Model.NewName, rewriteSession);
+                    RenameStandardElements(param, model.NewName, rewriteSession);
                 }
             }
             else
             {
-                RenameStandardElements(Model.Target, Model.NewName, rewriteSession);
+                RenameStandardElements(model.Target, model.NewName, rewriteSession);
             }
         }
 
-        private void RenameEvent(IRewriteSession rewriteSession)
+        private void RenameEvent(RenameModel model, IRewriteSession rewriteSession)
         {
-            RenameStandardElements(Model.Target, Model.NewName, rewriteSession);
+            RenameStandardElements(model.Target, model.NewName, rewriteSession);
 
             var withEventsDeclarations = _declarationFinderProvider.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
-                .Where(varDec => varDec.IsWithEvents && varDec.AsTypeName.Equals(Model.Target.ParentDeclaration.IdentifierName));
+                .Where(varDec => varDec.IsWithEvents && varDec.AsTypeName.Equals(model.Target.ParentDeclaration.IdentifierName));
 
             var eventHandlers = withEventsDeclarations.SelectMany(we => _declarationFinderProvider.DeclarationFinder.FindHandlersForWithEventsField(we));
-            RenameDefinedFormatMembers(eventHandlers.ToList(), PrependUnderscoreFormat, rewriteSession);
+            RenameDefinedFormatMembers(model, eventHandlers.ToList(), PrependUnderscoreFormat, rewriteSession);
         }
 
-        private void RenameVariable(IRewriteSession rewriteSession)
+        private void RenameVariable(RenameModel model, IRewriteSession rewriteSession)
         {
-            if ((Model.Target.Accessibility == Accessibility.Public ||
-                 Model.Target.Accessibility == Accessibility.Implicit)
-                && Model.Target.ParentDeclaration is ClassModuleDeclaration classDeclaration
+            if ((model.Target.Accessibility == Accessibility.Public ||
+                 model.Target.Accessibility == Accessibility.Implicit)
+                && model.Target.ParentDeclaration is ClassModuleDeclaration classDeclaration
                 && classDeclaration.Subtypes.Any())
             {
-                RenameMember(rewriteSession);
+                RenameMember(model, rewriteSession);
             }
-            else if (Model.Target.DeclarationType.HasFlag(DeclarationType.Control))
+            else if (model.Target.DeclarationType.HasFlag(DeclarationType.Control))
             {
-                var component = _projectsProvider.Component(Model.Target.QualifiedName.QualifiedModuleName);
+                var component = _projectsProvider.Component(model.Target.QualifiedName.QualifiedModuleName);
                 using (var controls = component.Controls)
                 {
-                    using (var control = controls.SingleOrDefault(item => item.Name == Model.Target.IdentifierName))
+                    using (var control = controls.SingleOrDefault(item => item.Name == model.Target.IdentifierName))
                     {
                         Debug.Assert(control != null,
-                            $"input validation fail: unable to locate '{Model.Target.IdentifierName}' in Controls collection");
+                            $"input validation fail: unable to locate '{model.Target.IdentifierName}' in Controls collection");
 
-                        control.Name = Model.NewName;
+                        control.Name = model.NewName;
                     }
                 }
-                RenameReferences(Model.Target, Model.NewName, rewriteSession);
-                var controlEventHandlers = FindEventHandlersForControl(Model.Target);
-                RenameDefinedFormatMembers(controlEventHandlers.ToList(), AppendUnderscoreFormat, rewriteSession);
+                RenameReferences(model.Target, model.NewName, rewriteSession);
+                var controlEventHandlers = FindEventHandlersForControl(model.Target);
+                RenameDefinedFormatMembers(model, controlEventHandlers.ToList(), AppendUnderscoreFormat, rewriteSession);
             }
             else
             {
-                RenameStandardElements(Model.Target, Model.NewName, rewriteSession);
-                if (Model.Target.IsWithEvents)
+                RenameStandardElements(model.Target, model.NewName, rewriteSession);
+                if (model.Target.IsWithEvents)
                 {
-                    var eventHandlers = _declarationFinderProvider.DeclarationFinder.FindHandlersForWithEventsField(Model.Target);
-                    RenameDefinedFormatMembers(eventHandlers.ToList(), AppendUnderscoreFormat, rewriteSession);
+                    var eventHandlers = _declarationFinderProvider.DeclarationFinder.FindHandlersForWithEventsField(model.Target);
+                    RenameDefinedFormatMembers(model, eventHandlers.ToList(), AppendUnderscoreFormat, rewriteSession);
                 }
             }
         }
 
-        private void RenameModule(IRewriteSession rewriteSession)
+        private void RenameModule(RenameModel model, IRewriteSession rewriteSession)
         {
-            RenameReferences(Model.Target, Model.NewName, rewriteSession);
+            RenameReferences(model.Target, model.NewName, rewriteSession);
 
-            if (Model.Target.DeclarationType.HasFlag(DeclarationType.ClassModule))
+            if (model.Target.DeclarationType.HasFlag(DeclarationType.ClassModule))
             {
-                foreach (var reference in Model.Target.References)
+                foreach (var reference in model.Target.References)
                 {
                     var ctxt = reference.Context.GetAncestor<VBAParser.ImplementsStmtContext>();
                     if (ctxt != null)
                     {
-                        RenameDefinedFormatMembers(_declarationFinderProvider.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt).ToList(), AppendUnderscoreFormat, rewriteSession);
+                        RenameDefinedFormatMembers(model, _declarationFinderProvider.DeclarationFinder.FindInterfaceMembersForImplementsContext(ctxt).ToList(), AppendUnderscoreFormat, rewriteSession);
                     }
                 }
             }
 
-            var component = _projectsProvider.Component(Model.Target.QualifiedName.QualifiedModuleName);
+            var component = _projectsProvider.Component(model.Target.QualifiedName.QualifiedModuleName);
             switch (component.Type)
             {
                 case ComponentType.Document:
                     {
-                        var properties = component.Properties;
-                        var property = properties["_CodeName"];
+                        using (var properties = component.Properties)
+                        using (var property = properties["_CodeName"])
                         {
-                            property.Value = Model.NewName;
+                            property.Value = model.NewName;
                         }
                         break;
                     }
@@ -379,14 +374,14 @@ namespace Rubberduck.Refactorings.Rename
                 case ComponentType.VBForm:
                 case ComponentType.MDIForm:
                     {
-                        var properties = component.Properties;
-                        var property = properties["Caption"];
+                        using (var properties = component.Properties)
+                        using (var property = properties["Caption"])
                         {
-                            if ((string)property.Value == Model.Target.IdentifierName)
+                            if ((string)property.Value == model.Target.IdentifierName)
                             {
-                                property.Value = Model.NewName;
+                                property.Value = model.NewName;
                             }
-                            component.Name = Model.NewName;
+                            component.Name = model.NewName;
                         }
                         break;
                     }
@@ -401,13 +396,13 @@ namespace Rubberduck.Refactorings.Rename
                                 {
                                     Debug.Assert(!codeModule.IsWrappingNullReference,
                                         "input validation fail: Attempting to rename an ICodeModule wrapping a null reference");
-                                    codeModule.Name = Model.NewName;
+                                    codeModule.Name = model.NewName;
                                 }
                             }
                             else
                             {
                                 // VB6 - rename component
-                                component.Name = Model.NewName;
+                                component.Name = model.NewName;
                             }
                         }
                         break;
@@ -416,22 +411,22 @@ namespace Rubberduck.Refactorings.Rename
         }
 
         //The parameter is not used, but it is required for the _renameActions dictionary.
-        private void RenameProject(IRewriteSession rewriteSession)
+        private void RenameProject(RenameModel model, IRewriteSession rewriteSession)
         {
-            var project = _projectsProvider.Project(Model.Target.ProjectId);
+            var project = _projectsProvider.Project(model.Target.ProjectId);
 
             if (project != null)
             {
-                project.Name = Model.NewName;
+                project.Name = model.NewName;
             }
         }
 
-        private void RenameDefinedFormatMembers(IReadOnlyCollection<Declaration> members, string underscoreFormat, IRewriteSession rewriteSession)
+        private void RenameDefinedFormatMembers(RenameModel model, IReadOnlyCollection<Declaration> members, string underscoreFormat, IRewriteSession rewriteSession)
         {
             if (!members.Any()) { return; }
 
-            var targetFragment = string.Format(underscoreFormat, Model.Target.IdentifierName);
-            var replacementFragment = string.Format(underscoreFormat, Model.NewName);
+            var targetFragment = string.Format(underscoreFormat, model.Target.IdentifierName);
+            var replacementFragment = string.Format(underscoreFormat, model.NewName);
             foreach (var member in members)
             {
                 var newMemberName = member.IdentifierName.Replace(targetFragment, replacementFragment);

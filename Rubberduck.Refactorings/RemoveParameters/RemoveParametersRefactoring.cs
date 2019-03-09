@@ -69,7 +69,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             return InitializeModel(target.QualifiedSelection);
         }
 
-        protected override void RefactorImpl(IRemoveParametersPresenter presenter)
+        protected override void RefactorImpl(RemoveParametersModel model)
         {
             RemoveParameters();
         }

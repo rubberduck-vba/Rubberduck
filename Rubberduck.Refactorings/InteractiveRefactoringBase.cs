@@ -11,7 +11,7 @@ namespace Rubberduck.Refactorings
         where TPresenter : class, IRefactoringPresenter<TModel>
         where TModel : class, IRefactoringModel
     {
-        protected readonly Func<TModel, IDisposalActionContainer<TPresenter>> PresenterFactory;
+        private readonly Func<TModel, IDisposalActionContainer<TPresenter>> PresenterFactory;
         protected TModel Model;
 
         protected InteractiveRefactoringBase(IRewritingManager rewritingManager, ISelectionService selectionService, IRefactoringPresenterFactory factory) 
@@ -23,12 +23,14 @@ namespace Rubberduck.Refactorings
         protected void Refactor(TModel initialModel)
         {
             Model = initialModel;
-            if (Model == null)
+
+            var model = initialModel;
+            if (model == null)
             {
                 throw new InvalidRefactoringModelException();
             }
 
-            using (var presenterContainer = PresenterFactory(Model))
+            using (var presenterContainer = PresenterFactory(model))
             {
                 var presenter = presenterContainer.Value;
                 if (presenter == null)
@@ -36,17 +38,19 @@ namespace Rubberduck.Refactorings
                     throw new InvalidRefactoringPresenterException();
                 }
 
-                Model = presenter.Show();
-                if (Model == null)
+                model = presenter.Show();
+                if (model == null)
                 {
                     throw new InvalidRefactoringModelException();
                 }
 
-                RefactorImpl(presenter);
+                Model = model;
+
+                RefactorImpl(model);
             }
         }
 
-        protected abstract void RefactorImpl(TPresenter presenter);
+        protected abstract void RefactorImpl(TModel model);
 
         public abstract override void Refactor(QualifiedSelection target);
         public abstract override void Refactor(Declaration target);

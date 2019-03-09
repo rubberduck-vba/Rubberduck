@@ -68,7 +68,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
             return InitializeModel(target.QualifiedSelection);
         }
 
-        protected override void RefactorImpl(IReorderParametersPresenter presenter)
+        protected override void RefactorImpl(ReorderParametersModel model)
         {
             if (!Model.Parameters.Where((param, index) => param.Index != index).Any())
             {

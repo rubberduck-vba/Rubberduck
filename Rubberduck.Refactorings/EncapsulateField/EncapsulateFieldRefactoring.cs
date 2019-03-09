@@ -35,7 +35,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
             return new EncapsulateFieldModel(_state, targetSelection);
         }
 
-        protected override void RefactorImpl(IEncapsulateFieldPresenter presenter)
+        protected override void RefactorImpl(EncapsulateFieldModel model)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             AddProperty(rewriteSession);

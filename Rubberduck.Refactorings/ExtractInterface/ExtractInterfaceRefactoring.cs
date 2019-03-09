@@ -38,7 +38,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
             return new ExtractInterfaceModel(_declarationFinderProvider, targetSelection);
         }
 
-        protected override void RefactorImpl(IExtractInterfacePresenter presenter)
+        protected override void RefactorImpl(ExtractInterfaceModel model)
         {
             AddInterface();
         }
