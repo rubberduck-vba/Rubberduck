@@ -1,11 +1,10 @@
 ﻿using System.Runtime.InteropServices;
 using EasyHook;
 using NLog;
+using Rubberduck.Runtime;
 using Rubberduck.UI.Command.ComCommands;
-using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Rubberduck.VBEditor.VbeRuntime;
 
 namespace Rubberduck.AutoComplete
 {
@@ -21,19 +20,16 @@ namespace Rubberduck.AutoComplete
     public class ShowQuickInfoCommand : ComCommandBase, IShowQuickInfoCommand
     {
         private readonly IVBE _vbe;
-        private readonly IComMessagePumper _pumper;
-        private readonly IVbeNativeApi _vbeApi;
+        private readonly IBeepInterceptor _beepInterceptor;
 
         public ShowQuickInfoCommand(
             IVBE vbe, 
             IVbeEvents vbeEvents, 
-            IVbeNativeApi vbeApi, 
-            IComMessagePumper pumper) 
+            IBeepInterceptor beepInterceptor) 
             : base(LogManager.GetCurrentClassLogger(), vbeEvents)
         {
             _vbe = vbe;
-            _vbeApi = vbeApi;
-            _pumper = pumper;
+            _beepInterceptor = beepInterceptor;
         }
 
         public void Execute()
@@ -59,32 +55,13 @@ namespace Rubberduck.AutoComplete
             using (var commandBars = _vbe.CommandBars)
             {
                 using (var command = commandBars.FindControl(showIntelliSenseId))
-                using (HookVbaBeep())
                 {
-                    command.Execute();
+                    // Ensures that the queued beep message (if any) is suppressed
+                    _beepInterceptor.SuppressBeep(100);
 
-                    // Ensures that the queued beep message (if any) is cleared
-                    // while we have it hooked
-                    _pumper.PumpMessages();
+                    command.Execute();
                 }
             }
-        }
-
-        private LocalHook HookVbaBeep()
-        {
-            var processAddress = LocalHook.GetProcAddress(_vbeApi.DllName, "rtcBeep");
-            var callbackDelegate = new VbaBeepDelegate(VbaBeepCallback);
-            var hook = LocalHook.Create(processAddress, callbackDelegate, null);
-            hook.ThreadACL.SetInclusiveACL(new[] {0});
-            return hook;
-        }
-
-        [UnmanagedFunctionPointer(CallingConvention.StdCall, SetLastError = true)]
-        private delegate void VbaBeepDelegate();
-
-        public void VbaBeepCallback()
-        {
-            //Ignore the beep command
         }
     }
 }
