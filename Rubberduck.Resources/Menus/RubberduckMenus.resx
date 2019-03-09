@@ -238,4 +238,10 @@
   <data name="AddRemoveReferences" xml:space="preserve">
     <value>Add/Remove References...</value>
   </data>
+  <data name="ContextMenu_RunSelectedTest" xml:space="preserve">
+    <value>Run selected test</value>
+  </data>
+  <data name="ContextMenu_RunSelectedTestModule" xml:space="preserve">
+    <value>Run tests in module</value>
+  </data>
 </root>

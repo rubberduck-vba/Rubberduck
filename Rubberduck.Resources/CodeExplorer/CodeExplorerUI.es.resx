@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CodeExplorerDockablePresenter_Caption" xml:space="preserve">
+    <value>Explorador de código</value>
+  </data>
+  <data name="CodeExplorerDockablePresenter_ParseStarted" xml:space="preserve">
+    <value>{0} (análisis ...)</value>
+  </data>
+  <data name="CodeExplorer_AddClassModuleText" xml:space="preserve">
+    <value>Módulo de clase (.cls)</value>
+  </data>
+  <data name="CodeExplorer_AddFormText" xml:space="preserve">
+    <value>UserForm (.frm)</value>
+  </data>
+  <data name="CodeExplorer_AddModule" xml:space="preserve">
+    <value>Agregar módulo</value>
+  </data>
+  <data name="CodeExplorer_AddStdModuleText" xml:space="preserve">
+    <value>Módulo estándar (.bas)</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleText" xml:space="preserve">
+    <value>Módulo de prueba</value>
+  </data>
+  <data name="CodeExplorer_AddTestModuleWithStubsText" xml:space="preserve">
+    <value>Módulo de prueba con stubs</value>
+  </data>
+  <data name="CodeExplorer_CollapseSubnodesToolTip" xml:space="preserve">
+    <value>Contraer nodo y todos los nodos secundarios</value>
+  </data>
+  <data name="CodeExplorer_CopyToolTip" xml:space="preserve">
+    <value>Copiar al portapapeles</value>
+  </data>
+  <data name="CodeExplorer_DisplayMemberNamesText" xml:space="preserve">
+    <value>Mostrar miembro y nombres</value>
+  </data>
+  <data name="CodeExplorer_DisplayModeToolTip" xml:space="preserve">
+    <value>Estilo de visualización</value>
+  </data>
+  <data name="CodeExplorer_DisplaySignaturesText" xml:space="preserve">
+    <value>Mostrar completo y firmas</value>
+  </data>
+  <data name="CodeExplorer_ExpandSubnodesToolTip" xml:space="preserve">
+    <value>Expandir nodo y todos los nodos hijos</value>
+  </data>
+  <data name="CodeExplorer_Export" xml:space="preserve">
+    <value>Exportar ...</value>
+  </data>
+  <data name="CodeExplorer_ExportAll" xml:space="preserve">
+    <value>Proyecto de exportación ...</value>
+  </data>
+  <data name="CodeExplorer_FindAllImplementationsText" xml:space="preserve">
+    <value>Buscar todas las implementaciones ...</value>
+  </data>
+  <data name="CodeExplorer_FindAllReferencesText" xml:space="preserve">
+    <value>Buscar todas las referencias ...</value>
+  </data>
+  <data name="CodeExplorer_Import" xml:space="preserve">
+    <value>Importar...</value>
+  </data>
+  <data name="CodeExplorer_Indent" xml:space="preserve">
+    <value>Indentar</value>
+  </data>
+  <data name="CodeExplorer_Navigate" xml:space="preserve">
+    <value>Na&amp;vegar</value>
+  </data>
+  <data name="CodeExplorer_New" xml:space="preserve">
+    <value>&amp;Nuevo</value>
+  </data>
+  <data name="CodeExplorer_NewToolTip" xml:space="preserve">
+    <value>Agregar un componente al proyecto activo</value>
+  </data>
+  <data name="CodeExplorer_Open" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="CodeExplorer_OpenDesigner" xml:space="preserve">
+    <value>Abrir diseño</value>
+  </data>
+  <data name="CodeExplorer_OpenProjectProperties" xml:space="preserve">
+    <value>Propiedades del proyecto</value>
+  </data>
+  <data name="CodeExplorer_Print" xml:space="preserve">
+    <value>Impresión...</value>
+  </data>
+  <data name="CodeExplorer_Refresh" xml:space="preserve">
+    <value>R&amp;efrescar</value>
+  </data>
+  <data name="CodeExplorer_Remove" xml:space="preserve">
+    <value>Retirar...</value>
+  </data>
+  <data name="CodeExplorer_ResourceFileText" xml:space="preserve">
+    <value>Recursos</value>
+  </data>
+  <data name="CodeExplorer_RunAllTestsText" xml:space="preserve">
+    <value>Ejecutar todas las pruebas</value>
+  </data>
+  <data name="CodeExplorer_ShowDesignerToolTip" xml:space="preserve">
+    <value>Abrir diseño</value>
+  </data>
+  <data name="CodeExplorer_ShowFoldersToolTip" xml:space="preserve">
+    <value>Alternar carpetas</value>
+  </data>
+  <data name="CodeExplorer_ShowSignaturesToolTip" xml:space="preserve">
+    <value>Alternar firmas</value>
+  </data>
+  <data name="CodeExplorer_Sort" xml:space="preserve">
+    <value>Ordenar</value>
+  </data>
+  <data name="CodeExplorer_SortStyle_ByCodeOrder" xml:space="preserve">
+    <value>Según lo declarado en el módulo.</value>
+  </data>
+  <data name="CodeExplorer_SortStyle_ByName" xml:space="preserve">
+    <value>Por nombre</value>
+  </data>
+  <data name="CodeExplorer_SortStyle_ByType" xml:space="preserve">
+    <value>Agrupar por tipo</value>
+  </data>
+  <data name="CodeExplorer_Add" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="ExportBeforeRemove_Caption" xml:space="preserve">
+    <value>Confirmar exportación</value>
+  </data>
+  <data name="ExportBeforeRemove_Prompt" xml:space="preserve">
+    <value>¿Desea exportar '{0}' antes de eliminar?</value>
+  </data>
+  <data name="CodeExplorer_AddMDIFormText" xml:space="preserve">
+    <value>MDI form (.frm)</value>
+  </data>
+  <data name="CodeExplorer_AddPropertyPageText" xml:space="preserve">
+    <value>Página de propiedades (.pag)</value>
+  </data>
+  <data name="CodeExplorer_AddUserControlText" xml:space="preserve">
+    <value>UserControl (.ctl)</value>
+  </data>
+  <data name="CodeExplorer_AddUserDocumentText" xml:space="preserve">
+    <value>Documento de usuario (.dob)</value>
+  </data>
+  <data name="CodeExplorer_AddVBFormText" xml:space="preserve">
+    <value>Form (.frm)</value>
+  </data>
+  <data name="CodeExplorer_Rename" xml:space="preserve">
+    <value>Rebautizar</value>
+  </data>
+  <data name="CodeExplorer_SetAsStartupProject" xml:space="preserve">
+    <value>Establecer como inicio</value>
+  </data>
+  <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
+    <value>Plantillas</value>
+  </data>
+  <data name="CodeExplorer_ProjectReferences" xml:space="preserve">
+    <value>Referencias de proyectos</value>
+  </data>
+  <data name="CodeExplorer_FontSizeToolTip" xml:space="preserve">
+    <value>Tamaño de fuente</value>
+  </data>
+  <data name="CodeExplorer_SearchPlaceholder" xml:space="preserve">
+    <value>Buscar...</value>
+  </data>
+  <data name="CodeExplorer_SyncCodePaneToolTip" xml:space="preserve">
+    <value>Sincronizar con el panel de código</value>
+  </data>
+  <data name="ExportError_Caption" xml:space="preserve">
+    <value>Error al exportar '{0}'</value>
+  </data>
+  <data name="RemoveError_Caption" xml:space="preserve">
+    <value>Error al eliminar '{0}'</value>
+  </data>
+  <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
+    <value>Biblioteca de referencias</value>
+  </data>
+</root>

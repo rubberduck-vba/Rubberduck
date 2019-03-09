@@ -1,7 +1,8 @@
 using NUnit.Framework;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
-using UnitTestSettings = Rubberduck.Settings.UnitTestSettings;
+using Rubberduck.UnitTesting.Settings;
+using UnitTestSettings = Rubberduck.UnitTesting.Settings.UnitTestSettings;
 
 namespace RubberduckTests.Settings
 {
@@ -29,7 +30,7 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
-            var viewModel = new UnitTestSettingsViewModel(customConfig);
+            var viewModel = new UnitTestSettingsViewModel(customConfig, null);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
@@ -48,7 +49,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void SetDefaultsWorks()
         {
-            var viewModel = new UnitTestSettingsViewModel(GetNondefaultConfig());
+            var viewModel = new UnitTestSettingsViewModel(GetNondefaultConfig(), null);
 
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
@@ -68,7 +69,7 @@ namespace RubberduckTests.Settings
         public void BindingModeIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.BindingMode, viewModel.BindingMode);
         }
@@ -78,7 +79,7 @@ namespace RubberduckTests.Settings
         public void AssertModeIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.AssertMode, viewModel.AssertMode);
         }
@@ -88,7 +89,7 @@ namespace RubberduckTests.Settings
         public void ModuleInitIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.ModuleInit, viewModel.ModuleInit);
         }
@@ -98,7 +99,7 @@ namespace RubberduckTests.Settings
         public void MethodInitIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.MethodInit, viewModel.MethodInit);
         }
@@ -108,7 +109,7 @@ namespace RubberduckTests.Settings
         public void DefaultTestStubInNewModuleIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new UnitTestSettingsViewModel(defaultConfig);
+            var viewModel = new UnitTestSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.UnitTestSettings.DefaultTestStubInNewModule, viewModel.DefaultTestStubInNewModule);
         }

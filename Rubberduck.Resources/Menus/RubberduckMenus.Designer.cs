@@ -59,7 +59,7 @@ namespace Rubberduck.Resources.Menus {
                 resourceCulture = value;
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Add/Remove References....
         /// </summary>
@@ -68,7 +68,7 @@ namespace Rubberduck.Resources.Menus {
                 return ResourceManager.GetString("AddRemoveReferences", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to &amp;Find all references....
         /// </summary>
@@ -93,6 +93,24 @@ namespace Rubberduck.Resources.Menus {
         public static string ContextMenu_GoToImplementation {
             get {
                 return ResourceManager.GetString("ContextMenu_GoToImplementation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run selected test.
+        /// </summary>
+        public static string ContextMenu_RunSelectedTest {
+            get {
+                return ResourceManager.GetString("ContextMenu_RunSelectedTest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Run tests in module.
+        /// </summary>
+        public static string ContextMenu_RunSelectedTestModule {
+            get {
+                return ResourceManager.GetString("ContextMenu_RunSelectedTestModule", resourceCulture);
             }
         }
         

@@ -397,4 +397,28 @@
     <value>Module '{0}' has a '{1}' attribute with value(s) '{2}', but no corresponding annotation.</value>
     <comment>{0} module; {1} specified attribute; {2} specified values</comment>
   </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Keyword used as an identifier for the member '{0}'</value>
+    <comment>{0} Member name</comment>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Line continuation(s) in unexpected places. </value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Non-breaking space encountered in identifier '{0}'</value>
+    <comment>{0} Identifier</comment>
+  </data>
+  <data name="ThunderCode_Base" xml:space="preserve">
+    <value>{0}
+Andrew "ThunderFrame" Jackson would be proud! 
+You're seeing this inspection result because there's no way that's real code and you're just pushing the limits of Rubberduck's parsing and resolving capabilities, right? ...RIGHT? 
+In memoriam, 1972-2018</value>
+    <comment>{0} ThunderCode inspection description</comment>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Negative line number encountered</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>On Error GoTo -1 encountered</value>
+  </data>
 </root>

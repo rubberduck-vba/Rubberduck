@@ -215,7 +215,9 @@ Wayne Phillips (vbWatchdog)
                         </TextBlock>
 
                         <TextBlock Text="{Resx ResxName=Rubberduck.Resources.About.AboutUI, Key=AboutWindow_GeneralThanks}"
-                                   FontSize="10" 
+                                   FontSize="10"
+                                   HorizontalAlignment="Left"
+                                   TextWrapping="WrapWithOverflow"
                                    Margin="15,0,0,0"/>
                     </StackPanel>
                 </StackPanel>

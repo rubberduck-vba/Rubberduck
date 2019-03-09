@@ -156,25 +156,25 @@
   <data name="TestExplorer_MethodName" xml:space="preserve">
     <value>Nom</value>
   </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
     <value>Tous les tests</value>
   </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
     <value>Exécuter</value>
   </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
     <value>Tests échoués</value>
   </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
     <value>Répéter</value>
   </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
     <value>Tests non exécutés</value>
   </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
     <value>Tests passés</value>
   </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
     <value>Tests sélectionnés</value>
   </data>
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
@@ -216,7 +216,7 @@
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignoré</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
     <value>Tests inconclusifs</value>
   </data>
   <data name="TestExplorer_Outcome" xml:space="preserve">
@@ -225,14 +225,11 @@
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Impossible de créer le module de test. L'application hôte peut ne pas permettre la création de nouveaux modules, ou le projet peut être verrouillé. Vérifiez les journaux pour les détails.</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Durée totale</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
     <value>Catégorie</value>
-  </data>
-  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
-    <value>Catégorie sélectionnée</value>
   </data>
   <data name="TestExplorer_Uncategorized" xml:space="preserve">
     <value>Non-catégorisés</value>

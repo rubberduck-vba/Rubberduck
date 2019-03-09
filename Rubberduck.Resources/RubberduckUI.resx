@@ -1537,4 +1537,19 @@ NOTE: Restart is required for the setting to take effect.</value>
   <data name="InspectionResults_ExpandAll" xml:space="preserve">
     <value>Expand all</value>
   </data>
+  <data name="clock" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\clock.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="hourglass" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\hourglass.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="skull_mad" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Icons\Fugue\skull-mad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Browse...</value>
+  </data>
 </root>

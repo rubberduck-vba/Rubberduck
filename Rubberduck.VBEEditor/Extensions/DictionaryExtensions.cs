@@ -43,7 +43,7 @@ namespace Rubberduck.VBEditor.Extensions
         }
 
         //See https://stackoverflow.com/a/3804852/5536802
-        public static bool HasEqualContent<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, IDictionary<TKey, TValue> otherDictionary)
+        public static bool HasEqualContent<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> dictionary, IReadOnlyDictionary<TKey, TValue> otherDictionary)
         {
             return dictionary.Count == otherDictionary.Count && !dictionary.Except(otherDictionary).Any();
         }

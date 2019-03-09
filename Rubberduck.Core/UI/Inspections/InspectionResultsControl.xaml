@@ -197,15 +197,15 @@
                                SelectionUnit="FullRow"
                                ItemsSource="{Binding Results, NotifyOnSourceUpdated=True}"
                                VirtualizingPanel.IsVirtualizingWhenGrouping="False">
-                <DataGrid.RowDetailsTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Rectangle Fill="Transparent" />
-                            <GridViewRowPresenter/>
-                        </Grid>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Rectangle Fill="Transparent" />
+                        <GridViewRowPresenter/>
+                    </Grid>
                 </DataTemplate>
-                </DataGrid.RowDetailsTemplate>
-                <DataGrid.Columns>
+            </DataGrid.RowDetailsTemplate>
+            <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=CodeInspectionResults_Type}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate DataType="abstract1:IInspectionResult">
@@ -248,7 +248,7 @@
         <Border Grid.Row="3" BorderThickness="0,1,0,0" BorderBrush="DimGray">
 
             <StackPanel Orientation="Vertical" MinHeight="48" Background="WhiteSmoke">
-                
+
                 <Grid Margin="4" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="25" />
@@ -286,6 +286,6 @@
                 </WrapPanel>
             </StackPanel>
         </Border>
-        
+
     </Grid>
 </UserControl>

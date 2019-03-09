@@ -1,9 +1,13 @@
+using System;
 using System.Linq;
 using System.Threading;
+using Moq;
 using NUnit.Framework;
 using Rubberduck.Inspections.Concrete;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.SafeComWrappers.VBA;
 using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Inspections
@@ -239,6 +243,40 @@ End Sub";
             }
         }
 
+        [Test]
+        [TestCase(ComponentType.StandardModule, "auto_open", "module1", "Excel")]
+        [TestCase(ComponentType.StandardModule, "auto_close", "module1", "Excel")]
+        [TestCase(ComponentType.StandardModule, "AutoExec", "module1", "Word")]
+        [TestCase(ComponentType.StandardModule, "AutoNew", "module1", "Word")]
+        [TestCase(ComponentType.StandardModule, "AutoOpen", "module1", "Word")]
+        [TestCase(ComponentType.StandardModule, "AutoClose", "module1", "Word")]
+        [TestCase(ComponentType.StandardModule, "AutoExit", "module1", "Word")]
+        [TestCase(ComponentType.Document, "AutoExec", "module1", "Word")]
+        [TestCase(ComponentType.Document, "AutoNew", "module1", "Word")]
+        [TestCase(ComponentType.StandardModule, "Main", "AutoClose", "Word")]
+        [TestCase(ComponentType.StandardModule, "Main", "AutoExit", "Word")]
+        [Category("Inspections")]
+        public void ProcedureNotUsed_NoResultForHostSpecificAutoMacros(ComponentType componentType, string macroName, string moduleName, string hostName)
+        {
+            //Input
+            var inputCode =
+                $@"Private Sub {macroName}()
+End Sub";
+
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, moduleName, componentType, out _);
+            vbe.Setup(v => v.HostApplication().AutoMacroIdentifiers).Returns(new []
+            {
+                new HostAutoMacro(new[] {componentType}, true, moduleName, macroName)
+            });
+            using (var state = MockParser.CreateAndParse(vbe.Object))
+            {
+
+                var inspection = new ProcedureNotUsedInspection(state);
+                var inspectionResults = inspection.GetInspectionResults(CancellationToken.None);
+
+                Assert.AreEqual(0, inspectionResults.Count());
+            }
+        }
 
         [Test]
         [Category("Inspections")]

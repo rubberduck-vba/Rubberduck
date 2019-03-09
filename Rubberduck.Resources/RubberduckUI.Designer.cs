@@ -324,6 +324,16 @@ namespace Rubberduck.Resources {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap clock {
+            get {
+                object obj = ResourceManager.GetObject("clock", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap clock_select {
             get {
                 object obj = ResourceManager.GetObject("clock_select", resourceCulture);
@@ -1782,6 +1792,16 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap hourglass {
+            get {
+                object obj = ResourceManager.GetObject("hourglass", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rubberduck - Implement Interface.
         /// </summary>
         public static string ImplementInterface_Caption {
@@ -2223,6 +2243,15 @@ namespace Rubberduck.Resources {
         public static string Language_EN {
             get {
                 return ResourceManager.GetString("Language_EN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Español.
+        /// </summary>
+        public static string Language_ES {
+            get {
+                return ResourceManager.GetString("Language_ES", resourceCulture);
             }
         }
         
@@ -2906,6 +2935,15 @@ namespace Rubberduck.Resources {
         public static string References_AddToolTip {
             get {
                 return ResourceManager.GetString("References_AddToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse....
+        /// </summary>
+        public static string References_BrowseButtonText {
+            get {
+                return ResourceManager.GetString("References_BrowseButtonText", resourceCulture);
             }
         }
         
@@ -3843,6 +3881,16 @@ namespace Rubberduck.Resources {
         public static string SeverityLabelText {
             get {
                 return ResourceManager.GetString("SeverityLabelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap skull_mad {
+            get {
+                object obj = ResourceManager.GetObject("skull_mad", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

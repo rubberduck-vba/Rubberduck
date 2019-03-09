@@ -10,9 +10,10 @@ using Rubberduck.Resources.Settings;
 
 namespace Rubberduck.UI.Settings
 {
-    public class IndenterSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
+    public sealed class IndenterSettingsViewModel : SettingsViewModelBase<SmartIndenter.IndenterSettings>, ISettingsViewModel<SmartIndenter.IndenterSettings>
     {
-        public IndenterSettingsViewModel(Configuration config)
+        public IndenterSettingsViewModel(Configuration config, IFilePersistanceService<SmartIndenter.IndenterSettings> service)
+            : base(service)
         {
             _alignCommentsWithCode = config.UserSettings.IndenterSettings.AlignCommentsWithCode;
             _alignContinuations = config.UserSettings.IndenterSettings.AlignContinuations;
@@ -38,11 +39,14 @@ namespace Rubberduck.UI.Settings
             _procedureSpacing = config.UserSettings.IndenterSettings.LinesBetweenProcedures;
 
             PropertyChanged += IndenterSettingsViewModel_PropertyChanged;
-            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings());
+            ExportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ExportSettings(GetCurrentSettings()));
             ImportButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => ImportSettings());
         }
 
-        void IndenterSettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        protected override string DialogLoadTitle => SettingsUI.DialogCaption_LoadIndenterSettings;
+        protected override string DialogSaveTitle => SettingsUI.DialogCaption_SaveIndenterSettings;
+
+        private void IndenterSettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             // ReSharper disable once ExplicitCallerInfoArgument
             if (e.PropertyName != "PreviewSampleCode")
@@ -378,6 +382,7 @@ namespace Rubberduck.UI.Settings
         }
 
         private int _procedureSpacing;
+
         public int LinesBetweenProcedures
         {
             get => _procedureSpacing;
@@ -403,7 +408,7 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private IIndenterSettings GetCurrentSettings()
+        private SmartIndenter.IndenterSettings GetCurrentSettings()
         {
             return new SmartIndenter.IndenterSettings(false)
             {
@@ -467,7 +472,7 @@ namespace Rubberduck.UI.Settings
             TransferSettingsToView(config.UserSettings.IndenterSettings);
         }
 
-        private void TransferSettingsToView(IIndenterSettings toLoad)
+        protected override void TransferSettingsToView(SmartIndenter.IndenterSettings toLoad)
         {
             AlignCommentsWithCode = toLoad.AlignCommentsWithCode;
             AlignContinuations = toLoad.AlignContinuations;
@@ -492,37 +497,6 @@ namespace Rubberduck.UI.Settings
             IndentSpaces = toLoad.IndentSpaces;
             VerticallySpaceProcedures = toLoad.VerticallySpaceProcedures;
             LinesBetweenProcedures = toLoad.LinesBetweenProcedures;
-        }
-
-        private void ImportSettings()
-        {
-            using (var dialog = new OpenFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_LoadIndenterSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<SmartIndenter.IndenterSettings> { FilePath = dialog.FileName };
-                var loaded = service.Load(new SmartIndenter.IndenterSettings(false));
-                TransferSettingsToView(loaded);
-            }
-        }
-
-        private void ExportSettings()
-        {
-            using (var dialog = new SaveFileDialog
-            {
-                Filter = SettingsUI.DialogMask_XmlFilesOnly,
-                Title = SettingsUI.DialogCaption_SaveIndenterSettings
-            })
-            {
-                dialog.ShowDialog();
-                if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var service = new XmlPersistanceService<SmartIndenter.IndenterSettings> {FilePath = dialog.FileName};
-                service.Save((SmartIndenter.IndenterSettings)GetCurrentSettings());
-            }
         }
     }
 }

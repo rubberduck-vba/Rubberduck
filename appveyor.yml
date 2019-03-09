@@ -37,9 +37,10 @@ platform: Any CPU
 # cache the nuget packages unless something changed there
 cache:
   - packages/ -> **/packages.config
+  - '%USERPROFILE%/.gradle/wrapper/dists'
 
 install:
-  set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;%PATH%
+  set PATH=C:\Program Files (x86)\MSBuild\15.0\Bin;C:\Program Files (x86)\Java\jdk1.8.0;%PATH%
 
 # patch version specifiers in the base project
 dotnet_csproj:
@@ -51,6 +52,7 @@ dotnet_csproj:
 
 
 before_build:
+  - development/java/Rubberduck.Parsing/Grammar/gradlew.bat -p development/java/Rubberduck.Parsing/Grammar clean build
   - cinst innosetup
   - cinst codecov
   - cinst opencover.portable

@@ -1308,4 +1308,7 @@ End Enum</value>
   <data name="References_RemoveToolTip" xml:space="preserve">
     <value>Odebrat z projektu</value>
   </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
 </root>

@@ -13,7 +13,7 @@ namespace Rubberduck.SettingsProvider
     {
         private const string DefaultConfigFile = "rubberduck.config";
 
-        protected readonly string RootPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Rubberduck");
+        protected readonly string RootPath;
         protected static readonly UTF8Encoding OutputEncoding = new UTF8Encoding(false);        
         protected const string RootElement = "Configuration";
 
@@ -28,6 +28,11 @@ namespace Rubberduck.SettingsProvider
 
         protected T Cached { get; set; }
 
+        protected XmlPersistanceServiceBase(IPersistancePathProvider pathProvider)
+        {
+            RootPath = pathProvider.DataRootPath;
+        }
+
         private string _filePath;
         public virtual string FilePath
         {
@@ -35,29 +40,32 @@ namespace Rubberduck.SettingsProvider
             set => _filePath = value;
         }
 
-        public abstract T Load(T toDeserialize);
+        public abstract T Load(T toDeserialize, string nonDefaultFilePath = null);
 
-        public abstract void Save(T toSerialize);
+        public abstract void Save(T toSerialize, string nonDefaultFilePath = null);
 
         protected static T FailedLoadReturnValue()
         {
-            return (T)Convert.ChangeType(null, typeof(T));
+            return null;
         }
 
         protected static XDocument GetConfigurationDoc(string file)
         {
             XDocument output;
-            try
+            if (File.Exists(file))
             {
-                output = XDocument.Load(file);
-                if (output.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(RootElement)) != null)
+                try
                 {
-                    return output;
+                    output = XDocument.Load(file);
+                    if (output.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(RootElement)) != null)
+                    {
+                        return output;
+                    }
                 }
-            }
-            catch
-            {
-                // this is fine - we'll just return an empty XDocument.
+                catch
+                {
+                    // this is fine - we'll just return an empty XDocument.
+                }
             }
 
             output = new XDocument();
@@ -70,18 +78,14 @@ namespace Rubberduck.SettingsProvider
             return doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(name));
         }
 
-        protected void EnsurePathExists()
+        protected void EnsurePathExists(string nonDefaultFilePath = null)
         {
-            var folder = Path.GetDirectoryName(FilePath);
+            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
+            var folder = Path.GetDirectoryName(filePath);
             if (folder != null && !Directory.Exists(folder))
             {
                 Directory.CreateDirectory(folder);
             }
-        }
-
-        protected T CachedOrNotFound()
-        {
-            return !File.Exists(FilePath) ? FailedLoadReturnValue() : Cached;
         }
     }
 }

@@ -21,6 +21,7 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.VbeRuntime;
 
 namespace Rubberduck
 {
@@ -40,6 +41,7 @@ namespace Rubberduck
     {
         private IVBE _vbe;
         private IAddIn _addin;
+        private IVbeNativeApi _vbeNativeApi;
         private bool _isInitialized;
         private bool _isBeginShutdownExecuted;
 
@@ -63,6 +65,7 @@ namespace Rubberduck
                 VbeProvider.Initialize(_vbe);
                 VbeNativeServices.HookEvents(_vbe);
 
+                _vbeNativeApi = VbeProvider.VbeRuntime;
 #if DEBUG
                 // FOR DEBUGGING/DEVELOPMENT PURPOSES, ALLOW ACCESS TO SOME VBETypeLibsAPI FEATURES FROM VBA
                 _addin.Object = new VBEditor.ComManagement.TypeLibsAPI.VBETypeLibsAPI_Object(_vbe);
@@ -145,7 +148,8 @@ namespace Rubberduck
                     return;
                 }
 
-                var configLoader = new XmlPersistanceService<GeneralSettings>
+                var pathProvider = PersistancePathProvider.Instance;
+                var configLoader = new XmlPersistanceService<GeneralSettings>(pathProvider)
                 {
                     FilePath =
                         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -226,7 +230,7 @@ namespace Rubberduck
                 currentDomain.UnhandledException += HandlAppDomainException;
                 currentDomain.AssemblyResolve += LoadFromSameFolder;
 
-                _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings));
+                _container = new WindsorContainer().Install(new RubberduckIoCInstaller(_vbe, _addin, _initialSettings, _vbeNativeApi));
                 
                 _app = _container.Resolve<App>();
                 _app.Startup();

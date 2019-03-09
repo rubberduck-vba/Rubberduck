@@ -75,13 +75,14 @@ namespace Rubberduck.Inspections.Concrete
 
         private bool IsReturnValueUsed(Declaration function)
         {
+            // TODO: This is O(MG) at work here. Need to refactor the whole shebang.
             return (from usage in function.References
-                    where !IsAddressOfCall(usage)
-                    where !IsTypeOfExpression(usage)
-                    where !IsCallStmt(usage)
-                    where !IsLet(usage)
-                    where !IsSet(usage)
-                    select usage).Any(usage => !IsReturnStatement(function, usage));
+                where !IsLet(usage)
+                where !IsSet(usage)
+                where !IsCallStmt(usage)
+                where !IsTypeOfExpression(usage)
+                where !IsAddressOfCall(usage)
+                select usage).Any(usage => !IsReturnStatement(function, usage));
         }
 
         private bool IsAddressOfCall(IdentifierReference usage)
@@ -93,7 +94,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             return usage.Context.IsDescendentOf<VBAParser.TypeofexprContext>();
         }
-
+        
         private bool IsReturnStatement(Declaration function, IdentifierReference assignment)
         {
             return assignment.ParentScoping.Equals(function) && assignment.Declaration.Equals(function);
@@ -111,6 +112,19 @@ namespace Rubberduck.Inspections.Concrete
             {
                 return false;
             }
+
+            var indexExpr = usage.Context.GetAncestor<VBAParser.IndexExprContext>();
+            if (indexExpr != null)
+            {
+                var memberAccessStmt = usage.Context.GetAncestor<VBAParser.MemberAccessExprContext>();
+                if (memberAccessStmt != null &&
+                    callStmt.SourceInterval.ProperlyContains(memberAccessStmt.SourceInterval) &&
+                    memberAccessStmt.SourceInterval.ProperlyContains(indexExpr.SourceInterval))
+                {
+                    return false;
+                }
+            }
+
             var argumentList = CallStatement.GetArgumentList(callStmt);
             if (argumentList == null)
             {

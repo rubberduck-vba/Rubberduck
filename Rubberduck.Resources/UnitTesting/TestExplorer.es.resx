@@ -1,0 +1,318 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="TestExplorer_TestNumberFailed" xml:space="preserve">
+    <value>{0} Falló</value>
+  </data>
+  <data name="TestExplorer_TestNumberInconclusive" xml:space="preserve">
+    <value>{0} Inconcluyente</value>
+  </data>
+  <data name="TestExplorer_TestNumberPassed" xml:space="preserve">
+    <value>{0} Aprobado</value>
+  </data>
+  <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
+    <value>Dos o más proyectos que contienen métodos de prueba tienen el mismo nombre y pruebas con el mismo nombre. Por favor cambia el nombre de uno para continuar.</value>
+  </data>
+  <data name="TestExplorerWindow_Caption" xml:space="preserve">
+    <value>Explorador de pruebas</value>
+  </data>
+  <data name="TestExplorer_Outcome" xml:space="preserve">
+    <value>Salir</value>
+  </data>
+  <data name="TestExplorer_AddButtonText" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="TestExplorer_AddExpectedErrorTestMethod" xml:space="preserve">
+    <value>Método de prueba (error esperado)</value>
+  </data>
+  <data name="TestExplorer_AddTestMethod" xml:space="preserve">
+    <value>Procedimiento de prueba</value>
+  </data>
+  <data name="TestExplorer_AddTestModule" xml:space="preserve">
+    <value>Módulo de prueba</value>
+  </data>
+  <data name="TestExplorer_Duration" xml:space="preserve">
+    <value>Duración</value>
+  </data>
+  <data name="TestExplorer_GotoSelectionToolTip" xml:space="preserve">
+    <value>Navegar por selección</value>
+  </data>
+  <data name="TestExplorer_Message" xml:space="preserve">
+    <value>Mensaje</value>
+  </data>
+  <data name="TestExplorer_MethodName" xml:space="preserve">
+    <value>Nombre del procedimiento</value>
+  </data>
+  <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
+    <value>Módulo</value>
+  </data>
+  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
+    <value>Todas las pruebas</value>
+  </data>
+  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
+    <value>Ejecutar</value>
+  </data>
+  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
+    <value>Pruebas fallidas</value>
+  </data>
+  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
+    <value>Repetir la última ejecución</value>
+  </data>
+  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
+    <value>No Ejecutar Pruebas</value>
+  </data>
+  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
+    <value>Pruebas aprobadas</value>
+  </data>
+  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
+    <value>Pruebas seleccionadas</value>
+  </data>
+  <data name="TestOutcome_Failed" xml:space="preserve">
+    <value>Ha fallado</value>
+  </data>
+  <data name="TestOutcome_Inconclusive" xml:space="preserve">
+    <value>Sin resultado</value>
+  </data>
+  <data name="TestOutcome_Succeeded" xml:space="preserve">
+    <value>Terminado</value>
+  </data>
+  <data name="TestOutcome_Unknown" xml:space="preserve">
+    <value>Desconocido</value>
+  </data>
+  <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
+    <value>Este método se ejecuta una vez por módulo.</value>
+  </data>
+  <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
+    <value>Este método se ejecuta antes de cada prueba en el módulo.</value>
+  </data>
+  <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
+    <value>Este método se ejecuta después de cada prueba en el módulo.</value>
+  </data>
+  <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
+    <value>Prueba de cambio de nombre</value>
+  </data>
+  <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
+    <value>Prueba provocó un error</value>
+  </data>
+  <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
+    <value>Cambiar al número de error esperado</value>
+  </data>
+  <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
+    <value>El error esperado no fue levantado</value>
+  </data>
+  <data name="TestOutcome_Ignored" xml:space="preserve">
+    <value>Ignorado</value>
+  </data>
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
+    <value>Duración total</value>
+  </data>
+  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
+    <value>Pruebas no concluyentes</value>
+  </data>
+  <data name="Command_AddTestModule_Error" xml:space="preserve">
+    <value>No se puede crear el módulo de prueba. Es posible que la aplicación host no permita la creación de nuevos módulos o que el proyecto esté bloqueado. Para más detalles, consulte el registro.</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
+    <value>Ejecutar todas las pruebas en grupo.</value>
+  </data>
+  <data name="TestExplorer_CategoryName" xml:space="preserve">
+    <value>Categoría</value>
+  </data>
+  <data name="TestExplorer_Uncategorized" xml:space="preserve">
+    <value>Sin categorizar</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunAll" xml:space="preserve">
+    <value>Ejecutar todas las pruebas</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSelected" xml:space="preserve">
+    <value>Ejecutar pruebas seleccionadas</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSingle" xml:space="preserve">
+    <value>Ejecutar prueba única</value>
+  </data>
+  <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
+    <value>Restablecer todos los resultados de la prueba</value>
+  </data>
+  <data name="UnitTest_NewMethod_Act" xml:space="preserve">
+    <value>Actuar</value>
+  </data>
+  <data name="UnitTest_NewMethod_Arrange" xml:space="preserve">
+    <value>Organizar</value>
+  </data>
+  <data name="UnitTest_NewMethod_Assert" xml:space="preserve">
+    <value>Afirmar</value>
+  </data>
+  <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
+    <value>Método de prueba</value>
+  </data>
+  <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
+    <value>Error esperado</value>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleCleanupMethod" xml:space="preserve">
+    <value>Módulo de limpieza</value>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleInitializeMethod" xml:space="preserve">
+    <value>Módulo Inicializar</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestCleanupMethod" xml:space="preserve">
+    <value>Prueba de limpieza</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestExitLabel" xml:space="preserve">
+    <value>Salida de prueba</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
+    <value>Prueba fallida</value>
+  </data>
+  <data name="UnitTest_NewMethod_TestInitializeMethod" xml:space="preserve">
+    <value>Prueba de inicialización</value>
+  </data>
+  <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
+    <value>Módulo de prueba</value>
+  </data>
+  <data name="UnitTest_NewModule_DefaultFolder" xml:space="preserve">
+    <value>Pruebas</value>
+  </data>
+  <data name="UnitTest_NewModule_LateBindConstant" xml:space="preserve">
+    <value>Enlace tardío</value>
+  </data>
+  <data name="UnitTest_NewModule_LateBindDirective" xml:space="preserve">
+    <value>Pruebas de enlace tardío</value>
+  </data>
+  <data name="TestOutcome_DurationHour" xml:space="preserve">
+    <value>hr</value>
+  </data>
+  <data name="TestOutcome_DurationMillisecond" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="TestOutcome_DurationMinute" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="TestOutcome_DurationSecond" xml:space="preserve">
+    <value>seg</value>
+  </data>
+  <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
+    <value>{0} de {1} Pruebas ejecutadas (Tiempo total de ejecución: {2:g})</value>
+  </data>
+  <data name="TestOutcome_SummaryCaption" xml:space="preserve">
+    <value>Resumen:</value>
+  </data>
+  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
+    <value>Fracaso espectacular</value>
+  </data>
+</root>

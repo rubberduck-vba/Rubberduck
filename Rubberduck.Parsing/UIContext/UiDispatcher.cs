@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.VBEditor.WindowsApi;
 
 namespace Rubberduck.Parsing.UIContext
 {
@@ -17,10 +18,7 @@ namespace Rubberduck.Parsing.UIContext
             _contextProvider = contextProvider;
         }
 
-        /// <summary>
-        /// Invokes an action asynchronously on the UI thread.
-        /// </summary>
-        /// <param name="action">The action that must be executed.</param>
+        /// <inheritdoc />
         public void InvokeAsync(Action action)
         {
             CheckInitialization();
@@ -28,17 +26,7 @@ namespace Rubberduck.Parsing.UIContext
             _contextProvider.UiContext.Post(x => action(), null);
         }
 
-        /// <summary>
-        /// Executes an action on the UI thread. If this method is called
-        /// from the UI thread, the action is executed immendiately. If the
-        /// method is called from another thread, the action will be enqueued
-        /// on the UI thread's dispatcher and executed asynchronously.
-        /// <para>For additional operations on the UI thread, you can get a
-        /// reference to the UI thread's context thanks to the property
-        /// <see cref="UiContext" /></para>.
-        /// </summary>
-        /// <param name="action">The action that will be executed on the UI
-        /// thread</param>
+        /// <inheritdoc />
         public void Invoke(Action action)
         {
             CheckInitialization();
@@ -53,16 +41,41 @@ namespace Rubberduck.Parsing.UIContext
             }
         }
 
+        /// <inheritdoc />
+        public void FlushMessageQueue()
+        {
+            CheckInitialization();
+
+            if (_contextProvider.UiContext == SynchronizationContext.Current)
+            {
+                PumpMessages();
+            }
+            else
+            {
+                InvokeAsync(PumpMessages);
+            }
+
+            // This should remain a local function - messages should not be pumped out outside of FlushMessageQueue.
+            void PumpMessages()
+            {
+                var message = new NativeMethods.NativeMessage();
+                var handle = GCHandle.Alloc(message);
+
+                while (NativeMethods.PeekMessage(ref message, IntPtr.Zero, 0, 0, NativeMethods.PeekMessageRemoval.Remove))
+                {
+                    NativeMethods.TranslateMessage(ref message);
+                    NativeMethods.DispatchMessage(ref message);
+                }
+
+                handle.Free();
+            }
+        }
+
         private const uint RPC_E_SERVERCALL_RETRYLATER = 0x8001010A;
         private const uint VBA_E_IGNORE = 0x800AC472;
         private const uint VBA_E_CANTEXECCODEINBREAKMODE = 0x800ADF09;
 
-        /// <summary>
-        /// Raises a COM-visible event on the UI thread. This will use <see cref="UiDispatcher.Invoke()" /> internally
-        /// but with additional error handling & retry logic for transisent failure to fire COM event due to the host
-        /// being too busy to accept event.
-        /// </summary>
-        /// <param name="comEventHandler">The handler for setting up and firing the COM event on the UI thread</param>
+        /// <inheritdoc />
         public void RaiseComEvent(Action comEventHandler)
         {
             Invoke(() =>
@@ -108,14 +121,7 @@ namespace Rubberduck.Parsing.UIContext
             });
         }
 
-        /// <summary>
-        /// Starts a task on the ui thread.
-        /// </summary>
-        /// <param name="action">The action that will be executed on the UI
-        /// thread.</param>
-        /// <param name="token">Optional cancellation token</param>
-        /// <param name="options">Optional TaskCreationOptions</param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public Task StartTask(Action action, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
         {
             CheckInitialization();
@@ -130,14 +136,7 @@ namespace Rubberduck.Parsing.UIContext
         }
 
 
-        /// <summary>
-        /// Starts a task returning a value on the ui thread.
-        /// </summary>
-        /// <param name="func">The function that will be executed on the UI
-        /// thread.</param>
-        /// <param name="token">Optional cancellation token</param>
-        /// <param name="options">Optional TaskCreationOptions</param>
-        /// <returns></returns>
+        /// <inheritdoc />
         public Task<T> StartTask<T>(Func<T> func, CancellationToken token, TaskCreationOptions options = TaskCreationOptions.None)
         {
             CheckInitialization();

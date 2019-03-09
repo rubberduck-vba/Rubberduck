@@ -20,6 +20,9 @@ using Rubberduck.SettingsProvider;
 using Rubberduck.Interaction;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UnitTesting;
+using Rubberduck.UnitTesting.CodeGeneration;
+using Rubberduck.UnitTesting.Settings;
+using RubberduckTests.Settings;
 
 namespace RubberduckTests.CodeExplorer
 {
@@ -30,6 +33,7 @@ namespace RubberduckTests.CodeExplorer
         private readonly Mock<IUiDispatcher> _uiDispatcher = new Mock<IUiDispatcher>();
         private readonly Mock<IConfigProvider<GeneralSettings>> _generalSettingsProvider = new Mock<IConfigProvider<GeneralSettings>>();
         private readonly Mock<IConfigProvider<WindowSettings>> _windowSettingsProvider = new Mock<IConfigProvider<WindowSettings>>();
+        private readonly Mock<IConfigProvider<UnitTestSettings>> _unitTestSettingsProvider = new Mock<IConfigProvider<UnitTestSettings>>();
         private readonly Mock<ConfigurationLoader> _configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
         private readonly Mock<IVBEInteraction> _interaction = new Mock<IVBEInteraction>();
 
@@ -38,6 +42,8 @@ namespace RubberduckTests.CodeExplorer
             _generalSettingsProvider.Setup(s => s.Create()).Returns(_generalSettings);
             _windowSettingsProvider.Setup(s => s.Create()).Returns(WindowSettings);
             _configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
+            _unitTestSettingsProvider.Setup(s => s.Create())
+                .Returns(new UnitTestSettings(BindingMode.LateBinding,AssertMode.StrictAssert, true, true, false));
 
             _uiDispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
 
@@ -271,7 +277,9 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddTestModuleCommand()
         {
-            ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, _configLoader.Object, MessageBox.Object, _interaction.Object);
+            var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
+            var codeGenerator = new TestCodeGenerator(Vbe.Object, State, MessageBox.Object, _interaction.Object, _unitTestSettingsProvider.Object, indenter, null);
+            ViewModel.AddTestModuleCommand = new AddTestComponentCommand(Vbe.Object, State, codeGenerator);
             return this;
         }
 
@@ -347,7 +355,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementOpenDesignerCommand()
         {
-            ViewModel.OpenDesignerCommand = new OpenDesignerCommand(State.ProjectsProvider);
+            ViewModel.OpenDesignerCommand = new OpenDesignerCommand(State.ProjectsProvider, Vbe.Object);
             return this;
         }
 
@@ -362,7 +370,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementIndenterCommand()
         {
-            ViewModel.IndenterCommand = new IndentCommand(State, new Indenter(Vbe.Object, () => Settings.IndenterSettingsTests.GetMockIndenterSettings()), null);
+            ViewModel.IndenterCommand = new IndentCommand(State, new Indenter(Vbe.Object, () => IndenterSettingsTests.GetMockIndenterSettings()), null);
             return this;
         }
 

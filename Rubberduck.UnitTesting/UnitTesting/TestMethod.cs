@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
@@ -10,14 +9,16 @@ using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UnitTesting
 {
-    [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
     public class TestMethod : IEquatable<TestMethod>, INavigateSource
     {
         public TestMethod(Declaration declaration)
         {
             Declaration = declaration;
+            TestCode = declaration.Context.GetText();
         }
         public Declaration Declaration { get; }
+
+        public string TestCode { get; }
 
         public TestCategory Category
         {
@@ -36,8 +37,10 @@ namespace Rubberduck.UnitTesting
             return new NavigateCodeEventArgs(new QualifiedSelection(Declaration.QualifiedName.QualifiedModuleName, Declaration.Context.GetSelection()));
         }
 
-        public bool Equals(TestMethod other) => other != null && Declaration.QualifiedName.Equals(other.Declaration.QualifiedName);
+        public bool Equals(TestMethod other) => other != null && Declaration.QualifiedName.Equals(other.Declaration.QualifiedName) && TestCode.Equals(other.TestCode);
+
         public override bool Equals(object obj) => obj is TestMethod method && Equals(method);
+
         public override int GetHashCode() => Declaration.QualifiedName.GetHashCode();
     }
 }

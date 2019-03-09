@@ -23,6 +23,35 @@ namespace Rubberduck.VBEditor.WindowsApi
         [DllImport("user32", EntryPoint = "SendMessageW", ExactSpelling = true)]
         public static extern IntPtr SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct NativeMessage
+        {
+            public IntPtr handle;
+            public uint msg;
+            public IntPtr wParam;
+            public IntPtr lParam;
+            public uint time;
+            public System.Drawing.Point p;
+        }
+
+        [Flags]
+        public enum PeekMessageRemoval : uint
+        {
+            NoRemove = 0,
+            Remove = 1,
+            NoYield = 2
+        }
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool PeekMessage(ref NativeMessage lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, PeekMessageRemoval wRemoveMsg);
+
+        [DllImport("user32.dll")]
+        public static extern bool TranslateMessage([In] ref NativeMessage lpMsg);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr DispatchMessage([In] ref NativeMessage lpMsg);
+
         /// <summary>   EnumChildWindows delegate. </summary>
         ///
         /// <param name="hwnd"> Main Window Handle</param>
