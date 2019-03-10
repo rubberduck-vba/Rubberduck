@@ -124,7 +124,7 @@
     <value>Acerca de Rubberduck</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 contribuyentes al proyecto Rubberduck</value>
+    <value>© Copyright 2014-{0} contribuyentes al proyecto Rubberduck</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Gracias especiales</value>
@@ -156,7 +156,7 @@ Todos nuestros cazadores de estrellas, seguidores y seguidores, para los cálido
     <value>Copiar información de la versión</value>
   </data>
   <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Copia la información de la versión al portapapeles.</value>
+    <value>Copia la información de la versión al portapapeles</value>
   </data>
   <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
     <value>La información de la versión fue copiada al portapapeles.</value>
@@ -184,5 +184,8 @@ Todos nuestros cazadores de estrellas, seguidores y seguidores, para los cálido
   </data>
   <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
     <value>Reportar un problema</value>
+  </data>
+  <data name="AboutWIndow_ViewLogFile" xml:space="preserve">
+    <value>Abrir log en el Explorador de Archivos</value>
   </data>
 </root>
