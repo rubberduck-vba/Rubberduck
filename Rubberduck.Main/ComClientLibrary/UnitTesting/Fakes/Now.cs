@@ -7,7 +7,7 @@ namespace Rubberduck.UnitTesting.Fakes
     {
         public Now()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcGetPresentDate");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcGetPresentDate");
 
             InjectDelegate(new NowDelegate(NowCallback), processAddress);
         }
@@ -25,7 +25,7 @@ namespace Rubberduck.UnitTesting.Fakes
             if (PassThrough)
             {
                 object result;
-                VbeProvider.VbeRuntime.GetPresentDate(out result);
+                VbeProvider.VbeNativeApi.GetPresentDate(out result);
                 Marshal.GetNativeVariantForObject(result, retVal);
                 return;
             }

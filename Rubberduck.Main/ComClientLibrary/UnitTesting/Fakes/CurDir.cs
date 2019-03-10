@@ -8,8 +8,8 @@ namespace Rubberduck.UnitTesting.Fakes
     {
         public CurDir()
         {
-            var processAddressVariant = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcCurrentDir");
-            var processAddressString = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcCurrentDirBstr");
+            var processAddressVariant = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcCurrentDir");
+            var processAddressString = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcCurrentDirBstr");
 
             InjectDelegate(new CurDirStringDelegate(CurDirStringCallback), processAddressString);
             InjectDelegate(new CurDirVariantDelegate(CurDirVariantCallback), processAddressVariant);

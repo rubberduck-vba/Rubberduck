@@ -8,7 +8,7 @@ namespace Rubberduck.UnitTesting
     {
         public RmDir()
         {
-            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeRuntime.DllName, "rtcRemoveDir");
+            var processAddress = EasyHook.LocalHook.GetProcAddress(VbeProvider.VbeNativeApi.DllName, "rtcRemoveDir");
 
             InjectDelegate(new RmDirDelegate(RmDirCallback), processAddress);
         }
@@ -25,7 +25,7 @@ namespace Rubberduck.UnitTesting
             TrackUsage("path", pathArg, Tokens.String);
             if (PassThrough)
             {
-                VbeProvider.VbeRuntime.RemoveDir(path);
+                VbeProvider.VbeNativeApi.RemoveDir(path);
             }
         }
     }
