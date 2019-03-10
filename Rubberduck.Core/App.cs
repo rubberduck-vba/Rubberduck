@@ -27,7 +27,6 @@ namespace Rubberduck
         private readonly IAppMenu _appMenus;
         private readonly IRubberduckHooks _hooks;
         private readonly IVersionCheck _version;
-        private readonly IBeepInterceptor _beepInterceptor;
         private readonly CommandBase _checkVersionCommand;
 
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -39,7 +38,6 @@ namespace Rubberduck
             IAppMenu appMenus,
             IRubberduckHooks hooks,
             IVersionCheck version,
-            IBeepInterceptor beepInterceptor,
             CommandBase checkVersionCommand)
         {
             _messageBox = messageBox;
@@ -47,7 +45,6 @@ namespace Rubberduck
             _appMenus = appMenus;
             _hooks = hooks;
             _version = version;
-            _beepInterceptor = beepInterceptor;
             _checkVersionCommand = checkVersionCommand;
 
             _configService.SettingsChanged += _configService_SettingsChanged;
@@ -266,8 +263,6 @@ namespace Rubberduck
             {
                 _configService.SettingsChanged -= _configService_SettingsChanged;
             }
-
-            _beepInterceptor.Dispose();
 
             UiDispatcher.Shutdown();
 
