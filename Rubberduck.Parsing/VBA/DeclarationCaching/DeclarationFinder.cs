@@ -324,6 +324,18 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
             return FindSelectedDeclaration(qualifiedSelection.Value);
         }
 
+        /// <summary>
+        /// Finds all declarations contained within the passed selection.
+        /// </summary>
+        /// <param name="selection">The QualifiedSelection to find declarations for.</param>
+        /// <returns>An IEnumerable of matches.</returns>
+        public IEnumerable<Declaration> FindDeclarationsForSelection(QualifiedSelection selection)
+        {
+            return _declarationsBySelection.Keys
+                .Where(key => key.Contains(selection))
+                .SelectMany(key => _declarationsBySelection[key]).Distinct();
+        }
+
         public IEnumerable<Declaration> FreshUndeclared => _newUndeclared.AllValues();
 
         //This does not need a lock because enumerators over a ConcurrentBag uses a snapshot.    
@@ -1187,16 +1199,8 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
             var handlers = DeclarationsWithType(DeclarationType.Procedure)
                 .Where(item =>
-                // class module built-in events
-                (item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule && (
-                     item.IdentifierName.Equals("Class_Initialize", StringComparison.InvariantCultureIgnoreCase) ||
-                     item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase))) ||
-                // standard module built-in handlers (Excel specific):
-                (_hostApp != null &&
-                 _hostApp.ApplicationName.Equals("Excel", StringComparison.InvariantCultureIgnoreCase) &&
-                 item.ParentDeclaration.DeclarationType == DeclarationType.ProceduralModule && (
-                     item.IdentifierName.Equals("auto_open", StringComparison.InvariantCultureIgnoreCase) ||
-                     item.IdentifierName.Equals("auto_close", StringComparison.InvariantCultureIgnoreCase))))
+                    IsVBAClassSpecificHandler(item) || 
+                    IsHostSpecificHandler(item))
                 .Concat(
                     UserDeclarations(DeclarationType.Procedure)
                         .Where(item => handlerNames.Contains(item.IdentifierName))
@@ -1204,6 +1208,25 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
                 .Concat(_handlersByWithEventsField.Value.AllValues())
                 .Concat(FindAllFormControlHandlers());
             return handlers.ToList();
+
+            // Local functions to help break up the complex logic in finding built-in handlers
+            bool IsVBAClassSpecificHandler(Declaration item)
+            {
+                return item.ParentDeclaration.DeclarationType == DeclarationType.ClassModule && (
+                           item.IdentifierName.Equals("Class_Initialize",
+                               StringComparison.InvariantCultureIgnoreCase) ||
+                           item.IdentifierName.Equals("Class_Terminate", StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            bool IsHostSpecificHandler(Declaration item)
+            {
+                return _hostApp?.AutoMacroIdentifiers.Any(i =>
+                           i.ComponentTypes.Any(t => t == item.QualifiedModuleName.ComponentType) &&
+                           (item.Accessibility != Accessibility.Private || i.MayBePrivate) &&
+                           (i.ModuleName == null || i.ModuleName == item.QualifiedModuleName.ComponentName) &&
+                           (i.ProcedureName == null || i.ProcedureName == item.IdentifierName)
+                       ) ?? false;
+            }
         }
 
         /// <summary>

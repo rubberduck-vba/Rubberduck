@@ -80,7 +80,8 @@ namespace Rubberduck.Resources {
         ///Attribute VB_Exposed = False
         ///Attribute VB_Ext_KEY = &quot;Rubberduck&quot;, &quot;Predeclared Class Module&quot;
         ///
-        ///Option Explicit.
+        ///Option Explicit
+        ///&apos;@PredeclaredId.
         /// </summary>
         public static string PredeclaredClassModule_Code {
             get {
@@ -89,7 +90,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adds a class mdoule that is predeclared and thus can be used without newing it up..
+        ///   Looks up a localized string similar to Adds a class module that is predeclared and thus can be used without first creating a new instance..
         /// </summary>
         public static string PredeclaredClassModule_Description {
             get {

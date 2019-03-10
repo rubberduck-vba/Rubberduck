@@ -19,7 +19,7 @@ namespace Rubberduck
         internal static void Initialize(IVBE vbe)
         {
             Vbe = vbe;
-            VbeRuntime = new VbeNativeApiAccessor(vbe);
+            VbeRuntime = new VbeNativeApiAccessor();
         }
 
         internal static void Terminate()

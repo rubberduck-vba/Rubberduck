@@ -44,14 +44,10 @@ namespace Rubberduck.UI.Settings
             _messageBox = messageBox;
             _vbeSettings = vbeSettings;
             _experimentalFeatureTypes = experimentalTypesProvider.ExperimentalTypes;
-            Languages = new ObservableCollection<DisplayLanguageSetting>(
-                new[]
-                {
-                    new DisplayLanguageSetting("en-US"),
-                    new DisplayLanguageSetting("fr-CA"),
-                    new DisplayLanguageSetting("de-DE"),
-                    new DisplayLanguageSetting("cs-CZ")
-                });
+
+            Languages = new ObservableCollection<DisplayLanguageSetting>(Locales.AvailableCultures
+                .OrderBy(locale => locale.NativeName)
+                .Select(locale => new DisplayLanguageSetting(locale.Name)));
 
             LogLevels = new ObservableCollection<MinimumLogLevel>(
                 LogLevelHelper.LogLevels.Select(l => new MinimumLogLevel(l.Ordinal, l.Name)));
@@ -295,7 +291,8 @@ namespace Rubberduck.UI.Settings
 
         private void TransferSettingsToView(IGeneralSettings general, IHotkeySettings hottkey)
         {
-            SelectedLanguage = Languages.First(l => l.Code == general.Language.Code);
+            SelectedLanguage = Languages.FirstOrDefault(culture => culture.Code == general.Language.Code);
+
             Hotkeys = hottkey == null
                 ? new ObservableCollection<HotkeySetting>()
                 : new ObservableCollection<HotkeySetting>(hottkey.Settings);

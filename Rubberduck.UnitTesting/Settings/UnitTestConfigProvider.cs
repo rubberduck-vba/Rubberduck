@@ -1,6 +1,6 @@
 ﻿using Rubberduck.SettingsProvider;
 
-namespace Rubberduck.Settings
+namespace Rubberduck.UnitTesting.Settings
 {
     public class UnitTestConfigProvider : IConfigProvider<UnitTestSettings>
     {
@@ -10,7 +10,15 @@ namespace Rubberduck.Settings
         public UnitTestConfigProvider(IPersistanceService<UnitTestSettings> persister)
         {
             _persister = persister;
-            _defaultSettings = new DefaultSettings<UnitTestSettings>().Default;
+
+            _defaultSettings = new UnitTestSettings
+            {
+                BindingMode = BindingMode.LateBinding,
+                AssertMode = AssertMode.StrictAssert,
+                ModuleInit = true,
+                MethodInit = true,
+                DefaultTestStubInNewModule = false
+            };
         }
 
         public UnitTestSettings Create()

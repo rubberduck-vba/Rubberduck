@@ -51,23 +51,21 @@ namespace Rubberduck.SettingsProvider
 
         protected static XDocument GetConfigurationDoc(string file)
         {
-            if (!File.Exists(file))
-            {
-                return new XDocument();
-            }
-
             XDocument output;
-            try
+            if (File.Exists(file))
             {
-                output = XDocument.Load(file);
-                if (output.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(RootElement)) != null)
+                try
                 {
-                    return output;
+                    output = XDocument.Load(file);
+                    if (output.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(RootElement)) != null)
+                    {
+                        return output;
+                    }
                 }
-            }
-            catch
-            {
-                // this is fine - we'll just return an empty XDocument.
+                catch
+                {
+                    // this is fine - we'll just return an empty XDocument.
+                }
             }
 
             output = new XDocument();

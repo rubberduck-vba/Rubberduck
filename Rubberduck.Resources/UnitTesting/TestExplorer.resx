@@ -162,26 +162,26 @@
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
     <value>Module</value>
   </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
     <value>All Tests</value>
   </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
     <value>Run</value>
   </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
     <value>Failed Tests</value>
   </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
     <value>Repeat Last Run</value>
   </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
     <value>Not Run Tests</value>
   </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
     <value>Passed Tests</value>
   </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
-    <value>Selected Test</value>
+  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
+    <value>Selected Tests</value>
   </data>
   <data name="TestOutcome_Failed" xml:space="preserve">
     <value>Failed</value>
@@ -197,44 +197,150 @@
   </data>
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>this method runs once per module</value>
+    <comment>Comment text.</comment>
   </data>
   <data name="UnitTest_NewModule_RunBeforeTest" xml:space="preserve">
     <value>this method runs before every test in the module</value>
+    <comment>Comment text.</comment>
   </data>
   <data name="UnitTest_NewModule_RunAfterTest" xml:space="preserve">
     <value>this method runs after every test in the module</value>
+    <comment>Comment text.</comment>
   </data>
   <data name="UnitTest_NewMethod_Rename" xml:space="preserve">
     <value>Rename test</value>
+    <comment>TODO comment text.</comment>
   </data>
   <data name="UnitTest_NewMethod_RaisedTestError" xml:space="preserve">
     <value>Test raised an error</value>
+    <comment>Comment text.</comment>
   </data>
   <data name="UnitTest_NewMethod_ChangeErrorNo" xml:space="preserve">
     <value>Change to expected error number</value>
+    <comment>Comment text.</comment>
   </data>
   <data name="UnitTest_NewMethod_ErrorNotRaised" xml:space="preserve">
     <value>Expected error was not raised</value>
+    <comment>Comment text.</comment>
   </data>
   <data name="TestOutcome_Ignored" xml:space="preserve">
     <value>Ignored</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Total Duration</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
     <value>Inconclusive Tests</value>
   </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
     <value>Unable to create test module. The host application may not allow for creation of new modules or the project may be locked. For details, check the log.</value>
   </data>
-  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
-    <value>Selected Category</value>
+  <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
+    <value>Run all tests in group</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
     <value>Category</value>
   </data>
   <data name="TestExplorer_Uncategorized" xml:space="preserve">
     <value>Uncategorized</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunAll" xml:space="preserve">
+    <value>Run all tests</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSelected" xml:space="preserve">
+    <value>Run selected tests</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSingle" xml:space="preserve">
+    <value>Run single test</value>
+  </data>
+  <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
+    <value>Reset all test results</value>
+  </data>
+  <data name="UnitTest_NewMethod_Act" xml:space="preserve">
+    <value>Act</value>
+    <comment>"Act" text inside the comments for the "Act, Arrange, Assert" pattern.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_Arrange" xml:space="preserve">
+    <value>Arrange</value>
+    <comment>"Arrange" text inside the comments for the "Act, Arrange, Assert" pattern.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_Assert" xml:space="preserve">
+    <value>Assert</value>
+    <comment>"Assert" text inside the comments for the "Act, Arrange, Assert" pattern. Also a label, so localization must follow allowable identifier rules.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
+    <value>TestMethod</value>
+    <comment>As it "Sub TestMethod1()". Also appended to the end of Stub tests - i.e "Sub FooTestMethod()".   Localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
+    <value>ExpectedError</value>
+    <comment>Constant identifier - "Const ExpectedError As Long = 0".  Localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleCleanupMethod" xml:space="preserve">
+    <value>ModuleCleanup</value>
+    <comment>Method name for the module cleanup method.  Localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleInitializeMethod" xml:space="preserve">
+    <value>ModuleInitialize</value>
+    <comment>Method name for the module initialize method.  Localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestCleanupMethod" xml:space="preserve">
+    <value>TestCleanup</value>
+    <comment>Method name for the test cleanup method.  Localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestExitLabel" xml:space="preserve">
+    <value>TestExit</value>
+    <comment>Label for exiting tests - localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
+    <value>TestFail</value>
+    <comment>Target label for "On Error GoTo TestFail" tests - localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestInitializeMethod" xml:space="preserve">
+    <value>TestInitialize</value>
+    <comment>Method name for the test initialization method.  Localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
+    <value>TestModule</value>
+    <comment>Test module name, i.e. "TestModule1".  Localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewModule_DefaultFolder" xml:space="preserve">
+    <value>Tests</value>
+    <comment>Default folder name for new test modules.</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindConstant" xml:space="preserve">
+    <value>LateBind</value>
+    <comment>Precompiler constant as in "#If LateBind Then". Localize as an indentifier.</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindDirective" xml:space="preserve">
+    <value>LateBindTests</value>
+    <comment>Precompiler directive, as in "#Const LateBind = LateBindTests". Localize as an indentifier.</comment>
+  </data>
+  <data name="TestOutcome_DurationHour" xml:space="preserve">
+    <value>hr</value>
+    <comment>Abbreviation for hours</comment>
+  </data>
+  <data name="TestOutcome_DurationMillisecond" xml:space="preserve">
+    <value>ms</value>
+    <comment>Abbreviation for milliseconds</comment>
+  </data>
+  <data name="TestOutcome_DurationMinute" xml:space="preserve">
+    <value>min</value>
+    <comment>Abbreviation for minutes</comment>
+  </data>
+  <data name="TestOutcome_DurationSecond" xml:space="preserve">
+    <value>sec</value>
+    <comment>Abbreviation for seconds</comment>
+  </data>
+  <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
+    <value>{0} of {1} Tests Run (Total Run Time: {2:g})</value>
+    <comment>{0} is number of tests in the test run, {1} is total tests, {2} is total duration</comment>
+  </data>
+  <data name="TestOutcome_SummaryCaption" xml:space="preserve">
+    <value>Summary:</value>
+  </data>
+  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
+    <value>Spectacular Failure</value>
+    <comment>Easter egg status.</comment>
   </data>
 </root>

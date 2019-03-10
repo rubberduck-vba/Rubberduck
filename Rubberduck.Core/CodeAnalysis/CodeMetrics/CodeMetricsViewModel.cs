@@ -112,7 +112,7 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
         {
             get
             {
-                var results = _resultsByDeclaration?.FirstOrDefault(f => ReferenceEquals(f.Key, SelectedItem.Declaration));
+                var results = _resultsByDeclaration?.FirstOrDefault(f => ReferenceEquals(f.Key, SelectedItem?.Declaration));
                 return results?.Value == null ? new ObservableCollection<ICodeMetricResult>() : new ObservableCollection<ICodeMetricResult>(results.Value.Value);
             }
         }

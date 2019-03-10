@@ -1380,4 +1380,7 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>In der Methode, die '{0}' verwendet, referenziert der Name dieser Variable bereits eine andere Deklaration.</value>
   </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
 </root>

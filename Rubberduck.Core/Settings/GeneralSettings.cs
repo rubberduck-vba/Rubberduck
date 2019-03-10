@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Xml.Serialization;
 using Rubberduck.Common;
+using Rubberduck.Resources;
 
 namespace Rubberduck.Settings
 {
@@ -26,7 +27,20 @@ namespace Rubberduck.Settings
     [XmlType(AnonymousType = true)]
     public class GeneralSettings : IGeneralSettings, IEquatable<GeneralSettings>
     {
-        public DisplayLanguageSetting Language { get; set; }
+        private DisplayLanguageSetting _language = new DisplayLanguageSetting(Locales.DefaultCulture.Name);
+
+        public DisplayLanguageSetting Language
+        {
+            get => _language;
+            set
+            {
+                if (Locales.AvailableCultures.Exists(culture => culture.Name.Equals(value.Code, StringComparison.OrdinalIgnoreCase)))
+                {
+                    _language = value;
+                }
+            }
+        }
+
         public bool CanShowSplash { get; set; }
         public bool CanCheckVersion { get; set; }
         public bool CompileBeforeParse { get; set; }

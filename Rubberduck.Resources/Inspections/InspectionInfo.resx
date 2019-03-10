@@ -364,4 +364,19 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Module attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized.</value>
   </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>A keyword is being used as a member in either an enumeration or an user defined type. That can lead to ambiguous resolution. Consider renaming the member.</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>There are line continuations between keywords. There is no good reason to put it there; consider removing them altogether</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>The identiifer contains a non-breaking space which looks very much like just an ordinary space, which obfsucates the code and makes for a confusing experience. Consider using visible characters for the identifiers.</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Negative line numbers are actually input as hex literal and then prettified by VBE. Editing the line again will cause it to turn red since negative line numbers are in fact illegal.</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>While this is legal, this is poorly documented "feature" that means something different -- the error state is also cleared in addition to disabling any error handling. However, this can be ambiguous as a negative line label of -1 may end up as a target and excessively complex error handling usually indicates a need of refactoring the procedure.</value>
+  </data>
 </root>
