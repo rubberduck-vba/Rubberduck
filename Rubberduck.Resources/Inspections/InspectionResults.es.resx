@@ -378,4 +378,25 @@
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>El módulo '{0}' tiene un atributo '{1}' con valor (es) '{2}', pero no tiene la anotación correspondiente.</value>
   </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Palabra clave utilizada como identificador para el miembro '{0}'</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Línea de continuacion(es) en lugares inesperados.</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>No se ha encontrado espacio de ruptura en el identificador '{0}'</value>
+  </data>
+  <data name="ThunderCode_Base" xml:space="preserve">
+    <value>{0}
+Andrew "ThunderFrame" Jackson estaría orgulloso!
+Estás viendo el resultado de esta inspección porque no hay forma de que sea un código real y solo estás superando los límites de las capacidades de análisis y resolución de Rubberduck, ¿verdad? ...¿CORRECTO?
+En memoria, 1972-2018</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Número de línea negativo encontrado</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>En error GoTo -1 encontrado</value>
+  </data>
 </root>
