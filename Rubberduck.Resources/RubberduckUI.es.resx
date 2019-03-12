@@ -659,7 +659,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>Habilitada</value>
   </data>
   <data name="GeneralSettings_HotkeyKey1" xml:space="preserve">
-    <value>Key1</value>
+    <value>Tecla1</value>
   </data>
   <data name="IndenterSettings_AlignCommentsWithCode" xml:space="preserve">
     <value>Alinear comentarios con código</value>
@@ -818,7 +818,7 @@ Advertencia: Se perderán todos los ajustes personalizados. Su archivo anterior 
     <value>Ctrl</value>
   </data>
   <data name="GeneralSettings_HotkeyKey2" xml:space="preserve">
-    <value>Key2</value>
+    <value>Tecla2</value>
   </data>
   <data name="GeneralSettings_HotkeyShift" xml:space="preserve">
     <value>Shift</value>
