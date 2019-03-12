@@ -124,7 +124,7 @@
     <value>O Rubberducku</value>
   </data>
   <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-2018 Rubberduck project contributors</value>
+    <value>© Copyright 2014-{0} Rubberduck project contributors</value>
   </data>
   <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
     <value>Speciální Poděkování</value>
@@ -156,7 +156,7 @@ Všichni ti, co koukají na hvězdy, oblíbenci a následovníci,, pro ten tepl�
     <value>Zkopírovat informace o verzi</value>
   </data>
   <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Klikněte zde pro zkopírování informací do schánky.</value>
+    <value>Klikněte zde pro zkopírování informací do schánky</value>
   </data>
   <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
     <value>Informace o verzi byly zkopírovány do schránky.</value>

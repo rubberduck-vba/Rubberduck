@@ -95,17 +95,16 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to An assignment is immediately overridden by another assignment or is never referenced..
+        ///   Looks up a localized string similar to The attribute value(s) for attribute {0} ({1}) are out of sync with the {2} annotation. .
         /// </summary>
-        public static string AttributeValueOutOfSyncInspection
-        {
+        public static string AttributeValueOutOfSyncInspection {
             get {
                 return ResourceManager.GetString("AttributeValueOutOfSyncInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Boolean literal &apos;{0}&apos; assigned in conditional..
         /// </summary>
@@ -377,11 +376,29 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;IsMissing&apos; is passed an expresssion that is not an argument to the enclosing procedure..
+        ///   Looks up a localized string similar to &apos;IsMissing&apos; is passed an expression that is not an argument to the enclosing procedure..
         /// </summary>
         public static string IsMissingWithNonArgumentParameterInspection {
             get {
                 return ResourceManager.GetString("IsMissingWithNonArgumentParameterInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyword used as an identifier for the member &apos;{0}&apos;.
+        /// </summary>
+        public static string KeywordsUsedAsMemberInspection {
+            get {
+                return ResourceManager.GetString("KeywordsUsedAsMemberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Line continuation(s) in unexpected places. .
+        /// </summary>
+        public static string LineContinuationBetweenKeywordsInspection {
+            get {
+                return ResourceManager.GetString("LineContinuationBetweenKeywordsInspection", resourceCulture);
             }
         }
         
@@ -420,27 +437,25 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
+        ///   Looks up a localized string similar to Member &apos;{0}&apos; has a &apos;{1}&apos; attribute with value(s) &apos;{2}&apos;, but no corresponding annotation..
         /// </summary>
-        public static string MissingMemberAnnotationInspection
-        {
+        public static string MissingMemberAnnotationInspection {
             get {
                 return ResourceManager.GetString("MissingMemberAnnotationInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Module or member &apos;{0}&apos; has a &apos;{1}&apos; attribute, but no corresponding annotation..
+        ///   Looks up a localized string similar to Module &apos;{0}&apos; has a &apos;{1}&apos; attribute with value(s) &apos;{2}&apos;, but no corresponding annotation..
         /// </summary>
-        public static string MissingModuleAnnotationInspection
-        {
+        public static string MissingModuleAnnotationInspection {
             get {
                 return ResourceManager.GetString("MissingModuleAnnotationInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Module-level variable &apos;{0}&apos; is declared with the &apos;Dim&apos; keyword..
         /// </summary>
@@ -483,6 +498,24 @@ namespace Rubberduck.Resources.Inspections {
         public static string MultipleDeclarationsInspection {
             get {
                 return ResourceManager.GetString("MultipleDeclarationsInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Negative line number encountered.
+        /// </summary>
+        public static string NegativeLineNumberInspection {
+            get {
+                return ResourceManager.GetString("NegativeLineNumberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non-breaking space encountered in identifier &apos;{0}&apos;.
+        /// </summary>
+        public static string NonBreakingSpaceIdentifierInspection {
+            get {
+                return ResourceManager.GetString("NonBreakingSpaceIdentifierInspection", resourceCulture);
             }
         }
         
@@ -573,6 +606,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ObsoleteTypeHintInspection {
             get {
                 return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On Error GoTo -1 encountered.
+        /// </summary>
+        public static string OnErrorGoToMinusOneInspection {
+            get {
+                return ResourceManager.GetString("OnErrorGoToMinusOneInspection", resourceCulture);
             }
         }
         
@@ -717,6 +759,18 @@ namespace Rubberduck.Resources.Inspections {
         public static string StopKeywordInspection {
             get {
                 return ResourceManager.GetString("StopKeywordInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}
+        ///Andrew &quot;ThunderFrame&quot; Jackson would be proud! 
+        ///You&apos;re seeing this inspection result because there&apos;s no way that&apos;s real code and you&apos;re just pushing the limits of Rubberduck&apos;s parsing and resolving capabilities, right? ...RIGHT? 
+        ///In memoriam, 1972-2018.
+        /// </summary>
+        public static string ThunderCode_Base {
+            get {
+                return ResourceManager.GetString("ThunderCode_Base", resourceCulture);
             }
         }
         

@@ -70,15 +70,6 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Text.
-        /// </summary>
-        public static string TodoSettings_Text {
-            get {
-                return ResourceManager.GetString("TodoSettings_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Text:.
         /// </summary>
         public static string TodoSettings_TextLabel {
