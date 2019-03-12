@@ -11,13 +11,13 @@ namespace Rubberduck.Refactorings
         where TPresenter : class, IRefactoringPresenter<TModel>
         where TModel : class, IRefactoringModel
     {
-        private readonly Func<TModel, IDisposalActionContainer<TPresenter>> PresenterFactory;
+        private readonly Func<TModel, IDisposalActionContainer<TPresenter>> _presenterFactory;
         protected TModel Model;
 
         protected InteractiveRefactoringBase(IRewritingManager rewritingManager, ISelectionService selectionService, IRefactoringPresenterFactory factory) 
         :base(rewritingManager, selectionService)
         {
-            PresenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<TPresenter, TModel>(model), factory.Release));
+            _presenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<TPresenter, TModel>(model), factory.Release));
         }
 
         protected void Refactor(TModel initialModel)
@@ -30,7 +30,7 @@ namespace Rubberduck.Refactorings
                 throw new InvalidRefactoringModelException();
             }
 
-            using (var presenterContainer = PresenterFactory(model))
+            using (var presenterContainer = _presenterFactory(model))
             {
                 var presenter = presenterContainer.Value;
                 if (presenter == null)

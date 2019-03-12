@@ -53,7 +53,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
         {
             if (target == null)
             {
-                throw new TargetDeclarationIsNullException(target);
+                throw new TargetDeclarationIsNullException();
             }
 
             if (target.DeclarationType != DeclarationType.Variable)

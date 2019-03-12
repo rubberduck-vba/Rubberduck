@@ -52,7 +52,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             if (target == null)
             {
-                throw new TargetDeclarationIsNullException(target);
+                throw new TargetDeclarationIsNullException();
             }
 
             return InitializeModel(target.QualifiedSelection);

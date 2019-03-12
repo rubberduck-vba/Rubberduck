@@ -42,7 +42,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
 
             if (model.TargetDeclaration == null)
             {
-                throw new TargetDeclarationIsNullException(null);
+                throw new TargetDeclarationIsNullException();
             }
 
             Refactor(model);
@@ -57,7 +57,7 @@ namespace Rubberduck.Refactorings.ReorderParameters
         {
             if (target == null)
             {
-                throw new TargetDeclarationIsNullException(target);
+                throw new TargetDeclarationIsNullException();
             }
 
             if (!ReorderParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType))

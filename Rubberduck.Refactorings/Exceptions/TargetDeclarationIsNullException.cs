@@ -4,8 +4,8 @@ namespace Rubberduck.Refactorings.Exceptions
 {
     public class TargetDeclarationIsNullException : InvalidTargetDeclarationException
     {
-        public TargetDeclarationIsNullException(Declaration targetDeclaration) 
-        :base(targetDeclaration)
+        public TargetDeclarationIsNullException() 
+        :base(null)
         {}
     }
 }

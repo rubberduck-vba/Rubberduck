@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Common;
 using Rubberduck.Parsing;
@@ -24,61 +23,131 @@ namespace Rubberduck.Refactorings.RemoveParameters
             _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Refactor(QualifiedSelection target)
+        public override void Refactor(QualifiedSelection targetSelection)
         {
-            CheckAndRefactor(InitializeModel(target));
-        }
+            var target = FindTarget(targetSelection);
 
-        private RemoveParametersModel InitializeModel(QualifiedSelection targetSelection)
-        {
-            return new RemoveParametersModel(_declarationFinderProvider, targetSelection);
-        }
-
-        private void CheckAndRefactor(RemoveParametersModel model)
-        {
-            if (model == null)
+            if (target == null)
             {
-                throw new InvalidRefactoringModelException();
+                throw new NoDeclarationForSelectionException(targetSelection);
             }
 
-            if (model.TargetDeclaration == null)
-            {
-                throw new TargetDeclarationIsNullException(null);
-            }
+            Refactor(target);
+        }
 
-            Refactor(model);
+        private Declaration FindTarget(QualifiedSelection targetSelection)
+        {
+            return _declarationFinderProvider.DeclarationFinder
+                .AllUserDeclarations
+                .FindTarget(targetSelection, ValidDeclarationTypes);
         }
 
         public override void Refactor(Declaration target)
         {
-            CheckAndRefactor(InitializeModel(target));
+            Refactor(InitializeModel(target));
         }
 
         private RemoveParametersModel InitializeModel(Declaration target)
         {
             if (target == null)
             {
-                throw new TargetDeclarationIsNullException(target);
+                throw new TargetDeclarationIsNullException();
             }
 
-            if (!RemoveParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType) && target.DeclarationType != DeclarationType.Parameter)
+            if (!ValidDeclarationTypes.Contains(target.DeclarationType) && target.DeclarationType != DeclarationType.Parameter)
             {
                 throw new InvalidDeclarationTypeException(target);
             }
 
-            return InitializeModel(target.QualifiedSelection);
+            var model = DerivedTarget(new RemoveParametersModel(target));
+            
+
+            return model;
+        }
+
+        private RemoveParametersModel DerivedTarget(RemoveParametersModel model)
+        {
+            var preliminaryModel = ResolvedInterfaceMemberTarget(model) 
+                                   ?? ResolvedEventTarget(model) 
+                                   ?? model;
+            return ResolvedGetterTarget(preliminaryModel) ?? preliminaryModel;
+        }
+
+        private static RemoveParametersModel ResolvedInterfaceMemberTarget(RemoveParametersModel model)
+        {
+            var declaration = model.TargetDeclaration;
+            if (!(declaration is ModuleBodyElementDeclaration member) || !member.IsInterfaceImplementation)
+            {
+                return null;
+            }
+
+            model.IsInterfaceMemberRefactoring = true;
+            model.TargetDeclaration = member.InterfaceMemberImplemented;
+
+            return model;
+        }
+
+        private RemoveParametersModel ResolvedEventTarget(RemoveParametersModel model)
+        {
+            foreach (var events in _declarationFinderProvider
+                .DeclarationFinder
+                .UserDeclarations(DeclarationType.Event))
+            {
+                if (_declarationFinderProvider.DeclarationFinder
+                    .AllUserDeclarations
+                    .FindHandlersForEvent(events)
+                    .Any(reference => Equals(reference.Item2, model.TargetDeclaration)))
+                {
+                    model.IsEventRefactoring = true;
+                    model.TargetDeclaration = events;
+                    return model;
+                }
+            }
+            return null;
+        }
+
+        private RemoveParametersModel ResolvedGetterTarget(RemoveParametersModel model)
+        {
+            var target = model.TargetDeclaration;
+            if (target == null || !target.DeclarationType.HasFlag(DeclarationType.Property))
+            {
+                return null;
+            }
+
+            if (target.DeclarationType == DeclarationType.PropertyGet)
+            {
+                model.IsPropertyRefactoringWithGetter = true;
+                return model;
+            }
+
+
+            var getter = _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(DeclarationType.PropertyGet)
+                .FirstOrDefault(item => item.Scope == target.Scope 
+                                        && item.IdentifierName == target.IdentifierName);
+
+            if (getter == null)
+            {
+                return null;
+            }
+
+            model.IsPropertyRefactoringWithGetter = true;
+            model.TargetDeclaration = getter;
+
+            return model;
         }
 
         protected override void RefactorImpl(RemoveParametersModel model)
         {
-            RemoveParameters();
+            RemoveParameters(model);
         }
 
         public void QuickFix(QualifiedSelection selection)
         {
-            Model = InitializeModel(selection);
+            var targetDeclaration = FindTarget(selection);
+            var model = InitializeModel(targetDeclaration);
             
-            var selectedParameters = Model.Parameters.Where(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection)).ToList();
+            var selectedParameters = model.Parameters.Where(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection)).ToList();
 
             if (selectedParameters.Count > 1)
             {
@@ -91,27 +160,27 @@ namespace Rubberduck.Refactorings.RemoveParameters
             {
                 throw new NoParameterSelectedException();
             }
-            
-            Model.RemoveParameters.Add(target);
-            RemoveParameters();
+
+            model.RemoveParameters.Add(target);
+            RemoveParameters(model);
         }
 
-        private void RemoveParameters()
+        private void RemoveParameters(RemoveParametersModel model)
         {
-            if (Model.TargetDeclaration == null)
+            if (model.TargetDeclaration == null)
             {
-                throw new TargetDeclarationIsNullException(null);
+                throw new TargetDeclarationIsNullException();
             }
 
             var rewritingSession = RewritingManager.CheckOutCodePaneSession();
 
-            AdjustReferences(Model.TargetDeclaration.References, Model.TargetDeclaration, rewritingSession);
-            AdjustSignatures(rewritingSession);
+            AdjustReferences(model, model.TargetDeclaration.References, model.TargetDeclaration, rewritingSession);
+            AdjustSignatures(model, rewritingSession);
 
             rewritingSession.TryRewrite();
         }
 
-        private void AdjustReferences(IEnumerable<IdentifierReference> references, Declaration method, IRewriteSession rewriteSession)
+        private void AdjustReferences(RemoveParametersModel model, IEnumerable<IdentifierReference> references, Declaration method, IRewriteSession rewriteSession)
         {
             foreach (var reference in references.Where(item => item.Context != method.Context))
             {
@@ -147,25 +216,25 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     continue;
                 }
 
-                RemoveCallArguments(argumentList, reference.QualifiedModuleName, rewriteSession);
+                RemoveCallArguments(model, argumentList, reference.QualifiedModuleName, rewriteSession);
             }
         }
 
-        private void RemoveCallArguments(VBAParser.ArgumentListContext argList, QualifiedModuleName module, IRewriteSession rewriteSession)
+        private void RemoveCallArguments(RemoveParametersModel model, VBAParser.ArgumentListContext argList, QualifiedModuleName module, IRewriteSession rewriteSession)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(module);
 
             var usesNamedArguments = false;
             var args = argList.children.OfType<VBAParser.ArgumentContext>().ToList();
-            for (var i = 0; i < Model.Parameters.Count; i++)
+            for (var i = 0; i < model.Parameters.Count; i++)
             {
                 // only remove params from RemoveParameters
-                if (!Model.RemoveParameters.Contains(Model.Parameters[i]))
+                if (!model.RemoveParameters.Contains(model.Parameters[i]))
                 {
                     continue;
                 }
                 
-                if (Model.Parameters[i].IsParamArray)
+                if (model.Parameters[i].IsParamArray)
                 {
                     //The following code works because it is neither allowed to use both named arguments
                     //and a ParamArray nor optional arguments and a ParamArray.
@@ -187,7 +256,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                     var arg = args.Where(a => a.namedArgument() != null)
                                   .SingleOrDefault(a =>
                                         a.namedArgument().unrestrictedIdentifier().GetText() ==
-                                        Model.Parameters[i].Declaration.IdentifierName);
+                                        model.Parameters[i].Declaration.IdentifierName);
 
                     if (arg != null)
                     {
@@ -196,80 +265,83 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 }
             }
 
-            RemoveTrailingComma(rewriter, argList, usesNamedArguments);
+            RemoveTrailingComma(model, rewriter, argList, usesNamedArguments);
         }
 
-        private void AdjustSignatures(IRewriteSession rewriteSession)
+        private void AdjustSignatures(RemoveParametersModel model, IRewriteSession rewriteSession)
         {
             // if we are adjusting a property getter, check if we need to adjust the letter/setter too
-            if (Model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
+            if (model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
             {
-                var setter = GetLetterOrSetter(Model.TargetDeclaration, DeclarationType.PropertySet);
+                var setter = GetLetterOrSetter(model.TargetDeclaration, DeclarationType.PropertySet);
                 if (setter != null)
                 {
-                    RemoveSignatureParameters(setter, rewriteSession);
-                    AdjustReferences(setter.References, setter, rewriteSession);
+                    RemoveSignatureParameters(model, setter, rewriteSession);
+                    AdjustReferences(model, setter.References, setter, rewriteSession);
                 }
 
-                var letter = GetLetterOrSetter(Model.TargetDeclaration, DeclarationType.PropertyLet);
+                var letter = GetLetterOrSetter(model.TargetDeclaration, DeclarationType.PropertyLet);
                 if (letter != null)
                 {
-                    RemoveSignatureParameters(letter, rewriteSession);
-                    AdjustReferences(letter.References, letter, rewriteSession);
+                    RemoveSignatureParameters(model, letter, rewriteSession);
+                    AdjustReferences(model, letter.References, letter, rewriteSession);
                 }
             }
 
-            RemoveSignatureParameters(Model.TargetDeclaration, rewriteSession);
+            RemoveSignatureParameters(model, model.TargetDeclaration, rewriteSession);
 
-            var eventImplementations = Model.Declarations
-                .Where(item => item.IsWithEvents && item.AsTypeName == Model.TargetDeclaration.ComponentName)
-                .SelectMany(withEvents => Model.Declarations.FindEventProcedures(withEvents));
+            var eventImplementations = _declarationFinderProvider.DeclarationFinder
+                .AllUserDeclarations
+                .Where(item => item.IsWithEvents && item.AsTypeName == model.TargetDeclaration.ComponentName)
+                .SelectMany(withEvents => _declarationFinderProvider.DeclarationFinder
+                    .AllUserDeclarations.FindEventProcedures(withEvents));
 
             foreach (var eventImplementation in eventImplementations)
             {
-                AdjustReferences(eventImplementation.References, eventImplementation, rewriteSession);
-                RemoveSignatureParameters(eventImplementation, rewriteSession);
+                AdjustReferences(model, eventImplementation.References, eventImplementation, rewriteSession);
+                RemoveSignatureParameters(model, eventImplementation, rewriteSession);
             }
 
             var interfaceImplementations = _declarationFinderProvider.DeclarationFinder
                 .FindAllInterfaceImplementingMembers()
-                .Where(item => item.ProjectId == Model.TargetDeclaration.ProjectId
-                               && item.IdentifierName == $"{Model.TargetDeclaration.ComponentName}_{Model.TargetDeclaration.IdentifierName}");
+                .Where(item => item.ProjectId == model.TargetDeclaration.ProjectId
+                               && item.IdentifierName == $"{model.TargetDeclaration.ComponentName}_{model.TargetDeclaration.IdentifierName}");
 
             foreach (var interfaceImplentation in interfaceImplementations)
             {
-                AdjustReferences(interfaceImplentation.References, interfaceImplentation, rewriteSession);
-                RemoveSignatureParameters(interfaceImplentation, rewriteSession);
+                AdjustReferences(model, interfaceImplentation.References, interfaceImplentation, rewriteSession);
+                RemoveSignatureParameters(model, interfaceImplentation, rewriteSession);
             }
         }
 
         private Declaration GetLetterOrSetter(Declaration declaration, DeclarationType declarationType)
         {
-            return Model.Declarations.FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName)
-                && item.IdentifierName == declaration.IdentifierName
-                && item.DeclarationType == declarationType);
+            return _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(declarationType)
+                .FirstOrDefault(item => item.QualifiedModuleName.Equals(declaration.QualifiedModuleName)
+                && item.IdentifierName == declaration.IdentifierName);
         }
 
-        private void RemoveSignatureParameters(Declaration target, IRewriteSession rewriteSession)
+        private void RemoveSignatureParameters(RemoveParametersModel model, Declaration target, IRewriteSession rewriteSession)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
             var parameters = ((IParameterizedDeclaration)target).Parameters.OrderBy(o => o.Selection).ToList();
 
-            foreach (var index in Model.RemoveParameters.Select(rem => Model.Parameters.IndexOf(rem)))
+            foreach (var index in model.RemoveParameters.Select(rem => model.Parameters.IndexOf(rem)))
             {
                 rewriter.Remove(parameters[index]);
             }
 
-            RemoveTrailingComma(rewriter);
+            RemoveTrailingComma(model, rewriter);
         }
 
         //Issue 4319.  If there are 3 or more arguments and the user elects to remove 2 or more of
         //the last arguments, then we need to specifically remove the trailing comma from
         //the last 'kept' argument.
-        private void RemoveTrailingComma(IModuleRewriter rewriter, VBAParser.ArgumentListContext argList = null, bool usesNamedParams = false)
+        private void RemoveTrailingComma(RemoveParametersModel model, IModuleRewriter rewriter, VBAParser.ArgumentListContext argList = null, bool usesNamedParams = false)
         {
-            var commaLocator = RetrieveTrailingCommaInfo(Model.RemoveParameters, Model.Parameters);
+            var commaLocator = RetrieveTrailingCommaInfo(model.RemoveParameters, model.Parameters);
             if (!commaLocator.RequiresTrailingCommaRemoval)
             {
                 return;
@@ -311,7 +383,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
             rewriter.RemoveRange(tokenStart, tokenStop);
         }
 
-        private CommaLocator RetrieveTrailingCommaInfo(List<Parameter> toRemove, List<Parameter> allParams)
+        private static CommaLocator RetrieveTrailingCommaInfo(List<Parameter> toRemove, List<Parameter> allParams)
         {
             if (toRemove.Count == allParams.Count || allParams.Count < 3)
             {
@@ -366,5 +438,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
             public int Index;
             public string Identifier => Param.Declaration.IdentifierName;
         }
+
+        public static readonly DeclarationType[] ValidDeclarationTypes =
+        {
+            DeclarationType.Event,
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
     }
 }

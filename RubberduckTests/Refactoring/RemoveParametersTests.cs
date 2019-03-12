@@ -755,16 +755,16 @@ End Sub
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            RemoveParametersModel capturedModel = null;
+            Func<RemoveParametersModel, RemoveParametersModel> presenterAction = model => 
             {
+                capturedModel = model;
+                return model;
+            };
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            RefactoredCode(inputCode, selection, presenterAction);
 
-                var model = new RemoveParametersModel(state, qualifiedSelection);
-
-                Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
-            }
+            Assert.AreEqual(1, capturedModel.Parameters.Count); // doesn't allow removing last param from setter
         }
 
         [Test]
@@ -778,16 +778,16 @@ End Property";
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+            RemoveParametersModel capturedModel = null;
+            Func<RemoveParametersModel, RemoveParametersModel> presenterAction = model =>
             {
+                capturedModel = model;
+                return model;
+            };
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            RefactoredCode(inputCode, selection, presenterAction);
 
-                var model = new RemoveParametersModel(state, qualifiedSelection);
-
-                Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
-            }
+            Assert.AreEqual(1, capturedModel.Parameters.Count); // doesn't allow removing last param from setter
         }
 
         [Test]

@@ -65,7 +65,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             if (target == null)
             {
-                throw new TargetDeclarationIsNullException(target);
+                throw new TargetDeclarationIsNullException();
             }
 
             CheckWhetherValidTarget(target);
