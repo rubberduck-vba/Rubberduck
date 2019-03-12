@@ -188,4 +188,7 @@ Todos nuestros cazadores de estrellas, seguidores y seguidoras, para los cálido
   <data name="AboutWIndow_ViewLogFile" xml:space="preserve">
     <value>Abrir log en el Explorador de Archivos</value>
   </data>
+  <data name="AboutWindow_ViewLogLabel" xml:space="preserve">
+    <value>Ver registro en el Explorador de archivos</value>
+  </data>
 </root>

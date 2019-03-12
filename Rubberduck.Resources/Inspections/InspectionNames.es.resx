@@ -363,4 +363,19 @@
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Falta la anotación del módulo</value>
   </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Código de trueno!</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Código de trueno!</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Código de trueno!</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Código de trueno!</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>Código de trueno!</value>
+  </data>
 </root>

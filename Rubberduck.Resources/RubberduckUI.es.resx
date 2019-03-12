@@ -1441,4 +1441,7 @@ NOTA: Es necesario reiniciar para que la configuración tenga efecto.</value>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Navegando...</value>
+  </data>
 </root>

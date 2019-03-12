@@ -24,6 +24,11 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="About\AboutUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>AboutUI.resx</DependentUpon>
+    </Compile>
     <Compile Update="Inspections\InspectionInfo.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -39,8 +44,17 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>InspectionResults.resx</DependentUpon>
     </Compile>
+    <Compile Update="RubberduckUI.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>RubberduckUI.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Update="About\AboutUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AboutUI.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Update="Inspections\InspectionInfo.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionInfo.Designer.cs</LastGenOutput>
@@ -52,6 +66,10 @@
     <EmbeddedResource Update="Inspections\InspectionResults.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionResults.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="RubberduckUI.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>RubberduckUI.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
 </Project>
