@@ -376,7 +376,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are line continuations between keywords. There is no good reason to put it there; consider removing them altogether.
+        ///   Looks up a localized string similar to There are line continuations between keywords. There is no good reason to put it there; consider removing them altogether..
         /// </summary>
         public static string LineContinuationBetweenKeywordsInspection {
             get {
@@ -493,7 +493,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The identiifer contains a non-breaking space which looks very much like just an ordinary space, which obfsucates the code and makes for a confusing experience. Consider using visible characters for the identifiers..
+        ///   Looks up a localized string similar to The identiifer contains a non-breaking space which looks very much like just an ordinary space (illegal in an identifier name), which obfsucates the code and makes for a confusing experience. Consider using visible characters for the identifiers..
         /// </summary>
         public static string NonBreakingSpaceIdentifierInspection {
             get {

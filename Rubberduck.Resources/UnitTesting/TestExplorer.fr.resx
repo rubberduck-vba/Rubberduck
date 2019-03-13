@@ -234,4 +234,28 @@
   <data name="TestExplorer_Uncategorized" xml:space="preserve">
     <value>Non-catégorisés</value>
   </data>
+  <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
+    <value>Exécuter le groupe</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunAll" xml:space="preserve">
+    <value>Exécuter tous les tests</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSelected" xml:space="preserve">
+    <value>Exécuter les tests sélectionnés</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSingle" xml:space="preserve">
+    <value>Exécuter le test</value>
+  </data>
+  <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
+    <value>Réinitialiser tous les résultats</value>
+  </data>
+  <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
+    <value>{0} de {1} test(s) exécuté(s) (temps d'exécution: {2:g})</value>
+  </data>
+  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
+    <value>Échec Spectaculaire</value>
+  </data>
+  <data name="TestOutcome_SummaryCaption" xml:space="preserve">
+    <value>Sommaire:</value>
+  </data>
 </root>

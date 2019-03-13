@@ -286,7 +286,7 @@ namespace Rubberduck.Resources.RegexAssistant {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not parse &apos;{0}&apos; as literal. Check your input, please.
+        ///   Looks up a localized string similar to Could not parse &apos;{0}&apos; as literal. Please verify input.
         /// </summary>
         public static string ExpressionDescription_ErrorExpression {
             get {

@@ -126,4 +126,8 @@
   <data name="PredeclaredClassModule_Description" xml:space="preserve">
     <value>Přidá modul třídy, který je předdeklarovaný a může být tedy použit bez nutnosti do něj napsat hlavičku.</value>
   </data>
+  <data name="PredeclaredClassModule_Code" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
 </root>

@@ -117,74 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AboutWindow_AttributionsLabel" xml:space="preserve">
-    <value>Attributions</value>
+  <data name="Quantifier_Optional" xml:space="preserve">
+    <value>une fois, au plus</value>
   </data>
-  <data name="AboutWindow_Caption" xml:space="preserve">
-    <value>À propos de Rubberduck</value>
+  <data name="Quantifer_Plus" xml:space="preserve">
+    <value>une fois, au moins</value>
   </data>
-  <data name="AboutWindow_AttributionList" xml:space="preserve">
-    <value>Analyse du code propulsée par ANTLR
-Intégration GitHub propulsée par LibGit2Sharp
-Présentation du code par AvalonEdit
-Icônes "Fugue" par Yusuke Kamiyamane
-Icônes IDE de SharpDevelop
-Support localisation WPF par Grant Frisken</value>
+  <data name="Quantifier_OpenRange" xml:space="preserve">
+    <value>au moins {0} fois</value>
   </data>
-  <data name="AboutWindow_Copyright" xml:space="preserve">
-    <value>© Copyright 2014-{0} Rubberduck project contributors</value>
+  <data name="Quantifier_None" xml:space="preserve">
+    <value>une fois seulement</value>
   </data>
-  <data name="AboutWindow_ContributorsHeader" xml:space="preserve">
-    <value>Contributeurs et supporters:</value>
+  <data name="Quantifier_Exact" xml:space="preserve">
+    <value>exactement {0} fois</value>
   </data>
-  <data name="AboutWindow_SpecialThanksLabel" xml:space="preserve">
-    <value>Remerciements</value>
+  <data name="Quantifier_ClosedRange" xml:space="preserve">
+    <value>entre {0} et {1} fois</value>
   </data>
-  <data name="AboutWindow_CommunityHeader" xml:space="preserve">
-    <value>Communauté:</value>
+  <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
+    <value>Impossible d'analyser '{0}' en tant que chaîne littérale.</value>
   </data>
-  <data name="AboutWindow_BlogsHeader" xml:space="preserve">
-    <value>Blogues:</value>
-  </data>
-  <data name="AboutWindow_GeneralThanks" xml:space="preserve">
-    <value>Tous les contributeurs à notre repository sur GitHub
-Tous ceux qui nous ont donné une étoile ou un "like"
-...et quiconque lit ceci!</value>
-  </data>
-  <data name="AboutWindow_CopyVersionMessage" xml:space="preserve">
-    <value>Les informations ont été copiées dans le presse-papier.</value>
-  </data>
-  <data name="AboutWindow_CopyVersionLabel" xml:space="preserve">
-    <value>Cliquer ici pour copier les informations dans le presse-papier</value>
-  </data>
-  <data name="AboutWindow_CopyVersionCaption" xml:space="preserve">
-    <value>Copie complétée.</value>
-  </data>
-  <data name="AboutWindow_HostExecutable" xml:space="preserve">
-    <value>Exécutable hôte : {0}</value>
-  </data>
-  <data name="AboutWindow_HostProduct" xml:space="preserve">
-    <value>Produit hôte : {0} {1}</value>
-  </data>
-  <data name="AboutWindow_HostVersion" xml:space="preserve">
-    <value>Version hôte : {0}</value>
-  </data>
-  <data name="AboutWindow_OperatingSystem" xml:space="preserve">
-    <value>Système d'exploitation : {0}, {1}</value>
-  </data>
-  <data name="AboutWindow_FindRubberduckAt" xml:space="preserve">
-    <value>Vous nous retrouvez également ici:</value>
-  </data>
-  <data name="AboutWindow_FoundAnIssue" xml:space="preserve">
-    <value>Un problème?</value>
-  </data>
-  <data name="AboutWindow_HelpImproveRubberduck" xml:space="preserve">
-    <value>Aidez-nous à améliorer Rubberduck!</value>
-  </data>
-  <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
-    <value>Rapporter un problème</value>
-  </data>
-  <data name="AboutWindow_ViewLogLabel" xml:space="preserve">
-    <value>Afficher le journal</value>
+  <data name="Quantifier_Asterisk" xml:space="preserve">
+    <value>n'importe quel nombre de fois</value>
   </data>
 </root>

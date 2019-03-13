@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -193,7 +193,7 @@
     <value>Matches literal sequence</value>
   </data>
   <data name="ExpressionDescription_ErrorExpression" xml:space="preserve">
-    <value>Could not parse '{0}' as literal. Check your input, please</value>
+    <value>Could not parse '{0}' as literal. Please verify input</value>
   </data>
   <data name="PatternDescription_AnchorEnd" xml:space="preserve">
     <value>$ ensures all characters of the string are consumed</value>

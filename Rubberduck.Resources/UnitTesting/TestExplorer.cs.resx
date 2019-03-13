@@ -234,4 +234,52 @@
   <data name="TestExplorer_Uncategorized" xml:space="preserve">
     <value>Bez kategorie</value>
   </data>
+  <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewModule_DefaultFolder" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestInitializeMethod" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindDirective" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestExitLabel" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestCleanupMethod" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleInitializeMethod" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleCleanupMethod" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindConstant" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
+    <value></value>
+    <comment>Do not translate</comment>
+  </data>
 </root>
