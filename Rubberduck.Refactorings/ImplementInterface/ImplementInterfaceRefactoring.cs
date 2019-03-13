@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.ImplementInterface;
-using Rubberduck.Resources;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -67,6 +65,11 @@ namespace Rubberduck.Refactorings.ImplementInterface
             var rewriter = rewriteSession.CheckOutModuleRewriter(_targetClass.QualifiedModuleName);
             ImplementMissingMembers(rewriter);
             rewriteSession.TryRewrite();     
+        }
+
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
+        {
+            throw new NotSupportedException();
         }
 
         public override void Refactor(Declaration target)

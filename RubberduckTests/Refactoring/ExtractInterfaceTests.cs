@@ -11,7 +11,6 @@ using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Mocks;
 
@@ -254,15 +253,13 @@ End Function
 
             var selection = new Selection(1, 23, 1, 27);
 
-            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
+            var vbe = MockVbeBuilder.BuildFromSingleModule(inputCode, ComponentType.ClassModule, out _, selection);
+            using(var state = MockParser.CreateAndParse(vbe.Object))
             {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                var target  = state.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).First();
 
                 //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
+                var model = new ExtractInterfaceModel(state, target);
                 Assert.AreEqual(0, model.Members.Count);
             }
         }
@@ -283,9 +280,6 @@ End Sub";
             using(state)
             {
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                //Specify Params to remove
-                var model = new ExtractInterfaceModel(state, qualifiedSelection);
 
                 //SetupFactory
                 var factory = new Mock<IRefactoringPresenterFactory>();
@@ -329,7 +323,6 @@ End Sub";
             const string inputCode =
                 @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
-            var selection = new Selection(1, 23, 1, 27);
 
             //Expectation
             const string expectedCode =

@@ -23,19 +23,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Refactor(QualifiedSelection target)
-        {
-            var targetDeclaration = FindTargetDeclaration(target);
-
-            if (targetDeclaration == null)
-            {
-                throw new NoDeclarationForSelectionException(target);
-            }
-
-            Refactor(targetDeclaration);
-        }
-
-        private Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
             return _declarationFinderProvider.DeclarationFinder
                 .UserDeclarations(DeclarationType.Variable)
@@ -94,14 +82,14 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             CheckThatThereIsNoOtherSameNameDeclarationInScopeInReferencingMethod(target);
         }
 
-        private bool TargetIsReferencedFromMultipleMethods(Declaration target)
+        private static bool TargetIsReferencedFromMultipleMethods(Declaration target)
         {
             var firstReference = target.References.FirstOrDefault();
 
             return firstReference != null && target.References.Any(r => !Equals(r.ParentScoping, firstReference.ParentScoping));
         }
 
-        private bool TargetIsInDifferentProject(Declaration target)
+        private static bool TargetIsInDifferentProject(Declaration target)
         {
             var firstReference = target.References.FirstOrDefault();
             if (firstReference == null)
@@ -112,7 +100,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             return firstReference.QualifiedModuleName.ProjectId != target.ProjectId;
         }
 
-        private bool TargetIsInDifferentNonStandardModule(Declaration target)
+        private static bool TargetIsInDifferentNonStandardModule(Declaration target)
         {
             var firstReference = target.References.FirstOrDefault();
             if (firstReference == null)
@@ -124,7 +112,7 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                    && Declaration.GetModuleParent(target).DeclarationType != DeclarationType.ProceduralModule;
         }
 
-        private bool TargetIsNonPrivateInNonStandardModule(Declaration target)
+        private static bool TargetIsNonPrivateInNonStandardModule(Declaration target)
         {
             if (!target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
             {

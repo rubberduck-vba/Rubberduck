@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using NLog;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
@@ -28,65 +27,60 @@ namespace Rubberduck.Refactorings.ExtractInterface
             _parseManager = parseManager;
         }
 
-        public override void Refactor(QualifiedSelection target)
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            Refactor(InitializeModel(target));
+            var candidates = _declarationFinderProvider.DeclarationFinder
+                .AllUserDeclarations
+                .Where(item => ModuleTypes.Contains(item.DeclarationType)).ToList();
+
+            return candidates.SingleOrDefault(item =>
+                item.QualifiedSelection.QualifiedName.Equals(targetSelection.QualifiedName));
         }
 
-        private ExtractInterfaceModel InitializeModel(QualifiedSelection targetSelection)
-        {
-            return new ExtractInterfaceModel(_declarationFinderProvider, targetSelection);
-        }
-
-        protected override void RefactorImpl(ExtractInterfaceModel model)
-        {
-            AddInterface();
-        }
-
-        public override void Refactor(Declaration target)
-        {
-            Refactor(InitializeModel(target));
-        }
-
-        private ExtractInterfaceModel InitializeModel(Declaration target)
+        protected override ExtractInterfaceModel InitializeModel(Declaration target)
         {
             if (target == null)
             {
                 throw new TargetDeclarationIsNullException();
             }
 
-            return InitializeModel(target.QualifiedSelection);
+            return new ExtractInterfaceModel(_declarationFinderProvider, target);
         }
 
-        private void AddInterface()
+        protected override void RefactorImpl(ExtractInterfaceModel model)
+        {
+            AddInterface(model);
+        }
+
+        private void AddInterface(ExtractInterfaceModel model)
         {
             //We need to suspend here since adding the interface and rewriting will both trigger a reparse.
-            var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, AddInterfaceInternal);
+            var suspendResult = _parseManager.OnSuspendParser(this, new[] {ParserState.Ready}, () => AddInterfaceInternal(model));
             if (suspendResult != SuspensionResult.Completed)
             {
                 _logger.Warn("Extract interface failed.");
             }
         }
 
-        private void AddInterfaceInternal()
+        private void AddInterfaceInternal(ExtractInterfaceModel model)
         {
-            var targetProject = Model.TargetDeclaration.Project;
+            var targetProject = model.TargetDeclaration.Project;
             if (targetProject == null)
             {
                 return; //The target project is not available.
             }
 
-            AddInterfaceClass(Model.TargetDeclaration, Model.InterfaceName, GetInterfaceModuleBody());
+            AddInterfaceClass(model.TargetDeclaration, model.InterfaceName, GetInterfaceModuleBody(model));
 
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            var rewriter = rewriteSession.CheckOutModuleRewriter(Model.TargetDeclaration.QualifiedModuleName);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(model.TargetDeclaration.QualifiedModuleName);
 
-            var firstNonFieldMember = _declarationFinderProvider.DeclarationFinder.Members(Model.TargetDeclaration)
+            var firstNonFieldMember = _declarationFinderProvider.DeclarationFinder.Members(model.TargetDeclaration)
                                             .OrderBy(o => o.Selection)
                                             .First(m => ExtractInterfaceModel.MemberTypes.Contains(m.DeclarationType));
-            rewriter.InsertBefore(firstNonFieldMember.Context.Start.TokenIndex, $"Implements {Model.InterfaceName}{Environment.NewLine}{Environment.NewLine}");
+            rewriter.InsertBefore(firstNonFieldMember.Context.Start.TokenIndex, $"Implements {model.InterfaceName}{Environment.NewLine}{Environment.NewLine}");
 
-            AddInterfaceMembersToClass(rewriter);
+            AddInterfaceMembersToClass(model, rewriter);
 
             rewriteSession.TryRewrite();
         }
@@ -113,15 +107,22 @@ namespace Rubberduck.Refactorings.ExtractInterface
             }
         }
 
-        private void AddInterfaceMembersToClass(IModuleRewriter rewriter)
+        private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IModuleRewriter rewriter)
         {
             var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, RewritingManager, SelectionService);
-            implementInterfaceRefactoring.Refactor(Model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, Model.InterfaceName);
+            implementInterfaceRefactoring.Refactor(model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, model.InterfaceName);
         }
 
-        private string GetInterfaceModuleBody()
+        private string GetInterfaceModuleBody(ExtractInterfaceModel model)
         {
-            return string.Join(Environment.NewLine, Model.SelectedMembers.Select(m => m.Body));
+            return string.Join(Environment.NewLine, model.SelectedMembers.Select(m => m.Body));
         }
+
+        private static readonly DeclarationType[] ModuleTypes =
+        {
+            DeclarationType.ClassModule,
+            DeclarationType.Document,
+            DeclarationType.UserForm
+        };
     }
 }

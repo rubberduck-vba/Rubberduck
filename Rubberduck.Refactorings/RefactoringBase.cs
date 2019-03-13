@@ -28,7 +28,19 @@ namespace Rubberduck.Refactorings
             Refactor(activeSelection.Value);
         }
 
-        public abstract void Refactor(QualifiedSelection target);
+        public virtual void Refactor(QualifiedSelection targetSelection)
+        {
+            var target = FindTargetDeclaration(targetSelection);
+
+            if (target == null)
+            {
+                throw new NoDeclarationForSelectionException(targetSelection);
+            }
+
+            Refactor(target);
+        }
+
+        protected abstract Declaration FindTargetDeclaration(QualifiedSelection targetSelection);
         public abstract void Refactor(Declaration target);
     }
 }

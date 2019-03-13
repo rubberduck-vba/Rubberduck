@@ -22,19 +22,7 @@ namespace Rubberduck.Refactorings.IntroduceField
             _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Refactor(QualifiedSelection target)
-        {
-            var targetDeclaration = FindTarget(target);
-
-            if (targetDeclaration == null)
-            {
-                throw new NoDeclarationForSelectionException(target);
-            }
-
-            Refactor(targetDeclaration);
-        }
-
-        private Declaration FindTarget(QualifiedSelection targetSelection)
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
             return _declarationFinderProvider.DeclarationFinder
                 .UserDeclarations(DeclarationType.Variable)

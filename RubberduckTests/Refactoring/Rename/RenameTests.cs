@@ -1959,8 +1959,6 @@ End Sub"
                 @"Private Sub Foo(ByVal a As Integer, ByVal b As String)
 End Sub";
 
-            var selection = new Selection(3, 27, 3, 27);
-
             var tdo = new RenameTestsDataObject("Class1", DeclarationType.ClassModule, newName);
             var testModuleDefinition = new RenameTestModuleDefinition("Class1")
             {
@@ -2845,7 +2843,7 @@ End Property";
 
                 if (cursorFound)
                 {
-                    Assert.Inconclusive($"Found multiple selection cursors ('{RenameTests.FAUX_CURSOR}') in the test input");
+                    Assert.Inconclusive($"Found multiple selection cursors ('{FAUX_CURSOR}') in the test input");
                 }
 
                 cursorFound = true;
@@ -2853,7 +2851,7 @@ End Property";
 
             if (!cursorFound)
             {
-                Assert.Inconclusive($"Unable to determine selected target using '{RenameTests.FAUX_CURSOR}' in test input");
+                Assert.Inconclusive($"Unable to determine selected target using '{FAUX_CURSOR}' in test input");
             }
         }
 
@@ -2918,7 +2916,7 @@ End Property";
                 tdo.QualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), tdo.RawSelection.Value);
                 return;
             }
-            Assert.Inconclusive($"Unable to find target '{RenameTests.FAUX_CURSOR}' in { tdo.SelectionModuleName} content.");
+            Assert.Inconclusive($"Unable to find target '{FAUX_CURSOR}' in { tdo.SelectionModuleName} content.");
         }
 
         private static IVBE BuildProject(string projectName, IEnumerable<RenameTestModuleDefinition> testModuleDefinitions, bool useLibraries = false)

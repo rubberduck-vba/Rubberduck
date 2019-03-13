@@ -1,6 +1,4 @@
-﻿using System.Drawing.Text;
-using Rubberduck.Interaction;
-using Rubberduck.Refactorings;
+﻿using Rubberduck.Interaction;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Resources;
 using Rubberduck.Refactorings.RemoveParameters;

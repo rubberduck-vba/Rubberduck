@@ -22,26 +22,14 @@ namespace Rubberduck.Refactorings.ReorderParameters
             _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Refactor(QualifiedSelection targetSelection)
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            var target = _declarationFinderProvider.DeclarationFinder
+            return _declarationFinderProvider.DeclarationFinder
                 .AllUserDeclarations
                 .FindTarget(targetSelection, ValidDeclarationTypes);
-
-            if (target == null)
-            {
-                throw new NoDeclarationForSelectionException(targetSelection);
-            }
-
-            Refactor(target);
         }
 
-        public override void Refactor(Declaration target)
-        {
-            Refactor(Initializemodel(target));
-        }
-
-        protected ReorderParametersModel Initializemodel(Declaration target)
+        protected override ReorderParametersModel InitializeModel(Declaration target)
         {
             if (target == null)
             {

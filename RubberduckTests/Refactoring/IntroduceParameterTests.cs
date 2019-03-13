@@ -5,7 +5,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.IntroduceParameter;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
@@ -550,10 +549,10 @@ End Sub";
 
         protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService)
         {
-            return TestRefactoring(rewritingManager, state, selectionService);
+            return TestRefactoring(rewritingManager, state, selectionService, null);
         }
 
-        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService, IMessageBox msgBox = null)
+        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, ISelectionService selectionService, IMessageBox msgBox)
         {
             if (msgBox == null)
             {

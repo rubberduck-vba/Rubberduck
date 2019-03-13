@@ -142,7 +142,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             signature.Append($" Property Let {member.IdentifierName}(");
 
             var selectedParams = Parameters.Select(s => s.Name).ToList();
-            selectedParams.Add(new Parameter((ParameterDeclaration)member.Parameters.Last(), -1).Name);
+            selectedParams.Add(new Parameter(member.Parameters.Last(), -1).Name);
             signature.Append($", {selectedParams})");
             return signature.ToString();
         }
@@ -154,7 +154,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             signature.Append($" Property Set {member.IdentifierName}(");
 
             var selectedParams = Parameters.Select(s => s.Name).ToList();
-            selectedParams.Add(new Parameter((ParameterDeclaration)member.Parameters.Last(), -1).Name);
+            selectedParams.Add(new Parameter(member.Parameters.Last(), -1).Name);
             signature.Append($", {selectedParams})");
             return signature.ToString();
         }

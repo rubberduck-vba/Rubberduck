@@ -35,19 +35,7 @@ namespace Rubberduck.Refactorings.IntroduceParameter
             _messageBox = messageBox;
         }
 
-        public override void Refactor(QualifiedSelection target)
-        {
-            var targetDeclaration = FindTargetDeclaration(target);
-
-            if (targetDeclaration == null)
-            {
-                throw new NoDeclarationForSelectionException(target);
-            }
-
-            Refactor(targetDeclaration);
-        }
-
-        private Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
             return _declarationFinderProvider.DeclarationFinder
                 .UserDeclarations(DeclarationType.Variable)

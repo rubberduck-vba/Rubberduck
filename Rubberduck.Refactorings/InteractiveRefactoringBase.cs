@@ -1,8 +1,7 @@
 ﻿using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.Symbols;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 using System;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.Refactorings
@@ -18,6 +17,11 @@ namespace Rubberduck.Refactorings
         :base(rewritingManager, selectionService)
         {
             _presenterFactory = ((model) => DisposalActionContainer.Create(factory.Create<TPresenter, TModel>(model), factory.Release));
+        }
+
+        public override void Refactor(Declaration target)
+        {
+            Refactor(InitializeModel(target));
         }
 
         protected void Refactor(TModel initialModel)
@@ -50,9 +54,7 @@ namespace Rubberduck.Refactorings
             }
         }
 
+        protected abstract TModel InitializeModel(Declaration target);
         protected abstract void RefactorImpl(TModel model);
-
-        public abstract override void Refactor(QualifiedSelection target);
-        public abstract override void Refactor(Declaration target);
     }
 }

@@ -23,31 +23,14 @@ namespace Rubberduck.Refactorings.RemoveParameters
             _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Refactor(QualifiedSelection targetSelection)
-        {
-            var target = FindTarget(targetSelection);
-
-            if (target == null)
-            {
-                throw new NoDeclarationForSelectionException(targetSelection);
-            }
-
-            Refactor(target);
-        }
-
-        private Declaration FindTarget(QualifiedSelection targetSelection)
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
             return _declarationFinderProvider.DeclarationFinder
                 .AllUserDeclarations
                 .FindTarget(targetSelection, ValidDeclarationTypes);
         }
 
-        public override void Refactor(Declaration target)
-        {
-            Refactor(InitializeModel(target));
-        }
-
-        private RemoveParametersModel InitializeModel(Declaration target)
+        protected override RemoveParametersModel InitializeModel(Declaration target)
         {
             if (target == null)
             {
@@ -143,7 +126,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
 
         public void QuickFix(QualifiedSelection selection)
         {
-            var targetDeclaration = FindTarget(selection);
+            var targetDeclaration = FindTargetDeclaration(selection);
             var model = InitializeModel(targetDeclaration);
             
             var selectedParameters = model.Parameters.Where(p => selection.Selection.Contains(p.Declaration.QualifiedSelection.Selection)).ToList();
@@ -389,7 +372,7 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 return new CommaLocator();
             }
 
-            var reversedAllParams = allParams.OrderByDescending(tr => tr.Declaration.Selection);
+            var reversedAllParams = allParams.OrderByDescending(tr => tr.Declaration.Selection).ToList();
             var rangeRemoval = new List<Parameter>();
             for (var idx = 0; idx < reversedAllParams.Count(); idx++)
             {

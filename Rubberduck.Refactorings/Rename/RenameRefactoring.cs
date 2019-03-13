@@ -43,25 +43,13 @@ namespace Rubberduck.Refactorings.Rename
             };
         }
 
-        public override void Refactor(QualifiedSelection targetSelection)
+        protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
-            var target = _declarationFinderProvider.DeclarationFinder
+            return _declarationFinderProvider.DeclarationFinder
                 .FindSelectedDeclaration(targetSelection);
-
-            if (target == null)
-            {
-                throw new NoDeclarationForSelectionException(targetSelection);
-            }
-
-            Refactor(target);
         }
 
-        public override void Refactor(Declaration target)
-        {
-            Refactor(InitializeModel(target));
-        }
-
-        private RenameModel InitializeModel(Declaration target)
+        protected override RenameModel InitializeModel(Declaration target)
         {
             if (target == null)
             {

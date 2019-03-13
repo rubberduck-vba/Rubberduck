@@ -1,6 +1,6 @@
+using System;
 using NUnit.Framework;
 using Moq;
-using Rubberduck.Common;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
@@ -17,7 +17,7 @@ using Rubberduck.VBEditor.Utility;
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
-    public class EncapsulateFieldTests
+    public class EncapsulateFieldTests : InteractiveRefactoringTestBase<IEncapsulateFieldPresenter, EncapsulateFieldModel>
     {
         [Test]
         [Category("Refactorings")]
@@ -41,30 +41,9 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-                
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -92,30 +71,9 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -140,30 +98,9 @@ Public Property Set Name(ByVal value As Variant)
     Set fizz = value
 End Property
 ";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = false,
-                    ImplementSetSetterType = true,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementSet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -184,30 +121,9 @@ Public Property Get Name() As Variant
     Name = fizz
 End Property
 ";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = false,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name");
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -246,30 +162,9 @@ End Sub
 Function Bar() As Integer
     Bar = 0
 End Function";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -314,30 +209,10 @@ End Property
 
 Property Set Foo(ByVal vall As Variant)
 End Property";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -364,30 +239,9 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-            
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -424,30 +278,9 @@ Public Property Set Name(ByVal value As Variant)
     Set fizz = value
 End Property
 ";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = true,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementSet: true, implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -476,30 +309,9 @@ Public Property Let Name(ByVal value As Boolean)
     buzz = value
 End Property
 ";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -528,30 +340,9 @@ Public Property Let Name(ByVal value As Date)
     bazz = value
 End Property
 ";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -576,30 +367,9 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -640,30 +410,9 @@ End Sub
 
 Sub Bar(ByVal name As Integer)
 End Sub";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -717,41 +466,17 @@ End Sub
 Sub Bar(ByVal v As Integer)
 End Sub";
 
-            var builder = new MockVbeBuilder();
-            var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, codeClass1, selection)
-                .AddComponent("Class2", ComponentType.ClassModule, codeClass2)
-                .Build();
-            var vbe = builder.AddProject(project).Build();
-            var component = project.Object.VBComponents[0];
-            vbe.Setup(v => v.ActiveCodePane).Returns(component.CodeModule.CodePane);
-
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var module1 = project.Object.VBComponents[0].CodeModule;
-                var module2 = project.Object.VBComponents[1].CodeModule;
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var actualCode1 = module1.Content();
-                var actualCode2 = module2.Content();
-
-                Assert.AreEqual(expectedCode1, actualCode1);
-                Assert.AreEqual(expectedCode2, actualCode2);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(
+                "Class1", 
+                selection, 
+                presenterAction, 
+                null, 
+                false, 
+                ("Class1", codeClass1, ComponentType.ClassModule),
+                ("Class2", codeClass2, ComponentType.ClassModule));
+            Assert.AreEqual(expectedCode1, actualCode["Class1"]);
+            Assert.AreEqual(expectedCode2, actualCode["Class2"]);
         }
 
         [Test]
@@ -762,7 +487,6 @@ End Sub";
             //Input
             const string inputCode =
                 @"Private fizz As Integer";
-            var selection = new Selection(1, 1);
 
             //Expectation
             const string expectedCode =
@@ -776,28 +500,9 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, "fizz", DeclarationType.Variable, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         [Test]
@@ -808,18 +513,18 @@ End Property
             //Input
             const string inputCode =
                 @"Private fizz As Variant";
-
+            
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), Selection.Home);
-                var selectionServiceMock = new Mock<ISelectionService>();
+                var selectionService = MockedSelectionService();
                 var factory = new Mock<IRefactoringPresenterFactory>();
                 factory.Setup(f => f.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(It.IsAny<EncapsulateFieldModel>()))
                     .Returns(() => null); // resolves ambiguous method overload
 
-                var refactoring = new EncapsulateFieldRefactoring(state, CreateIndenter(vbe.Object), factory.Object, rewritingManager, selectionServiceMock.Object);
+                var refactoring = TestRefactoring(rewritingManager, state, factory.Object, selectionService);
 
                 Assert.Throws<InvalidRefactoringPresenterException>(() => refactoring.Refactor(qualifiedSelection));
 
@@ -838,19 +543,9 @@ End Property
                 @"Private fizz As Variant";
             var selection = new Selection(1, 1);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, null);
-
-                Assert.Throws<InvalidRefactoringModelException>(() => refactoring.Refactor(qualifiedSelection));
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(inputCode, actualCode);
-            }
+            Func<EncapsulateFieldModel, EncapsulateFieldModel> presenterAction = model => null;
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction, typeof(InvalidRefactoringModelException));
+            Assert.AreEqual(inputCode, actualCode);
         }
 
         [Test]
@@ -863,7 +558,6 @@ End Property
                 @"Option Explicit
 
 Public foo As String";
-            var selection = new Selection(3, 9);
 
             //Expectation
             const string expectedCode =
@@ -879,83 +573,10 @@ Public Property Let Name(ByVal value As String)
     foo = value
 End Property
 ";
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using (state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    //CanImplementLet = true,
-                    ParameterName = "value",
-                    PropertyName = "Name"
-                };
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
-
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, "foo", DeclarationType.Variable, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        // FIXME this test is bollocks
-        public void Presenter_ParameterlessTargetReturnsNullModel()
-        {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo()
-End Sub";
-            var selection = new Selection(1, 15);
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-                var factory = SetupFactory(null);
-                var presenter = factory.Object.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(null);
-
-                Assert.AreEqual(null, presenter.Show());
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        // FIXME the assumption of this test is a smart presenter. That's bollocks
-        public void Presenter_NullTargetReturnsNullModel()
-        {
-            //Input
-            const string inputCode =
-                @"
-Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = Selection.Home;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var codePane = vbe.Object.VBProjects[0].VBComponents[0].CodeModule.CodePane;
-                codePane.Selection = selection;
-
-                var factory = SetupFactory(null);
-
-                var presenter = factory.Object.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(null);
-
-                Assert.AreEqual(null, presenter.Show());
-            }
-        }
-
 
         [Test]
         [Category("Refactorings")]
@@ -967,6 +588,8 @@ End Sub";
                 @"Option Explicit
 
 Public Foo As String";
+
+            var selection = new Selection(3, 8, 3, 11);
 
             //Output
             const string expectedCode =
@@ -982,68 +605,40 @@ Public Property Let bar(ByVal value As String)
     Foo = value
 End Property
 ";
-
-            var selection = new Selection(3, 8, 3, 11);
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using (state)
-            {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
-
-                var model = new EncapsulateFieldModel(state, qualifiedSelection)
-                {
-                    ImplementLetSetterType = true,
-                    ImplementSetSetterType = false,
-                    ParameterName = "value",
-                    PropertyName = "bar"
-                };
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
-                refactoring.Refactor(qualifiedSelection);
-
-                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
-                var actualCode = targetComponent.CodeModule.Content();
-                Assert.AreEqual(expectedCode, actualCode);
-            }
+            var presenterAction = SetParameters("bar", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction);
+            Assert.AreEqual(expectedCode, actualCode);
         }
 
         #region setup
 
-        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, EncapsulateFieldModel model)
+        private Func<EncapsulateFieldModel, EncapsulateFieldModel> SetParameters(
+            string propertyName,
+            bool implementSet = false, 
+            bool implementLet = false, 
+            string parameterName = "value")
         {
-            var selectionService = MockedSelectionService();
-            var indenter = CreateIndenter(vbe);
-            var factory = SetupFactory(model);
-            return new EncapsulateFieldRefactoring(state, indenter, factory.Object, rewritingManager, selectionService);
+            return model =>
+            {
+                model.PropertyName = propertyName;
+                model.ParameterName = parameterName;
+                model.ImplementLetSetterType = implementLet;
+                model.ImplementSetSetterType = implementSet;
+                return model;
+            };
         }
 
-        private static ISelectionService MockedSelectionService()
-        {
-            QualifiedSelection? activeSelection = null;
-            var selectionServiceMock = new Mock<ISelectionService>();
-            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
-            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
-                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
-            return selectionServiceMock.Object;
-        }
-
-        private static Mock<IRefactoringPresenterFactory> SetupFactory(EncapsulateFieldModel model)
-        {
-            var presenter = new Mock<IEncapsulateFieldPresenter>();
-            var factory = new Mock<IRefactoringPresenterFactory>();
-            factory.Setup(f => f.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(It.IsAny<EncapsulateFieldModel>()))
-                .Callback(() => presenter.Setup(p => p.Show()).Returns(model))
-                .Returns(presenter.Object);
-            return factory;
-        }
-
-        private static IIndenter CreateIndenter(IVBE vbe)
+        private static IIndenter CreateIndenter(IVBE vbe = null)
         {
             return new Indenter(vbe, () => Settings.IndenterSettingsTests.GetMockIndenterSettings());
         }
+
+        protected override IRefactoring TestRefactoring(IRewritingManager rewritingManager, RubberduckParserState state, IRefactoringPresenterFactory factory, ISelectionService selectionService)
+        {
+            var indenter = CreateIndenter(); //The refactoring only uses method independent of the VBE instance.
+            return new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService);
+        }
+
         #endregion
     }
 }
