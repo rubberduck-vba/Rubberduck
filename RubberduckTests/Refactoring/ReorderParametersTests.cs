@@ -13,6 +13,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.ReorderParameters;
+using Rubberduck.UI.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
@@ -377,17 +378,16 @@ End Property";
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using (state)
+            ReorderParametersModel capturedModel = null;
+            Func<ReorderParametersModel, ReorderParametersModel> presenterAction = model =>
             {
+                capturedModel = model;
+                return model;
+            };
 
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+            RefactoredCode(inputCode, selection, presenterAction);
 
-                var model = new ReorderParametersModel(state, qualifiedSelection);
-
-                Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from setter
-            }
+            Assert.AreEqual(1, capturedModel.Parameters.Count); // doesn't allow removing last param from setter
         }
 
         [Test]
@@ -401,16 +401,16 @@ End Property";
 End Property";
             var selection = new Selection(1, 23, 1, 27);
 
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using (state)
+            ReorderParametersModel capturedModel = null;
+            Func<ReorderParametersModel, ReorderParametersModel> presenterAction = model =>
             {
-                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
+                capturedModel = model;
+                return model;
+            };
 
-                var model = new ReorderParametersModel(state, qualifiedSelection);
+            RefactoredCode(inputCode, selection, presenterAction);
 
-                Assert.AreEqual(1, model.Parameters.Count); // doesn't allow removing last param from letter
-            }
+            Assert.AreEqual(1, capturedModel.Parameters.Count); // doesn't allow removing last param from setter
         }
 
         [Test]
@@ -480,7 +480,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Reorder Parameters")]
-        public void ReorderParametersRefactoring_ClientReferencesAreNotUpdated_ParamArray()
+        public void ReorderParametersRefactoring_ParamArrayBeforeOtherArgument_CannotConfirmDialog()
         {
             //Input
             const string inputCode =
@@ -499,9 +499,18 @@ End Sub
 ";
             var selection = new Selection(1, 23, 1, 27);
 
-            var presenterAction = ReverseParameters();
-            var actualCode = RefactoredCode(inputCode, selection, presenterAction, typeof(ParamArrayIsNotLastParameterException));
-            Assert.AreEqual(inputCode, actualCode);
+            ReorderParametersModel capturedModel = null;
+            Func<ReorderParametersModel, ReorderParametersModel> presenterAction = model =>
+            {
+                capturedModel = model;
+                return ReverseParameters()(model);
+            };
+            RefactoredCode(inputCode, selection, presenterAction);
+
+            var declarationFinderProvider = new Mock<IDeclarationFinderProvider>().Object;
+            var viewModel = new ReorderParametersViewModel(declarationFinderProvider, capturedModel);
+
+            Assert.IsFalse(viewModel.OkButtonCommand.CanExecute(null));
         }
 
         [Test]
@@ -611,7 +620,7 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Reorder Parameters")]
-        public void ReorderParams_MoveOptionalParamBeforeNonOptionalParamFails()
+        public void ReorderParams_MoveOptionalParamBeforeNonOptionalParam_CannotConfirmDialog()
         {
             //Input
             const string inputCode =
@@ -619,9 +628,18 @@ End Sub
 End Sub";
             var selection = new Selection(1, 23, 1, 27);
 
-            var presenterAction = ReorderParamIndices(new List<int> { 1, 2, 0 });
-            var actualCode = RefactoredCode(inputCode, selection, presenterAction, typeof(OptionalParameterNotAtTheEndException));
-            Assert.AreEqual(inputCode, actualCode);
+            ReorderParametersModel capturedModel = null;
+            Func<ReorderParametersModel, ReorderParametersModel> presenterAction = model =>
+            {
+                capturedModel = model;
+                return ReorderParamIndices(new List<int> {1, 2, 0})(model);
+            };
+            RefactoredCode(inputCode, selection, presenterAction);
+
+            var declarationFinderProvider = new Mock<IDeclarationFinderProvider>().Object;
+            var viewModel = new ReorderParametersViewModel(declarationFinderProvider, capturedModel);
+
+            Assert.IsFalse(viewModel.OkButtonCommand.CanExecute(null));
         }
 
         [Test]

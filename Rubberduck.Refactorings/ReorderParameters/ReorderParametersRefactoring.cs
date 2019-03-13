@@ -1,118 +1,152 @@
-﻿﻿using Rubberduck.Common;
-using Rubberduck.Parsing;
+﻿using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.VBEditor;
 using Rubberduck.Parsing.Rewriter;
 using System.Collections.Generic;
 using System.Linq;
- using Rubberduck.Parsing.VBA;
+using Rubberduck.Common;
+using Rubberduck.Parsing.VBA;
  using Rubberduck.Refactorings.Exceptions;
- using Rubberduck.Refactorings.Exceptions.ReorderParameters;
  using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.ReorderParameters
 {
     public class ReorderParametersRefactoring : InteractiveRefactoringBase<IReorderParametersPresenter, ReorderParametersModel>
     {
-        private readonly RubberduckParserState _state;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public ReorderParametersRefactoring(RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public ReorderParametersRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
         :base(rewritingManager, selectionService, factory)
         {
-            _state = state;
+            _declarationFinderProvider = declarationFinderProvider;
         }
 
-        public override void Refactor(QualifiedSelection target)
+        public override void Refactor(QualifiedSelection targetSelection)
         {
-            CheckAndRefactor(InitializeModel(target));
-        }
+            var target = _declarationFinderProvider.DeclarationFinder
+                .AllUserDeclarations
+                .FindTarget(targetSelection, ValidDeclarationTypes);
 
-        private ReorderParametersModel InitializeModel(QualifiedSelection targetSelection)
-        {
-            return new ReorderParametersModel(_state, targetSelection);
-        }
-
-        private void CheckAndRefactor(ReorderParametersModel model)
-        {
-            if (model == null)
+            if (target == null)
             {
-                throw new InvalidRefactoringModelException();
+                throw new NoDeclarationForSelectionException(targetSelection);
             }
 
-            if (model.TargetDeclaration == null)
-            {
-                throw new TargetDeclarationIsNullException();
-            }
-
-            Refactor(model);
+            Refactor(target);
         }
 
         public override void Refactor(Declaration target)
         {
-            CheckAndRefactor(InitializeModel(target));
+            Refactor(Initializemodel(target));
         }
 
-        protected ReorderParametersModel InitializeModel(Declaration target)
+        protected ReorderParametersModel Initializemodel(Declaration target)
         {
             if (target == null)
             {
                 throw new TargetDeclarationIsNullException();
             }
 
-            if (!ReorderParametersModel.ValidDeclarationTypes.Contains(target.DeclarationType))
+            if (!ValidDeclarationTypes.Contains(target.DeclarationType))
             {
                 throw new InvalidDeclarationTypeException(target);
             }
 
-            return InitializeModel(target.QualifiedSelection);
+            var model = DerivedTarget(new ReorderParametersModel(target));
+
+            return model;
+        }
+
+        private ReorderParametersModel DerivedTarget(ReorderParametersModel model)
+        {
+            var preliminarymodel = ResolvedInterfaceMemberTarget(model)
+                                   ?? ResolvedEventTarget(model)
+                                   ?? model;
+            return ResolvedGetterTarget(preliminarymodel) ?? preliminarymodel;
+        }
+
+        private static ReorderParametersModel ResolvedInterfaceMemberTarget(ReorderParametersModel model)
+        {
+            var declaration = model.TargetDeclaration;
+            if (!(declaration is ModuleBodyElementDeclaration member) || !member.IsInterfaceImplementation)
+            {
+                return null;
+            }
+
+            model.IsInterfaceMemberRefactoring = true;
+            model.TargetDeclaration = member.InterfaceMemberImplemented;
+
+            return model;
+        }
+
+        private ReorderParametersModel ResolvedEventTarget(ReorderParametersModel model)
+        {
+            foreach (var events in _declarationFinderProvider
+                .DeclarationFinder
+                .UserDeclarations(DeclarationType.Event))
+            {
+                if (_declarationFinderProvider.DeclarationFinder
+                    .AllUserDeclarations
+                    .FindHandlersForEvent(events)
+                    .Any(reference => Equals(reference.Item2, model.TargetDeclaration)))
+                {
+                    model.IsEventRefactoring = true;
+                    model.TargetDeclaration = events;
+                    return model;
+                }
+            }
+            return null;
+        }
+
+        private ReorderParametersModel ResolvedGetterTarget(ReorderParametersModel model)
+        {
+            var target = model.TargetDeclaration;
+            if (target == null || !target.DeclarationType.HasFlag(DeclarationType.Property))
+            {
+                return null;
+            }
+
+            if (target.DeclarationType == DeclarationType.PropertyGet)
+            {
+                model.IsPropertyRefactoringWithGetter = true;
+                return model;
+            }
+
+
+            var getter = _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(DeclarationType.PropertyGet)
+                .FirstOrDefault(item => item.Scope == target.Scope
+                                        && item.IdentifierName == target.IdentifierName);
+
+            if (getter == null)
+            {
+                return null;
+            }
+
+            model.IsPropertyRefactoringWithGetter = true;
+            model.TargetDeclaration = getter;
+
+            return model;
         }
 
         protected override void RefactorImpl(ReorderParametersModel model)
         {
-            if (!Model.Parameters.Where((param, index) => param.Index != index).Any())
+            if (!model.Parameters.Where((param, index) => param.Index != index).Any())
             {
                 //This is not an error: the user chose to leave everything as-is.
                 return;
             }
 
-            if (!IsValidParamOrder())
-            {
-                throw new InvalidParameterOrderException();
-            }
-
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            AdjustReferences(Model.TargetDeclaration.References, rewriteSession);
-            AdjustSignatures(rewriteSession);
+            AdjustReferences(model, model.TargetDeclaration.References, rewriteSession);
+            AdjustSignatures(model, rewriteSession);
             rewriteSession.TryRewrite();
         }
 
-        private bool IsValidParamOrder()
+        private void AdjustReferences(ReorderParametersModel model, IEnumerable<IdentifierReference> references, IRewriteSession rewriteSession)
         {
-            var indexOfFirstOptionalParam = Model.Parameters.FindIndex(param => param.IsOptional);
-            if (indexOfFirstOptionalParam >= 0)
-            {
-                for (var index = indexOfFirstOptionalParam + 1; index < Model.Parameters.Count; index++)
-                {
-                    if (!Model.Parameters.ElementAt(index).IsOptional)
-                    {
-                        throw new OptionalParameterNotAtTheEndException();
-                    }
-                }
-            }
-
-            var indexOfParamArray = Model.Parameters.FindIndex(param => param.IsParamArray);
-            if (indexOfParamArray >= 0 && indexOfParamArray != Model.Parameters.Count - 1)
-            {
-                throw new ParamArrayIsNotLastParameterException();
-            }
-            
-            return true;
-        }
-
-        private void AdjustReferences(IEnumerable<IdentifierReference> references, IRewriteSession rewriteSession)
-        {
-            foreach (var reference in references.Where(item => item.Context != Model.TargetDeclaration.Context))
+            foreach (var reference in references.Where(item => item.Context != model.TargetDeclaration.Context))
             {
                 VBAParser.ArgumentListContext argumentList = null;
                 var callStmt = reference.Context.GetAncestor<VBAParser.CallStmtContext>();
@@ -136,16 +170,16 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 }
 
                 var module = reference.QualifiedModuleName;
-                RewriteCall(argumentList, module, rewriteSession);
+                RewriteCall(model, argumentList, module, rewriteSession);
             }
         }
 
-        private void RewriteCall(VBAParser.ArgumentListContext argList, QualifiedModuleName module, IRewriteSession rewriteSession)
+        private void RewriteCall(ReorderParametersModel model, VBAParser.ArgumentListContext argList, QualifiedModuleName module, IRewriteSession rewriteSession)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(module);
 
             var args = argList.argument().Select((s, i) => new { Index = i, Text = s.GetText() }).ToList();
-            for (var i = 0; i < Model.Parameters.Count; i++)
+            for (var i = 0; i < model.Parameters.Count; i++)
             {
                 if (argList.argument().Length <= i)
                 {
@@ -153,69 +187,75 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 }
 
                 var arg = argList.argument()[i];
-                rewriter.Replace(arg, args.Single(s => s.Index == Model.Parameters[i].Index).Text);
+                rewriter.Replace(arg, args.Single(s => s.Index == model.Parameters[i].Index).Text);
             }
         }
 
-        private void AdjustSignatures(IRewriteSession rewriteSession)
+        private void AdjustSignatures(ReorderParametersModel model, IRewriteSession rewriteSession)
         {
-            var proc = (dynamic)Model.TargetDeclaration.Context;
+            var proc = (dynamic)model.TargetDeclaration.Context;
             var paramList = (VBAParser.ArgListContext)proc.argList();
 
             // if we are reordering a property getter, check if we need to reorder a letter/setter too
-            if (Model.TargetDeclaration.DeclarationType == DeclarationType.PropertyGet)
+            if (model.IsPropertyRefactoringWithGetter)
             {
-                var setter = Model.Declarations.FirstOrDefault(item => item.ParentScope == Model.TargetDeclaration.ParentScope &&
-                                              item.IdentifierName == Model.TargetDeclaration.IdentifierName &&
-                                              item.DeclarationType == DeclarationType.PropertySet);
+                var setter = _declarationFinderProvider.DeclarationFinder
+                    .UserDeclarations(DeclarationType.PropertySet)
+                    .FirstOrDefault(item => item.ParentScope == model.TargetDeclaration.ParentScope
+                                                && item.IdentifierName == model.TargetDeclaration.IdentifierName);
 
                 if (setter != null)
                 {
-                    AdjustSignatures(setter, rewriteSession);
-                    AdjustReferences(setter.References, rewriteSession);
+                    AdjustSignatures(model, setter, rewriteSession);
+                    AdjustReferences(model, setter.References, rewriteSession);
                 }
 
-                var letter = Model.Declarations.FirstOrDefault(item => item.ParentScope == Model.TargetDeclaration.ParentScope &&
-                              item.IdentifierName == Model.TargetDeclaration.IdentifierName &&
-                              item.DeclarationType == DeclarationType.PropertyLet);
+                var letter = _declarationFinderProvider.DeclarationFinder
+                    .UserDeclarations(DeclarationType.PropertyLet)
+                    .FirstOrDefault(item => item.ParentScope == model.TargetDeclaration.ParentScope 
+                                                && item.IdentifierName == model.TargetDeclaration.IdentifierName);
 
                 if (letter != null)
                 {
-                    AdjustSignatures(letter, rewriteSession);
-                    AdjustReferences(letter.References, rewriteSession);
+                    AdjustSignatures(model, letter, rewriteSession);
+                    AdjustReferences(model, letter.References, rewriteSession);
                 }
             }
 
-            RewriteSignature(Model.TargetDeclaration, paramList, rewriteSession);
+            RewriteSignature(model, model.TargetDeclaration, paramList, rewriteSession);
 
-            foreach (var withEvents in Model.Declarations.Where(item => item.IsWithEvents && item.AsTypeName == Model.TargetDeclaration.ComponentName))
+            foreach (var withEvents in _declarationFinderProvider.DeclarationFinder
+                .AllUserDeclarations
+                .Where(item => item.IsWithEvents && item.AsTypeName == model.TargetDeclaration.ComponentName))
             {
-                foreach (var reference in Model.Declarations.FindEventProcedures(withEvents))
+                foreach (var reference in _declarationFinderProvider.DeclarationFinder
+                    .AllUserDeclarations
+                    .FindEventProcedures(withEvents))
                 {
-                    AdjustReferences(reference.References, rewriteSession);
-                    AdjustSignatures(reference, rewriteSession);
+                    AdjustReferences(model, reference.References, rewriteSession);
+                    AdjustSignatures(model, reference, rewriteSession);
                 }
             }
 
-            if (!(Model.TargetDeclaration is ModuleBodyElementDeclaration member) 
+            if (!(model.TargetDeclaration is ModuleBodyElementDeclaration member) 
                 || !(member.IsInterfaceImplementation || member.IsInterfaceMember))
             {
                 return;
             }
 
             var implementations =
-                Model.State.DeclarationFinder.FindInterfaceImplementationMembers(member.IsInterfaceMember
+                _declarationFinderProvider.DeclarationFinder.FindInterfaceImplementationMembers(member.IsInterfaceMember
                     ? member
                     : member.InterfaceMemberImplemented);
 
             foreach (var interfaceImplentation in implementations)
             {
-                AdjustReferences(interfaceImplentation.References, rewriteSession);
-                AdjustSignatures(interfaceImplentation, rewriteSession);
+                AdjustReferences(model, interfaceImplentation.References, rewriteSession);
+                AdjustSignatures(model, interfaceImplentation, rewriteSession);
             }
         }
 
-        private void AdjustSignatures(Declaration declaration, IRewriteSession rewriteSession)
+        private static void AdjustSignatures(ReorderParametersModel model, Declaration declaration, IRewriteSession rewriteSession)
         {
             var proc = (dynamic) declaration.Context.Parent;
             VBAParser.ArgListContext paramList;
@@ -230,19 +270,29 @@ namespace Rubberduck.Refactorings.ReorderParameters
                 paramList = (VBAParser.ArgListContext) proc.subStmt().argList();
             }
 
-            RewriteSignature(declaration, paramList, rewriteSession);
+            RewriteSignature(model, declaration, paramList, rewriteSession);
         }
 
-        private void RewriteSignature(Declaration target, VBAParser.ArgListContext paramList, IRewriteSession rewriteSession)
+        private static void RewriteSignature(ReorderParametersModel model, Declaration target, VBAParser.ArgListContext paramList, IRewriteSession rewriteSession)
         {
             var rewriter = rewriteSession.CheckOutModuleRewriter(target.QualifiedModuleName);
 
             var parameters = paramList.arg().Select((s, i) => new { Index = i, Text = s.GetText() }).ToList();
-            for (var i = 0; i < Model.Parameters.Count; i++)
+            for (var i = 0; i < model.Parameters.Count; i++)
             {
                 var param = paramList.arg()[i];
-                rewriter.Replace(param, parameters.SingleOrDefault(s => s.Index == Model.Parameters[i].Index)?.Text);
+                rewriter.Replace(param, parameters.SingleOrDefault(s => s.Index == model.Parameters[i].Index)?.Text);
             }
         }
+
+        public static readonly DeclarationType[] ValidDeclarationTypes =
+        {
+            DeclarationType.Event,
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
     }
 }

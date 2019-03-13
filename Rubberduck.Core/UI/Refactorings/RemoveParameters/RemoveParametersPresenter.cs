@@ -55,7 +55,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private bool UserConfirmsNewTarget(string message)
         {
-            return _messageBox.ConfirmYesNo(message, RubberduckUI.ReorderParamsDialog_TitleText);
+            return _messageBox.ConfirmYesNo(message, RubberduckUI.RemoveParamsDialog_TitleText);
         }
     }
 }

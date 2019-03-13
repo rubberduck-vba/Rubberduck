@@ -1,5 +1,6 @@
 ﻿using Rubberduck.Resources;
 using Rubberduck.Interaction;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.ReorderParameters;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
@@ -24,6 +25,12 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 return null;
             }
 
+            if (Model.IsInterfaceMemberRefactoring
+                && !UserConfirmsInterfaceTarget(Model))
+            {
+                throw new RefactoringAbortedException();
+            }
+
             if (Model.Parameters.Count < 2)
             {
                 var message = string.Format(RubberduckUI.ReorderPresenter_LessThanTwoParametersError, Model.TargetDeclaration.IdentifierName);
@@ -32,6 +39,18 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
             }
 
             return base.Show();
+        }
+
+        private bool UserConfirmsInterfaceTarget(ReorderParametersModel model)
+        {
+            var message = string.Format(RubberduckUI.Refactoring_TargetIsInterfaceMemberImplementation,
+                model.OriginalTarget.IdentifierName, Model.TargetDeclaration.ComponentName, model.TargetDeclaration.IdentifierName);
+            return UserConfirmsNewTarget(message);
+        }
+
+        private bool UserConfirmsNewTarget(string message)
+        {
+            return _messageBox.ConfirmYesNo(message, RubberduckUI.ReorderParamsDialog_TitleText);
         }
     }
 }

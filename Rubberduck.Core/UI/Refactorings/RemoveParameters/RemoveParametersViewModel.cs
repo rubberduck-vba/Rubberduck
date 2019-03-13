@@ -5,27 +5,22 @@ using System;
 using System.Collections.Generic;
 using Rubberduck.Parsing.Symbols;
 using System.Linq;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
-using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.RemoveParameters
 {
     public class RemoveParametersViewModel : RefactoringViewModelBase<RemoveParametersModel>
     {
-        private readonly IMessageBox _messageBox;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public RemoveParametersViewModel(RubberduckParserState state, RemoveParametersModel model) : base(model)
+        public RemoveParametersViewModel(IDeclarationFinderProvider declarationFinderProvider, RemoveParametersModel model) : base(model)
         {
-            State = state;
+            _declarationFinderProvider = declarationFinderProvider;
             RemoveParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RemoveParameter((ParameterViewModel)param));
             RestoreParameterCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => RestoreParameter((ParameterViewModel)param));
 
             Parameters = model.Parameters.Select(p => p.ToViewModel()).ToList();
         }
-
-        public RubberduckParserState State { get; }
 
         private void UpdateModelParameters()
         {
@@ -58,19 +53,20 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
                 if (member.DeclarationType.HasFlag(DeclarationType.Property))
                 {
-                    var declarations = State.AllUserDeclarations;
+                    var getter = _declarationFinderProvider.DeclarationFinder
+                        .UserDeclarations(DeclarationType.PropertyGet)
+                        .FirstOrDefault(item => item.Scope == member.Scope 
+                                                && item.IdentifierName == member.IdentifierName);
 
-                    var getter = declarations.FirstOrDefault(item => item.Scope == member.Scope &&
-                                                                     item.IdentifierName == member.IdentifierName &&
-                                                                     item.DeclarationType == DeclarationType.PropertyGet);
+                    var letter = _declarationFinderProvider.DeclarationFinder
+                        .UserDeclarations(DeclarationType.PropertyLet)
+                        .FirstOrDefault(item => item.Scope == member.Scope
+                                                && item.IdentifierName == member.IdentifierName); 
 
-                    var letter = declarations.FirstOrDefault(item => item.Scope == member.Scope &&
-                                                                     item.IdentifierName == member.IdentifierName &&
-                                                                     item.DeclarationType == DeclarationType.PropertyLet);
-
-                    var setter = declarations.FirstOrDefault(item => item.Scope == member.Scope &&
-                                                                     item.IdentifierName == member.IdentifierName &&
-                                                                     item.DeclarationType == DeclarationType.PropertySet);
+                    var setter = _declarationFinderProvider.DeclarationFinder
+                        .UserDeclarations(DeclarationType.PropertySet)
+                        .FirstOrDefault(item => item.Scope == member.Scope
+                                                && item.IdentifierName == member.IdentifierName); 
 
                     var signature = string.Empty;
                     if (getter != null) { signature += GetSignature((PropertyGetDeclaration)getter); }

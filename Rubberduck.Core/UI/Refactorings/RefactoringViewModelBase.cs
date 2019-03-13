@@ -11,7 +11,7 @@ namespace Rubberduck.UI.Refactorings
         {
             Model = model;
 
-            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk());
+            OkButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogOk(), canExecute: _ => DialogOkPossible());
             CancelButtonCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ => DialogCancel());
         }
 
@@ -19,6 +19,8 @@ namespace Rubberduck.UI.Refactorings
         public TModel Model { get; }
         protected virtual void DialogCancel() => OnWindowClosed?.Invoke(this, RefactoringDialogResult.Cancel);
         protected virtual void DialogOk() => OnWindowClosed?.Invoke(this, RefactoringDialogResult.Execute);
+
+        protected virtual bool DialogOkPossible() => true;
 
         public CommandBase OkButtonCommand { get; }
         public CommandBase CancelButtonCommand { get; }

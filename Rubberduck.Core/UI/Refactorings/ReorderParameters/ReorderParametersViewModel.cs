@@ -3,36 +3,24 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using NLog;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ReorderParameters;
-using Rubberduck.Resources;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Refactorings.ReorderParameters
 {
     public class ReorderParametersViewModel : RefactoringViewModelBase<ReorderParametersModel>
     {
-        private readonly IMessageBox _messageBox;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        public ReorderParametersViewModel(RubberduckParserState state, ReorderParametersModel model, IMessageBox messageBox) : base(model)
+        public ReorderParametersViewModel(IDeclarationFinderProvider declarationFinderProvider, ReorderParametersModel model) : base(model)
         {
-            State = state;
+            _declarationFinderProvider = declarationFinderProvider;
             MoveParameterUpCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterUp((Parameter)param));
             MoveParameterDownCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param => MoveParameterDown((Parameter)param));
-            _messageBox = messageBox;
             _parameters = new ObservableCollection<Parameter>(model.Parameters);
-
-            model.ConfirmReorderParameter += ConfirmReorderParameterHandler;
         }
-
-        private void ConfirmReorderParameterHandler(object sender, Rubberduck.Refactorings.RefactoringConfirmEventArgs e)
-        {
-            e.Confirm = _messageBox.ConfirmYesNo(e.Message, RubberduckUI.ReorderParamsDialog_TitleText);
-        }
-
-        public RubberduckParserState State { get; }
 
         private void UpdateModelParameters()
         {
@@ -65,19 +53,20 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
                 if (member.DeclarationType.HasFlag(DeclarationType.Property))
                 {
-                    var declarations = State.AllUserDeclarations;
+                    var getter = _declarationFinderProvider.DeclarationFinder
+                        .UserDeclarations(DeclarationType.PropertyGet)
+                        .FirstOrDefault(item => item.Scope == member.Scope
+                                                && item.IdentifierName == member.IdentifierName);
 
-                    var getter = declarations.FirstOrDefault(item => item.Scope == member.Scope &&
-                                                                     item.IdentifierName == member.IdentifierName &&
-                                                                     item.DeclarationType == DeclarationType.PropertyGet);
+                    var letter = _declarationFinderProvider.DeclarationFinder
+                        .UserDeclarations(DeclarationType.PropertyLet)
+                        .FirstOrDefault(item => item.Scope == member.Scope
+                                                && item.IdentifierName == member.IdentifierName);
 
-                    var letter = declarations.FirstOrDefault(item => item.Scope == member.Scope &&
-                                                                     item.IdentifierName == member.IdentifierName &&
-                                                                     item.DeclarationType == DeclarationType.PropertyLet);
-
-                    var setter = declarations.FirstOrDefault(item => item.Scope == member.Scope &&
-                                                                     item.IdentifierName == member.IdentifierName &&
-                                                                     item.DeclarationType == DeclarationType.PropertySet);
+                    var setter = _declarationFinderProvider.DeclarationFinder
+                        .UserDeclarations(DeclarationType.PropertySet)
+                        .FirstOrDefault(item => item.Scope == member.Scope
+                                                && item.IdentifierName == member.IdentifierName);
 
                     var signature = string.Empty;
                     if (getter != null)
@@ -193,7 +182,35 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
                 OnPropertyChanged(nameof(SignaturePreview));
             }
         }
-        
+
+        protected override bool DialogOkPossible()
+        {
+            return IsValidParamOrder();
+        }
+
+        private bool IsValidParamOrder()
+        {
+            var indexOfFirstOptionalParam = Model.Parameters.FindIndex(param => param.IsOptional);
+            if (indexOfFirstOptionalParam >= 0)
+            {
+                for (var index = indexOfFirstOptionalParam + 1; index < Model.Parameters.Count; index++)
+                {
+                    if (!Model.Parameters.ElementAt(index).IsOptional)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            var indexOfParamArray = Model.Parameters.FindIndex(param => param.IsParamArray);
+            if (indexOfParamArray >= 0 && indexOfParamArray != Model.Parameters.Count - 1)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public CommandBase MoveParameterUpCommand { get; }
         public CommandBase MoveParameterDownCommand { get; }
     }

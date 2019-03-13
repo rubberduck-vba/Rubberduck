@@ -60,7 +60,6 @@ namespace Rubberduck.Refactorings.RemoveParameters
             }
 
             var model = DerivedTarget(new RemoveParametersModel(target));
-            
 
             return model;
         }
