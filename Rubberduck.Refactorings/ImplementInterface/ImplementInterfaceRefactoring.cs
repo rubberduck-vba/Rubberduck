@@ -16,10 +16,6 @@ namespace Rubberduck.Refactorings.ImplementInterface
     {
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
 
-        private readonly List<Declaration> _declarations;
-        private ClassModuleDeclaration _targetInterface;
-        private ClassModuleDeclaration _targetClass;
-
         private const string MemberBody = "    Err.Raise 5 'TODO implement interface member";
 
         public ImplementInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IRewritingManager rewritingManager, ISelectionService selectionService)
@@ -37,9 +33,9 @@ namespace Rubberduck.Refactorings.ImplementInterface
 
         public override void Refactor(QualifiedSelection target)
         {
-            _targetInterface = _declarationFinderProvider.DeclarationFinder.FindInterface(target);
+            var targetInterface = _declarationFinderProvider.DeclarationFinder.FindInterface(target);
 
-            if (_targetInterface == null)
+            if (targetInterface == null)
             {
                 throw new NoImplementsStatementSelectedException(target);
             }
@@ -52,9 +48,9 @@ namespace Rubberduck.Refactorings.ImplementInterface
                 throw new InvalidDeclarationTypeException(targetModule);
             }
 
-            _targetClass = targetModule as ClassModuleDeclaration;
+            var targetClass = targetModule as ClassModuleDeclaration;
 
-            if (_targetClass == null)
+            if (targetClass == null)
             {
                 //This really should never happen. If it happens the declaration type enum value
                 //and the type of the declaration are inconsistent.
@@ -62,8 +58,8 @@ namespace Rubberduck.Refactorings.ImplementInterface
             }
 
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
-            var rewriter = rewriteSession.CheckOutModuleRewriter(_targetClass.QualifiedModuleName);
-            ImplementMissingMembers(rewriter);
+            var rewriter = rewriteSession.CheckOutModuleRewriter(targetClass.QualifiedModuleName);
+            ImplementMissingMembers(targetInterface, targetClass, rewriter);
             rewriteSession.TryRewrite();     
         }
 
@@ -82,19 +78,19 @@ namespace Rubberduck.Refactorings.ImplementInterface
             AddItems(members, rewriter, interfaceName);
         }
 
-        private void ImplementMissingMembers(IModuleRewriter rewriter)
+        private void ImplementMissingMembers(ModuleDeclaration targetInterface, ModuleDeclaration targetClass, IModuleRewriter rewriter)
         {
-            var implemented = _targetClass.Members
-                .Where(decl => decl is ModuleBodyElementDeclaration member && ReferenceEquals(member.InterfaceImplemented, _targetInterface))
+            var implemented = targetClass.Members
+                .Where(decl => decl is ModuleBodyElementDeclaration member && ReferenceEquals(member.InterfaceImplemented, targetInterface))
                 .Cast<ModuleBodyElementDeclaration>()
                 .Select(member => member.InterfaceMemberImplemented).ToList();
 
-            var interfaceMembers = _targetInterface.Members.OrderBy(member => member.Selection.StartLine)
+            var interfaceMembers = targetInterface.Members.OrderBy(member => member.Selection.StartLine)
                 .ThenBy(member => member.Selection.StartColumn);
 
             var nonImplementedMembers = interfaceMembers.Where(member => !implemented.Contains(member));
 
-            AddItems(nonImplementedMembers, rewriter, _targetInterface.IdentifierName);
+            AddItems(nonImplementedMembers, rewriter, targetInterface.IdentifierName);
         }
 
         private void AddItems(IEnumerable<Declaration> missingMembers, IModuleRewriter rewriter, string interfaceName)
