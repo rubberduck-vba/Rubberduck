@@ -1311,4 +1311,8 @@ End Enum</value>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
+  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value></value>
+    <comment>FIXME: needs rewording/clarification</comment>
+  </data>
 </root>

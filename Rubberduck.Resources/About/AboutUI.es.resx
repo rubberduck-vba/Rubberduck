@@ -131,7 +131,6 @@
   </data>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Análisis ejecutado por ANTLR
-Integración de GitHub impulsada por LibGit2Sharp
 Resaltado de sintaxis impulsado por AvalonEdit
 Ganchos nativos accionados por EasyHook
 Iconos de fuga por Yusuke Kamiyamane
@@ -184,9 +183,6 @@ Todos nuestros cazadores de estrellas, seguidores y seguidoras, para los cálido
   </data>
   <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
     <value>Reportar un problema</value>
-  </data>
-  <data name="AboutWIndow_ViewLogFile" xml:space="preserve">
-    <value>Abrir log en el Explorador de Archivos</value>
   </data>
   <data name="AboutWindow_ViewLogLabel" xml:space="preserve">
     <value>Ver registro en el Explorador de archivos</value>

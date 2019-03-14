@@ -381,4 +381,25 @@
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Le module '{0}' a l'attribut '{1}' avec la/les valeur(s) '{2}', mais aucune annotation correspondante.</value>
   </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Marqueur(s) de continuation inattendu.</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>Utilisation de 'On Error GoTo -1'</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Utilisation d'un numéro de ligne négatif</value>
+  </data>
+  <data name="ThunderCode_Base" xml:space="preserve">
+    <value>{0}
+Andrew "ThunderFrame" Jackson serait fier!
+Vous voyez ce résultat d'inspection parce qu'il n'y a aucune raison que ce soit du vrai code et que vous tentez simplement de pousser les limites des capacités d'analyse de Rubberduck... n'est-ce pas? N'EST-CE PAS?
+In memoriam, 1972-2018</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>L'identifiant '{0}' comporte un espace insécable</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Le nom du membre '{0}' est un mot-clé</value>
+  </data>
 </root>

@@ -131,7 +131,6 @@
   </data>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Parsing ermöglicht durch ANTLR
-GitHub Integration ermöglicht durch LibGit2Sharp
 Syntaxhervorhebung ermöglicht durch AvalonEdit
 Native Hooks ermöglicht durch EasyHook
 Fugue Icons von Yusuke Kamiyamane
