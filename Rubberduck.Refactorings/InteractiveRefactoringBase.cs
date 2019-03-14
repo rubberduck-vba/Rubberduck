@@ -11,7 +11,6 @@ namespace Rubberduck.Refactorings
         where TModel : class, IRefactoringModel
     {
         private readonly Func<TModel, IDisposalActionContainer<TPresenter>> _presenterFactory;
-        protected TModel Model;
 
         protected InteractiveRefactoringBase(IRewritingManager rewritingManager, ISelectionService selectionService, IRefactoringPresenterFactory factory) 
         :base(rewritingManager, selectionService)
@@ -26,8 +25,6 @@ namespace Rubberduck.Refactorings
 
         protected void Refactor(TModel initialModel)
         {
-            Model = initialModel;
-
             var model = initialModel;
             if (model == null)
             {
@@ -47,8 +44,6 @@ namespace Rubberduck.Refactorings
                 {
                     throw new InvalidRefactoringModelException();
                 }
-
-                Model = model;
 
                 RefactorImpl(model);
             }
