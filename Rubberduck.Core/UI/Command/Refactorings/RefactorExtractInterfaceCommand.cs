@@ -32,8 +32,9 @@ namespace Rubberduck.UI.Command.Refactorings
         private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[] 
         {
             DeclarationType.ClassModule,
+            DeclarationType.Document,
             DeclarationType.UserForm, 
-            DeclarationType.ProceduralModule, 
+            DeclarationType.ProceduralModule
         };
 
         protected override bool EvaluateCanExecute(object parameter)

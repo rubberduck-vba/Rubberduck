@@ -287,8 +287,6 @@ End Sub
                 var docNode = folder.Children.Single(s => s.Name == "Document1");
 
                 // this tests the logic I wrote to place docs above cls modules even though the parser calls them both cls modules
-                Assert.AreEqual(clsNode.Declaration.DeclarationType, docNode.Declaration.DeclarationType);
-
                 Assert.AreEqual(-1, new CompareByDeclarationType().Compare(docNode, clsNode));
             }
         }
