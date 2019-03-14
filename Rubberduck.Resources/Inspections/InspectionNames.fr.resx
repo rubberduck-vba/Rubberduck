@@ -363,19 +363,4 @@
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Annotation manquante (module)</value>
   </data>
-  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
-    <value>ThunderCode!</value>
-  </data>
-  <data name="NegativeLineNumberInspection" xml:space="preserve">
-    <value>ThunderCode!</value>
-  </data>
-  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>ThunderCode!</value>
-  </data>
-  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
-    <value>ThunderCode!</value>
-  </data>
-  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
-    <value>ThunderCode!</value>
-  </data>
 </root>

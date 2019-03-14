@@ -125,7 +125,6 @@
   </data>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Analyse du code propulsée par ANTLR
-Intégration GitHub propulsée par LibGit2Sharp
 Présentation du code par AvalonEdit
 Icônes "Fugue" par Yusuke Kamiyamane
 Icônes IDE de SharpDevelop

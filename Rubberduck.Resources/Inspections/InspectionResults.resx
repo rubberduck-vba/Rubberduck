@@ -413,7 +413,7 @@
 Andrew "ThunderFrame" Jackson would be proud! 
 You're seeing this inspection result because there's no way that's real code and you're just pushing the limits of Rubberduck's parsing and resolving capabilities, right? ...RIGHT? 
 In memoriam, 1972-2018</value>
-    <comment>{0} ThunderCode inspection description</comment>
+    <comment>{0} ThunderCode easter egg inspection description</comment>
   </data>
   <data name="NegativeLineNumberInspection" xml:space="preserve">
     <value>Negative line number encountered</value>

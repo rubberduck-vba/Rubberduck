@@ -131,7 +131,6 @@
   </data>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>ANTLR: Parsování
-LibGit2Sharp: Integrace GitHubu
 AvalonEdit: Zvýraznění syntaxe
 EasyHook: Nativní hooky
 Yusuke Kamiyamane: Fugue ikony

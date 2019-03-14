@@ -62,7 +62,6 @@ namespace Rubberduck.Resources.About {
         
         /// <summary>
         ///   Looks up a localized string similar to Parsing powered by ANTLR
-        ///GitHub integration powered by LibGit2Sharp
         ///Syntax highlighting powered by AvalonEdit
         ///Native hooks powered by EasyHook
         ///Fugue icons by Yusuke Kamiyamane

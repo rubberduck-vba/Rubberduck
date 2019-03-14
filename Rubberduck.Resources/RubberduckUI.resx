@@ -1515,7 +1515,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
-    <value>'{0}' is a non-private module variable outside a standard module.</value>
+    <value>'{0}' is globally accessible and is in use.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">

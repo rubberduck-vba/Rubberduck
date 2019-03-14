@@ -1095,7 +1095,7 @@ les projets dans le VBE.</value>
 {1} marqueurs trouvés.</value>
   </data>
   <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>P</value>
+    <value>Imbrication</value>
   </data>
   <data name="CodeMetrics_Complexity" xml:space="preserve">
     <value>Complexité Cyclomatique</value>
@@ -1401,5 +1401,9 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="InspectionResults_ExpandAll" xml:space="preserve">
     <value>Développer tout</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' est accessible globalement, et est utilisé</value>
+    
   </data>
 </root>

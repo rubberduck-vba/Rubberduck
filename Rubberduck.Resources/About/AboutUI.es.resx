@@ -131,7 +131,6 @@
   </data>
   <data name="AboutWindow_AttributionList" xml:space="preserve">
     <value>Análisis ejecutado por ANTLR
-Integración de GitHub impulsada por LibGit2Sharp
 Resaltado de sintaxis impulsado por AvalonEdit
 Ganchos nativos accionados por EasyHook
 Iconos de fuga por Yusuke Kamiyamane

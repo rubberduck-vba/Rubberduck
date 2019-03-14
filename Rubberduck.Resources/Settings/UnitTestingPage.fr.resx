@@ -153,4 +153,7 @@
   <data name="PageInstructions" xml:space="preserve">
     <value>Configuration du contenu des nouveaux modules et méthodes de test.</value>
   </data>
+  <data name="UnitTestSettings_DualBinding" xml:space="preserve">
+    <value>Double (dual binding)</value>
+  </data>
 </root>
