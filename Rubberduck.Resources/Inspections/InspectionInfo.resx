@@ -371,7 +371,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
     <value>There are line continuations between keywords. There is no good reason to put it there; consider removing them altogether.</value>
   </data>
   <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
-    <value>The identiifer contains a non-breaking space which looks very much like just an ordinary space (illegal in an identifier name), which obfsucates the code and makes for a confusing experience. Consider using visible characters for the identifiers.</value>
+    <value>The identifier contains a non-breaking space which looks very much like just an ordinary space (illegal in an identifier name), which obfuscates the code and makes for a confusing experience. Consider using visible characters for the identifiers.</value>
   </data>
   <data name="NegativeLineNumberInspection" xml:space="preserve">
     <value>Negative line numbers are actually input as hex literal and then prettified by VBE. Editing the line again will cause it to turn red since negative line numbers are in fact illegal.</value>
