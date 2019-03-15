@@ -184,4 +184,7 @@ Všichni ti, co koukají na hvězdy, oblíbenci a následovníci,, pro ten tepl�
   <data name="AboutWindow_ReportAnIssue" xml:space="preserve">
     <value>Nahlásit problém</value>
   </data>
+  <data name="AboutWindow_ViewLogLabel" xml:space="preserve">
+    <value>Zobrazení logu v Průzkumníku Souborů</value>
+  </data>
 </root>
