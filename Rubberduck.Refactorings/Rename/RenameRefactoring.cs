@@ -68,6 +68,7 @@ namespace Rubberduck.Refactorings.Rename
             return model;
         }
 
+        //FIXME: The parser needs to be suspended during the refactoring in case a component (or project) gets renamed because the VBE API object rename causes a separate reparse. 
         protected override void RefactorImpl(RenameModel model)
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
@@ -398,7 +399,7 @@ namespace Rubberduck.Refactorings.Rename
             }
         }
 
-        //The parameter is not used, but it is required for the _renameActions dictionary.
+        //TODO: Implement renaming references to the project in code.
         private void RenameProject(RenameModel model, IRewriteSession rewriteSession)
         {
             var project = _projectsProvider.Project(model.Target.ProjectId);

@@ -33,7 +33,7 @@ namespace Rubberduck.UI.Command.Refactorings
         {
             DeclarationType.ClassModule,
             DeclarationType.UserForm, 
-            DeclarationType.ProceduralModule, 
+            DeclarationType.Document, 
         };
 
         protected override bool EvaluateCanExecute(object parameter)
