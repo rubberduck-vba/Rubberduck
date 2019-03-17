@@ -25,7 +25,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
-                .Select(context => new QualifiedContextInspectionResult(this, InspectionResults.ObsoleteWhileWendInspection, context));
+                .Select(context => new QualifiedContextInspectionResult(this, InspectionResults.ObsoleteWhileWendStatementInspection, context));
         }
 
         public class ObsoleteWhileWendStatementListener : VBAParserBaseListener, IInspectionListener

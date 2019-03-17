@@ -612,9 +612,9 @@ namespace Rubberduck.Resources.Inspections {
         /// <summary>
         ///   Recherche une chaîne localisée semblable à &apos;While...Wend&apos; conditional loop can be written as a &apos;Do While...Loop&apos; block..
         /// </summary>
-        public static string ObsoleteWhileWendInspection {
+        public static string ObsoleteWhileWendStatementInspection {
             get {
-                return ResourceManager.GetString("ObsoleteWhileWendInspection", resourceCulture);
+                return ResourceManager.GetString("ObsoleteWhileWendStatementInspection", resourceCulture);
             }
         }
         
