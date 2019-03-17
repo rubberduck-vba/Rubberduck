@@ -7,6 +7,7 @@
     <Product>Rubberduck.VBEditor</Product>
     <Copyright>Copyright © 2015-2018</Copyright>
     <ProjectGuid>{8CE35EB3-8852-4BA1-84DD-DF3F5D2967B0}</ProjectGuid>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants></DefineConstants>

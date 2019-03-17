@@ -5,6 +5,7 @@
     <Product>Rubberduck.Resources</Product>
     <Copyright>Copyright © 2018</Copyright>
     <ProjectGuid>{1B84B387-F7C4-4876-9BDF-C644C365359A}</ProjectGuid>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   <ItemGroup>
@@ -136,6 +137,18 @@
     <EmbeddedResource Update="Inspections\InspectionInfo.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>InspectionInfo.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Inspections\InspectionNames.cs.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Inspections\InspectionNames.de.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Inspections\InspectionNames.es.resx">
+      <Generator></Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Inspections\InspectionNames.fr.resx">
+      <Generator></Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Inspections\InspectionNames.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

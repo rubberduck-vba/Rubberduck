@@ -17,6 +17,8 @@
     <TestProjectType>UnitTest</TestProjectType>
     
     <UnifyOutputPath>true</UnifyOutputPath>
+    
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 

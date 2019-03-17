@@ -5,6 +5,7 @@
     <Product>Rubberduck.VBEditor.VB6</Product>
     <Copyright>Copyright © 2018</Copyright>
     <ProjectGuid>{5D683117-21F1-4A01-A0C7-6AE6F30A16A7}</ProjectGuid>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   

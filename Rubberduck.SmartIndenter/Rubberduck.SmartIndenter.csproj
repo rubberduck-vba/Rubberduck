@@ -5,6 +5,7 @@
     <Product>Rubberduck.SmartIndenter</Product>
     <Copyright>Copyright © 2015-2018</Copyright>
     <ProjectGuid>{B9C0BF22-4D8A-4BF4-89F9-E789C0063DEB}</ProjectGuid>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   

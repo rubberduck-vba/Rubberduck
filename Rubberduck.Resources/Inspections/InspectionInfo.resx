@@ -379,4 +379,7 @@ If the parameter can be null, ignore this inspection result; passing a null valu
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>While this is legal, this is poorly documented "feature" that means something different -- the error state is also cleared in addition to disabling any error handling. However, this can be ambiguous as a negative line label of -1 may end up as a target and excessively complex error handling usually indicates a need of refactoring the procedure.</value>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>'While...Wend' loops exist for backward compatibility and have been superseded by the introduction of 'Do While...Loop' blocks, which support the 'Exit Do' exit statement. 'While...Wend' loops cannot be exited other than fulfilling the 'While' condition.</value>
+  </data>
 </root>

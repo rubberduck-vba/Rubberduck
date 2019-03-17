@@ -13,8 +13,8 @@ namespace RubberduckTests.Inspections
         [Category("Inspections")]
         public void ObsoleteErrorSyntax_ReturnsResult()
         {
-            const string inputCode =
-                @"Sub Foo()
+            const string inputCode = @"
+Sub Foo()
     Error 91
 End Sub";
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out _);

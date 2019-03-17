@@ -5,6 +5,7 @@
     <RootNamespace>Rubberduck.Refactorings</RootNamespace>
     <AssemblyName>Rubberduck.Refactorings</AssemblyName>
     <Copyright>Copyright © 2018</Copyright>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
   

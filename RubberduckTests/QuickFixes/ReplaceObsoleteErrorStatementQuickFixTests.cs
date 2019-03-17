@@ -6,12 +6,13 @@ using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.QuickFixes
 {
+
     [TestFixture]
     public class ReplaceObsoleteErrorStatementQuickFixTests : QuickFixTestBase
     {
         [Test]
         [Category("QuickFixes")]
-        public void ObsoleteCommentSyntax_QuickFixWorks()
+        public void ObsoleteErrorStatement_QuickFixWorks()
         {
             const string inputCode =
                 @"Sub Foo()
@@ -28,7 +29,7 @@ End Sub";
         }
         [Test]
         [Category("QuickFixes")]
-        public void ObsoleteCommentSyntax_QuickFixWorks_ProcNamedError()
+        public void ObsoleteErrorStatement_QuickFixWorks_ProcNamedError()
         {
             const string inputCode =
                 @"Sub Error(val as Integer)
@@ -52,7 +53,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        public void ObsoleteCommentSyntax_QuickFixWorks_UpdateCommentHasContinuation()
+        public void ObsoleteErrorStatement_QuickFixWorks_UpdateCommentHasContinuation()
         {
             const string inputCode =
                 @"Sub Foo()
@@ -73,7 +74,7 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment_LineHasCode()
+        public void ObsoleteErrorStatement_QuickFixWorks_UpdateComment_LineHasCode()
         {
             const string inputCode =
                 @"Sub Foo()

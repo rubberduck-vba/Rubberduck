@@ -8,6 +8,7 @@
     <ProjectGuid>{E8AB5D93-2D0F-423D-BC15-5EE118673E48}</ProjectGuid>
     <!-- Disable "Missing XML documentation" warning (CS1591) -->
     <DisabledWarnings>$(DisabledWarnings);1591</DisabledWarnings>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 

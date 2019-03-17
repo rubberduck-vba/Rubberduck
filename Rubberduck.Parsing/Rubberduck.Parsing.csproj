@@ -15,6 +15,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <Antlr4UseCSharpGenerator>True</Antlr4UseCSharpGenerator>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Antlr4 Include="Grammar\VBALexer.g4">

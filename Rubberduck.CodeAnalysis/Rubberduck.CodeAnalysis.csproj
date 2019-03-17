@@ -7,6 +7,7 @@
     <AssemblyName>Rubberduck.CodeAnalysis</AssemblyName>
     <RootNamespace>Rubberduck.Inspections</RootNamespace>
     <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 

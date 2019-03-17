@@ -5,6 +5,7 @@
     <Description>Rubberduck Reflection API</Description>
     <Copyright>Copyright © 2018</Copyright>
     <ProjectGuid>{AC1B4A57-364A-4F90-A0CD-6EE818349CE5}</ProjectGuid>
+    <LangVersion>7.1</LangVersion>
     <!-- 
     TODO: affix AssemblyVersion and/or FileVersion for COM-Registration?!
     -->

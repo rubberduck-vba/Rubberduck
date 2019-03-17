@@ -5,6 +5,7 @@
     <Product>Rubberduck.RegexAssistant</Product>
     <Copyright>Copyright © 2016-2018</Copyright>
     <ProjectGuid>{40CC03E3-756C-4674-AF07-384115DEAEE2}</ProjectGuid>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 
