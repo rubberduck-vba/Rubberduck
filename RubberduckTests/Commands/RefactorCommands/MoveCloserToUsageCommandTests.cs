@@ -13,7 +13,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Commands.RefactorCommands
 {
     [TestFixture]
-    public class MoveCloserToUsageCommandTests : CodePaneRefactorCommandTestBase
+    public class MoveCloserToUsageCommandTests : RefactorCodePaneCommandTestBase
     {
         [Category("Commands")]
         [Test]

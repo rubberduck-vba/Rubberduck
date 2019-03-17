@@ -11,7 +11,7 @@ using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Commands.RefactorCommands
 {
-    public class EncapsulateFieldCommandTests : CodePaneRefactorCommandTestBase
+    public class EncapsulateFieldCommandTests : RefactorCodePaneCommandTestBase
     {
         [Category("Commands")]
         [Test]

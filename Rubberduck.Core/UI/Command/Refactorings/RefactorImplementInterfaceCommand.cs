@@ -10,25 +10,22 @@ using Rubberduck.VBEditor.Utility;
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorImplementInterfaceCommand : RefactorCommandBase
+    public class RefactorImplementInterfaceCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _msgBox;
 
         public RefactorImplementInterfaceCommand(RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager, ISelectionService selectionService)
-            : base(rewritingManager, selectionService)
+            : base(new ImplementInterfaceRefactoring(state, rewritingManager, selectionService), selectionService, state)
         {
             _state = state;
             _msgBox = msgBox;
+
+            AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
-            {
-                return false;
-            }
-
             var activeSelection = SelectionService.ActiveSelection();        
             if (!activeSelection.HasValue)
             {
@@ -42,20 +39,7 @@ namespace Rubberduck.UI.Command.Refactorings
 
             return targetInterface != null && targetClass != null
                 && !_state.IsNewOrModified(targetInterface.QualifiedModuleName)
-                && !_state.IsNewOrModified(targetClass.QualifiedModuleName);
-            
-        }
-
-        protected override void OnExecute(object parameter)
-        {
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                return;
-            }
-
-            var refactoring = new ImplementInterfaceRefactoring(_state, RewritingManager, SelectionService);
-            refactoring.Refactor(activeSelection.Value);
+                && !_state.IsNewOrModified(targetClass.QualifiedModuleName); 
         }
     }
 }

@@ -12,7 +12,7 @@ using Rubberduck.VBEditor.Utility;
 namespace RubberduckTests.Commands.RefactorCommands
 {
     [TestFixture]
-    public class IntroduceParameterCommandTests : CodePaneRefactorCommandTestBase
+    public class IntroduceParameterCommandTests : RefactorCodePaneCommandTestBase
     {
         [Category("Commands")]
         [Test]

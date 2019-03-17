@@ -3,7 +3,7 @@
 namespace RubberduckTests.Commands.RefactorCommands
 {
     [TestFixture]
-    public abstract class CodePaneRefactorCommandTestBase : RefactorCommandTestBase
+    public abstract class RefactorCodePaneCommandTestBase : RefactorCommandTestBase
     {
         [Category("Commands")]
         [Test]

@@ -105,7 +105,7 @@ namespace Rubberduck.Refactorings.Rename
         {
             if (target == null)
             {
-                throw new InvalidTargetDeclarationException(null);
+                throw new TargetDeclarationIsNullException();
             }
 
             if (!target.IsUserDefined)

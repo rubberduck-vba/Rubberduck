@@ -12,38 +12,21 @@ using Rubberduck.VBEditor.Utility;
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class ProjectExplorerRefactorRenameCommand : RefactorCommandBase
+    public class ProjectExplorerRefactorRenameCommand : RefactorDeclarationCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _msgBox;
-        private readonly IRefactoringPresenterFactory _factory;
         private readonly IVBE _vbe;
 
         public ProjectExplorerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-            : base(rewritingManager, selectionService)
+            : base(new RenameRefactoring(factory, state, state.ProjectsProvider, rewritingManager, selectionService), state)
         {
             _state = state;
             _msgBox = msgBox;
-            _factory = factory;
             _vbe = vbe;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            return _state.Status == ParserState.Ready;
-        }
-
-        protected override void OnExecute(object parameter)
-        {
-            var refactoring = new RenameRefactoring(_factory, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
-            var target = GetTarget();
-            if (target != null)
-            {
-                refactoring.Refactor(target);
-            }
-        }
-
-        private Declaration GetTarget()
+        protected override Declaration GetTarget()
         {
             string selectedComponentName;
             using (var selectedComponent = _vbe.SelectedVBComponent)

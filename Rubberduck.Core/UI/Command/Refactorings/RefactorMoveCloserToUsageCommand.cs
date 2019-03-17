@@ -8,32 +8,24 @@ using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
-    public class RefactorMoveCloserToUsageCommand : RefactorCommandBase
+    public class RefactorMoveCloserToUsageCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
         public RefactorMoveCloserToUsageCommand(RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
-            :base(rewritingManager, selectionService)
+            :base(new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService), selectionService, state)
         {
             _state = state;
             _messageBox = messageBox;
+
+            AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
-            {
-                return false;
-            }
+            var target = GetTarget();
 
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                return false;
-            }
-
-            var target = _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
             return target != null
                    && !_state.IsNewOrModified(target.QualifiedModuleName)
                    && (target.DeclarationType == DeclarationType.Variable
@@ -41,14 +33,16 @@ namespace Rubberduck.UI.Command.Refactorings
                    && target.References.Any();
         }
 
-        protected override void OnExecute(object parameter)
+        private Declaration GetTarget()
         {
             var activeSelection = SelectionService.ActiveSelection();
-            if (activeSelection.HasValue)
+            if (!activeSelection.HasValue)
             {
-                var refactoring = new MoveCloserToUsageRefactoring(_state, RewritingManager, SelectionService);
-                refactoring.Refactor(activeSelection.Value);
+                return null;
             }
+
+            var target = _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
+            return target;
         }
     }
 }

@@ -12,37 +12,23 @@ using Rubberduck.VBEditor.Utility;
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class RefactorReorderParametersCommand : RefactorCommandBase
+    public class RefactorReorderParametersCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
 
         public RefactorReorderParametersCommand(RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (rewritingManager, selectionService)
+            : base (new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService), selectionService, state)
         {
             _state = state;
             _messageBox = messageBox;
-            _factory = factory;
+
+            AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
-        private static readonly DeclarationType[] ValidDeclarationTypes =
+        private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            DeclarationType.Event,
-            DeclarationType.Function,
-            DeclarationType.Procedure,
-            DeclarationType.PropertyGet,
-            DeclarationType.PropertyLet,
-            DeclarationType.PropertySet
-        };
-
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            if (_state.Status != ParserState.Ready)
-            {
-                return false;
-            }
-
             var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
@@ -55,24 +41,19 @@ namespace Rubberduck.UI.Command.Refactorings
             }
 
             var parameters = _state.DeclarationFinder.UserDeclarations(DeclarationType.Parameter).Where(item => member.Equals(item.ParentScopeDeclaration)).ToList();
-            var canExecute = (member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet)
-                    ? parameters.Count > 2
-                    : parameters.Count > 1;
-
-            return canExecute;
+            return (member.DeclarationType == DeclarationType.PropertyLet || member.DeclarationType == DeclarationType.PropertySet)
+                ? parameters.Count > 2
+                : parameters.Count > 1;
         }
 
-        protected override void OnExecute(object parameter)
+        private static readonly DeclarationType[] ValidDeclarationTypes =
         {
-            var activeSelection = SelectionService.ActiveSelection();
-
-            if (!activeSelection.HasValue)
-            {
-                return;
-            }
-
-            var refactoring = new ReorderParametersRefactoring(_state, _factory, RewritingManager, SelectionService);
-            refactoring.Refactor(activeSelection.Value);
-        }
+            DeclarationType.Event,
+            DeclarationType.Function,
+            DeclarationType.Procedure,
+            DeclarationType.PropertyGet,
+            DeclarationType.PropertyLet,
+            DeclarationType.PropertySet
+        };
     }
 }

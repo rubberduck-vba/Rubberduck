@@ -15,7 +15,7 @@ using RubberduckTests.Mocks;
 namespace RubberduckTests.Commands.RefactorCommands
 {
     [TestFixture]
-    public class ExtractInterfaceCommandTests : CodePaneRefactorCommandTestBase
+    public class ExtractInterfaceCommandTests : RefactorCodePaneCommandTestBase
     {
         [Category("Commands")]
         [Test]
