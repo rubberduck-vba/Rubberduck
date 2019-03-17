@@ -50,7 +50,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             DeclarationType.ClassModule,
             DeclarationType.UserForm, 
-            DeclarationType.Document, 
+            DeclarationType.Document
         };
 
         public void Refactor(QualifiedSelection selection)

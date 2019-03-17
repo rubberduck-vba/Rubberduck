@@ -267,4 +267,25 @@
   <data name="CodeExplorer_AddTemplatesSubMenu" xml:space="preserve">
     <value>Šablony</value>
   </data>
+  <data name="CodeExplorer_FontSizeToolTip" xml:space="preserve">
+    <value>Velikost Fontu</value>
+  </data>
+  <data name="CodeExplorer_ProjectReferences" xml:space="preserve">
+    <value>Reference Projektu</value>
+  </data>
+  <data name="CodeExplorer_SearchPlaceholder" xml:space="preserve">
+    <value>Vyhledávat...</value>
+  </data>
+  <data name="CodeExplorer_SyncCodePaneToolTip" xml:space="preserve">
+    <value>Synchronizovat s původním panelem</value>
+  </data>
+  <data name="ExportError_Caption" xml:space="preserve">
+    <value>Chyba při exportování '{0}'</value>
+  </data>
+  <data name="RemoveError_Caption" xml:space="preserve">
+    <value>Chyba při odstraňování '{0}'</value>
+  </data>
+  <data name="CodeExplorer_LibraryReferences" xml:space="preserve">
+    <value>Reference Knihovny</value>
+  </data>
 </root>

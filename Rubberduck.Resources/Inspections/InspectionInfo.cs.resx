@@ -364,4 +364,19 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Funkce, které jsou pro Excel viditelné jako funkce 'definované uživatelem', vrátí chybu 'REF!', pokud jsou použity ve Worksheetu a jestli odpovídají názvu platného odkazu na buňku. Pokud je funkce zamyšlena k použití jako UDF, musí být přejmenována. Není-li tato funkce míněna jako UDF, měla by být zařazena jako 'Privátní' nebo přesunuta pryč ze standardního modulu.</value>
   </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Klíčové slovo se používá jako člen v enumeraci, nebo v uživatelem definovaném typu. To může vést k nejednoznačnému řešení. Zvažte přejmenování člena.</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Mezi klíčovými slovy se nacházejí pokračování řádků. Neexistuje dobrý důvod, proč by tam měly být; zvažte jejich úplné odstranění.</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Identifikátor obsahuje pevnou mezeru, která vypadá jako normální mezera (ilegální v názvu identifikátoru), což znepříjemňuje čitelnost kódu a dělá ho zmatečným. Zvažte použití viditelných znaků pro identifikátory.</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Záporná čísla řádků jsou ve skutečnosti vstup jako hexadecimální písmena, která jsou poté zkrášlena samotným VBE. Opětovná úprava řádku vyústí v její červené vysvícení, protože jsou negativní čísla řádků ve skutečnosti nelegální.</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>I když je tato "funkce" legální, je velmi špatně zdokumentována a dělá něco úplně jiného -- chybový stav je také vyčištěn a ještě k tomu je vypnuto jakékoli řešení chyb. Toto může být nejednoznačné, protože záporný řádek -1 může skončit jako cíl pro nadměrně složité zpracování chyb, které většinou potřebuje refaktorování procedury.</value>
+  </data>
 </root>

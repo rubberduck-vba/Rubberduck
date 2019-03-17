@@ -313,10 +313,10 @@ namespace Rubberduck.Parsing.VBA
             foreach (var declaration in AllUserDeclarations)
             {
                 if (declaration.ProjectId == e.ProjectId &&
-                    declaration.DeclarationType == DeclarationType.ClassModule &&
+                    declaration is ClassModuleDeclaration classModule &&
                     declaration.IdentifierName == e.OldName)
                 {
-                    foreach (var superType in ((ClassModuleDeclaration)declaration).Supertypes)
+                    foreach (var superType in classModule.Supertypes)
                     {
                         if (superType.IdentifierName == "Worksheet")
                         {

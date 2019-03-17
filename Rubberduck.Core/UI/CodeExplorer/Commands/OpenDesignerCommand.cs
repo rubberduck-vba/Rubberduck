@@ -48,9 +48,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 // ReSharper disable once SwitchStatementMissingSomeCases
                 switch (declaration.DeclarationType)
                 {
-                    case DeclarationType.ClassModule when qualifiedModuleName.ComponentType != ComponentType.Document:
-                        return _projectsProvider.Component(qualifiedModuleName).HasDesigner;
                     case DeclarationType.ClassModule:
+                        return _projectsProvider.Component(qualifiedModuleName).HasDesigner;
+                    case DeclarationType.Document:
                         using (var app = _vbe.HostApplication())
                         {
                             return app?.CanOpenDocumentDesigner(qualifiedModuleName) ?? false;
@@ -71,7 +71,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             if (!base.EvaluateCanExecute(parameter) || 
                 !(parameter is CodeExplorerItemViewModel node) ||
                 node.Declaration == null ||
-                node.Declaration.DeclarationType != DeclarationType.ClassModule)
+                !node.Declaration.DeclarationType.HasFlag(DeclarationType.ClassModule))
             {
                 return;
             }

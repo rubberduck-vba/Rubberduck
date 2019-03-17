@@ -493,7 +493,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Recherche une chaîne localisée semblable à The identiifer contains a non-breaking space which looks very much like just an ordinary space (illegal in an identifier name), which obfsucates the code and makes for a confusing experience. Consider using visible characters for the identifiers..
+        ///   Looks up a localized string similar to The identifier contains a non-breaking space which looks very much like just an ordinary space (illegal in an identifier name), which obfuscates the code and makes for a confusing experience. Consider using visible characters for the identifiers..
         /// </summary>
         public static string NonBreakingSpaceIdentifierInspection {
             get {
