@@ -1,10 +1,7 @@
 ﻿using System.Runtime.InteropServices;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
-using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -14,8 +11,8 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorEncapsulateFieldCommand(RubberduckParserState state, Indenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-            : base(new EncapsulateFieldRefactoring(state, indenter, factory, rewritingManager, selectionService), selectionService, state)
+        public RefactorEncapsulateFieldCommand(EncapsulateFieldRefactoring refactoring, RubberduckParserState state, ISelectionService selectionService)
+            : base(refactoring, selectionService, state)
         {
             _state = state;
 

@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Common;
 using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
@@ -13,8 +12,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public RefactorIntroduceParameterCommand (RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
-            :base(new IntroduceParameterRefactoring(state, messageBox, rewritingManager, selectionService), selectionService, state)
+        public RefactorIntroduceParameterCommand (IntroduceParameterRefactoring refactoring, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService)
+            :base(refactoring, selectionService, state)
         {
             _state = state;
             _messageBox = messageBox;

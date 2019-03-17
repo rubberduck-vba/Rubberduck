@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
@@ -54,7 +55,8 @@ Dim b As Variant";
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorImplementInterfaceCommand(state, msgBox, rewritingManager, selectionService);
+            var refactoring = new ImplementInterfaceRefactoring(state, rewritingManager, selectionService);
+            return new RefactorImplementInterfaceCommand(refactoring, state, msgBox, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()

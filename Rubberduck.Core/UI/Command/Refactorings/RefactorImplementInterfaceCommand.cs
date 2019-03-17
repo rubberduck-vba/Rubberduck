@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
@@ -15,8 +14,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _msgBox;
 
-        public RefactorImplementInterfaceCommand(RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager, ISelectionService selectionService)
-            : base(new ImplementInterfaceRefactoring(state, rewritingManager, selectionService), selectionService, state)
+        public RefactorImplementInterfaceCommand(ImplementInterfaceRefactoring refactoring, RubberduckParserState state, IMessageBox msgBox, ISelectionService selectionService)
+            : base(refactoring, selectionService, state)
         {
             _state = state;
             _msgBox = msgBox;

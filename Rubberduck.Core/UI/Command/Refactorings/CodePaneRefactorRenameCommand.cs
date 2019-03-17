@@ -1,9 +1,7 @@
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor.Utility;
 
@@ -14,14 +12,12 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
-        private readonly IRefactoringPresenterFactory _factory;
 
-        public CodePaneRefactorRenameCommand(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (new RenameRefactoring(factory, state, state.ProjectsProvider, rewritingManager, selectionService), selectionService, state)
+        public CodePaneRefactorRenameCommand(RenameRefactoring refactoring, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService) 
+            : base (refactoring, selectionService, state)
         {
             _state = state;
             _messageBox = messageBox;
-            _factory = factory;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }

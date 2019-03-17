@@ -1,10 +1,8 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -19,8 +17,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly IMessageBox _messageBox;
         private readonly IVBE _vbe;
 
-        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (new RenameRefactoring(factory, state, state.ProjectsProvider, rewritingManager, selectionService), state)
+        public FormDesignerRefactorRenameCommand(RenameRefactoring refactoring, IVBE vbe, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService) 
+            : base (refactoring, state)
         {
             _state = state;
             _messageBox = messageBox;

@@ -2,10 +2,8 @@
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.VBEditor.Utility;
 
@@ -16,10 +14,9 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
-        private readonly IRefactoringPresenterFactory _factory;
 
-        public RefactorReorderParametersCommand(RubberduckParserState state, IRefactoringPresenterFactory factory, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService), selectionService, state)
+        public RefactorReorderParametersCommand(ReorderParametersRefactoring refactoring, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService) 
+            : base (refactoring, selectionService, state)
         {
             _state = state;
             _messageBox = messageBox;

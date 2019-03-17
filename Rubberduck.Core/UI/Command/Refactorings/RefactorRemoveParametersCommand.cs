@@ -1,10 +1,8 @@
 using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor.Utility;
 
@@ -15,8 +13,8 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorRemoveParametersCommand(RubberduckParserState state, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService), selectionService, state)
+        public RefactorRemoveParametersCommand(RemoveParametersRefactoring refactoring, RubberduckParserState state, ISelectionService selectionService) 
+            : base (refactoring, selectionService, state)
         {
             _state = state;
 

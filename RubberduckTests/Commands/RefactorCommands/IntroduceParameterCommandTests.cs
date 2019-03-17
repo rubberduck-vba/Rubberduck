@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.IntroduceParameter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
@@ -41,7 +42,8 @@ End Property";
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorIntroduceParameterCommand(state, msgBox, rewritingManager, selectionService);
+            var refactoring = new IntroduceParameterRefactoring(state, msgBox, rewritingManager, selectionService);
+            return new RefactorIntroduceParameterCommand(refactoring, state, msgBox, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()

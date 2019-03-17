@@ -4,6 +4,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.ExtractInterface;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
@@ -162,7 +163,8 @@ End Property";
         {
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorExtractInterfaceCommand(state, msgBox, factory, rewritingManager, selectionService);
+            var refactoring = new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService);
+            return new RefactorExtractInterfaceCommand(refactoring, state, msgBox, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()

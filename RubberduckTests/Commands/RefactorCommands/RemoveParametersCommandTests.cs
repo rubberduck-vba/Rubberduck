@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
@@ -159,7 +160,8 @@ End Property";
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
-            return new RefactorRemoveParametersCommand(state, factory, rewritingManager, selectionService);
+            var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService);
+            return new RefactorRemoveParametersCommand(refactoring, state, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()

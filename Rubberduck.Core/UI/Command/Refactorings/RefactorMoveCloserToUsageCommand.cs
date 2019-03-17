@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
@@ -13,8 +12,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly RubberduckParserState _state;
         private readonly IMessageBox _messageBox;
 
-        public RefactorMoveCloserToUsageCommand(RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
-            :base(new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService), selectionService, state)
+        public RefactorMoveCloserToUsageCommand(MoveCloserToUsageRefactoring refactoring, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService)
+            :base(refactoring, selectionService, state)
         {
             _state = state;
             _messageBox = messageBox;

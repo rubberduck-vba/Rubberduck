@@ -5,7 +5,6 @@ using Antlr4.Runtime;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
@@ -21,8 +20,8 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly IMessageBox _messageBox;
         private readonly IRefactoringPresenterFactory _factory;
         
-        public RefactorExtractInterfaceCommand(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-            :base(new ExtractInterfaceRefactoring(state, state, factory, rewritingManager, selectionService), selectionService, state)
+        public RefactorExtractInterfaceCommand(ExtractInterfaceRefactoring refactoring, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService)
+            :base(refactoring, selectionService, state)
         {
             _state = state;
             _messageBox = messageBox;

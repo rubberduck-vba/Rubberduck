@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
@@ -96,7 +97,8 @@ End Sub";
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorMoveCloserToUsageCommand(state, msgBox, rewritingManager, selectionService);
+            var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService);
+            return new RefactorMoveCloserToUsageCommand(refactoring, state, msgBox, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()

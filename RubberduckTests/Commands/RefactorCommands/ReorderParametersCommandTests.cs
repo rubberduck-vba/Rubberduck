@@ -4,6 +4,7 @@ using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.ReorderParameters;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
 using Rubberduck.VBEditor;
@@ -161,7 +162,8 @@ End Property";
         {
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var msgBox = new Mock<IMessageBox>().Object;
-            return new RefactorReorderParametersCommand(state, factory, msgBox, rewritingManager, selectionService);
+            var refactoring = new ReorderParametersRefactoring(state, factory, rewritingManager, selectionService);
+            return new RefactorReorderParametersCommand(refactoring, state, msgBox, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()
