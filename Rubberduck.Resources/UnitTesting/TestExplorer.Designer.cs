@@ -412,7 +412,7 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} of {1} Tests Run (Total Run Time: {2:g}).
+        ///   Looks up a localized string similar to {0} of {1} test(s) run (total run time: {2:g}).
         /// </summary>
         public static string TestOutcome_RunSummaryFormat {
             get {

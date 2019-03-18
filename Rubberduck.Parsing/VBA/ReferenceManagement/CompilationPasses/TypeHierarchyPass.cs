@@ -31,8 +31,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
 
         public void Execute(IReadOnlyCollection<QualifiedModuleName> modules)
         {
-            var toRelsolveSupertypesFor = _declarationFinder
-                                            .UserDeclarations(DeclarationType.ClassModule)
+            var toRelsolveSupertypesFor = _declarationFinder.UserDeclarations(DeclarationType.ClassModule)
+                                            .Concat(_declarationFinder.UserDeclarations(DeclarationType.Document))
                                             .Where(decl => modules.Contains(decl.QualifiedName.QualifiedModuleName))
                                             .Concat(_declarationFinder.BuiltInDeclarations(DeclarationType.ClassModule));
             foreach (var declaration in toRelsolveSupertypesFor)
@@ -43,7 +43,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
 
         private void AddImplementedInterface(Declaration potentialClassModule)
         {
-            if (potentialClassModule.DeclarationType != DeclarationType.ClassModule)
+            if (!potentialClassModule.DeclarationType.HasFlag(DeclarationType.ClassModule))
             {
                 return;
             }

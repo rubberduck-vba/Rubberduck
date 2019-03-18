@@ -364,4 +364,19 @@ Si el parámetro puede ser nulo, ignore el resultado de esta inspección; pasar 
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Los atributos del módulo no se muestran en el VBE. Al agregar una anotación, hace que estos atributos sean más explícitos, y Rubberduck puede mantener las anotaciones y los atributos sincronizados.</value>
   </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Una palabra clave se usa como miembro en una enumeración o en un tipo definido por el usuario. Eso puede llevar a una resolución ambigua. Considere cambiar el nombre del miembro.</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Hay continuaciones de línea entre palabras clave. No hay una buena razón para ponerlas allí; Considera eliminarlas por completo</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>El identificador contiene un espacio de no ruptura que se parece mucho a un espacio ordinario, que concibe el código y crea una experiencia confusa. Considere el uso de caracteres visibles para los identificadores.</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Los números de línea negativos en realidad se ingresan como literal hexadecimal y luego son prectificados por VBE. Volver a editar la línea hará que se vuelva roja, ya que los números de línea negativos son, de hecho, ilegales.</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>Si bien esto es legal, se trata de una "característica" mal documentada que significa algo diferente: el estado de error también se borra además de deshabilitar cualquier manejo de errores. Sin embargo, esto puede ser ambiguo, ya que una etiqueta de línea negativa de -1 puede terminar como un objetivo y un manejo de errores excesivamente complejo generalmente indica la necesidad de refactorizar el procedimiento.</value>
+  </data>
 </root>

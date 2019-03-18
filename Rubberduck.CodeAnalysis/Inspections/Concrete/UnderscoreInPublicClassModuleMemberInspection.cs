@@ -19,7 +19,7 @@ namespace Rubberduck.Inspections.Concrete
             var eventHandlers = State.DeclarationFinder.FindEventHandlers().ToList();
 
             var names = State.DeclarationFinder.UserDeclarations(Parsing.Symbols.DeclarationType.Member)
-                .Where(w => w.ParentDeclaration.DeclarationType == Parsing.Symbols.DeclarationType.ClassModule)
+                .Where(w => w.ParentDeclaration.DeclarationType.HasFlag(Parsing.Symbols.DeclarationType.ClassModule))
                 .Where(w => !interfaceMembers.Contains(w) && !eventHandlers.Contains(w))
                 .Where(w => w.Accessibility == Parsing.Symbols.Accessibility.Public || w.Accessibility == Parsing.Symbols.Accessibility.Implicit)
                 .Where(w => w.IdentifierName.Contains('_'))

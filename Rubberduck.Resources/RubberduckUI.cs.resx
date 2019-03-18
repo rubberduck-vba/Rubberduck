@@ -1311,4 +1311,56 @@ End Enum</value>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
   </data>
+  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' je globálně přístupno a je využíváno.</value>
+    <comment>FIXME: needs rewording/clarification</comment>
+  </data>
+  <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
+    <value>Selhání obnovy atributu člena</value>
+  </data>
+  <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
+    <value>Obnovení atributů členů selhalo.</value>
+  </data>
+  <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
+    <value>Atributy členů pro následující moduly se nepodařilo obnovit, protože je jich nelze nalézt. {0}</value>
+  </data>
+  <data name="AllReferences_NoneFoundReference" xml:space="preserve">
+    <value>V projektu nebylo nalezeno žádné využití pro referenci '{0}'</value>
+  </data>
+  <data name="AllReferences_PerformanceWarning" xml:space="preserve">
+    <value>Výsledek hledání využití reference '{0}' vrátilo {1} výsledků. Jejich zobrazení může mít negativní dopad na výkon. Pokračovat?</value>
+  </data>
+  <data name="PerformanceWarningCaption" xml:space="preserve">
+    <value>Varování o výkonu</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' je vestavěná proměnná.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+    <value>'{0}' není definováno ve stejném projektu, ve kterém je používáno.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>'{0}' není definováno ani v komponentě komponenty, ve které je použito, ani ve standardním modulu.</value>
+  </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Procházet...</value>
+  </data>
+  <data name="InspectionResults_CollapseAll" xml:space="preserve">
+    <value>Sbalit vše</value>
+  </data>
+  <data name="InspectionResults_ExpandAll" xml:space="preserve">
+    <value>Rozbalit vše</value>
+  </data>
+  <data name="GroupingStyle_BySeverity" xml:space="preserve">
+    <value>Dle závažnosti</value>
+  </data>
+  <data name="GroupingStyle_ByName" xml:space="preserve">
+    <value>Dle inspekce</value>
+  </data>
+  <data name="GroupingGrid_Filter" xml:space="preserve">
+    <value>Filtr</value>
+  </data>
+  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>Metoda používající '{0}' má již jinou deklaraci stejného jména v rozsahu.</value>
+  </data>
 </root>

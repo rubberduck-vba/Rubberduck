@@ -333,7 +333,7 @@
     <comment>Abbreviation for seconds</comment>
   </data>
   <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
-    <value>{0} of {1} Tests Run (Total Run Time: {2:g})</value>
+    <value>{0} of {1} test(s) run (total run time: {2:g})</value>
     <comment>{0} is number of tests in the test run, {1} is total tests, {2} is total duration</comment>
   </data>
   <data name="TestOutcome_SummaryCaption" xml:space="preserve">

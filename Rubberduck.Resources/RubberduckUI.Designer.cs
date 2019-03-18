@@ -2441,7 +2441,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used not in a standard module. .
+        ///   Looks up a localized string similar to &apos;{0}&apos; is defined neither in the component component it is used nor in a standard module. .
         /// </summary>
         public static string MoveCloserToUsage_TargetIsInOtherNonStandardModule {
             get {
@@ -2450,7 +2450,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;{0}&apos; is a non-private module variable outside a standard module..
+        ///   Looks up a localized string similar to &apos;{0}&apos; is globally accessible and is in use..
         /// </summary>
         public static string MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule {
             get {

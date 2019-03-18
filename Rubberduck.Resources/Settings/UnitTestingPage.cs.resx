@@ -153,4 +153,7 @@
   <data name="UnitTestSettings_TestModuleTemplateHeader" xml:space="preserve">
     <value>Šablona Test Modulu</value>
   </data>
+  <data name="UnitTestSettings_DualBinding" xml:space="preserve">
+    <value>Dvojitá vazba</value>
+  </data>
 </root>

@@ -28,7 +28,7 @@ namespace Rubberduck.Refactorings.ImplementInterface
         {
             DeclarationType.ClassModule,
             DeclarationType.UserForm, 
-            DeclarationType.Document, 
+            DeclarationType.Document
         };
 
         public override void Refactor(QualifiedSelection target)

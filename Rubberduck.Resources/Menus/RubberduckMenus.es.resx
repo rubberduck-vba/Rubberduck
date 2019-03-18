@@ -145,7 +145,7 @@
     <value>Na&amp;vegar</value>
   </data>
   <data name="SmartIndenterMenu" xml:space="preserve">
-    <value>In%dentar</value>
+    <value>In&amp;dentar</value>
   </data>
   <data name="RubberduckMenu_RegexSearchReplace" xml:space="preserve">
     <value>Rege&amp;x Buscar/Reemplazar</value>
@@ -175,7 +175,7 @@
     <value>M&amp;ódulo de prueba</value>
   </data>
   <data name="TestMenu_RunAllTests" xml:space="preserve">
-    <value>Ejecuta%r todas las pruebas</value>
+    <value>Ejecuta&amp;r todas las pruebas</value>
   </data>
   <data name="TestMenu_TextExplorer" xml:space="preserve">
     <value>&amp;Explorador de pruebas</value>

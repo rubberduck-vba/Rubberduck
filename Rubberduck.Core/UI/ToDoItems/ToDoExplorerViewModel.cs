@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Text.RegularExpressions;
+using System.Windows.Data;
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Settings;
@@ -15,104 +17,98 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
+using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.ToDoItems
 {
+    public enum ToDoItemGrouping
+    {
+        None,
+        Marker,
+        Location
+    };
+
     public sealed class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
         private readonly IGeneralConfigService _configService;
         private readonly ISettingsFormFactory _settingsFormFactory;
+        private readonly IUiDispatcher _uiDispatcher;
 
-        public ToDoExplorerViewModel(RubberduckParserState state, IGeneralConfigService configService, ISettingsFormFactory settingsFormFactory, ISelectionService selectionService)
+        public ToDoExplorerViewModel(
+            RubberduckParserState state, 
+            IGeneralConfigService configService, 
+            ISettingsFormFactory settingsFormFactory, 
+            ISelectionService selectionService, 
+            IUiDispatcher uiDispatcher)
         {
             _state = state;
             _configService = configService;
             _settingsFormFactory = settingsFormFactory;
+            _uiDispatcher = uiDispatcher;
             _state.StateChanged += HandleStateChanged;
 
-            _navigateCommand = new Lazy<NavigateCommand>(() => new NavigateCommand(selectionService));
+            NavigateCommand = new NavigateCommand(selectionService);
+            RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, CanExecuteRemoveCommand);
+            CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
+            ExpandAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteExpandAll);
+            CopyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCopyResultsCommand, CanExecuteCopyResultsCommand);
+            OpenTodoSettingsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteOpenTodoSettingsCommand);
 
-            SetMarkerGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                GroupByMarker = (bool)param;
-                GroupByLocation = !(bool)param;
-            });
-
-            SetLocationGroupingCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), param =>
-            {
-                GroupByLocation = (bool)param;
-                GroupByMarker = !(bool)param;
-            });
+            Items = CollectionViewSource.GetDefaultView(_items);
+            OnPropertyChanged(nameof(Items));
+            Grouping = ToDoItemGrouping.Marker;
         }
 
-        private ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
-        public ObservableCollection<ToDoItem> Items
+        private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
+
+        public ICollectionView Items { get; }
+
+        private static readonly Dictionary<ToDoItemGrouping, PropertyGroupDescription> GroupDescriptions = new Dictionary<ToDoItemGrouping, PropertyGroupDescription>
         {
-            get => _items;
+            { ToDoItemGrouping.Marker, new PropertyGroupDescription("Type") },
+            { ToDoItemGrouping.Location, new PropertyGroupDescription("Selection.QualifiedName.Name") }
+        };
+
+        private ToDoItemGrouping _grouping;
+        public ToDoItemGrouping Grouping
+        {
+            get => _grouping;
             set
             {
-                if (_items == value)
+                if (value == _grouping)
                 {
                     return;
                 }
 
-                _items = value;
+                _grouping = value;
+                Items.GroupDescriptions.Clear();
+                Items.GroupDescriptions.Add(GroupDescriptions[_grouping]);
+                Items.Refresh();
                 OnPropertyChanged();
             }
         }
 
-        private bool _groupByMarker = true;
-        public bool GroupByMarker
+        private bool _expanded;
+        public bool ExpandedState
         {
-            get => _groupByMarker;
+            get => _expanded;
             set
             {
-                if (_groupByMarker == value)
-                {
-                    return;
-                }
-
-                _groupByMarker = value;
+                _expanded = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool _groupByLocation;
-        public bool GroupByLocation
+        private ToDoItem _selectedItem;
+        public INavigateSource SelectedItem
         {
-            get => _groupByLocation;
+            get => _selectedItem;
             set
             {
-                if (_groupByLocation == value)
-                {
-                    return;
-                }
-
-                _groupByLocation = value;
+                _selectedItem = value as ToDoItem;
                 OnPropertyChanged();
-            }
-        }
-
-        public CommandBase SetMarkerGroupingCommand { get; }
-
-        public CommandBase SetLocationGroupingCommand { get; }
-
-        private CommandBase _refreshCommand;
-        public CommandBase RefreshCommand
-        {
-            get
-            {
-                if (_refreshCommand != null)
-                {
-                    return _refreshCommand;
-                }
-                return _refreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
-                {
-                    _state.OnParseRequested(this);
-                },
-                _ => _state.IsDirty());
             }
         }
 
@@ -123,121 +119,108 @@ namespace Rubberduck.UI.ToDoItems
                 return;
             }
 
-            Items = new ObservableCollection<ToDoItem>(GetItems());
+            _uiDispatcher.Invoke(() =>
+            {
+                _items.Clear();
+                foreach (var item in _state.AllComments.SelectMany(GetToDoMarkers))
+                {
+                    _items.Add(item);
+                }
+            });
         }
 
-        private ToDoItem _selectedItem;
-        public INavigateSource SelectedItem
+        public INavigateCommand NavigateCommand { get; }
+
+        public ReparseCommand RefreshCommand { get; set; }
+
+        public CommandBase RemoveCommand { get; }
+
+        public CommandBase CollapseAllCommand { get; }
+
+        public CommandBase ExpandAllCommand { get; }
+
+        public CommandBase CopyResultsCommand { get; }
+
+        public CommandBase OpenTodoSettingsCommand { get; }
+
+        private void ExecuteCollapseAll(object parameter)
         {
-            get => _selectedItem;
-            set
+            ExpandedState = false;
+        }
+
+        private void ExecuteExpandAll(object parameter)
+        {
+            ExpandedState = true;
+        }
+
+        private bool CanExecuteRemoveCommand(object obj) => SelectedItem != null && RefreshCommand.CanExecute(obj);
+
+        private void ExecuteRemoveCommand(object obj)
+        {
+            if (!CanExecuteRemoveCommand(obj))
             {
-                _selectedItem = value as ToDoItem; 
-                OnPropertyChanged();
+                return;
+            }
+
+            var component = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName);
+            using (var module = component.CodeModule)
+            {
+                var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
+                var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
+
+                module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
+            }
+
+            RefreshCommand.Execute(null);
+        }
+
+        private bool CanExecuteCopyResultsCommand(object obj) => _items.Any();
+
+        public void ExecuteCopyResultsCommand(object obj)
+        {
+            const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
+            if (!CanExecuteCopyResultsCommand(obj))
+            {
+                return;
+            }
+
+            ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Description"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
+
+            var resultArray = _items.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
+
+            var resource = _items.Count == 1
+                ? ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Singular
+                : ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Plural;
+
+            var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
+
+            var textResults = title + Environment.NewLine + string.Join("", _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
+            var csvResults = ExportFormatter.Csv(resultArray, title, columnInfos);
+            var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, columnInfos);
+            var rtfResults = ExportFormatter.RTF(resultArray, title);
+
+            // todo: verify that this disposing this stream breaks the xmlSpreadsheetDataFormat
+            var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
+
+            IClipboardWriter _clipboard = new ClipboardWriter();
+            //Add the formats from richest formatting to least formatting
+            _clipboard.AppendStream(DataFormats.GetDataFormat(xmlSpreadsheetDataFormat).Name, stream);
+            _clipboard.AppendString(DataFormats.Rtf, rtfResults);
+            _clipboard.AppendString(DataFormats.Html, htmlResults);
+            _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
+            _clipboard.AppendString(DataFormats.UnicodeText, textResults);
+
+            _clipboard.Flush();
+        }
+
+        public void ExecuteOpenTodoSettingsCommand(object obj)
+        {
+            using (var window = _settingsFormFactory.Create(SettingsViews.TodoSettings))
+            {
+                window.ShowDialog();
+                _settingsFormFactory.Release(window);
             }
         }
-
-        private CommandBase _removeCommand;
-        public CommandBase RemoveCommand
-        {
-            get
-            {
-                if (_removeCommand != null)
-                {
-                    return _removeCommand;
-                }
-                return _removeCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
-                {
-                    if (_selectedItem == null)
-                    {
-                        return;
-                    }
-
-                    var component = _state.ProjectsProvider.Component(_selectedItem.Selection.QualifiedName);
-                    using (var module = component.CodeModule)
-                    {
-                        var oldContent = module.GetLines(_selectedItem.Selection.Selection.StartLine, 1);
-                        var newContent = oldContent.Remove(_selectedItem.Selection.Selection.StartColumn - 1);
-
-                        module.ReplaceLine(_selectedItem.Selection.Selection.StartLine, newContent);
-                    }
-
-                    RefreshCommand.Execute(null);
-                }
-                );
-            }
-        }
-
-        private CommandBase _copyResultsCommand;
-        public CommandBase CopyResultsCommand
-        {
-            get
-            {
-                if (_copyResultsCommand != null)
-                {
-                    return _copyResultsCommand;
-                }
-                return _copyResultsCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
-                {
-                    const string xmlSpreadsheetDataFormat = "XML Spreadsheet";
-                    if (_items == null)
-                    {
-                        return;
-                    }
-                    ColumnInfo[] columnInfos = { new ColumnInfo("Type"), new ColumnInfo("Description"), new ColumnInfo("Project"), new ColumnInfo("Component"), new ColumnInfo("Line", hAlignment.Right), new ColumnInfo("Column", hAlignment.Right) };
-
-                    var resultArray = _items.OfType<IExportable>().Select(result => result.ToArray()).ToArray();
-
-                    var resource = _items.Count == 1
-                        ? ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Singular
-                        : ToDoExplorerUI.ToDoExplorer_NumberOfIssuesFound_Plural;
-
-                    var title = string.Format(resource, DateTime.Now.ToString(CultureInfo.InvariantCulture), _items.Count);
-
-                    var textResults = title + Environment.NewLine + string.Join("", _items.OfType<IExportable>().Select(result => result.ToClipboardString() + Environment.NewLine).ToArray());
-                    var csvResults = ExportFormatter.Csv(resultArray, title, columnInfos);
-                    var htmlResults = ExportFormatter.HtmlClipboardFragment(resultArray, title, columnInfos);
-                    var rtfResults = ExportFormatter.RTF(resultArray, title);
-
-                    // todo: verify that this disposing this stream breaks the xmlSpreadsheetDataFormat
-                    var stream = ExportFormatter.XmlSpreadsheetNew(resultArray, title, columnInfos);
-
-                    IClipboardWriter _clipboard = new ClipboardWriter();
-                    //Add the formats from richest formatting to least formatting
-                    _clipboard.AppendStream(DataFormats.GetDataFormat(xmlSpreadsheetDataFormat).Name, stream);
-                    _clipboard.AppendString(DataFormats.Rtf, rtfResults);
-                    _clipboard.AppendString(DataFormats.Html, htmlResults);
-                    _clipboard.AppendString(DataFormats.CommaSeparatedValue, csvResults);
-                    _clipboard.AppendString(DataFormats.UnicodeText, textResults);
-
-                    _clipboard.Flush();
-
-                });
-            }
-        }
-
-        private CommandBase _openTodoSettings;
-        public CommandBase OpenTodoSettings
-        {
-            get
-            {
-                if (_openTodoSettings != null)
-                {
-                    return _openTodoSettings;
-                }
-                return _openTodoSettings = new DelegateCommand(LogManager.GetCurrentClassLogger(), _ =>
-                {
-                    using (var window = _settingsFormFactory.Create(SettingsViews.TodoSettings))
-                    {
-                        window.ShowDialog();
-                        _settingsFormFactory.Release(window);
-                    }
-                });
-            }
-        }
-
-        private readonly Lazy<NavigateCommand> _navigateCommand;
-        public INavigateCommand NavigateCommand => _navigateCommand.Value;
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
@@ -245,11 +228,6 @@ namespace Rubberduck.UI.ToDoItems
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
                                          && Regex.IsMatch(comment.CommentText, @"\b" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
                            .Select(marker => new ToDoItem(marker.Text, comment));
-        }
-
-        private IEnumerable<ToDoItem> GetItems()
-        {
-            return _state.AllComments.SelectMany(GetToDoMarkers);
         }
 
         public void Dispose()
