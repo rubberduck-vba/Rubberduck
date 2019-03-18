@@ -27,7 +27,8 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            CanExecuteEvaluation = (parameter) => CanExecuteEvaluation(parameter) && furtherCanExecuteEvaluation(parameter);
+            var currentCanExecute = CanExecuteEvaluation; 
+            CanExecuteEvaluation = (parameter) => currentCanExecute(parameter) && furtherCanExecuteEvaluation(parameter);
         }
 
         protected override bool EvaluateCanExecute(object parameter)
