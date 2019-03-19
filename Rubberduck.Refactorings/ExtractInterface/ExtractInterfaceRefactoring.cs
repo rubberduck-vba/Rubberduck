@@ -18,6 +18,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
         private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IParseManager _parseManager;
 
+        private readonly ImplementInterfaceRefactoring _implementInterfaceRefactoring;
+
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ExtractInterfaceRefactoring(IDeclarationFinderProvider declarationFinderProvider, IParseManager parseManager, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
@@ -25,6 +27,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
         {
             _declarationFinderProvider = declarationFinderProvider;
             _parseManager = parseManager;
+
+            _implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, RewritingManager, SelectionService);
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
@@ -42,6 +46,11 @@ namespace Rubberduck.Refactorings.ExtractInterface
             if (target == null)
             {
                 throw new TargetDeclarationIsNullException();
+            }
+
+            if (!ModuleTypes.Contains(target.DeclarationType))
+            {
+                throw new InvalidTargetDeclarationException(target);
             }
 
             return new ExtractInterfaceModel(_declarationFinderProvider, target);
@@ -109,8 +118,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
         private void AddInterfaceMembersToClass(ExtractInterfaceModel model, IModuleRewriter rewriter)
         {
-            var implementInterfaceRefactoring = new ImplementInterfaceRefactoring(_declarationFinderProvider, RewritingManager, SelectionService);
-            implementInterfaceRefactoring.Refactor(model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, model.InterfaceName);
+            _implementInterfaceRefactoring.Refactor(model.SelectedMembers.Select(m => m.Member).ToList(), rewriter, model.InterfaceName);
         }
 
         private string GetInterfaceModuleBody(ExtractInterfaceModel model)

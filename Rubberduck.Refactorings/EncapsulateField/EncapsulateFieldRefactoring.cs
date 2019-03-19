@@ -40,6 +40,11 @@ namespace Rubberduck.Refactorings.EncapsulateField
                 throw new TargetDeclarationIsNullException();
             }
 
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new InvalidDeclarationTypeException(target);
+            }
+
             return new EncapsulateFieldModel(target);
         }
 

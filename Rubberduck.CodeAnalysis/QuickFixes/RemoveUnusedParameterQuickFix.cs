@@ -34,6 +34,8 @@ namespace Rubberduck.Inspections.QuickFixes
             {
                 refactoring.QuickFix(result.QualifiedSelection);
             }
+            catch (RefactoringAbortedException)
+            { }
             catch (RefactoringException exception)
             {
                 //The selection in the inspection result was malformed.

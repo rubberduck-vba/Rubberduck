@@ -581,10 +581,10 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="EncapsulateField_SetterType" xml:space="preserve">
     <value>Typ für 'Set':</value>
   </data>
-  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' hat keine Referenzen.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' hat Referenzen in mehrere Methoden.</value>
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
@@ -602,7 +602,7 @@ Wollen Sie trotzdem fortfahren?</value>
   <data name="EncapsulateField_InstructionText" xml:space="preserve">
     <value>Spezifizierung des Eigenschaftsnamen, Parameterverfügbarkeit und 'Setter type' notwendig.</value>
   </data>
-  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Ungültige Auswahl.</value>
   </data>
   <data name="ImplementInterface_InvalidSelectionMessage" xml:space="preserve">
@@ -1022,12 +1022,6 @@ Möchten sie die Einstellungen in Rubberduck importieren?</value>
   <data name="RenameDialog_InterfaceRenameError" xml:space="preserve">
     <value>Konnte Interfacemitglied {0} nicht umbenennen.</value>
   </data>
-  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
-    <value>Bezeichner {0} kann nicht umbenannt werden.</value>
-  </data>
-  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>Kann gewähltes Ziel für Umbenennung nicht erkennen.</value>
-  </data>
   <data name="RenameDialog_DefaultRenameError" xml:space="preserve">
     <value>Konnte {0} nicht umbenennen.</value>
   </data>
@@ -1365,22 +1359,61 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Performancewarnung</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
     <value>'{0}' ist keine Nutzerdeklaration.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
     <value>Die Variable '{0}' ist nicht im selben Projekt definiert, in dem sie verwendet wird.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
     <value>Die Variable '{0}' ist weder in der Komponente definiert, in der sie verwendet wir, noch in einem Standardmodul.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' ist eine nicht private Modulvariable außerhalb eines Standardmoduls.</value>
   </data>
-  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>In der Methode, die '{0}' verwendet, referenziert der Name dieser Variable bereits eine andere Deklaration.</value>
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>In der Methode, die '{0}' verwendet, referenziert der Name dieser Variable bereits die Deklaration '{1}.</value>
   </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refactoring fehlgeschlagen.</value>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>Es gibt keine aktive Selektion.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>Es ist kein zulässiges Ziel selektiert.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Das Ziel des Refactorings ist null.</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>Es wurde kein Codemodul für das Zielmodul '{0}' gefunden.</value>
+  </data>
+  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+    <value>Es wurde das Zielkontrollelement '{0}' nicht gefunden.</value>
+  </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>Das Ziel '{0}' ist ein Standardeventhandler, welcher nicht umbenannt werden kann.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>Das Ziel ist nicht benutzerdefiniert.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt des erwarteten Typs '{2}'.</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>Es ist keine Implements-Anweisung selektiert.</value>
+  </data>
+  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
+    <value>Das Ziel '{0}' ist bereits ein Feld.</value>
+  </data>
+  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+    <value>Das Ziel '{0}' ist nicht in einer Methode enthalten.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>
   </data>
 </root>
