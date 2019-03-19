@@ -1416,4 +1416,22 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
     <value>Der Typ des Ziels '{0}'ist '{1}' anstatt eines der erwarteten Typen '{2}'.</value>
   </data>
+  <data name="GroupingGrid_Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="GroupingStyle_ByName" xml:space="preserve">
+    <value>Nach Codeuntersuchung</value>
+  </data>
+  <data name="GroupingStyle_BySeverity" xml:space="preserve">
+    <value>Nach Schweregrad</value>
+  </data>
+  <data name="InspectionResults_CollapseAll" xml:space="preserve">
+    <value>Alle einklappen</value>
+  </data>
+  <data name="InspectionResults_ExpandAll" xml:space="preserve">
+    <value>Alle ausklappen</value>
+  </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Durchsuchen...</value>
+  </data>
 </root>
