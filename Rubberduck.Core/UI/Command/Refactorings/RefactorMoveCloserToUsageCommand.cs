@@ -1,8 +1,8 @@
 ﻿using System.Linq;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -10,13 +10,11 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorMoveCloserToUsageCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
 
-        public RefactorMoveCloserToUsageCommand(MoveCloserToUsageRefactoring refactoring, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService)
-            :base(refactoring, selectionService, state)
+        public RefactorMoveCloserToUsageCommand(MoveCloserToUsageRefactoring refactoring, MoveCloserToUsageFailedNotifier moveCloserToUsageFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
+            :base(refactoring, moveCloserToUsageFailedNotifier, selectionService, state)
         {
             _state = state;
-            _messageBox = messageBox;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }

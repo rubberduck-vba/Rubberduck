@@ -1,11 +1,13 @@
 ﻿using Moq;
 using NUnit.Framework;
+using Rubberduck.Interaction;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
@@ -159,9 +161,11 @@ End Property";
 
         protected override CommandBase TestCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
+            var msgBox = new Mock<IMessageBox>().Object;
             var factory = new Mock<IRefactoringPresenterFactory>().Object;
             var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService);
-            return new RefactorRemoveParametersCommand(refactoring, state, selectionService);
+            var notifier = new RemoveParameterFailedNotifier(msgBox);
+            return new RefactorRemoveParametersCommand(refactoring, notifier, state, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()

@@ -4,7 +4,7 @@ using Rubberduck.Refactorings.Exceptions.Rename;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal class RenameFailedNotifier : RefactoringFailureNotifierBase
+    public class RenameFailedNotifier : RefactoringFailureNotifierBase
     {
         public RenameFailedNotifier(IMessageBox messageBox) 
             : base(messageBox)

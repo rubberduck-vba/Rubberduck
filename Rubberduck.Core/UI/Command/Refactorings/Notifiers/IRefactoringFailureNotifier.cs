@@ -2,7 +2,7 @@
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal interface IRefactoringFailureNotifier
+    public interface IRefactoringFailureNotifier
     {
         void Notify(RefactoringException exception);
     }

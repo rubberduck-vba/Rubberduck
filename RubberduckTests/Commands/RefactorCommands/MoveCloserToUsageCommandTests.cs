@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
@@ -98,7 +99,8 @@ End Sub";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var refactoring = new MoveCloserToUsageRefactoring(state, rewritingManager, selectionService);
-            return new RefactorMoveCloserToUsageCommand(refactoring, state, msgBox, selectionService);
+            var notifier = new MoveCloserToUsageFailedNotifier(msgBox);
+            return new RefactorMoveCloserToUsageCommand(refactoring, notifier, state, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()

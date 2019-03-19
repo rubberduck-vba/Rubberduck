@@ -2,6 +2,8 @@
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -10,8 +12,8 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         protected readonly ISelectionService SelectionService;
 
-        protected RefactorCodePaneCommandBase(IRefactoring refactoring, ISelectionService selectionService, IParserStatusProvider parserStatusProvider)
-            : base (refactoring, parserStatusProvider)
+        protected RefactorCodePaneCommandBase(IRefactoring refactoring, IRefactoringFailureNotifier failureNotifier, ISelectionService selectionService, IParserStatusProvider parserStatusProvider)
+            : base (refactoring, failureNotifier, parserStatusProvider)
         {
             SelectionService = selectionService;
 
@@ -31,7 +33,16 @@ namespace Rubberduck.UI.Command.Refactorings
                 return;
             }
 
-            Refactoring.Refactor(activeSelection.Value);
+            try
+            {
+                Refactoring.Refactor(activeSelection.Value);
+            }
+            catch (RefactoringAbortedException)
+            {}
+            catch (RefactoringException exception)
+            {
+                FailureNotifier.Notify(exception);
+            }
         }
     }
 }

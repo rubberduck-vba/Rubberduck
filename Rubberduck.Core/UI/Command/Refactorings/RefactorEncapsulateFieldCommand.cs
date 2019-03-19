@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.EncapsulateField;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -11,8 +12,8 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorEncapsulateFieldCommand(EncapsulateFieldRefactoring refactoring, RubberduckParserState state, ISelectionService selectionService)
-            : base(refactoring, selectionService, state)
+        public RefactorEncapsulateFieldCommand(EncapsulateFieldRefactoring refactoring, EncapsulateFieldFailedNotifier encapsulateFieldFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
+            : base(refactoring, encapsulateFieldFailedNotifier, selectionService, state)
         {
             _state = state;
 

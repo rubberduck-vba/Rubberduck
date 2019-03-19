@@ -4,6 +4,7 @@ using Rubberduck.Common;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.RemoveParameters;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -13,8 +14,8 @@ namespace Rubberduck.UI.Command.Refactorings
     {
         private readonly RubberduckParserState _state;
 
-        public RefactorRemoveParametersCommand(RemoveParametersRefactoring refactoring, RubberduckParserState state, ISelectionService selectionService) 
-            : base (refactoring, selectionService, state)
+        public RefactorRemoveParametersCommand(RemoveParametersRefactoring refactoring, RemoveParameterFailedNotifier removeParameterFailedNotifier, RubberduckParserState state, ISelectionService selectionService) 
+            : base (refactoring, removeParameterFailedNotifier, selectionService, state)
         {
             _state = state;
 

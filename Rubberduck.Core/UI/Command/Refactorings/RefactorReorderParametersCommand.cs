@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ReorderParameters;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -13,13 +13,11 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorReorderParametersCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
 
-        public RefactorReorderParametersCommand(ReorderParametersRefactoring refactoring, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService) 
-            : base (refactoring, selectionService, state)
+        public RefactorReorderParametersCommand(ReorderParametersRefactoring refactoring, ReorderParametersFailedNotifier reorderParametersFailedNotifier, RubberduckParserState state, ISelectionService selectionService) 
+            : base (refactoring, reorderParametersFailedNotifier, selectionService, state)
         {
             _state = state;
-            _messageBox = messageBox;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }

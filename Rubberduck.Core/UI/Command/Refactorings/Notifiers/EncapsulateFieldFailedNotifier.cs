@@ -4,7 +4,7 @@ using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal class EncapsulateFieldFailedNotifier : RefactoringFailureNotifierBase
+    public class EncapsulateFieldFailedNotifier : RefactoringFailureNotifierBase
     {
         public EncapsulateFieldFailedNotifier(IMessageBox messageBox)
             : base(messageBox)

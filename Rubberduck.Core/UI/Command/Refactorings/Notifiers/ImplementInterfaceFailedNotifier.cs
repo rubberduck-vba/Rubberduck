@@ -5,7 +5,7 @@ using Rubberduck.Refactorings.Exceptions.ImplementInterface;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal class ImplementInterfaceFailedNotifier : RefactoringFailureNotifierBase
+    public class ImplementInterfaceFailedNotifier : RefactoringFailureNotifierBase
     {
         public ImplementInterfaceFailedNotifier(IMessageBox messageBox)
             : base(messageBox)

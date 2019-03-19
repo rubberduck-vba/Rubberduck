@@ -5,7 +5,7 @@ using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal abstract class RefactoringFailureNotifierBase : IRefactoringFailureNotifier
+    public abstract class RefactoringFailureNotifierBase : IRefactoringFailureNotifier
     {
         private readonly IMessageBox _messageBox;
 

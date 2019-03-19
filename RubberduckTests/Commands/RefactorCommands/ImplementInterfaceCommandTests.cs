@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -56,7 +57,8 @@ Dim b As Variant";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var refactoring = new ImplementInterfaceRefactoring(state, rewritingManager, selectionService);
-            return new RefactorImplementInterfaceCommand(refactoring, state, msgBox, selectionService);
+            var notifier = new ImplementInterfaceFailedNotifier(msgBox);
+            return new RefactorImplementInterfaceCommand(refactoring, notifier, state, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()

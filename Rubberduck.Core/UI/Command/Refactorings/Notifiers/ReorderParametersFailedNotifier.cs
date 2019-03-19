@@ -4,7 +4,7 @@ using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal class ReorderParametersFailedNotifier : RefactoringFailureNotifierBase
+    public class ReorderParametersFailedNotifier : RefactoringFailureNotifierBase
     {
         public ReorderParametersFailedNotifier(IMessageBox messageBox)
             : base(messageBox)

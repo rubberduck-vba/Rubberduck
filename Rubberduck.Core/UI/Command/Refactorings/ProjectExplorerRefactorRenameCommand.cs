@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
@@ -13,14 +13,12 @@ namespace Rubberduck.UI.Command.Refactorings
     public class ProjectExplorerRefactorRenameCommand : RefactorDeclarationCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _msgBox;
         private readonly IVBE _vbe;
 
-        public ProjectExplorerRefactorRenameCommand(RenameRefactoring refactoring, IVBE vbe, RubberduckParserState state, IMessageBox msgBox, ISelectionService selectionService)
-            : base(refactoring, state)
+        public ProjectExplorerRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IVBE vbe, RubberduckParserState state, ISelectionService selectionService)
+            : base(refactoring, renameFailedNotifier, state)
         {
             _state = state;
-            _msgBox = msgBox;
             _vbe = vbe;
         }
 

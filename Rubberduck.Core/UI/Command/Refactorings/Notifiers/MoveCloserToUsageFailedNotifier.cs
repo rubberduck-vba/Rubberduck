@@ -5,7 +5,7 @@ using Rubberduck.Refactorings.Exceptions.MoveCloserToUsage;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal class MoveCloserToUsageFailedNotifier : RefactoringFailureNotifierBase
+    public class MoveCloserToUsageFailedNotifier : RefactoringFailureNotifierBase
     {
         public MoveCloserToUsageFailedNotifier(IMessageBox messageBox)
             : base(messageBox)

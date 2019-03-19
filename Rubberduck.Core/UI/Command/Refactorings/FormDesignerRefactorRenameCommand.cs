@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
@@ -14,14 +14,12 @@ namespace Rubberduck.UI.Command.Refactorings
     public class FormDesignerRefactorRenameCommand : RefactorDeclarationCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
         private readonly IVBE _vbe;
 
-        public FormDesignerRefactorRenameCommand(RenameRefactoring refactoring, IVBE vbe, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService) 
-            : base (refactoring, state)
+        public FormDesignerRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IVBE vbe, RubberduckParserState state, ISelectionService selectionService) 
+            : base (refactoring, renameFailedNotifier, state)
         {
             _state = state;
-            _messageBox = messageBox;
             _vbe = vbe;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);

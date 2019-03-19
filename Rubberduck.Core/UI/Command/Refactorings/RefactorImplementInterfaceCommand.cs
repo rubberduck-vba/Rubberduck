@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -12,13 +12,11 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorImplementInterfaceCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _msgBox;
 
-        public RefactorImplementInterfaceCommand(ImplementInterfaceRefactoring refactoring, RubberduckParserState state, IMessageBox msgBox, ISelectionService selectionService)
-            : base(refactoring, selectionService, state)
+        public RefactorImplementInterfaceCommand(ImplementInterfaceRefactoring refactoring, ImplementInterfaceFailedNotifier implementInterfaceFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
+            : base(refactoring, implementInterfaceFailedNotifier, selectionService, state)
         {
             _state = state;
-            _msgBox = msgBox;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }

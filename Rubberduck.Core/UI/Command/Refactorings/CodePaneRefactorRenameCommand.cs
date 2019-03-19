@@ -1,8 +1,8 @@
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -11,13 +11,11 @@ namespace Rubberduck.UI.Command.Refactorings
     public class CodePaneRefactorRenameCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
 
-        public CodePaneRefactorRenameCommand(RenameRefactoring refactoring, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService) 
-            : base (refactoring, selectionService, state)
+        public CodePaneRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, RubberduckParserState state, ISelectionService selectionService) 
+            : base (refactoring, renameFailedNotifier, selectionService, state)
         {
             _state = state;
-            _messageBox = messageBox;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }

@@ -6,6 +6,7 @@ using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.Refactorings;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
@@ -43,7 +44,8 @@ End Property";
         {
             var msgBox = new Mock<IMessageBox>().Object;
             var refactoring = new IntroduceParameterRefactoring(state, msgBox, rewritingManager, selectionService);
-            return new RefactorIntroduceParameterCommand(refactoring, state, msgBox, selectionService);
+            var notifier = new IntroduceParameterFailedNotifier(msgBox);
+            return new RefactorIntroduceParameterCommand(refactoring, notifier, state, selectionService);
         }
 
         protected override IVBE SetupAllowingExecution()

@@ -5,7 +5,7 @@ using Rubberduck.Refactorings.Exceptions.IntroduceParameter;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal class IntroduceParameterFailedNotifier : RefactoringFailureNotifierBase
+    public class IntroduceParameterFailedNotifier : RefactoringFailureNotifierBase
     {
         public IntroduceParameterFailedNotifier(IMessageBox messageBox)
             : base(messageBox)

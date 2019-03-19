@@ -1,8 +1,8 @@
 ﻿using Rubberduck.Common;
-using Rubberduck.Interaction;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.IntroduceParameter;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -10,13 +10,11 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorIntroduceParameterCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
 
-        public RefactorIntroduceParameterCommand (IntroduceParameterRefactoring refactoring, RubberduckParserState state, IMessageBox messageBox, ISelectionService selectionService)
-            :base(refactoring, selectionService, state)
+        public RefactorIntroduceParameterCommand (IntroduceParameterRefactoring refactoring, IntroduceParameterFailedNotifier introduceParameterFailedNotifier, RubberduckParserState state, ISelectionService selectionService)
+            :base(refactoring, introduceParameterFailedNotifier, selectionService, state)
         {
             _state = state;
-            _messageBox = messageBox;
 
             AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }

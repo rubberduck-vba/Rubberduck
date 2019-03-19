@@ -4,7 +4,7 @@ using Rubberduck.Refactorings.Exceptions;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal class RemoveParameterFailedNotifier : RefactoringFailureNotifierBase
+    public class RemoveParameterFailedNotifier : RefactoringFailureNotifierBase
     {
         public RemoveParameterFailedNotifier(IMessageBox messageBox)
             : base(messageBox)

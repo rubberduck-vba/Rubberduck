@@ -5,7 +5,7 @@ using Rubberduck.Refactorings.Exceptions.IntroduceField;
 
 namespace Rubberduck.UI.Command.Refactorings.Notifiers
 {
-    internal class IntroduceFieldFailedNotifier : RefactoringFailureNotifierBase
+    public class IntroduceFieldFailedNotifier : RefactoringFailureNotifierBase
     {
         public IntroduceFieldFailedNotifier(IMessageBox messageBox)
             : base(messageBox)

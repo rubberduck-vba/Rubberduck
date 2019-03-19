@@ -2,20 +2,23 @@
 using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCommandBase : CommandBase
     {
         protected readonly IRefactoring Refactoring;
+        protected readonly IRefactoringFailureNotifier FailureNotifier;
         protected readonly IParserStatusProvider ParserStatusProvider;
 
-        protected RefactorCommandBase(IRefactoring refactoring, IParserStatusProvider parserStatusProvider)
+        protected RefactorCommandBase(IRefactoring refactoring, IRefactoringFailureNotifier failureNotifier, IParserStatusProvider parserStatusProvider)
             : base(LogManager.GetCurrentClassLogger())
         {
             Refactoring = refactoring;
             ParserStatusProvider = parserStatusProvider;
             CanExecuteEvaluation = StandardEvaluateCanExecute;
+            FailureNotifier = failureNotifier;
         }
 
         protected Func<object, bool> CanExecuteEvaluation { get; private set; }
