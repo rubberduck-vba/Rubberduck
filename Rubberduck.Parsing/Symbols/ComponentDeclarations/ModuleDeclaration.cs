@@ -5,7 +5,7 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public abstract class ModuleDeclaration : Declaration
+    public abstract class ModuleDeclaration : ComponentDeclaration
     {
         protected ModuleDeclaration(
             QualifiedMemberName qualifiedName,
@@ -19,21 +19,12 @@ namespace Rubberduck.Parsing.Symbols
             : base(
                 qualifiedName,
                 projectDeclaration,
-                projectDeclaration,
                 name,
-                null,
-                false,
-                isWithEvents,
-                Accessibility.Public,
                 declarationType,
-                null,
-                null,
-                Selection.Home,
-                false,
-                null,
                 isUserDefined,
                 annotations,
-                attributes)
+                attributes,
+                isWithEvents)
         {
             CustomFolder = FolderFromAnnotations();
         }

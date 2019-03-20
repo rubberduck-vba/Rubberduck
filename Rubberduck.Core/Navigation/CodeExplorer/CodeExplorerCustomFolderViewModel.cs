@@ -16,7 +16,15 @@ namespace Rubberduck.Navigation.CodeExplorer
             DeclarationType.ClassModule, 
             DeclarationType.Document, 
             DeclarationType.ProceduralModule, 
-            DeclarationType.UserForm
+            DeclarationType.UserForm,
+            DeclarationType.VbForm,
+            DeclarationType.MdiForm,
+            DeclarationType.UserControl,
+            DeclarationType.ResFile,
+            DeclarationType.PropPage,
+            DeclarationType.DocObject,
+            DeclarationType.RelatedDocument,
+            DeclarationType.ActiveXDesigner,
         };
 
         private readonly IVBE _vbe;

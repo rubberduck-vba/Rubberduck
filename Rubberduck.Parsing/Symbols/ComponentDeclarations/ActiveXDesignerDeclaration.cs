@@ -1,32 +1,27 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rubberduck.Parsing.Annotations;
+﻿using Rubberduck.Parsing.Annotations;
 using Rubberduck.VBEditor;
+using System.Collections.Generic;
 
 namespace Rubberduck.Parsing.Symbols
 {
-    public class DocumentModuleDeclaration : ClassModuleDeclaration
+    public class ActiveXDesignerDeclaration : ClassModuleDeclaration
     {
-        public DocumentModuleDeclaration(
+        public ActiveXDesignerDeclaration(
             QualifiedMemberName qualifiedName,
             Declaration projectDeclaration,
             string name,
             IEnumerable<IAnnotation> annotations,
             Attributes attributes)
-            : base(qualifiedName, 
+            : base(qualifiedName,
                 projectDeclaration,
                 name,
+                DeclarationType.ActiveXDesigner,
                 true,
                 annotations,
                 attributes,
                 true,
                 true,
-                false,
-                true)
+                false)
         { }
     }
 }

@@ -20,21 +20,42 @@ namespace Rubberduck.Parsing.Symbols
         private readonly Lazy<bool> _hasPredeclaredId;
 
         public ClassModuleDeclaration(
+                QualifiedMemberName qualifiedName,
+                Declaration projectDeclaration,
+                string name,
+                bool isUserDefined,
+                IEnumerable<IAnnotation> annotations,
+                Attributes attributes,
+                bool isWithEvents = false,
+                bool hasDefaultInstanceVariable = false,
+                bool isControl = false)
+            : this(
+                  qualifiedName,
+                  projectDeclaration,
+                  name,
+                  DeclarationType.ClassModule,
+                  isUserDefined,
+                  annotations,
+                  attributes,
+                  isWithEvents)
+        { }
+
+        protected ClassModuleDeclaration(
                   QualifiedMemberName qualifiedName,
                   Declaration projectDeclaration,
                   string name,
+                  DeclarationType declarationType,
                   bool isUserDefined,
                   IEnumerable<IAnnotation> annotations,
                   Attributes attributes,
                   bool isWithEvents = false,
                   bool hasDefaultInstanceVariable = false,
-                  bool isControl = false,
-                  bool isDocument = false)
+                  bool isControl = false)
             : base(
                   qualifiedName,
                   projectDeclaration,
                   name,
-                  isDocument ? DeclarationType.Document : DeclarationType.ClassModule,
+                  declarationType,
                   isUserDefined,
                   annotations,
                   attributes,

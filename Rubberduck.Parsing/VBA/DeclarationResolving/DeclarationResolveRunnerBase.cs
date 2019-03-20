@@ -207,6 +207,55 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         qualifiedModuleName.ComponentName,
                         moduleAnnotations,
                         moduleAttributes);
+                case ComponentType.UserForm:
+                    return new UserFormDeclaration(
+                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
+                        projectDeclaration,
+                        qualifiedModuleName.ComponentName,
+                        moduleAnnotations,
+                        moduleAttributes);
+                case ComponentType.VBForm:
+                    return new VbFormDeclaration(
+                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
+                        projectDeclaration,
+                        qualifiedModuleName.ComponentName,
+                        moduleAnnotations,
+                        moduleAttributes);
+                case ComponentType.MDIForm:
+                    return new MdiFormDeclaration(
+                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
+                        projectDeclaration,
+                        qualifiedModuleName.ComponentName,
+                        moduleAnnotations,
+                        moduleAttributes);
+                case ComponentType.UserControl:
+                    return new UserControlDeclaration(
+                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
+                        projectDeclaration,
+                        qualifiedModuleName.ComponentName,
+                        moduleAnnotations,
+                        moduleAttributes);
+                case ComponentType.DocObject:
+                    return new DocObjectDeclaration(
+                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
+                        projectDeclaration,
+                        qualifiedModuleName.ComponentName,
+                        moduleAnnotations,
+                        moduleAttributes);
+                case ComponentType.ActiveXDesigner:
+                    return new ActiveXDesignerDeclaration(
+                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
+                        projectDeclaration,
+                        qualifiedModuleName.ComponentName,
+                        moduleAnnotations,
+                        moduleAttributes);
+                case ComponentType.PropPage:
+                    return new PropPageDeclaration(
+                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
+                        projectDeclaration,
+                        qualifiedModuleName.ComponentName,
+                        moduleAnnotations,
+                        moduleAttributes);
                 default:
                     return new ClassModuleDeclaration(
                         qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
