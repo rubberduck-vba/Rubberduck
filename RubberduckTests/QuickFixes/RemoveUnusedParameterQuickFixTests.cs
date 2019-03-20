@@ -6,6 +6,7 @@ using Rubberduck.Inspections.Concrete;
 using Rubberduck.Inspections.QuickFixes;
 using RubberduckTests.Mocks;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.RemoveParameters;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
@@ -37,7 +38,9 @@ End Sub";
                 var rewriteSession = rewritingManager.CheckOutCodePaneSession();
                 var selectionService = MockedSelectionService();
 
-                new RemoveUnusedParameterQuickFix(state, new Mock<IRefactoringPresenterFactory>().Object, rewritingManager, selectionService)
+                var factory = new Mock<IRefactoringPresenterFactory>().Object;
+                var refactoring = new RemoveParametersRefactoring(state, factory, rewritingManager, selectionService);
+                new RemoveUnusedParameterQuickFix(refactoring)
                     .Fix(inspectionResults.First(), rewriteSession);
                 Assert.AreEqual(expectedCode, component.CodeModule.Content());
             }
