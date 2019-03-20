@@ -173,6 +173,7 @@ namespace Rubberduck.Root
             RegisterParseTreeInspections(container, assembliesToRegister);
             RegisterInspections(container, assembliesToRegister);
             RegisterQuickFixes(container, assembliesToRegister);
+            RegisterRefactorings(container, assembliesToRegister);
             RegisterAutoCompletes(container, assembliesToRegister);
             RegisterCodeMetrics(container, assembliesToRegister);
 
@@ -180,6 +181,18 @@ namespace Rubberduck.Root
             RegisterFactories(container, assembliesToRegister);
 
             ApplyDefaultInterfaceConvention(container, assembliesToRegister);
+        }
+
+        private void RegisterRefactorings(IWindsorContainer container, Assembly[] assembliesToRegister)
+        {
+            foreach (var assembly in assembliesToRegister)
+            {
+                container.Register(Classes.FromAssembly(assembly)
+                    .IncludeNonPublicTypes()
+                    .BasedOn<IRefactoring>()
+                    .WithServiceSelf()
+                    .LifestyleSingleton());
+            }
         }
 
         private void RegisterCodeMetrics(IWindsorContainer container, Assembly[] assembliesToRegister)
