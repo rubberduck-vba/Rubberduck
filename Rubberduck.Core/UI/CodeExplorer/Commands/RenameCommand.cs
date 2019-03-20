@@ -5,7 +5,9 @@ using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
@@ -19,26 +21,22 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerMemberViewModel)
         };
 
-        private readonly RubberduckParserState _state;
-        private readonly IRefactoringPresenterFactory _factory;
-        private readonly IMessageBox _msgBox;
-        private readonly IRewritingManager _rewritingManager;
-        private readonly ISelectionService _selectionService;
+        private readonly IParserStatusProvider _parserStatusProvider;
+        private readonly IRefactoring _refactoring;
+        private readonly IRefactoringFailureNotifier _failureNotifier;
 
-        public RenameCommand(RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+        public RenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IParserStatusProvider parserStatusProvider)
         {
-            _selectionService = selectionService;
-            _state = state;
-            _rewritingManager = rewritingManager;
-            _msgBox = msgBox;
-            _factory = factory;
+            _refactoring = refactoring;
+            _failureNotifier = renameFailedNotifier;
+            _parserStatusProvider = parserStatusProvider;
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            return _state.Status == ParserState.Ready && base.EvaluateCanExecute(parameter);
+            return _parserStatusProvider.Status == ParserState.Ready && base.EvaluateCanExecute(parameter);
         }
 
         protected override void OnExecute(object parameter)
@@ -50,8 +48,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            var refactoring = new RenameRefactoring(_factory, _state, _state.ProjectsProvider, _rewritingManager, _selectionService);
-            refactoring.Refactor(node.Declaration);
+            try
+            {
+                _refactoring.Refactor(node.Declaration);
+            }
+            catch (RefactoringAbortedException)
+            {}
+            catch (RefactoringException exception)
+            {
+                _failureNotifier.Notify(exception);
+            }
         }
     }
 }
