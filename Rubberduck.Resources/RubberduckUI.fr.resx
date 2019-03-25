@@ -1095,7 +1095,7 @@ les projets dans le VBE.</value>
 {1} marqueurs trouvés.</value>
   </data>
   <data name="CodeMetrics_Nesting" xml:space="preserve">
-    <value>P</value>
+    <value>Imbrication</value>
   </data>
   <data name="CodeMetrics_Complexity" xml:space="preserve">
     <value>Complexité Cyclomatique</value>
@@ -1362,5 +1362,48 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   </data>
   <data name="Language_ES" xml:space="preserve">
     <value>Español</value>
+  </data>
+  <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
+    <value>Échec de la récupération des attributs.</value>
+  </data>
+  <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
+    <value>Les attributs des membres des modules suivants n'ont pas pu être récupérés: {0}</value>
+  </data>
+  <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
+    <value>Échec de la récupération des attributs</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' n'est pas défini par l'utilisateur</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+    <value>'{0}' doit être défini dans le même projet que la cible.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>'{0}' n'est utilisé ni dans le module où il est défini, ni dans un module standard.</value>
+  </data>
+  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>La procédure qui utilise '{0}' contient déjà une déclaration utilisant cet identifiant.</value>
+  </data>
+  <data name="GroupingGrid_Filter" xml:space="preserve">
+    <value>Filtre</value>
+  </data>
+  <data name="GroupingStyle_ByName" xml:space="preserve">
+    <value>Par inspection</value>
+  </data>
+  <data name="GroupingStyle_BySeverity" xml:space="preserve">
+    <value>Par sévérité</value>
+  </data>
+  <data name="InspectionResults_CollapseAll" xml:space="preserve">
+    <value>Réduire tout</value>
+  </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Parcourir...</value>
+  </data>
+  <data name="InspectionResults_ExpandAll" xml:space="preserve">
+    <value>Développer tout</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' est accessible globalement, et est utilisé</value>
+    
   </data>
 </root>

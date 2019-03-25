@@ -364,4 +364,19 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Les attributs ne sont pas visibles dans l'éditeur. En ajoutant une annotation, ces attributs deviennent plus explicites, et Rubberduck peut assurer la synchronisation des attrbuts avec ces annotations.</value>
   </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Un mot-clé est utilisé comme nom de membre d'une énumétation ou d'un type défini par l'utilisateur. Ceci peut entraîner une résolution ambiguë, considérez renommer le membre.</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Des marqueurs de continuation sont présents entre les mots-clés. Bien que ce soit légal, il n'y a pas de raison valable de le faire. Considérez supprimer les marqueurs de continuation.</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>L'identifiant contient un espace insécable (&amp;nbsp;), ce qui lui donne l'apparence d'un espace régulier (illégal dans un identifiant), obscurcit le code et rend son utilisation et sa maintenance généralement plus difficile. Considérez utiliser seulement des caractères visibles pour nommer les identifiants.</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Les numéros de lignes négatifs doivent être saisis avec une valeur hexadécimale, que l'éditeur "corrige". Modifier la ligne causera une erreur de compilation, puisque les numéros de lignes négatifs sont illégaux.</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>Bien que légale, cette syntaxe a un effet peu documentée -- toute erreur courante est supprimée, en plus de désactiver la gestion d'erreurs. L'instruction peut également être ambiguë, si la procédure contient effectivement une ligne -1. La stratégie de gestion d'erreurs semble plus complexe que nécessaire et pourrait être à revoir.</value>
+  </data>
 </root>

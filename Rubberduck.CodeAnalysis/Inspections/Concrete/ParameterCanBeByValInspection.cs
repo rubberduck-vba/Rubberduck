@@ -70,7 +70,7 @@ namespace Rubberduck.Inspections.Concrete
                 && (parameter.IsByRef || parameter.IsImplicitByRef)
                 && !IsParameterOfDeclaredLibraryFunction(parameter)
                 && (parameter.AsTypeDeclaration == null 
-                    || (parameter.AsTypeDeclaration.DeclarationType != DeclarationType.ClassModule 
+                    || (!parameter.AsTypeDeclaration.DeclarationType.HasFlag(DeclarationType.ClassModule)
                         && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType 
                         && parameter.AsTypeDeclaration.DeclarationType != DeclarationType.Enumeration))
                 && !parameter.References.Any(reference => reference.IsAssignment)

@@ -367,7 +367,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ThunderCode!.
+        ///   Looks up a localized string similar to ThunderCode 1.
         /// </summary>
         public static string KeywordsUsedAsMemberInspection {
             get {
@@ -376,7 +376,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ThunderCode!.
+        ///   Looks up a localized string similar to ThunderCode 10.
         /// </summary>
         public static string LineContinuationBetweenKeywordsInspection {
             get {
@@ -484,7 +484,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ThunderCode!.
+        ///   Looks up a localized string similar to ThunderCode 100.
         /// </summary>
         public static string NegativeLineNumberInspection {
             get {
@@ -493,7 +493,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ThunderCode!.
+        ///   Looks up a localized string similar to ThunderCode 11.
         /// </summary>
         public static string NonBreakingSpaceIdentifierInspection {
             get {
@@ -592,7 +592,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ThunderCode!.
+        ///   Looks up a localized string similar to ThunderCode 101.
         /// </summary>
         public static string OnErrorGoToMinusOneInspection {
             get {

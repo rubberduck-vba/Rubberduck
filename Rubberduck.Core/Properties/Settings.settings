@@ -35,7 +35,7 @@
     &lt;CodeInspection Name="EmptyModuleInspection" Severity="Hint" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
     &lt;CodeInspection Name="LineLabelNotUsedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="IntegerDataTypeInspection" Severity="Hint" InspectionType="CodeQualityIssues" /&gt;
-    &lt;CodeInspection Name="ShadowedDeclarationInspection" Severity="DoNotShow" InspectionType="CodeQualityIssues" /&gt;
+    &lt;CodeInspection Name="ShadowedDeclarationInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="ConstantNotUsedInspection" Severity="Warning" InspectionType="CodeQualityIssues" /&gt;
     &lt;CodeInspection Name="DefaultProjectNameInspection" Severity="Suggestion" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;
     &lt;CodeInspection Name="EmptyCaseBlockInspection" Severity="Warning" InspectionType="MaintainabilityAndReadabilityIssues" /&gt;

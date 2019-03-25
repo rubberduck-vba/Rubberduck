@@ -23,7 +23,7 @@ namespace Rubberduck.UI.About
             }
         }
 
-        private void CopyVersionInfo_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void CopyVersionInfo_Click(object sender, RoutedEventArgs e)
         {
             CopyVersionInfoToClipboard();
         }

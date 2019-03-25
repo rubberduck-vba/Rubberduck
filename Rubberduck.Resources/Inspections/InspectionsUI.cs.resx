@@ -177,4 +177,25 @@
   <data name="CodeInspectionSeverity_All" xml:space="preserve">
     <value>Vše</value>
   </data>
+  <data name="CodeInspection_Filter" xml:space="preserve">
+    <value>Filtr</value>
+  </data>
+  <data name="ExportColumnHeader_Column" xml:space="preserve">
+    <value>Sloupec</value>
+  </data>
+  <data name="ExportColumnHeader_Component" xml:space="preserve">
+    <value>Komponenta</value>
+  </data>
+  <data name="ExportColumnHeader_Issue" xml:space="preserve">
+    <value>Problém</value>
+  </data>
+  <data name="ExportColumnHeader_Line" xml:space="preserve">
+    <value>Řádek</value>
+  </data>
+  <data name="ExportColumnHeader_Project" xml:space="preserve">
+    <value>Projekt</value>
+  </data>
+  <data name="ExportColumnHeader_Type" xml:space="preserve">
+    <value>Typ</value>
+  </data>
 </root>

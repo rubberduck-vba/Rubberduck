@@ -1511,11 +1511,11 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
-    <value>'{0}' is defined neither in the component component it is used not in a standard module. </value>
+    <value>'{0}' is defined neither in the component component it is used nor in a standard module. </value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
-    <value>'{0}' is a non-private module variable outside a standard module.</value>
+    <value>'{0}' is globally accessible and is in use.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">

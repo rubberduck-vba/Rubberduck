@@ -43,7 +43,7 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement.CompilationPasses
 
         private void AnnotateType(Declaration declaration)
         {
-            if (declaration.DeclarationType == DeclarationType.ClassModule || 
+            if (declaration.DeclarationType.HasFlag(DeclarationType.ClassModule) || 
                 declaration.DeclarationType == DeclarationType.UserDefinedType || 
                 declaration.DeclarationType == DeclarationType.ComAlias)
             {
