@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Misc;
 using Rubberduck.Common;
 using Rubberduck.Interaction;
 using Rubberduck.Parsing;
@@ -10,57 +7,53 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.UI;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.Refactorings.MoveCloserToUsage
 {
     public class MoveCloserToUsageRefactoring : IRefactoring
     {
-        private readonly List<Declaration> _declarations;
-        private readonly IVBE _vbe;
-        private readonly RubberduckParserState _state;
+        private readonly ISelectionService _selectionService;
+        private readonly IDeclarationFinderProvider _declarationFinderProvider;
         private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
         private Declaration _target;
 
-        public MoveCloserToUsageRefactoring(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
+        public MoveCloserToUsageRefactoring(IDeclarationFinderProvider declarationFinderProvider, IMessageBox messageBox, IRewritingManager rewritingManager, ISelectionService selectionService)
         {
-            //TODO: Use the DeclarationFinder instead and inject an IDeclarationFinderProvider instead of the RubberduckParserState. (Callers are not affected.) 
-            _declarations = state.AllUserDeclarations.ToList();
-            _vbe = vbe;
-            _state = state;
+            _selectionService = selectionService;
+            _declarationFinderProvider = declarationFinderProvider;
             _rewritingManager = rewritingManager;
             _messageBox = messageBox;
         }
 
         public void Refactor()
         {
-            var qualifiedSelection = _vbe.GetActiveSelection();
-
-            if (qualifiedSelection != null)
-            {
-                Refactor(_declarations.FindVariable(qualifiedSelection.Value));
-            }
-            else
+            var activeSelection = _selectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
                 _messageBox.NotifyWarn(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.MoveCloserToUsage_Caption);
+                return;
             }
+
+            Refactor(activeSelection.Value);
         }
 
         public void Refactor(QualifiedSelection selection)
         {
-            _target = _declarations.FindVariable(selection);
+            var target = _declarationFinderProvider.DeclarationFinder
+                .UserDeclarations(DeclarationType.Variable)
+                .FindVariable(selection);
 
-            if (_target == null)
+            if (target == null)
             {
                 _messageBox.NotifyWarn(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
                 return;
             }
 
-            MoveCloserToUsage();
+            Refactor(target);
         }
 
         public void Refactor(Declaration target)
@@ -68,6 +61,12 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             if (target.DeclarationType != DeclarationType.Variable)
             {
                 _messageBox.NotifyWarn(RubberduckUI.MoveCloserToUsage_InvalidSelection, RubberduckUI.IntroduceParameter_Caption);
+                return;
+            }
+
+            if (!target.IsUserDefined)
+            {
+                _messageBox.NotifyWarn(RubberduckUI.MoveCloserToUsage_TargetIsNotUserDefined, RubberduckUI.IntroduceParameter_Caption);
                 return;
             }
 
@@ -80,6 +79,82 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             var firstReference = target.References.FirstOrDefault();
 
             return firstReference != null && target.References.Any(r => !Equals(r.ParentScoping, firstReference.ParentScoping));
+        }
+
+        private bool TargetIsInDifferentProject(Declaration target)
+        {
+            var firstReference = target.References.FirstOrDefault();
+            if (firstReference == null)
+            {
+                return false;
+            }
+
+            return firstReference.QualifiedModuleName.ProjectId != target.ProjectId;
+        }
+
+        private bool TargetIsInDifferentNonStandardModule(Declaration target)
+        {
+            var firstReference = target.References.FirstOrDefault();
+            if (firstReference == null)
+            {
+                return false;
+            }
+
+            return !target.QualifiedModuleName.Equals(firstReference.QualifiedModuleName)
+                   && Declaration.GetModuleParent(target).DeclarationType != DeclarationType.ProceduralModule;
+        }
+
+        private bool TargetIsNonPrivateInNonStandardModule(Declaration target)
+        {
+            if (!_target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+            {
+                //local variable
+                return false;
+            }
+
+            return target.Accessibility != Accessibility.Private
+                && Declaration.GetModuleParent(target).DeclarationType != DeclarationType.ProceduralModule;
+        }
+
+        private bool ReferencingMethodHasOtherSameNameDeclarationInScope(Declaration target)
+        {
+            var firstReference = target.References.FirstOrDefault();
+            if (firstReference == null)
+            {
+                return false;
+            }
+
+            if (firstReference.ParentScoping.Equals(_target.ParentScopeDeclaration))
+            {
+                //The variable is already in the same scope and consequently the identifier already refers to the declaration there.
+                return false;
+            }
+
+            var sameNameDeclarationsInModule = _declarationFinderProvider.DeclarationFinder
+                .MatchName(_target.IdentifierName)
+                .Where(decl => decl.QualifiedModuleName.Equals(firstReference.QualifiedModuleName))
+                .ToList();
+
+            var sameNameVariablesInProcedure = sameNameDeclarationsInModule
+                .Where(decl => decl.DeclarationType == DeclarationType.Variable 
+                               && decl.ParentScopeDeclaration.Equals(firstReference.ParentScoping));
+            if (sameNameVariablesInProcedure.Any())
+            {
+                return true;
+            }
+
+            if (_target.QualifiedModuleName.Equals(firstReference.QualifiedModuleName))
+            {
+                //The variable is a module variable in the same module.
+                //Since there is no local declaration of the of the same name in the procedure,
+                //the identifier already refers to the declaration inside the method. 
+                return false;
+            }
+
+            //We know that the target is the only public variable of that name in a different standard module.
+            var sameNameDeclarationWithModuleScope = sameNameDeclarationsInModule
+                .Where(decl => decl.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module));
+            return sameNameDeclarationWithModuleScope.Any();
         }
 
         private void MoveCloserToUsage()
@@ -100,53 +175,47 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 return;
             }
 
-            QualifiedSelection? oldSelection = null;
-            using (var pane = _vbe.ActiveCodePane)
+            if (TargetIsInDifferentProject(_target))
             {
-                if (!pane.IsWrappingNullReference)
-                {
-                    oldSelection = pane.GetQualifiedSelection();
-                }
+                var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetIsInDifferentProject,
+                    _target.IdentifierName);
+                _messageBox.NotifyWarn(message, RubberduckUI.MoveCloserToUsage_Caption);
 
-                var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
-                InsertNewDeclaration(rewriteSession);
-                RemoveOldDeclaration(rewriteSession);
-                UpdateOtherModules(rewriteSession);
-                rewriteSession.TryRewrite();
-
-                if (oldSelection.HasValue && !pane.IsWrappingNullReference)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
+                return;
             }
-        }
 
-        private void UpdateOtherModules(IRewriteSession rewriteSession)
-        {
-            QualifiedSelection? oldSelection = null;
-            using (var pane = _vbe.ActiveCodePane)
+            if (TargetIsInDifferentNonStandardModule(_target))
             {
-                if (!pane.IsWrappingNullReference)
-                {
-                    oldSelection = pane.GetQualifiedSelection();
-                }
+                var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetIsInOtherNonStandardModule,
+                    _target.IdentifierName);
+                _messageBox.NotifyWarn(message, RubberduckUI.MoveCloserToUsage_Caption);
 
-                var newTarget = _state.DeclarationFinder.MatchName(_target.IdentifierName).FirstOrDefault(
-                    item => item.ComponentName == _target.ComponentName &&
-                            item.ParentScope == _target.ParentScope &&
-                            item.ProjectId == _target.ProjectId &&
-                            Equals(item.Selection, _target.Selection));
-
-                if (newTarget != null)
-                {
-                    UpdateCallsToOtherModule(newTarget.References.ToList(), rewriteSession);
-                }
-
-                if (oldSelection.HasValue)
-                {
-                    pane.Selection = oldSelection.Value.Selection;
-                }
+                return;
             }
+
+            if (TargetIsNonPrivateInNonStandardModule(_target))
+            {
+                var message = string.Format(RubberduckUI.MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule,
+                    _target.IdentifierName);
+                _messageBox.NotifyWarn(message, RubberduckUI.MoveCloserToUsage_Caption);
+
+                return;
+            }
+
+            if (ReferencingMethodHasOtherSameNameDeclarationInScope(_target))
+            {
+                var message = string.Format(RubberduckUI.MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope,
+                    _target.IdentifierName);
+                _messageBox.NotifyWarn(message, RubberduckUI.MoveCloserToUsage_Caption);
+
+                return;
+            }
+
+            var rewriteSession = _rewritingManager.CheckOutCodePaneSession();
+            InsertNewDeclaration(rewriteSession);
+            RemoveOldDeclaration(rewriteSession);
+            UpdateQualifiedCalls(rewriteSession);
+            rewriteSession.TryRewrite();
         }
 
         private void InsertNewDeclaration(IRewriteSession rewriteSession)
@@ -155,31 +224,52 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             var identifier = _target.IsArray ? $"{_target.IdentifierName}({subscripts})" : _target.IdentifierName;
 
             var newVariable = _target.AsTypeContext is null
-                ? $"{Tokens.Dim} {identifier} {Tokens.As} {Tokens.Variant}{Environment.NewLine}"
-                : $"{Tokens.Dim} {identifier} {Tokens.As} {(_target.IsSelfAssigned ? Tokens.New + " " : string.Empty)}{_target.AsTypeNameWithoutArrayDesignator}{Environment.NewLine}";
+                ? $"{Tokens.Dim} {identifier} {Tokens.As} {Tokens.Variant}"
+                : $"{Tokens.Dim} {identifier} {Tokens.As} {(_target.IsSelfAssigned ? Tokens.New + " " : string.Empty)}{_target.AsTypeNameWithoutArrayDesignator}";
 
             var firstReference = _target.References.OrderBy(r => r.Selection.StartLine).First();
 
-            RuleContext expression = firstReference.Context;
-            while (!(expression is VBAParser.BlockStmtContext))
-            {
-                expression = expression.Parent;
-            }
-
-            var insertionIndex = (expression as ParserRuleContext).Start.TokenIndex;
-            int indentLength;
-            using (var pane = _vbe.ActiveCodePane)
-            {
-                using (var codeModule = pane.CodeModule)
-                {
-                    var firstReferenceLine = codeModule.GetLines((expression as ParserRuleContext).Start.Line, 1);
-                    indentLength = firstReferenceLine.Length - firstReferenceLine.TrimStart().Length;
-                }
-            }
-            var padding = new string(' ', indentLength);
+            var enclosingBlockStatement = firstReference.Context.GetAncestor<VBAParser.BlockStmtContext>();
+            var insertionIndex = enclosingBlockStatement.Start.TokenIndex;
+            var insertCode = PaddedDeclaration(newVariable, enclosingBlockStatement);
 
             var rewriter = rewriteSession.CheckOutModuleRewriter(firstReference.QualifiedModuleName);
-            rewriter.InsertBefore(insertionIndex, newVariable + padding);
+            rewriter.InsertBefore(insertionIndex, insertCode);
+        }
+
+        private string PaddedDeclaration(string declarationText, VBAParser.BlockStmtContext blockStmtContext)
+        {
+            if (blockStmtContext.TryGetPrecedingContext(out VBAParser.IndividualNonEOFEndOfStatementContext precedingEndOfStatement))
+            {
+                if (precedingEndOfStatement.COLON() != null)
+                {
+                    //You have been asking for it!
+                    return $"{declarationText} : ";
+                }
+
+                var labelContext = blockStmtContext.statementLabelDefinition();
+                if (labelContext != null)
+                {
+                    var labelAsSpace = new string(' ', labelContext.GetText().Length);
+                    return $"{labelAsSpace}{blockStmtContext.whiteSpace()?.GetText()}{declarationText}{Environment.NewLine}";
+                }
+
+                var precedingWhitespaces = precedingEndOfStatement.whiteSpace();
+                if (precedingWhitespaces != null && precedingWhitespaces.Length > 0)
+                {
+                    return $"{declarationText}{Environment.NewLine}{precedingWhitespaces[0]?.GetText()}";
+                }
+
+                return $"{declarationText}{Environment.NewLine}";
+            }
+            //This is the very first statement. In the context of this refactoring, this should not happen since we move a declaration into or inside a method.
+            //We will handle this edge-case nonetheless and return the result with the proper indentation for this special case.
+            if (blockStmtContext.TryGetPrecedingContext(out VBAParser.WhiteSpaceContext startingWhitespace))
+            {
+                return $"{declarationText}{Environment.NewLine}{startingWhitespace?.GetText()}";
+            }
+
+            return $"{declarationText}{Environment.NewLine}";
         }
 
         private void RemoveOldDeclaration(IRewriteSession rewriteSession)
@@ -188,34 +278,39 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             rewriter.Remove(_target);
         }
 
-        private void UpdateCallsToOtherModule(IEnumerable<IdentifierReference> references, IRewriteSession rewriteSession)
+        private void UpdateQualifiedCalls(IRewriteSession rewriteSession)
         {
-            foreach (var reference in references.OrderByDescending(o => o.Selection.StartLine).ThenByDescending(t => t.Selection.StartColumn))
+            var references = _target.References.ToList();
+            var rewriter = rewriteSession.CheckOutModuleRewriter(references.First().QualifiedModuleName);
+            foreach (var reference in references)
             {
-                // todo: Grab `GetAncestor` and use that
-                var parent = reference.Context.Parent;
-                while (!(parent is VBAParser.MemberAccessExprContext) && parent.Parent != null)
-                {
-                    parent = parent.Parent;
-                }
-
-                if (!(parent is VBAParser.MemberAccessExprContext))
-                {
-                    continue;
-                }
-
-                // member access might be to something unrelated to the rewritten target.
-                // check we're not accidentally overwriting some other member-access who just happens to be a parent context
-                var memberAccessContext = (VBAParser.MemberAccessExprContext)parent;
-                if (memberAccessContext.unrestrictedIdentifier().GetText() != _target.IdentifierName)
-                {
-                    continue;
-                }
-
-                var rewriter = rewriteSession.CheckOutModuleRewriter(reference.QualifiedModuleName);
-                var tokenInterval = Interval.Of(parent.SourceInterval.a, reference.Context.SourceInterval.b);
-                rewriter.Replace(tokenInterval, reference.IdentifierName);
+                MakeReferenceUnqualified(reference, rewriter);
             }
+        }
+
+        private void MakeReferenceUnqualified(IdentifierReference reference, IModuleRewriter rewriter)
+        {
+            var memberAccessContext = reference.Context.GetAncestor<VBAParser.MemberAccessExprContext>();
+            if (memberAccessContext == null)
+            {
+                return;
+            }
+
+            // member access might be to something unrelated to the rewritten target.
+            // check we're not accidentally overwriting some other member-access who just happens to be a parent context
+            if (memberAccessContext.unrestrictedIdentifier()?.GetText() != _target.IdentifierName)
+            {
+                return;
+            }
+            var qualification = memberAccessContext.lExpression().GetText();
+            if (!qualification.Equals(_target.ComponentName, StringComparison.InvariantCultureIgnoreCase)
+                && !qualification.Equals(_target.ProjectName, StringComparison.InvariantCultureIgnoreCase)
+                && !qualification.Equals($"{_target.QualifiedModuleName.ProjectName}.{_target.ComponentName}", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
+
+            rewriter.Replace(memberAccessContext, reference.IdentifierName);
         }
     }
 }

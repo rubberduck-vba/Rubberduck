@@ -364,4 +364,19 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Modulattribute werden von der VBE nicht angezeigt. Durch das hinzufügen einer Annotation werden diese Attribute deutlicher. Außerdem kann Rubberduck die Annotationen und Attribute synchronisieren.</value>
   </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>Ein Schlüsselwort wird als Name eines Elements einer Aufzählung oder eines benutzerdefinierten Typs verwendet. Dies kann zu Problemen bei der Auflösung von Referenzen auf das Element führen. Sie sollten in Betracht ziehen den Namen zu ändern.</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>Es befinden sich Zeilenfortsetzungszeichen zwischen Schlüsselwörtern. Dafür gibt es keinen guten Grund. Sie sollten in Betracht ziehen sie zu entfernen.</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>Der Bezeichner enthält ein geschütztes Leerzeichen, welches wie eine gewöhnliches Leerzeichen aussieht (nicht zulässig in Bezeichnern). Die macht es schwerer den Programmcode zu lesen. Sie sollten in Betracht ziehen stattdessen sichtbare Zeichen zu verwenden.</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>Negative Zeilennummern können nur im Hexadezimalformat eingegeben werden, welches der VBE in negative Dezimalzahlen wandelt. Wird der Programmcode kopiert, mach die negative Dezimalzahl als Zeilennummer ihn illegal.</value>
+  </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>Hierbei handelt es sich um ein schlecht dokumentiertes Feature: Im Normallfall wird der Fehlerspeicher geleert und jegliche Fehlerbehandlung deaktiviert. Sollte allerdings -1 als Zeilennummer vorhanden sein, kann diese als Marker der zu verwendenden Fehlerbehandlung interpretiert werden.</value>
+  </data>
 </root>

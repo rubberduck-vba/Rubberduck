@@ -8,6 +8,9 @@ using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Refactorings;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Commands
 {
@@ -24,8 +27,7 @@ namespace RubberduckTests.Commands
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -40,7 +42,7 @@ namespace RubberduckTests.Commands
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -58,8 +60,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -77,8 +78,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(encapsulateFieldCommand.CanExecute(null));
             }
         }
@@ -96,11 +96,18 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var encapsulateFieldCommand = new RefactorEncapsulateFieldCommand(vbe.Object, state, null, rewritingManager);
+                var encapsulateFieldCommand = TestRefactorEncapsulateFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(encapsulateFieldCommand.CanExecute(null));
             }
         }
+
+        private RefactorEncapsulateFieldCommand TestRefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var factory = new Mock<IRefactoringPresenterFactory>().Object;
+            var selectionService = MockedSelectionService(vbe);
+            return new RefactorEncapsulateFieldCommand(state, null, factory, rewritingManager, selectionService);
+        }
+
 
         [Category("Commands")]
         [Test]
@@ -112,8 +119,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -128,8 +134,7 @@ End Sub";
             using (state)
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -142,7 +147,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -154,13 +159,11 @@ End Sub";
             var input =
                 @"Sub foo()
 End Sub";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -173,8 +176,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -209,7 +211,7 @@ End Sub
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -236,8 +238,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -254,8 +255,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 var canExecute = extractInterfaceCommand.CanExecute(null);
                 Assert.IsTrue(canExecute);
             }
@@ -273,8 +273,7 @@ End Function";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -291,8 +290,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -309,8 +307,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
         }
@@ -327,10 +324,17 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var extractInterfaceCommand = new RefactorExtractInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var extractInterfaceCommand = TestRefactorExtractInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(extractInterfaceCommand.CanExecute(null));
             }
+        }
+
+        private RefactorExtractInterfaceCommand TestRefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var selectionService = MockedSelectionService(vbe);
+            var factory = new Mock<IRefactoringPresenterFactory>().Object;
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorExtractInterfaceCommand(state, msgBox, factory, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -343,8 +347,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var implementInterfaceCommand = TestRefactorImplementInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -360,7 +363,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var implementInterfaceCommand = TestRefactorImplementInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -373,8 +376,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var implementInterfaceCommand = TestRefactorImplementInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(implementInterfaceCommand.CanExecute(null));
             }
         }
@@ -393,10 +395,16 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var implementInterfaceCommand = new RefactorImplementInterfaceCommand(vbe.Object, state, null, rewritingManager);
+                var implementInterfaceCommand = TestRefactorImplementInterfaceCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(implementInterfaceCommand.CanExecute(null));
             }
+        }
+
+        private RefactorImplementInterfaceCommand TestRefactorImplementInterfaceCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var selectionService = MockedSelectionService(vbe);
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorImplementInterfaceCommand(state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -408,9 +416,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceFieldCommand = TestRefactorIntroduceFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -426,8 +432,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceFieldCommand = TestRefactorIntroduceFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -440,9 +445,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceFieldCommand = TestRefactorIntroduceFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(introduceFieldCommand.CanExecute(null));
             }
         }
@@ -460,11 +463,16 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var msgbox = new Mock<IMessageBox>();
-                var introduceFieldCommand = new RefactorIntroduceFieldCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceFieldCommand = TestRefactorIntroduceFieldCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(introduceFieldCommand.CanExecute(null));
             }
+        }
+
+        private RefactorIntroduceFieldCommand TestRefactorIntroduceFieldCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var selectionService = MockedSelectionService(vbe);
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorIntroduceFieldCommand(state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -476,9 +484,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var msgbox = new Mock<IMessageBox>();
-                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceParameterCommand = TestRefactorIntroduceParameterCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(introduceParameterCommand.CanExecute(null));
             }
         }
@@ -494,8 +500,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var msgbox = new Mock<IMessageBox>();
-                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceParameterCommand = TestRefactorIntroduceParameterCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(introduceParameterCommand.CanExecute(null));
             }
         }
@@ -508,9 +513,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var msgbox = new Mock<IMessageBox>();
-                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceParameterCommand = TestRefactorIntroduceParameterCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(introduceParameterCommand.CanExecute(null));
             }
         }
@@ -528,11 +531,16 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var msgbox = new Mock<IMessageBox>();
-                var introduceParameterCommand = new RefactorIntroduceParameterCommand(vbe.Object, state, msgbox.Object, rewritingManager);
+                var introduceParameterCommand = TestRefactorIntroduceParameterCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(introduceParameterCommand.CanExecute(null));
             }
+        }
+
+        private RefactorIntroduceParameterCommand TestRefactorIntroduceParameterCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var selectionService = MockedSelectionService(vbe);
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorIntroduceParameterCommand(state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -545,7 +553,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -561,7 +569,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -575,7 +583,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -594,7 +602,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -608,7 +616,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -628,7 +636,7 @@ End Sub";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -648,7 +656,7 @@ End Property";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
             }
         }
@@ -669,9 +677,16 @@ End Sub";
             using (state)
             {
 
-                var moveCloserToUsageCommand = new RefactorMoveCloserToUsageCommand(vbe.Object, state, null, rewritingManager);
+                var moveCloserToUsageCommand = TestRefactorMoveCloserToUsageCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(moveCloserToUsageCommand.CanExecute(null));
             }
+        }
+
+        private RefactorMoveCloserToUsageCommand TestRefactorMoveCloserToUsageCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var selectionService = MockedSelectionService(vbe);
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorMoveCloserToUsageCommand(state, msgBox, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -684,7 +699,7 @@ End Sub";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -700,7 +715,7 @@ End Sub";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -717,7 +732,7 @@ End Sub";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -735,7 +750,7 @@ End Sub";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -753,7 +768,7 @@ End Function";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -771,7 +786,7 @@ End Property";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -789,7 +804,7 @@ End Property";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -807,7 +822,7 @@ End Property";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(removeParametersCommand.CanExecute(null));
             }
         }
@@ -824,7 +839,7 @@ End Property";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -842,7 +857,7 @@ End Sub";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -860,7 +875,7 @@ End Function";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -878,7 +893,7 @@ End Property";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -896,7 +911,7 @@ End Property";
             using (state)
             {
 
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
         }
@@ -913,10 +928,16 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var removeParametersCommand = new RefactorRemoveParametersCommand(vbe.Object, state, null, rewritingManager);
+                var removeParametersCommand = TestRefactorRemoveParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(removeParametersCommand.CanExecute(null));
             }
+        }
+
+        private RefactorRemoveParametersCommand TestRefactorRemoveParametersCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var factory = new Mock<IRefactoringPresenterFactory>().Object;
+            var selectionService = MockedSelectionService(vbe);
+            return new RefactorRemoveParametersCommand(state, factory, rewritingManager, selectionService);
         }
 
         [Category("Commands")]
@@ -928,8 +949,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -945,7 +965,7 @@ End Property";
             {
                 state.SetStatusAndFireStateChanged(this, ParserState.ResolvedDeclarations, CancellationToken.None);
 
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -956,13 +976,11 @@ End Property";
         {
             const string input =
                 @"Public Event Foo(value)";
-
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(input, out _, new Selection(1, 16, 1, 16));
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -979,8 +997,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -997,8 +1014,7 @@ End Function";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1015,8 +1031,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1033,8 +1048,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1051,8 +1065,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsFalse(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1068,8 +1081,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1086,8 +1098,7 @@ End Sub";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1104,8 +1115,7 @@ End Function";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1122,8 +1132,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1140,8 +1149,7 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
         }
@@ -1158,10 +1166,25 @@ End Property";
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using (state)
             {
-
-                var reorderParametersCommand = new RefactorReorderParametersCommand(vbe.Object, state, null, rewritingManager);
+                var reorderParametersCommand = TestRefactorReorderParametersCommand(vbe.Object, state, rewritingManager);
                 Assert.IsTrue(reorderParametersCommand.CanExecute(null));
             }
+        }
+
+        private RefactorReorderParametersCommand TestRefactorReorderParametersCommand(IVBE vbe, RubberduckParserState state, IRewritingManager rewritingManager)
+        {
+            var factory = new Mock<IRefactoringPresenterFactory>().Object;
+            var selectionService = MockedSelectionService(vbe);
+            var msgBox = new Mock<IMessageBox>().Object;
+            return new RefactorReorderParametersCommand(state, factory, msgBox, rewritingManager, selectionService);
+        }
+
+        private ISelectionService MockedSelectionService(IVBE vbe)
+        {
+            var selectionServiceMock = new Mock<ISelectionService>();
+            var activeSelection = vbe.ActiveCodePane?.GetQualifiedSelection();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            return selectionServiceMock.Object;
         }
     }
 }

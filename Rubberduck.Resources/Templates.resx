@@ -133,6 +133,7 @@ Attribute VB_Ext_KEY = "Rubberduck", "Predeclared Class Module"
 
 Option Explicit
 '@PredeclaredId</value>
+    <comment>do not translate</comment>
   </data>
   <data name="PredeclaredClassModule_Description" xml:space="preserve">
     <value>Adds a class module that is predeclared and thus can be used without first creating a new instance.</value>

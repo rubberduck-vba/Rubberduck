@@ -38,7 +38,7 @@ If you like this project and would like to thank its contributors, you are welco
 
 Rubberduck is a COM add-in for the VBA IDE (VBE).
 
-Copyright (C) 2014-2018 Rubberduck project contributors
+Copyright (C) 2014-2019 Rubberduck project contributors
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

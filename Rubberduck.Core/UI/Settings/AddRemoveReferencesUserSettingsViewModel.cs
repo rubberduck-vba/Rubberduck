@@ -11,14 +11,17 @@ using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
 {
-    public class AddRemoveReferencesUserSettingsViewModel : SettingsViewModelBase, ISettingsViewModel
+    public class AddRemoveReferencesUserSettingsViewModel : SettingsViewModelBase<ReferenceSettings>, ISettingsViewModel<ReferenceSettings>
     {
         private readonly IConfigProvider<ReferenceSettings> _provider;
         private readonly IFileSystemBrowserFactory _browserFactory;
         private readonly ReferenceSettings _clean;
 
-
-        public AddRemoveReferencesUserSettingsViewModel(IConfigProvider<ReferenceSettings> provider, IFileSystemBrowserFactory browserFactory)
+        public AddRemoveReferencesUserSettingsViewModel(
+            IConfigProvider<ReferenceSettings> provider, 
+            IFileSystemBrowserFactory browserFactory,
+            IFilePersistanceService<ReferenceSettings> service)
+            : base(service)
         {
             _provider = provider;
             _browserFactory = browserFactory;
@@ -33,6 +36,7 @@ namespace Rubberduck.UI.Settings
         }
 
         private int _recent;
+
         public int RecentReferencesTracked
         {
             get => _recent;
@@ -84,13 +88,17 @@ namespace Rubberduck.UI.Settings
             ProjectPaths.Remove(path);
         }
 
-        private void TransferSettingsToView(ReferenceSettings loading)
+        protected override void TransferSettingsToView(ReferenceSettings loading)
         {
             RecentReferencesTracked = loading.RecentReferencesTracked;
             FixBrokenReferences = loading.FixBrokenReferences;
             AddToRecentOnReferenceEvents = loading.AddToRecentOnReferenceEvents;
             ProjectPaths = new ObservableCollection<string>(loading.ProjectPaths);
         }
+
+        protected override string DialogLoadTitle { get; }
+
+        protected override string DialogSaveTitle { get; }
 
         private void TransferViewToSettings(ReferenceSettings target)
         {

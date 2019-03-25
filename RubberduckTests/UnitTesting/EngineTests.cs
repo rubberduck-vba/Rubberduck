@@ -1,57 +1,44 @@
 using Moq;
 using NUnit.Framework;
-using Rubberduck.Parsing.UIContext;
 using Rubberduck.Resources.UnitTesting;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
-using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.VBA;
 
 namespace RubberduckTests.UnitTesting
 {
-    [TestFixture]
+    // FIXME - These commented tests need to be restored after TestEngine refactor.
+    [NonParallelizable]
+    [TestFixture, Apartment(ApartmentState.STA)]  
     public class EngineTests
     {
         [Test]
+        [TestCase(1)]
+        [TestCase(2)]
+        [TestCase(3)]
         [Category("Unit Testing")]
-        public void TestEngine_ExposesTestMethod_AndRaisesRefresh()
+        public void TestEngine_ExposesTestMethods_AndRaisesRefresh(int testCount)
         {
-            var testMethods = @"'@TestMethod
-Public Sub TestMethod1()
-End Sub";
-
-            var builder = new MockVbeBuilder()
-                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
-                .AddProjectToVbeBuilder();
-
-            var vbe = builder.Build().Object;
-            var parser = MockParser.Create(vbe);
-            var interaction = new Mock<IVBEInteraction>();
-            var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
-            var fakesFactory = new Mock<IFakesFactory>();
-            var dispatcher = new Mock<IUiDispatcher>();
-            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
-              .Callback((Action action) => action.Invoke())
-              .Verifiable();
-
-            using (var state = parser.State)
+            using (var engine = new MockedTestEngine(testCount))
             {
-                var engine = new TestEngine(state, fakesFactory.Object, interaction.Object, wrapperProvider.Object, dispatcher.Object, vbe);
-                int refreshes = 0;
-                engine.TestsRefreshed += (sender, args) => refreshes++;
-                parser.Parse(new CancellationTokenSource());
-                if (!engine.CanRun)
+                var started = 0;
+                var refreshes = 0;
+
+                engine.TestEngine.TestsRefreshStarted += (sender, args) => started++;
+                engine.TestEngine.TestsRefreshed += (sender, args) => refreshes++;
+                engine.ParserState.OnParseRequested(engine);
+
+                if (engine.ParserState.Status != ParserState.Ready)
                 {
                     Assert.Inconclusive("Parser Error");
                 }
 
-                Assert.AreEqual(1, engine.Tests.Count());
+                Assert.AreEqual(1, started);
                 Assert.AreEqual(1, refreshes);
+                Assert.AreEqual(testCount, engine.TestEngine.Tests.Count());
             }
         }
 
@@ -59,316 +46,209 @@ End Sub";
         [Category("Unit Testing")]
         public void TestEngine_RaisesRefreshEvent_EveryParserRun()
         {
-            var testMethods = @"'@TestMethod
-Public Sub TestMethod1()
-End Sub";
+            const int parserRuns = 5;
 
-            var builder = new MockVbeBuilder()
-                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
-                .AddProjectToVbeBuilder();
-
-            var vbe = builder.Build().Object;
-            var parser = MockParser.Create(vbe);
-            var interaction = new Mock<IVBEInteraction>();
-            var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
-            var fakesFactory = new Mock<IFakesFactory>();
-            var dispatcher = new Mock<IUiDispatcher>();
-            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
-              .Callback((Action action) => action.Invoke())
-              .Verifiable();
-
-            using (var state = parser.State)
+            using (var engine = new MockedTestEngine(MockedTestEngine.GetTestMethod(1)))
             {
-                var engine = new TestEngine(state, fakesFactory.Object, interaction.Object, wrapperProvider.Object, dispatcher.Object, vbe);
-                const int parserRuns = 5;
-                int refreshes = 0;
-                engine.TestsRefreshed += (sender, args) => refreshes++;
-                for (int i = 0; i < parserRuns; i++)
-                {
-                    parser.Parse(new CancellationTokenSource());
-                }
-                if (!engine.CanRun)
-                {
-                    Assert.Inconclusive("Parser Error");
-                }
+                var refreshCount = 0;
+                engine.TestEngine.TestsRefreshed += (sender, args) => refreshCount++;
 
-                Assert.AreEqual(1, engine.Tests.Count());
-                Assert.AreEqual(parserRuns, refreshes);
+                for (var parse = 1; parse <= parserRuns; parse++)
+                {
+                    engine.ParserState.OnParseRequested(engine);
+
+                    if (engine.ParserState.Status != ParserState.Ready)
+                    {
+                        Assert.Inconclusive("Parser Error");
+                    }
+
+                    Assert.AreEqual(parse, refreshCount);
+                    Assert.AreEqual(1, engine.TestEngine.Tests.Count());
+                }
             }
         }
 
         [Test]
         [Category("Unit Testing")]
-        public void TestEngine_Run_RaisesCompletionEvent_Success()
+        public void TestEngine_Raises_TestRunStarted()
         {
-            var testMethods = @"'@TestMethod
-Public Sub TestMethod1()
-End Sub";
-
-            var builder = new MockVbeBuilder()
-                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
-                .AddProjectToVbeBuilder();
-
-            var vbe = builder.Build().Object;
-            var parser = MockParser.Create(vbe);
-            var interaction = new Mock<IVBEInteraction>();
-            var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
-            var typeLibMock = new Mock<ITypeLibWrapper>();
-            wrapperProvider.Setup(p => p.TypeLibWrapperFromProject(It.IsAny<string>()))
-                            .Returns(typeLibMock.Object)
-                            .Verifiable();
-            long durationStub;
-            interaction.Setup(ia => ia.RunTestMethod(typeLibMock.Object, It.IsAny<TestMethod>(), It.IsAny<EventHandler<AssertCompletedEventArgs>>(), out durationStub))
-                .Verifiable();
-
-            var fakesFactory = new Mock<IFakesFactory>();
-            var createdFakes = new Mock<IFakes>();
-            fakesFactory.Setup(factory => factory.Create())
-                .Returns(createdFakes.Object);
-
-            var dispatcher = new Mock<IUiDispatcher>();
-            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
-                      .Callback((Action action) => action.Invoke())
-                      .Verifiable();
-
-            var completionEvents = new List<TestCompletedEventArgs>();
-            using (var state = parser.State)
-            {
-                var engine = new TestEngine(state, fakesFactory.Object, interaction.Object, wrapperProvider.Object, dispatcher.Object, vbe);
-                engine.TestCompleted += (source, args) => completionEvents.Add(args);
-                parser.Parse(new CancellationTokenSource());
-                if (!engine.CanRun)
-                {
-                    Assert.Inconclusive("Parser Error");
-                }
-                engine.Run(engine.Tests);
-            }
-            Mock.Verify(dispatcher, interaction, wrapperProvider);
-            Assert.AreEqual(1, completionEvents.Count);
-            Assert.AreEqual(new TestResult(TestOutcome.Succeeded), completionEvents.First().Result);
+            SetupAndTestStatusEvent((engine, events) => engine.TestRunStarted += (source, args) => events.Add(args));
         }
 
         [Test]
         [Category("Unit Testing")]
-        public void TestEngine_Run_AndAssertSuccess_RaisesCompletionEvent_Success()
+        public void TestEngine_Raises_TestStarted()
         {
-            var testMethods = @"'@TestMethod
-Public Sub TestMethod1()
-End Sub";
-
-            var builder = new MockVbeBuilder()
-                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
-                .AddProjectToVbeBuilder();
-
-            var vbe = builder.Build().Object;
-            var parser = MockParser.Create(vbe);
-            var interaction = new Mock<IVBEInteraction>();
-            var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
-            var typeLibMock = new Mock<ITypeLibWrapper>();
-
-            long durationStub;
-            interaction.Setup(ia => ia.RunTestMethod(typeLibMock.Object, It.IsAny<TestMethod>(), It.IsAny<EventHandler<AssertCompletedEventArgs>>(), out durationStub))
-                .Callback(new RunTestMethodCallback((ITypeLibWrapper _, TestMethod method, EventHandler<AssertCompletedEventArgs> assertHandler, out long duration) =>
-                {
-                    duration = 0;
-                    AssertHandler.OnAssertCompleted += assertHandler;
-                    AssertHandler.OnAssertSucceeded();
-                    AssertHandler.OnAssertCompleted -= assertHandler;
-                }))
-                .Verifiable();
-
-            wrapperProvider.Setup(p => p.TypeLibWrapperFromProject(It.IsAny<string>()))
-                            .Returns(typeLibMock.Object)
-                            .Verifiable();
-
-            typeLibMock.Setup(tlm => tlm.Dispose()).Verifiable();
-
-
-            var fakesFactory = new Mock<IFakesFactory>();
-            var createdFakes = new Mock<IFakes>();
-            fakesFactory.Setup(factory => factory.Create())
-                .Returns(createdFakes.Object);
-
-            var dispatcher = new Mock<IUiDispatcher>();
-            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
-                      .Callback((Action action) => action.Invoke())
-                      .Verifiable();
-
-            var completionEvents = new List<TestCompletedEventArgs>();
-            using (var state = parser.State)
-            {
-                var engine = new TestEngine(state, fakesFactory.Object, interaction.Object, wrapperProvider.Object, dispatcher.Object, vbe);
-                engine.TestCompleted += (source, args) => completionEvents.Add(args);
-                parser.Parse(new CancellationTokenSource());
-                if (!engine.CanRun)
-                {
-                    Assert.Inconclusive("Parser Error");
-                }
-                engine.Run(engine.Tests);
-            }
-            Mock.Verify(dispatcher, interaction, wrapperProvider, typeLibMock);
-            Assert.AreEqual(1, completionEvents.Count);
-            Assert.AreEqual(new TestResult(TestOutcome.Succeeded), completionEvents.First().Result);
+            SetupAndTestStatusEvent((engine, events) => engine.TestStarted += (source, args) => events.Add(args));
         }
 
         [Test]
         [Category("Unit Testing")]
-        public void TestEngine_Run_AndAssertInconclusive_RaisesCompletionEvent_Inconclusive()
+        public void TestEngine_Raises_TestCompleted()
         {
-            var testMethods = @"'@TestMethod
-Public Sub TestMethod1()
-End Sub";
-
-            var builder = new MockVbeBuilder()
-                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
-                .AddProjectToVbeBuilder();
-
-            var vbe = builder.Build().Object;
-            var parser = MockParser.Create(vbe);
-            var interaction = new Mock<IVBEInteraction>();
-            var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
-            var typeLibMock = new Mock<ITypeLibWrapper>();
-            wrapperProvider.Setup(p => p.TypeLibWrapperFromProject(It.IsAny<string>()))
-                            .Returns(typeLibMock.Object)
-                            .Verifiable();
-            long durationStub;
-            interaction.Setup(ia => ia.RunTestMethod(typeLibMock.Object, It.IsAny<TestMethod>(), It.IsAny<EventHandler<AssertCompletedEventArgs>>(), out durationStub))
-                .Callback(new RunTestMethodCallback((ITypeLibWrapper _, TestMethod method, EventHandler<AssertCompletedEventArgs> assertHandler, out long duration) =>
-                {
-                    duration = 0;
-                    AssertHandler.OnAssertCompleted += assertHandler;
-                    AssertHandler.OnAssertInconclusive("Test Message");
-                    AssertHandler.OnAssertCompleted -= assertHandler;
-                }))
-                .Verifiable();
-
-            typeLibMock.Setup(tlm => tlm.Dispose()).Verifiable();
-
-
-            var fakesFactory = new Mock<IFakesFactory>();
-            var createdFakes = new Mock<IFakes>();
-            fakesFactory.Setup(factory => factory.Create())
-                .Returns(createdFakes.Object);
-
-            var dispatcher = new Mock<IUiDispatcher>();
-            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
-                      .Callback((Action action) => action.Invoke())
-                      .Verifiable();
-
-            var completionEvents = new List<TestCompletedEventArgs>();
-            using (var state = parser.State)
-            {
-                var engine = new TestEngine(state, fakesFactory.Object, interaction.Object, wrapperProvider.Object, dispatcher.Object, vbe);
-                engine.TestCompleted += (source, args) => completionEvents.Add(args);
-                parser.Parse(new CancellationTokenSource());
-                if (!engine.CanRun)
-                {
-                    Assert.Inconclusive("Parser Error");
-                }
-                engine.Run(engine.Tests);
-            }
-            Mock.Verify(dispatcher, interaction, wrapperProvider, typeLibMock);
-            Assert.AreEqual(1, completionEvents.Count);
-            Assert.AreEqual(new TestResult(TestOutcome.Inconclusive, "Test Message"), completionEvents.First().Result);
+            SetupAndTestStatusEvent((engine, events) => engine.TestCompleted += (source, args) => events.Add(args));
         }
 
         [Test]
         [Category("Unit Testing")]
-        public void TestEngine_Run_AndAssertFailed_RaisesCompletionEvent_Failed()
+        public void TestEngine_Raises_TestRunCompleted()
         {
-            var testMethods = @"'@TestMethod
-Public Sub TestMethod1()
-End Sub";
+            SetupAndTestStatusEvent((engine, events) => engine.TestRunCompleted += (source, args) => events.Add(args));
+        }
 
-            var builder = new MockVbeBuilder()
-                .ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("TestModule1", ComponentType.StandardModule, TestModuleHeader + testMethods)
-                .AddProjectToVbeBuilder();
-
-            var vbe = builder.Build().Object;
-            var parser = MockParser.Create(vbe);
-            var interaction = new Mock<IVBEInteraction>();
-            var wrapperProvider = new Mock<ITypeLibWrapperProvider>();
-            var typeLibMock = new Mock<ITypeLibWrapper>();
-            wrapperProvider.Setup(p => p.TypeLibWrapperFromProject(It.IsAny<string>()))
-                            .Returns(typeLibMock.Object)
-                            .Verifiable();
-
-            long durationStub;
-            interaction.Setup(ia => ia.RunTestMethod(typeLibMock.Object, It.IsAny<TestMethod>(), It.IsAny<EventHandler<AssertCompletedEventArgs>>(), out durationStub))
-                .Callback(new RunTestMethodCallback((ITypeLibWrapper _, TestMethod method, EventHandler<AssertCompletedEventArgs> assertHandler, out long duration) =>
-                {
-                    duration = 0;
-                    AssertHandler.OnAssertCompleted += assertHandler;
-                    AssertHandler.OnAssertFailed("Test Message", "TestMethod1");
-                    AssertHandler.OnAssertCompleted -= assertHandler;
-                }))
-                .Verifiable();
-
-            typeLibMock.Setup(tlm => tlm.Dispose()).Verifiable();
-
-
-            var fakesFactory = new Mock<IFakesFactory>();
-            var createdFakes = new Mock<IFakes>();
-            fakesFactory.Setup(factory => factory.Create())
-                .Returns(createdFakes.Object);
-
-            var dispatcher = new Mock<IUiDispatcher>();
-            dispatcher.Setup(d => d.InvokeAsync(It.IsAny<Action>()))
-                      .Callback((Action action) => action.Invoke())
-                      .Verifiable();
-
-            var completionEvents = new List<TestCompletedEventArgs>();
-            using (var state = parser.State)
+        private void SetupAndTestStatusEvent(Action<ITestEngine, List<EventArgs>> configuration)
+        {
+            using (var engine = new MockedTestEngine(MockedTestEngine.GetTestMethod(1)))
             {
-                var engine = new TestEngine(state, fakesFactory.Object, interaction.Object, wrapperProvider.Object, dispatcher.Object, vbe);
-                engine.TestCompleted += (source, args) => completionEvents.Add(args);
-                parser.Parse(new CancellationTokenSource());
-                if (!engine.CanRun)
+                var completionEvents = new List<EventArgs>();
+
+                configuration.Invoke(engine.TestEngine, completionEvents);
+                engine.ParserState.OnParseRequested(engine);
+
+                if (engine.ParserState.Status != ParserState.Ready)
                 {
                     Assert.Inconclusive("Parser Error");
                 }
-                engine.Run(engine.Tests);
+
+                engine.TestEngine.Run(engine.TestEngine.Tests);
+
+                Mock.Verify(engine.Dispatcher, engine.VbeInteraction, engine.WrapperProvider);
+                Assert.AreEqual(1, completionEvents.Count);
             }
-            Mock.Verify(dispatcher, interaction, wrapperProvider, typeLibMock);
-            Assert.AreEqual(1, completionEvents.Count);
-            Assert.AreEqual(new TestResult(TestOutcome.Failed, string.Format(AssertMessages.Assert_FailedMessageFormat, "TestMethod1", "Test Message")), completionEvents.First().Result);
         }
 
+        [Test]
+        [Category("Unit Testing")]
+        public void TestEngine_RunsAssert_ReturnsSucceeded()
+        {
+            var expected = new TestResult(TestOutcome.Succeeded);
+            SetupAndTestAssertAndReturn(AssertHandler.OnAssertSucceeded, expected);
+        }
 
-        delegate void RunTestMethodCallback(ITypeLibWrapper wrapper, TestMethod method, EventHandler<AssertCompletedEventArgs> assertListener, out long duration);
+        [Test]
+        [Category("Unit Testing")]
+        public void TestEngine_RunsAssert_ReturnsInconclusive()
+        {
+            var expected = new TestResult(TestOutcome.Inconclusive, "Test Message");
+            SetupAndTestAssertAndReturn(() => AssertHandler.OnAssertInconclusive("Test Message"), expected);
+        }
 
-        private const string TestModuleHeader = @"Option Explicit
-Option Private Module
+        [Test]
+        [Category("Unit Testing")]
+        public void TestEngine_RunsAssert_ReturnsFailed()
+        {
+            var expected = new TestResult(TestOutcome.Failed, string.Format(AssertMessages.Assert_FailedMessageFormat, "TestMethod1", "Test Message"));
+            // ReSharper disable once ExplicitCallerInfoArgument - there is no "caller".
+            SetupAndTestAssertAndReturn(() => AssertHandler.OnAssertFailed("Test Message", "TestMethod1"), expected);
+        }
 
-'@TestModule
+        private void SetupAndTestAssertAndReturn(Action action, TestResult expected)
+        {
+            using (var engine = new MockedTestEngine(MockedTestEngine.GetTestMethod(1)))
+            {
+                var completionEvents = new List<TestCompletedEventArgs>();
 
-Private Assert As Object
+                engine.SetupAssertCompleted(action);
+                engine.TestEngine.TestCompleted += (source, args) => completionEvents.Add(args);
+                engine.ParserState.OnParseRequested(engine);
 
-'@ModuleInitialize
-Public Sub ModuleInitialize()
-    'this method runs once per module.
-    Assert = CreateObject(""Rubberduck.AssertClass"")
-End Sub
+                if (engine.ParserState.Status != ParserState.Ready)
+                {
+                    Assert.Inconclusive("Parser Error");
+                }
 
-'@ModuleCleanup
-Public Sub ModuleCleanup()
-    'this method runs once per module.
-End Sub
+                engine.TestEngine.Run(engine.TestEngine.Tests);
+                Thread.SpinWait(25);
 
-'@TestInitialize
-Public Sub TestInitialize()
-    'this method runs before every test in the module.
-End Sub
+                Mock.Verify(engine.Dispatcher, engine.VbeInteraction, engine.WrapperProvider, engine.TypeLib);
+                Assert.AreEqual(1, completionEvents.Count);
+                Assert.AreEqual(expected, completionEvents.First().Result);
+            }
+        }
 
-'@TestCleanup
-Public Sub TestCleanup()
-    'this method runs after every test in the module.
-End Sub
-";
+        private static readonly Dictionary<TestOutcome, (TestOutcome Outcome, string Output, long Duration)> DummyOutcomes = new Dictionary<TestOutcome, (TestOutcome, string, long)>
+        {
+            { TestOutcome.Succeeded,  (TestOutcome.Succeeded, "", 0)  },
+            { TestOutcome.Inconclusive,  (TestOutcome.Inconclusive, "", 0)  },
+            { TestOutcome.Failed,  (TestOutcome.Failed, "", 0)  },
+            { TestOutcome.SpectacularFail,  (TestOutcome.SpectacularFail, "", 0)  },
+            { TestOutcome.Ignored,  (TestOutcome.Ignored, "", 0)  }
+        };
+
+        //[Test]
+        //[NonParallelizable]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Failed })]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Succeeded, TestOutcome.Succeeded })]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Inconclusive, TestOutcome.Failed })]
+        //[TestCase(new object[] { TestOutcome.Inconclusive, TestOutcome.Inconclusive, TestOutcome.Inconclusive })]
+        //[TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
+        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
+        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.SpectacularFail })]
+        //[Category("Unit Testing")]
+        //public void TestEngine_LastTestRun_UpdatesAfterRun(params TestOutcome[] tests)
+        //{
+        //    var underTest = tests.Select(test => DummyOutcomes[test]).ToList();
+
+        //    using (var engine = new MockedTestEngine(underTest))
+        //    {
+        //        engine.TestEngine.Run(engine.TestEngine.Tests);
+        //        Thread.SpinWait(25);
+
+        //        Assert.AreEqual(underTest.Count, engine.TestEngine.LastRunTests.Count);
+        //    }
+        //}
+
+        //[Test]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Failed })]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Succeeded, TestOutcome.Succeeded })]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Inconclusive, TestOutcome.Failed })]
+        //[TestCase(new object[] { TestOutcome.Inconclusive, TestOutcome.Inconclusive, TestOutcome.Inconclusive })]
+        //[TestCase(new object[] { TestOutcome.Failed, TestOutcome.Failed, TestOutcome.Failed })]
+        //[TestCase(new object[] { TestOutcome.Succeeded, TestOutcome.Ignored })]
+        //[TestCase(new object[] { TestOutcome.Ignored, TestOutcome.Ignored, TestOutcome.Ignored })]
+        //[Category("Unit Testing")]
+        //public void TestEngine_RunByOutcome_RunsAppropriateTests(params TestOutcome[] tests)
+        //{
+        //    var underTest = tests.Select(test => DummyOutcomes[test]).ToList();
+
+        //    using (var engine = new MockedTestEngine(underTest))
+        //    {
+        //        engine.TestEngine.Run(engine.TestEngine.Tests);
+
+        //        var completionEvents = new List<EventArgs>();
+        //        engine.TestEngine.TestCompleted += (source, args) => completionEvents.Add(args);
+
+        //        var outcomes = Enum.GetValues(typeof(TestOutcome)).Cast<TestOutcome>().Where(outcome => outcome != TestOutcome.Unknown);
+
+        //        foreach (var outcome in outcomes)
+        //        {
+        //            completionEvents.Clear();
+        //            engine.TestEngine.RunByOutcome(outcome);
+
+        //            Thread.SpinWait(25);
+
+        //            var expected = tests.Count(result => result == outcome);
+        //            Assert.AreEqual(expected, completionEvents.Count);
+
+        //            if (expected == 0)
+        //            {
+        //                continue;
+        //            }
+
+        //            var actual = new List<TestMethod>();
+        //            for (var index = 0; index < underTest.Count; index++)
+        //            {
+        //                if (tests[index] == outcome)
+        //                {
+        //                    actual.Add(engine.TestEngine.Tests.ElementAt(index));
+        //                }
+        //            }
+
+        //            CollectionAssert.AreEqual(actual, engine.TestEngine.LastRunTests);
+        //        }
+        //    }
+        //}
+
     }
 }

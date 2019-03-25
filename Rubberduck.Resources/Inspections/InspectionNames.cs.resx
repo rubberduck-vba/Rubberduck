@@ -363,4 +363,19 @@
   <data name="ExcelUdfNameIsValidCellReferenceInspection" xml:space="preserve">
     <value>Funkce je schována referencí Excelovské buňky</value>
   </data>
+  <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
+    <value>ThunderCode 101</value>
+  </data>
+  <data name="NegativeLineNumberInspection" xml:space="preserve">
+    <value>ThunderCode 100</value>
+  </data>
+  <data name="NonBreakingSpaceIdentifierInspection" xml:space="preserve">
+    <value>ThunderCode 11</value>
+  </data>
+  <data name="LineContinuationBetweenKeywordsInspection" xml:space="preserve">
+    <value>ThunderCode 10</value>
+  </data>
+  <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
+    <value>ThunderCode 1</value>
+  </data>
 </root>

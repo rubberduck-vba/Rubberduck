@@ -12,9 +12,9 @@ namespace RubberduckTests.Inspections
     [TestFixture]
     public class AssignmentNotUsedInspectionTests
     {
-        private IEnumerable<IInspectionResult> GetInspectionResults(string code)
+        private IEnumerable<IInspectionResult> GetInspectionResults(string code, bool includeLibraries = false)
         {
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(code, out _, referenceStdLibs: includeLibraries);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
@@ -204,6 +204,38 @@ Sub foo()
 End Sub";
             var results = GetInspectionResults(code);
             Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void DoesNotMarkAssignment_UsingNothing()
+        {
+            const string code = @"
+Public Sub Test()
+Dim my_fso   As Scripting.FileSystemObject
+Set my_fso = New Scripting.FileSystemObject
+
+Debug.Print my_fso.GetFolder(""C:\Windows"").DateLastModified
+
+Set my_fso = Nothing
+End Sub";
+            var results = GetInspectionResults(code, includeLibraries:true);
+            Assert.AreEqual(0, results.Count());
+        }
+
+        [Test]
+        [Category("Inspections")]
+        public void DoesMarkAssignment_UsingNothing_NotUsed()
+        {
+            const string code = @"
+Public Sub Test()
+Dim my_fso   As Scripting.FileSystemObject
+Set my_fso = New Scripting.FileSystemObject
+
+Set my_fso = Nothing
+End Sub";
+            var results = GetInspectionResults(code, includeLibraries: true);
+            Assert.AreEqual(1, results.Count());
         }
     }
 }

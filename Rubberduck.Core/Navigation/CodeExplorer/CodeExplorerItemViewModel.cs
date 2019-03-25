@@ -43,7 +43,8 @@ namespace Rubberduck.Navigation.CodeExplorer
 
             var matching = updated.FirstOrDefault(decl =>
                 Declaration.DeclarationType == decl?.DeclarationType &&
-                Declaration.QualifiedName.Equals(decl.QualifiedName));
+                Declaration.QualifiedName.Equals(decl.QualifiedName) &&
+                (Declaration.ParentDeclaration is null || Declaration.ParentDeclaration.QualifiedName.Equals(decl.ParentDeclaration?.QualifiedName)));
 
             if (matching is null)
             {

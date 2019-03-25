@@ -1,19 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UnitTesting
 {
-    // FIXME make internal. Nobody outside of RD.UnitTesting needs this!
-    public static class TestDiscovery // todo: reimplement using state.DeclarationFinder
+    // FIXME make internal. Nobody outside of RD.UnitTesting needs this! 
+    public static class TestDiscovery // todo: reimplement using state.DeclarationFinder 
     {
         public static IEnumerable<TestMethod> GetAllTests(RubberduckParserState state)
         {
@@ -37,10 +35,9 @@ namespace Rubberduck.UnitTesting
 
         public static bool IsTestMethod(RubberduckParserState state, Declaration item)
         {
-            return !state.AllUserDeclarations.Any(
-                    d => d.DeclarationType == DeclarationType.Parameter && Equals(d.ParentScopeDeclaration, item)) &&
-                item.Accessibility == Accessibility.Public &&
-                item.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod);
+            return !state.AllUserDeclarations.Any(d =>
+                       d.DeclarationType == DeclarationType.Parameter && Equals(d.ParentScopeDeclaration, item)) &&
+                   item.Annotations.Any(a => a.AnnotationType == AnnotationType.TestMethod);
         }
 
         public static IEnumerable<Declaration> FindModuleInitializeMethods(QualifiedModuleName module, RubberduckParserState state)

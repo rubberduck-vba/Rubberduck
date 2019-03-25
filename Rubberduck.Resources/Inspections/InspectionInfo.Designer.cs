@@ -86,17 +86,16 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to An assignment is immediately overridden by another assignment or is never referenced..
+        ///   Looks up a localized string similar to A Rubberduck annotation is specified for a module or member, but the corresponding attribute has a different value. Module attributes and annotations need to be synchronized..
         /// </summary>
-        public static string AttributeValueOutOfSyncInspection
-        {
+        public static string AttributeValueOutOfSyncInspection {
             get {
                 return ResourceManager.GetString("AttributeValueOutOfSyncInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to A member is assigned True/False in different branches of an if statement with no other statements in the conditional. Use the condition directly to the member instead..
         /// </summary>
@@ -242,7 +241,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Functions that are visible to Excel as User-Defined Functions will return a &apos;#REF&apos; error when used on a Worksheet if they match the name of a valid cell reference. If the function is intended to be used as a UDF, it must be renamed. If the function is not intended to be used as a UDF, it should be scoped as &apos;Private&apos; or moved out of a standard Module..
+        ///   Looks up a localized string similar to Functions that are visible to Excel as User-Defined Functions will return a &apos;#REF!&apos; error when used on a Worksheet if they match the name of a valid cell reference. If the function is intended to be used as a UDF, it must be renamed. If the function is not intended to be used as a UDF, it should be scoped as &apos;Private&apos; or moved out of a standard Module..
         /// </summary>
         public static string ExcelUdfNameIsValidCellReferenceInspection {
             get {
@@ -368,6 +367,24 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A keyword is being used as a member in either an enumeration or an user defined type. That can lead to ambiguous resolution. Consider renaming the member..
+        /// </summary>
+        public static string KeywordsUsedAsMemberInspection {
+            get {
+                return ResourceManager.GetString("KeywordsUsedAsMemberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are line continuations between keywords. There is no good reason to put it there; consider removing them altogether..
+        /// </summary>
+        public static string LineContinuationBetweenKeywordsInspection {
+            get {
+                return ResourceManager.GetString("LineContinuationBetweenKeywordsInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A line label that is never jumpted to (&apos;GoTo&apos;, &apos;Resume&apos;, ...), serves no purpose. Consider removing it..
         /// </summary>
         public static string LineLabelNotUsedInspection {
@@ -402,27 +419,25 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
+        ///   Looks up a localized string similar to Member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
         /// </summary>
-        public static string MissingMemberAnnotationInspection
-        {
+        public static string MissingMemberAnnotationInspection {
             get {
                 return ResourceManager.GetString("MissingMemberAnnotationInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Module and member attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
+        ///   Looks up a localized string similar to Module attributes are not displayed in the VBE. By adding an annotation, you make these attributes more explicit, and Rubberduck can keep annotations and attributes synchronized..
         /// </summary>
-        public static string MissingModuleAnnotationInspection
-        {
+        public static string MissingModuleAnnotationInspection {
             get {
                 return ResourceManager.GetString("MissingModuleAnnotationInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The &apos;Public&apos; keyword can only be used at module level; its counterpart &apos;Private&apos; can also only be used at module level. &apos;Dim&apos; however, can be used to declare both procedure and module scope variables. For consistency, it would be preferable to reserve &apos;Dim&apos; for locals, and thus to use &apos;Private&apos; instead of &apos;Dim&apos; at module level..
         /// </summary>
@@ -469,6 +484,24 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Negative line numbers are actually input as hex literal and then prettified by VBE. Editing the line again will cause it to turn red since negative line numbers are in fact illegal..
+        /// </summary>
+        public static string NegativeLineNumberInspection {
+            get {
+                return ResourceManager.GetString("NegativeLineNumberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The identifier contains a non-breaking space which looks very much like just an ordinary space (illegal in an identifier name), which obfuscates the code and makes for a confusing experience. Consider using visible characters for the identifiers..
+        /// </summary>
+        public static string NonBreakingSpaceIdentifierInspection {
+            get {
+                return ResourceManager.GetString("NonBreakingSpaceIdentifierInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This is likely a bug. The return value of a function or property getter must be assigned before exiting, otherwise the program will not be working with expected results. If a function has no meaningful return value, consider declaring it as a &apos;Sub&apos; procedure instead..
         /// </summary>
         public static string NonReturningFunctionInspection {
@@ -487,7 +520,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Windows implementations of Visual Basic only support the StdCall calling convention, and use of of the CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - &apos;Bad DLL calling convention&apos;. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled..
+        ///   Looks up a localized string similar to Windows implementations of Visual Basic only support the StdCall calling convention. The CDecl calling convention is only supported in Macintosh versions of VBA. Use of this keyword in Windows will result in runtime error 49 - &apos;Bad DLL calling convention&apos;. If this procedure is only intended to be used on Macintosh hosts, it should be conditionally compiled..
         /// </summary>
         public static string ObsoleteCallingConventionInspection {
             get {
@@ -559,7 +592,16 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to On Local Error exists only for compatibility with previous versions of Visual Basic, and all Errors are treated as Local regardless of the Error statement. Use of this keyword inaccurately gives the impression that there is a distinction between types of error handling when there is not..
+        ///   Looks up a localized string similar to While this is legal, this is poorly documented &quot;feature&quot; that means something different -- the error state is also cleared in addition to disabling any error handling. However, this can be ambiguous as a negative line label of -1 may end up as a target and excessively complex error handling usually indicates a need of refactoring the procedure..
+        /// </summary>
+        public static string OnErrorGoToMinusOneInspection {
+            get {
+                return ResourceManager.GetString("OnErrorGoToMinusOneInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to On Local Error exists only for compatibility with previous versions of Visual Basic, and all Errors are treated as Local regardless of the On Local Error statement. Use of this keyword inaccurately gives the impression that there is a distinction between types of error handling when there is not..
         /// </summary>
         public static string OnLocalErrorInspection {
             get {
@@ -658,7 +700,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Two declarations are in scope and have the same identifier name. This means that only one of them will be available to use..
+        ///   Looks up a localized string similar to Two declarations are in scope and have the same identifier name. Consider using fully qualified identifier names, otherwise only one of them will be available to use..
         /// </summary>
         public static string ShadowedDeclarationInspection {
             get {

@@ -6,54 +6,56 @@ using System.Reflection;
 using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel.ModelBuilder.Inspectors;
 using Castle.MicroKernel.Registration;
+using Component = Castle.MicroKernel.Registration.Component;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using Rubberduck.AddRemoveReferences;
+using Rubberduck.AutoComplete;
+using Rubberduck.CodeAnalysis.CodeMetrics;
 using Rubberduck.ComClientLibrary.UnitTesting;
 using Rubberduck.Common;
 using Rubberduck.Common.Hotkeys;
 using Rubberduck.Inspections.Rubberduck.Inspections;
 using Rubberduck.Parsing;
+using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.Symbols.DeclarationLoaders;
+using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Parsing.VBA.ComReferenceLoading;
+using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.DeclarationResolving;
+using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
+using Rubberduck.Parsing.VBA.ReferenceManagement;
+using Rubberduck.Refactorings;
 using Rubberduck.Settings;
+using GeneralSettings = Rubberduck.Settings.GeneralSettings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.SmartIndenter;
+using IndenterSettings = Rubberduck.SmartIndenter.IndenterSettings;
 using Rubberduck.UI;
+using Rubberduck.UI.AddRemoveReferences;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Command.MenuItems;
 using Rubberduck.UI.Command.MenuItems.CommandBars;
 using Rubberduck.UI.Command.MenuItems.ParentMenus;
 using Rubberduck.UI.Controls;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.Rename;
+using Rubberduck.UI.Settings;
 using Rubberduck.UI.UnitTesting;
 using Rubberduck.UnitTesting;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
-using Component = Castle.MicroKernel.Registration.Component;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
-using Rubberduck.Parsing.Common;
+using Rubberduck.VBEditor.ComManagement.TypeLibs;
 using Rubberduck.VBEditor.ComManagement.TypeLibsAPI;
 using Rubberduck.VBEditor.Events;
 using Rubberduck.VBEditor.Utility;
-using Rubberduck.AutoComplete;
-using Rubberduck.AutoComplete.Service;
-using Rubberduck.CodeAnalysis.CodeMetrics;
-using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Parsing.VBA.ComReferenceLoading;
-using Rubberduck.Parsing.VBA.DeclarationResolving;
-using Rubberduck.Parsing.VBA.Parsing;
-using Rubberduck.Parsing.VBA.ReferenceManagement;
-using Rubberduck.VBEditor;
-using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.SourceCodeHandling;
-using Rubberduck.Parsing.VBA.DeclarationCaching;
-using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
-using Rubberduck.UI.AddRemoveReferences;
+using Rubberduck.VBEditor.VbeRuntime;
+using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.Root
 {
@@ -62,12 +64,14 @@ namespace Rubberduck.Root
         private readonly IVBE _vbe;
         private readonly IAddIn _addin;
         private readonly GeneralSettings _initialSettings;
+        private readonly IVbeNativeApi _vbeNativeApi;
 
-        public RubberduckIoCInstaller(IVBE vbe, IAddIn addin, GeneralSettings initialSettings)
+        public RubberduckIoCInstaller(IVBE vbe, IAddIn addin, GeneralSettings initialSettings, IVbeNativeApi vbeNativeApi)
         {
             _vbe = vbe;
             _addin = addin;
             _initialSettings = initialSettings;
+            _vbeNativeApi = vbeNativeApi;
         }
 
         //Guidelines and words of caution:
@@ -84,7 +88,7 @@ namespace Rubberduck.Root
             ActivateAutoMagicFactories(container);
             OverridePropertyInjection(container);
 
-            RegisterConstantVbeAndAddIn(container);
+            RegisterInstances(container);
             RegisterAppWithSpecialDependencies(container);
             RegisterUnitTestingComSide(container);
 
@@ -99,6 +103,9 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<ISelectionChangeService>()
                 .ImplementedBy<SelectionChangeService>()
+                .LifestyleSingleton());
+            container.Register(Component.For<ISelectionService>()
+                .ImplementedBy<SelectionService>()
                 .LifestyleSingleton());
             container.Register(Component.For<AutoCompleteService>()
                 .LifestyleSingleton());
@@ -117,6 +124,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<IRewritingManager>()
                 .ImplementedBy<RewritingManager>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IMemberAttributeRecovererWithSettableRewritingManager>()
+                .ImplementedBy<MemberAttributeRecoverer>()
+                .LifestyleSingleton());
 
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
@@ -124,6 +134,7 @@ namespace Rubberduck.Root
                 .ImplementedBy<VBEInteraction>()
                 .LifestyleSingleton());
 
+            RegisterSettingsViewModel(container);
             RegisterRefactoringDialogs(container);
 
             container.Register(Component.For<ISearchResultsWindowViewModel>()
@@ -131,7 +142,8 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<SearchResultPresenterInstanceManager>()
                 .LifestyleSingleton());
-            
+
+            RegisterRefactoringDialogs(container);
             RegisterDockablePresenters(container);
             RegisterDockableUserControls(container);
 
@@ -201,7 +213,9 @@ namespace Rubberduck.Root
             {
                 container.Register(Classes.FromAssembly(assembly)
                     .IncludeNonPublicTypes()
-                    .Where(type => type.Namespace == typeof(Configuration).Namespace && type.NotDisabledOrExperimental(_initialSettings))
+                    .Where(type => type.Namespace == typeof(Configuration).Namespace 
+                                   && type.NotDisabledOrExperimental(_initialSettings)
+                                   && type != typeof(ExperimentalTypesProvider))
                     .WithService.AllInterfaces()
                     .LifestyleSingleton());
 
@@ -209,12 +223,11 @@ namespace Rubberduck.Root
                     .Where(t => Attribute.IsDefined(t, typeof(ExperimentalAttribute))));
             }
 
-            // FIXME correctly register experimentalFeatureTypes.
-            // This is probably blocked until GeneralSettingsViewModel is no more newed up in SettingsForm's code-behind
-            //container.Register(Component.For(typeof(IEnumerable<Type>))
-            //    .DependsOn(Dependency.OnComponent<ViewModelBase, GeneralSettingsViewModel>())
-            //    .LifestyleSingleton()
-            //    .Instance(experimentalTypes));
+            var provider = new ExperimentalTypesProvider(experimentalTypes);
+            container.Register(Component.For(typeof(IExperimentalTypesProvider))
+                .DependsOn(Dependency.OnComponent<ViewModelBase, GeneralSettingsViewModel>())
+                .LifestyleSingleton()
+                .Instance(provider));
 
             container.Register(Component.For<IComProjectSerializationProvider>()
                 .ImplementedBy<XmlComProjectSerializer>()
@@ -229,6 +242,10 @@ namespace Rubberduck.Root
 
             container.Register(Component.For<IConfigProvider<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
+                .LifestyleSingleton());
+
+            container.Register(Component.For<IConfigProvider<UnitTesting.Settings.UnitTestSettings>>()
+                .ImplementedBy<UnitTestConfigProvider>()
                 .LifestyleSingleton());
         }
 
@@ -442,7 +459,9 @@ namespace Rubberduck.Root
                 typeof(SmartIndenterParentMenu),
                 typeof(FindSymbolCommandMenuItem),
                 typeof(FindAllReferencesCommandMenuItem),
-                typeof(FindAllImplementationsCommandMenuItem)
+                typeof(FindAllImplementationsCommandMenuItem),
+                typeof(RunSelectedTestModuleCommandMenuItem),
+                typeof(RunSelectedTestMethodCommandMenuItem)
             };
         }
 
@@ -613,11 +632,91 @@ namespace Rubberduck.Root
             return items.ToArray();
         }
 
+        private void RegisterSettingsViewModel(IWindsorContainer container)
+        {
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(SettingsViewModelBase<>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(ISettingsViewModel<>));
+
+                    return face == null ? new[] { type } : new[] { type, face };
+                })
+            );
+        }
+
         private void RegisterRefactoringDialogs(IWindsorContainer container)
         {
-            container.Register(Component.For<IRefactoringDialog<RenameViewModel>>()
-                .ImplementedBy<RenameDialog>()
-                .LifestyleTransient());
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringView<>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringView<>));
+
+                    return face == null ? new[] { type } : new[] { type, face };
+                })
+            );
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringViewModel<>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringViewModel<>));
+
+                    return face == null ? new[] { type } : new[] {type, face};
+                })
+            );
+            container.Register(Types
+                .FromAssemblyInThisApplication()
+                .IncludeNonPublicTypes()
+                .BasedOn(typeof(IRefactoringDialog<,,>))
+                .LifestyleTransient()
+                .WithServiceSelect((type, types) =>
+                {
+                    var face = type.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringDialog<,,>));
+
+                    if (face == null)
+                    {
+                        return new[] { type };
+                    }
+
+                    var model = face.GenericTypeArguments[0];
+
+                    var view = face.GenericTypeArguments[1];
+                    var interfaceView = view.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringView<>));
+
+                    if (interfaceView == null)
+                    {
+                        return new[] { type };
+                    }
+                    
+                    var viewModel = face.GenericTypeArguments[2];
+                    var interfaceViewModel = viewModel.GetInterfaces().FirstOrDefault(i =>
+                        i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRefactoringViewModel<>));
+
+                    if (interfaceViewModel == null)
+                    {
+                        return new[] {type};
+                    }
+
+                    var closedFace = typeof(IRefactoringDialog<,,>).MakeGenericType(model, interfaceView, interfaceViewModel);
+
+                    return new[] { type, closedFace };
+                })
+            );
         }
 
         private void RegisterCommandMenuItems(IWindsorContainer container)
@@ -850,7 +949,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
         }
 
-        private void RegisterConstantVbeAndAddIn(IWindsorContainer container)
+        private void RegisterInstances(IWindsorContainer container)
         {
             container.Register(Component.For<IVBE>().Instance(_vbe));
             container.Register(Component.For<IAddIn>().Instance(_addin));
@@ -858,7 +957,9 @@ namespace Rubberduck.Root
             container.Register(Component.For<ICommandBars>().Instance(_vbe.CommandBars));
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
-            container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler));
+            container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler).LifestyleSingleton());
+            container.Register(Component.For<IPersistancePathProvider>().Instance(PersistancePathProvider.Instance).LifestyleSingleton());
+            container.Register(Component.For<IVbeNativeApi>().Instance(_vbeNativeApi).LifestyleSingleton());
         }
     }
 }

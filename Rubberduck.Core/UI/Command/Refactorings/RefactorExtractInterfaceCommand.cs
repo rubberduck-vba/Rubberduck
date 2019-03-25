@@ -8,10 +8,9 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.ExtractInterface;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.ExtractInterface;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -19,35 +18,40 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorExtractInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _messageBox;
-
-        public RefactorExtractInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRewritingManager rewritingManager)
-            :base(vbe)
+        private readonly IRefactoringPresenterFactory _factory;
+        
+        public RefactorExtractInterfaceCommand(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+            :base(rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _messageBox = messageBox;
+            _factory = factory;
         }
 
         private static readonly IReadOnlyList<DeclarationType> ModuleTypes = new[] 
         {
             DeclarationType.ClassModule,
+            DeclarationType.Document,
             DeclarationType.UserForm, 
-            DeclarationType.ProceduralModule, 
+            DeclarationType.ProceduralModule
         };
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            var selection = Vbe.GetActiveSelection();
+            if (_state.Status != ParserState.Ready)
+            {
+                return false;
+            }
 
-            if (!selection.HasValue)
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
                 return false;
             }
 
             var interfaceClass = _state.AllUserDeclarations.SingleOrDefault(item =>
-                item.QualifiedName.QualifiedModuleName.Equals(selection.Value.QualifiedName)
+                item.QualifiedName.QualifiedModuleName.Equals(activeSelection.Value.QualifiedName)
                 && ModuleTypes.Contains(item.DeclarationType));
 
             if (interfaceClass == null)
@@ -72,25 +76,19 @@ namespace Rubberduck.UI.Command.Refactorings
             // true if active code pane is for a class/document/form module
             return !context.Any() 
                 && !_state.IsNewOrModified(interfaceClass.QualifiedModuleName) 
-                && !_state.IsNewOrModified(selection.Value.QualifiedName);
+                && !_state.IsNewOrModified(activeSelection.Value.QualifiedName);
         }
 
         protected override void OnExecute(object parameter)
         {
-            using(var activePane = Vbe.ActiveCodePane)
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
-                if (activePane == null || activePane.IsWrappingNullReference)
-                {
-                    return;
-                }
+                return;
             }
 
-            using (var view = new ExtractInterfaceDialog(new ExtractInterfaceViewModel()))
-            {
-                var factory = new ExtractInterfacePresenterFactory(Vbe, _state, view);
-                var refactoring = new ExtractInterfaceRefactoring(Vbe, _messageBox, factory, _rewritingManager);
-                refactoring.Refactor();
-            }
+            var refactoring = new ExtractInterfaceRefactoring(_state, _state, _messageBox, _factory, RewritingManager, SelectionService);
+            refactoring.Refactor(activeSelection.Value);
         }
     }
 }

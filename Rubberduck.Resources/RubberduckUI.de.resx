@@ -1347,6 +1347,15 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   <data name="References_MoveUpToolTip" xml:space="preserve">
     <value>Abwärts bewegen</value>
   </data>
+  <data name="MemberAttributeRecoveryRewriteFailedMessage" xml:space="preserve">
+    <value>Das Wiederherstellen der Elementattribute ist fehlgeschlagen.</value>
+  </data>
+  <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
+    <value>Wiederherstellen der Elementattribute fehlgeschlagen</value>
+  </data>
+  <data name="MemberAttributeRecoveryMembersNotFoundMessage" xml:space="preserve">
+    <value>Die Elementattribute für die folgenden Elemente konnten nicht wiederhergestellt werden, da sie nicht mehr aufgefunden wurden: {0} </value>
+  </data>
   <data name="AllReferences_NoneFoundReference" xml:space="preserve">
     <value>Es wurden keine Verwendungen der Projektreferenz '{0}' gefunden.</value>
   </data>
@@ -1355,5 +1364,41 @@ ACHTUNG: Ein Neustart ist nötig, damit die Änderungen wirksam werden.</value>
   </data>
   <data name="PerformanceWarningCaption" xml:space="preserve">
     <value>Performancewarnung</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+    <value>'{0}' ist keine Nutzerdeklaration.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+    <value>Die Variable '{0}' ist nicht im selben Projekt definiert, in dem sie verwendet wird.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+    <value>Die Variable '{0}' ist weder in der Komponente definiert, in der sie verwendet wir, noch in einem Standardmodul.</value>
+  </data>
+  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+    <value>'{0}' ist eine nicht private Modulvariable außerhalb eines Standardmoduls.</value>
+  </data>
+  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+    <value>In der Methode, die '{0}' verwendet, referenziert der Name dieser Variable bereits eine andere Deklaration.</value>
+  </data>
+  <data name="Language_ES" xml:space="preserve">
+    <value>Español</value>
+  </data>
+  <data name="GroupingGrid_Filter" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="GroupingStyle_ByName" xml:space="preserve">
+    <value>Nach Codeuntersuchung</value>
+  </data>
+  <data name="GroupingStyle_BySeverity" xml:space="preserve">
+    <value>Nach Schweregrad</value>
+  </data>
+  <data name="InspectionResults_CollapseAll" xml:space="preserve">
+    <value>Alle einklappen</value>
+  </data>
+  <data name="InspectionResults_ExpandAll" xml:space="preserve">
+    <value>Alle ausklappen</value>
+  </data>
+  <data name="References_BrowseButtonText" xml:space="preserve">
+    <value>Durchsuchen...</value>
   </data>
 </root>

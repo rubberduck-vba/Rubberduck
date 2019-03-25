@@ -20,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
                 .Where(declaration =>
                 {
                     if (declaration.IsWithEvents
-                        || !new[] {DeclarationType.ClassModule, DeclarationType.ProceduralModule}.Contains(declaration.ParentDeclaration.DeclarationType)
+                        || !new[] {DeclarationType.ClassModule, DeclarationType.Document, DeclarationType.ProceduralModule}.Contains(declaration.ParentDeclaration.DeclarationType)
                         || IsIgnoringInspectionResultFor(declaration, AnnotationName))
                     {
                         return false;

@@ -103,8 +103,12 @@ namespace Rubberduck.Navigation.CodeExplorer
                     case ComponentType.Document:
                         using (var app = _vbe?.HostApplication())
                         {
-                            var parenthesized = app?.GetDocument(qualifiedModuleName)?.DocumentName ?? string.Empty;
-                            _name = string.IsNullOrEmpty(parenthesized) ? _name : $"{_name} ({parenthesized})";
+                            var document = app?.GetDocument(qualifiedModuleName);
+                            if (document != null)
+                            {
+                                var parenthesized = document.DocumentName ?? string.Empty;
+                                _name = string.IsNullOrEmpty(parenthesized) ? _name : $"{_name} ({parenthesized})";
+                            }
                         }
 
                         break;

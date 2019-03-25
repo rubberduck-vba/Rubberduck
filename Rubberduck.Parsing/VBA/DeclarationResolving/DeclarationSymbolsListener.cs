@@ -279,9 +279,10 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                             attributes);
                         break;
                 }
-                if (_parentDeclaration.DeclarationType == DeclarationType.ClassModule && result is ICanBeDefaultMember && ((ICanBeDefaultMember)result).IsDefaultMember)
+                if (_parentDeclaration is ClassModuleDeclaration classParent && 
+                    ((result as ICanBeDefaultMember)?.IsDefaultMember ?? false))
                 {
-                    ((ClassModuleDeclaration)_parentDeclaration).DefaultMember = result;
+                    classParent.DefaultMember = result;
                 }
             }
             return result;

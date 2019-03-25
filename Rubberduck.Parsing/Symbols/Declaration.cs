@@ -235,7 +235,7 @@ namespace Rubberduck.Parsing.Symbols
             {
                 return null;
             }
-            if (declaration.DeclarationType == DeclarationType.ClassModule || declaration.DeclarationType == DeclarationType.ProceduralModule)
+            if (declaration.DeclarationType.HasFlag(DeclarationType.ClassModule) || declaration.DeclarationType == DeclarationType.ProceduralModule)
             {
                 return declaration;
             }
@@ -546,6 +546,7 @@ namespace Rubberduck.Parsing.Symbols
                     case DeclarationType.Project:
                         return "VBE";
                     case DeclarationType.ClassModule:
+                    case DeclarationType.Document:
                     case DeclarationType.ProceduralModule:
                         return QualifiedModuleName.ToString();
                     case DeclarationType.Procedure:

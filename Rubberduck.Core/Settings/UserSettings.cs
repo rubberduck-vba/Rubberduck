@@ -1,5 +1,6 @@
 ﻿using System.Xml.Serialization;
 using Rubberduck.SmartIndenter;
+using Rubberduck.UnitTesting.Settings;
 
 namespace Rubberduck.Settings
 {

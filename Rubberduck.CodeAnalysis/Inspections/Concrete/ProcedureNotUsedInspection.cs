@@ -29,8 +29,10 @@ namespace Rubberduck.Inspections.Concrete
         {
             var declarations = UserDeclarations.ToList();
 
-            var classes = State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).ToList(); // declarations.Where(item => item.DeclarationType == DeclarationType.ClassModule).ToList();
-            var modules = State.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).ToList(); // declarations.Where(item => item.DeclarationType == DeclarationType.ProceduralModule).ToList();
+            var classes = State.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule)
+                .Concat(State.DeclarationFinder.UserDeclarations(DeclarationType.Document))
+                .ToList(); 
+            var modules = State.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).ToList();
 
             var handlers = State.DeclarationFinder.UserDeclarations(DeclarationType.Control)
                 .SelectMany(control => declarations.FindEventHandlers(control)).ToList();

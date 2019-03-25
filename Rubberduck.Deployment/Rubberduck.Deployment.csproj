@@ -14,9 +14,7 @@
 
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="BuildRegistryScript.ps1" />
     <None Include="Licenses\License.rtf" />
-    <None Include="PreInnoSetupConfiguration.ps1" />
     
     <!-- EasyHook nuget may be not be within the solution so we need to check different places. The PreserveNewest should hopefully avoid repetitive (but harmless) copying -->
     <Content Include="..\packages\EasyHook.2.7.6684\content\net40\**" CopyToPublishDirectory="PreserveNewest" Link="%(Filename)%(Extension)" />
@@ -37,38 +35,39 @@
       <CopyToOutputDirectory>content/net40/*</CopyToOutputDirectory>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="olewoo">
-      <HintPath>OleWoo\olewoo.dll</HintPath>
-    </Reference>
-    <Reference Include="olewoo_interop">
-      <HintPath>OleWoo\olewoo_interop.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+  
+  <UsingTask TaskName="RubberduckPreBuildTask" AssemblyFile="..\Rubberduck.Deployment.Build\bin\Rubberduck.Deployment.Build.dll" />
+  <UsingTask TaskName="RubberduckPostBuildTask" AssemblyFile="..\Rubberduck.Deployment.Build\bin\Rubberduck.Deployment.Build.dll" />
+  
   <Target Name="CopyLinkedContentFiles" BeforeTargets="Build">
-    <Copy SourceFiles="%(Content.Identity)"
-          DestinationFiles="$(OutputPath)\%(Content.Link)"
-          SkipUnchangedFiles="true"
-          OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="%(Content.Identity)" DestinationFiles="$(OutputPath)\%(Content.Link)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" />
   </Target>
-  <Target Name="InnoSetupConfig" BeforeTargets="PreBuildEvent">
-      <CreateProperty Value="&amp;  '$(ProjectDir)PreInnoSetupConfiguration.ps1' -WorkingDir  '$(ProjectDir)'">
-      <Output TaskParameter="Value" PropertyName="PowershellCommand" />
-    </CreateProperty>
-    <Exec Command="%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command &quot;$(PowershellCommand)&quot;" ConsoleToMsBuild="true" />
-    <Message Text="Ran InnoSetupConfig" Importance="normal" />
+
+  <Target Name="PreBuildTask" BeforeTargets="PreBuildEvent">
+    <RubberduckPreBuildTask 
+        WorkingDir="$(ProjectDir)" 
+        OutputDir="$(TargetDir)" />
+
+    <Message Text="Ran Rubberduck prebuild task" Importance="normal" />
   </Target>
-  <Target Name="Register" AfterTargets="PostBuildEvent">
+  <Target Name="PostBuildTask" AfterTargets="PostBuildEvent">
     <GetFrameworkSdkPath>
       <Output TaskParameter="Path" PropertyName="SdkPath" />
     </GetFrameworkSdkPath>
     <CreateProperty Value="$(ProjectDir)$(OutputPath)$(TargetFileName)">
       <Output TaskParameter="Value" PropertyName="TargetAssembly" />
     </CreateProperty>
-    <CreateProperty Value="&amp; '$(ProjectDir)BuildRegistryScript.ps1' -config  '$(ConfigurationName)' -builderAssemblyPath  '$(TargetPath)'  -netToolsDir  '$(SdkPath)bin\NETFX 4.6.1 Tools\' -wixToolsDir  '$(ProjectDir)WixToolset\' -sourceDir  '$(TargetDir)' -targetDir  '$(TargetDir)' -projectDir  '$(ProjectDir)' -includeDir  '$(ProjectDir)InnoSetup\Includes\' -filesToExtract  'Rubberduck.dll|Rubberduck.API.dll'">
-      <Output TaskParameter="Value" PropertyName="PowershellCommand" />
-    </CreateProperty>
-    <Exec Command="%25SystemRoot%25\System32\WindowsPowerShell\v1.0\powershell.exe -ExecutionPolicy Bypass -command &quot;$(PowershellCommand)&quot;" ConsoleToMsBuild="true" />
-    <Message Text="Ran Registration script" Importance="normal" />
+
+    <RubberduckPostBuildTask 
+        Config="$(ConfigurationName)" 
+        NetToolsDir="$(SdkPath)bin\NETFX 4.6.1 Tools\" 
+        WixToolsDir="$(ProjectDir)WixToolset\" 
+        SourceDir="$(TargetDir)" 
+        TargetDir="$(TargetDir)" 
+        ProjectDir="$(ProjectDir)" 
+        IncludeDir="$(ProjectDir)InnoSetup\Includes\" 
+        FilesToExtract="Rubberduck.dll|Rubberduck.API.dll" />
+
+    <Message Text="Ran Rubberduck postbuild task" Importance="normal" />
   </Target>
 </Project>

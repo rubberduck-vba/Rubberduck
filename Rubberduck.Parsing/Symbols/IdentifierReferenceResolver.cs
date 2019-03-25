@@ -32,7 +32,7 @@ namespace Rubberduck.Parsing.Symbols
             _withBlockExpressions = new Stack<IBoundExpression>();
             _moduleDeclaration = finder.MatchName(_qualifiedModuleName.ComponentName)
                 .SingleOrDefault(item =>
-                    (item.DeclarationType == DeclarationType.ClassModule ||
+                    (item.DeclarationType.HasFlag(DeclarationType.ClassModule) ||
                      item.DeclarationType == DeclarationType.ProceduralModule)
                     && item.QualifiedName.QualifiedModuleName.Equals(_qualifiedModuleName));
             SetCurrentScope();

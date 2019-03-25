@@ -97,6 +97,15 @@ namespace Rubberduck.Resources.Settings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Dual binding.
+        /// </summary>
+        public static string UnitTestSettings_DualBinding {
+            get {
+                return ResourceManager.GetString("UnitTestSettings_DualBinding", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Early binding.
         /// </summary>
         public static string UnitTestSettings_EarlyBinding {
