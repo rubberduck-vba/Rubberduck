@@ -1,5 +1,8 @@
+using System;
+using System.Linq;
 using NUnit.Framework;
 using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions.ImplementInterface;
@@ -7,12 +10,42 @@ using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
     [TestFixture]
     public class ImplementInterfaceTests : RefactoringTestBase
     {
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public override void TargetNull_Throws()
+        {
+            var testVbe = TestVbe(string.Empty, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(testVbe);
+            using (state)
+            {
+                var refactoring = TestRefactoring(rewritingManager, state);
+                Assert.Throws<NotSupportedException>(() => refactoring.Refactor((Declaration)null));
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Implement Interface")]
+        public void DoesNotSupportCallingWithADeclaration()
+        {
+            var testVbe = TestVbe(("testClass", string.Empty, ComponentType.ClassModule));
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(testVbe);
+            using (state)
+            {
+                var target = state.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule).Single();
+                var refactoring = TestRefactoring(rewritingManager, state);
+                Assert.Throws<NotSupportedException>(() => refactoring.Refactor(target));
+            }
+        }
+
         [Test]
         [Category("Refactorings")]
         [Category("Implement Interface")]

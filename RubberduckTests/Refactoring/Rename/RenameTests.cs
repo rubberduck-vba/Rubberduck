@@ -16,6 +16,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
+using Rubberduck.Refactorings.Exceptions.Rename;
 using Rubberduck.UI.Refactorings;
 using Rubberduck.VBEditor.Utility;
 
@@ -2645,6 +2646,86 @@ End Sub";
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);
             }
+        }
+      
+        [Category("Refactorings")]
+        [Category("Rename")]
+        [TestCase("Class_Initialize")]
+        [TestCase("Class_Terminate")]
+        public void Rename_StandardEventHandler(string handlerName)
+        {
+            var inputCode =
+                $@"Private Sub {handlerName}()
+End Sub";
+
+            var presenterAction = AdjustName("test");
+
+            var actualCode = RefactoredCode(
+                handlerName,
+                DeclarationType.Procedure,
+                presenterAction,
+                typeof(TargetDeclarationIsStandardEventHandlerException),
+                ("TestClass", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(inputCode, actualCode["TestClass"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        public void Rename_NotUserDefined()
+        {
+            const string inputCode = 
+                @"Private Sub Foo()
+    Dim bar As Color|ScaleCriteria
+End Sub";
+
+            var tdo = new RenameTestsDataObject(declarationName: "ColorScaleCriteria", newName: "Goo", declarationType: DeclarationType.ClassModule);
+            var inputOutput1 = new RenameTestModuleDefinition("Class1")
+            {
+                Input = inputCode,
+                Expected = inputCode.Replace("|", string.Empty)
+            };
+            tdo.UseLibraries = true;
+            tdo.ExpectedException = typeof(TargetDeclarationNotUserDefinedException);
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput1);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Rename")]
+        [Ignore("Something is off with the project id of the implemented class: it does not agree with the project id of the exposing library.")]
+        public void Rename_ImplementedInterfaceNotUserDefined()
+        {
+            var inputCode =
+                @"Implements PivotFields
+
+Private Property Get Pivo|tFields_Count() As Long
+End Property
+
+Private Function PivotFields_Item(Index) As Object
+End Function
+
+Private Property Get PivotFields_Application() As Application
+End Property
+
+Private Property Get PivotFields_Creator() As XlCreator
+End Property
+
+Private Property Get PivotFields_Parent() As PivotTable
+End Property
+";
+
+            var tdo = new RenameTestsDataObject(declarationName: "PivotFields_Count", newName: "Goo", declarationType: DeclarationType.PropertyGet);
+            var inputOutput1 = new RenameTestModuleDefinition("Class1")
+            {
+                Input = inputCode,
+                Expected = inputCode.Replace("|", string.Empty)
+            };
+            tdo.UseLibraries = true;
+            tdo.ExpectedException = typeof(TargetDeclarationNotUserDefinedException);
+
+            PerformExpectedVersusActualRenameTests(tdo, inputOutput1);
         }
 
         [Test]

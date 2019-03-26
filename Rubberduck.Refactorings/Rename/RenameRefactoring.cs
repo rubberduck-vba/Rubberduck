@@ -51,11 +51,6 @@ namespace Rubberduck.Refactorings.Rename
 
         protected override RenameModel InitializeModel(Declaration target)
         {
-            if (target == null)
-            {
-                throw new TargetDeclarationIsNullException();
-            }
-
             CheckWhetherValidTarget(target);
 
             var model = DeriveTarget(new RenameModel(target));

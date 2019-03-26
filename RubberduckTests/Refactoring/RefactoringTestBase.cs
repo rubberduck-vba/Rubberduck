@@ -21,13 +21,25 @@ namespace RubberduckTests.Refactoring
     {
         [Test]
         [Category("Refactorings")]
-        [Category("Introduce Field")]
         public void NoActiveSelection_Throws()
         {
             var rewritingManager = new Mock<IRewritingManager>().Object;
             var refactoring = TestRefactoring(rewritingManager, null, initialSelection: null);
 
             Assert.Throws<NoActiveSelectionException>(() => refactoring.Refactor());
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        public virtual void TargetNull_Throws()
+        {
+            var testVbe = TestVbe(string.Empty, out _);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(testVbe);
+            using (state)
+            {
+                var refactoring = TestRefactoring(rewritingManager, state);
+                Assert.Throws<TargetDeclarationIsNullException>(() => refactoring.Refactor((Declaration)null));
+            }
         }
 
         protected string RefactoredCode(string code, Selection selection, Type expectedException = null, bool executeViaActiveSelection = false)
@@ -49,7 +61,7 @@ namespace RubberduckTests.Refactoring
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
-                var module = state.DeclarationFinder.UserDeclarations(DeclarationType.Module)
+                var module = state.DeclarationFinder.DeclarationsWithType(DeclarationType.Module)
                     .Single(declaration => declaration.IdentifierName == selectedComponentName)
                     .QualifiedModuleName;
                 var qualifiedSelection = new QualifiedSelection(module, selection);

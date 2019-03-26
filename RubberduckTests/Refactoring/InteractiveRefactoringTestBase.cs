@@ -97,7 +97,7 @@ namespace RubberduckTests.Refactoring
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
             using (state)
             {
-                var target = state.DeclarationFinder.UserDeclarations(declarationType)
+                var target = state.DeclarationFinder.DeclarationsWithType(declarationType)
                     .Single(declaration => declaration.IdentifierName == declarationName);
 
                 var refactoring = TestRefactoring(rewritingManager, state, presenterAdjustment);
