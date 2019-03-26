@@ -1469,6 +1469,23 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Remove Parameters")]
+        public void RemoveParams_RefactorDeclaration_FailsNoValidTargetSelected()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Long
+
+Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = Selection.Home;
+            var actualCode = RefactoredCode(inputCode, selection, typeof(NoDeclarationForSelectionException));
+
+            Assert.AreEqual(inputCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Remove Parameters")]
         public void RemoveParams_PresenterIsNull()
         {
             //Input

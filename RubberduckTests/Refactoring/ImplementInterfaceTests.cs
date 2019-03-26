@@ -5,6 +5,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.ImplementInterface;
 using Rubberduck.Refactorings.ImplementInterface;
 using Rubberduck.VBEditor;

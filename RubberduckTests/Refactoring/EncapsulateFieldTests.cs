@@ -49,6 +49,36 @@ End Property
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
+        public void EncapsulatePublicField_InvalidDeclarationType_Throws()
+        {
+            //Input
+            const string inputCode =
+                @"Public fizz As Integer";
+
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, "TestModule1", DeclarationType.ProceduralModule, presenterAction, typeof(InvalidDeclarationTypeException));
+            Assert.AreEqual(inputCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
+        public void EncapsulatePublicField_InvalidIdentifierSelected_Throws()
+        {
+            //Input
+            const string inputCode =
+                @"Public Function fizz() As Integer
+End Function";
+            var selection = new Selection(1, 19);
+
+            var presenterAction = SetParameters("Name", implementLet: true);
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction, typeof(NoDeclarationForSelectionException));
+            Assert.AreEqual(inputCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Encapsulate Field")]
         public void EncapsulatePublicField_FieldIsOverMultipleLines()
         {
             //Input

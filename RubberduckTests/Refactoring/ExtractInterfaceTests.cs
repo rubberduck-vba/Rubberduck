@@ -68,6 +68,66 @@ End Sub
         [Test]
         [Category("Refactorings")]
         [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_InvalidTargetType_Throws()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
+            {
+                foreach (var interfaceMember in model.Members)
+                {
+                    interfaceMember.IsSelected = true;
+                }
+
+                return model;
+            };
+
+            var actualCode = RefactoredCode(
+                "Module", 
+                DeclarationType.ProceduralModule, 
+                presenterAction, 
+                typeof(InvalidDeclarationTypeException),
+                ("Module", inputCode, ComponentType.StandardModule));
+            Assert.AreEqual(inputCode, actualCode["Module"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
+        public void ExtractInterfaceRefactoring_NoValidTargetSelected_Throws()
+        {
+            //Input
+            const string inputCode =
+                @"Public Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = new Selection(1, 23, 1, 27);
+
+            Func<ExtractInterfaceModel, ExtractInterfaceModel> presenterAction = model =>
+            {
+                foreach (var interfaceMember in model.Members)
+                {
+                    interfaceMember.IsSelected = true;
+                }
+
+                return model;
+            };
+
+            var actualCode = RefactoredCode(
+                "Module",
+                selection,
+                presenterAction,
+                typeof(NoDeclarationForSelectionException),
+                false,
+                ("Module", inputCode, ComponentType.StandardModule));
+            Assert.AreEqual(inputCode, actualCode["Module"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Extract Interface")]
         public void ExtractInterfaceRefactoring_ImplementProcAndFuncAndPropGetSetLet()
         {
             //Input

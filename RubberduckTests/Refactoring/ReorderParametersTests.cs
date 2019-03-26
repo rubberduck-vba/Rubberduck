@@ -131,6 +131,24 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Reorder Parameters")]
+        public void ReorderParams_RefactorDeclaration_FailsNoValidTargetSelected()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Long 
+
+Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
+End Sub";
+            var selection = Selection.Home;
+
+            var presenterAction = ReverseParameters();
+            var actualCode = RefactoredCode(inputCode, selection, presenterAction, typeof(NoDeclarationForSelectionException));
+            Assert.AreEqual(inputCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Reorder Parameters")]
         public void ReorderParams_WithOptionalParam()
         {
             //Input

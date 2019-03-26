@@ -44,14 +44,14 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
                 throw new TargetDeclarationIsNullException();
             }
 
-            if (target.DeclarationType != DeclarationType.Variable)
-            {
-                throw new InvalidDeclarationTypeException(target);
-            }
-
             if (!target.IsUserDefined)
             {
                 throw new TargetDeclarationNotUserDefinedException(target);
+            }
+
+            if (target.DeclarationType != DeclarationType.Variable)
+            {
+                throw new InvalidDeclarationTypeException(target);
             }
 
             if (!target.References.Any())

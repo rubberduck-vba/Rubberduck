@@ -4,13 +4,13 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings.MoveCloserToUsage;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
-using RubberduckTests.Mocks;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.Refactorings.Exceptions.MoveCloserToUsage;
 using Rubberduck.VBEditor.Utility;
+using RubberduckTests.Mocks;
 
 namespace RubberduckTests.Refactoring
 {
@@ -429,42 +429,6 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Move Closer")]
-        public void MoveCloserToUsageRefactoring_NoReferences()
-        {
-            //Input
-            const string inputCode =
-                @"Private bar As Boolean
-Private Sub Foo()
-End Sub";
-            var selection = new Selection(1, 1);
-
-            var actualCode = RefactoredCode(inputCode, selection, typeof(TargetDeclarationNotUsedException));
-            Assert.AreEqual(inputCode, actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Move Closer")]
-        public void MoveCloserToUsageRefactoring_ReferencedInMultipleProcedures()
-        {
-            //Input
-            const string inputCode =
-                @"Private bar As Boolean
-Private Sub Foo()
-    bar = True
-End Sub
-Private Sub Bar()
-    bar = True
-End Sub";
-            var selection = new Selection(1, 1);
-
-            var actualCode = RefactoredCode(inputCode, selection, typeof(TargetDeclarationUsedInMultipleMethodsException));
-            Assert.AreEqual(inputCode, actualCode);
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Move Closer")]
         public void MoveCloserToUsageRefactoring_ReferenceIsNotBeginningOfStatement_Assignment()
         {
             //Input
@@ -639,16 +603,9 @@ End Sub";
 Private Sub Foo()
     bar = True
 End Sub";
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
-            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
-            using(state)
-            {
-                var refactoring = TestRefactoring(rewritingManager, state);
-                Assert.Throws<InvalidDeclarationTypeException>(() => refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable)));
 
-                var actualCode = component.CodeModule.Content();
-                Assert.AreEqual(inputCode, actualCode);
-            }
+            var actualCode = RefactoredCode(inputCode, "Foo", DeclarationType.Procedure, typeof(InvalidDeclarationTypeException));
+            Assert.AreEqual(inputCode, actualCode);
         }
 
         [Test]
@@ -666,6 +623,228 @@ End Sub";
 
             var actualCode = RefactoredCode(inputCode, selection, typeof(NoDeclarationForSelectionException));
             Assert.AreEqual(inputCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_NoReferences()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Boolean
+Private Sub Foo()
+End Sub";
+            var selection = new Selection(1, 1);
+
+            var actualCode = RefactoredCode(inputCode, selection, typeof(TargetDeclarationNotUsedException));
+            Assert.AreEqual(inputCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_ReferencedInMultipleProcedures()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Boolean
+Private Sub Foo()
+    bar = True
+End Sub
+Private Sub Bar()
+    bar = True
+End Sub";
+            var selection = new Selection(1, 1);
+
+            var actualCode = RefactoredCode(inputCode, selection, typeof(TargetDeclarationUsedInMultipleMethodsException));
+            Assert.AreEqual(inputCode, actualCode);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_VariableWithSameNameAlreadyExistsInProcedure()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo()
+    Dim bar As Boolean
+    OtherModule.Bar = True
+End Sub";
+            var selection = new Selection(3, 18);
+
+            const string otherModuleInputCode =
+                @"Public Bar As Boolean";
+
+            var actualCode = RefactoredCode(
+                "Module", 
+                selection, 
+                typeof(TargetDeclarationConflictsWithPreexistingDeclaration),
+                false,
+                ("Module", inputCode, ComponentType.StandardModule),
+                ("OtherModule", otherModuleInputCode, ComponentType.StandardModule));
+            Assert.AreEqual(inputCode, actualCode["Module"]);
+            Assert.AreEqual(otherModuleInputCode, actualCode["OtherModule"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_ModuleVariableWithSameNameAlreadyExists()
+        {
+            //Input
+            const string inputCode =
+                @"Private bar As Boolean
+Private Sub Foo()
+    OtherModule.Bar = True
+End Sub";
+            var selection = new Selection(3, 18);
+
+            const string otherModuleInputCode =
+                @"Public Bar As Boolean";
+
+            var actualCode = RefactoredCode(
+                "Module",
+                selection,
+                typeof(TargetDeclarationConflictsWithPreexistingDeclaration),
+                false,
+                ("Module", inputCode, ComponentType.StandardModule),
+                ("OtherModule", otherModuleInputCode, ComponentType.StandardModule));
+            Assert.AreEqual(inputCode, actualCode["Module"]);
+            Assert.AreEqual(otherModuleInputCode, actualCode["OtherModule"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_NonPrivateInNonStandardModule()
+        {
+            //Input
+            const string inputCode =
+                @"Public bar As Boolean
+Private Sub Foo()
+    bar = True
+End Sub";
+            var selection = new Selection(1, 9);
+
+            var actualCode = RefactoredCode(
+                "Class",
+                selection,
+                typeof(TargetDeclarationNonPrivateInNonStandardModule),
+                false,
+                ("Class", inputCode, ComponentType.ClassModule));
+            Assert.AreEqual(inputCode, actualCode["Class"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_TargetInDifferentNonStandardModule()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo()
+    Dim baz As Class1
+    baz.Bar = True
+End Sub";
+            var selection = new Selection(3, 10);
+
+            const string otherClassInputCode =
+                @"Public Bar As Boolean";
+
+            var actualCode = RefactoredCode(
+                "Module",
+                selection,
+                typeof(TargetDeclarationInDifferentNonStandardModuleException),
+                false,
+                ("Module", inputCode, ComponentType.StandardModule),
+                ("Class1", otherClassInputCode, ComponentType.ClassModule));
+            Assert.AreEqual(inputCode, actualCode["Module"]);
+            Assert.AreEqual(otherClassInputCode, actualCode["Class1"]);
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        [Ignore("For some reason the reference is not recognized by the resolver in this test.")]
+        public void MoveCloserToUsageRefactoring_TargetInDifferentProject()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo()
+    OtherProject.OtherModule.Bar = True
+End Sub";
+            var selection = new Selection(2, 31);
+
+            const string otherModuleInputCode =
+                @"Public Bar As Boolean";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("OtherProject", ProjectProtection.Unprotected)
+                .AddComponent("OtherModule", ComponentType.StandardModule, otherModuleInputCode)
+                .AddProjectToVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Module", ComponentType.StandardModule, inputCode)
+                .AddReference("OtherProject", string.Empty,0,0,false,ReferenceKind.Project)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var module = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single(decl => decl.IdentifierName == "Module").QualifiedModuleName;
+                var qualifiedSelection = new QualifiedSelection(module, selection);
+                var testRefactoring = TestRefactoring(rewritingManager, state);
+
+                Assert.Throws<TargetDeclarationInDifferentProjectThanUses>(() =>
+                    testRefactoring.Refactor(qualifiedSelection));
+                
+                var otherModule = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single(decl => decl.IdentifierName == "OtherModule").QualifiedModuleName;
+                var actualModuleCode = state.ProjectsProvider.Component(module).CodeModule.Content();
+                var actualOtherModuleCode = state.ProjectsProvider.Component(otherModule).CodeModule.Content();
+
+                Assert.AreEqual(inputCode, actualModuleCode);
+                Assert.AreEqual(otherModuleInputCode, actualOtherModuleCode);
+            }
+        }
+
+        [Test]
+        [Category("Refactorings")]
+        [Category("Move Closer")]
+        public void MoveCloserToUsageRefactoring_TargetNotUserDefined()
+        {
+            //Input
+            const string inputCode =
+                @"Private Sub Foo()
+    Dim baz As Excel.Range
+    baz.Value = 42
+End Sub";
+
+            var vbe = new MockVbeBuilder()
+                .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
+                .AddComponent("Module", ComponentType.StandardModule, inputCode)
+                .AddReference("EXCEL", MockVbeBuilder.LibraryPathMsExcel, 1, 8, true)
+                .AddProjectToVbeBuilder()
+                .Build()
+                .Object;
+
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);
+            using (state)
+            {
+                var target = state.DeclarationFinder.MatchName("Value")
+                    .First(decl => decl.ParentDeclaration.IdentifierName == "Range");
+                var testRefactoring = TestRefactoring(rewritingManager, state);
+
+                Assert.Throws<TargetDeclarationNotUserDefinedException>(() =>
+                    testRefactoring.Refactor(target));
+
+                var module = state.DeclarationFinder.UserDeclarations(DeclarationType.ProceduralModule).Single(decl => decl.IdentifierName == "Module").QualifiedModuleName;
+                var actualModuleCode = state.ProjectsProvider.Component(module).CodeModule.Content();
+
+                Assert.AreEqual(inputCode, actualModuleCode);
+            }
         }
 
         [Test]

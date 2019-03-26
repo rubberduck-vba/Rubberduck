@@ -34,8 +34,8 @@ namespace Rubberduck.Refactorings.ExtractInterface
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)
         {
             var candidates = _declarationFinderProvider.DeclarationFinder
-                .AllUserDeclarations
-                .Where(item => ModuleTypes.Contains(item.DeclarationType)).ToList();
+                .Members(targetSelection.QualifiedName)
+                .Where(item => ModuleTypes.Contains(item.DeclarationType));
 
             return candidates.SingleOrDefault(item =>
                 item.QualifiedSelection.QualifiedName.Equals(targetSelection.QualifiedName));
@@ -50,7 +50,7 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             if (!ModuleTypes.Contains(target.DeclarationType))
             {
-                throw new InvalidTargetDeclarationException(target);
+                throw new InvalidDeclarationTypeException(target);
             }
 
             return new ExtractInterfaceModel(_declarationFinderProvider, target);
