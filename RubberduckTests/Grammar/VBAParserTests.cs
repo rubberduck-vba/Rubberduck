@@ -3779,6 +3779,22 @@ End Type
             AssertTree(parseResult.Item1, parseResult.Item2, "//unrestrictedIdentifier", matches => matches.Count == 1);
         }
 
+        [Test]
+        [Category("Parser")]
+        public void LineSpecialForm_WithLineContinuations()
+        {
+            // Taken from opened issue https://github.com/rubberduck-vba/Rubberduck/issues/4875
+            const string code = @"
+Sub Whatever()
+    Section.Parent.Line ((.Left + .Width + SectionProperties.VerticalLineMargin), _
+      PageHeaderHeight + tmpTopMargin + Abs(Section.Parent.Top)) _
+      -Step(0, Section.Parent.Height)
+End Sub
+";
+            var parseResult = Parse(code);
+            AssertTree(parseResult.Item1, parseResult.Item2, "//lineSpecialForm", matches => matches.Count == 1);
+        }
+
         
         [Test]
         [Category("Parser")]
