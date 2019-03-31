@@ -1,21 +1,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using NLog;
+using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
+using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class ExportCommand : CommandBase, IDisposable
+    public class ExportCommand : CommandBase
     {
-        private readonly ISaveFileDialog _saveFileDialog;
-        private readonly IProjectsProvider _projectsProvider;
-        private readonly Dictionary<ComponentType, string> _exportableFileExtensions = new Dictionary<ComponentType, string>
+        private static readonly Dictionary<ComponentType, string> ExportableFileExtensions = new Dictionary<ComponentType, string>
         {
             { ComponentType.StandardModule, ".bas" },
             { ComponentType.ClassModule, ".cls" },
@@ -23,69 +22,72 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             { ComponentType.UserForm, ".frm" }
         };
 
-        public ExportCommand(ISaveFileDialog saveFileDialog, IProjectsProvider projectsProvider) 
+        private readonly IFileSystemBrowserFactory _dialogFactory;
+
+        public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider)
             : base(LogManager.GetCurrentClassLogger())
         {
-            _saveFileDialog = saveFileDialog;
-            _saveFileDialog.OverwritePrompt = true;
-
-            _projectsProvider = projectsProvider;
+            _dialogFactory = dialogFactory;
+            MessageBox = messageBox;
+            ProjectsProvider = projectsProvider;
         }
+
+        protected IMessageBox MessageBox { get; }
+        protected IProjectsProvider ProjectsProvider { get; }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            if (!(parameter is CodeExplorerComponentViewModel))
+            if (!(parameter is CodeExplorerComponentViewModel node) ||
+                node.Declaration == null)
             {
                 return false;
             }
 
-            try
-            {
-                var node = (CodeExplorerComponentViewModel)parameter;
-                var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
-                return _exportableFileExtensions.Select(s => s.Key).Contains(componentType);
-            }
-            catch (COMException)
-            {
-                // thrown when the component reference is stale
-                return false;
-            }
+            var componentType = node.Declaration.QualifiedName.QualifiedModuleName.ComponentType;
+            return ExportableFileExtensions.Select(s => s.Key).Contains(componentType);
         }
 
         protected override void OnExecute(object parameter)
         {
-            var node = (CodeExplorerComponentViewModel)parameter;
-            var qualifiedModuleName = node.Declaration.QualifiedName.QualifiedModuleName;
-
-            string ext;
-            _exportableFileExtensions.TryGetValue(qualifiedModuleName.ComponentType, out ext);
-
-            _saveFileDialog.FileName = qualifiedModuleName.ComponentName + ext;
-            var result = _saveFileDialog.ShowDialog();
-
-            if (result == DialogResult.OK)
-            {
-                var component = _projectsProvider.Component(qualifiedModuleName);
-                component.Export(_saveFileDialog.FileName);
-            }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private bool _isDisposed;
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_isDisposed || !disposing)
+            if (!base.EvaluateCanExecute(parameter) || 
+                !(parameter is CodeExplorerComponentViewModel node) ||
+                node.Declaration == null)
             {
                 return;
             }
 
-            _saveFileDialog?.Dispose();
-            _isDisposed = true;
+            PromptFileNameAndExport(node.Declaration.QualifiedName.QualifiedModuleName);
+        }
+
+        protected bool PromptFileNameAndExport(QualifiedModuleName qualifiedModule)
+        {
+            if (!ExportableFileExtensions.TryGetValue(qualifiedModule.ComponentType, out var extension))
+            {
+                return false;
+            }
+
+            using (var dialog = _dialogFactory.CreateSaveFileDialog())
+            {
+                dialog.OverwritePrompt = true;
+                dialog.FileName = qualifiedModule.ComponentName + extension;
+
+                var result = dialog.ShowDialog();
+                if (result != DialogResult.OK)
+                {
+                    return false;
+                }
+
+                var component = ProjectsProvider.Component(qualifiedModule);
+                try
+                {
+                    component.Export(dialog.FileName);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.NotifyWarn(ex.Message, string.Format(Resources.CodeExplorer.CodeExplorerUI.ExportError_Caption, qualifiedModule.ComponentName));
+                }                    
+                return true;
+            }
         }
     }
 }

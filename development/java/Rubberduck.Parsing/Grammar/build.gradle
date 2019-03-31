@@ -1,0 +1,56 @@
+buildscript {
+	project.ext.antlrVersion = '4.7.2'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath group: 'org.antlr', name: 'antlr4', version: "${project.ext.antlrVersion}"
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+def envVersion = System.getenv("APPVEYOR_VERSION")
+
+group 'com.rubberduckvba.rubberduck.parsing'
+version envVersion==null?'snapshot':envVersion
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.antlr', name: 'antlr4-runtime', version: "${project.ext.antlrVersion}"
+}
+
+def grammarCodeGenDest = "${projectDir}/src/main/gen"
+def grammarSource = "${projectDir}/../../../../Rubberduck.Parsing/Grammar/"
+def grammarDest = "${projectDir}/src/main/antlr/com/rubberduckvba/rubberduck/parsing/grammar"
+
+sourceSets {
+    main {
+        java {
+            srcDir "${grammarCodeGenDest}"
+        }
+    }
+}
+
+task copyGrammarFiles(type: Copy) {
+    from grammarSource
+    into grammarDest
+    include "VBALexer.g4"
+    include "VBAParser.g4"
+}
+
+task generateGrammarSources(type: JavaExec) {
+    main 'org.antlr.v4.Tool'
+    classpath = buildscript.configurations.classpath
+    args "-o", "${grammarCodeGenDest}", "-visitor", "-package", "com.rubberduckvba.rubberduck.parsing.grammar", "${grammarDest}/VBALexer.g4", "${grammarDest}/VBAParser.g4"
+}
+
+generateGrammarSources.dependsOn copyGrammarFiles
+build.dependsOn generateGrammarSources

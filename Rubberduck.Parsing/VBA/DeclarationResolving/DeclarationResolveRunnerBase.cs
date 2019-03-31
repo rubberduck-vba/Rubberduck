@@ -176,8 +176,7 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
             QualifiedModuleName qualifiedModuleName,
             IParseTree tree,
             IDictionary<int, List<IAnnotation>> annotationsOnWhiteSpaceLines,
-            IDictionary<(string scopeIdentifier, DeclarationType scopeType),
-                Attributes> attributes,
+            IDictionary<(string scopeIdentifier, DeclarationType scopeType),Attributes> attributes,
             Declaration projectDeclaration)
         {
             var moduleAttributes = ModuleAttributes(qualifiedModuleName, attributes);
@@ -199,6 +198,13 @@ namespace Rubberduck.Parsing.VBA.DeclarationResolving
                         projectDeclaration,
                         qualifiedModuleName.ComponentName,
                         true,
+                        moduleAnnotations,
+                        moduleAttributes);
+                case ComponentType.Document:
+                    return new DocumentModuleDeclaration(
+                        qualifiedModuleName.QualifyMemberName(qualifiedModuleName.ComponentName),
+                        projectDeclaration,
+                        qualifiedModuleName.ComponentName,
                         moduleAnnotations,
                         moduleAttributes);
                 default:

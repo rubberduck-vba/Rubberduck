@@ -156,25 +156,25 @@
   <data name="TestExplorer_QualifiedModuleName" xml:space="preserve">
     <value>Modul</value>
   </data>
-  <data name="TestExplorer_RunAllTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuAllTests" xml:space="preserve">
     <value>Všechny testy</value>
   </data>
-  <data name="TestExplorer_RunButtonText" xml:space="preserve">
+  <data name="TestExplorer_RunMenuButtonText" xml:space="preserve">
     <value>Spustit</value>
   </data>
-  <data name="TestExplorer_RunLastRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuLastRunTests" xml:space="preserve">
     <value>Spustit poslední běh</value>
   </data>
-  <data name="TestExplorer_RunPassedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuPassedTests" xml:space="preserve">
     <value>Testy, které prošly</value>
   </data>
-  <data name="TestExplorer_RunSelectedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuSelectedTests" xml:space="preserve">
     <value>Vybrané testy</value>
   </data>
-  <data name="TestExplorer_RunNotRunTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuNotRunTests" xml:space="preserve">
     <value>Testy, které neproběhly</value>
   </data>
-  <data name="TestExplorer_RunFailedTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuFailedTests" xml:space="preserve">
     <value>Testy, které neprošly</value>
   </data>
   <data name="Command_AddTestModule_Error" xml:space="preserve">
@@ -183,7 +183,7 @@
   <data name="TestExplorer_Outcome" xml:space="preserve">
     <value>Výsledek</value>
   </data>
-  <data name="TestExplorer_RunInconclusiveTests" xml:space="preserve">
+  <data name="TestExplorer_RunMenuInconclusiveTests" xml:space="preserve">
     <value>Neprůkazné testy</value>
   </data>
   <data name="TestExplorerDockablePresenter_MultipleTestsSameNameError" xml:space="preserve">
@@ -225,13 +225,106 @@
   <data name="UnitTest_NewModule_RunOnce" xml:space="preserve">
     <value>tato metoda běží jedenkrát v modulu</value>
   </data>
-  <data name="UnitTest_TotalDuration" xml:space="preserve">
+  <data name="TestExplorer_TotalDuration" xml:space="preserve">
     <value>Celkové Trvání</value>
   </data>
   <data name="TestExplorer_CategoryName" xml:space="preserve">
     <value>Kategorie</value>
   </data>
-  <data name="TestExplorer_RunSelectedCategoryTests" xml:space="preserve">
-    <value>Vybraná Kategorie</value>
+  <data name="TestExplorer_Uncategorized" xml:space="preserve">
+    <value>Bez kategorie</value>
+  </data>
+  <data name="UnitTest_NewModule_BaseName" xml:space="preserve">
+    <value>TestovaciModul</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewModule_DefaultFolder" xml:space="preserve">
+    <value>Testy</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestInitializeMethod" xml:space="preserve">
+    <value>InicializaceTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestFailLabel" xml:space="preserve">
+    <value>SelhaniTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindDirective" xml:space="preserve">
+    <value>PozdniVazbaTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestExitLabel" xml:space="preserve">
+    <value>OpusteniTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_TestCleanupMethod" xml:space="preserve">
+    <value>UklidTestu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleInitializeMethod" xml:space="preserve">
+    <value>InicializovatModul</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ModuleCleanupMethod" xml:space="preserve">
+    <value>VycisteniModulu</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewModule_LateBindConstant" xml:space="preserve">
+    <value>PozdniVazba</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_ExpectedError" xml:space="preserve">
+    <value>OcekavanaChyba</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="UnitTest_NewMethod_BaseName" xml:space="preserve">
+    <value>TestovaciMetoda</value>
+    <comment>Do not translate</comment>
+  </data>
+  <data name="TestOutcome_RunSummaryFormat" xml:space="preserve">
+    <value>{0} z {1} testů (celková doba běhu: {2:g})</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunGroup" xml:space="preserve">
+    <value>Spustit všechny testy ve skupině</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunAll" xml:space="preserve">
+    <value>Spustit všechny testy</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSelected" xml:space="preserve">
+    <value>Spustit označené testy</value>
+  </data>
+  <data name="TestExplorer_ContextMenuRunSingle" xml:space="preserve">
+    <value>Spustit samostatný test</value>
+  </data>
+  <data name="TestExplorer_ResetButtonTooltip" xml:space="preserve">
+    <value>Resetovat výsledky všech testů</value>
+  </data>
+  <data name="UnitTest_NewMethod_Act" xml:space="preserve">
+    <value>Jednat</value>
+  </data>
+  <data name="UnitTest_NewMethod_Arrange" xml:space="preserve">
+    <value>Připravit</value>
+  </data>
+  <data name="UnitTest_NewMethod_Assert" xml:space="preserve">
+    <value>Potvrzení</value>
+  </data>
+  <data name="TestOutcome_DurationHour" xml:space="preserve">
+    <value>hod</value>
+  </data>
+  <data name="TestOutcome_DurationMillisecond" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="TestOutcome_DurationMinute" xml:space="preserve">
+    <value>min</value>
+  </data>
+  <data name="TestOutcome_DurationSecond" xml:space="preserve">
+    <value>s</value>
+  </data>
+  <data name="TestOutcome_SummaryCaption" xml:space="preserve">
+    <value>Shrnutí:</value>
+  </data>
+  <data name="TestOutcome_SpectacularFail" xml:space="preserve">
+    <value>Pozoruhodné Selhání</value>
   </data>
 </root>

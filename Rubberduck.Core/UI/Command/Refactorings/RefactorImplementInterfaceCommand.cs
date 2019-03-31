@@ -5,7 +5,7 @@ using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ImplementInterface;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -13,30 +13,31 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorImplementInterfaceCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly IMessageBox _msgBox;
 
-        public RefactorImplementInterfaceCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager)
-            : base(vbe)
+        public RefactorImplementInterfaceCommand(RubberduckParserState state, IMessageBox msgBox, IRewritingManager rewritingManager, ISelectionService selectionService)
+            : base(rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _msgBox = msgBox;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            
-            var selection = Vbe.GetActiveSelection();        
-
-            if (!selection.HasValue)
+            if (_state.Status != ParserState.Ready)
             {
                 return false;
             }
 
-            var targetInterface = _state.DeclarationFinder.FindInterface(selection.Value);
+            var activeSelection = SelectionService.ActiveSelection();        
+            if (!activeSelection.HasValue)
+            {
+                return false;
+            }
+
+            var targetInterface = _state.DeclarationFinder.FindInterface(activeSelection.Value);
             
-            var targetClass = _state.DeclarationFinder.Members(selection.Value.QualifiedName)
+            var targetClass = _state.DeclarationFinder.Members(activeSelection.Value.QualifiedName)
                 .SingleOrDefault(declaration => declaration.DeclarationType == DeclarationType.ClassModule);
 
             return targetInterface != null && targetClass != null
@@ -47,15 +48,14 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            using (var pane = Vbe.ActiveCodePane)
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
             {
-                if (pane.IsWrappingNullReference)
-                {
-                    return;
-                }
+                return;
             }
-            var refactoring = new ImplementInterfaceRefactoring(Vbe, _state, _msgBox, _rewritingManager);
-            refactoring.Refactor();
+
+            var refactoring = new ImplementInterfaceRefactoring(_state, _msgBox, RewritingManager, SelectionService);
+            refactoring.Refactor(activeSelection.Value);
         }
     }
 }

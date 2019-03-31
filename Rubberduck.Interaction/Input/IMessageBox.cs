@@ -1,5 +1,4 @@
-﻿using System;
-using Forms = System.Windows.Forms;
+﻿using Forms = System.Windows.Forms;
 
 namespace Rubberduck.Interaction
 {

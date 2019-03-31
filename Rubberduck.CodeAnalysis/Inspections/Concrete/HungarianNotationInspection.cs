@@ -85,6 +85,7 @@ namespace Rubberduck.Inspections.Concrete
             DeclarationType.Constant,
             DeclarationType.Control,
             DeclarationType.ClassModule,
+            DeclarationType.Document,
             DeclarationType.Member,
             DeclarationType.Module,
             DeclarationType.ProceduralModule,

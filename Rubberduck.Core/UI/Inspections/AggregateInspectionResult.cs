@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Antlr4.Runtime;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
@@ -28,6 +29,8 @@ namespace Rubberduck.UI.Inspections
         public ParserRuleContext Context => _result.Context;
 
         public dynamic Properties => throw new InvalidOperationException();
+
+        public virtual bool ChangesInvalidateResult(ICollection<QualifiedModuleName> modifiedModules) => true;
 
         public int CompareTo(IInspectionResult other)
         {

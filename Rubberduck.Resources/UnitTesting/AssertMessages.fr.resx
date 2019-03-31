@@ -174,9 +174,6 @@
   <data name="Assert_LBoundMismatchFormat" xml:space="preserve">
     <value>Dimension {0}: valeur LBound attendue {1}; valeur LBound réelle {2}. {3}</value>
   </data>
-  <data name="Assert_NotImplemented" xml:space="preserve">
-    <value>Pas implémenté.</value>
-  </data>
   <data name="Assert_ValueReferenceMismatch" xml:space="preserve">
     <value>[attendu] est une valeur, mais [réel] est une référence.</value>
   </data>

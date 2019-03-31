@@ -174,7 +174,7 @@ End Sub";
         internal static Mock<IPersistanceService<CodeInspectionSettings>> GetInspectionSettings()
         {
             var settings = new Mock<IPersistanceService<CodeInspectionSettings>>();
-            settings.Setup(s => s.Load(It.IsAny<CodeInspectionSettings>()))
+            settings.Setup(s => s.Load(It.IsAny<CodeInspectionSettings>(), null))
                 .Returns(new CodeInspectionSettings(Enumerable.Empty<CodeInspectionSetting>(), new[]
                 {
                     new WhitelistedIdentifierSetting("sss"),

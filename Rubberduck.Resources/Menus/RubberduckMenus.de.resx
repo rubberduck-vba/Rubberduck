@@ -234,4 +234,13 @@
   <data name="TestMenu_TextExplorer" xml:space="preserve">
     <value>&amp;Test Explorer</value>
   </data>
+  <data name="AddRemoveReferences" xml:space="preserve">
+    <value>Referenzen hinzufügen/entfernen...</value>
+  </data>
+  <data name="ContextMenu_RunSelectedTest" xml:space="preserve">
+    <value>Selektierten Test ausführen</value>
+  </data>
+  <data name="ContextMenu_RunSelectedTestModule" xml:space="preserve">
+    <value>Führe alle Tests im Modul aus</value>
+  </data>
 </root>

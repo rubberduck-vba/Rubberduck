@@ -222,4 +222,10 @@
   <data name="DialogCaption_SaveAutocompletionSettings" xml:space="preserve">
     <value>Einstellungen der automatischen Vervollständigung speichern</value>
   </data>
+  <data name="PageInstructions_ReferenceSettings" xml:space="preserve">
+    <value>Einstellungen bzgl. des Hinzufügens und Entfernens von Referenzen verwalten</value>
+  </data>
+  <data name="PageHeader_ReferenceSettings" xml:space="preserve">
+    <value>Referenzeinstellingen</value>
+  </data>
 </root>

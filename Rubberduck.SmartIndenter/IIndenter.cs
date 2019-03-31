@@ -9,6 +9,7 @@ namespace Rubberduck.SmartIndenter
         void IndentCurrentModule();
         void IndentCurrentProject();
         void Indent(IVBComponent component);
+        IEnumerable<string> Indent(string code);
         IEnumerable<string> Indent(IEnumerable<string> lines);
         IEnumerable<string> Indent(IEnumerable<string> codeLines, bool forceTrailingNewLines);
     }

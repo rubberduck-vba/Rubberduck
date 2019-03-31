@@ -62,7 +62,7 @@ End Sub";
 
             const string expectedCode = @"
 '@Obsolete
-': Foo
+' Foo
 Public Sub Foo
 End Sub";
 
@@ -190,7 +190,7 @@ End Sub";
 
         protected override IQuickFix QuickFix(RubberduckParserState state)
         {
-            return new RemoveDuplicatedAnnotationQuickFix();
+            return new RemoveDuplicatedAnnotationQuickFix(new AnnotationUpdater());
         }
     }
 }

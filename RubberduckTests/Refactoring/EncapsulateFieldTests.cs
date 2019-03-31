@@ -1,17 +1,17 @@
-using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
 using Rubberduck.Common;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor;
 using RubberduckTests.Mocks;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Refactorings;
-using Rubberduck.UI.Refactorings.EncapsulateField;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
 {
@@ -40,9 +40,8 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -53,15 +52,12 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
-
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -95,9 +91,8 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -108,15 +103,12 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -147,9 +139,8 @@ Public Property Set Name(ByVal value As Variant)
     Set fizz = value
 End Property
 ";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -160,15 +151,12 @@ End Property
                 {
                     ImplementLetSetterType = false,
                     ImplementSetSetterType = true,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -195,9 +183,8 @@ Public Property Get Name() As Variant
     Name = fizz
 End Property
 ";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -208,15 +195,12 @@ End Property
                 {
                     ImplementLetSetterType = false,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -261,9 +245,8 @@ End Sub
 Function Bar() As Integer
     Bar = 0
 End Function";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -274,15 +257,12 @@ End Function";
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -333,9 +313,8 @@ End Property
 
 Property Set Foo(ByVal vall As Variant)
 End Property";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -346,15 +325,12 @@ End Property";
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -387,9 +363,8 @@ Public Property Let Name(ByVal value As Integer)
     fizz = value
 End Property
 ";
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -400,15 +375,12 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -452,8 +424,7 @@ Public Property Set Name(ByVal value As Variant)
 End Property
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -464,15 +435,12 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = true,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -508,8 +476,7 @@ Public Property Let Name(ByVal value As Boolean)
 End Property
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -520,15 +487,12 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -564,8 +528,7 @@ Public Property Let Name(ByVal value As Date)
 End Property
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -576,15 +539,12 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -616,8 +576,7 @@ Public Property Let Name(ByVal value As Integer)
 End Property
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -628,15 +587,12 @@ End Property
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -684,8 +640,7 @@ End Sub
 Sub Bar(ByVal name As Integer)
 End Sub";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
@@ -696,15 +651,12 @@ End Sub";
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
@@ -766,7 +718,7 @@ End Sub";
 
             var builder = new MockVbeBuilder();
             var project = builder.ProjectBuilder("TestProject1", ProjectProtection.Unprotected)
-                .AddComponent("Class1", ComponentType.ClassModule, codeClass1)
+                .AddComponent("Class1", ComponentType.ClassModule, codeClass1, selection)
                 .AddComponent("Class2", ComponentType.ClassModule, codeClass2)
                 .Build();
             var vbe = builder.AddProject(project).Build();
@@ -785,15 +737,12 @@ End Sub";
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode1 = module1.Content();
@@ -827,27 +776,22 @@ Public Property Let Name(ByVal value As Integer)
 End Property
 ";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
-
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
                 var model = new EncapsulateFieldModel(state, qualifiedSelection)
                 {
                     ImplementLetSetterType = true,
                     ImplementSetSetterType = false,
-                    CanImplementLet = true,
+                    //CanImplementLet = true,
                     ParameterName = "value",
                     PropertyName = "Name"
                 };
 
-                //SetupFactory
-                var factory = SetupFactory(model);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
                 refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
 
                 var actualCode = component.CodeModule.Content();
@@ -864,16 +808,16 @@ End Property
             const string inputCode =
                 @"Private fizz As Variant";
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
+                var selectionServiceMock = new Mock<ISelectionService>();
+                var factory = new Mock<IRefactoringPresenterFactory>();
+                factory.Setup(f => f.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(It.IsAny<EncapsulateFieldModel>()))
+                    .Returns(() => null); // resolves ambiguous method overload
 
-                var vbeWrapper = vbe.Object;
-                var factory = new EncapsulateFieldPresenterFactory(vbeWrapper, state, null);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbeWrapper, CreateIndenter(vbe.Object), factory, rewritingManager);
+                var refactoring = new EncapsulateFieldRefactoring(state, CreateIndenter(vbe.Object), factory.Object, rewritingManager, selectionServiceMock.Object);
                 refactoring.Refactor();
 
                 var actualCode = component.CodeModule.Content();
@@ -891,18 +835,14 @@ End Property
                 @"Private fizz As Variant";
             var selection = new Selection(1, 1);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
             using(state)
             {
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                //SetupFactory
-                var factory = SetupFactory(null);
-
-                var refactoring = new EncapsulateFieldRefactoring(vbe.Object, CreateIndenter(vbe.Object), factory.Object, rewritingManager);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, null);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -913,28 +853,60 @@ End Property
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void GivenNullActiveCodePane_FactoryReturnsNullPresenter()
+        public void EncapsulatePublicField_OptionExplicit_NotMoved()
         {
             //Input
             const string inputCode =
-                @"Private fizz As Integer";
+                @"Option Explicit
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component);
-            using(var state = MockParser.CreateAndParse(vbe.Object))
+Public foo As String";
+            var selection = new Selection(3, 9);
+
+            //Expectation
+            const string expectedCode =
+                @"Option Explicit
+
+Private foo As String
+
+Public Property Get Name() As String
+    Name = foo
+End Property
+
+Public Property Let Name(ByVal value As String)
+    foo = value
+End Property
+";
+
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                vbe.Object.ActiveCodePane = null;
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, null);
-                var actual = factory.Create();
+                var model = new EncapsulateFieldModel(state, qualifiedSelection)
+                {
+                    ImplementLetSetterType = true,
+                    ImplementSetSetterType = false,
+                    //CanImplementLet = true,
+                    ParameterName = "value",
+                    PropertyName = "Name"
+                };
 
-                Assert.IsNull(actual);
+                //SetupFactory
+                var factory = SetupFactory(model);
+
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
+                refactoring.Refactor(state.AllUserDeclarations.FindVariable(qualifiedSelection));
+
+                var actualCode = component.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
+        // FIXME this test is bollocks
         public void Presenter_ParameterlessTargetReturnsNullModel()
         {
             //Input
@@ -943,13 +915,11 @@ End Property
 End Sub";
             var selection = new Selection(1, 15);
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, null);
-                var presenter = factory.Create();
+                var factory = SetupFactory(null);
+                var presenter = factory.Object.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(null);
 
                 Assert.AreEqual(null, presenter.Show());
             }
@@ -958,6 +928,7 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
+        // FIXME the assumption of this test is a smart presenter. That's bollocks
         public void Presenter_NullTargetReturnsNullModel()
         {
             //Input
@@ -967,555 +938,102 @@ Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
 End Sub";
             var selection = Selection.Home;
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
             using (var state = MockParser.CreateAndParse(vbe.Object))
             {
 
                 var codePane = vbe.Object.VBProjects[0].VBComponents[0].CodeModule.CodePane;
                 codePane.Selection = selection;
 
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, null);
+                var factory = SetupFactory(null);
 
-                var presenter = factory.Create();
-
-                Assert.AreEqual(null, presenter.Show());
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithParameterNameChanged()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Variant";
-            var selection = new Selection(1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.Setup(v => v.DialogResult).Returns(DialogResult.OK);
-                view.SetupGet(v => v.ViewModel).Returns(new EncapsulateFieldViewModel(state, null) { ParameterName = "myVal" });
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-
-                var presenter = factory.Create();
-
-                Assert.AreEqual("myVal", presenter.Show().ParameterName);
-            }
-        }
-
-        [Test]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Reject_ReturnsNull()
-        {
-            //Input
-            const string inputCode =
-                @"Private Sub Foo(ByVal arg1 As Integer, ByVal arg2 As String)
-End Sub";
-            var selection = new Selection(1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.Setup(v => v.DialogResult).Returns(DialogResult.Cancel);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-
-                var presenter = factory.Create();
+                var presenter = factory.Object.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(null);
 
                 Assert.AreEqual(null, presenter.Show());
             }
         }
 
-        //TODO: The tests below are ignored pending some sort of refactoring that enables them
-        //to actually *test* something.  Currently, all of the behavior the tests are looking for is
-        //being mocked.
-        // SEE: https://github.com/rubberduck-vba/Rubberduck/issues/3072
-
 
         [Test]
-        [Ignore("")]
         [Category("Refactorings")]
         [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementLetChanged()
+        public void Refactoring_Puts_Code_In_Correct_Place()
         {
             //Input
             const string inputCode =
-                @"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
+                @"Option Explicit
 
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
+Public Foo As String";
+
+            //Output
+            const string expectedCode =
+                @"Option Explicit
+
+Private Foo As String
+
+Public Property Get bar() As String
+    bar = Foo
+End Property
+
+Public Property Let bar(ByVal value As String)
+    Foo = value
+End Property
+";
+
+            var selection = new Selection(3, 8, 3, 11);
+            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
+            var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe.Object);
+            using (state)
             {
+                var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
+                var model = new EncapsulateFieldModel(state, qualifiedSelection)
+                {
+                    ImplementLetSetterType = true,
+                    ImplementSetSetterType = false,
+                    ParameterName = "value",
+                    PropertyName = "bar"
+                };
 
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.IsLetSelected, true);
-                view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
+                //SetupFactory
+                var factory = SetupFactory(model);
 
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
+                var refactoring = TestRefactoring(vbe.Object, rewritingManager, state, model);
+                refactoring.Refactor(qualifiedSelection);
 
-                var presenter = factory.Create();
-
-                Assert.AreEqual(true, presenter.Show().ImplementLetSetterType);
+                var targetComponent = state.ProjectsProvider.Component(model.TargetDeclaration.QualifiedModuleName);
+                var actualCode = targetComponent.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementSetChanged()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
-
-            IVBComponent component;
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.IsSetSelected, true);
-                view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-
-                var presenter = factory.Create();
-
-                Assert.AreEqual(true, presenter.Show().ImplementSetSetterType);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementLetAllowedForPrimitiveTypes_NoReferences()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Boolean";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.CanHaveLet, true);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(true, view.Object.ViewModel.CanHaveLet);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementSetNotAllowedForPrimitiveTypes_NoReferences()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Boolean";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.CanHaveSet, true);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(false, view.Object.ViewModel.CanHaveSet);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementSetAllowedForNonVariantNonPrimitiveTypes_NoReferences()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Icon";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.CanHaveSet, true);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(true, view.Object.ViewModel.CanHaveSet);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementLetNotAllowedForNonVariantNonPrimitiveType_NoReferences()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Icon";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.CanHaveLet, true);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(false, view.Object.ViewModel.CanHaveLet);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementLetAllowedForVariant_NoReferences()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.CanHaveLet, true);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(true, view.Object.ViewModel.CanHaveLet);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementSetAllowedForVariant_NoReferences()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.CanHaveLet, true);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(true, view.Object.ViewModel.CanHaveLet);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementLetRequiredForPrimitiveTypes_References()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Boolean
-Sub foo()
-    fizz = True
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.IsLetSelected, false);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(true, view.Object.ViewModel.IsLetSelected);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementSetRequiredForNonVariantNonPrimitiveTypes_References()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Class1
-Sub foo()
-    Set fizz = New Class1
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.IsSetSelected, false);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(true, view.Object.ViewModel.IsSetSelected);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementLetRequiredForNonSetVariant_References()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Variant
-Sub Foo()
-    fizz = True
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.IsLetSelected, false);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(true, view.Object.ViewModel.IsLetSelected);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_ReturnsModelWithImplementSetRequiredForSetVariant_References()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Variant
-Sub foo()
-    Set fizz = New Class1
-End Sub";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.SetupProperty(v => v.ViewModel.IsSetSelected, false);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                factory.Create().Show();
-
-                Assert.AreEqual(true, view.Object.ViewModel.IsSetSelected);
-            }
-        }
-
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_DefaultCreateGetOnly_PrimitiveType_NoReference()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Date";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                var model = factory.Create().Show();
-
-                Assert.AreEqual(false, model.ImplementLetSetterType);
-                Assert.AreEqual(false, model.ImplementSetSetterType);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_DefaultCreateGetOnly_NonPrimitiveTypeNonVariant_NoReference()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Icon";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                var model = factory.Create().Show();
-
-                Assert.AreEqual(false, model.ImplementLetSetterType);
-                Assert.AreEqual(false, model.ImplementSetSetterType);
-            }
-        }
-
-        [Test]
-        [Ignore("")]
-        [Category("Refactorings")]
-        [Category("Encapsulate Field")]
-        public void Presenter_Accept_DefaultCreateGetOnly_Variant_NoReference()
-        {
-            //Input
-            const string inputCode =
-                @"Private fizz As Variant";
-            var selection = new Selection(1, 15, 1, 15);
-
-            var builder = new MockVbeBuilder();
-            IVBComponent component;
-
-            var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out component, selection);
-            using (var state = MockParser.CreateAndParse(vbe.Object))
-            {
-
-                if (state.Status >= ParserState.Error) { Assert.Inconclusive("Parser Error"); }
-
-                var view = new Mock<IRefactoringDialog<EncapsulateFieldViewModel>>();
-                view.Setup(v => v.ShowDialog()).Returns(DialogResult.OK);
-
-                var factory = new EncapsulateFieldPresenterFactory(vbe.Object, state, view.Object);
-                var model = factory.Create().Show();
-
-                Assert.AreEqual(false, model.ImplementLetSetterType);
-                Assert.AreEqual(false, model.ImplementSetSetterType);
-            }
-        }
         #region setup
-        private static Mock<IRefactoringPresenterFactory<IEncapsulateFieldPresenter>> SetupFactory(EncapsulateFieldModel model)
+
+        private static IRefactoring TestRefactoring(IVBE vbe, IRewritingManager rewritingManager, RubberduckParserState state, EncapsulateFieldModel model)
+        {
+            var selectionService = MockedSelectionService();
+            var indenter = CreateIndenter(vbe);
+            var factory = SetupFactory(model);
+            return new EncapsulateFieldRefactoring(state, indenter, factory.Object, rewritingManager, selectionService);
+        }
+
+        private static ISelectionService MockedSelectionService()
+        {
+            QualifiedSelection? activeSelection = null;
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
+        }
+
+        private static Mock<IRefactoringPresenterFactory> SetupFactory(EncapsulateFieldModel model)
         {
             var presenter = new Mock<IEncapsulateFieldPresenter>();
-            presenter.Setup(p => p.Show()).Returns(model);
-
-            var factory = new Mock<IRefactoringPresenterFactory<IEncapsulateFieldPresenter>>();
-            factory.Setup(f => f.Create()).Returns(presenter.Object);
+            var factory = new Mock<IRefactoringPresenterFactory>();
+            factory.Setup(f => f.Create<IEncapsulateFieldPresenter, EncapsulateFieldModel>(It.IsAny<EncapsulateFieldModel>()))
+                .Callback(() => presenter.Setup(p => p.Show()).Returns(model))
+                .Returns(presenter.Object);
             return factory;
         }
 

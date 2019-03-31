@@ -91,6 +91,7 @@ Name: "English"; MessagesFile: "compiler:Default.isl"
 Name: "French"; MessagesFile: "compiler:Languages\French.isl"
 Name: "German"; MessagesFile: "compiler:Languages\German.isl"
 Name: "Czech"; MessagesFile: "compiler:Languages\Czech.isl"
+Name: "Spanish"; MessagesFile: "compiler:Languages\Spanish.isl"
 
 [Dirs]
 ; Make folder "readonly" to support icons (it does not actually make folder readonly. A weird Windows quirk)
@@ -129,6 +130,7 @@ Source: "{#IncludesDir}Rubberduck.RegisterAddIn.reg"; DestDir: "{app}"; Flags: i
 #include <French.CustomMessages.iss>
 #include <German.CustomMessages.iss>
 #include <Czech.CustomMessages.iss>
+#include <Spanish.CustomMessages.iss>
 
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,{#AppName}}"; Filename: "{#AppURL}"

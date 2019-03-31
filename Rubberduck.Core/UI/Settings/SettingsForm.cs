@@ -1,10 +1,6 @@
 ﻿using System.Windows.Forms;
 using Rubberduck.Settings;
-using Rubberduck.Common;
 using Rubberduck.Interaction;
-using Rubberduck.VBEditor.VbeRuntime.Settings;
-using System.Collections.Generic;
-using System;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.UI.Settings
@@ -16,6 +12,13 @@ namespace Rubberduck.UI.Settings
         void Release(SettingsForm form);
     }
 
+    public interface ISettingsViewModelFactory
+    {
+        ISettingsViewModel<TSettings> Create<TSettings>(Configuration config) where TSettings : class, new();
+        ISettingsViewModel<TSettings> Create<TSettings>() where TSettings : class, new();
+        void Release<TSettings>(ISettingsViewModel<TSettings> viewModel) where TSettings : class, new();
+    }
+
     public partial class SettingsForm : Form
     {
         public SettingsForm()
@@ -24,12 +27,10 @@ namespace Rubberduck.UI.Settings
         }
 
         public SettingsForm(IGeneralConfigService configService, 
-            IOperatingSystem operatingSystem, 
             IMessageBox messageBox, 
-            IVbeSettings vbeSettings,
-            IConfigProvider<ReferenceSettings> referencesProvider,
-            IFileSystemBrowserFactory browserFactory,
-            SettingsViews activeView = SettingsViews.GeneralSettings) : this()
+            ISettingsViewModelFactory viewModelFactory,
+            SettingsViews activeView = SettingsViews.GeneralSettings) 
+            : this()
         {
             var config = configService.LoadConfiguration();
 
@@ -37,50 +38,42 @@ namespace Rubberduck.UI.Settings
                 config,
                 new SettingsView
                 {
-                    // FIXME inject types marked as ExperimentalFeatures
-                    /* 
-                     * These ExperimentalFeatureTypes were originally obtained by directly calling into the IoC container 
-                     * (since only it knows, which Assemblies have been loaded as Plugins). The code is preserved here for easy access.
-                     * RubberduckIoCInstaller.AssembliesToRegister()
-                     *     .SelectMany(s => s.DefinedTypes)
-                     *     .Where(w => Attribute.IsDefined(w, typeof(ExperimentalAttribute)))
-                     */
-                    Control = new GeneralSettings(new GeneralSettingsViewModel(config, operatingSystem, messageBox, vbeSettings, new List<Type>())),
+                    Control = new GeneralSettings(viewModelFactory.Create<Rubberduck.Settings.GeneralSettings>(config)),
                     View = SettingsViews.GeneralSettings
                 },
                 new SettingsView
                 {
-                    Control = new TodoSettings(new TodoSettingsViewModel(config)),
+                    Control = new TodoSettings(viewModelFactory.Create<ToDoListSettings>(config)),
                     View = SettingsViews.TodoSettings
                 },
                 new SettingsView
                 {
-                    Control = new InspectionSettings(new InspectionSettingsViewModel(config)),
+                    Control = new InspectionSettings(viewModelFactory.Create<CodeInspectionSettings>(config)),
                     View = SettingsViews.InspectionSettings
                 },
                 new SettingsView
                 {
-                    Control = new UnitTestSettings(new UnitTestSettingsViewModel(config)),
+                    Control = new UnitTestSettings(viewModelFactory.Create<Rubberduck.UnitTesting.Settings.UnitTestSettings>(config)),
                     View = SettingsViews.UnitTestSettings
                 },
                 new SettingsView
                 {
-                    Control = new IndenterSettings(new IndenterSettingsViewModel(config)),
+                    Control = new IndenterSettings(viewModelFactory.Create<SmartIndenter.IndenterSettings>(config)),
                     View = SettingsViews.IndenterSettings
                 },
                 new SettingsView
                 {
-                    Control = new AutoCompleteSettings(new AutoCompleteSettingsViewModel(config)),
+                    Control = new AutoCompleteSettings(viewModelFactory.Create<Rubberduck.Settings.AutoCompleteSettings>(config)),
                     View = SettingsViews.AutoCompleteSettings
                 },
                 new SettingsView
                 {
-                    Control = new WindowSettings(new WindowSettingsViewModel(config)),
+                    Control = new WindowSettings(viewModelFactory.Create<Rubberduck.Settings.WindowSettings>(config)),
                     View = SettingsViews.WindowSettings
                 },
                 new SettingsView
                 {
-                    Control = new AddRemoveReferencesUserSettings(new AddRemoveReferencesUserSettingsViewModel(referencesProvider, browserFactory)),
+                    Control = new AddRemoveReferencesUserSettings(viewModelFactory.Create<ReferenceSettings>()),
                     View = SettingsViews.ReferenceSettings
                 },
                 activeView);

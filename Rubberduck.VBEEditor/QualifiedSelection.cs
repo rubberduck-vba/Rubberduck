@@ -14,6 +14,11 @@ namespace Rubberduck.VBEditor
 
         public Selection Selection { get; }
 
+        public bool Contains(QualifiedSelection other)
+        {
+            return QualifiedName.Equals(other.QualifiedName) && Selection.Contains(other.Selection);
+        }
+
         public int CompareTo(QualifiedSelection other)
         {
             return other.QualifiedName == QualifiedName

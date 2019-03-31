@@ -51,7 +51,7 @@ namespace Rubberduck.Inspections.Concrete
         private bool IsAssignedByRefArgument(Declaration enclosingProcedure, IdentifierReference reference)
         {
             var argExpression = reference.Context.GetAncestor<VBAParser.ArgumentExpressionContext>();
-            var parameter = State.DeclarationFinder.FindParameterFromArgument(argExpression, enclosingProcedure);
+            var parameter = State.DeclarationFinder.FindParameterOfNonDefaultMemberFromSimpleArgumentNotPassedByValExplicitly(argExpression, enclosingProcedure);
 
             // note: not recursive, by design.
             return parameter != null

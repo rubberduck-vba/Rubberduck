@@ -2,10 +2,10 @@
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.SmartIndenter;
-using Rubberduck.UI.Refactorings.EncapsulateField;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
@@ -13,29 +13,33 @@ namespace Rubberduck.UI.Command.Refactorings
     public class RefactorEncapsulateFieldCommand : RefactorCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IRewritingManager _rewritingManager;
         private readonly Indenter _indenter;
+        private readonly IRefactoringPresenterFactory _factory;
 
-        public RefactorEncapsulateFieldCommand(IVBE vbe, RubberduckParserState state, Indenter indenter, IRewritingManager rewritingManager)
-            : base(vbe)
+        public RefactorEncapsulateFieldCommand(RubberduckParserState state, Indenter indenter, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
+            : base(rewritingManager, selectionService)
         {
             _state = state;
-            _rewritingManager = rewritingManager;
             _indenter = indenter;
+            _factory = factory;
         }
 
         protected override bool EvaluateCanExecute(object parameter)
         {
-            Declaration target;
-            using (var pane = Vbe.ActiveCodePane)
+            //This should come first because it does not require COM access.
+            if (_state.Status != ParserState.Ready)
             {
-                if (pane == null || _state.Status != ParserState.Ready)
-                {
-                    return false;
-                }
-
-                target = _state.FindSelectedDeclaration(pane);
+                return false;
             }
+
+            var activeSelection = SelectionService.ActiveSelection();
+            if (!activeSelection.HasValue)
+            {
+                return false;
+            }
+
+            var target = _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
+
             return target != null
                 && target.DeclarationType == DeclarationType.Variable
                 && !target.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member)
@@ -44,20 +48,13 @@ namespace Rubberduck.UI.Command.Refactorings
 
         protected override void OnExecute(object parameter)
         {
-            using(var activePane = Vbe.ActiveCodePane)
+            if(!SelectionService.ActiveSelection().HasValue)
             {
-                if (activePane == null || activePane.IsWrappingNullReference)
-                {
-                    return;
-                }
+                return;
             }
 
-            using (var view = new EncapsulateFieldDialog(new EncapsulateFieldViewModel(_state, _indenter)))
-            {
-                var factory = new EncapsulateFieldPresenterFactory(Vbe, _state, view);
-                var refactoring = new EncapsulateFieldRefactoring(Vbe, _indenter, factory, _rewritingManager);
-                refactoring.Refactor();
-            }
+            var refactoring = new EncapsulateFieldRefactoring(_state, _indenter, _factory, RewritingManager, SelectionService);
+            refactoring.Refactor();
         }
     }
 }

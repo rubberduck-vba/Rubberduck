@@ -1,27 +1,17 @@
-using NLog;
-using Rubberduck.Navigation.CodeExplorer;
-using Rubberduck.UI.Command;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Rubberduck.VBEditor.SafeComWrappers;
+using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class AddVBFormCommand : CommandBase
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public class AddVBFormCommand : AddComponentCommandBase
     {
-        private readonly AddComponentCommand _addComponentCommand;
+        public AddVBFormCommand(IVBE vbe) : base(vbe) { }
 
-        public AddVBFormCommand(AddComponentCommand addComponentCommand) : base(LogManager.GetCurrentClassLogger())
-        {
-            _addComponentCommand = addComponentCommand;
-        }
+        public override IEnumerable<ProjectType> AllowableProjectTypes => ProjectTypes.VB6;
 
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            return _addComponentCommand.CanAddComponent(parameter as CodeExplorerItemViewModel, ProjectTypes.VB6);
-        }
-
-        protected override void OnExecute(object parameter)
-        {
-            _addComponentCommand.AddComponent(parameter as CodeExplorerItemViewModel, ComponentType.VBForm);
-        }
+        public override ComponentType ComponentType => ComponentType.VBForm;
     }
 }

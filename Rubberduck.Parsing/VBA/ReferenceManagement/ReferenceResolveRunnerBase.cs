@@ -148,17 +148,16 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
 
         private void AddSupertypesForDocumentModules(IReadOnlyCollection<QualifiedModuleName> modules, RubberduckParserState state)
         {
-            var allClassModuleDeclarations = state.DeclarationFinder.UserDeclarations(DeclarationType.ClassModule);
-            var documentModuleDeclarations = allClassModuleDeclarations.Where(declaration =>
-                                                                                declaration.QualifiedName.QualifiedModuleName.ComponentType == ComponentType.Document
-                                                                                && modules.Contains(declaration.QualifiedName.QualifiedModuleName));
+            var documentModuleDeclarations = state.DeclarationFinder.UserDeclarations(DeclarationType.Document)
+                .OfType<DocumentModuleDeclaration>()
+                .Where(declaration => modules.Contains(declaration.QualifiedName.QualifiedModuleName));
 
             foreach (var documentDeclaration in documentModuleDeclarations)
             {
                 var documentSupertype = SupertypeForDocument(documentDeclaration.QualifiedName.QualifiedModuleName, state);
                 if (documentSupertype != null)
                 {
-                    ((ClassModuleDeclaration)documentDeclaration).AddSupertype(documentSupertype);
+                    documentDeclaration.AddSupertype(documentSupertype);
                 }
             }
         }

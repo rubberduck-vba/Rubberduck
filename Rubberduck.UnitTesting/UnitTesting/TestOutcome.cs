@@ -3,9 +3,10 @@
     public enum TestOutcome
     {
         Unknown,
-        Ignored,
-        Inconclusive,
+        SpectacularFail,
         Failed,
+        Ignored,
+        Inconclusive,       
         Succeeded
     }
 }

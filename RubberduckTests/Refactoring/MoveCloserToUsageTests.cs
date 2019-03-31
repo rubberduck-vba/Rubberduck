@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using NUnit.Framework;
 using Moq;
@@ -8,6 +7,10 @@ using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
 using Rubberduck.Interaction;
+using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.VBEditor.Utility;
 
 namespace RubberduckTests.Refactoring
 {
@@ -41,7 +44,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -65,7 +68,7 @@ End Sub";
             //Expectation
             const string expectedCode =
                 @"Private Sub Foo()
-Dim bar As Boolean
+    Dim bar As Boolean
 100 bar = True
 End Sub";
 
@@ -76,7 +79,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -114,7 +117,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -162,7 +165,7 @@ End Sub";
                 var module1 = project.Object.VBComponents[0];
                 var module2 = project.Object.VBComponents[1];
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode1 = module1.CodeModule.Content();
@@ -202,7 +205,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -229,7 +232,7 @@ End Sub";
                 @"Private Sub Foo()
 1   
 2   Dim bat As Integer
-Dim bar As Boolean
+    Dim bar As Boolean
 3   bar = True
 End Sub";
 
@@ -240,7 +243,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -280,7 +283,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -321,7 +324,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -362,7 +365,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -403,7 +406,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -444,7 +447,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -487,7 +490,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -530,7 +533,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -573,7 +576,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -602,7 +605,7 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
@@ -637,7 +640,7 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once());
@@ -672,7 +675,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -710,7 +713,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -752,7 +755,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -775,8 +778,7 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
 
             // Yeah, this code is a mess.  That is why we got the SmartIndenter
             const string expectedCode =
-                @"Private Sub Foo(): Dim bar As Boolean
-Baz True, True, bar: End Sub
+                @"Private Sub Foo(): Dim bar As Boolean : Baz True, True, bar: End Sub
 Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean): End Sub";
 
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component, selection);
@@ -786,7 +788,7 @@ Private Sub Baz(ByVal bat As Boolean, ByVal bas As Boolean, ByVal bac As Boolean
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -832,7 +834,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -858,8 +860,7 @@ End Sub";
             var selection = new Selection(1, 1);
             const string expectedCode =
                 @"
-Public Sub Test(): Dim foo As Long
-SomeSub someParam:=foo: End Sub
+Public Sub Test(): Dim foo As Long : SomeSub someParam:=foo: End Sub
 
 Public Sub SomeSub(ByVal someParam As Long)
     Debug.Print someParam
@@ -872,7 +873,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -899,7 +900,7 @@ End Sub";
 
                 var messageBox = new Mock<IMessageBox>();
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
                 refactoring.Refactor(state.AllUserDeclarations.First(d => d.DeclarationType != DeclarationType.Variable));
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(inputCode, actualCode);
@@ -930,7 +931,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
 
                 messageBox.Verify(m => m.NotifyWarn(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -984,7 +985,7 @@ End Sub";
                     .Where(d => d.IdentifierName == "count")
                     .Single().QualifiedSelection;
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -1060,7 +1061,7 @@ End Sub";
             using(state)
             {
                 var messageBox = new Mock<IMessageBox>();
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, messageBox.Object, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state, messageBox.Object);
                 refactoring.Refactor(qualifiedSelection);
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(expectedCode, actualCode);
@@ -1096,7 +1097,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -1131,7 +1132,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -1166,7 +1167,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -1201,7 +1202,7 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
@@ -1236,12 +1237,32 @@ End Sub";
 
                 var qualifiedSelection = new QualifiedSelection(new QualifiedModuleName(component), selection);
 
-                var refactoring = new MoveCloserToUsageRefactoring(vbe.Object, state, null, rewritingManager);
+                var refactoring = TestRefactoring(rewritingManager, state);
                 refactoring.Refactor(qualifiedSelection);
 
                 var actualCode = component.CodeModule.Content();
                 Assert.AreEqual(expectedCode, actualCode);
             }
+        }
+
+        private static IRefactoring TestRefactoring(IRewritingManager rewritingManager, IDeclarationFinderProvider declarationFinderProvider, IMessageBox msgBox = null)
+        {
+            var selectionService = MockedSelectionService();
+            if (msgBox == null)
+            {
+                msgBox = new Mock<IMessageBox>().Object;
+            }
+            return new MoveCloserToUsageRefactoring(declarationFinderProvider, msgBox, rewritingManager, selectionService);
+        }
+
+        private static ISelectionService MockedSelectionService()
+        {
+            QualifiedSelection? activeSelection = null;
+            var selectionServiceMock = new Mock<ISelectionService>();
+            selectionServiceMock.Setup(m => m.ActiveSelection()).Returns(() => activeSelection);
+            selectionServiceMock.Setup(m => m.TrySetActiveSelection(It.IsAny<QualifiedSelection>()))
+                .Returns(() => true).Callback((QualifiedSelection selection) => activeSelection = selection);
+            return selectionServiceMock.Object;
         }
     }
 }

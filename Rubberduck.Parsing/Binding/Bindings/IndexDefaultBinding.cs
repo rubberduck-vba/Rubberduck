@@ -201,13 +201,9 @@ namespace Rubberduck.Parsing.Binding
                 The declared type of <l-expression> is a specific class, which has a public default Property 
                 Get, Property Let, function or subroutine, and one of the following is true:
             */
-            bool hasDefaultMember = asTypeDeclaration != null
-                && asTypeDeclaration.DeclarationType == DeclarationType.ClassModule
-                && ((ClassModuleDeclaration)asTypeDeclaration).DefaultMember != null;
-            if (hasDefaultMember)
+            if (asTypeDeclaration is ClassModuleDeclaration classModule
+                && classModule.DefaultMember is Declaration defaultMember)
             {
-                ClassModuleDeclaration classModule = (ClassModuleDeclaration)asTypeDeclaration;
-                Declaration defaultMember = classModule.DefaultMember;
                 bool isPropertyGetLetFunctionProcedure =
                     defaultMember.DeclarationType == DeclarationType.PropertyGet
                     || defaultMember.DeclarationType == DeclarationType.PropertyLet

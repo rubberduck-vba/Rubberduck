@@ -10,7 +10,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 {
     public class ReferenceStatusImageSourceConverter : ImageSourceConverter
     {
-        private readonly IDictionary<ReferenceStatus, ImageSource> _icons =
+        private static readonly IDictionary<ReferenceStatus, ImageSource> Icons =
             new Dictionary<ReferenceStatus, ImageSource>
             {
                 { ReferenceStatus.None, null },
@@ -29,8 +29,7 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         public override object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value == null || value.GetType() != typeof(ReferenceStatus)) { return null; }
-            return _icons[(ReferenceStatus)value];
+            return !(value is ReferenceStatus) ? null : Icons[(ReferenceStatus)value];
         }
     }
 }

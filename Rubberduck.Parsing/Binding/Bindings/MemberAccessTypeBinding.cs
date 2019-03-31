@@ -160,7 +160,7 @@ namespace Rubberduck.Parsing.Binding
              */
             if (lExpressionIsEnclosingProject)
             {
-                if (_module.DeclarationType == DeclarationType.ClassModule && _declarationFinder.IsMatch(_module.IdentifierName, name))
+                if (_module.DeclarationType.HasFlag(DeclarationType.ClassModule) && _declarationFinder.IsMatch(_module.IdentifierName, name))
                 {
                     return new MemberAccessExpression(_module, ExpressionClassification.Type, _expression, _unrestrictedNameContext, lExpression);
                 }

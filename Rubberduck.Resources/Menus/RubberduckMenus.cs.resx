@@ -234,4 +234,13 @@
   <data name="ToolsMenu_RegexAssistant" xml:space="preserve">
     <value>Regex &amp;Asistent</value>
   </data>
+  <data name="AddRemoveReferences" xml:space="preserve">
+    <value>Přidat/Odebrat Reference...</value>
+  </data>
+  <data name="ContextMenu_RunSelectedTest" xml:space="preserve">
+    <value>Spustit označené testy</value>
+  </data>
+  <data name="ContextMenu_RunSelectedTestModule" xml:space="preserve">
+    <value>Spustit testy v modulu</value>
+  </data>
 </root>

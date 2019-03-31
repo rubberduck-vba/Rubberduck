@@ -95,7 +95,7 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(customConfig);
+            var viewModel = new IndenterSettingsViewModel(customConfig, null);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
@@ -132,7 +132,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void SetDefaultsWorks()
         {
-            var viewModel = new IndenterSettingsViewModel(GetNondefaultConfig());
+            var viewModel = new IndenterSettingsViewModel(GetNondefaultConfig(), null);
 
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
@@ -170,7 +170,7 @@ namespace RubberduckTests.Settings
         public void AlignCommentsWithCodeIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignCommentsWithCode, viewModel.AlignCommentsWithCode);
         }
@@ -180,7 +180,7 @@ namespace RubberduckTests.Settings
         public void AlignContinuationsIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignContinuations, viewModel.AlignContinuations);
         }
@@ -190,7 +190,7 @@ namespace RubberduckTests.Settings
         public void AlignDimColumnIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignDimColumn, viewModel.AlignDimColumn);
         }
@@ -200,7 +200,7 @@ namespace RubberduckTests.Settings
         public void AlignDimsIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.AlignDims, viewModel.AlignDims);
         }
@@ -210,7 +210,7 @@ namespace RubberduckTests.Settings
         public void EndOfLineCommentColumnSpaceAlignmentIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentColumnSpaceAlignment, viewModel.EndOfLineCommentColumnSpaceAlignment);
         }
@@ -220,7 +220,7 @@ namespace RubberduckTests.Settings
         public void EndOfLineCommentStyleIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EndOfLineCommentStyle, viewModel.EndOfLineCommentStyle);
         }
@@ -230,7 +230,7 @@ namespace RubberduckTests.Settings
         public void ForceCompilerDirectivesInColumn1IsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceCompilerDirectivesInColumn1, viewModel.ForceCompilerDirectivesInColumn1);
         }
@@ -240,7 +240,7 @@ namespace RubberduckTests.Settings
         public void ForceDebugStatementsInColumn1IsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.ForceDebugStatementsInColumn1, viewModel.ForceDebugStatementsInColumn1);
         }
@@ -250,7 +250,7 @@ namespace RubberduckTests.Settings
         public void IgnoreOperatorsInContinuationsIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IgnoreOperatorsInContinuations, viewModel.IgnoreOperatorsInContinuations);
         }
@@ -260,7 +260,7 @@ namespace RubberduckTests.Settings
         public void IndentCaseIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentCase, viewModel.IndentCase);
         }
@@ -270,7 +270,7 @@ namespace RubberduckTests.Settings
         public void IndentEnumTypeAsProcedureIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentEnumTypeAsProcedure, viewModel.IndentEnumTypeAsProcedure);
         }
@@ -280,7 +280,7 @@ namespace RubberduckTests.Settings
         public void IndentCompilerDirectivesIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentCompilerDirectives, viewModel.IndentCompilerDirectives);
         }
@@ -290,7 +290,7 @@ namespace RubberduckTests.Settings
         public void IndentEntireProcedureBodyIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentEntireProcedureBody, viewModel.IndentEntireProcedureBody);
         }
@@ -300,7 +300,7 @@ namespace RubberduckTests.Settings
         public void IndentFirstCommentBlockIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentFirstCommentBlock, viewModel.IndentFirstCommentBlock);
         }
@@ -310,7 +310,7 @@ namespace RubberduckTests.Settings
         public void IndentFirstDeclarationBlockIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.IndentFirstDeclarationBlock, viewModel.IndentFirstDeclarationBlock);
         }
@@ -320,7 +320,7 @@ namespace RubberduckTests.Settings
         public void VerticallySpaceProceduresIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.VerticallySpaceProcedures, viewModel.VerticallySpaceProcedures);
         }
@@ -330,7 +330,7 @@ namespace RubberduckTests.Settings
         public void LinesBetweenProceduresIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.LinesBetweenProcedures, viewModel.LinesBetweenProcedures);
         }
@@ -340,7 +340,7 @@ namespace RubberduckTests.Settings
         public void EmptyLineHandlingMethodIsSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new IndenterSettingsViewModel(defaultConfig);
+            var viewModel = new IndenterSettingsViewModel(defaultConfig, null);
 
             Assert.AreEqual(defaultConfig.UserSettings.IndenterSettings.EmptyLineHandlingMethod, viewModel.EmptyLineHandlingMethod);
         }

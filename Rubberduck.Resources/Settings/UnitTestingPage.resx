@@ -129,6 +129,9 @@
   <data name="UnitTestSettings_BindingMode" xml:space="preserve">
     <value>Binding mode:</value>
   </data>
+  <data name="UnitTestSettings_DualBinding" xml:space="preserve">
+    <value>Dual binding</value>
+  </data>
   <data name="UnitTestSettings_EarlyBinding" xml:space="preserve">
     <value>Early binding</value>
   </data>

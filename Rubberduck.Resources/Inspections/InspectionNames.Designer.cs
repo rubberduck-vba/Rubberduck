@@ -86,17 +86,16 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("AssignmentNotUsedInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Assignment is not used.
+        ///   Looks up a localized string similar to Value does not match between attribute and annotation.
         /// </summary>
-        public static string AttributeValueOutOfSyncInspection
-        {
+        public static string AttributeValueOutOfSyncInspection {
             get {
                 return ResourceManager.GetString("AttributeValueOutOfSyncInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Boolean literal assignment in conditional.
         /// </summary>
@@ -350,7 +349,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inappropriate use of &apos;IsMissing&apos; function.
+        ///   Looks up a localized string similar to Inappropriate use of &apos;IsMissing&apos; - Parameter is not &apos;Variant&apos;.
         /// </summary>
         public static string IsMissingOnInappropriateArgumentInspection {
             get {
@@ -359,11 +358,29 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Inappropriate use of &apos;IsMissing&apos; function.
+        ///   Looks up a localized string similar to Inappropriate use of &apos;IsMissing&apos; - Parameter is local variable.
         /// </summary>
         public static string IsMissingWithNonArgumentParameterInspection {
             get {
                 return ResourceManager.GetString("IsMissingWithNonArgumentParameterInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ThunderCode 1.
+        /// </summary>
+        public static string KeywordsUsedAsMemberInspection {
+            get {
+                return ResourceManager.GetString("KeywordsUsedAsMemberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ThunderCode 10.
+        /// </summary>
+        public static string LineContinuationBetweenKeywordsInspection {
+            get {
+                return ResourceManager.GetString("LineContinuationBetweenKeywordsInspection", resourceCulture);
             }
         }
         
@@ -402,28 +419,25 @@ namespace Rubberduck.Resources.Inspections {
                 return ResourceManager.GetString("MissingAttributeInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Missing annotation.
+        ///   Looks up a localized string similar to Missing member annotation.
         /// </summary>
-        public static string MissingMemberAnnotationInspection
-        {
+        public static string MissingMemberAnnotationInspection {
             get {
                 return ResourceManager.GetString("MissingMemberAnnotationInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Missing annotation.
+        ///   Looks up a localized string similar to Missing module annotation.
         /// </summary>
-        public static string MissingModuleAnnotationInspection
-        {
-            get
-            {
+        public static string MissingModuleAnnotationInspection {
+            get {
                 return ResourceManager.GetString("MissingModuleAnnotationInspection", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Use of &apos;Dim&apos; keyword at module level.
         /// </summary>
@@ -470,6 +484,24 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ThunderCode 100.
+        /// </summary>
+        public static string NegativeLineNumberInspection {
+            get {
+                return ResourceManager.GetString("NegativeLineNumberInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ThunderCode 11.
+        /// </summary>
+        public static string NonBreakingSpaceIdentifierInspection {
+            get {
+                return ResourceManager.GetString("NonBreakingSpaceIdentifierInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Non-returning function or property getter.
         /// </summary>
         public static string NonReturningFunctionInspection {
@@ -488,7 +520,7 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use of obsolete &apos;CDecl&apos; calling convention.
+        ///   Looks up a localized string similar to Use of &apos;CDecl&apos; calling convention on Windows.
         /// </summary>
         public static string ObsoleteCallingConventionInspection {
             get {
@@ -556,6 +588,15 @@ namespace Rubberduck.Resources.Inspections {
         public static string ObsoleteTypeHintInspection {
             get {
                 return ResourceManager.GetString("ObsoleteTypeHintInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ThunderCode 101.
+        /// </summary>
+        public static string OnErrorGoToMinusOneInspection {
+            get {
+                return ResourceManager.GetString("OnErrorGoToMinusOneInspection", resourceCulture);
             }
         }
         

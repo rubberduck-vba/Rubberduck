@@ -324,7 +324,7 @@ namespace Rubberduck.Common
             .Select(item => new
             {
                 WithEventDeclaration = item, 
-                EventProvider = items.SingleOrDefault(type => type.DeclarationType == DeclarationType.ClassModule && type.QualifiedName.QualifiedModuleName == item.QualifiedName.QualifiedModuleName)
+                EventProvider = items.SingleOrDefault(type => type.DeclarationType.HasFlag(DeclarationType.ClassModule) && type.QualifiedName.QualifiedModuleName == item.QualifiedName.QualifiedModuleName)
             })
             .Select(item => new
             {

@@ -43,7 +43,7 @@ namespace RubberduckTests.Settings
         public void SaveConfigWorks()
         {
             var customConfig = GetNondefaultConfig();
-            var viewModel = new TodoSettingsViewModel(customConfig);
+            var viewModel = new TodoSettingsViewModel(customConfig, null);
 
             var config = GetDefaultConfig();
             viewModel.UpdateConfig(config);
@@ -55,7 +55,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void SetDefaultsWorks()
         {
-            var viewModel = new TodoSettingsViewModel(GetNondefaultConfig());
+            var viewModel = new TodoSettingsViewModel(GetNondefaultConfig(), null);
 
             var defaultConfig = GetDefaultConfig();
             viewModel.SetToDefaults(defaultConfig);
@@ -68,7 +68,7 @@ namespace RubberduckTests.Settings
         public void TodoMarkersAreSetInCtor()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new TodoSettingsViewModel(defaultConfig);
+            var viewModel = new TodoSettingsViewModel(defaultConfig, null);
 
             Assert.IsTrue(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.SequenceEqual(viewModel.TodoSettings));
         }
@@ -78,7 +78,7 @@ namespace RubberduckTests.Settings
         public void AddTodoMarker()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new TodoSettingsViewModel(defaultConfig);
+            var viewModel = new TodoSettingsViewModel(defaultConfig, null);
 
             viewModel.AddTodoCommand.Execute(null);
             var todoMarkersList = defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
@@ -92,7 +92,7 @@ namespace RubberduckTests.Settings
         public void DeleteTodoMarker()
         {
             var defaultConfig = GetDefaultConfig();
-            var viewModel = new TodoSettingsViewModel(defaultConfig);
+            var viewModel = new TodoSettingsViewModel(defaultConfig, null);
 
             viewModel.DeleteTodoCommand.Execute(defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers[0]);
             var todoMarkersList = defaultConfig.UserSettings.ToDoListSettings.ToDoMarkers.ToList();
@@ -105,7 +105,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void AddTodoMarker_ReusesAction()
         {
-            var viewModel = new TodoSettingsViewModel(GetDefaultConfig());
+            var viewModel = new TodoSettingsViewModel(GetDefaultConfig(), null);
 
             var initialAddTodoCommand = viewModel.AddTodoCommand;
             Assert.AreSame(initialAddTodoCommand, viewModel.AddTodoCommand);
@@ -115,7 +115,7 @@ namespace RubberduckTests.Settings
         [Test]
         public void DeleteTodoMarker_ReusesAction()
         {
-            var viewModel = new TodoSettingsViewModel(GetDefaultConfig());
+            var viewModel = new TodoSettingsViewModel(GetDefaultConfig(), null);
 
             var initialAddTodoCommand = viewModel.DeleteTodoCommand;
             Assert.AreSame(initialAddTodoCommand, viewModel.DeleteTodoCommand);

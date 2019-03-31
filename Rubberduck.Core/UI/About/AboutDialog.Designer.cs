@@ -42,7 +42,7 @@ namespace Rubberduck.UI.About
             this.ElementHost.Location = new System.Drawing.Point(0, 0);
             this.ElementHost.Margin = new System.Windows.Forms.Padding(2);
             this.ElementHost.Name = "ElementHost";
-            this.ElementHost.Size = new System.Drawing.Size(610, 560);
+            this.ElementHost.Size = new System.Drawing.Size(610, 579);
             this.ElementHost.TabIndex = 0;
             this.ElementHost.Child = this.AboutControl;
             // 
@@ -50,7 +50,7 @@ namespace Rubberduck.UI.About
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(610, 560);
+            this.ClientSize = new System.Drawing.Size(610, 579);
             this.Controls.Add(this.ElementHost);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

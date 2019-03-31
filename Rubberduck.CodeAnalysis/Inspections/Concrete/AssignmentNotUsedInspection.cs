@@ -7,7 +7,6 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
 using Rubberduck.Inspections.Results;
-using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 
 namespace Rubberduck.Inspections.Concrete
@@ -30,9 +29,20 @@ namespace Rubberduck.Inspections.Concrete
             var nodes = new List<IdentifierReference>();
             foreach (var variable in variables)
             {
-                var tree = _walker.GenerateTree(variable.ParentScopeDeclaration.Context, variable);
+                var parentScopeDeclaration = variable.ParentScopeDeclaration;
 
-                nodes.AddRange(tree.GetIdentifierReferences());
+                if (parentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Module))
+                {
+                    continue;
+                }
+
+                var tree = _walker.GenerateTree(parentScopeDeclaration.Context, variable);
+
+                var references = tree.GetIdentifierReferences();
+                // ignore set-assignments to 'Nothing'
+                nodes.AddRange(references.Where(r =>
+                    !(r.Context.Parent is VBAParser.SetStmtContext setStmtContext &&
+                    setStmtContext.expression().GetText().Equals(Tokens.Nothing))));
             }
 
             return nodes
