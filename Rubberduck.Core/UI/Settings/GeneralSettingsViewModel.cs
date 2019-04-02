@@ -60,7 +60,7 @@ namespace Rubberduck.UI.Settings
             _hotkeyService = hotkeyService;
         }
 
-        public List<ExperimentalFeatures> ExperimentalFeatures { get; set; }
+        public List<ExperimentalFeature> ExperimentalFeatures { get; set; }
 
         public ObservableCollection<DisplayLanguageSetting> Languages { get; set; } 
 
@@ -307,9 +307,10 @@ namespace Rubberduck.UI.Settings
             _selectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
 
             ExperimentalFeatures = _experimentalFeatureTypes
+                // extract the resource key to use
                 .SelectMany(s => s.CustomAttributes.Where(a => a.ConstructorArguments.Any()).Select(a => (string)a.ConstructorArguments.First().Value))
                 .Distinct()
-                .Select(s => new ExperimentalFeatures { IsEnabled = general.EnableExperimentalFeatures.SingleOrDefault(d => d.Key == s)?.IsEnabled ?? false, Key = s })
+                .Select(s => new ExperimentalFeature { IsEnabled = general.EnableExperimentalFeatures.SingleOrDefault(d => d.Key == s)?.IsEnabled ?? false, Key = s })
                 .ToList();
         }
 
