@@ -276,7 +276,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer x:Name="ScrollViewer" Margin="0,0,-259,0">
+        <ScrollViewer x:Name="ScrollViewer">
             <StackPanel Margin="5,5,5,0" ScrollViewer.VerticalScrollBarVisibility="Auto">
                 <Border Style="{StaticResource BorderHeader}"
                        Margin="0,0,0,3" Height="36">
