@@ -20,7 +20,7 @@ End Sub")]
         [TestCase(0, @"Public Sub foo()
 End Sub")]
         [TestCase(0, @"Public Sub foo bar()
-End Sub")]
+End Sub")] // Correctly provokes a parser error
         public void NonBreakingSpaceIdentifier_ReturnsResult(int expectedCount, string inputCode)
         {
             var func = new Func<RubberduckParserState, IInspection>(state =>
