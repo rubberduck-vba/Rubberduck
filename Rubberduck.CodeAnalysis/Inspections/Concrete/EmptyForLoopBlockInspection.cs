@@ -8,10 +8,11 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
+using Rubberduck.Resources.Experimentals;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    [Experimental]
+    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyForLoopBlockInspection : ParseTreeInspectionBase
     {
         public EmptyForLoopBlockInspection(RubberduckParserState state)
