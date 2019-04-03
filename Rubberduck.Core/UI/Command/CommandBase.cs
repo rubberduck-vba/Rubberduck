@@ -12,9 +12,9 @@ namespace Rubberduck.UI.Command
     {
         private static readonly List<MethodBase> ExceptionTargetSites = new List<MethodBase>();
 
-        protected CommandBase(ILogger logger)
+        protected CommandBase(ILogger logger = null)
         {
-            Logger = logger;
+            Logger = logger ?? LogManager.GetLogger(GetType().FullName);
         }
 
         protected ILogger Logger { get; }
