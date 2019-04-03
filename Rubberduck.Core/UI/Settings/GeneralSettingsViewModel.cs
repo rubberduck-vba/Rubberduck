@@ -11,6 +11,7 @@ using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.VbeRuntime.Settings;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Settings;
+using Rubberduck.Parsing.Common;
 
 namespace Rubberduck.UI.Settings
 {
@@ -307,10 +308,15 @@ namespace Rubberduck.UI.Settings
             _selectedLogLevel = LogLevels.First(l => l.Ordinal == general.MinimumLogLevel);
 
             ExperimentalFeatures = _experimentalFeatureTypes
-                // extract the resource key to use
-                .SelectMany(s => s.CustomAttributes.Where(a => a.ConstructorArguments.Any()).Select(a => (string)a.ConstructorArguments.First().Value))
+                .Select(type => {
+                    var attribute = (ExperimentalAttribute) type.GetCustomAttributes(typeof(ExperimentalAttribute), false).First();
+                    return attribute.Resource;
+                })
                 .Distinct()
-                .Select(s => new ExperimentalFeature { IsEnabled = general.EnableExperimentalFeatures.SingleOrDefault(d => d.Key == s)?.IsEnabled ?? false, Key = s })
+                .Select(resourceKey => new ExperimentalFeature {
+                    IsEnabled = general.EnableExperimentalFeatures.SingleOrDefault(d => d.Key == resourceKey)?.IsEnabled ?? false,
+                    Key = resourceKey
+                })
                 .ToList();
         }
 
