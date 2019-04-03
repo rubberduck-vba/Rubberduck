@@ -7,13 +7,14 @@ using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
+using Rubberduck.Resources.Experimentals;
 using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    [Experimental]
+    [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {
         public EmptyIfBlockInspection(RubberduckParserState state)

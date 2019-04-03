@@ -39,6 +39,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>CommandBarIcons.resx</DependentUpon>
     </Compile>
+    <Compile Update="Experimentals\ExperimentalNames.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ExperimentalNames.resx</DependentUpon>
+    </Compile>
     <Compile Update="Inspections\InspectionInfo.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -132,6 +137,10 @@
     <EmbeddedResource Update="CommandBarIcons.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>CommandBarIcons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Experimentals\ExperimentalNames.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>ExperimentalNames.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Inspections\InspectionInfo.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

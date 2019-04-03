@@ -431,9 +431,9 @@ namespace RubberduckTests.CodeExplorer
 
             var generalSettings = new GeneralSettings
             {
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                     {
-                        new ExperimentalFeatures()
+                        new ExperimentalFeature()
                     }
             };
 
