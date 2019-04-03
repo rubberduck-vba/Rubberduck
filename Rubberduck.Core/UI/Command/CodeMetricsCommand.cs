@@ -1,5 +1,4 @@
-﻿using NLog;
-using Rubberduck.UI.CodeMetrics;
+﻿using Rubberduck.UI.CodeMetrics;
 using System.Runtime.InteropServices;
 
 namespace Rubberduck.UI.Command
@@ -10,7 +9,6 @@ namespace Rubberduck.UI.Command
         private readonly CodeMetricsDockablePresenter _presenter;
 
         public CodeMetricsCommand(CodeMetricsDockablePresenter presenter)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }

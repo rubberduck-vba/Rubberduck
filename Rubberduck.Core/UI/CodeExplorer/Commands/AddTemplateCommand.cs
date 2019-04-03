@@ -13,9 +13,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private readonly ITemplateProvider _provider;
 
-        public AddTemplateCommand(IVBE vbe, ITemplateProvider provider) : base(vbe)
+        public AddTemplateCommand(IVBE vbe, ITemplateProvider provider) 
+            : base(vbe)
         {
             _provider = provider;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
@@ -24,22 +27,30 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public bool CanExecuteForNode(ICodeExplorerNode model)
         {
-            return base.EvaluateCanExecute(model);
+            return CanExecute(model);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        //FIXME: This evaluate method assumes a parameter that is incompatible with the contract of the base class. This causes it to always return false.
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (parameter is null)
             {
                 return false;
             }
 
+            if (parameter is ICodeExplorerNode)
+            {
+                return true;
+            }
+
             try
             {
-                // TODO this cast needs to be safer.
-                var data = ((string templateName, ICodeExplorerNode model))parameter;
+                if(parameter is System.ValueTuple<string, ICodeExplorerNode> data)
+                {
+                    return CanExecute(data.Item2);
+                }
 
-                return base.EvaluateCanExecute(data.model);
+                return false;
             }
             catch (Exception ex)
             {
@@ -57,15 +68,19 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             try
             {
-                // TODO this cast needs to be safer.
-                var data = ((string templateName, ICodeExplorerNode node))parameter;
-
-                if (string.IsNullOrWhiteSpace(data.templateName) || !(data.node is CodeExplorerItemViewModel model))
+                if (!(parameter is System.ValueTuple<string, ICodeExplorerNode> data))
                 {
                     return;
                 }
 
-                var moduleText = GetTemplate(data.templateName);
+                var (templateName, node) = data;
+
+                if (string.IsNullOrWhiteSpace(templateName) || !(node is CodeExplorerItemViewModel model))
+                {
+                    return;
+                }
+
+                var moduleText = GetTemplate(templateName);
                 AddComponent(model, moduleText);
             }
             catch (Exception ex)

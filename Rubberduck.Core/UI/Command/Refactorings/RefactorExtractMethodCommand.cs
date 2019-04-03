@@ -6,7 +6,6 @@ using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using NLog;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -24,16 +23,16 @@ namespace Rubberduck.UI.Command.Refactorings
         private readonly IVBE _vbe;
 
         public RefactorExtractMethodCommand(IVBE vbe, RubberduckParserState state, IIndenter indenter)
-        :base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _indenter = indenter;
             _vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-
             var qualifiedSelection = _vbe.GetActiveSelection();
             if (!qualifiedSelection.HasValue)
             {

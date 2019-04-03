@@ -8,7 +8,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly ProjectType[] Types = { ProjectType.ActiveXExe, ProjectType.ActiveXDll };
 
-        public AddUserDocumentCommand(IVBE vbe) : base(vbe) { }
+        public AddUserDocumentCommand(IVBE vbe) 
+            : base(vbe)
+        {}
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
 

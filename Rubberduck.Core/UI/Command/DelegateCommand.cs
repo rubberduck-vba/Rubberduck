@@ -10,13 +10,16 @@ namespace Rubberduck.UI.Command
         private readonly Predicate<object> _canExecute;
         private readonly Action<object> _execute;
 
-        public DelegateCommand(ILogger logger, Action<object> execute, Predicate<object> canExecute = null) : base(logger)
+        public DelegateCommand(ILogger logger, Action<object> execute, Predicate<object> canExecute = null) 
+            : base(logger)
         {
             _canExecute = canExecute;
             _execute = execute;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _canExecute == null || _canExecute.Invoke(parameter);
         }

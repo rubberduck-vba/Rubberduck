@@ -15,17 +15,30 @@ namespace Rubberduck.UI.Command
         protected CommandBase(ILogger logger = null)
         {
             Logger = logger ?? LogManager.GetLogger(GetType().FullName);
+            CanExecuteEvaluation = (parameter => true);
         }
 
         protected ILogger Logger { get; }
-        protected virtual bool EvaluateCanExecute(object parameter) => true;
         protected abstract void OnExecute(object parameter);
+
+        protected Func<object, bool> CanExecuteEvaluation { get; private set; }
+
+        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        {
+            if (furtherCanExecuteEvaluation == null)
+            {
+                return;
+            }
+
+            var currentCanExecute = CanExecuteEvaluation;
+            CanExecuteEvaluation = (parameter) => currentCanExecute(parameter) && furtherCanExecuteEvaluation(parameter);
+        }
 
         public bool CanExecute(object parameter)
         {
             try
             {
-                return EvaluateCanExecute(parameter);
+                return CanExecuteEvaluation(parameter);
             }
             catch (Exception exception)
             {

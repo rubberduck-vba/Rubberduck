@@ -6,7 +6,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 {
     public class AddPropertyPageCommand : AddComponentCommandBase
     {
-        public AddPropertyPageCommand(IVBE vbe) : base(vbe) { }
+        public AddPropertyPageCommand(IVBE vbe) 
+            : base(vbe)
+        {}
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => ProjectTypes.VB6;
 

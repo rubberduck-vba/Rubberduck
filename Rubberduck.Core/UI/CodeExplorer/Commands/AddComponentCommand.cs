@@ -23,6 +23,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         protected AddComponentCommandBase(IVBE vbe)
         {
             Vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         protected IVBE Vbe { get; }
@@ -38,10 +40,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             AddComponent(parameter as CodeExplorerItemViewModel);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) || 
-                !(parameter is CodeExplorerItemViewModel node) ||
+            if (!(parameter is CodeExplorerItemViewModel node) ||
                 !(node.Declaration?.Project is IVBProject project))
             {
                 return false;

@@ -17,17 +17,14 @@ namespace Rubberduck.AutoComplete
     {
         private readonly IVBE _vbe;
 
-        public ShowIntelliSenseCommand(IVBE vbe) : base(LogManager.GetCurrentClassLogger())
+        public ShowIntelliSenseCommand(IVBE vbe)
         {
             _vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        public void Execute()
-        {
-            OnExecute(null);
-        }
-
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             try
             {
@@ -37,6 +34,11 @@ namespace Rubberduck.AutoComplete
             {
                 return false;
             }
+        }
+
+        public void Execute()
+        {
+            OnExecute(null);
         }
 
         protected override void OnExecute(object parameter)
