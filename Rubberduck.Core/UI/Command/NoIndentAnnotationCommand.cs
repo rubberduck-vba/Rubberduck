@@ -26,8 +26,10 @@ namespace Rubberduck.UI.Command
             var target = FindTarget(parameter);
             using (var pane = _vbe.ActiveCodePane)
             {
-                return !pane.IsWrappingNullReference && target != null &&
-                       target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
+                return pane != null 
+                       && !pane.IsWrappingNullReference 
+                       && target != null 
+                       && target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
             }
         }
 

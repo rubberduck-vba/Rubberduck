@@ -1,5 +1,4 @@
-﻿using Rubberduck.Refactorings;
-using Rubberduck.Refactorings.EncapsulateField;
+﻿using Rubberduck.Refactorings.EncapsulateField;
 using Rubberduck.Resources;
 
 namespace Rubberduck.UI.Refactorings.EncapsulateField
@@ -14,13 +13,7 @@ namespace Rubberduck.UI.Refactorings.EncapsulateField
 
         public override EncapsulateFieldModel Show()
         {
-            if (Model.TargetDeclaration == null)
-            {
-                return null;
-            }
-
-            var model = base.Show();
-            return DialogResult != RefactoringDialogResult.Execute ? null : model;
+            return Model.TargetDeclaration == null ? null : base.Show();
         }
     }
 }
