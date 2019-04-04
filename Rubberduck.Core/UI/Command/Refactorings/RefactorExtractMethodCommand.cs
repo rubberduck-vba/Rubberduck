@@ -1,10 +1,14 @@
+using System;
 using System.Runtime.InteropServices;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings.ExtractMethod;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
+using System.Windows.Forms;
+using NLog;
 using Rubberduck.Parsing.Common;
+using Rubberduck.Resources;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.Command.Refactorings
@@ -13,14 +17,14 @@ namespace Rubberduck.UI.Command.Refactorings
     [Disabled]
 #endif
     [ComVisible(false)]
-    public class RefactorExtractMethodCommand : RefactorCommandBase
+    public class RefactorExtractMethodCommand : CommandBase
     {
         private readonly RubberduckParserState _state;
         private readonly IIndenter _indenter;
         private readonly IVBE _vbe;
 
         public RefactorExtractMethodCommand(IVBE vbe, RubberduckParserState state, IIndenter indenter)
-            : base (null, null)
+        :base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _indenter = indenter;
@@ -98,6 +102,11 @@ namespace Rubberduck.UI.Command.Refactorings
                     return extractedMethodModel;
                 }
             }
+        }
+
+        private void HandleInvalidSelection(object sender, EventArgs e)
+        {
+            MessageBox.Show(RubberduckUI.ExtractMethod_InvalidSelectionMessage, RubberduckUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
     }
 }

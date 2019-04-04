@@ -1,28 +1,52 @@
 ﻿using System;
-using System.Windows.Forms;
 using NLog;
-using Rubberduck.Parsing.Rewriter;
-using Rubberduck.Resources;
-using Rubberduck.VBEditor.Utility;
+using Rubberduck.Parsing.VBA;
+using Rubberduck.Refactorings;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     public abstract class RefactorCommandBase : CommandBase
     {
-        protected readonly IRewritingManager RewritingManager;
-        protected readonly ISelectionService SelectionService;
+        protected readonly IRefactoring Refactoring;
+        protected readonly IRefactoringFailureNotifier FailureNotifier;
+        protected readonly IParserStatusProvider ParserStatusProvider;
 
-        protected RefactorCommandBase(IRewritingManager rewritingManager, ISelectionService selectionService)
-            : base (LogManager.GetCurrentClassLogger())
+        protected RefactorCommandBase(IRefactoring refactoring, IRefactoringFailureNotifier failureNotifier, IParserStatusProvider parserStatusProvider)
+            : base(LogManager.GetCurrentClassLogger())
         {
-            RewritingManager = rewritingManager;
-            SelectionService = selectionService;
+            Refactoring = refactoring;
+            ParserStatusProvider = parserStatusProvider;
+            CanExecuteEvaluation = StandardEvaluateCanExecute;
+            FailureNotifier = failureNotifier;
         }
 
-        protected void HandleInvalidSelection(object sender, EventArgs e)
+        protected Func<object, bool> CanExecuteEvaluation { get; private set; }
+
+        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
         {
-            System.Windows.Forms.MessageBox.Show(RubberduckUI.ExtractMethod_InvalidSelectionMessage, RubberduckUI.ExtractMethod_Caption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            if (furtherCanExecuteEvaluation == null)
+            {
+                return;
+            }
+
+            var currentCanExecute = CanExecuteEvaluation; 
+            CanExecuteEvaluation = (parameter) => currentCanExecute(parameter) && furtherCanExecuteEvaluation(parameter);
+        }
+
+        protected override bool EvaluateCanExecute(object parameter)
+        {
+            return CanExecuteEvaluation(parameter);
+        }
+
+        private bool StandardEvaluateCanExecute(object parameter)
+        {
+            if (ParserStatusProvider.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
-

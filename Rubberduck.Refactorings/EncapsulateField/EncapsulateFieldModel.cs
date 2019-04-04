@@ -1,25 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Antlr4.Runtime;
-using Rubberduck.Common;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using Rubberduck.Parsing.VBA;
-using Rubberduck.VBEditor;
 
 namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public class EncapsulateFieldModel
+    public class EncapsulateFieldModel : IRefactoringModel
     {
-        public RubberduckParserState State { get; }
-
-        public EncapsulateFieldModel(RubberduckParserState state, QualifiedSelection selection)
+        public EncapsulateFieldModel(Declaration target)
         {
-            State = state;
-            IList<Declaration> declarations = state.DeclarationFinder.UserDeclarations(DeclarationType.Variable).ToList();
-
-            TargetDeclaration = declarations.FindVariable(selection);
+            TargetDeclaration = target;
             ParameterName = "value";
         }
 
@@ -37,6 +28,7 @@ namespace Rubberduck.Refactorings.EncapsulateField
         public string ParameterName { get; set; }
         public bool ImplementLetSetterType { get; set; }
         public bool ImplementSetSetterType { get; set; }
+
         public bool CanImplementLet { get; private set; }
         public bool CanImplementSet { get; private set; }
 

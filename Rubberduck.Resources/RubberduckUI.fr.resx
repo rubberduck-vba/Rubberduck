@@ -534,7 +534,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="ExtractInterface_Caption" xml:space="preserve">
     <value>Rubberduck - Extraire une interface</value>
   </data>
-  <data name="MoveCloserToUsage_TargetHasNoReferences" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetHasNoReferences" xml:space="preserve">
     <value>'{0}' n'est pas utilisé</value>
   </data>
   <data name="EncapsulateField_TitleText" xml:space="preserve">
@@ -606,7 +606,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="EncapsulateField_Preview" xml:space="preserve">
     <value>Aperçu:</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsUsedInMultipleMethods" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsUsedInMultipleMethods" xml:space="preserve">
     <value>'{0}' est utilisé dans plus d'une méthode.</value>
   </data>
   <data name="RegexSearchReplace_ReplaceAllButtonLabel" xml:space="preserve">
@@ -615,7 +615,7 @@ Attention: les valeurs personnalisées seront perdues.    Le fichier original se
   <data name="EncapsulateField_SetterType" xml:space="preserve">
     <value>Mutateur:</value>
   </data>
-  <data name="MoveCloserToUsage_InvalidSelection" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_InvalidSelection" xml:space="preserve">
     <value>Sélection invalide</value>
   </data>
   <data name="IntroduceField_Caption" xml:space="preserve">
@@ -1050,12 +1050,6 @@ les projets dans le VBE.</value>
   <data name="ImportCommand_OpenDialog_Filter_AllFiles" xml:space="preserve">
     <value>Tous les fichiers</value>
   </data>
-  <data name="RefactorRename_TargetNotUserDefinedError" xml:space="preserve">
-    <value>L'identifiant {0} ne peut être renommé.</value>
-  </data>
-  <data name="RefactorRename_TargetNotDefinedError" xml:space="preserve">
-    <value>Impossible de détecter la cible à renommer</value>
-  </data>
   <data name="ImportCommand_OpenDialog_Title" xml:space="preserve">
     <value>Importer fichiers source</value>
   </data>
@@ -1372,16 +1366,16 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="MemberAttributeRecoveryFailureCaption" xml:space="preserve">
     <value>Échec de la récupération des attributs</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNotUserDefined" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNotUserDefined" xml:space="preserve">
     <value>'{0}' n'est pas défini par l'utilisateur</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInDifferentProject" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInDifferentProject" xml:space="preserve">
     <value>'{0}' doit être défini dans le même projet que la cible.</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsInOtherNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsInOtherNonStandardModule" xml:space="preserve">
     <value>'{0}' n'est utilisé ni dans le module où il est défini, ni dans un module standard.</value>
   </data>
-  <data name="MoveCloserToUsage_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
     <value>La procédure qui utilise '{0}' contient déjà une déclaration utilisant cet identifiant.</value>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
@@ -1402,7 +1396,7 @@ NOTE: Un redémarrage de l'application sera requis pour que la nouvelle configur
   <data name="InspectionResults_ExpandAll" xml:space="preserve">
     <value>Développer tout</value>
   </data>
-  <data name="MoveCloserToUsage_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
+  <data name="MoveCloserToUsageFailure_TargetIsNonPrivateInNonStandardModule" xml:space="preserve">
     <value>'{0}' est accessible globalement, et est utilisé</value>
     
   </data>
