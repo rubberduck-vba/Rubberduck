@@ -401,12 +401,12 @@ namespace Rubberduck.Parsing.VBA
                     var args = new ParserStateEventArgs(state, oldStatus, token);
                     handler.Invoke(requestor, args);
                 }
+                catch (OperationCanceledException cancellation)
+                {
+                    throw;
+                }
                 catch (Exception e)
                 {
-                    if (e is OperationCanceledException cancellation)
-                    {
-                        throw cancellation;
-                    }
                     // Error state, because this implies consumers are not exception-safe!
                     // this behaviour could leave us in a state where some consumers have correctly updated and some have not
                     Logger.Error(e, "An exception occurred when notifying consumers of updated parser state.");
