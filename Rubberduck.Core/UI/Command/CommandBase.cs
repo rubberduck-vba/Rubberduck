@@ -15,13 +15,13 @@ namespace Rubberduck.UI.Command
         protected CommandBase(ILogger logger = null)
         {
             Logger = logger ?? LogManager.GetLogger(GetType().FullName);
-            CanExecuteEvaluation = (parameter => true);
+            CanExecuteCondition = (parameter => true);
         }
 
         protected ILogger Logger { get; }
         protected abstract void OnExecute(object parameter);
 
-        protected Func<object, bool> CanExecuteEvaluation { get; private set; }
+        protected Func<object, bool> CanExecuteCondition { get; private set; }
 
         protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
         {
@@ -30,15 +30,15 @@ namespace Rubberduck.UI.Command
                 return;
             }
 
-            var currentCanExecute = CanExecuteEvaluation;
-            CanExecuteEvaluation = (parameter) => currentCanExecute(parameter) && furtherCanExecuteEvaluation(parameter);
+            var currentCanExecute = CanExecuteCondition;
+            CanExecuteCondition = (parameter) => currentCanExecute(parameter) && furtherCanExecuteEvaluation(parameter);
         }
 
         public bool CanExecute(object parameter)
         {
             try
             {
-                return CanExecuteEvaluation(parameter);
+                return CanExecuteCondition(parameter);
             }
             catch (Exception exception)
             {
