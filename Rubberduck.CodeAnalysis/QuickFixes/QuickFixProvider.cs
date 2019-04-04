@@ -6,6 +6,7 @@ using Microsoft.CSharp.RuntimeBinder;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.VBA.Parsing;
+using Rubberduck.Refactorings.Exceptions;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.QuickFixes
@@ -78,7 +79,14 @@ namespace Rubberduck.Inspections.QuickFixes
             }
 
             var rewriteSession = RewriteSession(fix.TargetCodeKind);
-            fix.Fix(result, rewriteSession);
+            try
+            {
+                fix.Fix(result, rewriteSession);
+            }
+            catch (RewriteFailedException)
+            {
+                _failureNotifier.NotifyQuickFixExecutionFailure(rewriteSession.Status);
+            }
             Apply(rewriteSession);
         }
 

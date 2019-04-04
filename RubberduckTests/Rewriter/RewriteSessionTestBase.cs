@@ -81,11 +81,11 @@ namespace RubberduckTests.Rewriter
 
         [Test]
         [Category("Rewriter")]
-        public void TryRewriteReturnsFalseIfNoRewritersHaveBeenCheckedOut()
+        public void TryRewriteReturnsTrueIfNoRewritersHaveBeenCheckedOut()
         {
             var rewriteSession = RewriteSession(session => true, out _);
             var actual = rewriteSession.TryRewrite();
-            Assert.IsFalse(actual);
+            Assert.IsTrue(actual);
         }
 
         [Test]

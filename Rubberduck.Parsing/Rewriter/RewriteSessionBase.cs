@@ -78,7 +78,7 @@ namespace Rubberduck.Parsing.Rewriter
         {
             if (!CheckedOutModuleRewriters.Any())
             {
-                return false;
+                return true;
             }
 
             //This is thread-safe because, once invalidated, there is no way back.

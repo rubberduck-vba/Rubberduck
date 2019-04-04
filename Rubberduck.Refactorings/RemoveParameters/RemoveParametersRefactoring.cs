@@ -154,12 +154,15 @@ namespace Rubberduck.Refactorings.RemoveParameters
                 throw new TargetDeclarationIsNullException();
             }
 
-            var rewritingSession = RewritingManager.CheckOutCodePaneSession();
+            var rewriteSession = RewritingManager.CheckOutCodePaneSession();
 
-            AdjustReferences(model, model.TargetDeclaration.References, model.TargetDeclaration, rewritingSession);
-            AdjustSignatures(model, rewritingSession);
+            AdjustReferences(model, model.TargetDeclaration.References, model.TargetDeclaration, rewriteSession);
+            AdjustSignatures(model, rewriteSession);
 
-            rewritingSession.TryRewrite();
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
         }
 
         private void AdjustReferences(RemoveParametersModel model, IEnumerable<IdentifierReference> references, Declaration method, IRewriteSession rewriteSession)

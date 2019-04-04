@@ -52,7 +52,10 @@ namespace Rubberduck.Refactorings.EncapsulateField
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             AddProperty(model, rewriteSession);
-            rewriteSession.TryRewrite();
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
         }
 
         private void AddProperty(EncapsulateFieldModel model, IRewriteSession rewriteSession)
