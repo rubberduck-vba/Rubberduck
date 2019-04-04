@@ -5,11 +5,14 @@ using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using System;
+using NLog;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
     public class CodeMetricsAnalyst : ICodeMetricsAnalyst
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly CodeMetric[] metrics;
 
@@ -49,9 +52,16 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
                 l.InjectContext((declarationFinder, moduleName));
             }
             var combinedMetricListener = new CombinedParseTreeListener(listeners);
-
-            ParseTreeWalker.Default.Walk(combinedMetricListener, parseTree);
-            return listeners.SelectMany(l => l.Results());
+            try
+            {
+                ParseTreeWalker.Default.Walk(combinedMetricListener, parseTree);
+                return listeners.SelectMany(l => l.Results());
+            }
+            catch (Exception e)
+            {
+                Logger.Warn(e, "An exception occured during parse-tree traversal or result aggregation for Code Metrics");
+                return Enumerable.Empty<ICodeMetricResult>();
+            }
         }
     }
 }
