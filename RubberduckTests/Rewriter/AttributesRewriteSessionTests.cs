@@ -191,7 +191,7 @@ namespace RubberduckTests.Rewriter
             Assert.AreEqual("RecoverActiveCodePaneOnNextParse", lastOperation);
         }
 
-        protected override IRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false, ISelectionRecoverer selectionRecoverer = null)
+        protected override IExecutableRewriteSession RewriteSession(IParseManager parseManager, Func<IRewriteSession, bool> rewritingAllowed, out MockRewriterProvider mockProvider, bool rewritersAreDirty = false, ISelectionRecoverer selectionRecoverer = null)
         {
             if (selectionRecoverer == null)
             {

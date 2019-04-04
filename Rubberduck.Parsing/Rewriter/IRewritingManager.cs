@@ -2,8 +2,8 @@
 {
     public interface IRewritingManager
     {
-        IRewriteSession CheckOutCodePaneSession();
-        IRewriteSession CheckOutAttributesSession();
+        IExecutableRewriteSession CheckOutCodePaneSession();
+        IExecutableRewriteSession CheckOutAttributesSession();
         void InvalidateAllSessions();
     }
 }

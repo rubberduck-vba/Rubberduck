@@ -9,7 +9,7 @@ using Rubberduck.VBEditor.Extensions;
 
 namespace Rubberduck.Parsing.Rewriter
 {
-    public abstract class RewriteSessionBase : IRewriteSession
+    public abstract class RewriteSessionBase : IExecutableRewriteSession
     {
         protected readonly IDictionary<QualifiedModuleName, IExecutableModuleRewriter> CheckedOutModuleRewriters = new Dictionary<QualifiedModuleName, IExecutableModuleRewriter>();
         protected readonly IRewriterProvider RewriterProvider;

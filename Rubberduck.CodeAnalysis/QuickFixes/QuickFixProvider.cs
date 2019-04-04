@@ -82,7 +82,7 @@ namespace Rubberduck.Inspections.QuickFixes
             Apply(rewriteSession);
         }
 
-        private void Apply(IRewriteSession rewriteSession)
+        private void Apply(IExecutableRewriteSession rewriteSession)
         {
             if (!rewriteSession.TryRewrite())
             {
@@ -90,7 +90,7 @@ namespace Rubberduck.Inspections.QuickFixes
             }
         }
 
-        private IRewriteSession RewriteSession(CodeKind targetCodeKind)
+        private IExecutableRewriteSession RewriteSession(CodeKind targetCodeKind)
         {
             switch (targetCodeKind)
             {
