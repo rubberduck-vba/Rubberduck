@@ -25,7 +25,12 @@ namespace Rubberduck.Inspections.QuickFixes
                 Refactor(result);
             }
             catch (RefactoringAbortedException)
-            { }
+            {}
+            catch (RewriteFailedException)
+            {
+                //We rethrow because this information is required by the QuickFixProvider to trigger the failure notiication. 
+                throw;
+            }
             catch (RefactoringException exception)
             {
                 //This is an error: the inspection returned an invalid result. 
