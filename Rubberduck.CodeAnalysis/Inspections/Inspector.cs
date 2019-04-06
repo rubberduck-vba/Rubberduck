@@ -30,7 +30,6 @@ namespace Rubberduck.Inspections
 
             private readonly IGeneralConfigService _configService;
             private readonly List<IInspection> _inspections;
-            private const int AGGREGATION_THRESHOLD = 128;
 
             public Inspector(IGeneralConfigService configService, IInspectionProvider inspectionProvider)
             {
@@ -42,8 +41,8 @@ namespace Rubberduck.Inspections
 
             private void ConfigServiceSettingsChanged(object sender, EventArgs e)
             {
-                //var config = _configService.LoadConfiguration();
-                //UpdateInspectionSeverity(config);
+                var config = _configService.LoadConfiguration();
+                UpdateInspectionSeverity(config);
             }
 
             private void UpdateInspectionSeverity(Configuration config)
@@ -133,16 +132,9 @@ namespace Rubberduck.Inspections
                     LogManager.GetCurrentClassLogger().Error(e);
                 }
 
-                var issuesByType = allIssues.GroupBy(issue => issue.Inspection.Name)
-                                            .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
-                var results = issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
-                    .SelectMany(kv => kv.Value)
-                    .Union(issuesByType.Where(kv => kv.Value.Count > AGGREGATION_THRESHOLD)
-                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).First(), kv.Value.Count)))
-                    .ToList();
-
-                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, CultureInfo.CurrentUICulture)); // should be "Ready"
-                return results;
+                // should be "Ready"
+                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, CultureInfo.CurrentUICulture)); 
+                return allIssues;
             }
 
             private static bool RequiredLibrariesArePresent(IInspection inspection, RubberduckParserState state)
