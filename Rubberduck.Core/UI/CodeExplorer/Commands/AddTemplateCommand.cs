@@ -42,7 +42,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public IEnumerable<ProjectType> AllowableProjectTypes => ApplicableProjectTypes;
 
-        public ComponentType ComponentType => ComponentType.Undefined;
+        //We need a valid component type to add the component in the first place. Then the module content gets overwritten.
+        public ComponentType ComponentType => ComponentType.ClassModule;
 
         public bool CanExecuteForNode(ICodeExplorerNode model)
         {
