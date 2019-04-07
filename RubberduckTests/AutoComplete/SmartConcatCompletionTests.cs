@@ -122,7 +122,7 @@ namespace RubberduckTests.AutoComplete
             settings.SmartConcat.ConcatVbNewLineModifier = ModifierKeySetting.CtrlKey;
             settings.SmartConcat.ConcatMaxLines = AutoCompleteSettings.ConcatMaxLinesMaxValue;
 
-            var handler = new CodePaneSourceCodeHandler(new ProjectsRepository(vbe.Object));
+            var handler = new CodePaneHandler(new ProjectsRepository(vbe.Object));
             var sut = new SmartConcatenationHandler(handler);
             return sut;
         }

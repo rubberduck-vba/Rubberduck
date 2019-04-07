@@ -7,11 +7,11 @@ using System.Diagnostics;
 
 namespace Rubberduck.VBEditor.SourceCodeHandling
 {
-    public class CodePaneSourceCodeHandler : ICodePaneHandler
+    public class CodePaneHandler : ICodePaneHandler
     {
         private readonly IProjectsProvider _projectsProvider;
 
-        public CodePaneSourceCodeHandler(IProjectsProvider projectsProvider)
+        public CodePaneHandler(IProjectsProvider projectsProvider)
         {
             _projectsProvider = projectsProvider;
         }

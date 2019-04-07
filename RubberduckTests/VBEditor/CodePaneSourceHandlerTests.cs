@@ -20,7 +20,7 @@ namespace RubberduckTests.VBEditor
             var codeModule = codeModuleMock.Object;
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
             var projectsProvider = TestProvider(module, codeModule);
-            var codePaneSourceHandler = new CodePaneSourceCodeHandler(projectsProvider);
+            var codePaneSourceHandler = new CodePaneHandler(projectsProvider);
 
             var expected = "TestTestTest";
             var actual = codePaneSourceHandler.SourceCode(module);
@@ -38,7 +38,7 @@ namespace RubberduckTests.VBEditor
             var codeModule = codeModuleMock.Object;
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
             var projectsProvider = TestProvider(module, codeModule);
-            var codePaneSourceHandler = new CodePaneSourceCodeHandler(projectsProvider);
+            var codePaneSourceHandler = new CodePaneHandler(projectsProvider);
 
             var otherModule = new QualifiedModuleName("TestProject", string.Empty, "OtherTestModule");
 
@@ -63,7 +63,7 @@ namespace RubberduckTests.VBEditor
             var codeModule = codeModuleMock.Object;
             var module = new QualifiedModuleName("TestProject", string.Empty, "TestModule");
             var projectsProvider = TestProvider(module, codeModule);
-            var codePaneSourceHandler = new CodePaneSourceCodeHandler(projectsProvider);
+            var codePaneSourceHandler = new CodePaneHandler(projectsProvider);
 
             codePaneSourceHandler.SubstituteCode(module, "NewNewNew");
 
