@@ -35,11 +35,11 @@ namespace Rubberduck.Templates
             foreach (DictionaryEntry entry in set)
             {
                 var key = (string)entry.Key;
-                var value = (string) entry.Value;
                 if (key.EndsWith("_Name"))
                 {
-                    var handler = _provider.CreateTemplateFileHandler(value);
-                    list.Add(new Template(value, handler));
+                    var templateName = key.Substring(0, key.Length - "_Name".Length);
+                    var handler = _provider.CreateTemplateFileHandler(templateName);
+                    list.Add(new Template(templateName, handler));
                 }
             }
 
