@@ -11,8 +11,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly ProjectType[] Types = { ProjectType.StandardExe, ProjectType.ActiveXExe };
 
-        public AddMDIFormCommand(IVBE vbe)
-            : base(vbe)
+        public AddMDIFormCommand(ICodeExplorerAddComponentService addComponentService)
+            : base(addComponentService)
         {
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
@@ -30,21 +30,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             var project = node.Declaration?.Project;
 
-            if (project != null)
-            {
-                return EvaluateCanExecuteForProject(project);
-            }
-
-            if (Vbe.ProjectsCount != 1)
-            {
-                return false;
-            }
-
-            using (var vbProjects = Vbe.VBProjects)
-            using (project = vbProjects[1])
-            {
-                return EvaluateCanExecuteForProject(project);
-            }
+            return EvaluateCanExecuteForProject(project);
         }
 
         private static bool EvaluateCanExecuteForProject(IVBProject project)
