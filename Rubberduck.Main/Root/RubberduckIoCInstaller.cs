@@ -128,6 +128,11 @@ namespace Rubberduck.Root
             container.Register(Component.For<IMemberAttributeRecovererWithSettableRewritingManager>()
                 .ImplementedBy<MemberAttributeRecoverer>()
                 .LifestyleSingleton());
+            container.Register(Component.For<IAddComponentService>()
+                .ImplementedBy<AddComponentService>()
+                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodeModuleComponentSourceCodeHandler)),
+                    Dependency.OnComponent("attributesSourceCodeProvider", typeof(SourceFileHandlerComponentSourceCodeHandlerAdapter)))
+                .LifestyleSingleton());
 
             container.Register(Component.For<TestExplorerModel>()
                 .LifestyleSingleton());
