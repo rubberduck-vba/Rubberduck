@@ -132,6 +132,7 @@
   </data>
   <data name="IdentifierNameInspection" xml:space="preserve">
     <value>Consider renaming {0} '{1}'.</value>
+    <comment>{0} declaration type; {1} identifier name</comment>
   </data>
   <data name="WriteOnlyPropertyInspection" xml:space="preserve">
     <value>Property '{0}' has no getter.</value>
