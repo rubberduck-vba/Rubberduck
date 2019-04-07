@@ -42,7 +42,7 @@ namespace Rubberduck.VBEditor.Utility
                 
                 if (code != null)
                 {
-                    _codePaneSourceCodeHandler.SubstituteCode(newComponent, code);
+                    sourceCodeHandler.SubstituteCode(newComponent, code);
                 }
 
                 if (prefixInModule != null)
