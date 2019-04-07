@@ -74,21 +74,27 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
             return IsWrappingNullReference ? 0 : HashCode.Compute(Target);
         }
 
-        public void ImportSourceFile(string path)
+        public IVBComponent ImportSourceFile(string path)
         {
-            if (IsWrappingNullReference) { return; }
+            if (IsWrappingNullReference)
+            {
+                return null;
+            }
 
             var ext = Path.GetExtension(path);
             var name = Path.GetFileNameWithoutExtension(path);
             if (!File.Exists(path))
             {
-                return;
+                return null;
             }
 
-            if (ext == ComponentTypeExtensions.DocClassExtension)
+            switch (ext)
             {
-                IVBComponent component = null;
-                try {
+                case ComponentTypeExtensions.FormBinaryExtension:
+                    return null;
+                case ComponentTypeExtensions.DocClassExtension:
+                {
+                    IVBComponent component = null;
                     try
                     {
                         component = this[name];
@@ -104,17 +110,13 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                         codeModule.Clear();
                         codeModule.AddFromString(codeString);
                     }
+
+                    return component;
+
                 }
-                finally
+                case ComponentTypeExtensions.FormExtension:
                 {
-                    component?.Dispose();
-                }
-            }
-            else if (ext == ComponentTypeExtensions.FormExtension)
-            {
-                IVBComponent component = null;
-                try
-                {   
+                    IVBComponent component = null;
                     try
                     {
                         component = this[name];
@@ -142,15 +144,11 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VBA
                         codeModule.Clear();
                         codeModule.AddFromString(correctCodeString);
                     }
+                    
+                    return component;
                 }
-                finally
-                {
-                    component?.Dispose();
-                }
-            }
-            else if (ext != ComponentTypeExtensions.FormBinaryExtension)
-            {
-                using(Import(path)){} //Nothing to do here, except properly disposing the wrapper returned from Import.
+                default:
+                    return Import(path);
             }
         }
 

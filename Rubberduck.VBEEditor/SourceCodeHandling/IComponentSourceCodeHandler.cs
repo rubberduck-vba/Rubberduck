@@ -5,6 +5,6 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
     public interface IComponentSourceCodeHandler
     {
         string SourceCode(IVBComponent module);
-        void SubstituteCode(IVBComponent module, string newCode);
+        IVBComponent SubstituteCode(IVBComponent module, string newCode);
     }
 }

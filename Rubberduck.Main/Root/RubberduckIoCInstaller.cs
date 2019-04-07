@@ -130,8 +130,8 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<IAddComponentService>()
                 .ImplementedBy<AddComponentService>()
-                .DependsOn(Dependency.OnComponent("codePaneSourceCodeProvider", typeof(CodeModuleComponentSourceCodeHandler)),
-                    Dependency.OnComponent("attributesSourceCodeProvider", typeof(SourceFileHandlerComponentSourceCodeHandlerAdapter)))
+                .DependsOn(Dependency.OnComponent("codePaneComponentSourceCodeProvider", typeof(CodeModuleComponentSourceCodeHandler)),
+                    Dependency.OnComponent("attributesComponentSourceCodeProvider", typeof(SourceFileHandlerComponentSourceCodeHandlerAdapter)))
                 .LifestyleSingleton());
 
             container.Register(Component.For<TestExplorerModel>()

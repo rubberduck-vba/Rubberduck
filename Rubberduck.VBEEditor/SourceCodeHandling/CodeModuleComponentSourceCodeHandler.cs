@@ -12,13 +12,15 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             }
         }
 
-        public void SubstituteCode(IVBComponent module, string newCode)
+        public IVBComponent SubstituteCode(IVBComponent module, string newCode)
         {
             using (var codeModule = module.CodeModule)
             {
                 codeModule.Clear();
                 codeModule.InsertLines(1, newCode);
             }
+
+            return module;
         }
     }
 }

@@ -13,12 +13,12 @@ namespace Rubberduck.VBEditor.Utility
 
         public AddComponentService(
             IProjectsProvider projectsProvider,
-            IComponentSourceCodeHandler codePaneSourceCodeHandler,
-            IComponentSourceCodeHandler attributeSourceCodeHandler)
+            IComponentSourceCodeHandler codePaneComponentSourceCodeProvider,
+            IComponentSourceCodeHandler attributesComponentSourceCodeProvider)
         {
             _projectsProvider = projectsProvider;
-            _codePaneSourceCodeHandler = codePaneSourceCodeHandler;
-            _attributeSourceCodeHandler = attributeSourceCodeHandler;
+            _codePaneSourceCodeHandler = codePaneComponentSourceCodeProvider;
+            _attributeSourceCodeHandler = attributesComponentSourceCodeProvider;
         }
 
         public void AddComponent(string projectId, ComponentType componentType, string code = null, string additionalPrefixInModule = null)
@@ -39,19 +39,31 @@ namespace Rubberduck.VBEditor.Utility
                 {
                     return;
                 }
-                
+
                 if (code != null)
                 {
-                    sourceCodeHandler.SubstituteCode(newComponent, code);
-                }
-
-                if (prefixInModule != null)
-                {
-                    using (var codeModule = newComponent.CodeModule)
+                    using (var loadedComponent = sourceCodeHandler.SubstituteCode(newComponent, code))
                     {
-                        codeModule.InsertLines(1, prefixInModule);
+                        AddPrefix(loadedComponent, prefixInModule);
                     }
                 }
+                else
+                {
+                    AddPrefix(newComponent, prefixInModule);
+                }
+            }
+        }
+
+        private static void AddPrefix(IVBComponent module, string prefix)
+        {
+            if (prefix == null || module == null)
+            {
+                return;
+            }
+
+            using (var codeModule = module.CodeModule)
+            {
+                codeModule.InsertLines(1, prefix);
             }
         }
 

@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
                 return;
             }
 
-            _componentSourceCodeHandler.SubstituteCode(component, newCode);
+            using (_componentSourceCodeHandler.SubstituteCode(component, newCode)){} //We do nothing; we just need to guarantee that the returned SCW gets disposed.
         }
     }
 }

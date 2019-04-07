@@ -18,21 +18,21 @@ namespace Rubberduck.VBEditor.SourceCodeHandling
             return _tempSourceFileHandler.Read(module) ?? string.Empty;
         }
 
-        public void SubstituteCode(IVBComponent module, string newCode)
+        public IVBComponent SubstituteCode(IVBComponent module, string newCode)
         {
             if (module.Type == ComponentType.Document)
             {
                 //We cannot substitute the code of a document module via the file.
-                return;
+                return module;
             }
 
             var fileName = _tempSourceFileHandler.Export(module);
             if (fileName == null || !File.Exists(fileName))
             {
-                return;
+                return module;
             }
             File.WriteAllText(fileName, newCode);
-            _tempSourceFileHandler.ImportAndCleanUp(module, fileName);
+            return _tempSourceFileHandler.ImportAndCleanUp(module, fileName);
         }
     }
 }

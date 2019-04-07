@@ -70,7 +70,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.VB6
             return IsWrappingNullReference ? 0 : HashCode.Compute(Target);
         }
 
-        public void ImportSourceFile(string path)
+        public IVBComponent ImportSourceFile(string path)
         {
             throw new NotSupportedException("ImportSourceFile not supported in VB6");
         }
