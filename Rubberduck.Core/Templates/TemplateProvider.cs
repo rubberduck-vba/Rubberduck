@@ -30,7 +30,7 @@ namespace Rubberduck.Templates
         private Lazy<IEnumerable<Template>> LazyList => new Lazy<IEnumerable<Template>>(() =>
         {
             var list = new List<Template>();
-            var set = Rubberduck.Resources.Templates.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, true);
+            var set = Rubberduck.Resources.Templates.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
             foreach (DictionaryEntry entry in set)
             {

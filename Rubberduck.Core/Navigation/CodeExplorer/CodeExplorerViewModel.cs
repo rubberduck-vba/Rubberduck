@@ -113,8 +113,9 @@ namespace Rubberduck.Navigation.CodeExplorer
         }
 
         public bool AnyTemplatesCanExecute =>
-            BuiltInTemplates.Concat(UserDefinedTemplates)
-                .Any(template => AddTemplateCommand.CanExecuteForNode(SelectedItem));
+            AddTemplateCommand.CanExecuteForNode(SelectedItem)
+            && BuiltInTemplates.Concat(UserDefinedTemplates)
+                .Any(template => AddTemplateCommand.CanExecute((template.Name, SelectedItem)));
 
         private CodeExplorerSortOrder _sortOrder = CodeExplorerSortOrder.Name;
         public CodeExplorerSortOrder SortOrder
