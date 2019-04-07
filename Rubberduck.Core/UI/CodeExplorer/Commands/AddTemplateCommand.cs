@@ -4,11 +4,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Templates;
+using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class AddTemplateCommand : CodeExplorerCommandBase
+    public class AddTemplateCommand : CommandBase
     {
         private static readonly Type[] ApplicableNodes =
         {
@@ -37,7 +38,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        public override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
+        public IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
         public IEnumerable<ProjectType> AllowableProjectTypes => ApplicableProjectTypes;
 
@@ -45,11 +46,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         public bool CanExecuteForNode(ICodeExplorerNode model)
         {
-            return CanExecute(model);
+            return EvaluateCanExecute(model);
         }
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
+            if (parameter == null)
+            {
+                return false;
+            }
+
             try
             {
                 if(parameter is System.ValueTuple<string, ICodeExplorerNode> data)
@@ -68,7 +74,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool EvaluateCanExecute(ICodeExplorerNode node)
         {
-            if (!(node is CodeExplorerItemViewModel)
+            if (!ApplicableNodeTypes.Contains(node.GetType())
+                || !(node is CodeExplorerItemViewModel)
                 || node.Declaration == null)
             {
                 return false;
