@@ -228,4 +228,7 @@
   <data name="Settings_Caption" xml:space="preserve">
     <value>Rubberduck Settings</value>
   </data>
+  <data name="HotKeys_Exclamation" xml:space="preserve">
+    <value>Warning! No Modifier!</value>
+  </data>
 </root>

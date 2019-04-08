@@ -196,7 +196,7 @@
                         Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Resx ResxName=Rubberduck.Resources.Resources, Key=exclamation}"
+                                        <Label Content="{Resx ResxName=Rubberduck.Resources.SettingsUI, Key=HotKeys_Exclamation}"
                                                Visibility="{Binding IsValid, Converter={StaticResource BoolToHiddenVisibility}}"
                                                HorizontalContentAlignment="Center"
                                                ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionToolTip}"/>
