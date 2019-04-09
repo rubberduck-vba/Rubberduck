@@ -10,6 +10,7 @@ using Rubberduck.Parsing;
 using Rubberduck.VBEditor;
 using Antlr4.Runtime.Misc;
 using Rubberduck.Inspections.Results;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var results = Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+            var results = Listener.Contexts.Where(context => !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName))
                 .Select(context => new QualifiedContextInspectionResult(this,
                                                                         string.Format(InspectionResults.DefTypeStatementInspection,
                                                                                       GetTypeOfDefType(context.Context.start.Text),

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
@@ -39,7 +40,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
 
             return (from function in candidates.Where(decl => ValidCellIdRegex.IsMatch(decl.IdentifierName))
                     let row = Convert.ToUInt32(ValidCellIdRegex.Matches(function.IdentifierName)[0].Groups["Row"].Value)
-                    where row > 0 && row <= MaximumExcelRows && !IsIgnoringInspectionResultFor(function, AnnotationName)
+                    where row > 0 && row <= MaximumExcelRows && !function.IsIgnoringInspectionResultFor(AnnotationName)
                     select new DeclarationInspectionResult(this,
                         string.Format(InspectionResults.ExcelUdfNameIsValidCellReferenceInspection, function.IdentifierName),
                         function))

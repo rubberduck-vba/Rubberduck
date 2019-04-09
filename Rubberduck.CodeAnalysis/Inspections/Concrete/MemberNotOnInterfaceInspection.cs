@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -17,7 +18,8 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations.Where(decl => !IsIgnoringInspectionResultFor(decl, AnnotationName)).ToList();
+            var unresolved = State.DeclarationFinder.UnresolvedMemberDeclarations
+                .Where(decl => !decl.IsIgnoringInspectionResultFor(AnnotationName)).ToList();
 
             var targets = Declarations.Where(decl => decl.AsTypeDeclaration != null &&
                                                      !decl.AsTypeDeclaration.IsUserDefined &&

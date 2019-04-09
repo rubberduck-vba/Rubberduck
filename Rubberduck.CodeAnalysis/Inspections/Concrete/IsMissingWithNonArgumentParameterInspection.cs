@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
@@ -17,7 +18,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete
         {
             var results = new List<IInspectionResult>();
 
-            foreach (var reference in IsMissingDeclarations.SelectMany(decl => decl.References.Where(candidate => !IsIgnoringInspectionResultFor(candidate, AnnotationName))))
+            foreach (var reference in IsMissingDeclarations.SelectMany(decl => decl.References
+                .Where(candidate => !candidate.IsIgnoringInspectionResultFor(AnnotationName))))
             {
                 var parameter = GetParameterForReference(reference);
 

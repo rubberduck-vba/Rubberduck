@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -21,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
                 {
                     if (declaration.IsWithEvents
                         || !new[] {DeclarationType.ClassModule, DeclarationType.Document, DeclarationType.ProceduralModule}.Contains(declaration.ParentDeclaration.DeclarationType)
-                        || IsIgnoringInspectionResultFor(declaration, AnnotationName))
+                        || declaration.IsIgnoringInspectionResultFor(AnnotationName))
                     {
                         return false;
                     }

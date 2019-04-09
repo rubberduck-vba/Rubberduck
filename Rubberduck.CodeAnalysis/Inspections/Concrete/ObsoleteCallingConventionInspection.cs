@@ -2,6 +2,7 @@
 using System.Linq;
 using Antlr4.Runtime;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Grammar;
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
         {
             return Listener.Contexts
                 .Where(context => ((VBAParser.DeclareStmtContext) context.Context).CDECL() != null &&
-                    !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line))
+                    !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName))
                 .Select(context => new QualifiedContextInspectionResult(this,
                     string.Format(InspectionResults.ObsoleteCallingConventionInspection,
                         ((VBAParser.DeclareStmtContext) context.Context).identifier().GetText()), context));
