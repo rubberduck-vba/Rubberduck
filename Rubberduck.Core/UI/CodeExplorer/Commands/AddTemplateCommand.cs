@@ -52,20 +52,12 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            try
+            if(parameter is System.ValueTuple<string, ICodeExplorerNode> data)
             {
-                if(parameter is System.ValueTuple<string, ICodeExplorerNode> data)
-                {
-                    return EvaluateCanExecute(data.Item2);
-                }
+                return EvaluateCanExecute(data.Item2);
+            }
 
-                return false;
-            }
-            catch (Exception ex)
-            {
-                Logger.Trace(ex);
-                return false;
-            }
+            return false;
         }
 
         private bool EvaluateCanExecute(ICodeExplorerNode node)
@@ -77,16 +69,8 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return false;
             }
 
-            try
-            {
-                var project = node.Declaration.Project;
-                return AllowableProjectTypes.Contains(project.Type);
-            }
-            catch (COMException exception)
-            {
-                Logger.Debug(exception);
-                return false;
-            }
+            var project = node.Declaration.Project;
+            return AllowableProjectTypes.Contains(project.Type);
         }
 
         protected override void OnExecute(object parameter)
@@ -96,27 +80,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            try
+            if (!(parameter is System.ValueTuple<string, ICodeExplorerNode> data))
             {
-                if (!(parameter is System.ValueTuple<string, ICodeExplorerNode> data))
-                {
-                    return;
-                }
-
-                var (templateName, node) = data;
-
-                if (string.IsNullOrWhiteSpace(templateName) || !(node is CodeExplorerItemViewModel model))
-                {
-                    return;
-                }
-
-                var moduleText = GetTemplate(templateName);
-                _addComponentService.AddComponentWithAttributes(model, ComponentType, moduleText);
+                return;
             }
-            catch (Exception ex)
+
+            var (templateName, node) = data;
+
+            if (string.IsNullOrWhiteSpace(templateName) || !(node is CodeExplorerItemViewModel model))
             {
-                Logger.Trace(ex);
+                return;
             }
+
+            var moduleText = GetTemplate(templateName);
+            _addComponentService.AddComponentWithAttributes(model, ComponentType, moduleText);
         }
 
         private string GetTemplate(string name)
