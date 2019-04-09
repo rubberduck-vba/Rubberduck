@@ -9,7 +9,7 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class AddTemplateCommand : CommandBase
+    public class AddTemplateCommand : CodeExplorerCommandBase
     {
         private static readonly Type[] ApplicableNodes =
         {
@@ -38,7 +38,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        public IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
+        public override IEnumerable<Type> ApplicableNodeTypes => new[]{typeof(System.ValueTuple<string, ICodeExplorerNode>)};
 
         public IEnumerable<ProjectType> AllowableProjectTypes => ApplicableProjectTypes;
 
@@ -52,11 +52,6 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (parameter == null)
-            {
-                return false;
-            }
-
             try
             {
                 if(parameter is System.ValueTuple<string, ICodeExplorerNode> data)
@@ -75,7 +70,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool EvaluateCanExecute(ICodeExplorerNode node)
         {
-            if (!ApplicableNodeTypes.Contains(node.GetType())
+            if (!ApplicableNodes.Contains(node.GetType())
                 || !(node is CodeExplorerItemViewModel)
                 || node.Declaration == null)
             {
@@ -87,8 +82,9 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 var project = node.Declaration.Project;
                 return AllowableProjectTypes.Contains(project.Type);
             }
-            catch (COMException)
+            catch (COMException exception)
             {
+                Logger.Debug(exception);
                 return false;
             }
         }
