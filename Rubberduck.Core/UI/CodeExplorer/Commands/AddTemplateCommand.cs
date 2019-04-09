@@ -43,6 +43,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         public IEnumerable<ProjectType> AllowableProjectTypes => ApplicableProjectTypes;
 
         //We need a valid component type to add the component in the first place. Then the module content gets overwritten.
+        //TODO: Find a way to pass in the correct component type for a template. (A wrong component type does not hurt in VBA, but in VB6 it does.)
         public ComponentType ComponentType => ComponentType.ClassModule;
 
         public bool CanExecuteForNode(ICodeExplorerNode model)
