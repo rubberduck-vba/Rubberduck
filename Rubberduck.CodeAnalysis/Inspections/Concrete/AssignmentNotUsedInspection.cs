@@ -46,6 +46,9 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             return nodes
+                .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName)
+                            // Ignoring the Declaration disqualifies all assignments
+                            && !IsIgnoringInspectionResultFor(issue.Declaration, AnnotationName))
                 .Select(issue => new IdentifierReferenceInspectionResult(this, Description, State, issue))
                 .ToList();
         }
