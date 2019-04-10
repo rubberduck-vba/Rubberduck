@@ -11,6 +11,7 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -28,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
             var interfaceImplementationMembers = State.DeclarationFinder.FindAllInterfaceImplementingMembers();
             var functions = State.DeclarationFinder
                 .UserDeclarations(DeclarationType.Function)
-                .Where(item => !IsIgnoringInspectionResultFor(item, AnnotationName) &&
+                .Where(item => !item.IsIgnoringInspectionResultFor(AnnotationName) &&
                                item.References.Any(r => !IsReturnStatement(item, r) && !r.IsAssignment))
                 .ToList();
             var interfaceMemberIssues = GetInterfaceMemberIssues(interfaceMembers);

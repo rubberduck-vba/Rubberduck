@@ -11,6 +11,7 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -46,7 +47,7 @@ namespace Rubberduck.Inspections.Concrete
                                     && HasArgumentReferencesWithIsAssignmentFlagged(context))
                 .Select(context => GetSubStmtParentDeclaration(context))
                 .Where(decl => decl != null && 
-                                !IsIgnoringInspectionResultFor(decl, AnnotationName) &&
+                                !decl.IsIgnoringInspectionResultFor(AnnotationName) &&
                                 !ignored.Contains(decl) &&
                                 userDeclarations.Where(item => item.IsWithEvents)
                                    .All(withEvents => userDeclarations.FindEventProcedures(withEvents) == null) &&

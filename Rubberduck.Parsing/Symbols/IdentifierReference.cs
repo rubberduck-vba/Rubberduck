@@ -66,18 +66,6 @@ namespace Rubberduck.Parsing.Symbols
 
         public IEnumerable<IAnnotation> Annotations { get; }
 
-        public bool IsIgnoringInspectionResultFor(string inspectionName)
-        {
-            var isIgnoredAtModuleLevel =
-                Declaration.GetModuleParent(ParentScoping).Annotations
-                .Any(annotation => annotation.AnnotationType == AnnotationType.IgnoreModule
-                    && ((IgnoreModuleAnnotation)annotation).IsIgnored(inspectionName));
-
-            return isIgnoredAtModuleLevel || Annotations.Any(annotation => 
-                       annotation.AnnotationType == AnnotationType.Ignore
-                       && ((IgnoreAnnotation) annotation).IsIgnored(inspectionName));
-        }
-
         public bool HasExplicitLetStatement { get; }
 
         public bool HasExplicitCallStatement() => Context.Parent is VBAParser.CallStmtContext && ((VBAParser.CallStmtContext)Context).CALL() != null;

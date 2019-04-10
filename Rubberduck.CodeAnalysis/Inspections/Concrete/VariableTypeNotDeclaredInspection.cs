@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -20,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
                          .Union(State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter))
                          where (item.DeclarationType != DeclarationType.Parameter || (item.DeclarationType == DeclarationType.Parameter && !item.IsArray))
                          && item.DeclarationType != DeclarationType.Control
-                         && !IsIgnoringInspectionResultFor(item, AnnotationName)
+                         && !item.IsIgnoringInspectionResultFor(AnnotationName)
                          && !item.IsTypeSpecified
                          && !item.IsUndeclared
                          select new DeclarationInspectionResult(this, string.Format(InspectionResults.ImplicitVariantDeclarationInspection, item.DeclarationType, item.IdentifierName), item);

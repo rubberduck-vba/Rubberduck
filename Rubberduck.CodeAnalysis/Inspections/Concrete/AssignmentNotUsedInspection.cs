@@ -8,6 +8,7 @@ using Rubberduck.Inspections.CodePathAnalysis.Extensions;
 using System.Linq;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Grammar;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -46,6 +47,9 @@ namespace Rubberduck.Inspections.Concrete
             }
 
             return nodes
+                .Where(issue => !issue.IsIgnoringInspectionResultFor(AnnotationName)
+                            // Ignoring the Declaration disqualifies all assignments
+                            && !issue.Declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(issue => new IdentifierReferenceInspectionResult(this, Description, State, issue))
                 .ToList();
         }

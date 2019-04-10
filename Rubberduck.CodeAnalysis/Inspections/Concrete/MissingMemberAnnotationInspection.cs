@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing;
 using Rubberduck.Parsing.Annotations;
@@ -26,7 +27,7 @@ namespace Rubberduck.Inspections.Concrete
 
             var declarationsToInspect = memberDeclarationsWithAttributes
                 .Where(decl => decl.QualifiedModuleName.ComponentType != ComponentType.Document
-                               && !IsIgnoringInspectionResultFor(decl, AnnotationName));
+                               && !decl.IsIgnoringInspectionResultFor(AnnotationName));
 
             var results = new List<DeclarationInspectionResult>();
             foreach (var declaration in declarationsToInspect)
