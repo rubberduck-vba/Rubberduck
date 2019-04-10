@@ -1,6 +1,4 @@
-﻿using System;
-using NLog;
-using Rubberduck.Parsing.VBA;
+﻿using Rubberduck.Parsing.VBA;
 using Rubberduck.Refactorings;
 using Rubberduck.UI.Command.Refactorings.Notifiers;
 
@@ -13,40 +11,17 @@ namespace Rubberduck.UI.Command.Refactorings
         protected readonly IParserStatusProvider ParserStatusProvider;
 
         protected RefactorCommandBase(IRefactoring refactoring, IRefactoringFailureNotifier failureNotifier, IParserStatusProvider parserStatusProvider)
-            : base(LogManager.GetCurrentClassLogger())
         {
             Refactoring = refactoring;
             ParserStatusProvider = parserStatusProvider;
-            CanExecuteEvaluation = StandardEvaluateCanExecute;
             FailureNotifier = failureNotifier;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected Func<object, bool> CanExecuteEvaluation { get; private set; }
-
-        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (furtherCanExecuteEvaluation == null)
-            {
-                return;
-            }
-
-            var currentCanExecute = CanExecuteEvaluation; 
-            CanExecuteEvaluation = (parameter) => currentCanExecute(parameter) && furtherCanExecuteEvaluation(parameter);
-        }
-
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            return CanExecuteEvaluation(parameter);
-        }
-
-        private bool StandardEvaluateCanExecute(object parameter)
-        {
-            if (ParserStatusProvider.Status != ParserState.Ready)
-            {
-                return false;
-            }
-
-            return true;
+            return ParserStatusProvider.Status == ParserState.Ready;
         }
     }
 }

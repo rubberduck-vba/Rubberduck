@@ -1,6 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
-using Rubberduck.Settings;
 using Rubberduck.UI.Settings;
 using Rubberduck.Common;
 
@@ -14,7 +12,7 @@ namespace Rubberduck.UI.Command
     {
         private readonly ISettingsFormFactory _settingsFormFactory;
 
-        public SettingsCommand(ISettingsFormFactory settingsFormFactory) : base(LogManager.GetCurrentClassLogger())
+        public SettingsCommand(ISettingsFormFactory settingsFormFactory)
         {
             _settingsFormFactory = settingsFormFactory;
         }

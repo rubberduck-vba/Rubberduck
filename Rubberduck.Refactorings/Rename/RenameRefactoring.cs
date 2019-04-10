@@ -68,7 +68,10 @@ namespace Rubberduck.Refactorings.Rename
         {
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             Rename(model, rewriteSession);
-            rewriteSession.TryRewrite();
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
         }
 
         private RenameModel DeriveTarget(RenameModel model)

@@ -18,10 +18,13 @@ using RubberduckTests.Mocks;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.SettingsProvider;
 using Rubberduck.Interaction;
+using Rubberduck.UI.CodeExplorer;
 using Rubberduck.UI.UnitTesting.Commands;
 using Rubberduck.UnitTesting;
 using Rubberduck.UnitTesting.CodeGeneration;
 using Rubberduck.UnitTesting.Settings;
+using Rubberduck.VBEditor.SourceCodeHandling;
+using Rubberduck.VBEditor.Utility;
 using RubberduckTests.Settings;
 
 namespace RubberduckTests.CodeExplorer
@@ -157,8 +160,17 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddStdModuleCommand()
         {
-            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(Vbe.Object);
+            ViewModel.AddStdModuleCommand = new AddStdModuleCommand(AddComponentService());
             return this;
+        }
+
+        private ICodeExplorerAddComponentService AddComponentService()
+        {
+            var codePaneComponentSourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+
+            var addComponentBaseService = new AddComponentService(State.ProjectsProvider, codePaneComponentSourceCodeHandler, codePaneComponentSourceCodeHandler);
+
+            return new CodeExplorerAddComponentService(State, addComponentBaseService, Vbe.Object);
         }
 
         public void ExecuteAddStdModuleCommand()
@@ -172,7 +184,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddClassModuleCommand()
         {
-            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(Vbe.Object);
+            ViewModel.AddClassModuleCommand = new AddClassModuleCommand(AddComponentService());
             return this;
         }
 
@@ -187,7 +199,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserFormCommand()
         {
-            ViewModel.AddUserFormCommand = new AddUserFormCommand(Vbe.Object);
+            ViewModel.AddUserFormCommand = new AddUserFormCommand(AddComponentService());
             return this;
         }
 
@@ -202,7 +214,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddVbFormCommand()
         {
-            ViewModel.AddVBFormCommand = new AddVBFormCommand(Vbe.Object);
+            ViewModel.AddVBFormCommand = new AddVBFormCommand(AddComponentService());
             return this;
         }
 
@@ -217,7 +229,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddMdiFormCommand()
         {
-            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(Vbe.Object);
+            ViewModel.AddMDIFormCommand = new AddMDIFormCommand(AddComponentService());
             return this;
         }
 
@@ -232,7 +244,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserControlCommand()
         {
-            ViewModel.AddUserControlCommand = new AddUserControlCommand(Vbe.Object);
+            ViewModel.AddUserControlCommand = new AddUserControlCommand(AddComponentService());
             return this;
         }
 
@@ -247,7 +259,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddPropertyPageCommand()
         {
-            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(Vbe.Object);
+            ViewModel.AddPropertyPageCommand = new AddPropertyPageCommand(AddComponentService());
             return this;
         }
 
@@ -262,7 +274,7 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer ImplementAddUserDocumentCommand()
         {
-            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(Vbe.Object);
+            ViewModel.AddUserDocumentCommand = new AddUserDocumentCommand(AddComponentService());
             return this;
         }
 

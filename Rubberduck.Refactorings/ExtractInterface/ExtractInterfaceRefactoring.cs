@@ -91,7 +91,10 @@ namespace Rubberduck.Refactorings.ExtractInterface
 
             AddInterfaceMembersToClass(model, rewriter);
 
-            rewriteSession.TryRewrite();
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
         }
 
         private void AddInterfaceClass(Declaration implementingClass, string interfaceName, string interfaceBody)

@@ -30,18 +30,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             _refactoring = refactoring;
             _failureNotifier = renameFailedNotifier;
             _parserStatusProvider = parserStatusProvider;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return _parserStatusProvider.Status == ParserState.Ready && base.EvaluateCanExecute(parameter);
+            return _parserStatusProvider.Status == ParserState.Ready;
         }
 
         protected override void OnExecute(object parameter)
         {
-            if (!EvaluateCanExecute(parameter) ||
+            if (!CanExecute(parameter) ||
                 !(parameter is CodeExplorerItemViewModel node) ||
                 node.Declaration == null)
             {

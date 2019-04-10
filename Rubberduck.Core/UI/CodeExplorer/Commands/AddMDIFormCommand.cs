@@ -11,18 +11,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     {
         private static readonly ProjectType[] Types = { ProjectType.StandardExe, ProjectType.ActiveXExe };
 
-        public AddMDIFormCommand(IVBE vbe) : base(vbe) { }
+        public AddMDIFormCommand(ICodeExplorerAddComponentService addComponentService)
+            : base(addComponentService)
+        {
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+        }
 
         public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
 
         public override ComponentType ComponentType => ComponentType.MDIForm;
 
-        protected override void OnExecute(object parameter)
-        {
-            AddComponent(parameter as CodeExplorerItemViewModel);
-        }
-
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerItemViewModel node))
             {
@@ -31,19 +30,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
             var project = node.Declaration?.Project;
 
-            if (project != null || Vbe.ProjectsCount != 1)
-            {
-                return EvaluateCanExecuteForProject(project, node);
-            }
-
-            using (var vbProjects = Vbe.VBProjects)
-            using (project = vbProjects[1])
-            {
-                return EvaluateCanExecuteForProject(project, node);
-            }
+            return EvaluateCanExecuteForProject(project);
         }
 
-        private bool EvaluateCanExecuteForProject(IVBProject project, CodeExplorerItemViewModel itemViewModel)
+        private static bool EvaluateCanExecuteForProject(IVBProject project)
         {
             if (project == null)
             {
@@ -65,7 +55,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 }
             }
 
-            return base.EvaluateCanExecute(itemViewModel);
+            return true;
         }
     }
 }

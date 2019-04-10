@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NLog;
 using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
@@ -26,14 +25,15 @@ namespace Rubberduck.UI.Command.MenuItems.CommandBars
         private readonly IComLibraryProvider _comLibraryProvider;
 
         public SerializeProjectsCommand(RubberduckParserState state, IComProjectSerializationProvider serializationProvider, IComLibraryProvider comLibraryProvider) 
-            : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _serializationProvider = serializationProvider;
             _comLibraryProvider = comLibraryProvider;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Ready;
         }

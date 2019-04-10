@@ -544,7 +544,8 @@ End Sub
                 .SelectFirstModule())
             {
                 explorer.ExecuteIndenterCommand();
-                Assert.AreEqual(expectedCode, explorer.VbComponent.Object.CodeModule.Content());
+                var actualCode = explorer.VbComponent.Object.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 

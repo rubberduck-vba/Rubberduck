@@ -60,7 +60,10 @@ namespace Rubberduck.Refactorings.ImplementInterface
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             var rewriter = rewriteSession.CheckOutModuleRewriter(targetClass.QualifiedModuleName);
             ImplementMissingMembers(targetInterface, targetClass, rewriter);
-            rewriteSession.TryRewrite();     
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
         }
 
         protected override Declaration FindTargetDeclaration(QualifiedSelection targetSelection)

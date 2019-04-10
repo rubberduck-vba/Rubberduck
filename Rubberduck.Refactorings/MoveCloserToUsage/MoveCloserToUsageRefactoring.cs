@@ -177,7 +177,10 @@ namespace Rubberduck.Refactorings.MoveCloserToUsage
             InsertNewDeclaration(target, rewriteSession);
             RemoveOldDeclaration(target, rewriteSession);
             UpdateQualifiedCalls(target, rewriteSession);
-            rewriteSession.TryRewrite();
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
         }
 
         private void InsertNewDeclaration(Declaration target, IRewriteSession rewriteSession)

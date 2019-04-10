@@ -57,7 +57,10 @@ namespace Rubberduck.Refactorings.IntroduceField
             rewriter.Remove(target);
             AddField(rewriter, target);
 
-            rewriteSession.TryRewrite();
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
         }
 
         private void AddField(IModuleRewriter rewriter, Declaration target)

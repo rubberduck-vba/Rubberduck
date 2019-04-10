@@ -95,7 +95,8 @@ namespace RubberduckTests.Mocks
                     new FormEventDeclarations(state),
                     new AliasDeclarations(state),
                 });
-            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+            var codePaneComponentSourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+            var codePaneSourceCodeHandler = new ComponentSourceCodeHandlerSourceCodeHandlerAdapter(codePaneComponentSourceCodeHandler, projectRepository);
             //We use the same handler because to achieve consistency between the return values.
             var attributesSourceCodeHandler = codePaneSourceCodeHandler;
             var moduleParser = new ModuleParser(

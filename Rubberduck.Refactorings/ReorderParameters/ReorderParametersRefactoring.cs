@@ -129,7 +129,10 @@ namespace Rubberduck.Refactorings.ReorderParameters
             var rewriteSession = RewritingManager.CheckOutCodePaneSession();
             AdjustReferences(model, model.TargetDeclaration.References, rewriteSession);
             AdjustSignatures(model, rewriteSession);
-            rewriteSession.TryRewrite();
+            if (!rewriteSession.TryRewrite())
+            {
+                throw new RewriteFailedException(rewriteSession);
+            }
         }
 
         private void AdjustReferences(ReorderParametersModel model, IEnumerable<IdentifierReference> references, IRewriteSession rewriteSession)

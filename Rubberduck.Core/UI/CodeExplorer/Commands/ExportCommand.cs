@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.UI.Command;
@@ -25,17 +24,18 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly IFileSystemBrowserFactory _dialogFactory;
 
         public ExportCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _dialogFactory = dialogFactory;
             MessageBox = messageBox;
             ProjectsProvider = projectsProvider;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         protected IMessageBox MessageBox { get; }
         protected IProjectsProvider ProjectsProvider { get; }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (!(parameter is CodeExplorerComponentViewModel node) ||
                 node.Declaration == null)
@@ -49,8 +49,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) || 
-                !(parameter is CodeExplorerComponentViewModel node) ||
+            if (!(parameter is CodeExplorerComponentViewModel node) ||
                 node.Declaration == null)
             {
                 return;

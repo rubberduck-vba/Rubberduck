@@ -127,9 +127,11 @@ namespace Rubberduck.API.VBA
                         //new RubberduckApiDeclarations(_state)
                     }
                 );
-            var codePaneSourceCodeHandler = new CodePaneSourceCodeHandler(projectRepository);
+            var codePaneComponentSourceCodeHandler = new CodeModuleComponentSourceCodeHandler();
+            var codePaneSourceCodeHandler = new ComponentSourceCodeHandlerSourceCodeHandlerAdapter(codePaneComponentSourceCodeHandler, projectRepository);
             var sourceFileHandler = _vbe.TempSourceFileHandler;
-            var attributesSourceCodeHandler = new SourceFileHandlerSourceCodeHandlerAdapter(sourceFileHandler, projectRepository);
+            var attributeComponentSourceCodeHandler = new SourceFileHandlerComponentSourceCodeHandlerAdapter(sourceFileHandler);
+            var attributesSourceCodeHandler = new ComponentSourceCodeHandlerSourceCodeHandlerAdapter(attributeComponentSourceCodeHandler, projectRepository);
             var moduleParser = new ModuleParser(
                 codePaneSourceCodeHandler,
                 attributesSourceCodeHandler,
