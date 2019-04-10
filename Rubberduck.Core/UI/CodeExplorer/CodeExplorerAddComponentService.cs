@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -48,13 +49,16 @@ namespace Rubberduck.UI.CodeExplorer
             var folderAnnotation = FolderAnnotation(node);
             var optionCompare = OptionCompareStatement();
 
-            var basePrefixInModule = optionCompare != null
-                ? $"{folderAnnotation}{Environment.NewLine}{optionCompare}"
-                : folderAnnotation;
-
-            var prefixInModule = additionalPrefixInModule != null
-                ? $"{basePrefixInModule}{Environment.NewLine}{additionalPrefixInModule}"
-                : basePrefixInModule;
+            var modulePrefix = new StringBuilder(folderAnnotation);
+            if (optionCompare != null)
+            {
+                modulePrefix.Append(Environment.NewLine).Append(optionCompare);
+            }
+            if (additionalPrefixInModule != null)
+            {
+                modulePrefix.Append(Environment.NewLine).Append(additionalPrefixInModule);
+            }
+            var prefixInModule = modulePrefix.ToString();
 
             _parseManager.OnSuspendParser(
                 this,
@@ -79,7 +83,7 @@ namespace Rubberduck.UI.CodeExplorer
             var declaration = node?.Declaration;
             if (declaration == null)
             {
-                return ActiveProjectName();
+                return ActiveProjectFolder();
             }
 
             var customFolder = declaration.CustomFolder;

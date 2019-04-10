@@ -30,9 +30,10 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return ((ICodeExplorerNode)parameter).Declaration != null &&
-                   (!(parameter is CodeExplorerReferenceViewModel reference) || !reference.IsDimmed) &&
-                   _state.Status == ParserState.Ready;
+            return _state.Status == ParserState.Ready
+                       && ((ICodeExplorerNode)parameter).Declaration != null 
+                       && !(parameter is CodeExplorerReferenceViewModel reference 
+                            && reference.IsDimmed);
         }
 
         protected override void OnExecute(object parameter)
