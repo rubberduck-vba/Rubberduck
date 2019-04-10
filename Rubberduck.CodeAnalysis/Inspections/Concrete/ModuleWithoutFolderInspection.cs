@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.Annotations;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -22,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             return modulesWithoutFolderAnnotation
-                .Where(declaration => !IsIgnoringInspectionResultFor(declaration, AnnotationName))
+                .Where(declaration => !declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(declaration =>
                 new DeclarationInspectionResult(this, string.Format(InspectionResults.ModuleWithoutFolderInspection, declaration.IdentifierName), declaration));
         }

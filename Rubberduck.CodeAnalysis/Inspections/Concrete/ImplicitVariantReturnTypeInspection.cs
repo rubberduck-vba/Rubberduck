@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -19,7 +20,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             var issues = from item in State.DeclarationFinder.UserDeclarations(DeclarationType.Function)
-                         where !item.IsTypeSpecified && !IsIgnoringInspectionResultFor(item, AnnotationName)
+                         where !item.IsTypeSpecified && !item.IsIgnoringInspectionResultFor(AnnotationName)
                          let issue = new {Declaration = item, QualifiedContext = new QualifiedContext<ParserRuleContext>(item.QualifiedName, item.Context)}
                          select new DeclarationInspectionResult(this,
                                                      string.Format(InspectionResults.ImplicitVariantReturnTypeInspection, item.IdentifierName),

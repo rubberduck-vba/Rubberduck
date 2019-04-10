@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Symbols;
 using System;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
 {
@@ -49,7 +50,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
         {
             _inspectionResults = new List<IInspectionResult>();
             var qualifiedSelectCaseStmts = Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line));
+                .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName));
 
             ParseTreeValueVisitor.OnValueResultCreated += ValueResults.OnNewValueResult;
 

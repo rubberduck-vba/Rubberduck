@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -20,7 +21,7 @@ namespace Rubberduck.Inspections.Concrete
             var parameters = State.DeclarationFinder.UserDeclarations(DeclarationType.Parameter)
                 .Cast<ParameterDeclaration>()
                 .Where(item => !item.IsByRef 
-                    && !IsIgnoringInspectionResultFor(item, AnnotationName)
+                    && !item.IsIgnoringInspectionResultFor(AnnotationName)
                     && item.References.Any(reference => reference.IsAssignment));
 
             return parameters

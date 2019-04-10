@@ -9,6 +9,7 @@ using Rubberduck.Parsing.VBA;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Resources.Experimentals;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -21,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts
-                .Where(result => !IsIgnoringInspectionResultFor(result.ModuleName, result.Context.Start.Line))
+                .Where(result => !result.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName))
                 .Select(result => new QualifiedContextInspectionResult(this,
                                                         InspectionResults.EmptyForLoopBlockInspection,
                                                         result));

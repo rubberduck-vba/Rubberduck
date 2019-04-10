@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -29,7 +30,7 @@ namespace Rubberduck.Inspections.Concrete
             foreach (var moduleReferences in State.DeclarationFinder.IdentifierReferences())
             {
                 var module = State.DeclarationFinder.ModuleDeclaration(moduleReferences.Key);
-                if (module == null || !module.IsUserDefined || IsIgnoringInspectionResultFor(module, AnnotationName))
+                if (module == null || !module.IsUserDefined || module.IsIgnoringInspectionResultFor(AnnotationName))
                 {
                     // module isn't user code (?), or this inspection is ignored at module-level
                     continue;
@@ -39,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
                     && VariableRequiresSetAssignmentEvaluator.RequiresSetAssignment(reference, State)));
             }
 
-            return result.Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName));
+            return result.Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName));
         }
     }
 }

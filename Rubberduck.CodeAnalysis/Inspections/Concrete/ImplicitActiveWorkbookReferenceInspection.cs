@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -40,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             var members = targetProperties.SelectMany(item =>
-                item.References.Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName)));
+                item.References.Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName)));
 
             return members.Select(issue => new IdentifierReferenceInspectionResult(this,
                                                                 string.Format(InspectionResults.ImplicitActiveWorkbookReferenceInspection, issue.Context.GetText()),
