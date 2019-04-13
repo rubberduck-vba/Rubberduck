@@ -11,23 +11,22 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Settings
 {
-    public class ReferenceConfigProvider : IConfigProvider<ReferenceSettings>, IDisposable
+    public class ReferenceConfigProvider : ConfigurationServiceBase<ReferenceSettings>, IDisposable
     {
         private static readonly string HostApplication = Path.GetFileName(Application.ExecutablePath).ToUpperInvariant();
-
-        private readonly IPersistanceService<ReferenceSettings> _persister;
+        
         private readonly IEnvironmentProvider _environment;
         private readonly IVBEEvents _events;
         private bool _listening;
 
         public ReferenceConfigProvider(IPersistanceService<ReferenceSettings> persister, IEnvironmentProvider environment, IVBEEvents events)
+            : base(persister)
         {
-            _persister = persister;
             _environment = environment;
             _events = events;
 
             
-            var settings = Create();
+            var settings = Load();
             _listening = settings.AddToRecentOnReferenceEvents;
             if (_listening && _events != null)
             {
@@ -35,13 +34,13 @@ namespace Rubberduck.Settings
             }
         }
 
-        public ReferenceSettings Create()
+        public override ReferenceSettings Load()
         {
-            var defaults = CreateDefaults();
-            return _persister.Load(defaults) ?? defaults;
+            var defaults = LoadDefaults();
+            return persister.Load(defaults) ?? defaults;
         }
 
-        public ReferenceSettings CreateDefaults()
+        public override ReferenceSettings LoadDefaults()
         {
             var defaults = new ReferenceSettings
             {
@@ -77,7 +76,7 @@ namespace Rubberduck.Settings
             return defaults;
         }
 
-        public void Save(ReferenceSettings settings)
+        public override void Save(ReferenceSettings settings)
         {
             if (_listening && _events != null && !settings.AddToRecentOnReferenceEvents)
             {
@@ -90,8 +89,8 @@ namespace Rubberduck.Settings
                 _events.ProjectReferenceAdded += ReferenceAddedHandler;
                 _listening = true;
             }
-
-            _persister.Save(settings);
+            OnSettingsChanged();
+            persister.Save(settings);
         }
 
         private void ReferenceAddedHandler(object sender, ReferenceEventArgs e)
@@ -101,9 +100,9 @@ namespace Rubberduck.Settings
                 return;
             }
 
-            var settings = Create();
+            var settings = Load();
             settings.TrackUsage(e.Reference, e.Type == ReferenceKind.Project ? HostApplication : null);
-            _persister.Save(settings);
+            Save(settings);
         }
 
         public void Dispose()

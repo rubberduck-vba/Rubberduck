@@ -13,19 +13,19 @@ namespace Rubberduck.UI.Settings
 {
     public class AddRemoveReferencesUserSettingsViewModel : SettingsViewModelBase<ReferenceSettings>, ISettingsViewModel<ReferenceSettings>
     {
-        private readonly IConfigProvider<ReferenceSettings> _provider;
+        private readonly IConfigurationService<ReferenceSettings> _provider;
         private readonly IFileSystemBrowserFactory _browserFactory;
         private readonly ReferenceSettings _clean;
 
         public AddRemoveReferencesUserSettingsViewModel(
-            IConfigProvider<ReferenceSettings> provider, 
+            IConfigurationService<ReferenceSettings> provider, 
             IFileSystemBrowserFactory browserFactory,
             IFilePersistanceService<ReferenceSettings> service)
             : base(service)
         {
             _provider = provider;
             _browserFactory = browserFactory;
-            _clean = _provider.Create();
+            _clean = _provider.Load();
 
             TransferSettingsToView(_clean);
 
@@ -118,7 +118,7 @@ namespace Rubberduck.UI.Settings
 
         public void SetToDefaults(Configuration config)
         {
-            var temp = _provider.CreateDefaults();
+            var temp = _provider.LoadDefaults();
             var user = new ReferenceSettings(_clean)
             {
                 RecentReferencesTracked = temp.RecentReferencesTracked,

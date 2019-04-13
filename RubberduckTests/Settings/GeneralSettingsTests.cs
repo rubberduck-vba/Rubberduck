@@ -178,8 +178,8 @@ namespace RubberduckTests.Settings
             persisterMock.CallBase = true;
             var configProvider = new GeneralConfigProvider(persisterMock.Object);
 
-            var settings = configProvider.Create();
-            var defaultSettings = configProvider.CreateDefaults();
+            var settings = configProvider.Load();
+            var defaultSettings = configProvider.LoadDefaults();
 
             Assert.AreEqual(defaultSettings, settings);
         }

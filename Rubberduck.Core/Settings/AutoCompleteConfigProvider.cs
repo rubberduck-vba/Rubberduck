@@ -2,30 +2,24 @@
 
 namespace Rubberduck.Settings
 {
-    public class AutoCompleteConfigProvider : IConfigProvider<AutoCompleteSettings>
+    public class AutoCompleteConfigProvider : ConfigurationServiceBase<AutoCompleteSettings>
     {
-        private readonly IPersistanceService<AutoCompleteSettings> _persister;
         private readonly AutoCompleteSettings _defaultSettings;
 
         public AutoCompleteConfigProvider(IPersistanceService<AutoCompleteSettings> persister)
+            : base(persister)
         {
-            _persister = persister;
-            _defaultSettings = new DefaultSettings<AutoCompleteSettings>().Default;
+            _defaultSettings = new DefaultSettings<AutoCompleteSettings, Properties.Settings>().Default;
         }
 
-        public AutoCompleteSettings Create()
+        public override AutoCompleteSettings Load()
         {
-            return _persister.Load(_defaultSettings) ?? _defaultSettings;
+            return persister.Load(_defaultSettings) ?? _defaultSettings;
         }
 
-        public AutoCompleteSettings CreateDefaults()
+        public override AutoCompleteSettings LoadDefaults()
         {
             return _defaultSettings;
-        }
-
-        public void Save(AutoCompleteSettings settings)
-        {
-            _persister.Save(settings);
         }
     }
 }

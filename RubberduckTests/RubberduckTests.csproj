@@ -55,6 +55,7 @@
     <ProjectReference Include="..\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.csproj" />
     <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
+    <ProjectReference Include="..\Rubberduck.JunkDrawer\Rubberduck.JunkDrawer.csproj" />
     <ProjectReference Include="..\Rubberduck.Main\Rubberduck.Main.csproj" />
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj" />
     <ProjectReference Include="..\Rubberduck.Refactorings\Rubberduck.Refactorings.csproj" />

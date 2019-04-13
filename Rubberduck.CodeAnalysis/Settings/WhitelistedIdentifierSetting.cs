@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace Rubberduck.Settings
+namespace Rubberduck.CodeAnalysis.Settings
 {
     [XmlType(AnonymousType = true)]
     public class WhitelistedIdentifierSetting

@@ -7,6 +7,7 @@ using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace RubberduckTests.Settings
 {
@@ -24,7 +25,7 @@ namespace RubberduckTests.Settings
 
             var configProvider = new CodeInspectionConfigProvider(null, inspectionProviderMock.Object);
 
-            var defaults = configProvider.CreateDefaults();
+            var defaults = configProvider.LoadDefaults();
 
             Assert.NotNull(defaults.GetSetting(inspectionMock.Object.GetType()));
         }
@@ -49,8 +50,8 @@ namespace RubberduckTests.Settings
 
             var configProvider = new CodeInspectionConfigProvider(persisterMock.Object, inspectionProviderMock.Object);
 
-            var settings = configProvider.Create().CodeInspections;
-            var defaultSettings = configProvider.CreateDefaults().CodeInspections;
+            var settings = configProvider.Load().CodeInspections;
+            var defaultSettings = configProvider.LoadDefaults().CodeInspections;
 
             Assert.Contains(userSetting, settings.ToArray());
             Assert.IsTrue(defaultSettings.All(s => settings.Contains(s)));
@@ -75,9 +76,9 @@ namespace RubberduckTests.Settings
             persisterMock.Setup(persister => persister.Load(It.IsAny<CodeInspectionSettings>(), null)).Returns(userSettings);
 
             var configProvider = new CodeInspectionConfigProvider(persisterMock.Object, inspectionProviderMock.Object);
-            var settings = configProvider.Create().CodeInspections;
+            var settings = configProvider.Load().CodeInspections;
 
-            Assert.AreEqual(configProvider.CreateDefaults().CodeInspections.Count, settings.Count);
+            Assert.AreEqual(configProvider.LoadDefaults().CodeInspections.Count, settings.Count);
         }
 
 
@@ -101,7 +102,7 @@ namespace RubberduckTests.Settings
 
             var configProvider = new CodeInspectionConfigProvider(persisterMock.Object, inspectionProviderMock.Object);
 
-            var settings = configProvider.Create().CodeInspections;
+            var settings = configProvider.Load().CodeInspections;
 
             Assert.IsNull(settings.FirstOrDefault(setting => setting.Name == "Bar"));
         }

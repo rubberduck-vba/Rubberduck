@@ -5,6 +5,7 @@ using Moq;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Settings;
 using Rubberduck.Parsing.Inspections;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace RubberduckTests
 {

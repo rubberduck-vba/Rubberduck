@@ -15,10 +15,10 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
-using Rubberduck.Settings;
-using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor;
 using Rubberduck.Resources;
+using Rubberduck.SettingsProvider;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace Rubberduck.Inspections
 {
@@ -27,29 +27,28 @@ namespace Rubberduck.Inspections
         public class Inspector : IInspector
         {
             private const int _maxDegreeOfInspectionParallelism = -1;
-
-            private readonly IGeneralConfigService _configService;
+            private readonly IConfigurationService<CodeInspectionSettings> _configService;
             private readonly List<IInspection> _inspections;
 
-            public Inspector(IGeneralConfigService configService, IInspectionProvider inspectionProvider)
+            public Inspector(IConfigurationService<CodeInspectionSettings> configService, IInspectionProvider inspectionProvider)
             {
                 _inspections = inspectionProvider.Inspections.ToList();
-
+                
                 _configService = configService;
                 configService.SettingsChanged += ConfigServiceSettingsChanged;
             }
 
             private void ConfigServiceSettingsChanged(object sender, EventArgs e)
             {
-                var config = _configService.LoadConfiguration();
+                var config = _configService.Load();
                 UpdateInspectionSeverity(config);
             }
 
-            private void UpdateInspectionSeverity(Configuration config)
+            private void UpdateInspectionSeverity(CodeInspectionSettings config)
             {
                 foreach (var inspection in _inspections)
                 {
-                    foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
+                    foreach (var setting in config.CodeInspections)
                     {
                         if (inspection.Name == setting.Name)
                         {
@@ -72,7 +71,7 @@ namespace Rubberduck.Inspections
                 var allIssues = new ConcurrentBag<IInspectionResult>();
                 token.ThrowIfCancellationRequested();
 
-                var config = _configService.LoadConfiguration();
+                var config = _configService.Load();
                 UpdateInspectionSeverity(config);
                 token.ThrowIfCancellationRequested();
 
@@ -93,7 +92,7 @@ namespace Rubberduck.Inspections
                 {
                     try
                     {
-                        WalkTrees(config.UserSettings.CodeInspectionSettings, state, parseTreeInspections.Where(i => i.TargetKindOfCode == parsePass), parsePass);
+                        WalkTrees(config, state, parseTreeInspections.Where(i => i.TargetKindOfCode == parsePass), parsePass);
                     }
                     catch (Exception e)
                     {

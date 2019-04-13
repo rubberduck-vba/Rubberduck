@@ -2,16 +2,15 @@
 
 namespace Rubberduck.UnitTesting.Settings
 {
-    public class UnitTestConfigProvider : IConfigProvider<UnitTestSettings>
+    public class UnitTestConfigProvider : ConfigurationServiceBase<UnitTestSettings>
     {
-        private readonly IPersistanceService<UnitTestSettings> _persister;
-        private readonly UnitTestSettings _defaultSettings;
+        private readonly UnitTestSettings defaultSettings;
 
         public UnitTestConfigProvider(IPersistanceService<UnitTestSettings> persister)
+            : base(persister)
         {
-            _persister = persister;
 
-            _defaultSettings = new UnitTestSettings
+            defaultSettings = new UnitTestSettings
             {
                 BindingMode = BindingMode.LateBinding,
                 AssertMode = AssertMode.StrictAssert,
@@ -21,19 +20,14 @@ namespace Rubberduck.UnitTesting.Settings
             };
         }
 
-        public UnitTestSettings Create()
+        public override UnitTestSettings Load()
         {
-            return _persister.Load(_defaultSettings) ?? _defaultSettings;
+            return persister.Load(defaultSettings) ?? defaultSettings;
         }
 
-        public UnitTestSettings CreateDefaults()
+        public override UnitTestSettings LoadDefaults()
         {
-            return _defaultSettings;
-        }
-
-        public void Save(UnitTestSettings settings)
-        {
-            _persister.Save(settings);
+            return defaultSettings;
         }
     }
 }

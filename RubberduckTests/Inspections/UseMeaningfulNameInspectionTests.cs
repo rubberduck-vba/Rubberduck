@@ -8,6 +8,7 @@ using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using Rubberduck.VBEditor.SafeComWrappers;
 using RubberduckTests.Mocks;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace RubberduckTests.Inspections
 {

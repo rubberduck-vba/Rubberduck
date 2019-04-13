@@ -259,11 +259,11 @@ namespace Rubberduck.Root
                 .ImplementedBy(typeof(XmlContractPersistanceService<>))
                 .LifestyleSingleton());
 
-            container.Register(Component.For<IConfigProvider<IndenterSettings>>()
+            container.Register(Component.For<IConfigurationService<IndenterSettings>>()
                 .ImplementedBy<IndenterConfigProvider>()
                 .LifestyleSingleton());
 
-            container.Register(Component.For<IConfigProvider<UnitTesting.Settings.UnitTestSettings>>()
+            container.Register(Component.For<IConfigurationService<UnitTesting.Settings.UnitTestSettings>>()
                 .ImplementedBy<UnitTestConfigProvider>()
                 .LifestyleSingleton());
         }
@@ -786,8 +786,8 @@ namespace Rubberduck.Root
                 .ImplementedBy<IndenterSettings>()
                 .LifestyleSingleton());
             container.Register(Component.For<Func<IIndenterSettings>>()
-                .UsingFactoryMethod(kernel => (Func<IIndenterSettings>)(() => kernel.Resolve<IGeneralConfigService>()
-                   .LoadConfiguration().UserSettings.IndenterSettings))
+                .UsingFactoryMethod(kernel => (Func<IIndenterSettings>)(() => kernel.Resolve<IConfigurationService<Configuration>>()
+                   .Load().UserSettings.IndenterSettings))
                 .LifestyleTransient()); //todo: clean up this registration
         }
 

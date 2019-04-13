@@ -2,30 +2,24 @@
 
 namespace Rubberduck.Settings
 {
-    public class WindowConfigProvider : IConfigProvider<WindowSettings>
+    public class WindowConfigProvider : ConfigurationServiceBase<WindowSettings>
     {
-        private readonly IPersistanceService<WindowSettings> _persister;
         private readonly WindowSettings _defaultSettings;
 
         public WindowConfigProvider(IPersistanceService<WindowSettings> persister)
+            : base(persister)
         {
-            _persister = persister;
-            _defaultSettings = new DefaultSettings<WindowSettings>().Default;
+            _defaultSettings = new DefaultSettings<WindowSettings, Properties.Settings>().Default;
         }
 
-        public WindowSettings Create()
+        public override WindowSettings Load()
         {
-            return _persister.Load(_defaultSettings) ?? _defaultSettings;
+            return persister.Load(_defaultSettings) ?? _defaultSettings;
         }
 
-        public WindowSettings CreateDefaults()
+        public override WindowSettings LoadDefaults()
         {
             return _defaultSettings;
-        }
-
-        public void Save(WindowSettings settings)
-        {
-            _persister.Save(settings);
         }
     }
 }

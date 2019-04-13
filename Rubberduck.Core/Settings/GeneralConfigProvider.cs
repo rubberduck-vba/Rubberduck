@@ -3,48 +3,48 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {
-    public class GeneralConfigProvider : IConfigProvider<GeneralSettings>
+    public class GeneralConfigProvider : ConfigurationServiceBase<GeneralSettings>
     {
-        private GeneralSettings _current;
-        private readonly IPersistanceService<GeneralSettings> _persister;
-        private readonly GeneralSettings _defaultSettings;
+        private GeneralSettings current;
+        private readonly GeneralSettings defaultSettings;
 
         public GeneralConfigProvider(IPersistanceService<GeneralSettings> persister)
+            : base(persister)
         {
-            _persister = persister;
-            _defaultSettings = new DefaultSettings<GeneralSettings>().Default;
+            defaultSettings = new DefaultSettings<GeneralSettings, Properties.Settings>().Default;
         }
 
-        public GeneralSettings Create()
+        public override GeneralSettings Load()
         {
-            var updated = _persister.Load(_defaultSettings) ?? _defaultSettings;
+            var updated = persister.Load(defaultSettings) ?? defaultSettings;
 
             CheckForEventsToRaise(updated);
-            _current = updated;
+            current = updated;
 
-            return _current;
+            return current;
         }
 
-        public GeneralSettings CreateDefaults()
+        public override GeneralSettings LoadDefaults()
         {
-            return _defaultSettings;
+            return defaultSettings;
         }
 
-        public void Save(GeneralSettings settings)
+        public override void Save(GeneralSettings settings)
         {
             CheckForEventsToRaise(settings);
-            _persister.Save(settings);
+            OnSettingsChanged();
+            persister.Save(settings);
         }
 
         private void CheckForEventsToRaise(GeneralSettings other)
         {
-            if (_current == null || !Equals(other.Language, _current.Language))
+            if (current == null || !Equals(other.Language, current.Language))
             {
                 OnLanguageChanged(EventArgs.Empty);
             }
-            if (_current == null || 
-                other.IsAutoSaveEnabled != _current.IsAutoSaveEnabled || 
-                other.AutoSavePeriod != _current.AutoSavePeriod)
+            if (current == null || 
+                other.IsAutoSaveEnabled != current.IsAutoSaveEnabled || 
+                other.AutoSavePeriod != current.AutoSavePeriod)
             {
                 OnAutoSaveSettingsChanged(EventArgs.Empty);
             }

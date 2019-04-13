@@ -3,31 +3,25 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Settings
 {
-    public class ToDoListConfigProvider : IConfigProvider<ToDoListSettings>
+    public class ToDoListConfigProvider : ConfigurationServiceBase<ToDoListSettings>
     {
-        private readonly IPersistanceService<ToDoListSettings> _persister;
-        private readonly IEnumerable<ToDoMarker> _defaultMarkers;
+        private readonly IEnumerable<ToDoMarker> defaultMarkers;
 
         public ToDoListConfigProvider(IPersistanceService<ToDoListSettings> persister)
+            : base(persister)
         {
-            _persister = persister;
-            _defaultMarkers = new DefaultSettings<ToDoMarker>().Defaults;
+            defaultMarkers = new DefaultSettings<ToDoMarker, Properties.Settings>().Defaults;
         }
 
-        public ToDoListSettings Create()
+        public override ToDoListSettings Load()
         {
-            var prototype = new ToDoListSettings(_defaultMarkers);
-            return _persister.Load(prototype) ?? prototype;
+            var prototype = new ToDoListSettings(defaultMarkers);
+            return persister.Load(prototype) ?? prototype;
         }
 
-        public ToDoListSettings CreateDefaults()
+        public override ToDoListSettings LoadDefaults()
         {
-            return new ToDoListSettings(_defaultMarkers);
-        }
-
-        public void Save(ToDoListSettings settings)
-        {
-            _persister.Save(settings);
+            return new ToDoListSettings(defaultMarkers);
         }
     }
 }

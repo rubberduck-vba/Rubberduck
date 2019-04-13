@@ -34,18 +34,18 @@ namespace RubberduckTests.CodeExplorer
         private readonly GeneralSettings _generalSettings = new GeneralSettings();
 
         private readonly Mock<IUiDispatcher> _uiDispatcher = new Mock<IUiDispatcher>();
-        private readonly Mock<IConfigProvider<GeneralSettings>> _generalSettingsProvider = new Mock<IConfigProvider<GeneralSettings>>();
-        private readonly Mock<IConfigProvider<WindowSettings>> _windowSettingsProvider = new Mock<IConfigProvider<WindowSettings>>();
-        private readonly Mock<IConfigProvider<UnitTestSettings>> _unitTestSettingsProvider = new Mock<IConfigProvider<UnitTestSettings>>();
+        private readonly Mock<IConfigurationService<GeneralSettings>> _generalSettingsProvider = new Mock<IConfigurationService<GeneralSettings>>();
+        private readonly Mock<IConfigurationService<WindowSettings>> _windowSettingsProvider = new Mock<IConfigurationService<WindowSettings>>();
+        private readonly Mock<IConfigurationService<UnitTestSettings>> _unitTestSettingsProvider = new Mock<IConfigurationService<UnitTestSettings>>();
         private readonly Mock<ConfigurationLoader> _configLoader = new Mock<ConfigurationLoader>(null, null, null, null, null, null, null, null);
         private readonly Mock<IVBEInteraction> _interaction = new Mock<IVBEInteraction>();
 
         public MockedCodeExplorer()
         {
-            _generalSettingsProvider.Setup(s => s.Create()).Returns(_generalSettings);
-            _windowSettingsProvider.Setup(s => s.Create()).Returns(WindowSettings);
-            _configLoader.Setup(c => c.LoadConfiguration()).Returns(GetDefaultUnitTestConfig());
-            _unitTestSettingsProvider.Setup(s => s.Create())
+            _generalSettingsProvider.Setup(s => s.Load()).Returns(_generalSettings);
+            _windowSettingsProvider.Setup(s => s.Load()).Returns(WindowSettings);
+            _configLoader.Setup(c => c.Load()).Returns(GetDefaultUnitTestConfig());
+            _unitTestSettingsProvider.Setup(s => s.Load())
                 .Returns(new UnitTestSettings(BindingMode.LateBinding,AssertMode.StrictAssert, true, true, false));
 
             _uiDispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());

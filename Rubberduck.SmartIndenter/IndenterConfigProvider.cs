@@ -1,8 +1,9 @@
-﻿using Rubberduck.SettingsProvider;
+﻿using System;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.SmartIndenter
 {
-    public class IndenterConfigProvider : IConfigProvider<IndenterSettings>
+    public class IndenterConfigProvider : IConfigurationService<IndenterSettings>
     {
         private readonly IPersistanceService<IndenterSettings> _persister;
 
@@ -11,13 +12,15 @@ namespace Rubberduck.SmartIndenter
             _persister = persister;
         }
 
-        public IndenterSettings Create()
+        public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
+
+        public IndenterSettings Load()
         {
             var prototype = new IndenterSettings(false);
             return _persister.Load(prototype) ?? prototype;
         }
 
-        public IndenterSettings CreateDefaults()
+        public IndenterSettings LoadDefaults()
         {
             return new IndenterSettings(false);
         }

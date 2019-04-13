@@ -191,7 +191,7 @@ namespace RubberduckTests.TodoExplorer
                 var cs = GetConfigService(new[] { "TODO", "NOTE", "BUG" });
                 var vm = new ToDoExplorerViewModel(state, cs, null, selectionService, GetMockedUiDispatcher())
                 {
-                    RefreshCommand = new ReparseCommand(vbe.Object, new Mock<IConfigProvider<GeneralSettings>>().Object, state, null, null, null)
+                    RefreshCommand = new ReparseCommand(vbe.Object, new Mock<IConfigurationService<GeneralSettings>>().Object, state, null, null, null)
                 };
 
                 parser.Parse(new CancellationTokenSource());
@@ -208,10 +208,10 @@ namespace RubberduckTests.TodoExplorer
             }
         }
 
-        private IGeneralConfigService GetConfigService(string[] markers)
+        private IConfigurationService<Configuration> GetConfigService(string[] markers)
         {
-            var configService = new Mock<IGeneralConfigService>();
-            configService.Setup(c => c.LoadConfiguration()).Returns(GetTodoConfig(markers));
+            var configService = new Mock<IConfigurationService<Configuration>>();
+            configService.Setup(c => c.Load()).Returns(GetTodoConfig(markers));
 
             return configService.Object;
         }

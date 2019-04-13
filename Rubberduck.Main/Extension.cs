@@ -157,7 +157,7 @@ namespace Rubberduck
                 };
                 var configProvider = new GeneralConfigProvider(configLoader);
 
-                _initialSettings = configProvider.Create();
+                _initialSettings = configProvider.Load();
                 if (_initialSettings != null)
                 {
                     try

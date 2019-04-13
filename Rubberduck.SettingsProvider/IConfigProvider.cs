@@ -1,10 +1,30 @@
-﻿namespace Rubberduck.SettingsProvider
+﻿using System;
+
+namespace Rubberduck.SettingsProvider
 {
-    public interface IConfigProvider<T>
+    public interface IConfigurationService<T>
     {
-        T Create();
-        T CreateDefaults();
+        T Load();
+        T LoadDefaults();
 
         void Save(T settings);
+
+        event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
+    }
+
+    public class ConfigurationChangedEventArgs : EventArgs
+    {
+        public bool LanguageChanged { get; }
+        public bool InspectionSettingsChanged { get; }
+        public bool RunInspectionsOnReparse { get; }
+        public bool AutoCompleteSettingsChanged { get; }
+
+        public ConfigurationChangedEventArgs(bool runInspections, bool languageChanged, bool inspectionSettingsChanged, bool autoCompleteSettingsChanged)
+        {
+            AutoCompleteSettingsChanged = autoCompleteSettingsChanged;
+            RunInspectionsOnReparse = runInspections;
+            LanguageChanged = languageChanged;
+            InspectionSettingsChanged = inspectionSettingsChanged;
+        }
     }
 }

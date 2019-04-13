@@ -11,6 +11,7 @@ using Rubberduck.Resources.Inspections;
 using System.Globalization;
 using System;
 using Rubberduck.Resources.Settings;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace Rubberduck.UI.Settings
 {

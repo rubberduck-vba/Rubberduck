@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
@@ -9,7 +10,6 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Inspections.Concrete
