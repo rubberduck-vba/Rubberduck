@@ -1,0 +1,16 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Rubberduck.UnitTesting.Properties" GeneratedClassName="UnitTestDefaults">
+  <Profiles />
+  <Settings>
+    <Setting Name="UnitTestSettings" Type="Rubberduck.UnitTesting.Settings.UnitTestSettings" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;UnitTestSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;BindingMode&gt;LateBinding&lt;/BindingMode&gt;
+  &lt;AssertMode&gt;StrictAssert&lt;/AssertMode&gt;
+  &lt;ModuleInit&gt;true&lt;/ModuleInit&gt;
+  &lt;MethodInit&gt;true&lt;/MethodInit&gt;
+  &lt;DefaultTestStubInNewModule&gt;false&lt;/DefaultTestStubInNewModule&gt;
+&lt;/UnitTestSettings&gt;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
