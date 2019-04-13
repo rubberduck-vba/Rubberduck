@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Rubberduck.Parsing.Common;
 using Rubberduck.VBEditor;
 
 namespace Rubberduck.Parsing.VBA.Parsing
@@ -31,8 +30,6 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
             token.ThrowIfCancellationRequested();
 
-            var parsingStageTimer = ParsingStageTimer.StartNew();
-
             var results = new ConcurrentBag<(QualifiedModuleName module, ModuleParseResults results)>();
 
             var options = new ParallelOptions
@@ -57,9 +54,6 @@ namespace Rubberduck.Parsing.VBA.Parsing
                 StateManager.SetStatusAndFireStateChanged(this, ParserState.Error, token);
                 throw;
             }
-
-            parsingStageTimer.Stop();
-            parsingStageTimer.Log("Parsed user modules in {0}ms.");
 
             return results;
         }

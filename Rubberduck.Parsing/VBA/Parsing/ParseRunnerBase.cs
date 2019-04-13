@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
+using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.VBA.Parsing.ParsingExceptions;
 using Rubberduck.VBEditor;
 
@@ -40,8 +39,13 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
         public void ParseModules(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token)
         {
+            var parsingStageTimer = ParsingStageTimer.StartNew();
+
             var parseResults = ModulePareResults(modules, token);
             SaveModuleParseResultsOnState(parseResults, token);
+
+            parsingStageTimer.Stop();
+            parsingStageTimer.Log("Parsed user modules in {0}ms.");
         }
 
         protected abstract IReadOnlyCollection<(QualifiedModuleName module, ModuleParseResults results)> ModulePareResults(IReadOnlyCollection<QualifiedModuleName> modules, CancellationToken token);
