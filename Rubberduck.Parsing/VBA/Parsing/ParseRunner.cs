@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -30,7 +29,8 @@ namespace Rubberduck.Parsing.VBA.Parsing
 
             token.ThrowIfCancellationRequested();
 
-            var results = new ConcurrentBag<(QualifiedModuleName module, ModuleParseResults results)>();
+            var results = new List<(QualifiedModuleName module, ModuleParseResults results)>();
+            var lockObject = new object();
 
             var options = new ParallelOptions
             {
@@ -42,7 +42,19 @@ namespace Rubberduck.Parsing.VBA.Parsing
             {
                 Parallel.ForEach(modules,
                     options,
-                    module => results.Add((module, ModuleParseResults(module, token)))
+                    () => new List<(QualifiedModuleName module, ModuleParseResults results)>(), 
+                    (module, state, localList) =>
+                    {
+                        localList.Add((module, ModuleParseResults(module, token)));
+                        return localList;
+                    },
+                    (finalResult) =>
+                    {
+                        lock (lockObject)
+                        {
+                            results.AddRange(finalResult);
+                        }
+                    }
                 );
             }
             catch (AggregateException exception)
