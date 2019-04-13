@@ -1,12 +1,9 @@
 ﻿using Antlr4.Runtime.Misc;
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
