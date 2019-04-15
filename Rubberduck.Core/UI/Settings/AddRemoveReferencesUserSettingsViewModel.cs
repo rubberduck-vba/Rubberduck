@@ -20,7 +20,7 @@ namespace Rubberduck.UI.Settings
         public AddRemoveReferencesUserSettingsViewModel(
             IConfigurationService<ReferenceSettings> provider, 
             IFileSystemBrowserFactory browserFactory,
-            IFilePersistanceService<ReferenceSettings> service)
+            IFilePersistenceService<ReferenceSettings> service)
             : base(service)
         {
             _provider = provider;

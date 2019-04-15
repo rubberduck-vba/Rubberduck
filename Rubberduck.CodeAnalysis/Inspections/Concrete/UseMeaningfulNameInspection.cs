@@ -17,9 +17,9 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class UseMeaningfulNameInspection : InspectionBase
     {
-        private readonly IPersistanceService<CodeInspectionSettings> _settings;
+        private readonly IPersistenceService<CodeInspectionSettings> _settings;
 
-        public UseMeaningfulNameInspection(RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
+        public UseMeaningfulNameInspection(RubberduckParserState state, IPersistenceService<CodeInspectionSettings> settings)
             : base(state)
         {
             _settings = settings;

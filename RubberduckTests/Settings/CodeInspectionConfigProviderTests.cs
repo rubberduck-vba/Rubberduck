@@ -45,7 +45,7 @@ namespace RubberduckTests.Settings
                 CodeInspections = new HashSet<CodeInspectionSetting>(new[] { userSetting })
             };
 
-            var persisterMock = new Mock<IPersistanceService<CodeInspectionSettings>>();
+            var persisterMock = new Mock<IPersistenceService<CodeInspectionSettings>>();
             persisterMock.Setup(persister => persister.Load(It.IsAny<CodeInspectionSettings>(), null)).Returns(userSettings);
 
             var configProvider = new CodeInspectionConfigProvider(persisterMock.Object, inspectionProviderMock.Object);
@@ -72,7 +72,7 @@ namespace RubberduckTests.Settings
                 CodeInspections = new HashSet<CodeInspectionSetting>(new[] { userSetting })
             };
 
-            var persisterMock = new Mock<IPersistanceService<CodeInspectionSettings>>();
+            var persisterMock = new Mock<IPersistenceService<CodeInspectionSettings>>();
             persisterMock.Setup(persister => persister.Load(It.IsAny<CodeInspectionSettings>(), null)).Returns(userSettings);
 
             var configProvider = new CodeInspectionConfigProvider(persisterMock.Object, inspectionProviderMock.Object);
@@ -97,7 +97,7 @@ namespace RubberduckTests.Settings
                 CodeInspections = new HashSet<CodeInspectionSetting>(new[] { userSetting })
             };
 
-            var persisterMock = new Mock<IPersistanceService<CodeInspectionSettings>>();
+            var persisterMock = new Mock<IPersistenceService<CodeInspectionSettings>>();
             persisterMock.Setup(persister => persister.Load(It.IsAny<CodeInspectionSettings>(), null)).Returns(userSettings);
 
             var configProvider = new CodeInspectionConfigProvider(persisterMock.Object, inspectionProviderMock.Object);

@@ -104,9 +104,9 @@ namespace Rubberduck.Inspections.Concrete
 
         #endregion
 
-        private readonly IPersistanceService<CodeInspectionSettings> _settings;
+        private readonly IPersistenceService<CodeInspectionSettings> _settings;
 
-        public HungarianNotationInspection(RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
+        public HungarianNotationInspection(RubberduckParserState state, IPersistenceService<CodeInspectionSettings> settings)
             : base(state)
         {
             _settings = settings;

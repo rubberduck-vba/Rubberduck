@@ -10,9 +10,9 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class AddIdentifierToWhiteListQuickFix : QuickFixBase
     {
-        private readonly IPersistanceService<CodeInspectionSettings> _settings;
+        private readonly IPersistenceService<CodeInspectionSettings> _settings;
 
-        public AddIdentifierToWhiteListQuickFix(IPersistanceService<CodeInspectionSettings> settings)
+        public AddIdentifierToWhiteListQuickFix(IPersistenceService<CodeInspectionSettings> settings)
             : base(typeof(HungarianNotationInspection), typeof(UseMeaningfulNameInspection))
         {
             _settings = settings;

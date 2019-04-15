@@ -5,9 +5,9 @@ namespace Rubberduck.SmartIndenter
 {
     public class IndenterConfigProvider : IConfigurationService<IndenterSettings>
     {
-        private readonly IPersistanceService<IndenterSettings> _persister;
+        private readonly IPersistenceService<IndenterSettings> _persister;
 
-        public IndenterConfigProvider(IPersistanceService<IndenterSettings> persister)
+        public IndenterConfigProvider(IPersistenceService<IndenterSettings> persister)
         {
             _persister = persister;
         }

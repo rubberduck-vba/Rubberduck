@@ -148,8 +148,8 @@ namespace Rubberduck
                     return;
                 }
 
-                var pathProvider = PersistancePathProvider.Instance;
-                var configLoader = new XmlPersistanceService<GeneralSettings>(pathProvider)
+                var pathProvider = PersistencePathProvider.Instance;
+                var configLoader = new XmlPersistenceService<GeneralSettings>(pathProvider)
                 {
                     FilePath =
                         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
