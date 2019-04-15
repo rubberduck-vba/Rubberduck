@@ -5,7 +5,7 @@ using System.Xml;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class XmlContractPersistanceService<T> : XmlPersistanceServiceBase<T> where T : class, IEquatable<T>, new()
+    internal class XmlContractPersistenceService<T> : XmlPersistenceServiceBase<T> where T : class, IEquatable<T>, new()
     {
         private const string DefaultConfigFile = "rubberduck.references";
 
@@ -15,7 +15,7 @@ namespace Rubberduck.SettingsProvider
             RootNamespace = XmlDictionaryString.Empty            
         };
 
-        public XmlContractPersistanceService(IPersistancePathProvider pathProvider) : base(pathProvider) { }
+        public XmlContractPersistenceService(IPersistencePathProvider pathProvider) : base(pathProvider) { }
 
         private string _filePath;
         public override string FilePath

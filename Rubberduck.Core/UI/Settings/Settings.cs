@@ -49,7 +49,7 @@ namespace Rubberduck.UI.Settings
 
             try
             {
-                var config = _configService.Load();
+                var config = _configService.Read();
                 _cultureInfo = CultureInfo.GetCultureInfo(config.UserSettings.GeneralSettings.Language.Code);
                 
                 Dispatcher.CurrentDispatcher.Thread.CurrentUICulture = _cultureInfo;

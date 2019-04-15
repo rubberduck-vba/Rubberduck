@@ -10,38 +10,30 @@ namespace Rubberduck.CodeAnalysis.Settings
 {
     public class CodeInspectionConfigProvider : ConfigurationServiceBase<CodeInspectionSettings>
     {
-        private readonly CodeInspectionSettings defaultSettings;
         private readonly HashSet<string> foundInspectionNames;
 
-        public CodeInspectionConfigProvider(IPersistanceService<CodeInspectionSettings> persister, IInspectionProvider inspectionProvider)
-            : base(persister)
+        public CodeInspectionConfigProvider(IPersistenceService<CodeInspectionSettings> persister, IInspectionProvider inspectionProvider)
+            : base(persister, new DefaultSettings<CodeInspectionSettings, Properties.CodeInspectionDefaults>())
         {
             foundInspectionNames = inspectionProvider.Inspections.Select(inspection => inspection.Name).ToHashSet();
-            defaultSettings = new DefaultSettings<CodeInspectionSettings, Properties.CodeInspectionDefaults>().Default;
             // Ignore settings for unknown inspections, for example when using the Experimental attribute
-            defaultSettings.CodeInspections = defaultSettings.CodeInspections.Where(setting => foundInspectionNames.Contains(setting.Name)).ToHashSet();
+            Defaults.Default.CodeInspections = Defaults.Default.CodeInspections.Where(setting => foundInspectionNames.Contains(setting.Name)).ToHashSet();
 
-            var defaultNames = defaultSettings.CodeInspections.Select(x => x.Name);
+            var defaultNames = Defaults.Default.CodeInspections.Select(x => x.Name);
             var nonDefaultInspections = inspectionProvider.Inspections.Where(inspection => !defaultNames.Contains(inspection.Name));
 
-            defaultSettings.CodeInspections.UnionWith(nonDefaultInspections.Select(inspection => new CodeInspectionSetting(inspection)));
+            Defaults.Default.CodeInspections.UnionWith(nonDefaultInspections.Select(inspection => new CodeInspectionSetting(inspection)));
         }
 
-        public override CodeInspectionSettings Load()
+        public override CodeInspectionSettings Read()
         {
-            var loaded = persister.Load(defaultSettings);
-
-            if (loaded == null)
-            {
-                return defaultSettings;
-            }
-
+            var loaded = LoadCacheValue();
             // Loaded settings don't contain defaults, so we need to combine user settings with defaults.
             var settings = new HashSet<CodeInspectionSetting>();
 
             foreach (var loadedSetting in loaded.CodeInspections.Where(inspection => foundInspectionNames.Contains(inspection.Name)))
             {
-                var matchingDefaultSetting = defaultSettings.CodeInspections.FirstOrDefault(inspection => inspection.Equals(loadedSetting));
+                var matchingDefaultSetting = Defaults.Default.CodeInspections.FirstOrDefault(inspection => inspection.Equals(loadedSetting));
                 if (matchingDefaultSetting != null)
                 {
                     loadedSetting.InspectionType = matchingDefaultSetting.InspectionType;
@@ -49,17 +41,10 @@ namespace Rubberduck.CodeAnalysis.Settings
 
                 settings.Add(loadedSetting);
             }
-
-            settings.UnionWith(defaultSettings.CodeInspections.Where(inspection => !settings.Contains(inspection)));
+            settings.UnionWith(Defaults.Default.CodeInspections.Where(inspection => !settings.Contains(inspection)));
 
             loaded.CodeInspections = settings;
-
             return loaded;
-        }
-
-        public override CodeInspectionSettings LoadDefaults()
-        {
-            return defaultSettings;
         }
     }
 }

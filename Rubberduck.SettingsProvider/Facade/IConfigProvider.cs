@@ -4,8 +4,8 @@ namespace Rubberduck.SettingsProvider
 {
     public interface IConfigurationService<T>
     {
-        T Load();
-        T LoadDefaults();
+        T Read();
+        T ReadDefaults();
 
         void Save(T settings);
 

@@ -121,7 +121,7 @@ namespace Rubberduck.UI.Inspections
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             // todo: remove I/O work in constructor
-            _runInspectionsOnReparse = _configService.Load().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
+            _runInspectionsOnReparse = _configService.Read().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
             if (CollectionViewSource.GetDefaultView(_results) is ListCollectionView results)
             {
@@ -540,7 +540,7 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var config = _configService.Load();
+            var config = _configService.Read();
 
             var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == _selectedInspection.Name);
             setting.Severity = CodeInspectionSeverity.DoNotShow;

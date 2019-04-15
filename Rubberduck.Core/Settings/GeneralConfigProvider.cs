@@ -5,46 +5,37 @@ namespace Rubberduck.Settings
 {
     public class GeneralConfigProvider : ConfigurationServiceBase<GeneralSettings>
     {
-        private GeneralSettings current;
-        private readonly GeneralSettings defaultSettings;
 
-        public GeneralConfigProvider(IPersistanceService<GeneralSettings> persister)
-            : base(persister)
+        public GeneralConfigProvider(IPersistenceService<GeneralSettings> persister)
+            : base(persister, new DefaultSettings<GeneralSettings, Properties.Settings>())
         {
-            defaultSettings = new DefaultSettings<GeneralSettings, Properties.Settings>().Default;
         }
 
-        public override GeneralSettings Load()
+        public override GeneralSettings Read()
         {
-            var updated = persister.Load(defaultSettings) ?? defaultSettings;
-
-            CheckForEventsToRaise(updated);
-            current = updated;
-
-            return current;
-        }
-
-        public override GeneralSettings LoadDefaults()
-        {
-            return defaultSettings;
+            var before = CurrentValue;
+            var updated = LoadCacheValue();
+            CheckForEventsToRaise(before, updated);
+            return updated;
         }
 
         public override void Save(GeneralSettings settings)
         {
-            CheckForEventsToRaise(settings);
+            var before = CurrentValue;
+            PersistValue(settings);
+            CheckForEventsToRaise(before, settings);
             OnSettingsChanged();
-            persister.Save(settings);
         }
 
-        private void CheckForEventsToRaise(GeneralSettings other)
+        private void CheckForEventsToRaise(GeneralSettings before, GeneralSettings after)
         {
-            if (current == null || !Equals(other.Language, current.Language))
+            if (before == null || !Equals(after.Language, before.Language))
             {
                 OnLanguageChanged(EventArgs.Empty);
             }
-            if (current == null || 
-                other.IsAutoSaveEnabled != current.IsAutoSaveEnabled || 
-                other.AutoSavePeriod != current.AutoSavePeriod)
+            if (before == null ||
+                after.IsAutoSaveEnabled != before.IsAutoSaveEnabled ||
+                after.AutoSavePeriod != before.AutoSavePeriod)
             {
                 OnAutoSaveSettingsChanged(EventArgs.Empty);
             }

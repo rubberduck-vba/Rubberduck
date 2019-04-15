@@ -30,4 +30,17 @@
       <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\UnitTestDefaults.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>UnitTestDefaults.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\UnitTestDefaults.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>UnitTestDefaults.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
 </Project>

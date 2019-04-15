@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections
 
             private void ConfigServiceSettingsChanged(object sender, EventArgs e)
             {
-                var config = _configService.Load();
+                var config = _configService.Read();
                 UpdateInspectionSeverity(config);
             }
 
@@ -71,7 +71,7 @@ namespace Rubberduck.Inspections
                 var allIssues = new ConcurrentBag<IInspectionResult>();
                 token.ThrowIfCancellationRequested();
 
-                var config = _configService.Load();
+                var config = _configService.Read();
                 UpdateInspectionSeverity(config);
                 token.ThrowIfCancellationRequested();
 

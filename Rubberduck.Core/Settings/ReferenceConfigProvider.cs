@@ -19,14 +19,14 @@ namespace Rubberduck.Settings
         private readonly IVBEEvents _events;
         private bool _listening;
 
-        public ReferenceConfigProvider(IPersistanceService<ReferenceSettings> persister, IEnvironmentProvider environment, IVBEEvents events)
-            : base(persister)
+        public ReferenceConfigProvider(IPersistenceService<ReferenceSettings> persister, IEnvironmentProvider environment, IVBEEvents events)
+            : base(persister, new DefaultSettings<ReferenceSettings, Properties.Settings>())
         {
             _environment = environment;
             _events = events;
 
             
-            var settings = Load();
+            var settings = Read();
             _listening = settings.AddToRecentOnReferenceEvents;
             if (_listening && _events != null)
             {
@@ -34,13 +34,7 @@ namespace Rubberduck.Settings
             }
         }
 
-        public override ReferenceSettings Load()
-        {
-            var defaults = LoadDefaults();
-            return persister.Load(defaults) ?? defaults;
-        }
-
-        public override ReferenceSettings LoadDefaults()
+        public override ReferenceSettings ReadDefaults()
         {
             var defaults = new ReferenceSettings
             {
@@ -90,7 +84,7 @@ namespace Rubberduck.Settings
                 _listening = true;
             }
             OnSettingsChanged();
-            persister.Save(settings);
+            PersistValue(settings);
         }
 
         private void ReferenceAddedHandler(object sender, ReferenceEventArgs e)
@@ -100,7 +94,7 @@ namespace Rubberduck.Settings
                 return;
             }
 
-            var settings = Load();
+            var settings = Read();
             settings.TrackUsage(e.Reference, e.Type == ReferenceKind.Project ? HostApplication : null);
             Save(settings);
         }

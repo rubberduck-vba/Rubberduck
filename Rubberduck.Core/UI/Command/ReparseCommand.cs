@@ -37,7 +37,7 @@ namespace Rubberduck.UI.Command
             _vbeSettings = vbeSettings;
             _typeLibApi = typeLibApi;
             _state = state;
-            _settings = settingsProvider.Load();
+            _settings = settingsProvider.Read();
             _messageBox = messageBox;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);

@@ -42,10 +42,10 @@ namespace RubberduckTests.CodeExplorer
 
         public MockedCodeExplorer()
         {
-            _generalSettingsProvider.Setup(s => s.Load()).Returns(_generalSettings);
-            _windowSettingsProvider.Setup(s => s.Load()).Returns(WindowSettings);
-            _configLoader.Setup(c => c.Load()).Returns(GetDefaultUnitTestConfig());
-            _unitTestSettingsProvider.Setup(s => s.Load())
+            _generalSettingsProvider.Setup(s => s.Read()).Returns(_generalSettings);
+            _windowSettingsProvider.Setup(s => s.Read()).Returns(WindowSettings);
+            _configLoader.Setup(c => c.Read()).Returns(GetDefaultUnitTestConfig());
+            _unitTestSettingsProvider.Setup(s => s.Read())
                 .Returns(new UnitTestSettings(BindingMode.LateBinding,AssertMode.StrictAssert, true, true, false));
 
             _uiDispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());

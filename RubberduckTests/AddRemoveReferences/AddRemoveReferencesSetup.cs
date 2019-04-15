@@ -103,8 +103,8 @@ namespace RubberduckTests.AddRemoveReferences
         {
             var output = new Mock<IConfigurationService<ReferenceSettings>>();
 
-            output.Setup(m => m.Load()).Returns(() => settings ?? GetDefaultReferenceSettings());
-            output.Setup(m => m.LoadDefaults()).Returns(GetDefaultReferenceSettings);
+            output.Setup(m => m.Read()).Returns(() => settings ?? GetDefaultReferenceSettings());
+            output.Setup(m => m.ReadDefaults()).Returns(GetDefaultReferenceSettings);
             output.Setup(m => m.Save(It.IsAny<ReferenceSettings>()));
 
             return output;

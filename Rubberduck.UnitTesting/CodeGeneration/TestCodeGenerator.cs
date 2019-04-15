@@ -62,7 +62,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
                 return;
             }
 
-            var settings = _settings.Load();
+            var settings = _settings.Read();
 
             AddReferenceIfNeeded(project, settings);
 
@@ -133,7 +133,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
 
         private string GetNewTestModuleCode(IVBComponent component)
         {
-            var settings = _settings.Load();
+            var settings = _settings.Read();
             var baseModule = (GetBaseTestModule(settings) + Environment.NewLine);
 
             if (settings.DefaultTestStubInNewModule)
@@ -162,7 +162,7 @@ namespace Rubberduck.UnitTesting.CodeGeneration
         {
             if (settings is null)
             {
-                settings = _settings.Load();
+                settings = _settings.Read();
             }
 
             string declaration;

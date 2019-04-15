@@ -101,7 +101,7 @@ namespace Rubberduck.UI.Settings
                 return;
             }
 
-            var defaultConfig = _configService.LoadDefaults();
+            var defaultConfig = _configService.ReadDefaults();
             foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
             {
                 vm.SetToDefaults(defaultConfig);

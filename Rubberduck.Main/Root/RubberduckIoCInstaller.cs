@@ -787,7 +787,7 @@ namespace Rubberduck.Root
                 .LifestyleSingleton());
             container.Register(Component.For<Func<IIndenterSettings>>()
                 .UsingFactoryMethod(kernel => (Func<IIndenterSettings>)(() => kernel.Resolve<IConfigurationService<Configuration>>()
-                   .Load().UserSettings.IndenterSettings))
+                   .Read().UserSettings.IndenterSettings))
                 .LifestyleTransient()); //todo: clean up this registration
         }
 

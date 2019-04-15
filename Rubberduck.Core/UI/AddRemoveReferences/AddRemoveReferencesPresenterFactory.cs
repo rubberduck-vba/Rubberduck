@@ -116,7 +116,7 @@ namespace Rubberduck.UI.AddRemoveReferences
                     models.Add(reference.Key, new ReferenceModel(reference.Value));
                 }
 
-                var settings = _settings.Load();
+                var settings = _settings.Read();
                 model = new AddRemoveReferencesModel(_state, project, models.Values, settings);
                 if (AddRemoveReferencesViewModel.HostHasProjects)
                 {

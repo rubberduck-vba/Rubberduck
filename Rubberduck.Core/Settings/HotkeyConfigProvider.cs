@@ -7,18 +7,18 @@ namespace Rubberduck.Settings
     {
         private readonly IEnumerable<HotkeySetting> _defaultHotkeys;
 
-        public HotkeyConfigProvider(IPersistanceService<HotkeySettings> persister)
-            : base(persister)
+        public HotkeyConfigProvider(IPersistenceService<HotkeySettings> persister)
+            : base(persister, new DefaultSettings<HotkeySettings, Properties.Settings>())
         {
             _defaultHotkeys = new DefaultSettings<HotkeySetting, Properties.Settings>().Defaults;
         }
 
-        public override HotkeySettings Load()
+        public override HotkeySettings Read()
         {
             var prototype = new HotkeySettings(_defaultHotkeys);
 
             // Loaded settings don't contain defaults, so we need to use the `Settings` property to combine user settings with defaults.
-            var loaded = persister.Load(prototype);
+            var loaded = LoadCacheValue();
             if (loaded != null)
             {
                 prototype.Settings = loaded.Settings;
@@ -27,7 +27,7 @@ namespace Rubberduck.Settings
             return prototype;
         }
 
-        public override HotkeySettings LoadDefaults()
+        public override HotkeySettings ReadDefaults()
         {
             return new HotkeySettings(_defaultHotkeys);
         }

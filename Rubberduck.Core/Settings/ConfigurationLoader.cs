@@ -42,52 +42,52 @@ namespace Rubberduck.Settings
         /// Loads the configuration from Rubberduck.config xml file.
         /// </summary>
         // marked virtual for Mocking
-        public virtual Configuration Load()
+        public virtual Configuration Read()
         {
             var config = new Configuration
             {
                 UserSettings = new UserSettings
                 (
-                    _generalProvider.Load(),
-                    _hotkeyProvider.Load(),
-                    _autoCompleteProvider.Load(),
-                    _todoProvider.Load(),
-                    _inspectionProvider.Load(),
-                    _unitTestProvider.Load(),
-                    _indenterProvider.Load(),
-                    _windowProvider.Load()
+                    _generalProvider.Read(),
+                    _hotkeyProvider.Read(),
+                    _autoCompleteProvider.Read(),
+                    _todoProvider.Read(),
+                    _inspectionProvider.Read(),
+                    _unitTestProvider.Read(),
+                    _indenterProvider.Read(),
+                    _windowProvider.Read()
                 )
             };            
             return config;
         }
 
-        public Configuration LoadDefaults()
+        public Configuration ReadDefaults()
         {
             return new Configuration
             {
                 UserSettings = new UserSettings
                 (
-                    _generalProvider.LoadDefaults(),
-                    _hotkeyProvider.LoadDefaults(),
-                    _autoCompleteProvider.LoadDefaults(),
-                    _todoProvider.LoadDefaults(),
-                    _inspectionProvider.LoadDefaults(),
-                    _unitTestProvider.LoadDefaults(),
-                    _indenterProvider.LoadDefaults(),
-                    _windowProvider.LoadDefaults()
+                    _generalProvider.ReadDefaults(),
+                    _hotkeyProvider.ReadDefaults(),
+                    _autoCompleteProvider.ReadDefaults(),
+                    _todoProvider.ReadDefaults(),
+                    _inspectionProvider.ReadDefaults(),
+                    _unitTestProvider.ReadDefaults(),
+                    _indenterProvider.ReadDefaults(),
+                    _windowProvider.ReadDefaults()
                 )
             };
         }
         
         public void Save(Configuration toSerialize)
         {
-            var langChanged = _generalProvider.Load().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
-            var oldInspectionSettings = _inspectionProvider.Load().CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
+            var langChanged = _generalProvider.Read().Language.Code != toSerialize.UserSettings.GeneralSettings.Language.Code;
+            var oldInspectionSettings = _inspectionProvider.Read().CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
             var newInspectionSettings = toSerialize.UserSettings.CodeInspectionSettings.CodeInspections.Select(s => Tuple.Create(s.Name, s.Severity));
             var inspectionsChanged = !oldInspectionSettings.SequenceEqual(newInspectionSettings);
             var inspectOnReparse = toSerialize.UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
-            var oldAutoCompleteSettings = _autoCompleteProvider.Load();
+            var oldAutoCompleteSettings = _autoCompleteProvider.Read();
             var newAutoCompleteSettings = toSerialize.UserSettings.AutoCompleteSettings;
             var autoCompletesChanged = oldAutoCompleteSettings.Equals(newAutoCompleteSettings);
 

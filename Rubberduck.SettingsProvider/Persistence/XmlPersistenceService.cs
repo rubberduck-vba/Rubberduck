@@ -7,10 +7,10 @@ using System.Xml.Serialization;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class XmlPersistanceService<T> : XmlPersistanceServiceBase<T> 
+    internal class XmlPersistenceService<T> : XmlPersistenceServiceBase<T> 
         where T : class, IEquatable<T>, new()
     {
-        public XmlPersistanceService(IPersistancePathProvider pathProvider) : base(pathProvider) { }
+        public XmlPersistenceService(IPersistencePathProvider pathProvider) : base(pathProvider) { }
 
         public override T Load(T toDeserialize, string nonDefaultFilePath = null)
         {

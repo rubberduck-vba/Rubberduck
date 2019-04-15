@@ -7,19 +7,13 @@ namespace Rubberduck.Settings
     {
         private readonly IEnumerable<ToDoMarker> defaultMarkers;
 
-        public ToDoListConfigProvider(IPersistanceService<ToDoListSettings> persister)
-            : base(persister)
+        public ToDoListConfigProvider(IPersistenceService<ToDoListSettings> persister)
+            : base(persister, new DefaultSettings<ToDoListSettings, Properties.Settings>())
         {
             defaultMarkers = new DefaultSettings<ToDoMarker, Properties.Settings>().Defaults;
         }
-
-        public override ToDoListSettings Load()
-        {
-            var prototype = new ToDoListSettings(defaultMarkers);
-            return persister.Load(prototype) ?? prototype;
-        }
-
-        public override ToDoListSettings LoadDefaults()
+        
+        public override ToDoListSettings ReadDefaults()
         {
             return new ToDoListSettings(defaultMarkers);
         }

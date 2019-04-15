@@ -14,13 +14,13 @@ namespace Rubberduck.SmartIndenter
 
         public event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
 
-        public IndenterSettings Load()
+        public IndenterSettings Read()
         {
             var prototype = new IndenterSettings(false);
             return _persister.Load(prototype) ?? prototype;
         }
 
-        public IndenterSettings LoadDefaults()
+        public IndenterSettings ReadDefaults()
         {
             return new IndenterSettings(false);
         }

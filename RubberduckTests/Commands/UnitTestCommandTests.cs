@@ -462,7 +462,7 @@ End Enum
             var settings = new Mock<IConfigurationService<UnitTestSettings>>();
             var arguments = new Mock<ICompilationArgumentsProvider>();
 
-            settings.Setup(s => s.Load()).Returns(new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false));
+            settings.Setup(s => s.Read()).Returns(new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false));
             arguments.Setup(m => m.UserDefinedCompilationArguments(It.IsAny<string>()))
                 .Returns(new Dictionary<string, short>());
 

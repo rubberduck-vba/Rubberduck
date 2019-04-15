@@ -9,7 +9,7 @@ using System.Xml.Serialization;
 // ReSharper disable StaticMemberInGenericType
 namespace Rubberduck.SettingsProvider
 {
-    public abstract class XmlPersistanceServiceBase<T> : IFilePersistanceService<T> where T : class, IEquatable<T>, new()
+    internal abstract class XmlPersistenceServiceBase<T> : IFilePersistenceService<T> where T : class, IEquatable<T>, new()
     {
         private const string DefaultConfigFile = "rubberduck.config";
 
@@ -28,7 +28,7 @@ namespace Rubberduck.SettingsProvider
 
         protected T Cached { get; set; }
 
-        protected XmlPersistanceServiceBase(IPersistancePathProvider pathProvider)
+        protected XmlPersistenceServiceBase(IPersistencePathProvider pathProvider)
         {
             RootPath = pathProvider.DataRootPath;
         }

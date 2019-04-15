@@ -43,7 +43,7 @@ namespace Rubberduck.Common
             Detach();
             _hooks.Clear();
 
-            var config = _config.Load();
+            var config = _config.Read();
             var settings = config.UserSettings.HotkeySettings;
 
             foreach (var hotkeySetting in settings.Settings.Where(hotkeySetting => hotkeySetting.IsEnabled))

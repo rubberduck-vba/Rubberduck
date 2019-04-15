@@ -33,7 +33,7 @@ namespace Rubberduck.UI.Settings
             SettingsViews activeView = SettingsViews.GeneralSettings) 
             : this()
         {
-            var config = configService.Load();
+            var config = configService.Read();
 
             ViewModel = new SettingsControlViewModel(messageBox, configService,
                 config,

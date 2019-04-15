@@ -225,7 +225,7 @@ namespace Rubberduck.UI.ToDoItems
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
-            var markers = _configService.Load().UserSettings.ToDoListSettings.ToDoMarkers;
+            var markers = _configService.Read().UserSettings.ToDoListSettings.ToDoMarkers;
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
                                          && Regex.IsMatch(comment.CommentText, @"\b" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
                            .Select(marker => new ToDoItem(marker.Text, comment));

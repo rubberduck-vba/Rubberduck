@@ -36,7 +36,7 @@ namespace Rubberduck.UI
             UserControl = view as UserControl;
             if (settingsProvider != null)
             {
-                _settings = settingsProvider.Load();
+                _settings = settingsProvider.Read();
             }
             _window = CreateToolWindow(view);
         }

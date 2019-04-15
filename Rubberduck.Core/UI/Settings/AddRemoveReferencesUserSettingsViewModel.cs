@@ -25,7 +25,7 @@ namespace Rubberduck.UI.Settings
         {
             _provider = provider;
             _browserFactory = browserFactory;
-            _clean = _provider.Load();
+            _clean = _provider.Read();
 
             TransferSettingsToView(_clean);
 
@@ -118,7 +118,7 @@ namespace Rubberduck.UI.Settings
 
         public void SetToDefaults(Configuration config)
         {
-            var temp = _provider.LoadDefaults();
+            var temp = _provider.ReadDefaults();
             var user = new ReferenceSettings(_clean)
             {
                 RecentReferencesTracked = temp.RecentReferencesTracked,

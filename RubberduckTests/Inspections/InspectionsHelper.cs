@@ -22,7 +22,7 @@ namespace RubberduckTests.Inspections
         {
             var settings = new Mock<IConfigurationService<CodeInspectionSettings>>();
             var config = GetTestConfig(inspection);
-            settings.Setup(x => x.Load()).Returns(config);
+            settings.Setup(x => x.Read()).Returns(config);
 
             return settings.Object;
         }

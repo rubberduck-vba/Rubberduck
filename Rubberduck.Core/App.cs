@@ -54,7 +54,7 @@ namespace Rubberduck
 
         private void _configService_SettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
-            _config = _configService.Load();
+            _config = _configService.Read();
             _hooks.HookHotkeys();
             UpdateLoggingLevel();
 
@@ -160,7 +160,7 @@ namespace Rubberduck
 
         private void ApplyCultureConfig()
         {
-            _config = _configService.Load();
+            _config = _configService.Read();
 
             var currentCulture = Resources.RubberduckUI.Culture;
             try

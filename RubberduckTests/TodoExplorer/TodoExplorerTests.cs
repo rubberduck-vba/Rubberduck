@@ -211,7 +211,7 @@ namespace RubberduckTests.TodoExplorer
         private IConfigurationService<Configuration> GetConfigService(string[] markers)
         {
             var configService = new Mock<IConfigurationService<Configuration>>();
-            configService.Setup(c => c.Load()).Returns(GetTodoConfig(markers));
+            configService.Setup(c => c.Read()).Returns(GetTodoConfig(markers));
 
             return configService.Object;
         }

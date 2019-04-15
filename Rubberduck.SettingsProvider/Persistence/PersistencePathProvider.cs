@@ -3,17 +3,17 @@ using System.IO;
 
 namespace Rubberduck.SettingsProvider
 {
-    public class PersistancePathProvider : IPersistancePathProvider
+    internal class PersistencePathProvider : IPersistencePathProvider
     {
-        private static readonly Lazy<IPersistancePathProvider> LazyInstance;
+        private static readonly Lazy<IPersistencePathProvider> LazyInstance;
 
-        static PersistancePathProvider()
+        static PersistencePathProvider()
         {
-            LazyInstance = new Lazy<IPersistancePathProvider>(() => new PersistancePathProvider());
+            LazyInstance = new Lazy<IPersistencePathProvider>(() => new PersistencePathProvider());
         }
 
         // Disallow instancing of the class except via static method
-        private PersistancePathProvider() { }
+        private PersistencePathProvider() { }
 
         public string DataRootPath => Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -24,6 +24,6 @@ namespace Rubberduck.SettingsProvider
             return Path.Combine(DataRootPath, folderName);
         }
 
-        public static IPersistancePathProvider Instance => LazyInstance.Value;
+        public static IPersistencePathProvider Instance => LazyInstance.Value;
     }
 }

@@ -4,7 +4,13 @@ using System.Reflection;
 
 namespace Rubberduck.Settings
 {
-    public class DefaultSettings<T, S>
+    public interface IDefaultSettings<T>
+    {
+        IEnumerable<T> Defaults { get; }
+        T Default { get; }
+    }
+
+    public class DefaultSettings<T, S>  : IDefaultSettings<T>
         where S : System.Configuration.ApplicationSettingsBase
     {
         public IEnumerable<T> Defaults { get; }
@@ -16,6 +22,12 @@ namespace Rubberduck.Settings
             var defaultInstance = typeof(S).GetProperty("Default", BindingFlags.Static | BindingFlags.Public).GetValue(null);
 
             Defaults = properties.Select(prop => prop.GetValue(defaultInstance)).Cast<T>();
+        }
+
+        public DefaultSettings(S settingsInstance)
+        {
+            var properties = typeof(S).GetProperties().Where(prop => prop.PropertyType == typeof(T));
+            Defaults = properties.Select(prop => prop.GetValue(settingsInstance)).Cast<T>();
         }
     }
 }

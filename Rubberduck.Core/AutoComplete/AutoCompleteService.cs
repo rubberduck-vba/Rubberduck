@@ -43,7 +43,7 @@ namespace Rubberduck.AutoComplete
             {
                 if (!_initialized)
                 {
-                    var config = _configService.Load();
+                    var config = _configService.Read();
                     ApplyAutoCompleteSettings(config);
                 }
             }
@@ -86,7 +86,7 @@ namespace Rubberduck.AutoComplete
 
         private void ConfigServiceSettingsChanged(object sender, ConfigurationChangedEventArgs e)
         {
-            var config = _configService.Load();
+            var config = _configService.Read();
             ApplyAutoCompleteSettings(config);
         }
         
