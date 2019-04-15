@@ -65,7 +65,8 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
             var metricResults = _analyst.GetMetrics(_state);
             _resultsByDeclaration = metricResults.GroupBy(r => r.Declaration).ToDictionary(g => g.Key, g => g.ToList());
 
-            _uiDispatcher.Invoke(() =>
+            //We have to wait for the task to guarantee that no new parse starts invalidating all cached components.
+            _uiDispatcher.StartTask(() =>
             {
                 var updates = declarations.ToList();
                 var existing = Projects.OfType<CodeExplorerProjectViewModel>().ToList();
@@ -86,7 +87,7 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
                     var model = new CodeExplorerProjectViewModel(project, ref updates, _state, _vbe, false);
                     Projects.Add(model);
                 }
-            });
+            }).Wait();
         }
 
         private ICodeExplorerNode _selectedItem;

@@ -436,7 +436,7 @@ namespace Rubberduck.Parsing.VBA
                     ParsingSuspendLock.ExitReadLock();
                 }
             }
-            if (watch != null) Logger.Debug("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId);
+            if (watch != null) Logger.Info("Parsing run finished after {0}s. (thread {1}).", watch.Elapsed.TotalSeconds, Thread.CurrentThread.ManagedThreadId);
         }
 
         protected void ParseAllInternal(object requestor, CancellationToken token)

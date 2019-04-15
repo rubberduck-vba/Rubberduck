@@ -22,7 +22,7 @@ namespace Rubberduck.Parsing.Common
 
         public void Log(string message)
         {
-            Logger.Debug(message, _stopwatch.ElapsedMilliseconds);
+            Logger.Info(message, _stopwatch.ElapsedMilliseconds);
         }
     }
 }
