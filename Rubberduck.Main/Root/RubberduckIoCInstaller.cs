@@ -231,11 +231,13 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 container.Register(Classes.FromAssembly(assembly)
-                    .IncludeNonPublicTypes()
-                    .Where(type => type.Namespace == typeof(Configuration).Namespace 
-                                   && type.NotDisabledOrExperimental(_initialSettings)
-                                   && type != typeof(ExperimentalTypesProvider))
-                    .WithService.AllInterfaces()
+                    .BasedOn(typeof(ConfigurationServiceBase<>))
+                    .WithServiceSelect((type, hierarchy) =>
+                    {
+                        // select closed generic interface
+                        return type.GetInterfaces().Where(iface => iface.IsGenericType 
+                            && iface.GetGenericTypeDefinition() == typeof(IConfigurationService<>));
+                    })
                     .LifestyleSingleton());
 
                 experimentalTypes.AddRange(assembly.GetTypes()
@@ -259,12 +261,8 @@ namespace Rubberduck.Root
                 .ImplementedBy(typeof(XmlContractPersistenceService<>))
                 .LifestyleSingleton());
 
-            container.Register(Component.For<IConfigurationService<IndenterSettings>>()
-                .ImplementedBy<IndenterConfigProvider>()
-                .LifestyleSingleton());
-
-            container.Register(Component.For<IConfigurationService<UnitTesting.Settings.UnitTestSettings>>()
-                .ImplementedBy<UnitTestConfigProvider>()
+            container.Register(Component.For(typeof(IConfigurationService<Configuration>))
+                .ImplementedBy(typeof(ConfigurationLoader))
                 .LifestyleSingleton());
         }
 

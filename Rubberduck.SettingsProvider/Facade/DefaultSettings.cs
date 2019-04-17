@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -8,6 +9,17 @@ namespace Rubberduck.Settings
     {
         IEnumerable<T> Defaults { get; }
         T Default { get; }
+    }
+
+    public class FixedValueDefault<T> : IDefaultSettings<T>
+    {
+        public IEnumerable<T> Defaults { get => new[] { Default }; }
+        public T Default { get; }
+
+        public FixedValueDefault(T value)
+        {
+            Default = value;
+        }
     }
 
     public class DefaultSettings<T, S>  : IDefaultSettings<T>

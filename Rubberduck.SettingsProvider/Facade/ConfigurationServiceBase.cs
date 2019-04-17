@@ -1,6 +1,5 @@
 ﻿using Rubberduck.Settings;
 using System;
-using System.Threading;
 
 namespace Rubberduck.SettingsProvider
 {
