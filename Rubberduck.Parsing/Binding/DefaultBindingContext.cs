@@ -2,6 +2,7 @@
 using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using System;
+using Antlr4.Runtime.Tree;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 
 namespace Rubberduck.Parsing.Binding
@@ -22,20 +23,29 @@ namespace Rubberduck.Parsing.Binding
             _procedurePointerBindingContext = procedurePointerBindingContext;
         }
 
-        public IBoundExpression Resolve(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        public IBoundExpression Resolve(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            IExpressionBinding bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
-            if (bindingTree != null)
-            {
-                return bindingTree.Resolve();
-            }
-            return null;
+            var bindingTree = BuildTree(module, parent, expression, withBlockVariable, statementContext);
+            return bindingTree?.Resolve();
         }
 
-        public IExpressionBinding BuildTree(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        public IExpressionBinding BuildTree(Declaration module, Declaration parent, IParseTree expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic dynamicExpression = expression;
-            return Visit(module, parent, dynamicExpression, withBlockVariable, statementContext);
+            switch (expression)
+            {
+                case VBAParser.ExpressionContext expressionContext:
+                    return Visit(module, parent, expressionContext, withBlockVariable, statementContext);
+                case VBAParser.LExpressionContext lExpressionContext:
+                    return Visit(module, parent, lExpressionContext, withBlockVariable, statementContext);
+                case VBAParser.IdentifierValueContext identifierValueContext:
+                    return Visit(module, parent, identifierValueContext, withBlockVariable, statementContext);
+                case VBAParser.CallStmtContext callExpression:
+                    return Visit(module, parent, callExpression, withBlockVariable, statementContext);
+                case VBAParser.BooleanExpressionContext booleanExpressionContext:
+                    return Visit(module, parent, booleanExpressionContext, withBlockVariable, statementContext);
+                default:
+                    throw new NotSupportedException($"Unexpected context type {expression.GetType()}");
+            }
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.CallStmtContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
@@ -43,29 +53,23 @@ namespace Rubberduck.Parsing.Binding
             // Call statements always have an argument list.
             // One of the reasons we're doing this is that an empty argument list could represent a call to a default member,
             // which requires us to use an IndexDefaultBinding.
-            if (expression.CALL() == null)
+            var lExpression = expression.lExpression();
+            var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
+
+            if (expression.CALL() != null)
             {
-                dynamic lexpr = expression.lExpression();
-                var lexprBinding = Visit(module, parent, lexpr, withBlockVariable, StatementResolutionContext.Undefined);
-                var argList = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
-                SetLeftMatch(lexprBinding, argList.Arguments.Count);
-                return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), lexprBinding, argList);
+                return lExpressionBinding is IndexDefaultBinding indexDefaultBinding
+                    ? indexDefaultBinding
+                    : new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent,
+                        expression.lExpression(), lExpressionBinding, new ArgumentList());
             }
-            else
-            {
-                var lexprBinding = Visit(module, parent, (dynamic)expression.lExpression(), withBlockVariable, StatementResolutionContext.Undefined);
-                if (!(lexprBinding is IndexDefaultBinding))
-                {
-                    return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), lexprBinding, new ArgumentList());
-                }
-                else
-                {
-                    return lexprBinding;
-                }
-            }
+
+            var argList = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
+            SetLeftMatch(lExpressionBinding, argList.Arguments.Count);
+            return new IndexDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression.lExpression(), lExpressionBinding, argList);
         }
 
-        private void SetLeftMatch(IExpressionBinding binding, int argumentCount)
+        private static void SetLeftMatch(IExpressionBinding binding, int argumentCount)
         {
             // See SimpleNameDefaultBinding for a description on why we're doing this.
             if (!(binding is SimpleNameDefaultBinding))
@@ -79,10 +83,79 @@ namespace Rubberduck.Parsing.Binding
             ((SimpleNameDefaultBinding)binding).IsPotentialLeftMatch = true;
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ExpressionContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic lexpr = expression.lExpression();
-            return Visit(module, parent, lexpr, withBlockVariable, statementContext);
+            switch (expression)
+            {
+                case VBAParser.LExprContext lExprContext:
+                    return Visit(module, parent, lExprContext.lExpression(), withBlockVariable, statementContext);
+                case VBAParser.ParenthesizedExprContext parenthesizedExprContext:
+                    return Visit(module, parent, parenthesizedExprContext, withBlockVariable, statementContext);
+                case VBAParser.RelationalOpContext relationalOpContext:
+                    return Visit(module, parent, relationalOpContext, withBlockVariable, statementContext);
+                case VBAParser.LiteralExprContext literalExprContext:
+                    return Visit(module, parent, literalExprContext.literalExpression(), withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.NewExprContext newExprContext:
+                    return Visit(module, parent, newExprContext, withBlockVariable, statementContext);
+                case VBAParser.LogicalNotOpContext logicalNotOpContext:
+                    return VisitUnaryOp(module, parent, logicalNotOpContext, logicalNotOpContext.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.UnaryMinusOpContext unaryMinusOpContext:
+                    return VisitUnaryOp(module, parent, unaryMinusOpContext, unaryMinusOpContext.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.LogicalAndOpContext logicalAndOpContext:
+                    return VisitBinaryOp(module, parent, logicalAndOpContext, logicalAndOpContext.expression()[0], logicalAndOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.LogicalOrOpContext logicalOrOpContext:
+                    return VisitBinaryOp(module, parent, logicalOrOpContext, logicalOrOpContext.expression()[0], logicalOrOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.LogicalXorOpContext logicalXorOpContext:
+                    return VisitBinaryOp(module, parent, logicalXorOpContext, logicalXorOpContext.expression()[0], logicalXorOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.LogicalEqvOpContext logicalEqvOpContext:
+                    return VisitBinaryOp(module, parent, logicalEqvOpContext, logicalEqvOpContext.expression()[0], logicalEqvOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.LogicalImpOpContext logicalImpOpContext:
+                    return VisitBinaryOp(module, parent, logicalImpOpContext, logicalImpOpContext.expression()[0], logicalImpOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.AddOpContext addOpContext:
+                    return VisitBinaryOp(module, parent, addOpContext, addOpContext.expression()[0], addOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.ConcatOpContext concatOpContext:
+                    return VisitBinaryOp(module, parent, concatOpContext, concatOpContext.expression()[0], concatOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.MultOpContext multOpContext:
+                    return VisitBinaryOp(module, parent, multOpContext, multOpContext.expression()[0], multOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.ModOpContext modOpContext:
+                    return VisitBinaryOp(module, parent, modOpContext, modOpContext.expression()[0], modOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.PowOpContext powOpContext:
+                    return VisitBinaryOp(module, parent, powOpContext, powOpContext.expression()[0], powOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.IntDivOpContext intDivOpContext:
+                    return VisitBinaryOp(module, parent, intDivOpContext, intDivOpContext.expression()[0], intDivOpContext.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                case VBAParser.MarkedFileNumberExprContext markedFileNumberExprContext:
+                    return Visit(module, parent, markedFileNumberExprContext, withBlockVariable, statementContext);
+                case VBAParser.BuiltInTypeExprContext builtInTypeExprContext:
+                    return Visit(module, parent, builtInTypeExprContext, withBlockVariable, statementContext);
+                //We do not handle the VBAParser.TypeofexprContext because that should only ever appear as a child of an IS relational operator expression and is specifically handled there.
+                default:
+                    throw new NotSupportedException($"Unexpected expression type {expression.GetType()}");
+            }
+        }
+
+        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LExpressionContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        {
+            switch (expression)
+            {
+                case VBAParser.SimpleNameExprContext simpleNameExprContext:
+                    return Visit(module, parent, simpleNameExprContext, withBlockVariable, statementContext);
+                case VBAParser.MemberAccessExprContext memberAccessExprContext:
+                    return Visit(module, parent, memberAccessExprContext, withBlockVariable, statementContext);
+                case VBAParser.IndexExprContext indexExprContext:
+                    return Visit(module, parent, indexExprContext, withBlockVariable, statementContext);
+                case VBAParser.WithMemberAccessExprContext withMemberAccessExprContext:
+                    return Visit(module, parent, withMemberAccessExprContext, withBlockVariable, statementContext);
+                case VBAParser.InstanceExprContext instanceExprContext:
+                    return Visit(module, parent, instanceExprContext, withBlockVariable, statementContext);
+                case VBAParser.WhitespaceIndexExprContext whitespaceIndexExprContext:
+                    return Visit(module, parent, whitespaceIndexExprContext, withBlockVariable, statementContext);
+                case VBAParser.DictionaryAccessExprContext dictionaryAccessExprContext:
+                    return Visit(module, parent, dictionaryAccessExprContext, withBlockVariable, statementContext);
+                case VBAParser.WithDictionaryAccessExprContext withDictionaryAccessExprContext:
+                    return Visit(module, parent, withDictionaryAccessExprContext, withBlockVariable, statementContext);
+                default:
+                    throw new NotSupportedException($"Unexpected lExpression type {expression.GetType()}");
+            }
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.NewExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
@@ -100,7 +173,7 @@ namespace Rubberduck.Parsing.Binding
             // The MarkedFileNumberExpr doesn't actually exist but for backwards compatibility reasons we support it, ignore the "hash tag" of the file number
             // and resolve it as a normal expression.
             // This allows us to support functions such as Input(file1, #file1) which would otherwise not work.
-            return Visit(module, parent, (dynamic)expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+            return Visit(module, parent, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.BuiltInTypeExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
@@ -109,7 +182,7 @@ namespace Rubberduck.Parsing.Binding
             return null;
         }
 
-        private IExpressionBinding VisitType(Declaration module, Declaration parent, ParserRuleContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        private IExpressionBinding VisitType(Declaration module, Declaration parent, VBAParser.ExpressionContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
             return _typeBindingContext.BuildTree(module, parent, expression, withBlockVariable, StatementResolutionContext.Undefined);
         }
@@ -126,14 +199,14 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.MemberAccessExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic lExpression = expression.lExpression();
+            var lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             return new MemberAccessDefaultBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, lExpressionBinding, statementContext, expression.unrestrictedIdentifier());
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.IndexExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic lExpression = expression.lExpression();
+            var lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
             SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
@@ -142,7 +215,7 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.WhitespaceIndexExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic lExpression = expression.lExpression();
+            var lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             var argumentListBinding = VisitArgumentList(module, parent, expression.argumentList(), withBlockVariable, StatementResolutionContext.Undefined);
             SetLeftMatch(lExpressionBinding, argumentListBinding.Arguments.Count);
@@ -202,10 +275,8 @@ namespace Rubberduck.Parsing.Binding
                 {
                     return new SimpleNameExpression(parameter, classification, context);
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             };
         }
 
@@ -213,12 +284,12 @@ namespace Rubberduck.Parsing.Binding
         {
             if (argumentExpression.expression() != null)
             {
-                dynamic expr = argumentExpression.expression();
+                var expr = argumentExpression.expression();
                 return Visit(module, parent, expr, withBlockVariable, StatementResolutionContext.Undefined);
             }
             else
             {
-                dynamic expr = argumentExpression.addressOfExpression();
+                var expr = argumentExpression.addressOfExpression();
                 return Visit(module, parent, expr, withBlockVariable, StatementResolutionContext.Undefined);
             }
         }
@@ -230,7 +301,7 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.DictionaryAccessExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic lExpression = expression.lExpression();
+            var lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression, withBlockVariable, StatementResolutionContext.Undefined);
             return VisitDictionaryAccessExpression(module, parent, expression, expression.unrestrictedIdentifier(), lExpressionBinding, StatementResolutionContext.Undefined);
         }
@@ -277,48 +348,18 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ParenthesizedExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic expressionParens = expression.expression();
+            var expressionParens = expression.expression();
             var expressionBinding = Visit(module, parent, expressionParens, withBlockVariable, StatementResolutionContext.Undefined);
             return new ParenthesizedDefaultBinding(expression, expressionBinding);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.PowOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.MultOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.IntDivOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ModOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.AddOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.ConcatOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.RelationalOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
             // To make the grammar we treat a type-of-is expression as a construct of the form "TYPEOF expression", where expression
             // is always "expression IS expression".
-            if (expression.expression()[0] is VBAParser.TypeofexprContext)
+            if (expression.expression()[0] is VBAParser.TypeofexprContext typeofExpr)
             {
-                return VisitTypeOf(module, parent, expression, (VBAParser.TypeofexprContext)expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
+                return VisitTypeOf(module, parent, expression, typeofExpr, expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
             }
             return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
         }
@@ -328,89 +369,46 @@ namespace Rubberduck.Parsing.Binding
             Declaration parent,
             VBAParser.RelationalOpContext typeOfIsExpression,
             VBAParser.TypeofexprContext typeOfLeftPartExpression,
-            ParserRuleContext typeExpression,
+            VBAParser.ExpressionContext typeExpression,
             IBoundExpression withBlockVariable, 
             StatementResolutionContext statementContext)
         {
-            dynamic booleanExpression = typeOfLeftPartExpression.expression();
+            var booleanExpression = typeOfLeftPartExpression.expression();
             var booleanExpressionBinding = Visit(module, parent, booleanExpression, withBlockVariable, StatementResolutionContext.Undefined);
-            var typeExpressionBinding = VisitType(module, parent, (dynamic)typeExpression, withBlockVariable, StatementResolutionContext.Undefined);
+            var typeExpressionBinding = VisitType(module, parent, typeExpression, withBlockVariable, StatementResolutionContext.Undefined);
             return new TypeOfIsDefaultBinding(typeOfIsExpression, booleanExpressionBinding, typeExpressionBinding);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LogicalAndOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LogicalOrOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LogicalXorOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LogicalEqvOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LogicalImpOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitBinaryOp(module, parent, expression, expression.expression()[0], expression.expression()[1], withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.UnaryMinusOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitUnaryOp(module, parent, expression, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LogicalNotOpContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return VisitUnaryOp(module, parent, expression, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
-        }
-
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LiteralExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
-        {
-            return Visit(module, parent, expression.literalExpression(), withBlockVariable, StatementResolutionContext.Undefined);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.BooleanExpressionContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            return Visit(module, parent, (dynamic)expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+            return Visit(module, parent, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
         }
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.IntegerExpressionContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            return Visit(module, parent, (dynamic)expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
+            return Visit(module, parent, expression.expression(), withBlockVariable, StatementResolutionContext.Undefined);
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.InstanceExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        private static IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.InstanceExprContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
             return new InstanceDefaultBinding(expression, module);
         }
 
-        private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LiteralExpressionContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        private static IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.LiteralExpressionContext expression, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
             return new LiteralDefaultBinding(expression);
         }
 
-        private IExpressionBinding VisitBinaryOp(Declaration module, Declaration parent, ParserRuleContext context, ParserRuleContext left, ParserRuleContext right, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        private IExpressionBinding VisitBinaryOp(Declaration module, Declaration parent, ParserRuleContext context, VBAParser.ExpressionContext left, VBAParser.ExpressionContext right, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic leftExpr = left;
-            var leftBinding = Visit(module, parent, leftExpr, withBlockVariable, StatementResolutionContext.Undefined);
-            dynamic rightExpr = right;
-            var rightBinding = Visit(module, parent, rightExpr, withBlockVariable, StatementResolutionContext.Undefined);
+            var leftBinding = Visit(module, parent, left, withBlockVariable, StatementResolutionContext.Undefined);
+            var rightBinding = Visit(module, parent, right, withBlockVariable, StatementResolutionContext.Undefined);
             return new BinaryOpDefaultBinding(context, leftBinding, rightBinding);
         }
 
-        private IExpressionBinding VisitUnaryOp(Declaration module, Declaration parent, ParserRuleContext context, ParserRuleContext expr, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
+        private IExpressionBinding VisitUnaryOp(Declaration module, Declaration parent, ParserRuleContext context, VBAParser.ExpressionContext expr, IBoundExpression withBlockVariable, StatementResolutionContext statementContext)
         {
-            dynamic exprExpr = expr;
-            var exprBinding = Visit(module, parent, exprExpr, withBlockVariable, StatementResolutionContext.Undefined);
+            var exprBinding = Visit(module, parent, expr, withBlockVariable, StatementResolutionContext.Undefined);
             return new UnaryOpDefaultBinding(context, exprBinding);
         }
     }
