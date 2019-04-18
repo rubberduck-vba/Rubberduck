@@ -78,7 +78,7 @@ namespace Rubberduck.Parsing.Binding
 
         private IExpressionBinding Visit(Declaration module, Declaration parent, VBAParser.MemberAccessExprContext expression)
         {
-            dynamic lExpression = expression.lExpression();
+            var lExpression = expression.lExpression();
             var lExpressionBinding = Visit(module, parent, lExpression);
             SetPreferProjectOverUdt(lExpressionBinding);
             return new MemberAccessTypeBinding(_declarationFinder, Declaration.GetProjectParent(parent), module, parent, expression, expression.unrestrictedIdentifier(), lExpressionBinding);
