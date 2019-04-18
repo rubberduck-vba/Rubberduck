@@ -97,7 +97,20 @@ namespace Rubberduck.Parsing.Symbols
                 return false;
             }
 
-            var hint = ((dynamic)Context.Parent).typeHint() as VBAParser.TypeHintContext;
+            VBAParser.TypeHintContext hint;
+            switch (Context.Parent)
+            {
+                case VBAParser.TypedIdentifierContext typedIdentifierContext:
+                    hint = typedIdentifierContext.typeHint();
+                    break;
+                case VBAParser.LiteralExpressionContext literalExpressionContext:
+                    hint = literalExpressionContext.typeHint();
+                    break;
+                default:
+                    hint = null;
+                    break;
+            }
+
             token = hint?.GetText();
             _hasTypeHint = hint != null;
             return _hasTypeHint.Value;
