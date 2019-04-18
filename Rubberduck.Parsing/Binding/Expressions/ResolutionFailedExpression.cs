@@ -8,17 +8,9 @@ namespace Rubberduck.Parsing.Binding
 
         public ResolutionFailedExpression()
             : base(null, ExpressionClassification.ResolutionFailed, null)
-        {
-            _successfullyResolvedExpressions = new List<IBoundExpression>();
-        }
+        {}
 
-        public IReadOnlyList<IBoundExpression> SuccessfullyResolvedExpressions
-        {
-            get
-            {
-                return _successfullyResolvedExpressions;
-            }
-        }
+        public IReadOnlyList<IBoundExpression> SuccessfullyResolvedExpressions => _successfullyResolvedExpressions;
 
         public void AddSuccessfullyResolvedExpression(IBoundExpression expression)
         {
