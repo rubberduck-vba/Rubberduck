@@ -9,4 +9,13 @@
         Global = 5,
         Static = 6
     }
+
+    public static class AccessibilityExtensions
+    {
+        public static string CodeString(this Accessibility access)
+        {
+            return access == Accessibility.Implicit ? string.Empty : access.ToString();
+        }
+    }
+
 }

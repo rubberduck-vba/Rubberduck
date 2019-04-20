@@ -93,70 +93,48 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private string GetSignature(SubroutineDeclaration member)
         {
-            var signature = new StringBuilder();
-            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
-            signature.Append($" Sub {member.IdentifierName}(");
-
-            var selectedParams = Parameters.Select(s => s.Name);
-            signature.Append($", {selectedParams})");
-            return signature.ToString();
+            var accessibility = member.Accessibility.CodeString();
+            var parameterList = string.Join(", ", Parameters.Select(p => p.Name));
+            return $"{accessibility} Sub {member.IdentifierName}({parameterList})";
         }
 
         private string GetSignature(FunctionDeclaration member)
         {
-            var signature = new StringBuilder();
-            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
-            signature.Append($" Function {member.IdentifierName}(");
-
-            var selectedParams = Parameters.Select(s => s.Name);
-            signature.Append($", {selectedParams}) As {member.AsTypeName}");
-            return signature.ToString();
+            var accessibility = member.Accessibility.CodeString();
+            var parameterList = string.Join(", ", Parameters.Select(p => p.Name));
+            return $"{accessibility} Function {member.IdentifierName}({parameterList}) As {member.AsTypeName}";
         }
 
         private string GetSignature(EventDeclaration member)
         {
-            var signature = new StringBuilder();
-            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
-            signature.Append($" Event {member.IdentifierName}(");
-
-            var selectedParams = Parameters.Select(s => s.Name);
-            signature.Append($", {selectedParams})");
-            return signature.ToString();
+            var access = member.Accessibility.CodeString();
+            var parameters = string.Join(", ", Parameters.Select(p => p.Name));
+            return $"{access} Event {member.IdentifierName}({parameters})";
         }
 
         private string GetSignature(PropertyGetDeclaration member)
         {
-            var signature = new StringBuilder();
-            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
-            signature.Append($" Property Get {member.IdentifierName}(");
-
-            var selectedParams = Parameters.Select(s => s.Name);
-            signature.Append($", {selectedParams}) As {member.AsTypeName}");
-            return signature.ToString();
+            var access = member.Accessibility.CodeString();
+            var parameters = string.Join(", ", Parameters.Select(p => p.Name));
+            return $"{access} Property Get {member.IdentifierName}({parameters}) As {member.AsTypeName}";
         }
 
         private string GetSignature(PropertyLetDeclaration member)
         {
-            var signature = new StringBuilder();
-            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
-            signature.Append($" Property Let {member.IdentifierName}(");
-
+            var access = member.Accessibility.CodeString();
             var selectedParams = Parameters.Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last(), -1).Name);
-            signature.Append($", {selectedParams})");
-            return signature.ToString();
+            var parameters = string.Join(", ", selectedParams);
+            return $"{access} Property Let {member.IdentifierName}({parameters})";
         }
 
         private string GetSignature(PropertySetDeclaration member)
         {
-            var signature = new StringBuilder();
-            signature.Append(member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString());
-            signature.Append($" Property Set {member.IdentifierName}(");
-
+            var access = member.Accessibility.CodeString();
             var selectedParams = Parameters.Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last(), -1).Name);
-            signature.Append($", {selectedParams})");
-            return signature.ToString();
+            var parameters = string.Join(", ", selectedParams);
+            return $"{access} Property Set {member.IdentifierName}({parameters})";
         }
 
         public void UpdatePreview() => OnPropertyChanged(nameof(SignaturePreview));
