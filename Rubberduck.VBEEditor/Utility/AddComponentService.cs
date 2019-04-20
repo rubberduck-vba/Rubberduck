@@ -45,11 +45,34 @@ namespace Rubberduck.VBEditor.Utility
                     using (var loadedComponent = sourceCodeHandler.SubstituteCode(newComponent, code))
                     {
                         AddPrefix(loadedComponent, prefixInModule);
+                        ShowComponent(loadedComponent);
                     }
                 }
                 else
                 {
                     AddPrefix(newComponent, prefixInModule);
+                    ShowComponent(newComponent);
+                }
+            }
+        }
+
+        private static void ShowComponent(IVBComponent component)
+        {
+            if (component == null)
+            {
+                return;
+            }
+
+            using (var codeModule = component.CodeModule)
+            {
+                if (codeModule == null)
+                {
+                    return;
+                }
+
+                using (var codePane = codeModule.CodePane)
+                {
+                    codePane.Show();
                 }
             }
         }
