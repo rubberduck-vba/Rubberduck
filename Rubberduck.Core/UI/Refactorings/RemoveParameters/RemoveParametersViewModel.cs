@@ -90,58 +90,46 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private string GetSignature(SubroutineDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Sub " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.CodeString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            return $"{access} Sub {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private string GetSignature(FunctionDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Function " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.CodeString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ") As " + member.AsTypeName;
+            return $"{access} Function {member.IdentifierName}({string.Join(", ", selectedParams)}) As {member.AsTypeName}";
         }
 
         private string GetSignature(EventDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Event " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.CodeString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            return $"{access} Event {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private string GetSignature(PropertyGetDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Property Get " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.CodeString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
-            return signature + string.Join(", ", selectedParams) + ") As " + member.AsTypeName;
+            return $"{access} Property Get {member.IdentifierName}({string.Join(", ", selectedParams)}) As {member.AsTypeName}";
         }
 
         private string GetSignature(PropertyLetDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Property Let " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.CodeString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last()).Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            return $"{access} Property Let {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private string GetSignature(PropertySetDeclaration member)
         {
-            var signature = member.Accessibility == Accessibility.Implicit ? string.Empty : member.Accessibility.ToString();
-            signature += " Property Set " + member.IdentifierName + "(";
-
+            var access = member.Accessibility.CodeString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last()).Name);
-            return signature + string.Join(", ", selectedParams) + ")";
+            return $"{access} Property Set {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private void RemoveParameter(ParameterViewModel parameter)
