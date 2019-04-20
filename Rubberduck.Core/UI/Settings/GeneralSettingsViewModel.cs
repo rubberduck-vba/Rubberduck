@@ -26,7 +26,7 @@ namespace Rubberduck.UI.Settings
         private readonly IOperatingSystem _operatingSystem;
         private readonly IMessageBox _messageBox;
         private readonly IVbeSettings _vbeSettings;
-        private readonly IFilePersistanceService<HotkeySettings> _hotkeyService;
+        private readonly IFilePersistenceService<HotkeySettings> _hotkeyService;
 
         private bool _indenterPrompted;
         private readonly IReadOnlyList<Type> _experimentalFeatureTypes;
@@ -37,8 +37,8 @@ namespace Rubberduck.UI.Settings
             IMessageBox messageBox,
             IVbeSettings vbeSettings,
             IExperimentalTypesProvider experimentalTypesProvider,
-            IFilePersistanceService<Rubberduck.Settings.GeneralSettings> service,
-            IFilePersistanceService<HotkeySettings> hotkeyService) 
+            IFilePersistenceService<Rubberduck.Settings.GeneralSettings> service,
+            IFilePersistenceService<HotkeySettings> hotkeyService) 
             : base(service)
         {
             _operatingSystem = operatingSystem;

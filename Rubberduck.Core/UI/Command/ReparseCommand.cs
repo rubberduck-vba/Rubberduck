@@ -31,13 +31,13 @@ namespace Rubberduck.UI.Command
         private readonly RubberduckParserState _state;
         private readonly GeneralSettings _settings;
 
-        public ReparseCommand(IVBE vbe, IConfigProvider<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
+        public ReparseCommand(IVBE vbe, IConfigurationService<GeneralSettings> settingsProvider, RubberduckParserState state, IVBETypeLibsAPI typeLibApi, IVbeSettings vbeSettings, IMessageBox messageBox) : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _vbeSettings = vbeSettings;
             _typeLibApi = typeLibApi;
             _state = state;
-            _settings = settingsProvider.Create();
+            _settings = settingsProvider.Read();
             _messageBox = messageBox;
 
             AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);

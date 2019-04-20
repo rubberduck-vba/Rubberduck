@@ -231,11 +231,13 @@ namespace Rubberduck.Root
             foreach (var assembly in assembliesToRegister)
             {
                 container.Register(Classes.FromAssembly(assembly)
-                    .IncludeNonPublicTypes()
-                    .Where(type => type.Namespace == typeof(Configuration).Namespace 
-                                   && type.NotDisabledOrExperimental(_initialSettings)
-                                   && type != typeof(ExperimentalTypesProvider))
-                    .WithService.AllInterfaces()
+                    .BasedOn(typeof(ConfigurationServiceBase<>))
+                    .WithServiceSelect((type, hierarchy) =>
+                    {
+                        // select closed generic interface
+                        return type.GetInterfaces().Where(iface => iface.IsGenericType 
+                            && iface.GetGenericTypeDefinition() == typeof(IConfigurationService<>));
+                    })
                     .LifestyleSingleton());
 
                 experimentalTypes.AddRange(assembly.GetTypes()
@@ -251,20 +253,16 @@ namespace Rubberduck.Root
             container.Register(Component.For<IComProjectSerializationProvider>()
                 .ImplementedBy<XmlComProjectSerializer>()
                 .LifestyleTransient());
-            container.Register(Component.For(typeof(IPersistanceService<>), typeof(IFilePersistanceService<>))
-                .ImplementedBy(typeof(XmlPersistanceService<>))
+            container.Register(Component.For(typeof(IPersistenceService<>), typeof(IFilePersistenceService<>))
+                .ImplementedBy(typeof(XmlPersistenceService<>))
                 .LifestyleSingleton());
 
-            container.Register(Component.For(typeof(IPersistanceService<ReferenceSettings>), typeof(IFilePersistanceService<>))
-                .ImplementedBy(typeof(XmlContractPersistanceService<>))
+            container.Register(Component.For(typeof(IPersistenceService<ReferenceSettings>), typeof(IFilePersistenceService<>))
+                .ImplementedBy(typeof(XmlContractPersistenceService<>))
                 .LifestyleSingleton());
 
-            container.Register(Component.For<IConfigProvider<IndenterSettings>>()
-                .ImplementedBy<IndenterConfigProvider>()
-                .LifestyleSingleton());
-
-            container.Register(Component.For<IConfigProvider<UnitTesting.Settings.UnitTestSettings>>()
-                .ImplementedBy<UnitTestConfigProvider>()
+            container.Register(Component.For(typeof(IConfigurationService<Configuration>))
+                .ImplementedBy(typeof(ConfigurationLoader))
                 .LifestyleSingleton());
         }
 
@@ -786,8 +784,8 @@ namespace Rubberduck.Root
                 .ImplementedBy<IndenterSettings>()
                 .LifestyleSingleton());
             container.Register(Component.For<Func<IIndenterSettings>>()
-                .UsingFactoryMethod(kernel => (Func<IIndenterSettings>)(() => kernel.Resolve<IGeneralConfigService>()
-                   .LoadConfiguration().UserSettings.IndenterSettings))
+                .UsingFactoryMethod(kernel => (Func<IIndenterSettings>)(() => kernel.Resolve<IConfigurationService<Configuration>>()
+                   .Read().UserSettings.IndenterSettings))
                 .LifestyleTransient()); //todo: clean up this registration
         }
 
@@ -991,7 +989,7 @@ namespace Rubberduck.Root
             container.Register(Component.For<IUiContextProvider>().Instance(UiContextProvider.Instance()).LifestyleSingleton());
             container.Register(Component.For<IVBEEvents>().Instance(VBEEvents.Initialize(_vbe)).LifestyleSingleton());
             container.Register(Component.For<ITempSourceFileHandler>().Instance(_vbe.TempSourceFileHandler).LifestyleSingleton());
-            container.Register(Component.For<IPersistancePathProvider>().Instance(PersistancePathProvider.Instance).LifestyleSingleton());
+            container.Register(Component.For<IPersistencePathProvider>().Instance(PersistencePathProvider.Instance).LifestyleSingleton());
             container.Register(Component.For<IVbeNativeApi>().Instance(_vbeNativeApi).LifestyleSingleton());
         }
     }

@@ -2,6 +2,7 @@
 using System.Linq;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Settings;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace Rubberduck.CodeAnalysis.Inspections
 {
@@ -9,7 +10,7 @@ namespace Rubberduck.CodeAnalysis.Inspections
     {
         public InspectionProvider(IEnumerable<IInspection> inspections)
         {
-            var defaultSettings = new DefaultSettings<CodeInspectionSettings>().Default;
+            var defaultSettings = new DefaultSettings<CodeInspectionSettings, Properties.CodeInspectionDefaults>().Default;
             var defaultNames = defaultSettings.CodeInspections.Select(x => x.Name);
             var defaultInspections = inspections.Where(inspection => defaultNames.Contains(inspection.Name));
 

@@ -19,6 +19,7 @@ using Rubberduck.Resources.ToDoExplorer;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.Utility;
+using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -32,13 +33,13 @@ namespace Rubberduck.UI.ToDoItems
     public sealed class ToDoExplorerViewModel : ViewModelBase, INavigateSelection, IDisposable
     {
         private readonly RubberduckParserState _state;
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationService<Configuration> _configService;
         private readonly ISettingsFormFactory _settingsFormFactory;
         private readonly IUiDispatcher _uiDispatcher;
 
         public ToDoExplorerViewModel(
-            RubberduckParserState state, 
-            IGeneralConfigService configService, 
+            RubberduckParserState state,
+            IConfigurationService<Configuration> configService, 
             ISettingsFormFactory settingsFormFactory, 
             ISelectionService selectionService, 
             IUiDispatcher uiDispatcher)
@@ -224,7 +225,7 @@ namespace Rubberduck.UI.ToDoItems
 
         private IEnumerable<ToDoItem> GetToDoMarkers(CommentNode comment)
         {
-            var markers = _configService.LoadConfiguration().UserSettings.ToDoListSettings.ToDoMarkers;
+            var markers = _configService.Read().UserSettings.ToDoListSettings.ToDoMarkers;
             return markers.Where(marker => !string.IsNullOrEmpty(marker.Text)
                                          && Regex.IsMatch(comment.CommentText, @"\b" + Regex.Escape(marker.Text) + @"\b", RegexOptions.IgnoreCase))
                            .Select(marker => new ToDoItem(marker.Text, comment));

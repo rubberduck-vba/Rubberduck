@@ -1,6 +1,6 @@
 ﻿namespace Rubberduck.SettingsProvider
 {
-    public interface IPersistancePathProvider
+    public interface IPersistencePathProvider
     {
         string DataRootPath { get; }
         string DataFolderPath(string folderName);

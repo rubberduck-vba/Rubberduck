@@ -27,14 +27,14 @@ namespace Rubberduck.UI.AddRemoveReferences
 
         private readonly IVBE _vbe;
         private readonly RubberduckParserState _state;
-        private readonly IConfigProvider<ReferenceSettings> _settings;
+        private readonly IConfigurationService<ReferenceSettings> _settings;
         private readonly IRegisteredLibraryFinderService _finder;
         private readonly IReferenceReconciler _reconciler;
         private readonly IFileSystemBrowserFactory _browser;
 
         public AddRemoveReferencesPresenterFactory(IVBE vbe,
             RubberduckParserState state,
-            IConfigProvider<ReferenceSettings> settingsProvider, 
+            IConfigurationService<ReferenceSettings> settingsProvider, 
             IRegisteredLibraryFinderService finder,
             IReferenceReconciler reconciler,
             IFileSystemBrowserFactory browser)
@@ -116,7 +116,7 @@ namespace Rubberduck.UI.AddRemoveReferences
                     models.Add(reference.Key, new ReferenceModel(reference.Value));
                 }
 
-                var settings = _settings.Create();
+                var settings = _settings.Read();
                 model = new AddRemoveReferencesModel(_state, project, models.Values, settings);
                 if (AddRemoveReferencesViewModel.HostHasProjects)
                 {

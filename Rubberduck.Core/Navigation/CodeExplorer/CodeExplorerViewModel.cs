@@ -38,8 +38,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         // ReSharper disable NotAccessedField.Local - The settings providers aren't used, but several enhancement requests will need them.
         private readonly RubberduckParserState _state;
         private readonly RemoveCommand _externalRemoveCommand;
-        private readonly IConfigProvider<GeneralSettings> _generalSettingsProvider;      
-        private readonly IConfigProvider<WindowSettings> _windowSettingsProvider;
+        private readonly IConfigurationService<GeneralSettings> _generalSettingsProvider;      
+        private readonly IConfigurationService<WindowSettings> _windowSettingsProvider;
         private readonly IUiDispatcher _uiDispatcher;
         private readonly IVBE _vbe;
         private readonly ITemplateProvider _templateProvider;
@@ -48,8 +48,8 @@ namespace Rubberduck.Navigation.CodeExplorer
         public CodeExplorerViewModel(
             RubberduckParserState state,
             RemoveCommand removeCommand,
-            IConfigProvider<GeneralSettings> generalSettingsProvider, 
-            IConfigProvider<WindowSettings> windowSettingsProvider, 
+            IConfigurationService<GeneralSettings> generalSettingsProvider, 
+            IConfigurationService<WindowSettings> windowSettingsProvider, 
             IUiDispatcher uiDispatcher,
             IVBE vbe,
             ITemplateProvider templateProvider,

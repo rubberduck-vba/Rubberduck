@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Inspections;
 
-namespace Rubberduck.Settings
+namespace Rubberduck.CodeAnalysis.Settings
 {
     public interface ICodeInspectionSettings
     {

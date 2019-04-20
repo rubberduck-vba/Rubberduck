@@ -20,4 +20,9 @@
       <Version>4.6.4</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Refactorings\IAssignedByValParameterQuickFixDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+  </ItemGroup>
 </Project>

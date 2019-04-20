@@ -9,7 +9,7 @@ namespace Rubberduck.UI.ToDoItems
     /// </summary>
     public class ToDoExplorerDockablePresenter : DockableToolwindowPresenter
     {
-        public ToDoExplorerDockablePresenter(IVBE vbe, IAddIn addin, ToDoExplorerWindow window, IConfigProvider<WindowSettings> settings)
+        public ToDoExplorerDockablePresenter(IVBE vbe, IAddIn addin, ToDoExplorerWindow window, IConfigurationService<WindowSettings> settings)
             : base(vbe, addin, window, settings)
         {
         }

@@ -5,6 +5,7 @@ using NLog;
 using Rubberduck.Interaction;
 using Rubberduck.Resources.Settings;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 
 namespace Rubberduck.UI.Settings
@@ -12,11 +13,11 @@ namespace Rubberduck.UI.Settings
     public class SettingsControlViewModel : ViewModelBase
     {
         private readonly IMessageBox _messageBox;
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationService<Configuration> _configService;
         private readonly Configuration _config;
 
         public SettingsControlViewModel(IMessageBox messageBox,
-            IGeneralConfigService configService,
+            IConfigurationService<Configuration> configService,
             Configuration config,
             SettingsView generalSettings,
             SettingsView todoSettings,
@@ -79,7 +80,7 @@ namespace Rubberduck.UI.Settings
                 vm.UpdateConfig(_config);
             }
 
-            _configService.SaveConfiguration(_config);
+            _configService.Save(_config);
         }
 
         private void CloseWindow()
@@ -100,7 +101,7 @@ namespace Rubberduck.UI.Settings
                 return;
             }
 
-            var defaultConfig = _configService.GetDefaultConfiguration();
+            var defaultConfig = _configService.ReadDefaults();
             foreach (var vm in SettingsViews.Select(v => v.Control.ViewModel))
             {
                 vm.SetToDefaults(defaultConfig);
