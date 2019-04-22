@@ -5,9 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:codeExplorer="clr-namespace:Rubberduck.Navigation.CodeExplorer"
-             xmlns:controls="clr-namespace:Rubberduck.UI.Controls"
-             xmlns:converters="clr-namespace:Rubberduck.UI.Converters"
-             xmlns:local="clr-namespace:Rubberduck.UI.CodeExplorer"
+             xmlns:controls="clr-namespace:Rubberduck.UI.Controls;assembly="
+             xmlns:converters="clr-namespace:Rubberduck.UI.Converters;assembly="
+             xmlns:local="clr-namespace:Rubberduck.UI.CodeExplorer;assembly="
              ResxExtension.DefaultResxName="Rubberduck.Resources.CodeExplorer.CodeExplorerUI" 
              Language="{UICulture}"
              Name="CodeExplorer"
@@ -48,7 +48,6 @@
             <converters:BoolToHiddenVisibilityConverter x:Key="BoolToHiddenVisibility" />
             <converters:BooleanToDimmedBrushConverter x:Key="BooleanToDimmed" />
             <converters:TemplateCommandParameterToTupleConverter x:Key="TemplateCommandParameterToTuple" />
-            <converters:SearchImageSourceConverter x:Key="SearchToIcon" />
             <converters:InvertBoolValueConverter x:Key="NotBool" />
             <converters:CodeExplorerNodeToIconConverter x:Key="NodeToIcon" />
             <converters:AccessibilityToIconConverter x:Key="AccessibilityToIcon" />
@@ -63,37 +62,6 @@
             </LinearGradientBrush>
             <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
             <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
-
-            <Style x:Key="PlaceHolder" TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type TextBox}">
-                            <Grid>
-                                <TextBox Text="{Binding Path=Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                         x:Name="textSource" 
-                                         Background="Transparent" 
-                                         Panel.ZIndex="2" 
-                                         VerticalContentAlignment="Center"/>
-                                <TextBox Text="{TemplateBinding Tag}" Background="{TemplateBinding Background}" Panel.ZIndex="1">
-                                    <TextBox.Style>
-                                        <Style TargetType="{x:Type TextBox}">
-                                            <Setter Property="Foreground" Value="Transparent"/>
-                                            <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Path=Text, Source={x:Reference textSource}}" Value="">
-                                                    <Setter Property="Foreground" Value="LightGray"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBox.Style>
-                                </TextBox>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="Margin" Value="0" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-            </Style>
 
             <CompositeCollection x:Key="AddModuleCommands">
                 <MenuItem Header="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_AddVBFormText}"
@@ -419,32 +387,13 @@
                 BorderBrush="{x:Static SystemColors.ActiveBorderBrush}" 
                 BorderThickness="1" 
                 Padding="2">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="20" />
-                </Grid.ColumnDefinitions>
-                <TextBox Name="SearchBox" Grid.Column="0">
-                    <TextBox.Style>
-                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource PlaceHolder}">
-                            <Setter Property="Height" Value="20" />
-                            <Setter Property="Width" Value="Auto" />
-                            <Setter Property="Tag" Value="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_SearchPlaceholder}" />
-                            <Setter Property="Text" Value="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
-                        </Style>
-                    </TextBox.Style>
-                </TextBox>
-                <Button Name="SearchButton"  Grid.Column="1" Command="{Binding ClearSearchCommand}" 
-                                        BorderBrush="{x:Static SystemColors.ControlLightBrush}"
-                                        Background="Transparent"
-                                        Width="20" Height="20" Padding="0" Margin="0,1">
-                    <Image VerticalAlignment="Center" HorizontalAlignment="Center"  
-                           Width="16" Height="16" Source="{Binding Search, Converter={StaticResource SearchToIcon}, UpdateSourceTrigger=PropertyChanged}" />
-                    <i:Interaction.Behaviors>
-                        <controls:FocusElementAfterClickBehavior FocusElement="{Binding ElementName=SearchBox, Mode=OneWay}"/>
-                    </i:Interaction.Behaviors>
-                </Button>
-            </Grid>
+            <controls:SearchBox x:Name="SearchBox"
+                      Background="{x:Static SystemColors.WindowBrush}"
+                      Text="{Binding Search, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      Hint="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI,
+                          Key=CodeExplorer_SearchPlaceholder}"
+                      Grid.Column="0"
+                      Width="Auto"/>
         </Border>
 
         <TreeView x:Name="ProjectTree"
