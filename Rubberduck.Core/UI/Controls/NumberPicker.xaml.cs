@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using Rubberduck.Settings;
 
 // credit to http://stackoverflow.com/a/2752538
@@ -9,7 +10,7 @@ namespace Rubberduck.UI.Controls
     /// <summary>
     /// Interaction logic for NumberPicker.xaml
     /// </summary>
-    public partial class NumberPicker : IDataErrorInfo
+    public partial class NumberPicker : UserControl, IDataErrorInfo
     {
         public static readonly DependencyProperty NumValueProperty =
             DependencyProperty.Register(nameof(NumValue), typeof(int), typeof(NumberPicker), new UIPropertyMetadata(default(int), PropertyChangedCallback));
