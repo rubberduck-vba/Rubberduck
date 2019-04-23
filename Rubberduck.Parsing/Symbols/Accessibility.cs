@@ -12,6 +12,10 @@
 
     public static class AccessibilityExtensions
     {
+        /// <summary>
+        /// Gets the string/token representation of an accessibility specifier.
+        /// </summary>
+        /// <remarks>Implicit accessibility being unspecified, yields an empty string.</remarks>
         public static string CodeString(this Accessibility access)
         {
             return access == Accessibility.Implicit ? string.Empty : access.ToString();
