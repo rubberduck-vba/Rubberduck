@@ -93,35 +93,35 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private string GetSignature(SubroutineDeclaration member)
         {
-            var accessibility = member.Accessibility.CodeString();
+            var accessibility = member.Accessibility.TokenString();
             var parameterList = string.Join(", ", Parameters.Select(p => p.Name));
             return $"{accessibility} Sub {member.IdentifierName}({parameterList})";
         }
 
         private string GetSignature(FunctionDeclaration member)
         {
-            var accessibility = member.Accessibility.CodeString();
+            var accessibility = member.Accessibility.TokenString();
             var parameterList = string.Join(", ", Parameters.Select(p => p.Name));
             return $"{accessibility} Function {member.IdentifierName}({parameterList}) As {member.AsTypeName}";
         }
 
         private string GetSignature(EventDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var parameters = string.Join(", ", Parameters.Select(p => p.Name));
             return $"{access} Event {member.IdentifierName}({parameters})";
         }
 
         private string GetSignature(PropertyGetDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var parameters = string.Join(", ", Parameters.Select(p => p.Name));
             return $"{access} Property Get {member.IdentifierName}({parameters}) As {member.AsTypeName}";
         }
 
         private string GetSignature(PropertyLetDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last(), -1).Name);
             var parameters = string.Join(", ", selectedParams);
@@ -130,7 +130,7 @@ namespace Rubberduck.UI.Refactorings.ReorderParameters
 
         private string GetSignature(PropertySetDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last(), -1).Name);
             var parameters = string.Join(", ", selectedParams);

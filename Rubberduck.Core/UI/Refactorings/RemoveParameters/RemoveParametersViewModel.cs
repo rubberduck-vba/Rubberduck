@@ -90,35 +90,35 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private string GetSignature(SubroutineDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
             return $"{access} Sub {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private string GetSignature(FunctionDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
             return $"{access} Function {member.IdentifierName}({string.Join(", ", selectedParams)}) As {member.AsTypeName}";
         }
 
         private string GetSignature(EventDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
             return $"{access} Event {member.IdentifierName}({string.Join(", ", selectedParams)})";
         }
 
         private string GetSignature(PropertyGetDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name);
             return $"{access} Property Get {member.IdentifierName}({string.Join(", ", selectedParams)}) As {member.AsTypeName}";
         }
 
         private string GetSignature(PropertyLetDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last()).Name);
             return $"{access} Property Let {member.IdentifierName}({string.Join(", ", selectedParams)})";
@@ -126,7 +126,7 @@ namespace Rubberduck.UI.Refactorings.RemoveParameters
 
         private string GetSignature(PropertySetDeclaration member)
         {
-            var access = member.Accessibility.CodeString();
+            var access = member.Accessibility.TokenString();
             var selectedParams = Parameters.Where(p => !p.IsRemoved).Select(s => s.Name).ToList();
             selectedParams.Add(new Parameter(member.Parameters.Last()).Name);
             return $"{access} Property Set {member.IdentifierName}({string.Join(", ", selectedParams)})";
