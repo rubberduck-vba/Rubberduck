@@ -228,4 +228,7 @@
   <data name="PageInstructions_ReferenceSettings" xml:space="preserve">
     <value>Nakonfigurovat nastavení pro přidávání a odstraňování referencí.</value>
   </data>
+  <data name="HotKeys_Exclamation" xml:space="preserve">
+    <value>Pozor! Chybí modifikátor!</value>
+  </data>
 </root>

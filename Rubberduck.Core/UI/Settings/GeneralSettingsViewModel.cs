@@ -12,6 +12,8 @@ using Rubberduck.VBEditor.VbeRuntime.Settings;
 using Rubberduck.Resources;
 using Rubberduck.Resources.Settings;
 using Rubberduck.Parsing.Common;
+using System.Collections.Specialized;
+using Rubberduck.UI.WPF;
 
 namespace Rubberduck.UI.Settings
 {
@@ -79,18 +81,31 @@ namespace Rubberduck.UI.Settings
             }
         }
 
-        private ObservableCollection<HotkeySetting> _hotkeys;
-        public ObservableCollection<HotkeySetting> Hotkeys
+        private ObservableViewModelCollection<HotkeySettingViewModel> _hotkeys;
+        public ObservableViewModelCollection<HotkeySettingViewModel> Hotkeys
         {
             get => _hotkeys;
             set
             {
                 if (_hotkeys != value)
                 {
+                    if (_hotkeys != null)
+                    {
+                        _hotkeys.ElementPropertyChanged -= InvalidateShouldDisplayWarning;
+                    }
+                    if (value != null)
+                    {
+                        value.ElementPropertyChanged += InvalidateShouldDisplayWarning;
+                    }
                     _hotkeys = value;
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(ShouldDisplayHotkeyModificationLabel));
                 }
             }
+        }
+        private void InvalidateShouldDisplayWarning(object sender, ElementPropertyChangedEventArgs<HotkeySettingViewModel> e)
+        {
+            OnPropertyChanged(nameof(ShouldDisplayHotkeyModificationLabel));
         }
 
         public bool ShouldDisplayHotkeyModificationLabel
@@ -259,7 +274,7 @@ namespace Rubberduck.UI.Settings
         public void UpdateConfig(Configuration config)
         {
             config.UserSettings.GeneralSettings = GetCurrentGeneralSettings();
-            config.UserSettings.HotkeySettings.Settings = Hotkeys.ToArray();
+            config.UserSettings.HotkeySettings.Settings = Hotkeys.Select(vm => vm.Unwrap()).ToArray();
         }
 
         public void SetToDefaults(Configuration config)
@@ -290,13 +305,13 @@ namespace Rubberduck.UI.Settings
             TransferSettingsToView(toLoad, null);
         }
 
-        private void TransferSettingsToView(IGeneralSettings general, IHotkeySettings hottkey)
+        private void TransferSettingsToView(IGeneralSettings general, IHotkeySettings hotkey)
         {
             SelectedLanguage = Languages.FirstOrDefault(culture => culture.Code == general.Language.Code);
 
-            Hotkeys = hottkey == null
-                ? new ObservableCollection<HotkeySetting>()
-                : new ObservableCollection<HotkeySetting>(hottkey.Settings);
+            Hotkeys = hotkey == null
+                ? new ObservableViewModelCollection<HotkeySettingViewModel>()
+                : new ObservableViewModelCollection<HotkeySettingViewModel>(hotkey.Settings.Select(data => new HotkeySettingViewModel(data)));
             ShowSplashAtStartup = general.CanShowSplash;
             CheckVersionAtStartup = general.CanCheckVersion;
             CompileBeforeParse = general.CompileBeforeParse;
@@ -352,8 +367,60 @@ namespace Rubberduck.UI.Settings
                 dialog.ShowDialog();
                 if (string.IsNullOrEmpty(dialog.FileName)) return;
                 Service.Save(settings, dialog.FileName);
-                _hotkeyService.Save(new HotkeySettings { Settings = Hotkeys.ToArray() }, dialog.FileName);
+                _hotkeyService.Save(new HotkeySettings { Settings = Hotkeys.Select(vm => vm.Unwrap()).ToArray() }, dialog.FileName);
             }
         }
+    }
+
+    public class HotkeySettingViewModel : ViewModelBase
+    {
+        private readonly HotkeySetting wrapped;
+
+        public HotkeySettingViewModel(HotkeySetting wrapped)
+        {
+            this.wrapped = wrapped;
+        }
+
+        public HotkeySetting Unwrap() { return wrapped; }
+
+        public string Key1
+        {
+            get { return wrapped.Key1; }
+            set { wrapped.Key1 = value; OnPropertyChanged(); }
+        }
+
+        public bool IsEnabled
+        {
+            get { return wrapped.IsEnabled; }
+            set { wrapped.IsEnabled = value; OnPropertyChanged(); }
+        }
+
+        public bool HasShiftModifier
+        {
+            get { return wrapped.HasShiftModifier; }
+            set { wrapped.HasShiftModifier = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsValid)); }
+        }
+
+        public bool HasAltModifier
+        {
+            get { return wrapped.HasAltModifier; }
+            set { wrapped.HasAltModifier = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsValid)); }
+        }
+
+        public bool HasCtrlModifier
+        {
+            get { return wrapped.HasCtrlModifier; }
+            set { wrapped.HasCtrlModifier = value; OnPropertyChanged(); OnPropertyChanged(nameof(IsValid)); }
+        }
+
+        public string CommandTypeName
+        {
+            get { return wrapped.CommandTypeName; }
+            set { wrapped.CommandTypeName = value; OnPropertyChanged(); }
+        }
+
+        public bool IsValid { get { return wrapped.IsValid;  } }
+        // FIXME If this is the only use, the property should be inlined to here
+        public string Prompt { get { return wrapped.Prompt;  } }
     }
 }
