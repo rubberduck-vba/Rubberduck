@@ -8,6 +8,8 @@ namespace Rubberduck.SettingsProvider
         T ReadDefaults();
 
         void Save(T settings);
+        T Import(string fileName);
+        void Export(string fileName);
 
         event EventHandler<ConfigurationChangedEventArgs> SettingsChanged;
     }
