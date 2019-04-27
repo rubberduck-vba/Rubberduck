@@ -8,9 +8,9 @@ namespace Rubberduck.UI.Settings
     public abstract class SettingsViewModelBase<TSettings> : ViewModelBase 
         where TSettings : new()
     {
-        protected readonly IFilePersistenceService<TSettings> Service;
+        protected readonly IConfigurationService<TSettings> Service;
 
-        protected SettingsViewModelBase(IFilePersistenceService<TSettings> service)
+        protected SettingsViewModelBase(IConfigurationService<TSettings> service)
         {
             Service = service;
         }
