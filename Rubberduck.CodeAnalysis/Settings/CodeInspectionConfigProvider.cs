@@ -2,7 +2,6 @@
 using System.Linq;
 using Rubberduck.CodeAnalysis.Inspections;
 using Rubberduck.SettingsProvider;
-using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
 
