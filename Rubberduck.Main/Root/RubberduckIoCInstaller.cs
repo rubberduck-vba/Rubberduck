@@ -253,11 +253,11 @@ namespace Rubberduck.Root
             container.Register(Component.For<IComProjectSerializationProvider>()
                 .ImplementedBy<XmlComProjectSerializer>()
                 .LifestyleTransient());
-            container.Register(Component.For(typeof(IPersistenceService<>), typeof(IFilePersistenceService<>))
+            container.Register(Component.For(typeof(IPersistenceService<>))
                 .ImplementedBy(typeof(XmlPersistenceService<>))
                 .LifestyleSingleton());
 
-            container.Register(Component.For(typeof(IPersistenceService<ReferenceSettings>), typeof(IFilePersistenceService<>))
+            container.Register(Component.For(typeof(IPersistenceService<ReferenceSettings>))
                 .ImplementedBy(typeof(XmlContractPersistenceService<>))
                 .LifestyleSingleton());
 

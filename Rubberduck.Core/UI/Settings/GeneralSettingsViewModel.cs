@@ -348,8 +348,8 @@ namespace Rubberduck.UI.Settings
             {
                 dialog.ShowDialog();
                 if (string.IsNullOrEmpty(dialog.FileName)) return;
-                var general = Service.Load(new Rubberduck.Settings.GeneralSettings(), dialog.FileName);
-                var hotkey = _hotkeyService.Load(new HotkeySettings(), dialog.FileName);
+                var general = Service.Import(dialog.FileName);
+                var hotkey = _hotkeyService.Import(dialog.FileName);
                 //Always assume Smart Indenter registry import has been prompted if importing.
                 general.IsSmartIndenterPrompted = true;
                 TransferSettingsToView(general, hotkey);
@@ -366,8 +366,13 @@ namespace Rubberduck.UI.Settings
             {
                 dialog.ShowDialog();
                 if (string.IsNullOrEmpty(dialog.FileName)) return;
-                Service.Save(settings, dialog.FileName);
-                _hotkeyService.Save(new HotkeySettings { Settings = Hotkeys.Select(vm => vm.Unwrap()).ToArray() }, dialog.FileName);
+
+                // We call save before export to ensure the UI settings are synced to the service before exporting
+                Service.Save(settings);
+                _hotkeyService.Save(new HotkeySettings { Settings = Hotkeys.Select(vm => vm.Unwrap()).ToArray() });
+                // this assumes Export does not truncate any existing exported settings
+                Service.Export(dialog.FileName);
+                _hotkeyService.Export(dialog.FileName);
             }
         }
     }
