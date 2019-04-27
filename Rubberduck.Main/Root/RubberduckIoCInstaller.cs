@@ -244,6 +244,11 @@ namespace Rubberduck.Root
                     .Where(t => Attribute.IsDefined(t, typeof(ExperimentalAttribute))));
             }
 
+            container.Register(Component.For(typeof(IDefaultSettings<>))
+                .ImplementedBy(typeof(DefaultSettings<,>), new FixedGenericAppender(new[] { typeof(Properties.Settings) }))
+                .IsFallback()
+                .LifestyleTransient());
+
             var provider = new ExperimentalTypesProvider(experimentalTypes);
             container.Register(Component.For(typeof(IExperimentalTypesProvider))
                 .DependsOn(Dependency.OnComponent<ViewModelBase, GeneralSettingsViewModel>())
