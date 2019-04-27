@@ -32,7 +32,7 @@ namespace Rubberduck.VBEditor.ComManagement
 
         protected virtual void Dispose(bool disposing)
         {
-#if DEBUG
+#if TRACE_COM_SAFE
             if (_disposed)
             {
                 return;
@@ -70,7 +70,7 @@ namespace Rubberduck.VBEditor.ComManagement
 #endif
         }
 
-#if DEBUG
+#if TRACE_COM_SAFE
         private struct TraceData
         {
             internal int HashCode { get; set; }
