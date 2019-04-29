@@ -1513,7 +1513,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}: Variable Name</comment>
   </data>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>The method using '{0}' already has the declaration '{1}'' of the same name in scope.</value>
+    <value>The method using '{0}' already has the declaration '{1}' of the same name in scope.</value>
     <comment>{0}: Variable Name; {1}: name of conflicting declaration</comment>
   </data>
   <data name="GroupingGrid_Filter" xml:space="preserve">
@@ -1564,7 +1564,7 @@ NOTE: Restart is required for the setting to take effect.</value>
     <comment>{0}: name of module</comment>
   </data>
   <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
-    <value>Target control '{0}' not found,</value>
+    <value>Target control '{0}' not found.</value>
     <comment>{0}: name of control</comment>
   </data>
   <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
@@ -1583,11 +1583,11 @@ NOTE: Restart is required for the setting to take effect.</value>
     <value>No implements selected.</value>
   </data>
   <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
-    <value>The target '{0}'is already a field.</value>
+    <value>The target '{0}' is already a field.</value>
     <comment>{0}: name of target</comment>
   </data>
   <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
-    <value>The target '{0}'is not contained in a method.</value>
+    <value>The target '{0}' is not contained in a method.</value>
     <comment>{0}: name of target</comment>
   </data>
   <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
