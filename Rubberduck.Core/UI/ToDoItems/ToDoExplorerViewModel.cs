@@ -53,9 +53,31 @@ namespace Rubberduck.UI.ToDoItems
             RefreshCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(),
                 _ =>
                 {
-                    _state.OnParseRequested(this);
+                    switch(_state.Status)
+                    {
+                        case ParserState.Ready:
+                        case ParserState.Error:
+                        case ParserState.ResolverError:
+                        case ParserState.UnexpectedError:
+                        case ParserState.Pending:
+                            _state.OnParseRequested(this);
+                            break;
+                    }
                 },
-                _ => _state.IsDirty());
+                _ =>
+                {
+                    switch (_state.Status)
+                    {
+                        case ParserState.Ready:
+                        case ParserState.Error:
+                        case ParserState.ResolverError:
+                        case ParserState.UnexpectedError:
+                        case ParserState.Pending:
+                            return true;
+                        default:
+                            return false;
+                    }
+                });
             NavigateCommand = new NavigateCommand(selectionService);
             RemoveCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteRemoveCommand, CanExecuteRemoveCommand);
             CollapseAllCommand = new DelegateCommand(LogManager.GetCurrentClassLogger(), ExecuteCollapseAll);
