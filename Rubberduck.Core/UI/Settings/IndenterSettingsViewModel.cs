@@ -49,9 +49,9 @@ namespace Rubberduck.UI.Settings
         private void IndenterSettingsViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             // ReSharper disable once ExplicitCallerInfoArgument
-            if (e.PropertyName != "PreviewSampleCode")
+            if (e.PropertyName != nameof(PreviewSampleCode))
             {
-                OnPropertyChanged("PreviewSampleCode");
+                OnPropertyChanged(nameof(PreviewSampleCode));
             }
         }
 
