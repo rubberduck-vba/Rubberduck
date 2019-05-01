@@ -9,6 +9,20 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about parameters passed by value being assigned a new value in the body of a procedure.
+    /// </summary>
+    /// <why>
+    /// 
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples:
+    /// <code>
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// </code>
+    /// </example>
     public sealed class AssignedByValParameterInspection : InspectionBase
     {
         public AssignedByValParameterInspection(RubberduckParserState state)
