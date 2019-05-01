@@ -484,6 +484,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Replace &apos;While...Wend&apos; with &apos;Do While...Loop&apos;.
+        /// </summary>
+        public static string ReplaceWhileWendWithDoWhileLoopQuickFix {
+            get {
+                return ResourceManager.GetString("ReplaceWhileWendWithDoWhileLoopQuickFix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Return explicit Variant.
         /// </summary>
         public static string SetExplicitVariantReturnTypeQuickFix {

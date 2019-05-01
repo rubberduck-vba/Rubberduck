@@ -592,6 +592,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Use of obsolete &apos;While...Wend&apos; statement.
+        /// </summary>
+        public static string ObsoleteWhileWendStatementInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteWhileWendStatementInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ThunderCode 101.
         /// </summary>
         public static string OnErrorGoToMinusOneInspection {
