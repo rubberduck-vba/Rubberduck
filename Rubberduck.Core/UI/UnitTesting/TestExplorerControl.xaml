@@ -282,11 +282,19 @@
                 <Separator />
 
                 <Menu Background="Transparent">
-                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuButtonText}"
+                    <MenuItem VerticalAlignment="Center"
                               IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource RunImage}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuButtonText}" />
+                                <Border Margin="8,0,0,0">
+                                    <Path VerticalAlignment="Center" Width="6" Fill="{DynamicResource ToolBarGripper}" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z" />
+                                </Border>
+                            </StackPanel>
+                        </MenuItem.Header>
                         <MenuItem Command="{Binding RunAllTestsCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_RunMenuAllTests}">
                             <MenuItem.Icon>
                                 <Image Source="{StaticResource RunAllTestsImage}" />
@@ -347,11 +355,19 @@
                 <Separator />
 
                 <Menu Background="Transparent">
-                    <MenuItem VerticalAlignment="Center" Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}"
+                    <MenuItem VerticalAlignment="Center"
                               IsEnabled="{Binding Model.IsBusy, Converter={StaticResource InvertBoolValue}}">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource AddIcon}" Style="{StaticResource ToolbarImageOpacity}" />
                         </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Add}" />
+                                <Border Margin="8,0,0,0">
+                                    <Path VerticalAlignment="Center" Width="6" Fill="{DynamicResource ToolBarGripper}" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z" />
+                                </Border>
+                            </StackPanel>
+                        </MenuItem.Header>
                         <MenuItem Command="{Binding AddTestModuleCommand}" Header="{Resx ResxName=Rubberduck.Resources.UnitTesting.TestExplorer, Key=TestExplorer_AddTestModule}">
                         </MenuItem>
                         <Separator />

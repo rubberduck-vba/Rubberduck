@@ -266,7 +266,12 @@
                 <Menu VerticalContentAlignment="Center" Background="Transparent" >
                     <MenuItem ItemsSource="{StaticResource AddModuleCommands}" VerticalContentAlignment="Center">
                         <MenuItem.Header>
-                            <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource AddModuleImage}" />
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource AddModuleImage}" />
+                                <Border Margin="4,0,0,0">
+                                    <Path VerticalAlignment="Center" Width="6" Fill="{DynamicResource ToolBarGripper}" Stretch="Uniform" HorizontalAlignment="Right" Data="F1 M 301.14,-189.041L 311.57,-189.041L 306.355,-182.942L 301.14,-189.041 Z" />
+                                </Border>
+                            </StackPanel>
                         </MenuItem.Header>
                         <MenuItem.ToolTip>
                             <TextBlock Text="{Resx ResxName=Rubberduck.Resources.CodeExplorer.CodeExplorerUI, Key=CodeExplorer_Add}" />

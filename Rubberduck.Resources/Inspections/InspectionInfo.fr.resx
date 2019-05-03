@@ -379,4 +379,7 @@ Si le paramètre peut être nul, ignorer ce résultat; passer une valeur nulle �
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>Bien que légale, cette syntaxe a un effet peu documentée -- toute erreur courante est supprimée, en plus de désactiver la gestion d'erreurs. L'instruction peut également être ambiguë, si la procédure contient effectivement une ligne -1. La stratégie de gestion d'erreurs semble plus complexe que nécessaire et pourrait être à revoir.</value>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Les boucles 'While...Wend' existent pour compatibilité avec les anciennes versions de VB, et ont été remplaçées par l'introduction des structures itératives 'Do While...Loop', qui supportent l'instruction 'Exit Do'. Les boucles 'While...Wend' ne peuvent être terminées qu'en remplissant la condition de l'expression 'While'.</value>
+  </data>
 </root>
