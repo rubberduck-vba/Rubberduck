@@ -610,6 +610,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;While...Wend&apos; conditional loop can be written as a &apos;Do While...Loop&apos; block..
+        /// </summary>
+        public static string ObsoleteWhileWendStatementInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteWhileWendStatementInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to On Error GoTo -1 encountered.
         /// </summary>
         public static string OnErrorGoToMinusOneInspection {
