@@ -67,6 +67,16 @@ namespace Rubberduck.UI.UnitTesting
 
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
+            TestFiltering = null;
+
+            //SeverityFilters = new ObservableCollection<string>(
+            //    new[] { InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_All", CultureInfo.CurrentUICulture) }
+            //        .Concat(Enum.GetNames(typeof(CodeInspectionSeverity)).Select(s => InspectionsUI.ResourceManager.GetString("CodeInspectionSeverity_" + s, CultureInfo.CurrentUICulture))));
+            OutcomeFilters = new System.Collections.ObjectModel.ObservableCollection<object>(
+                new[] { "None" }
+                    .Concat(Enum.GetNames(typeof(TestOutcome)).Select(s => s.ToString())));
+
+            UnitTestProperties = new ListCollectionView(Model.Tests);
         }
 
         public TestExplorerModel Model { get; }
@@ -132,6 +142,41 @@ namespace Rubberduck.UI.UnitTesting
             }
         }
 
+        //public System.Collections.ObjectModel.ObservableCollection<System.Windows.Media.Imaging.BitmapImage> OutcomeFilters { get; }
+        public System.Collections.ObjectModel.ObservableCollection<object> OutcomeFilters { get; }
+
+        private TestOutcome? _filtering = null;
+
+        public TestOutcome? TestFiltering
+        {
+            get => _filtering;
+            set
+            {
+                if (value == _filtering)
+                {
+                    return;
+                }
+
+                _filtering = value;
+                Tests.Refresh();
+                OnPropertyChanged();
+            }
+        }
+
+        private string _testNameFilter = string.Empty;
+        public string TestNameFilter
+        {
+            get => _testNameFilter;
+            set
+            {
+                if (_testNameFilter != value)
+                {
+                    _testNameFilter = value;
+                    
+                }
+            }
+        }
+
         private bool _expanded;
         public bool ExpandedState
         {
@@ -140,6 +185,45 @@ namespace Rubberduck.UI.UnitTesting
             {
                 _expanded = value;
                 OnPropertyChanged();
+            }
+        }
+
+        private const string _noFilter = "None";
+        private string _selectedOutcomeFilter = _noFilter;
+        public string SelectedOutcomeFilter
+        {
+            get => _selectedOutcomeFilter;
+            set
+            {
+                if (_selectedOutcomeFilter != value)
+                {
+                    _selectedOutcomeFilter = value.Replace(" ", string.Empty);
+                    OnPropertyChanged();
+                    UnitTestProperties.Filter = item => FilterResults(item);
+                }
+            }
+        }
+
+        private bool FilterResults(object unitTest)
+        {
+            OnPropertyChanged(nameof(UnitTestProperties));
+            var unitTestProperties = unitTest as UnitTestProperties;
+
+            return unitTestProperties.Name.ToUpper().Contains(_noFilter.ToUpper())
+                && unitTestProperties.TestOutcome.ToString().Equals(_noFilter);
+        }
+
+        private ListCollectionView _unitTestProperties;
+        public ListCollectionView UnitTestProperties
+        {
+            get => _unitTestProperties;
+            set
+            {
+                if (_unitTestProperties != value)
+                {
+                    _unitTestProperties = value;
+                    OnPropertyChanged();
+                }
             }
         }
 

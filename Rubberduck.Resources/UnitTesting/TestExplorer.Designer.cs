@@ -160,6 +160,15 @@ namespace Rubberduck.Resources.UnitTesting {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Test Name.
+        /// </summary>
+        public static string TestExplorer_Filter {
+            get {
+                return ResourceManager.GetString("TestExplorer_Filter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Navigate to selected.
         /// </summary>
         public static string TestExplorer_GotoSelectionToolTip {
