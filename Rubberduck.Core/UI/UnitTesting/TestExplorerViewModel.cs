@@ -18,6 +18,7 @@ using Rubberduck.UnitTesting;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.Utility;
 using DataFormats = System.Windows.DataFormats;
+using Rubberduck.Resources.UnitTesting;
 
 namespace Rubberduck.UI.UnitTesting
 {
@@ -67,6 +68,10 @@ namespace Rubberduck.UI.UnitTesting
 
             OnPropertyChanged(nameof(Tests));
             TestGrouping = TestExplorerGrouping.Outcome;
+
+            OutcomeFilters = new System.Collections.ObjectModel.ObservableCollection<string>(
+                new[] { _allResultsFilter }
+                    .Concat(Enum.GetNames(typeof(TestOutcome)).Select(s => s.ToString())));
         }
 
         public TestExplorerModel Model { get; }
@@ -141,6 +146,50 @@ namespace Rubberduck.UI.UnitTesting
                 _expanded = value;
                 OnPropertyChanged();
             }
+        }
+
+        public System.Collections.ObjectModel.ObservableCollection<string> OutcomeFilters { get; }
+
+        private string _testNameFilter = string.Empty;
+        public string TestNameFilter
+        {
+            get => _testNameFilter;
+            set
+            {
+                if (_testNameFilter != value)
+                {
+                    _testNameFilter = value;
+                    OnPropertyChanged();
+                    Tests.Filter = item => FilterResults(item);
+                }
+            }
+        }
+
+        private static readonly string _allResultsFilter = TestExplorer.ResourceManager.GetString("TestExplorer_AllResults", CultureInfo.CurrentUICulture);
+        private string _selectedOutcomeFilter = _allResultsFilter;
+        public string SelectedOutcomeFilter
+        {
+            get => _selectedOutcomeFilter;
+            set
+            {
+                if (_selectedOutcomeFilter != value)
+                {
+                    _selectedOutcomeFilter = value.Replace(" ", string.Empty);
+                    OnPropertyChanged();
+                    Tests.Filter = item => FilterResults(item);
+                }
+            }
+        }
+
+        private bool FilterResults(object unitTest)
+        {
+            OnPropertyChanged(nameof(Tests));
+
+            var testMethodViewModel = unitTest as TestMethodViewModel;
+            var memberName = testMethodViewModel.QualifiedName.MemberName;
+
+            return memberName.ToUpper().Contains(TestNameFilter.ToUpper())
+                && (SelectedOutcomeFilter.Equals(_allResultsFilter) || testMethodViewModel.Result.Outcome.ToString().Equals(_selectedOutcomeFilter));
         }
 
         private void HandleTestCompletion(object sender, TestCompletedEventArgs e)

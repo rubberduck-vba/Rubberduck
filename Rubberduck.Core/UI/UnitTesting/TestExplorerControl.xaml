@@ -216,6 +216,18 @@
 
                 <Separator />
 
+                <Label Content="{Resx Key=TestExplorer_Filter, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
+                <TextBox MinWidth="50"
+                         Text="{Binding TestNameFilter, UpdateSourceTrigger=PropertyChanged}"/>
+
+                <Label Content="{Resx Key=TestExplorer_Outcome, ResxName=Rubberduck.Resources.UnitTesting.TestExplorer}" />
+
+                <ComboBox Width="100" 
+                          ItemsSource="{Binding OutcomeFilters, UpdateSourceTrigger=PropertyChanged}"
+                          SelectedItem="{Binding SelectedOutcomeFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <Separator />
+
                 <Button Name="CollapseAll" Command="{Binding CollapseAllCommand}" Margin="2"
                         ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=InspectionResults_CollapseAll}">
                     <Image Source="{StaticResource CollapseAllImage}" Style="{StaticResource ToolbarImageOpacity}" />

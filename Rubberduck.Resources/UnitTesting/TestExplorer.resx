@@ -343,4 +343,7 @@
     <value>Spectacular Failure</value>
     <comment>Easter egg status.</comment>
   </data>
+  <data name="TestExplorer_Filter" xml:space="preserve">
+    <value>Test Name</value>
+  </data>
 </root>
