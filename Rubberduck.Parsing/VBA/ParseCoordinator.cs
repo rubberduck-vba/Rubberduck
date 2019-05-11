@@ -239,54 +239,15 @@ namespace Rubberduck.Parsing.VBA
             _parserStateManager.SetStatusAndFireStateChanged(this, ParserState.LoadingReference, token);
             token.ThrowIfCancellationRequested();
 
-            var newOrModifiedProjects = toParse.Select(module => module.ProjectId).Concat(newProjectIds).ToHashSet();
-            _parsingCacheService.RefreshUserComProjects(newOrModifiedProjects);
+            //TODO: Remove the conditional compilation after loading from typelibs actually works.
+#if LOAD_USER_COM_PROJECTS
+            RefreshUserComProjects(toParse, newProjectIds);
             token.ThrowIfCancellationRequested();
 
-            _parsingStageService.SyncUserComProjects();
-            if (_parsingStageService.LastSyncOfUserComProjectsLoadedDeclarations || _parsingStageService.UserProjectIdsUnloaded.Any())
-            {
-                var unloadedProjectIds = _parsingStageService.UserProjectIdsUnloaded.ToHashSet();
-                var unloadedModules =
-                    _parsingCacheService.DeclarationFinder.AllModules
-                        .Where(qmn => unloadedProjectIds.Contains(qmn.ProjectId))
-                        .ToHashSet();
-                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
-                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
-                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
-                ClearModuleToModuleReferences(unloadedModules);
-                RefreshDeclarationFinder();
-            }
+            SyncDeclarationsFromUserComProjects(toParse, token, toReresolveReferences);
+#endif
 
-            _parsingStageService.SyncComReferences(token);
-            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences || _parsingStageService.COMReferencesUnloadedInLastSync.Any())
-            {
-                var unloadedReferences = _parsingStageService.COMReferencesUnloadedInLastSync.ToHashSet();
-                var unloadedModules =
-                    _parsingCacheService.DeclarationFinder.AllModules
-                        .Where(qmn => unloadedReferences.Contains(qmn.ProjectId))
-                        .ToHashSet();
-                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
-                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
-                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
-                ClearModuleToModuleReferences(unloadedModules);
-                RefreshDeclarationFinder();
-            }
-
-            if (_parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync.Any())
-            {
-                //We only use the referencedProjectId because that simplifies the reference management immensely.  
-                var affectedReferences = _parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync
-                    .Select(tpl => tpl.referencedProjectId)
-                    .ToHashSet();
-                var referenceModules =
-                    _parsingCacheService.DeclarationFinder.AllModules
-                        .Where(qmn => affectedReferences.Contains(qmn.ProjectId))
-                        .ToHashSet();
-                var additionalModulesToBeReresolved = OtherModulesReferencingAnyNotToBeParsed(referenceModules.AsReadOnly(), toParse);
-                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
-                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
-            }
+            SyncComReferences(toParse, token, toReresolveReferences);
             token.ThrowIfCancellationRequested();
 
             _parsingStageService.LoadBuitInDeclarations();
@@ -377,6 +338,69 @@ namespace Rubberduck.Parsing.VBA
             //This is the point where the change of the overall state to Ready is triggered on the success path.
             _parserStateManager.EvaluateOverallParserState(token);
             token.ThrowIfCancellationRequested();
+        }
+
+        private void SyncComReferences(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token, HashSet<QualifiedModuleName> toReresolveReferences)
+        {
+            _parsingStageService.SyncComReferences(token);
+            if (_parsingStageService.LastSyncOfCOMReferencesLoadedReferences ||
+                _parsingStageService.COMReferencesUnloadedInLastSync.Any())
+            {
+                var unloadedReferences = _parsingStageService.COMReferencesUnloadedInLastSync.ToHashSet();
+                var unloadedModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => unloadedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved =
+                    OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
+                ClearModuleToModuleReferences(unloadedModules);
+                RefreshDeclarationFinder();
+            }
+
+            if (_parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync.Any())
+            {
+                //We only use the referencedProjectId because that simplifies the reference management immensely.  
+                var affectedReferences = _parsingStageService.COMReferencesAffectedByPriorityChangesInLastSync
+                    .Select(tpl => tpl.referencedProjectId)
+                    .ToHashSet();
+                var referenceModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => affectedReferences.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved =
+                    OtherModulesReferencingAnyNotToBeParsed(referenceModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
+            }
+        }
+
+        private void SyncDeclarationsFromUserComProjects(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token,
+            HashSet<QualifiedModuleName> toReresolveReferences)
+        {
+            _parsingStageService.SyncUserComProjects();
+            if (_parsingStageService.LastSyncOfUserComProjectsLoadedDeclarations ||
+                _parsingStageService.UserProjectIdsUnloaded.Any())
+            {
+                var unloadedProjectIds = _parsingStageService.UserProjectIdsUnloaded.ToHashSet();
+                var unloadedModules =
+                    _parsingCacheService.DeclarationFinder.AllModules
+                        .Where(qmn => unloadedProjectIds.Contains(qmn.ProjectId))
+                        .ToHashSet();
+                var additionalModulesToBeReresolved =
+                    OtherModulesReferencingAnyNotToBeParsed(unloadedModules.AsReadOnly(), toParse);
+                toReresolveReferences.UnionWith(additionalModulesToBeReresolved);
+                _parserStateManager.SetModuleStates(additionalModulesToBeReresolved, ParserState.ResolvingReferences, token);
+                ClearModuleToModuleReferences(unloadedModules);
+                RefreshDeclarationFinder();
+            }
+        }
+
+        private void RefreshUserComProjects(IReadOnlyCollection<QualifiedModuleName> toParse, IReadOnlyCollection<string> newProjectIds)
+        {
+            var newOrModifiedProjects = toParse.Select(module => module.ProjectId).Concat(newProjectIds).ToHashSet();
+            _parsingCacheService.RefreshUserComProjects(newOrModifiedProjects);
         }
 
         private void ClearModuleToModuleReferences(IEnumerable<QualifiedModuleName> modules)
