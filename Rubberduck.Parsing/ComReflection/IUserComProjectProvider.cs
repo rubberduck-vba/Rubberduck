@@ -5,6 +5,6 @@ namespace Rubberduck.Parsing.ComReflection
     public interface IUserComProjectProvider
     {
         ComProject UserProject(string projectId);
-        IEnumerable<(string projectId, ComProject comProject)> UserProjects();
+        IReadOnlyDictionary<string, ComProject> UserProjects();
     }
 }
