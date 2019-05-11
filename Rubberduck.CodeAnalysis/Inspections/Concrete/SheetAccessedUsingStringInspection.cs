@@ -10,6 +10,7 @@ using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -43,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
                 .ToList();
 
             var references = targetProperties.SelectMany(declaration => declaration.References
-                .Where(reference => !IsIgnoringInspectionResultFor(reference, AnnotationName) &&
+                .Where(reference => !reference.IsIgnoringInspectionResultFor(AnnotationName) &&
                                     IsAccessedWithStringLiteralParameter(reference))
                 .Select(reference => new IdentifierReferenceInspectionResult(this,
                     InspectionResults.SheetAccessedUsingStringInspection, State, reference)));

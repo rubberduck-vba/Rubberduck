@@ -19,10 +19,13 @@ namespace Rubberduck.UI.CodeExplorer.Commands
             typeof(CodeExplorerMemberViewModel)
         };
 
-        public AddTestComponentCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator) 
-            : base(vbe, state, codeGenerator) { }
+        public AddTestComponentCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator)
+            : base(vbe, state, codeGenerator)
+        {
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+        }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (parameter == null || 
                 !ApplicableNodes.Contains(parameter.GetType()) ||

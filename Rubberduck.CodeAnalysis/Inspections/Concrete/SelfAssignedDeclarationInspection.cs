@@ -7,6 +7,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -25,7 +26,7 @@ namespace Rubberduck.Inspections.Concrete
                         || declaration.AsTypeDeclaration.DeclarationType != DeclarationType.UserDefinedType)
                     && declaration.ParentScopeDeclaration != null
                     && declaration.ParentScopeDeclaration.DeclarationType.HasFlag(DeclarationType.Member))
-                .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName))
+                .Where(result => !result.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(issue => new DeclarationInspectionResult(this,
                                                       string.Format(InspectionResults.SelfAssignedDeclarationInspection, issue.IdentifierName),
                                                       issue));

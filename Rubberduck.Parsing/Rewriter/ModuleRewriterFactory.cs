@@ -11,18 +11,18 @@ namespace Rubberduck.Parsing.Rewriter
     public class ModuleRewriterFactory : IModuleRewriterFactory
     {
 
-        private readonly ISourceCodeHandler _codePaneSourceCodeHandlerr;
+        private readonly ISourceCodeHandler _codePaneSourceCodeHandler;
         private readonly ISourceCodeHandler _attributesSourceCodeHandler;
 
         public ModuleRewriterFactory(ISourceCodeHandler codePaneSourceCodeHandler, ISourceCodeHandler attributesSourceCodeHandler)
         {
-            _codePaneSourceCodeHandlerr = codePaneSourceCodeHandler;
+            _codePaneSourceCodeHandler = codePaneSourceCodeHandler;
             _attributesSourceCodeHandler = attributesSourceCodeHandler;
         }
 
         public IExecutableModuleRewriter CodePaneRewriter(QualifiedModuleName module, ITokenStream tokenStream)
         {
-            return new ModuleRewriter(module, tokenStream, _codePaneSourceCodeHandlerr);
+            return new ModuleRewriter(module, tokenStream, _codePaneSourceCodeHandler);
         }
 
         public IExecutableModuleRewriter AttributesRewriter(QualifiedModuleName module, ITokenStream tokenStream)

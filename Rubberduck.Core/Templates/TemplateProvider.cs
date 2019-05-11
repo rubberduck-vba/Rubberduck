@@ -30,16 +30,16 @@ namespace Rubberduck.Templates
         private Lazy<IEnumerable<Template>> LazyList => new Lazy<IEnumerable<Template>>(() =>
         {
             var list = new List<Template>();
-            var set = Rubberduck.Resources.Templates.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, true);
+            var set = Rubberduck.Resources.Templates.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 
             foreach (DictionaryEntry entry in set)
             {
                 var key = (string)entry.Key;
-                var value = (string) entry.Value;
                 if (key.EndsWith("_Name"))
                 {
-                    var handler = _provider.CreateTemplateFileHandler(value);
-                    list.Add(new Template(value, handler));
+                    var templateName = key.Substring(0, key.Length - "_Name".Length);
+                    var handler = _provider.CreateTemplateFileHandler(templateName);
+                    list.Add(new Template(templateName, handler));
                 }
             }
 

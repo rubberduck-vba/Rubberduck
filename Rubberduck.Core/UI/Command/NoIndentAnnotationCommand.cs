@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -15,19 +14,22 @@ namespace Rubberduck.UI.Command
         private readonly RubberduckParserState _state;
 
         public NoIndentAnnotationCommand(IVBE vbe, RubberduckParserState state)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _state = state;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             var target = FindTarget(parameter);
             using (var pane = _vbe.ActiveCodePane)
             {
-                return !pane.IsWrappingNullReference && target != null &&
-                       target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
+                return pane != null 
+                       && !pane.IsWrappingNullReference 
+                       && target != null 
+                       && target.Annotations.All(a => a.AnnotationType != AnnotationType.NoIndent);
             }
         }
 

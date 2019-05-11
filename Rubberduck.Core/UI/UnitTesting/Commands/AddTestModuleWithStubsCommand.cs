@@ -14,9 +14,11 @@ namespace Rubberduck.UI.UnitTesting.Commands
         {
             _vbe = vbe;
             _newUnitTestModuleCommand = newUnitTestModuleCommand;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel;
+        private bool SpecialEvaluateCanExecute(object parameter) => parameter is CodeExplorerComponentViewModel;
 
         protected override void OnExecute(object parameter)
         {

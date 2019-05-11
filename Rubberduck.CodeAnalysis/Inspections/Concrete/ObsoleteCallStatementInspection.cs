@@ -10,6 +10,7 @@ using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -27,7 +28,7 @@ namespace Rubberduck.Inspections.Concrete
         {
             var results = new List<IInspectionResult>();
 
-            foreach (var context in Listener.Contexts.Where(context => !IsIgnoringInspectionResultFor(context.ModuleName, context.Context.Start.Line)))
+            foreach (var context in Listener.Contexts.Where(context => !context.IsIgnoringInspectionResultFor(State.DeclarationFinder, AnnotationName)))
             {
                 string lines;
                 var component = State.ProjectsProvider.Component(context.ModuleName);

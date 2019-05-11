@@ -16,12 +16,12 @@ namespace Rubberduck.Parsing.Rewriter
             _selectionRecoverer = selectionRecoverer;
         }
 
-        public IRewriteSession CodePaneSession(Func<IRewriteSession, bool> rewritingAllowed)
+        public IExecutableRewriteSession CodePaneSession(Func<IRewriteSession, bool> rewritingAllowed)
         {
             return new CodePaneRewriteSession(_state, _rewriterProvider, _selectionRecoverer, rewritingAllowed);
         }
 
-        public IRewriteSession AttributesSession(Func<IRewriteSession, bool> rewritingAllowed)
+        public IExecutableRewriteSession AttributesSession(Func<IRewriteSession, bool> rewritingAllowed)
         {
             return new AttributesRewriteSession(_state, _rewriterProvider, _selectionRecoverer, rewritingAllowed);
         }

@@ -12,20 +12,33 @@ namespace Rubberduck.UI.Command
     {
         private static readonly List<MethodBase> ExceptionTargetSites = new List<MethodBase>();
 
-        protected CommandBase(ILogger logger)
+        protected CommandBase(ILogger logger = null)
         {
-            Logger = logger;
+            Logger = logger ?? LogManager.GetLogger(GetType().FullName);
+            CanExecuteCondition = (parameter => true);
         }
 
         protected ILogger Logger { get; }
-        protected virtual bool EvaluateCanExecute(object parameter) => true;
         protected abstract void OnExecute(object parameter);
+
+        protected Func<object, bool> CanExecuteCondition { get; private set; }
+
+        protected void AddToCanExecuteEvaluation(Func<object, bool> furtherCanExecuteEvaluation)
+        {
+            if (furtherCanExecuteEvaluation == null)
+            {
+                return;
+            }
+
+            var currentCanExecute = CanExecuteCondition;
+            CanExecuteCondition = (parameter) => currentCanExecute(parameter) && furtherCanExecuteEvaluation(parameter);
+        }
 
         public bool CanExecute(object parameter)
         {
             try
             {
-                return EvaluateCanExecute(parameter);
+                return CanExecuteCondition(parameter);
             }
             catch (Exception exception)
             {

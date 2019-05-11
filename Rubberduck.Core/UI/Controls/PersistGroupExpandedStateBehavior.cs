@@ -68,10 +68,19 @@ namespace Rubberduck.UI.Controls
 
         private void OnExpanded(object sender, RoutedEventArgs e) => SetExpanded(true);
 
-        private void SetExpanded(bool expanded) => GetExpandedStateStore()[GroupName ?? string.Empty] = expanded;
+        private void SetExpanded(bool expanded)
+        {
+            var expandStateStore = GetExpandedStateStore();
+            //TODO: Remove this once GetExpandedStateStore is reliable.
+            if (expandStateStore != null)
+            {
+                expandStateStore[GroupName ?? string.Empty] = expanded;
+            }
+        }
 
         private IDictionary<object, bool> GetExpandedStateStore()
         {
+            //FIXME: This is not reliable since the containing GroupItem does not necessarily have a VisualParent at the time of the request.
             if (!(AssociatedObject?.GetVisualAncestor<ItemsControl>() is ItemsControl items))
             {
                 return null;

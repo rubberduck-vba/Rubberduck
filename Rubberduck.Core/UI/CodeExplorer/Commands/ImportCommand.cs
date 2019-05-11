@@ -25,13 +25,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             _vbe = vbe;
             _dialogFactory = dialogFactory;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        public override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
+        public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            return base.EvaluateCanExecute(parameter) && _vbe.ProjectsCount == 1 || ThereIsAValidActiveProject();
+            return _vbe.ProjectsCount == 1 || ThereIsAValidActiveProject();
         }
 
         private bool ThereIsAValidActiveProject()
@@ -46,7 +48,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter))
+            if (!CanExecute(parameter))
             {
                 return;
             }

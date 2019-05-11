@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Controls;
@@ -20,14 +19,15 @@ namespace Rubberduck.UI.Command
         private readonly FindAllReferencesService _finder;
 
         public FindAllReferencesCommand(RubberduckParserState state, IVBE vbe, ISearchResultsWindowViewModel viewModel, FindAllReferencesService finder)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _state = state;
             _vbe = vbe;
             _finder = finder;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             if (_state.Status != ParserState.Ready)
             {

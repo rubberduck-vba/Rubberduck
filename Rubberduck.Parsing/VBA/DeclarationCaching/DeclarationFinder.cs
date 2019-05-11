@@ -274,30 +274,29 @@ namespace Rubberduck.Parsing.VBA.DeclarationCaching
 
         public Declaration FindSelectedDeclaration(QualifiedSelection qualifiedSelection)
         {
-            var selection = qualifiedSelection.Selection;
+            var matches = new List<Declaration>();
 
             // statistically we'll be on an IdentifierReference more often than on a Declaration:
-            var matches = _referencesBySelection
-                .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.QualifiedName)
-                              && kvp.Key.Selection.ContainsFirstCharacter(qualifiedSelection.Selection))
-                .SelectMany(kvp => kvp.Value)
-                .OrderByDescending(reference => reference.Declaration.DeclarationType)
-                .Select(reference => reference.Declaration)
-                .Distinct()
-                .ToArray();
-
-            if (!matches.Any())
+            if (_referencesByModule.TryGetValue(qualifiedSelection.QualifiedName, out var referencesInModule))
             {
-                matches = _declarationsBySelection
-                    .Where(kvp => kvp.Key.QualifiedName.Equals(qualifiedSelection.QualifiedName)
-                                  && kvp.Key.Selection.ContainsFirstCharacter(selection))
-                    .SelectMany(kvp => kvp.Value)
-                    .OrderByDescending(declaration => declaration.DeclarationType)
+                matches = referencesInModule
+                    .Where(reference => reference.IsSelected(qualifiedSelection))
+                    .OrderByDescending(reference => reference.Declaration.DeclarationType)
+                    .Select(reference => reference.Declaration)
                     .Distinct()
-                    .ToArray();
+                    .ToList();
             }
 
-            switch (matches.Length)
+            if (!matches.Any() && _declarations.TryGetValue(qualifiedSelection.QualifiedName, out var declarationsInModule))
+            {
+                matches = declarationsInModule
+                    .Where(declaration => declaration.IsSelected(qualifiedSelection))
+                    .OrderByDescending(declaration => declaration.DeclarationType)
+                    .Distinct()
+                    .ToList();
+            }
+
+            switch (matches.Count)
             {
                 case 0:
                     return ModuleDeclaration(qualifiedSelection.QualifiedName);

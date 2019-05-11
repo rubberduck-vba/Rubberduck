@@ -27,12 +27,12 @@ namespace Rubberduck.AddRemoveReferences
         public static readonly List<string> TypeLibraryExtensions = new List<string> { ".olb", ".tlb", ".dll", ".ocx", ".exe" };
 
         private readonly IMessageBox _messageBox;
-        private readonly IConfigProvider<ReferenceSettings> _settings;
+        private readonly IConfigurationService<ReferenceSettings> _settings;
         private readonly IComLibraryProvider _libraryProvider;
 
         public ReferenceReconciler(
             IMessageBox messageBox, 
-            IConfigProvider<ReferenceSettings> settings, 
+            IConfigurationService<ReferenceSettings> settings, 
             IComLibraryProvider libraryProvider)
         {
             _messageBox = messageBox;

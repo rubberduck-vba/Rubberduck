@@ -5,7 +5,7 @@
     <Description>Assembly Containing the Code Analysis features exposed by Rubberduck</Description>
     <Copyright>Copyright © 2017-2018</Copyright>
     <AssemblyName>Rubberduck.CodeAnalysis</AssemblyName>
-    <RootNamespace>Rubberduck.Inspections</RootNamespace>
+    <RootNamespace>Rubberduck.CodeAnalysis</RootNamespace>
     <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
@@ -15,8 +15,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rubberduck.Core\Rubberduck.Core.csproj" />
     <ProjectReference Include="..\Rubberduck.Interaction\Rubberduck.Interaction.csproj" />
+    <ProjectReference Include="..\Rubberduck.JunkDrawer\Rubberduck.JunkDrawer.csproj" />
     <ProjectReference Include="..\Rubberduck.Parsing\Rubberduck.Parsing.csproj">
       <Private>False</Private>
     </ProjectReference>
@@ -51,5 +51,18 @@
     <PackageReference Include="System.ValueTuple">
       <Version>4.5.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\CodeInspectionDefaults.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeInspectionDefaults.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\CodeInspectionDefaults.settings">
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
+      <LastGenOutput>CodeInspectionDefaults.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

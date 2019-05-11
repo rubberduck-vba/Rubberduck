@@ -1,21 +1,23 @@
 ﻿using Antlr4.Runtime.Tree;
-using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using System;
+using NLog;
 
 namespace Rubberduck.CodeAnalysis.CodeMetrics
 {
     public class CodeMetricsAnalyst : ICodeMetricsAnalyst
     {
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private readonly CodeMetric[] metrics;
+        private readonly CodeMetric[] _metrics;
 
         public CodeMetricsAnalyst(IEnumerable<CodeMetric> supportedMetrics)
         {
-            metrics = supportedMetrics.ToArray();
+            _metrics = supportedMetrics.ToArray();
         }
 
         public IEnumerable<ICodeMetricResult> GetMetrics(RubberduckParserState state)
@@ -42,16 +44,23 @@ namespace Rubberduck.CodeAnalysis.CodeMetrics
 
         private IEnumerable<ICodeMetricResult> TraverseModuleTree(IParseTree parseTree, DeclarationFinder declarationFinder, QualifiedModuleName moduleName)
         {
-            var listeners = metrics.Select(metric => metric.TreeListener).ToList();
+            var listeners = _metrics.Select(metric => metric.TreeListener).ToList();
             foreach (var l in listeners)
             {
                 l.Reset();
                 l.InjectContext((declarationFinder, moduleName));
             }
             var combinedMetricListener = new CombinedParseTreeListener(listeners);
-
-            ParseTreeWalker.Default.Walk(combinedMetricListener, parseTree);
-            return listeners.SelectMany(l => l.Results());
+            try
+            {
+                ParseTreeWalker.Default.Walk(combinedMetricListener, parseTree);
+                return listeners.SelectMany(l => l.Results());
+            }
+            catch (Exception e)
+            {
+                Logger.Warn(e, "An exception occured during parse-tree traversal or result aggregation for Code Metrics");
+                return Enumerable.Empty<ICodeMetricResult>();
+            }
         }
     }
 }

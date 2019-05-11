@@ -1,51 +1,77 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Templates;
+using Rubberduck.UI.Command;
 using Rubberduck.VBEditor.SafeComWrappers;
-using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.UI.CodeExplorer.Commands
 {
-    public class AddTemplateCommand : AddComponentCommandBase
+    public class AddTemplateCommand : CodeExplorerCommandBase
     {
-        private static readonly ProjectType[] Types = { ProjectType.HostProject, ProjectType.StandAlone, ProjectType.StandardExe, ProjectType.ActiveXExe };
+        private static readonly Type[] ApplicableNodes =
+        {
+            typeof(CodeExplorerProjectViewModel),
+            typeof(CodeExplorerCustomFolderViewModel),
+            typeof(CodeExplorerComponentViewModel),
+            typeof(CodeExplorerMemberViewModel)
+        };
+
+        private static readonly ProjectType[] ApplicableProjectTypes =
+        {
+            ProjectType.HostProject,
+            ProjectType.StandAlone,
+            ProjectType.StandardExe,
+            ProjectType.ActiveXExe
+        };
 
         private readonly ITemplateProvider _provider;
+        private readonly ICodeExplorerAddComponentService _addComponentService;
 
-        public AddTemplateCommand(IVBE vbe, ITemplateProvider provider) : base(vbe)
+        public AddTemplateCommand(ICodeExplorerAddComponentService addComponentService, ITemplateProvider provider) 
         {
             _provider = provider;
+            _addComponentService = addComponentService;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        public override IEnumerable<ProjectType> AllowableProjectTypes => Types;
+        public override IEnumerable<Type> ApplicableNodeTypes => new[]{typeof(System.ValueTuple<string, ICodeExplorerNode>)};
 
-        public override ComponentType ComponentType => ComponentType.Undefined;
+        public IEnumerable<ProjectType> AllowableProjectTypes => ApplicableProjectTypes;
+
+        //We need a valid component type to add the component in the first place. Then the module content gets overwritten.
+        //TODO: Find a way to pass in the correct component type for a template. (A wrong component type does not hurt in VBA, but in VB6 it does.)
+        public ComponentType ComponentType => ComponentType.ClassModule;
 
         public bool CanExecuteForNode(ICodeExplorerNode model)
         {
-            return base.EvaluateCanExecute(model);
+            return EvaluateCanExecute(model);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (parameter is null)
+            if(parameter is System.ValueTuple<string, ICodeExplorerNode> data)
+            {
+                return EvaluateCanExecute(data.Item2);
+            }
+
+            return false;
+        }
+
+        private bool EvaluateCanExecute(ICodeExplorerNode node)
+        {
+            if (!ApplicableNodes.Contains(node.GetType())
+                || !(node is CodeExplorerItemViewModel)
+                || node.Declaration == null)
             {
                 return false;
             }
 
-            try
-            {
-                // TODO this cast needs to be safer.
-                var data = ((string templateName, ICodeExplorerNode model))parameter;
-
-                return base.EvaluateCanExecute(data.model);
-            }
-            catch (Exception ex)
-            {
-                Logger.Trace(ex);
-                return false;
-            }
+            var project = node.Declaration.Project;
+            return AllowableProjectTypes.Contains(project.Type);
         }
 
         protected override void OnExecute(object parameter)
@@ -55,23 +81,20 @@ namespace Rubberduck.UI.CodeExplorer.Commands
                 return;
             }
 
-            try
+            if (!(parameter is System.ValueTuple<string, ICodeExplorerNode> data))
             {
-                // TODO this cast needs to be safer.
-                var data = ((string templateName, ICodeExplorerNode node))parameter;
-
-                if (string.IsNullOrWhiteSpace(data.templateName) || !(data.node is CodeExplorerItemViewModel model))
-                {
-                    return;
-                }
-
-                var moduleText = GetTemplate(data.templateName);
-                AddComponent(model, moduleText);
+                return;
             }
-            catch (Exception ex)
+
+            var (templateName, node) = data;
+
+            if (string.IsNullOrWhiteSpace(templateName) || !(node is CodeExplorerItemViewModel model))
             {
-                Logger.Trace(ex);
+                return;
             }
+
+            var moduleText = GetTemplate(templateName);
+            _addComponentService.AddComponentWithAttributes(model, ComponentType, moduleText);
         }
 
         private string GetTemplate(string name)

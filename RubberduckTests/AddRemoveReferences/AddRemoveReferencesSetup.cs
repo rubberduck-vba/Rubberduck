@@ -94,17 +94,17 @@ namespace RubberduckTests.AddRemoveReferences
             return settings;
         }
 
-        public static IConfigProvider<ReferenceSettings> GetReferenceSettingsProvider(ReferenceSettings settings = null)
+        public static IConfigurationService<ReferenceSettings> GetReferenceSettingsProvider(ReferenceSettings settings = null)
         {
             return GetMockReferenceSettingsProvider(settings).Object;
         }
 
-        public static Mock<IConfigProvider<ReferenceSettings>> GetMockReferenceSettingsProvider(ReferenceSettings settings = null)
+        public static Mock<IConfigurationService<ReferenceSettings>> GetMockReferenceSettingsProvider(ReferenceSettings settings = null)
         {
-            var output = new Mock<IConfigProvider<ReferenceSettings>>();
+            var output = new Mock<IConfigurationService<ReferenceSettings>>();
 
-            output.Setup(m => m.Create()).Returns(() => settings ?? GetDefaultReferenceSettings());
-            output.Setup(m => m.CreateDefaults()).Returns(GetDefaultReferenceSettings);
+            output.Setup(m => m.Read()).Returns(() => settings ?? GetDefaultReferenceSettings());
+            output.Setup(m => m.ReadDefaults()).Returns(GetDefaultReferenceSettings);
             output.Setup(m => m.Save(It.IsAny<ReferenceSettings>()));
 
             return output;

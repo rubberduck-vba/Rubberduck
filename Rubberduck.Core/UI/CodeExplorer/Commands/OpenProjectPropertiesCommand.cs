@@ -21,14 +21,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         public OpenProjectPropertiesCommand(IVBE vbe)
         {
             _vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
-            if (!base.EvaluateCanExecute(parameter) ||
-                !(parameter is CodeExplorerItemViewModel node))
+            if (!(parameter is CodeExplorerItemViewModel node))
             {
                 return false;
             }

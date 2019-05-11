@@ -9,33 +9,24 @@ namespace RubberduckTests.Refactoring.Rename
     internal struct RenameTestModuleDefinition
     {
         private CodeString _codeString;
-        private string _inputWithFauxCursor;
         private string _expected;
 
-        public string Input_WithFauxCursor => _inputWithFauxCursor;
+        public string InputWithFauxCursor { get; private set; }
+
         public string Input
         {
             set
             {
-                _inputWithFauxCursor = value.Contains(RenameTests.FAUX_CURSOR) ? value : _inputWithFauxCursor;
+                InputWithFauxCursor = value.Contains(RenameTests.FAUX_CURSOR) ? value : InputWithFauxCursor;
                 _codeString = value.ToCodeString();
             }
-            get
-            {
-                return _codeString.Code;
-            }
+            get => _codeString.Code;
         }
 
         public string Expected
         {
-            set
-            {
-                _expected = value;
-            }
-            get
-            {
-                return _expected.Equals(string.Empty) ? Input : _expected;
-            }
+            set => _expected = value;
+            get => _expected.Equals(string.Empty) ? Input : _expected;
         }
 
         public string ModuleName;
@@ -48,13 +39,13 @@ namespace RubberduckTests.Refactoring.Rename
         public RenameTestModuleDefinition(string moduleName, ComponentType moduleType = ComponentType.ClassModule)
         {
             _codeString = new CodeString(string.Empty, default);
-            _inputWithFauxCursor = string.Empty;
+            InputWithFauxCursor = string.Empty;
             _expected = string.Empty;
             ModuleName = moduleName;
+            NewName = moduleName;
             ModuleType = moduleType;
             CheckExpectedEqualsActual = true;
             ControlNames = new List<String>();
-            NewName = "";
         }
     }
 }

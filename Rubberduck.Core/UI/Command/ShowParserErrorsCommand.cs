@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
-using NLog;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
@@ -30,7 +29,6 @@ namespace Rubberduck.UI.Command
             ISearchResultsWindowViewModel viewModel,
             SearchResultPresenterInstanceManager presenterService,
             IUiDispatcher uiDispatcher)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _navigateCommand = navigateCommand;
             _state = state;

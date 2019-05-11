@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.UI.UnitTesting;
 
 namespace Rubberduck.UI.Command
@@ -10,7 +9,6 @@ namespace Rubberduck.UI.Command
         private readonly TestExplorerDockablePresenter _presenter;
 
         public TestExplorerCommand(TestExplorerDockablePresenter presenter)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _presenter = presenter;
         }

@@ -8,6 +8,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -28,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
                     && State.DeclarationFinder.MatchName(declaration.AsTypeName).All(item => item.DeclarationType != DeclarationType.UserDefinedType) // UDT variables don't need to be assigned
                     && !declaration.IsSelfAssigned
                     && !declaration.References.Any(reference => reference.IsAssignment || IsAssignedByRefArgument(reference.ParentScoping, reference)))
-                .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName));
+                .Where(result => !result.IsIgnoringInspectionResultFor(AnnotationName));
 
             return declarations.Select(issue => 
                 new DeclarationInspectionResult(this, string.Format(InspectionResults.VariableNotAssignedInspection, issue.IdentifierName), issue));

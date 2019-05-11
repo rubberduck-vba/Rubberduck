@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.AddRemoveReferences;
 using Rubberduck.Navigation.CodeExplorer;
 using Rubberduck.Parsing.Symbols;
@@ -21,13 +20,32 @@ namespace Rubberduck.UI.Command
         public AddRemoveReferencesCommand(IVBE vbe, 
             RubberduckParserState state, 
             IAddRemoveReferencesPresenterFactory factory,
-            IReferenceReconciler reconciler) 
-            : base(LogManager.GetCurrentClassLogger())
+            IReferenceReconciler reconciler)
         {
             _vbe = vbe;
             _state = state;
             _factory = factory;
             _reconciler = reconciler;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+        }
+
+        private bool SpecialEvaluateCanExecute(object parameter)
+        {
+            if (_state.Status != ParserState.Ready)
+            {
+                return false;
+            }
+
+            if (parameter is CodeExplorerItemViewModel explorerNode)
+            {
+                return explorerNode.Declaration is ProjectDeclaration;
+            }
+
+            using (var project = _vbe.ActiveVBProject)
+            {
+                return !(project is null);
+            }
         }
 
         protected override void OnExecute(object parameter)
@@ -56,24 +74,6 @@ namespace Rubberduck.UI.Command
 
             _reconciler.ReconcileReferences(model);
             _state.OnParseRequested(this);
-        }
-
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            if (_state.Status != ParserState.Ready)
-            {
-                return false;
-            }
-
-            if (parameter is CodeExplorerItemViewModel explorerNode)
-            {
-                return explorerNode.Declaration is ProjectDeclaration;
-            }
-
-            using (var project = _vbe.ActiveVBProject)
-            {
-                return !(project is null);
-            }
         }
 
         private Declaration GetDeclaration()

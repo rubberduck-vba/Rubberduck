@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.VBEditor.SafeComWrappers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -19,11 +18,12 @@ namespace Rubberduck.UI.UnitTesting.Commands
         private readonly ITestCodeGenerator _codeGenerator;
 
         public AddTestModuleCommand(IVBE vbe, RubberduckParserState state, ITestCodeGenerator codeGenerator)
-            : base(LogManager.GetCurrentClassLogger())
         {
             Vbe = vbe;
             _state = state;
             _codeGenerator = codeGenerator;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         protected IVBE Vbe { get; }
@@ -46,7 +46,7 @@ namespace Rubberduck.UI.UnitTesting.Commands
             }
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             bool canExecute;
             using (var project = GetProject())

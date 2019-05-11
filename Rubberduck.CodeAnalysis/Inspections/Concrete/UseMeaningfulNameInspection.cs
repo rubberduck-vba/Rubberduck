@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Common;
 using Rubberduck.Inspections.Abstract;
 using Rubberduck.Inspections.Results;
@@ -9,7 +10,6 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 using static Rubberduck.Parsing.Grammar.VBAParser;
 
@@ -17,9 +17,9 @@ namespace Rubberduck.Inspections.Concrete
 {
     public sealed class UseMeaningfulNameInspection : InspectionBase
     {
-        private readonly IPersistanceService<CodeInspectionSettings> _settings;
+        private readonly IPersistenceService<CodeInspectionSettings> _settings;
 
-        public UseMeaningfulNameInspection(RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
+        public UseMeaningfulNameInspection(RubberduckParserState state, IPersistenceService<CodeInspectionSettings> settings)
             : base(state)
         {
             _settings = settings;

@@ -1,65 +1,43 @@
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
+using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class CodePaneRefactorRenameCommand : RefactorCommandBase
+    public class CodePaneRefactorRenameCommand : RefactorCodePaneCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
-        private readonly IRefactoringPresenterFactory _factory;
 
-        public CodePaneRefactorRenameCommand(RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (rewritingManager, selectionService)
+        public CodePaneRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, RubberduckParserState state, ISelectionService selectionService) 
+            : base (refactoring, renameFailedNotifier, selectionService, state)
         {
             _state = state;
-            _messageBox = messageBox;
-            _factory = factory;
+
+            AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
-            {
-                return false;
-            }
+            var target = GetTarget();
 
-            var activeSelection = SelectionService.ActiveSelection();
-            if (!activeSelection.HasValue)
-            {
-                return false;
-            }
-
-            var target = _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
-
-            return target != null 
-                && target.IsUserDefined 
-                && !_state.IsNewOrModified(target.QualifiedModuleName);
+            return target != null
+                   && target.IsUserDefined
+                   && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 
-        protected override void OnExecute(object parameter)
+        private Declaration GetTarget()
         {
             var activeSelection = SelectionService.ActiveSelection();
             if (!activeSelection.HasValue)
             {
-                return;
+                return null;
             }
 
-            var target = _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
-
-            if (target == null || !target.IsUserDefined)
-            {
-                return;
-            }
-            
-            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
-            refactoring.Refactor(target);
+            return _state.DeclarationFinder.FindSelectedDeclaration(activeSelection.Value);
         }
     }
 }

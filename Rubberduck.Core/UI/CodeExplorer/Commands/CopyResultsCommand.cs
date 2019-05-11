@@ -2,7 +2,6 @@
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using NLog;
 using Rubberduck.Common;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.UI.Command;
@@ -14,13 +13,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         private readonly RubberduckParserState _state;
         private readonly IClipboardWriter _clipboard;
 
-        public CopyResultsCommand(RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public CopyResultsCommand(RubberduckParserState state)
         {
             _state = state;
             _clipboard = new ClipboardWriter();
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _state.Status == ParserState.Ready;
         }

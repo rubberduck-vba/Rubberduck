@@ -9,6 +9,7 @@ using NLog;
 using Rubberduck.Common;
 using Rubberduck.Interaction.Navigation;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Settings;
 using Rubberduck.UI.UnitTesting.Commands;
@@ -37,7 +38,7 @@ namespace Rubberduck.UI.UnitTesting
             TestExplorerModel model,
             IClipboardWriter clipboard,
             // ReSharper disable once UnusedParameter.Local - left in place because it will likely be needed for app wide font settings, etc.
-            IGeneralConfigService configService,
+            IConfigurationService<Configuration> configService,
             ISettingsFormFactory settingsFormFactory)
         {
             _clipboard = clipboard;

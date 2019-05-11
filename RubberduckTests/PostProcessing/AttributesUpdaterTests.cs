@@ -849,7 +849,7 @@ End Sub
             Assert.AreEqual(expectedCode, actualCode);
         }
 
-        private (IVBComponent component, IRewriteSession rewriteSession, RubberduckParserState state) TestSetup(string inputCode)
+        private (IVBComponent component, IExecutableRewriteSession rewriteSession, RubberduckParserState state) TestSetup(string inputCode)
         {
             var vbe = MockVbeBuilder.BuildFromSingleStandardModule(inputCode, out var component).Object;
             var (state, rewritingManager) = MockParser.CreateAndParseWithRewritingManager(vbe);

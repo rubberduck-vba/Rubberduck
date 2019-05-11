@@ -24,6 +24,16 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             _state = state;
             _finder = finder;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+        }
+
+        private bool SpecialEvaluateCanExecute(object parameter)
+        {
+            return _state.Status == ParserState.Ready
+                       && ((ICodeExplorerNode)parameter).Declaration != null 
+                       && !(parameter is CodeExplorerReferenceViewModel reference 
+                            && reference.IsDimmed);
         }
 
         protected override void OnExecute(object parameter)
@@ -49,13 +59,5 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         }
 
         public override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
-
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            return base.EvaluateCanExecute(parameter) && 
-                   ((ICodeExplorerNode)parameter).Declaration != null &&
-                   (!(parameter is CodeExplorerReferenceViewModel reference) || !reference.IsDimmed) &&
-                   _state.Status == ParserState.Ready;
-        }
     }
 }
