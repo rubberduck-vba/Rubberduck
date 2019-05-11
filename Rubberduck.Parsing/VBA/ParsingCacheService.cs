@@ -186,7 +186,7 @@ namespace Rubberduck.Parsing.VBA
             return _userComProjectRepository.UserProject(projectId);
         }
 
-        public IEnumerable<(string projectId, ComProject comProject)> UserProjects()
+        public IReadOnlyDictionary<string, ComProject> UserProjects()
         {
             return _userComProjectRepository.UserProjects();
         }

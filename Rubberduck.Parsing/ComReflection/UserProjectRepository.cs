@@ -38,9 +38,10 @@ namespace Rubberduck.Parsing.ComReflection
             return _userComProjects.TryGetValue(projectId, out var result) ? result : null;
         }
 
-        public IEnumerable<(string projectId, ComProject comProject)> UserProjects()
+        public IReadOnlyDictionary<string, ComProject> UserProjects()
         {
-            return _userComProjects.Select(kvp => (kvp.Key, kvp.Value));
+            //We return a copy to avoid issues updating the collections contents. 
+            return _userComProjects.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         }
 
         public void RefreshUserComProjects(IReadOnlyCollection<string> projectIdsToReload)

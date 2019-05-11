@@ -376,8 +376,7 @@ namespace Rubberduck.Parsing.VBA
             }
         }
 
-        private void SyncDeclarationsFromUserComProjects(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token,
-            HashSet<QualifiedModuleName> toReresolveReferences)
+        private void SyncDeclarationsFromUserComProjects(IReadOnlyCollection<QualifiedModuleName> toParse, CancellationToken token, HashSet<QualifiedModuleName> toReresolveReferences)
         {
             _parsingStageService.SyncUserComProjects();
             if (_parsingStageService.LastSyncOfUserComProjectsLoadedDeclarations ||
