@@ -15,13 +15,16 @@ namespace Rubberduck.Inspections.Concrete
     /// <summary>
     /// Warns about late-bound WorksheetFunction calls made against the extended interface of the Application object.
     /// </summary>
+    /// <reference>
+    /// This inspection only executes if the Excel type library is referenced.
+    /// </reference>
     /// <why>
     /// An early-bound, equivalent function likely exists in the object returned by the Application.WorksheetFunction property; 
     /// late-bound member calls will fail at run-time with error 438 if there is a typo (a typo fails to compile for an early-bound member call). 
     /// Late-bound worksheet functions will return a <c>Variant/Error</c> given invalid inputs; 
-    /// the equivalent early-bound member calls raise a more VB-idiomatic runtime error given the same invalid inputs.
-    /// A <c>Variant/Error</c> value cannot be coerced into any other data type, be it for assignment or comparison.
-    /// Trying to compare or assign a <c>Variant/Error</c> to another data type will throw error 13 "type mismatch" at run-time.
+    /// the equivalent early-bound member calls raise a more VB-idiomatic runtime error given the same invalid inputs. 
+    /// A <c>Variant/Error</c> value cannot be coerced into any other data type, be it for assignment or comparison. 
+    /// Trying to compare or assign a <c>Variant/Error</c> to another data type will throw error 13 "type mismatch" at run-time. 
     /// Consider using the early-bound equivalent function instead.
     /// </why>
     /// <example>
