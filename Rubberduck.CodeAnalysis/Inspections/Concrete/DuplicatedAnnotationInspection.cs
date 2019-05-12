@@ -8,6 +8,31 @@ using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about duplicated annotations.
+    /// </summary>
+    /// <why>
+    /// Rubberduck annotations should not be specified more than once for a given module, member, variable, or expression.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples:
+    /// <code>
+    /// '@Folder("Bar")
+    /// '@Folder("Foo")
+    ///
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// '@Folder("Foo.Bar")
+    ///
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class DuplicatedAnnotationInspection : InspectionBase
     {
         public DuplicatedAnnotationInspection(RubberduckParserState state) : base(state)
@@ -27,12 +52,9 @@ namespace Rubberduck.Inspections.Concrete
                 issues.AddRange(duplicateAnnotations.Select(duplicate =>
                 {
                     var result = new DeclarationInspectionResult(
-                        this,
-                        string.Format(InspectionResults.DuplicatedAnnotationInspection, duplicate.Key.ToString()),
-                        declaration);
+                        this, string.Format(InspectionResults.DuplicatedAnnotationInspection, duplicate.Key.ToString()), declaration);
 
                     result.Properties.AnnotationType = duplicate.Key;
-
                     return result;
                 }));
             }

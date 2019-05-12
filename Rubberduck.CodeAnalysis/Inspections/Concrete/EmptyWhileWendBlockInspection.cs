@@ -13,6 +13,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies empty 'While...Wend' blocks that can be safely removed.
+    /// </summary>
+    /// <why>
+    /// Dead code should be removed. A loop without a body is usually redundant.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples:
+    /// <code>
+    /// Public Sub DoSomething(ByVal foo As Long)
+    ///     While foo &lt; 100
+    ///         'no executable statements... would be an infinite loop if entered
+    ///     Wend
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething(ByVal foo As Long)
+    ///     While foo &lt; 100
+    ///         foo = foo + 1
+    ///     Wend
+    /// End Sub
+    /// </code>
+    /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyWhileWendBlockInspection : ParseTreeInspectionBase
     {

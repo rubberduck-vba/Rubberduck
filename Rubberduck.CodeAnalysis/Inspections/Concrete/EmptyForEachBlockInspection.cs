@@ -13,6 +13,32 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies empty 'For Each...Next' blocks that can be safely removed.
+    /// </summary>
+    /// <why>
+    /// Dead code should be removed. A loop without a body is usually redundant.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim sheet As Worksheet
+    ///     For Each sheet In ThisWorkbook.Worksheets
+    ///         ' no executable statement...
+    ///     Next
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim sheet As Worksheet
+    ///     For Each sheet In ThisWorkbook.Worksheets
+    ///         Debug.Print sheet.Name
+    ///     Next
+    /// End Sub
+    /// </code>
+    /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyForEachBlockInspection : ParseTreeInspectionBase
     {
