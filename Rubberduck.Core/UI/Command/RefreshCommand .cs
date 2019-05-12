@@ -1,5 +1,4 @@
 using System.Runtime.InteropServices;
-using NLog;
 
 namespace Rubberduck.UI.Command
 {
@@ -9,12 +8,13 @@ namespace Rubberduck.UI.Command
         private readonly ReparseCommand _command;
 
         public RefreshCommand(ReparseCommand command) 
-            : base(LogManager.GetCurrentClassLogger())
         {
             _command = command;
-        }        
 
-        protected override bool EvaluateCanExecute(object parameter)
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+        }
+
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return _command?.CanExecute(parameter) ?? false;
         }

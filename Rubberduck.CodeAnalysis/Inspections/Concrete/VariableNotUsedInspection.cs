@@ -9,6 +9,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -21,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
             var declarations = State.DeclarationFinder.UserDeclarations(DeclarationType.Variable)
                 .Where(declaration =>
                     !declaration.IsWithEvents
-                    && !IsIgnoringInspectionResultFor(declaration, AnnotationName)
+                    && !declaration.IsIgnoringInspectionResultFor(AnnotationName)
                     && !declaration.References.Any());
 
             return declarations.Select(issue => 

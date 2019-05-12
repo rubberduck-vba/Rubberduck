@@ -1,11 +1,9 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
@@ -13,45 +11,27 @@ using Rubberduck.VBEditor.Utility;
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class FormDesignerRefactorRenameCommand : RefactorCommandBase
+    public class FormDesignerRefactorRenameCommand : RefactorDeclarationCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _messageBox;
-        private readonly IRefactoringPresenterFactory _factory;
         private readonly IVBE _vbe;
 
-        public FormDesignerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox messageBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService) 
-            : base (rewritingManager, selectionService)
+        public FormDesignerRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IVBE vbe, RubberduckParserState state, ISelectionService selectionService) 
+            : base (refactoring, renameFailedNotifier, state)
         {
             _state = state;
-            _messageBox = messageBox;
-            _factory = factory;
             _vbe = vbe;
+
+            AddToCanExecuteEvaluation(SpecializedEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecializedEvaluateCanExecute(object parameter)
         {
-            if (_state.Status != ParserState.Ready)
-            {
-                return false;
-            }
-
             var target = GetTarget();
             return target != null && !_state.IsNewOrModified(target.QualifiedModuleName);
         }
 
-        protected override void OnExecute(object parameter)
-        {
-            var refactoring = new RenameRefactoring(_factory, _messageBox, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
-            var target = GetTarget();
-            if (target != null)
-            {
-                refactoring.Refactor(target);
-            }
-            
-        }
-
-        private Declaration GetTarget()
+        protected override Declaration GetTarget()
         {
             string projectId;
             using (var activeProject = _vbe.ActiveVBProject)

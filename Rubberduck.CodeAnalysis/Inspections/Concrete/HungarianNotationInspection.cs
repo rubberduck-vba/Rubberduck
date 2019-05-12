@@ -2,13 +2,14 @@
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Inspections.Abstract;
+using Rubberduck.Inspections.Inspections.Extensions;
 using Rubberduck.Inspections.Results;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Resources;
-using Rubberduck.Settings;
 using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Inspections.Concrete
@@ -103,9 +104,9 @@ namespace Rubberduck.Inspections.Concrete
 
         #endregion
 
-        private readonly IPersistanceService<CodeInspectionSettings> _settings;
+        private readonly IPersistenceService<CodeInspectionSettings> _settings;
 
-        public HungarianNotationInspection(RubberduckParserState state, IPersistanceService<CodeInspectionSettings> settings)
+        public HungarianNotationInspection(RubberduckParserState state, IPersistenceService<CodeInspectionSettings> settings)
             : base(state)
         {
             _settings = settings;
@@ -122,7 +123,7 @@ namespace Rubberduck.Inspections.Concrete
                                       !IgnoredProcedureTypes.Contains(declaration.DeclarationType) && 
                                       !IgnoredProcedureTypes.Contains(declaration.ParentDeclaration.DeclarationType) &&
                                       HungarianIdentifierRegex.IsMatch(declaration.IdentifierName) &&
-                                      !IsIgnoringInspectionResultFor(declaration, AnnotationName))
+                                      !declaration.IsIgnoringInspectionResultFor(AnnotationName))
                 .Select(issue => new DeclarationInspectionResult(this,
                                                       string.Format(Resources.Inspections.InspectionResults.IdentifierNameInspection,
                                                                     RubberduckUI.ResourceManager.GetString($"DeclarationType_{issue.DeclarationType}", CultureInfo.CurrentUICulture),

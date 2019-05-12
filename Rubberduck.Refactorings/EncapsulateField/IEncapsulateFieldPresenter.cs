@@ -1,7 +1,5 @@
 ﻿namespace Rubberduck.Refactorings.EncapsulateField
 {
-    public interface IEncapsulateFieldPresenter
-    {
-        EncapsulateFieldModel Show();
-    }
+    public interface IEncapsulateFieldPresenter : IRefactoringPresenter<EncapsulateFieldModel>
+    {}
 }

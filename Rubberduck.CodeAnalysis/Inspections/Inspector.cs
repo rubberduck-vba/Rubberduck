@@ -15,10 +15,10 @@ using Rubberduck.Parsing.Inspections;
 using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Parsing;
-using Rubberduck.Settings;
-using Rubberduck.UI.Inspections;
 using Rubberduck.VBEditor;
 using Rubberduck.Resources;
+using Rubberduck.SettingsProvider;
+using Rubberduck.CodeAnalysis.Settings;
 
 namespace Rubberduck.Inspections
 {
@@ -27,30 +27,28 @@ namespace Rubberduck.Inspections
         public class Inspector : IInspector
         {
             private const int _maxDegreeOfInspectionParallelism = -1;
-
-            private readonly IGeneralConfigService _configService;
+            private readonly IConfigurationService<CodeInspectionSettings> _configService;
             private readonly List<IInspection> _inspections;
-            private const int AGGREGATION_THRESHOLD = 128;
 
-            public Inspector(IGeneralConfigService configService, IInspectionProvider inspectionProvider)
+            public Inspector(IConfigurationService<CodeInspectionSettings> configService, IInspectionProvider inspectionProvider)
             {
                 _inspections = inspectionProvider.Inspections.ToList();
-
+                
                 _configService = configService;
                 configService.SettingsChanged += ConfigServiceSettingsChanged;
             }
 
             private void ConfigServiceSettingsChanged(object sender, EventArgs e)
             {
-                //var config = _configService.LoadConfiguration();
-                //UpdateInspectionSeverity(config);
+                var config = _configService.Read();
+                UpdateInspectionSeverity(config);
             }
 
-            private void UpdateInspectionSeverity(Configuration config)
+            private void UpdateInspectionSeverity(CodeInspectionSettings config)
             {
                 foreach (var inspection in _inspections)
                 {
-                    foreach (var setting in config.UserSettings.CodeInspectionSettings.CodeInspections)
+                    foreach (var setting in config.CodeInspections)
                     {
                         if (inspection.Name == setting.Name)
                         {
@@ -73,7 +71,7 @@ namespace Rubberduck.Inspections
                 var allIssues = new ConcurrentBag<IInspectionResult>();
                 token.ThrowIfCancellationRequested();
 
-                var config = _configService.LoadConfiguration();
+                var config = _configService.Read();
                 UpdateInspectionSeverity(config);
                 token.ThrowIfCancellationRequested();
 
@@ -94,7 +92,7 @@ namespace Rubberduck.Inspections
                 {
                     try
                     {
-                        WalkTrees(config.UserSettings.CodeInspectionSettings, state, parseTreeInspections.Where(i => i.TargetKindOfCode == parsePass), parsePass);
+                        WalkTrees(config, state, parseTreeInspections.Where(i => i.TargetKindOfCode == parsePass), parsePass);
                     }
                     catch (Exception e)
                     {
@@ -133,16 +131,9 @@ namespace Rubberduck.Inspections
                     LogManager.GetCurrentClassLogger().Error(e);
                 }
 
-                var issuesByType = allIssues.GroupBy(issue => issue.Inspection.Name)
-                                            .ToDictionary(grouping => grouping.Key, grouping => grouping.ToList());
-                var results = issuesByType.Where(kv => kv.Value.Count <= AGGREGATION_THRESHOLD)
-                    .SelectMany(kv => kv.Value)
-                    .Union(issuesByType.Where(kv => kv.Value.Count > AGGREGATION_THRESHOLD)
-                    .Select(kv => new AggregateInspectionResult(kv.Value.OrderBy(i => i.QualifiedSelection).First(), kv.Value.Count)))
-                    .ToList();
-
-                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, CultureInfo.CurrentUICulture)); // should be "Ready"
-                return results;
+                // should be "Ready"
+                state.OnStatusMessageUpdate(RubberduckUI.ResourceManager.GetString("ParserState_" + state.Status, CultureInfo.CurrentUICulture)); 
+                return allIssues;
             }
 
             private static bool RequiredLibrariesArePresent(IInspection inspection, RubberduckParserState state)

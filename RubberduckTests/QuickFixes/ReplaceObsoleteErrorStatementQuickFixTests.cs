@@ -11,15 +11,15 @@ namespace RubberduckTests.QuickFixes
     {
         [Test]
         [Category("QuickFixes")]
-        public void ObsoleteCommentSyntax_QuickFixWorks()
+        public void ObsoleteErrorStatement_QuickFixWorks()
         {
-            const string inputCode =
-                @"Sub Foo()
+            const string inputCode = @"
+Sub Foo()
     Error 91
 End Sub";
 
-            const string expectedCode =
-                @"Sub Foo()
+            const string expectedCode = @"
+Sub Foo()
     Err.Raise 91
 End Sub";
 
@@ -28,18 +28,18 @@ End Sub";
         }
         [Test]
         [Category("QuickFixes")]
-        public void ObsoleteCommentSyntax_QuickFixWorks_ProcNamedError()
+        public void ObsoleteErrorStatement_QuickFixWorks_ProcNamedError()
         {
-            const string inputCode =
-                @"Sub Error(val as Integer)
+            const string inputCode = @"
+Sub Error(val as Integer)
 End Sub
 
 Sub Foo()
     Error 91
 End Sub";
 
-            const string expectedCode =
-                @"Sub Error(val as Integer)
+            const string expectedCode = @"
+Sub Error(val as Integer)
 End Sub
 
 Sub Foo()
@@ -52,16 +52,16 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        public void ObsoleteCommentSyntax_QuickFixWorks_UpdateCommentHasContinuation()
+        public void ObsoleteErrorStatement_QuickFixWorks_UpdateCommentHasContinuation()
         {
-            const string inputCode =
-                @"Sub Foo()
+            const string inputCode = @"
+Sub Foo()
     Error _
     91
 End Sub";
 
-            const string expectedCode =
-                @"Sub Foo()
+            const string expectedCode = @"
+Sub Foo()
     Err.Raise _
     91
 End Sub";
@@ -73,15 +73,15 @@ End Sub";
 
         [Test]
         [Category("QuickFixes")]
-        public void ObsoleteCommentSyntax_QuickFixWorks_UpdateComment_LineHasCode()
+        public void ObsoleteErrorStatement_QuickFixWorks_UpdateComment_LineHasCode()
         {
-            const string inputCode =
-                @"Sub Foo()
+            const string inputCode = @"
+Sub Foo()
     Dim foo: Error 91
 End Sub";
 
-            const string expectedCode =
-                @"Sub Foo()
+            const string expectedCode = @"
+Sub Foo()
     Dim foo: Err.Raise 91
 End Sub";
 

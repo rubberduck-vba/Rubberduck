@@ -28,7 +28,7 @@ namespace Rubberduck.UI
         private readonly IWindow _window;
         private readonly WindowSettings _settings;  //Storing this really doesn't matter - it's only checked on startup and never persisted.
 
-        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view, IConfigProvider<WindowSettings> settingsProvider)
+        protected DockableToolwindowPresenter(IVBE vbe, IAddIn addin, IDockableUserControl view, IConfigurationService<WindowSettings> settingsProvider)
         {
             _vbe = vbe;
             _addin = addin;
@@ -36,7 +36,7 @@ namespace Rubberduck.UI
             UserControl = view as UserControl;
             if (settingsProvider != null)
             {
-                _settings = settingsProvider.Create();
+                _settings = settingsProvider.Read();
             }
             _window = CreateToolWindow(view);
         }

@@ -20,7 +20,7 @@ namespace Rubberduck.Settings
         bool UserEditedLogLevel { get; set; }
         int MinimumLogLevel { get; set; }
         bool SetDpiUnaware { get; set; }
-        List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; }
+        List<ExperimentalFeature> EnableExperimentalFeatures { get; set; }
     }
 
     [SettingsSerializeAs(SettingsSerializeAs.Xml)]
@@ -73,7 +73,7 @@ namespace Rubberduck.Settings
 
         public bool SetDpiUnaware { get; set; }
 
-        public List<ExperimentalFeatures> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeatures>();
+        public List<ExperimentalFeature> EnableExperimentalFeatures { get; set; } = new List<ExperimentalFeature>();
 
         public GeneralSettings()
         {

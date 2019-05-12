@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using NLog;
 using Rubberduck.Parsing.Annotations;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
@@ -15,14 +14,15 @@ namespace Rubberduck.UI.Command
         private readonly IDeclarationFinderProvider _finderProvider;
 
         public RunSelectedTestMethodCommand(ITestEngine engine, ISelectionService selectionService, IDeclarationFinderProvider finderProvider) 
-            : base(LogManager.GetCurrentClassLogger())
         {
             _engine = engine;
             _selectionService = selectionService;
             _finderProvider = finderProvider;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             return (parameter ?? FindDeclarationFromSelection()) is Declaration candidate &&
                    !(_engine.Tests.FirstOrDefault(test => test.Declaration.Equals(candidate)) is null) &&

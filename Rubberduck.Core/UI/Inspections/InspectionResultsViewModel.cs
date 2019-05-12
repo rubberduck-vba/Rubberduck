@@ -20,6 +20,7 @@ using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.Settings;
+using Rubberduck.SettingsProvider;
 using Rubberduck.UI.Command;
 using Rubberduck.UI.Settings;
 using Rubberduck.VBEditor;
@@ -66,7 +67,7 @@ namespace Rubberduck.UI.Inspections
         private readonly IInspector _inspector;
         private readonly IQuickFixProvider _quickFixProvider;
         private readonly IClipboardWriter _clipboard;
-        private readonly IGeneralConfigService _configService;
+        private readonly IConfigurationService<Configuration> _configService;
         private readonly ISettingsFormFactory _settingsFormFactory;
         private readonly IUiDispatcher _uiDispatcher;
 
@@ -78,8 +79,8 @@ namespace Rubberduck.UI.Inspections
             IQuickFixProvider quickFixProvider,
             INavigateCommand navigateCommand, 
             ReparseCommand reparseCommand,
-            IClipboardWriter clipboard, 
-            IGeneralConfigService configService, 
+            IClipboardWriter clipboard,
+            IConfigurationService<Configuration> configService, 
             ISettingsFormFactory settingsFormFactory,
             IUiDispatcher uiDispatcher)
         {
@@ -120,7 +121,7 @@ namespace Rubberduck.UI.Inspections
             _configService.SettingsChanged += _configService_SettingsChanged;
             
             // todo: remove I/O work in constructor
-            _runInspectionsOnReparse = _configService.LoadConfiguration().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
+            _runInspectionsOnReparse = _configService.Read().UserSettings.CodeInspectionSettings.RunInspectionsOnSuccessfulParse;
 
             if (CollectionViewSource.GetDefaultView(_results) is ListCollectionView results)
             {
@@ -539,12 +540,12 @@ namespace Rubberduck.UI.Inspections
                 return;
             }
 
-            var config = _configService.LoadConfiguration();
+            var config = _configService.Read();
 
             var setting = config.UserSettings.CodeInspectionSettings.CodeInspections.Single(e => e.Name == _selectedInspection.Name);
             setting.Severity = CodeInspectionSeverity.DoNotShow;
 
-            Task.Run(() => _configService.SaveConfiguration(config));
+            Task.Run(() => _configService.Save(config));
 
             _uiDispatcher.Invoke(() =>
             {

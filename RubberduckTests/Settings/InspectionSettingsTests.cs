@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
+using Rubberduck.CodeAnalysis.Settings;
 using Rubberduck.Parsing.Inspections;
 using Rubberduck.Settings;
 using Rubberduck.UI.Settings;

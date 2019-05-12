@@ -6,6 +6,7 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
+using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
@@ -22,7 +23,7 @@ namespace Rubberduck.Inspections.Concrete
                         item.Accessibility == Accessibility.Public || 
                         item.Accessibility == Accessibility.Global)
                     && State.DeclarationFinder.MatchName(item.IdentifierName).All(accessor => accessor.DeclarationType != DeclarationType.PropertyGet))
-                .Where(result => !IsIgnoringInspectionResultFor(result, AnnotationName))
+                .Where(result => !result.IsIgnoringInspectionResultFor(AnnotationName))
                 .GroupBy(item => new {item.QualifiedName, item.DeclarationType})
                 .Select(grouping => grouping.First()); // don't get both Let and Set accessors
 

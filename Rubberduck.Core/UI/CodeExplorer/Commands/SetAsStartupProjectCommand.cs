@@ -20,16 +20,17 @@ namespace Rubberduck.UI.CodeExplorer.Commands
         {
             _vbe = vbe;
             _parserState = parserState;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
         public sealed override IEnumerable<Type> ApplicableNodeTypes => ApplicableNodes;
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             try
             {
-                if (!base.EvaluateCanExecute(parameter) ||                   
-                    !(parameter is CodeExplorerProjectViewModel node) ||
+                if (!(parameter is CodeExplorerProjectViewModel node) ||
                     !(node.Declaration?.Project is IVBProject project) ||
                     !ProjectTypes.VB6.Contains(project.Type) ||
                     _vbe.ProjectsCount <= 1)
@@ -51,7 +52,7 @@ namespace Rubberduck.UI.CodeExplorer.Commands
 
         protected override void OnExecute(object parameter)
         {
-            if (!EvaluateCanExecute(parameter) ||
+            if (!CanExecute(parameter) ||
                 !(parameter is CodeExplorerProjectViewModel node))
             {
                 return;

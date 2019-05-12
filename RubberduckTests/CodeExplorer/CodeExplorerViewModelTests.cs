@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using NUnit.Framework;
 using Moq;
@@ -544,7 +545,8 @@ End Sub
                 .SelectFirstModule())
             {
                 explorer.ExecuteIndenterCommand();
-                Assert.AreEqual(expectedCode, explorer.VbComponent.Object.CodeModule.Content());
+                var actualCode = explorer.VbComponent.Object.CodeModule.Content();
+                Assert.AreEqual(expectedCode, actualCode);
             }
         }
 
@@ -858,6 +860,7 @@ End Sub";
             var dispatcher = new Mock<IUiDispatcher>();
 
             dispatcher.Setup(m => m.Invoke(It.IsAny<Action>())).Callback((Action argument) => argument.Invoke());
+            dispatcher.Setup(m => m.StartTask(It.IsAny<Action>(), It.IsAny<TaskCreationOptions>())).Returns((Action argument, TaskCreationOptions options) => Task.Factory.StartNew(argument.Invoke, options));
 
             var viewModel = new CodeExplorerViewModel(state, null, null, null, dispatcher.Object, vbe.Object, null, new CodeExplorerSyncProvider(vbe.Object, state));
 

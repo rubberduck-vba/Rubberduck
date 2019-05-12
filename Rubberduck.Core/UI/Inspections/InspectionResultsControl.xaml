@@ -83,12 +83,15 @@
 
                 <Separator />
                 <Menu Background="Transparent">
-                    <MenuItem VerticalAlignment="Center" 
-                          Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Fix}"
-                          ItemsSource="{Binding QuickFixes}" Background="Transparent">
+                    <MenuItem VerticalAlignment="Center"
+                              HeaderTemplate="{StaticResource MenuItemHeaderDropdownIndicatorTemplate}"
+                              ItemsSource="{Binding QuickFixes}" Background="Transparent">
                         <MenuItem.Icon>
                             <Image Source="{StaticResource FixImage}" />
                         </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <TextBlock Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=Fix}" />
+                        </MenuItem.Header>
                         <MenuItem.ItemContainerStyle>
                             <Style TargetType="{x:Type MenuItem}">
                                 <Setter Property="Icon">

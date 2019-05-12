@@ -20,7 +20,7 @@ namespace Rubberduck.VBEditor.SafeComWrappers.Abstract
         IVBComponent Add(ComponentType type);
         IVBComponent Import(string path);
         IVBComponent AddCustom(string progId);
-        void ImportSourceFile(string path);
+        IVBComponent ImportSourceFile(string path);
 
         /// <summary>
         /// Safely removes the specified VbComponent from the collection.

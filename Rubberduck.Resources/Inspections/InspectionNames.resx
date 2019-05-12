@@ -383,4 +383,7 @@
     <value>ThunderCode 101</value>
     <comment>meta easter egg; do not translate</comment>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Use of obsolete 'While...Wend' statement</value>
+  </data>
 </root>

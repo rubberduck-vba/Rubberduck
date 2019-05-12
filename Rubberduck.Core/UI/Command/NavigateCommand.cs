@@ -1,7 +1,5 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Interaction.Navigation;
-using Rubberduck.VBEditor;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command
@@ -16,7 +14,6 @@ namespace Rubberduck.UI.Command
         private readonly ISelectionService _selectionService;
 
         public NavigateCommand(ISelectionService selectionService)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _selectionService = selectionService;
         }

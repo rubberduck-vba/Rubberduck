@@ -10,12 +10,15 @@ namespace Rubberduck.UI.CodeExplorer.Commands
     public class RemoveCommand : ExportCommand
     {
         public RemoveCommand(IFileSystemBrowserFactory dialogFactory, IMessageBox messageBox, IProjectsProvider projectsProvider) 
-            : base(dialogFactory, messageBox, projectsProvider) { }
-
-        protected override bool EvaluateCanExecute(object parameter)
+            : base(dialogFactory, messageBox, projectsProvider)
         {
-            return base.EvaluateCanExecute(parameter) &&
-                   ((CodeExplorerComponentViewModel) parameter).Declaration.QualifiedName.QualifiedModuleName
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
+        }
+
+        private bool SpecialEvaluateCanExecute(object parameter)
+        {
+            return ((CodeExplorerComponentViewModel) parameter).Declaration.QualifiedName.QualifiedModuleName
                    .ComponentType != ComponentType.Document;
         }
 

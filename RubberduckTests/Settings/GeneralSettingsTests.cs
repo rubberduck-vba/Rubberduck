@@ -46,9 +46,9 @@ namespace RubberduckTests.Settings
                 Language = new DisplayLanguageSetting("en-US"),
                 IsAutoSaveEnabled = false,
                 AutoSavePeriod = 10,
-                EnableExperimentalFeatures = new List<ExperimentalFeatures>
+                EnableExperimentalFeatures = new List<ExperimentalFeature>
                 {
-                    new ExperimentalFeatures()
+                    new ExperimentalFeature()
                 }
                 //Delimiter = '.'
             };
@@ -99,7 +99,7 @@ namespace RubberduckTests.Settings
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(config.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage);
-                Assert.IsTrue(config.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys));
+                Assert.IsTrue(config.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys.Select(vm => vm.Unwrap())));
                 Assert.AreEqual(config.UserSettings.GeneralSettings.IsAutoSaveEnabled, viewModel.AutoSaveEnabled);
                 Assert.AreEqual(config.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
             });
@@ -117,7 +117,7 @@ namespace RubberduckTests.Settings
             Assert.Multiple(() =>
             {
                 Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.Language, viewModel.SelectedLanguage);
-                Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys));
+                Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys.Select(vm => vm.Unwrap())));
                 Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.IsAutoSaveEnabled, viewModel.AutoSaveEnabled);
                 Assert.AreEqual(defaultConfig.UserSettings.GeneralSettings.AutoSavePeriod, viewModel.AutoSavePeriod);
             });
@@ -140,7 +140,7 @@ namespace RubberduckTests.Settings
             var defaultConfig = GetDefaultConfig();
             var viewModel = new GeneralSettingsViewModel(defaultConfig, GetOperatingSystemMock().Object, GetMessageBoxMock().Object, GetVbeSettingsMock().Object, GetExperimentalTypesProviderMock().Object, null, null);
 
-            Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys));
+            Assert.IsTrue(defaultConfig.UserSettings.HotkeySettings.Settings.SequenceEqual(viewModel.Hotkeys.Select(vm => vm.Unwrap())));
         }
 
         [Category("Settings")]
@@ -167,19 +167,19 @@ namespace RubberduckTests.Settings
         [Test]
         public void UserSettingsLoadedUsingDefaultWhenMissingFile()
         {
-            var pathProviderMock = new Mock<IPersistancePathProvider>();
+            var pathProviderMock = new Mock<IPersistencePathProvider>();
             pathProviderMock.Setup(x => x.DataRootPath).Returns("C:\\rubberduck\\");
             pathProviderMock.Setup(x => x.DataFolderPath(It.IsAny<string>())).Returns<string>(x => x);
             // For this test, we need to use the actual object. Fortunately, the path is virtual, so we
             // can override that property and force it to use an non-existent path to prove that settings
             // will be still created using defaults without the file present. 
-            var persisterMock = new Mock<XmlPersistanceService<GeneralSettings>>(pathProviderMock.Object);
+            var persisterMock = new Mock<XmlPersistenceService<GeneralSettings>>(pathProviderMock.Object);
             persisterMock.Setup(x => x.FilePath).Returns("C:\\some\\non\\existent\\path\\rubberduck");
             persisterMock.CallBase = true;
             var configProvider = new GeneralConfigProvider(persisterMock.Object);
 
-            var settings = configProvider.Create();
-            var defaultSettings = configProvider.CreateDefaults();
+            var settings = configProvider.Read();
+            var defaultSettings = configProvider.ReadDefaults();
 
             Assert.AreEqual(defaultSettings, settings);
         }

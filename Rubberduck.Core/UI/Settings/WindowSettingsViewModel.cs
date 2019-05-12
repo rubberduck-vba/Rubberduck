@@ -8,7 +8,7 @@ namespace Rubberduck.UI.Settings
 {
     public sealed class WindowSettingsViewModel : SettingsViewModelBase<Rubberduck.Settings.WindowSettings>, ISettingsViewModel<Rubberduck.Settings.WindowSettings>
     {
-        public WindowSettingsViewModel(Configuration config, IFilePersistanceService<Rubberduck.Settings.WindowSettings> service) 
+        public WindowSettingsViewModel(Configuration config, IFilePersistenceService<Rubberduck.Settings.WindowSettings> service) 
             : base(service)
         {
             CodeExplorerVisibleOnStartup = config.UserSettings.WindowSettings.CodeExplorerVisibleOnStartup;

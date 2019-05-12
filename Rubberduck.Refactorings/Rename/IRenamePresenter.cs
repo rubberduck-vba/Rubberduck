@@ -2,9 +2,8 @@
 
 namespace Rubberduck.Refactorings.Rename
 {
-    public interface IRenamePresenter
+    public interface IRenamePresenter : IRefactoringPresenter<RenameModel>
     {
-        RenameModel Show();
         RenameModel Show(Declaration target);
         RenameModel Model { get; }
     }

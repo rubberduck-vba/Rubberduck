@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers;
@@ -14,14 +13,16 @@ namespace Rubberduck.UI.Command
         private readonly IIndenter _indenter;
         private readonly RubberduckParserState _state;
 
-        public IndentCurrentProjectCommand(IVBE vbe, IIndenter indenter, RubberduckParserState state) : base(LogManager.GetCurrentClassLogger())
+        public IndentCurrentProjectCommand(IVBE vbe, IIndenter indenter, RubberduckParserState state)
         {
             _vbe = vbe;
             _indenter = indenter;
             _state = state;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             using (var vbProject = _vbe.ActiveVBProject)
             {

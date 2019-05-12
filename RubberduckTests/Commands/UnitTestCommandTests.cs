@@ -459,10 +459,10 @@ End Enum
         private ITestCodeGenerator ArrangeCodeGenerator(IVBE vbe, RubberduckParserState state)
         {
             var indenter = new Indenter(null, () => IndenterSettingsTests.GetMockIndenterSettings());
-            var settings = new Mock<IConfigProvider<UnitTestSettings>>();
+            var settings = new Mock<IConfigurationService<UnitTestSettings>>();
             var arguments = new Mock<ICompilationArgumentsProvider>();
 
-            settings.Setup(s => s.Create()).Returns(new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false));
+            settings.Setup(s => s.Read()).Returns(new UnitTestSettings(BindingMode.LateBinding, AssertMode.StrictAssert, true, true, false));
             arguments.Setup(m => m.UserDefinedCompilationArguments(It.IsAny<string>()))
                 .Returns(new Dictionary<string, short>());
 

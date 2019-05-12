@@ -1,49 +1,28 @@
 using System.Linq;
 using System.Runtime.InteropServices;
-using Rubberduck.Interaction;
-using Rubberduck.Parsing.Rewriter;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Refactorings;
 using Rubberduck.Refactorings.Rename;
+using Rubberduck.UI.Command.Refactorings.Notifiers;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 using Rubberduck.VBEditor.Utility;
 
 namespace Rubberduck.UI.Command.Refactorings
 {
     [ComVisible(false)]
-    public class ProjectExplorerRefactorRenameCommand : RefactorCommandBase
+    public class ProjectExplorerRefactorRenameCommand : RefactorDeclarationCommandBase
     {
         private readonly RubberduckParserState _state;
-        private readonly IMessageBox _msgBox;
-        private readonly IRefactoringPresenterFactory _factory;
         private readonly IVBE _vbe;
 
-        public ProjectExplorerRefactorRenameCommand(IVBE vbe, RubberduckParserState state, IMessageBox msgBox, IRefactoringPresenterFactory factory, IRewritingManager rewritingManager, ISelectionService selectionService)
-            : base(rewritingManager, selectionService)
+        public ProjectExplorerRefactorRenameCommand(RenameRefactoring refactoring, RenameFailedNotifier renameFailedNotifier, IVBE vbe, RubberduckParserState state, ISelectionService selectionService)
+            : base(refactoring, renameFailedNotifier, state)
         {
             _state = state;
-            _msgBox = msgBox;
-            _factory = factory;
             _vbe = vbe;
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
-        {
-            return _state.Status == ParserState.Ready;
-        }
-
-        protected override void OnExecute(object parameter)
-        {
-            var refactoring = new RenameRefactoring(_factory, _msgBox, _state, _state.ProjectsProvider, RewritingManager, SelectionService);
-            var target = GetTarget();
-            if (target != null)
-            {
-                refactoring.Refactor(target);
-            }
-        }
-
-        private Declaration GetTarget()
+        protected override Declaration GetTarget()
         {
             string selectedComponentName;
             using (var selectedComponent = _vbe.SelectedVBComponent)

@@ -192,14 +192,14 @@
                         Width="*"
                         IsReadOnly="True" />
                             <DataGridTemplateColumn
-                        Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_ModifierWarning}"
-                        Width="Auto">
+                                Width="Auto">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Resx ResxName=Rubberduck.Resources.Resources, Key=exclamation}"
-                                               Visibility="{Binding IsValid, Converter={StaticResource BoolToHiddenVisibility}}"
-                                               HorizontalContentAlignment="Center"
-                                               ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionToolTip}"/>
+                                        <Label Visibility="{Binding IsValid, Converter={StaticResource BoolToHiddenVisibility}}"
+                                               HorizontalContentAlignment="Center">
+                                            <Image Source="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=exclamation}"
+                                                   ToolTip="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_HotkeyRestrictionToolTip}"/>
+                                        </Label>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
@@ -240,7 +240,9 @@
                         </DataGrid.Columns>
                     </DataGrid>
                     <Label Content="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_ExperimentalFeatures}" FontWeight="SemiBold" />
-                    <Label Margin="5,0,0,5" FontWeight="Bold" Foreground="{x:Static SystemColors.HighlightTextBrush}">
+                    <Label Margin="5,0,0,5" FontWeight="Bold"
+                           Foreground="{x:Static SystemColors.InfoTextBrush}" 
+                           Background="{x:Static SystemColors.InfoBrush}">
                         <Label.Content>
                             <AccessText TextWrapping="Wrap" Text="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=GeneralSettings_ExperimentalFeaturesWarning}"/>
                         </Label.Content>

@@ -8,9 +8,6 @@ namespace Rubberduck.RegexAssistant.Atoms
 {
     internal class CharacterClass : IAtom
     {
-        public static readonly string Pattern = @"(?<!\\)\[(?<expression>.*?)(?<!\\)\]";
-        private static readonly Regex Matcher = new Regex($"^{Pattern}$", RegexOptions.Compiled);
-
         public bool InverseMatching { get; }
         public IList<string> CharacterSpecifiers { get; }
 
@@ -22,13 +19,13 @@ namespace Rubberduck.RegexAssistant.Atoms
             }
 
             Quantifier = quantifier;
-            var m = Matcher.Match(specifier);
-            if (!m.Success)
+            if (!specifier.StartsWith("[") || !specifier.EndsWith("]"))
             {
                 throw new ArgumentException("The given specifier does not denote a character class");
             }
             Specifier = specifier;
-            var actualSpecifier = m.Groups["expression"].Value;
+            // trim leading and closing bracket
+            var actualSpecifier = specifier.Substring(1, specifier.Length - 2);
             InverseMatching = actualSpecifier.StartsWith("^");
             CharacterSpecifiers= ExtractCharacterSpecifiers(InverseMatching ? actualSpecifier.Substring(1) : actualSpecifier);
         }

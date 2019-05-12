@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.Parsing.VBA;
 using Rubberduck.SmartIndenter;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
@@ -14,18 +13,19 @@ namespace Rubberduck.UI.Command
         private readonly RubberduckParserState _state;
 
         public IndentCurrentProcedureCommand(IVBE vbe, IIndenter indenter, RubberduckParserState state)
-            : base(LogManager.GetCurrentClassLogger())
         {
             _vbe = vbe;
             _indenter = indenter;
             _state = state;
+
+            AddToCanExecuteEvaluation(SpecialEvaluateCanExecute);
         }
 
-        protected override bool EvaluateCanExecute(object parameter)
+        private bool SpecialEvaluateCanExecute(object parameter)
         {
             using (var activePane = _vbe.ActiveCodePane)
             {
-                return activePane != null || !activePane.IsWrappingNullReference;
+                return activePane != null && !activePane.IsWrappingNullReference;
             }
         }
 

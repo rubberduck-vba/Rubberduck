@@ -1,5 +1,4 @@
 ﻿using System.Runtime.InteropServices;
-using NLog;
 using Rubberduck.UI.About;
 using Rubberduck.VersionCheck;
 
@@ -11,7 +10,7 @@ namespace Rubberduck.UI.Command
     [ComVisible(false)]
     public class AboutCommand : CommandBase
     {
-        public AboutCommand(IVersionCheck versionService) : base(LogManager.GetCurrentClassLogger())
+        public AboutCommand(IVersionCheck versionService)
         {
             _versionService = versionService;
         }

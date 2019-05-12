@@ -176,26 +176,5 @@ namespace RubberduckTests.Inspections
 
             Assert.IsFalse(inspectionResult.ChangesInvalidateResult(modifiedModules));
         }
-
-        [Test]
-        public void AggregateInspectionResultsAreAlwaysDeemedInvalidated()
-        {
-            var inspectionMock = new Mock<IInspection>();
-            inspectionMock
-                .Setup(m =>
-                    m.ChangesInvalidateResult(It.IsAny<IInspectionResult>(),
-                        It.IsAny<ICollection<QualifiedModuleName>>()))
-                .Returns(false);
-
-            var module = new QualifiedModuleName("project", string.Empty, "module");
-            var otherModule = new QualifiedModuleName("project", string.Empty, "otherModule");
-            var context = new QualifiedContext(module, null);
-            var modifiedModules = new HashSet<QualifiedModuleName> { otherModule };
-
-            var baseInspectionResult = new QualifiedContextInspectionResult(inspectionMock.Object, string.Empty, context);
-            var inspectionResult = new AggregateInspectionResult(baseInspectionResult, 42);
-
-            Assert.IsTrue(inspectionResult.ChangesInvalidateResult(modifiedModules));
-        }
     }
 }

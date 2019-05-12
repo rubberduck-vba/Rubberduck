@@ -1,4 +1,4 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Rubberduck.Parsing.Annotations;
@@ -7,8 +7,6 @@ using Rubberduck.Parsing.Grammar;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.VBEditor;
-
-// ReSharper disable UnusedParameter.Local  - calls are dynamic, so the signatures need to match.
 
 namespace Rubberduck.Parsing.VBA.ReferenceManagement
 {
@@ -30,22 +28,67 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement = false,
             bool isSetAssignment = false)
         {
-            Visit((dynamic)boundExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+            Visit(boundExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+        }
+
+        private void Visit(
+            IBoundExpression boundExpression,
+            QualifiedModuleName module,
+            Declaration scope,
+            Declaration parent,
+            bool isAssignmentTarget = false,
+            bool hasExplicitLetStatement = false,
+            bool isSetAssignment = false)
+        {
+            switch (boundExpression)
+            {
+                case SimpleNameExpression simpleNameExpression:
+                    Visit(simpleNameExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                    break;
+                case MemberAccessExpression memberAccessExpression:
+                    Visit(memberAccessExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                    break;
+                case IndexExpression failedExpression:
+                    Visit(failedExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                    break;
+                case ParenthesizedExpression parenthesizedExpression:
+                    Visit(parenthesizedExpression, module, scope, parent);
+                    break;
+                case LiteralExpression literalExpression:
+                    Visit(literalExpression);
+                    break;
+                case BinaryOpExpression binaryOpExpression:
+                    Visit(binaryOpExpression, module, scope, parent);
+                    break;
+                case UnaryOpExpression unaryOpExpression:
+                    Visit(unaryOpExpression, module, scope, parent);
+                    break;
+                case NewExpression failedExpression:
+                    Visit(failedExpression, module, scope, parent);
+                    break;
+                case InstanceExpression instanceExpression:
+                    Visit(instanceExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+                    break;
+                case TypeOfIsExpression typeOfIsExpression:
+                    Visit(typeOfIsExpression, module, scope, parent);
+                    break;
+                case ResolutionFailedExpression resolutionFailedExpression:
+                    Visit(resolutionFailedExpression, module, scope, parent);
+                    break;
+                default: throw new NotSupportedException($"Unexpected bound expression type {boundExpression.GetType()}");
+            }
         }
 
         private void Visit(
             ResolutionFailedExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent,
-            bool isAssignmentTarget,
-            bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            Declaration parent)
         {
             // To bind as much as possible we gather all successfully resolved expressions and bind them here as a special case.
             foreach (var successfullyResolvedExpression in expression.SuccessfullyResolvedExpressions)
             {
-                Visit((dynamic)successfullyResolvedExpression, module, scope, parent, false, false, false);
+                Visit(successfullyResolvedExpression, module, scope, parent);
             }
         }
 
@@ -98,26 +141,29 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             bool hasExplicitLetStatement,
             bool isSetAssignment)
         {
-            Visit((dynamic)expression.LExpression, module, scope, parent, false, false, false);
+            Visit(expression.LExpression, module, scope, parent);
+            
             // Expressions could be unbound thus not have a referenced declaration. The lexpression might still be bindable though.
-            if (expression.Classification != ExpressionClassification.Unbound)
+            if (expression.Classification == ExpressionClassification.Unbound)
             {
-                var callSiteContext = expression.UnrestrictedNameContext;
-                var identifier = expression.UnrestrictedNameContext.GetText();
-                var callee = expression.ReferencedDeclaration;
-                expression.ReferencedDeclaration.AddReference(
-                    module,
-                    scope,
-                    parent,
-                    callSiteContext,
-                    identifier,
-                    callee,
-                    callSiteContext.GetSelection(),
-                    FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
-                    isAssignmentTarget,
-                    hasExplicitLetStatement,
-                    isSetAssignment);
+                return;
             }
+
+            var callSiteContext = expression.UnrestrictedNameContext;
+            var identifier = expression.UnrestrictedNameContext.GetText();
+            var callee = expression.ReferencedDeclaration;
+            expression.ReferencedDeclaration.AddReference(
+                module,
+                scope,
+                parent,
+                callSiteContext,
+                identifier,
+                callee,
+                callSiteContext.GetSelection(),
+                FindIdentifierAnnotations(module, callSiteContext.GetSelection().StartLine),
+                isAssignmentTarget,
+                hasExplicitLetStatement,
+                isSetAssignment);
         }
 
         private void Visit(
@@ -131,7 +177,8 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
         {
             // Index expressions are a bit special in that they could refer to elements of an array, what apparently we don't want to
             // add an identifier reference to, that's why we pass on the isassignment/hasexplicitletstatement values.
-            Visit((dynamic)expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+            Visit(expression.LExpression, module, scope, parent, isAssignmentTarget, hasExplicitLetStatement, isSetAssignment);
+
             if (expression.Classification != ExpressionClassification.Unbound
                 && expression.ReferencedDeclaration != null
                 && !ReferenceEquals(expression.LExpression.ReferencedDeclaration, expression.ReferencedDeclaration))
@@ -159,11 +206,11 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             {
                 if (argument.Expression != null)
                 {
-                    Visit((dynamic)argument.Expression, module, scope, parent, false, false, false);
+                    Visit(argument.Expression, module, scope, parent);
                 }
                 if (argument.NamedArgumentExpression != null)
                 {
-                    Visit((dynamic)argument.NamedArgumentExpression, module, scope, parent, false, false, false);
+                    Visit(argument.NamedArgumentExpression, module, scope, parent);
                 }
             }
         }
@@ -172,74 +219,52 @@ namespace Rubberduck.Parsing.VBA.ReferenceManagement
             NewExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent,
-            bool isAssignmentTarget,
-            bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            Declaration parent)
         {
             // We don't need to add a reference to the NewExpression's referenced declaration since that's covered
             // with its TypeExpression.
-            Visit((dynamic)expression.TypeExpression, module, scope, parent, false, false, false);
+            Visit(expression.TypeExpression, module, scope, parent);
         }
 
         private void Visit(
             ParenthesizedExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent,
-            bool isAssignmentTarget,
-            bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            Declaration parent)
         {
-            Visit((dynamic)expression.Expression, module, scope, parent, false, false, false);
+            Visit(expression.Expression, module, scope, parent);
         }
 
         private void Visit(
             TypeOfIsExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent,
-            bool isAssignmentTarget,
-            bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            Declaration parent)
         {
-            Visit((dynamic)expression.Expression, module, scope, parent, false, false, false);
-            Visit((dynamic)expression.TypeExpression, module, scope, parent, false, false, false);
+            Visit(expression.Expression, module, scope, parent);
+            Visit(expression.TypeExpression, module, scope, parent);
         }
 
         private void Visit(
             BinaryOpExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent,
-            bool isAssignmentTarget,
-            bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            Declaration parent)
         {
-            Visit((dynamic)expression.Left, module, scope, parent, false, false, false);
-            Visit((dynamic)expression.Right, module, scope, parent, false, false, false);
+            Visit(expression.Left, module, scope, parent);
+            Visit(expression.Right, module, scope, parent);
         }
 
         private void Visit(
             UnaryOpExpression expression,
             QualifiedModuleName module,
             Declaration scope,
-            Declaration parent,
-            bool isAssignmentTarget,
-            bool hasExplicitLetStatement,
-            bool isSetAssignment)
+            Declaration parent)
         {
-            Visit((dynamic)expression.Expr, module, scope, parent, false, false, false);
+            Visit(expression.Expr, module, scope, parent);
         }
 
-        private void Visit(
-            LiteralExpression expression,
-            QualifiedModuleName module,
-            Declaration scope,
-            Declaration parent,
-            bool isAssignmentTarget,
-            bool hasExplicitLetStatement,
-            bool isSetAssignment)
+        private void Visit(LiteralExpression expression)
         {
             // Nothing to do here.
         }

@@ -592,6 +592,15 @@ namespace Rubberduck.Resources.Inspections {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &apos;While...Wend&apos; loops exist for backward compatibility and have been superseded by the introduction of &apos;Do While...Loop&apos; blocks, which support the &apos;Exit Do&apos; exit statement. &apos;While...Wend&apos; loops cannot be exited other than fulfilling the &apos;While&apos; condition..
+        /// </summary>
+        public static string ObsoleteWhileWendStatementInspection {
+            get {
+                return ResourceManager.GetString("ObsoleteWhileWendStatementInspection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to While this is legal, this is poorly documented &quot;feature&quot; that means something different -- the error state is also cleared in addition to disabling any error handling. However, this can be ambiguous as a negative line label of -1 may end up as a target and excessively complex error handling usually indicates a need of refactoring the procedure..
         /// </summary>
         public static string OnErrorGoToMinusOneInspection {
