@@ -13,6 +13,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies implicit default member calls.
+    /// </summary>
+    /// <why>
+    /// Code should do what it says, and say what it does. Implicit default member calls generally do the opposite of that.
+    /// </why>
+    /// <example>
+    /// This inspection would flag the following code:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     ActiveSheet.Range("A1") = 42 ' implicit assignment to 'Range.[_default]'.
+    /// End Sub
+    /// </code>
+    /// The following code would not trip the inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     ActiveSheet.Range("A1").Value = 42
+    /// End Sub
+    /// 
+    /// Private Function GetFoo() As Long
+    ///     GetFoo = 42
+    /// End Function
+    /// </code>
+    /// </example>
     public sealed class ImplicitDefaultMemberAssignmentInspection : InspectionBase
     {
         public ImplicitDefaultMemberAssignmentInspection(RubberduckParserState state)
