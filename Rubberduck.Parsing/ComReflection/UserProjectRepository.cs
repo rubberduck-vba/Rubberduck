@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using NLog;
 using Rubberduck.Parsing.Common;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.ComManagement;
 using Rubberduck.VBEditor.ComManagement.TypeLibs;
+using Rubberduck.VBEditor.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
 
 namespace Rubberduck.Parsing.ComReflection
@@ -71,7 +70,12 @@ namespace Rubberduck.Parsing.ComReflection
             RemoveProjects(noLongerExistingProjectIds);
         }
 
-        //Use only on the UI thread.
+        /// <summary>
+        /// Use only on the UI thread!
+        /// </summary>
+        /// <remarks>
+        ///This method uses TryLoadProject, which is only safe to use on the UI thread.
+        /// </remarks>
         private void AddLockedProjects()
         {
             var lockedProjects = _projectsProvider.LockedProjects();
@@ -82,57 +86,37 @@ namespace Rubberduck.Parsing.ComReflection
                     continue;
                 }
 
-                TryLoadProject(projectId, project);
+                if (TryLoadProject(projectId, project, out var comProject))
+                {
+                    _userComProjects.Add(projectId, comProject);
+                } 
             }
         }
 
-        //Use only on the UI thread.
-        private bool TryLoadProject(string projectId, IVBProject project)
+        /// <summary>
+        /// Use only on the UI thread!
+        /// </summary>
+        /// <remarks>
+        ///This method uses the typeLib API, which is only safe to use on the UI thread.
+        /// </remarks>
+        private bool TryLoadProject(string projectId, IVBProject project, out ComProject comProject)
         {
-            if (!TryGetFullPath(project, out var path))
+            if (!project.TryGetFullPath(out var path))
             {
                 //Only debug because this will always happen for unsaved projects.
                 _logger.Debug($"Unable to get project path for project with projectId {projectId} when loading the COM project.");
                 path = string.Empty;
             }
 
-            ComProject comProject = null;
             using (var typeLib = _typeLibWrapperProvider.TypeLibWrapperFromProject(project))
             {
-                comProject = typeLib != null ? new ComProject(typeLib, path) : null;
+                comProject = typeLib != null 
+                    ? new ComProject(typeLib, path) 
+                    : null;
             }
 
-            if (comProject == null)
-            {
-                return false;
-            }
-
-            _userComProjects.Add(projectId, comProject);
-
-            return true;
+            return comProject != null;
         } 
-
-        private bool TryGetFullPath(IVBProject project, out string fullPath)
-        {
-            try
-            {
-                fullPath = project.FileName;
-            }
-            catch (IOException)
-            {
-                // Filename throws exception if unsaved.
-                fullPath = null;
-                return false;
-            }
-            catch (COMException e)
-            {
-                _logger.Warn(e);
-                fullPath = null;
-                return false;
-            }
-
-            return true;
-        }
 
         private void RemoveProjects(IEnumerable<string> projectIdsToRemove)
         {
@@ -142,13 +126,21 @@ namespace Rubberduck.Parsing.ComReflection
             }
         }
 
-        //Use only on the UI thread.
+        /// <summary>
+        /// Use only on the UI thread!
+        /// </summary>
+        /// <remarks>
+        ///This method uses TryLoadProject, which is only safe to use on the UI thread.
+        /// </remarks>
         private void AddUnprotectedUserProjects(IReadOnlyCollection<string> projectIdsToLoad)
         {
             var projectsToLoad = _projectsProvider.Projects().Where(tpl => projectIdsToLoad.Contains(tpl.ProjectId));
             foreach (var (projectId, project) in projectsToLoad)
             {
-                TryLoadProject(projectId, project);
+                if (TryLoadProject(projectId, project, out var comProject))
+                {
+                    _userComProjects.Add(projectId, comProject);
+                }
             }
         }
     }
