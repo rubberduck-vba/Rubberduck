@@ -14,6 +14,32 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags invalid Rubberduck annotation comments.
+    /// </summary>
+    /// <why>
+    /// Rubberduck is correctly parsing an annotation, but that annotation is illegal in that context.
+    /// </why>
+    /// <example>
+    /// This inspection would flag the following module annotation decorating a local variable:
+    /// <code>
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     '@Folder("Module1.DoSomething")
+    ///     Dim foo As Long
+    /// End Sub
+    /// </code>
+    /// The following code would not trip the inspection:
+    /// <code>
+    /// '@Folder("Module1.DoSomething")
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class IllegalAnnotationInspection : InspectionBase
     {
         public IllegalAnnotationInspection(RubberduckParserState state)

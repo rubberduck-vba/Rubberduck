@@ -9,32 +9,6 @@ using Antlr4.Runtime.Tree;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    /// <summary>
-    /// Identifies empty code blocks that can be safely removed.
-    /// </summary>
-    /// <why>
-    /// Empty code blocks are redundant, dead code that should be removed. They can also be misleading about their intent:
-    /// an empty block may be signalling an unfinished thought or an oversight.
-    /// </why>
-    /// <example>
-    /// This inspection means to flag the following examples:
-    /// <code>
-    /// Public Sub DoSomething(ByVal foo As Boolean)
-    ///     If foo Then
-    ///         ' ...
-    ///     Else
-    ///     End If
-    /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
-    /// Public Sub DoSomething(ByVal foo As Boolean)
-    ///     If foo Then
-    ///         ' ...
-    ///     End If
-    /// End Sub
-    /// </code>
-    /// </example>
     public class EmptyBlockInspectionListenerBase : VBAParserBaseListener, IInspectionListener
     {
         private readonly List<QualifiedContext<ParserRuleContext>> _contexts = new List<QualifiedContext<ParserRuleContext>>();

@@ -13,6 +13,29 @@ using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates public User-Defined Function procedures accidentally named after a cell reference.
+    /// </summary>
+    /// <reference>
+    /// This inspection only executes if the Excel type library is referenced.
+    /// </reference>
+    /// <why>
+    /// Another good reason to avoid numeric suffixes: if the function is meant to be used as a UDF in a cell formula,
+    /// the worksheet cell by the same name takes precedence and gets the reference, and the function is never invoked.
+    /// </why>
+    /// <example>
+    /// This inspection will flag the following function name as a valid cell address:
+    /// <code>
+    /// Public Function FOO1234()
+    /// End Sub
+    /// </code>
+    /// The following funcrtion name should not trip this inspection.
+    /// <code>
+    /// Public Function Foo()
+    /// End Sub
+    /// </code>
+    /// </example>
+
     [RequiredLibrary("Excel")]
     public class ExcelUdfNameIsValidCellReferenceInspection : InspectionBase
     {
