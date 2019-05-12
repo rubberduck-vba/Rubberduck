@@ -53,40 +53,43 @@ namespace Rubberduck.Parsing.ComReflection
                     declarations.AddRange(memberDeclarations);
                     AssignDefaultMember(moduleDeclaration, defaultMember);
 
-                    (memberDeclarations, defaultMember) = GetDeclarationsForMembers(membered.Members, moduleName,
-                        moduleDeclaration, membered.DefaultMember);
+                    (memberDeclarations, defaultMember) = GetDeclarationsForMembers(
+                        membered.Members, 
+                        moduleName,
+                        moduleDeclaration, 
+                        membered.DefaultMember);
                     declarations.AddRange(memberDeclarations);
                     AssignDefaultMember(moduleDeclaration, defaultMember);
 
                     if (membered is ComCoClass coClass)
                     {
-                        (memberDeclarations, defaultMember) = GetDeclarationsForMembers(coClass.SourceMembers,
-                            moduleName, moduleDeclaration, coClass.DefaultMember, true);
+                        (memberDeclarations, defaultMember) = GetDeclarationsForMembers(
+                            coClass.SourceMembers,
+                            moduleName, 
+                            moduleDeclaration, 
+                            coClass.DefaultMember, 
+                            eventHandlers: true);
                         declarations.AddRange(memberDeclarations);
                         AssignDefaultMember(moduleDeclaration, defaultMember);
                     }
 
                     break;
                 case ComEnumeration enumeration:
-                    {
-                        var enumDeclaration = new Declaration(enumeration, moduleDeclaration, moduleName);
-                        declarations.Add(enumDeclaration);
-                        var members = enumeration.Members
-                            .Select(enumMember => new ValuedDeclaration(enumMember, enumDeclaration, moduleName))
-                            .ToList();
-                        declarations.AddRange(members);
-                        break;
-                    }
+                    var enumDeclaration = new Declaration(enumeration, moduleDeclaration, moduleName);
+                    declarations.Add(enumDeclaration);
+                    var enumerationMembers = enumeration.Members
+                        .Select(enumMember => new ValuedDeclaration(enumMember, enumDeclaration, moduleName))
+                        .ToList();
+                    declarations.AddRange(enumerationMembers);
+                    break;
                 case ComStruct structure:
-                    {
-                        var typeDeclaration = new Declaration(structure, moduleDeclaration, moduleName);
-                        declarations.Add(typeDeclaration);
-                        var members = structure.Fields
-                            .Select(f => new Declaration(f, typeDeclaration, moduleName))
-                            .ToList();
-                        declarations.AddRange(members);
-                        break;
-                    }
+                    var typeDeclaration = new Declaration(structure, moduleDeclaration, moduleName);
+                    declarations.Add(typeDeclaration);
+                    var structMembers = structure.Fields
+                        .Select(f => new Declaration(f, typeDeclaration, moduleName))
+                        .ToList();
+                    declarations.AddRange(structMembers);
+                    break;
             }
 
             if (module is IComTypeWithFields fields && fields.Fields.Any())
