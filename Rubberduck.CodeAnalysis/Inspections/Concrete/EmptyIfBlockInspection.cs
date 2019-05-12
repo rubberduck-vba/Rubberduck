@@ -15,6 +15,31 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies empty 'If' blocks.
+    /// </summary>
+    /// <why>
+    /// Conditional expression is inverted; there would not be a need for an 'Else' block otherwise.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples:
+    /// <code>
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo Then
+    ///     Else
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If Not foo Then
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// </code>
+    /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyIfBlockInspection : ParseTreeInspectionBase
     {

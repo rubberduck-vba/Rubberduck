@@ -14,6 +14,34 @@ using Rubberduck.SettingsProvider;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags identifiers that use [Systems] Hungarian Notation prefixes.
+    /// </summary>
+    /// <why>
+    /// Systems Hungarian (encoding data types in variable names) stemmed from a misunderstanding of what its inventor meant
+    /// when they described that prefixes identified the "kind" of variable in a naming scheme dubbed Apps Hungarian.
+    /// Modern naming conventions in all programming languages heavily discourage the use of Systems Hungarian prefixes. 
+    /// </why>
+    /// <example>
+    /// This inspection would flag the following names:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim bFoo As Boolean, blnFoo As Boolean
+    ///     Dim intBar As Long ' which is correct? the int or the Long?
+    /// End Sub
+    /// </code>
+    /// The following code would not trip the inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim foo As Boolean, isFoo As Boolean
+    ///     Dim bar As long
+    /// End Sub
+    /// 
+    /// Private Function GetFoo() As Long
+    ///     GetFoo = 42
+    /// End Function
+    /// </code>
+    /// </example>
     public sealed class HungarianNotationInspection : InspectionBase
     {
         #region statics

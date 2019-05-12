@@ -10,6 +10,27 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags publicly exposed instance fields.
+    /// </summary>
+    /// <why>
+    /// Instance fields are the implementation details of a object's internal state; exposing them directly breaks encapsulation. 
+    /// Often, an object only needs to expose a 'Get' procedure to expose an internal instance field.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples (in a class module):
+    /// <code>
+    /// Public Foo As Long
+    /// </code>
+    /// The following code should not trip this inspection (in a class module):
+    /// <code>
+    /// Private internalFoo As Long
+    /// 
+    /// Public Property Get Foo() As Long
+    ///     Foo = internalFoo
+    /// End Property
+    /// </code>
+    /// </example>
     public sealed class EncapsulatePublicFieldInspection : InspectionBase
     {
         public EncapsulatePublicFieldInspection(RubberduckParserState state)

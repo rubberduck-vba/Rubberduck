@@ -13,6 +13,32 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags uses of an empty string literal ("").
+    /// </summary>
+    /// <why>
+    /// Standard library constant 'vbNullString' is more explicit about its intent, and should be preferred to a string literal. 
+    /// While the memory gain is meaningless, an empty string literal still takes up 2 bytes of memory,
+    /// but 'vbNullString' is a null string pointer, and doesn't.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples:
+    /// <code>
+    /// Public Sub DoSomething(ByVal foo As String)
+    ///     If foo = "" Then
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething(ByVal foo As String)
+    ///     If foo = vbNullString Then
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase
     {
         public EmptyStringLiteralInspection(RubberduckParserState state)
