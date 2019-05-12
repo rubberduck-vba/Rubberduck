@@ -14,6 +14,24 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about Def[Type] statements.
+    /// </summary>
+    /// <why>
+    /// These declarative statements make the first letter of identifiers determine the data type.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples:
+    /// <code>
+    /// DefBool B
+    /// DefDbl D
+    ///
+    /// Public Sub DoSomething() 
+    ///     Dim bar ' implicit Boolean
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class DefTypeStatementInspection : ParseTreeInspectionBase
     {
         public DefTypeStatementInspection(RubberduckParserState state)
