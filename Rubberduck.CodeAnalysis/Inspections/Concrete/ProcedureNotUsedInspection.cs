@@ -11,6 +11,37 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates procedures that are never invoked from user code.
+    /// </summary>
+    /// <why>
+    /// Unused procedures are dead code that should probably be removed. Note, a procedure may be effectively "not used" in code, but attached to some
+    /// Shape object in the host document: in such cases the inspection result should be ignored. An event handler procedure that isn't being
+    /// resolved as such, may also wrongly trigger this inspection.
+    /// </why>
+    /// <warning>
+    /// Not all unused procedures can/should be removed: ignore any inspection results for 
+    /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
+    /// </warning>
+    /// <example>
+    /// This inspection means to flag the following:
+    /// <code>
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     ' macro is attached to a worksheet Shape.
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Option Explicit
+    ///
+    /// '@Ignore ProcedureNotUsed
+    /// Public Sub DoSomething() As Long
+    ///     ' macro is attached to a worksheet Shape.
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class ProcedureNotUsedInspection : InspectionBase
     {
         public ProcedureNotUsedInspection(RubberduckParserState state) : base(state) { }

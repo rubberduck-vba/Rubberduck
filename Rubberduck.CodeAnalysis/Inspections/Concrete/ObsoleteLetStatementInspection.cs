@@ -13,6 +13,28 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates explicit 'Let' assignments.
+    /// </summary>
+    /// <why>
+    /// The legacy syntax is obsolete/redundant; prefer implicit Let-coercion instead.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following statement:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long
+    ///     Let foo = 42 ' explicit Let is redundant
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long
+    ///     foo = 42 ' [Let] is implicit
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase
     {
         public ObsoleteLetStatementInspection(RubberduckParserState state)

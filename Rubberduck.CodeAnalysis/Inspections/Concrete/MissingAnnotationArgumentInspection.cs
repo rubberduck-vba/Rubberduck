@@ -14,6 +14,28 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about a malformed Rubberduck annotation that is missing an argument.
+    /// </summary>
+    /// <why>
+    /// Some annotations require arguments; if the argument isn't specified, the annotation is nothing more than an obscure comment.
+    /// </why>
+    /// <example>
+    /// This inspection would flag the following annotations with missing required arguments:
+    /// <code>
+    /// '@Folder
+    /// '@ModuleDescription
+    /// Option Explicit
+    /// ' ...
+    /// </code>
+    /// The following code would not trip the inspection:
+    /// <code>
+    /// '@Folder("MyProject.XYZ")
+    /// '@ModuleDescription("This module does XYZ")
+    /// Option Explicit
+    /// ' ...
+    /// </code>
+    /// </example>
     public sealed class MissingAnnotationArgumentInspection : ParseTreeInspectionBase
     {
         public MissingAnnotationArgumentInspection(RubberduckParserState state)

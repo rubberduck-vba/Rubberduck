@@ -10,6 +10,35 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about properties that don't expose a 'Property Get' accessor.
+    /// </summary>
+    /// <why>
+    /// Write-only properties are suspicious: if the client code is able to set a property, it should be allowed to read that property as well. 
+    /// Class design guidelines and best practices generally recommend against write-only properties.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following:
+    /// <code>
+    /// Private internalFoo As Long
+    ///
+    /// Public Property Let Foo(ByVal value As Long)
+    ///     internalFoo = value
+    /// End Property
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Private internalFoo As Long
+    ///
+    /// Public Property Let Foo(ByVal value As Long)
+    ///     internalFoo = value
+    /// End Property
+    ///
+    /// Public Property Get Foo() As Long
+    ///     Foo = internalFoo
+    /// End Property
+    /// </code>
+    /// </example>
     public sealed class WriteOnlyPropertyInspection : InspectionBase
     {
         public WriteOnlyPropertyInspection(RubberduckParserState state)

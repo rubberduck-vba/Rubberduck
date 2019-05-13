@@ -15,6 +15,33 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates 'For' loops where the 'Step' token is omitted.
+    /// </summary>
+    /// <why>
+    /// Out of convention or preference, explicit 'Step' specifiers could be considered mandatory; 
+    /// this inspection can ensure the consistency of the convention.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     For i = 1 To 100 ' Step is implicitly 1
+    ///         ' ...
+    ///     Next
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     For i = 1 To 100 Step 1 ' explicit 'Step 1' could also be considered redundant.
+    ///         ' ...
+    ///     Next
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class StepIsNotSpecifiedInspection : ParseTreeInspectionBase
     {
         public StepIsNotSpecifiedInspection(RubberduckParserState state) : base(state) { }

@@ -14,6 +14,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags modules that omit Option Explicit.
+    /// </summary>
+    /// <why>
+    /// This option makes variable declarations mandatory. Without it, a typo gets compiled as a new on-the-spot Variant/Empty variable with a new name. 
+    /// Omitting this option amounts to refusing the little help the VBE can provide with compile-time validation.
+    /// </why>
+    /// <example>
+    /// This inspection would flag this module:
+    /// <code>
+    /// 
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class OptionExplicitInspection : ParseTreeInspectionBase
     {
         public OptionExplicitInspection(RubberduckParserState state)

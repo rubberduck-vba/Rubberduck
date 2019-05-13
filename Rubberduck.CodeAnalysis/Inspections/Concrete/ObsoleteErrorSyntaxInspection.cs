@@ -13,6 +13,26 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates legacy 'Error' statements.
+    /// </summary>
+    /// <why>
+    /// The legacy syntax is obsolete; prefer 'Err.Raise' instead.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following statement:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Error 5 ' raises run-time error 5
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Err.Raise 5 ' raises run-time error 5
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase
     {
         public ObsoleteErrorSyntaxInspection(RubberduckParserState state)

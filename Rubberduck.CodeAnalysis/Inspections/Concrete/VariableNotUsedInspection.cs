@@ -13,6 +13,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about variables that are never referenced.
+    /// </summary>
+    /// <why>
+    /// A variable can be declared and even assigned, but if its value is never referenced, it's effectively an unused variable.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim value As Long ' declared
+    ///     value = 42 ' assigned
+    ///     ' ... but never rerenced
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     value = 42
+    ///     Debug.Print value
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class VariableNotUsedInspection : InspectionBase
     {
         public VariableNotUsedInspection(RubberduckParserState state) : base(state) { }

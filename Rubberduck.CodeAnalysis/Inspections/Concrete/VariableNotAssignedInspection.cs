@@ -12,6 +12,31 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about variables that are never assigned.
+    /// </summary>
+    /// <why>
+    /// A variable that is never assigned is probably a sign of a bug. 
+    /// This inspection may yield false positives if the variable is assigned through a ByRef parameter assignment, or 
+    /// if UserForm controls fail to resolve, references to these controls in code-behind can be flagged as unassigned and undeclared variables.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim value As Long ' declared, but not assigned
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim value As Long
+    ///     value = 42
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class VariableNotAssignedInspection : InspectionBase
     {
         public VariableNotAssignedInspection(RubberduckParserState state)

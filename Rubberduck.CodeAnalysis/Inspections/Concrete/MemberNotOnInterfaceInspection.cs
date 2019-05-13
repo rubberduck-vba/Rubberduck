@@ -11,6 +11,32 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about member calls against an extensible interface, that cannot be validated at compile-time.
+    /// </summary>
+    /// <why>
+    /// Extensible COM types can have members attached at run-time; VBA cannot bind these member calls at compile-time.
+    /// If there is an early-bound alternative way to achieve the same result, it should be preferred.
+    /// </why>
+    /// <example>
+    /// This inspection would flag the following:
+    /// <code>
+    /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
+    ///     adoConnection.SomeStoredProcedure 42
+    /// End Sub
+    /// </code>
+    /// The following code would not trip the inspection:
+    /// <code>
+    /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
+    ///     Dim adoCommand As ADODB.Command
+    ///     Set adoCommand.ActiveConnection = adoConnection
+    ///     adoCommand.CommandText = "SomeStoredProcedure"
+    ///     adoCommand.CommandType = adCmdStoredProc
+    ///     adoCommand.Parameters.Append adocommand.CreateParameter(Value:=42)
+    ///     adoCommand.Execute
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class MemberNotOnInterfaceInspection : InspectionBase
     {
         public MemberNotOnInterfaceInspection(RubberduckParserState state)

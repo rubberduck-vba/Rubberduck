@@ -10,6 +10,44 @@ using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags usages of members marked as obsolete with an @Obsolete("justification") Rubberduck annotation.
+    /// </summary>
+    /// <why>
+    /// Marking members as obsolete can help refactoring a legacy code base. This inspection is a tool that makes it easy to locate obsolete member calls.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following statement:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     DoStuff ' member is marked as obsolete
+    /// End Sub
+    ///
+    /// '@Obsolete("Use the newer DoThing() method instead")
+    /// Private Sub DoStuff()
+    ///     ' ...
+    /// End Sub
+    ///
+    /// Private Sub DoThing()
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     DoThing
+    /// End Sub
+    ///
+    /// '@Obsolete("Use the newer DoThing() method instead")
+    /// Private Sub DoStuff()
+    ///     ' ...
+    /// End Sub
+    ///
+    /// Private Sub DoThing()
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class ObsoleteMemberUsageInspection : InspectionBase
     {
         public ObsoleteMemberUsageInspection(RubberduckParserState state) : base(state)

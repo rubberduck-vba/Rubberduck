@@ -10,6 +10,29 @@ using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies uses of 'IsMissing' involving non-variant, non-optional, or array parameters.
+    /// </summary>
+    /// <why>
+    /// 'IsMissing' only returns True when an optional Variant parameter was not supplied as an argument.
+    /// This inspection flags uses that attempt to use 'IsMissing' for other purposes, resulting in conditions that are always False.
+    /// </why>
+    /// <example>
+    /// This inspection would flag the following IsMissing usage:
+    /// <code>
+    /// Public Sub DoSomething(ByVal foo As Long = 0)
+    ///     If IsMissing(foo) Then Exit Sub ' condition is always false
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code would not trip the inspection:
+    /// <code>
+    /// Public Sub DoSomething(Optional ByVal foo As Variant = 0)
+    ///     If IsMissing(foo) Then Exit Sub
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public class IsMissingOnInappropriateArgumentInspection : IsMissingInspectionBase
     {
         public IsMissingOnInappropriateArgumentInspection(RubberduckParserState state)
