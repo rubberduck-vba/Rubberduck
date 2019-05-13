@@ -68,7 +68,4 @@
       <LastGenOutput>CodeInspectionDefaults.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(TargetDir)$(TargetName).xml&quot; &quot;$(SolutionDir)docs&quot; /Y" />
-  </Target>
 </Project>
