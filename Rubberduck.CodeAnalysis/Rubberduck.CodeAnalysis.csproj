@@ -8,6 +8,9 @@
     <RootNamespace>Rubberduck.CodeAnalysis</RootNamespace>
     <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Dev\GitHub\Rubberduck\Rubberduck.CodeAnalysis\Rubberduck.CodeAnalysis.xml</DocumentationFile>
+  </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 
   <ItemGroup>
