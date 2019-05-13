@@ -14,6 +14,31 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Finds instances of 'On Error Resume Next' that don't have a corresponding 'On Error GoTo 0' to restore error handling.
+    /// </summary>
+    /// <why>
+    /// 'On Error Resume Next' should be constrained to a limited number of instructions, otherwise it supresses error handling 
+    /// for the rest of the procedure; 'On Error GoTo 0' reinstates error handling. 
+    /// This inspection helps treating 'Resume Next' and 'GoTo 0' as a code block (similar to 'With...End With'), essentially.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     On Error Resume Next ' error handling is never restored in this scope.
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     On Error Resume Next
+    ///     ' ...
+    ///     On Error GoTo 0
+    /// End Sub
+    /// </code>
+    /// </example>
     public class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase
     {
         private readonly Dictionary<QualifiedContext<ParserRuleContext>, List<ParserRuleContext>> _unhandledContextsMap =

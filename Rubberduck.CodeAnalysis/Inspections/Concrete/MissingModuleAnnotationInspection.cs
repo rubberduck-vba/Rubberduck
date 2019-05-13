@@ -14,6 +14,28 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Indicates that a hidden VB attribute is present for a module, but no Rubberduck annotation is documenting it.
+    /// </summary>
+    /// <why>
+    /// Rubberduck annotations mean to document the presence of hidden VB attributes; this inspection flags modules that
+    /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples (code from an exported module):
+    /// <code>
+    /// Attribute VB_PredeclaredId = True
+    /// Option Explicit
+    /// ' ...
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Attribute VB_PredeclaredId = True
+    /// '@PredeclaredId
+    /// Option Explicit
+    /// ' ...
+    /// </code>
+    /// </example>
     public sealed class MissingModuleAnnotationInspection : InspectionBase
     {
         public MissingModuleAnnotationInspection(RubberduckParserState state) 

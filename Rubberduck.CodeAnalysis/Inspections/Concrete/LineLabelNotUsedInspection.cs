@@ -14,6 +14,35 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies line labels that are never referenced, and therefore superfluous.
+    /// </summary>
+    /// <why>
+    /// Line labels are useful for GoTo, GoSub, Resume, and On Error statements; but the intent of a line label
+    /// can be confusing if it isn't referenced by any such instruction.
+    /// </why>
+    /// <example>
+    /// This inspection would flag the following line label:
+    /// <code>
+    /// Public Sub DoSomething()
+    /// '    On Error GoTo ErrHandler ' (commented-out On Error statement leaves line label unreferenced)
+    ///     ' ...
+    ///     Exit Sub
+    /// ErrHandler:
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code would not trip the inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     On Error GoTo ErrHandler
+    ///     ' ...
+    ///     Exit Sub
+    /// ErrHandler:
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class LineLabelNotUsedInspection : InspectionBase
     {
         public LineLabelNotUsedInspection(RubberduckParserState state) : base(state) { }

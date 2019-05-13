@@ -12,6 +12,33 @@ using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies identifiers that hide/"shadow" other identifiers otherwise accessible in that scope.
+    /// </summary>
+    /// <why>
+    /// Global namespace contains a number of perfectly legal identifier names that user code can use. But using these names in user code 
+    /// effectively "hides" the global ones. In general, avoid shadowing global-scope identifiers if possible.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following:
+    /// <code>
+    /// Private MsgBox As String ' hides the global-scope VBA.Interaction.MsgBox function in this module.
+    /// 
+    /// Public Sub DoSomething()
+    ///     MsgBox = "Test" ' refers to the module variable in scope.
+    ///     VBA.Interaction.MsgBox MsgBox ' global function now needs to be fully qualified to be accessed.
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection and behaves more accordingly with what's expected of an object reference:
+    /// <code>
+    /// Private message As String
+    /// 
+    /// Public Sub DoSomething()
+    ///     message = "Test"
+    ///     MsgBox message ' VBA.Interaction module qualifier is optional.
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class ShadowedDeclarationInspection : InspectionBase
     {
         private enum DeclarationSite

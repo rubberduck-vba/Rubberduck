@@ -10,6 +10,26 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Indicates that a user module is missing a @Folder Rubberduck annotation.
+    /// </summary>
+    /// <why>
+    /// Modules without a custom @Folder annotation will be grouped under the default folder in the Code Explorer toolwindow.
+    /// By specifying a custom @Folder annotation, modules can be organized by functionality rather than simply listed.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following examples:
+    /// <code>
+    /// Option Explicit
+    /// ' ...
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// '@Folder("Foo")
+    /// Option Explicit
+    /// ' ...
+    /// </code>
+    /// </example>
     public sealed class ModuleWithoutFolderInspection : InspectionBase
     {
         public ModuleWithoutFolderInspection(RubberduckParserState state)

@@ -14,6 +14,34 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates explicit 'Call' statements.
+    /// </summary>
+    /// <why>
+    /// The 'Call' keyword is obsolete and redundant, since call statements are legal and generally more consistent without it.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following call statement:
+    /// <code>
+    /// Public Sub Test()
+    ///     Call DoSomething(42)
+    /// End Sub
+    ///
+    /// Private Sub DoSomething(ByVal foo As Long)
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub Test()
+    ///     DoSomething 42
+    /// End Sub
+    ///
+    /// Private Sub DoSomething(ByVal foo As Long)
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class ObsoleteCallStatementInspection : ParseTreeInspectionBase
     {
         public ObsoleteCallStatementInspection(RubberduckParserState state)

@@ -8,6 +8,29 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about public class members with an underscore in their names.
+    /// </summary>
+    /// <why>
+    /// The public interface of any class module can be implemented by any other class module; if the public interface 
+    /// contains names with underscores, other classes cannot implement it - the code will not compile. Avoid underscores; prefer PascalCase names.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following:
+    /// <code>
+    /// '@Interface
+    /// 
+    /// Public Sub Do_Something() ' underscore in name makes the interface non-implementable.
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// '@Interface
+    /// 
+    /// Public Sub DoSomething() ' PascalCase identifiers are never a problem.
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class UnderscoreInPublicClassModuleMemberInspection : InspectionBase
     {
         public UnderscoreInPublicClassModuleMemberInspection(RubberduckParserState state)

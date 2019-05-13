@@ -10,6 +10,29 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about implicit local variables that are used but never declared.
+    /// </summary>
+    /// <why>
+    /// If this code compiles, then Option Explicit is omitted and compile-time validation is easily forfeited, even accidentally (e.g. typos). 
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     foo = 42 ' foo is not declared
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long
+    ///     foo = 42
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class UndeclaredVariableInspection : InspectionBase
     {
         public UndeclaredVariableInspection(RubberduckParserState state)

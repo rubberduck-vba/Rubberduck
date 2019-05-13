@@ -14,6 +14,28 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags parameters declared across multiple physical lines of code.
+    /// </summary>
+    /// <why>
+    /// When splitting a long list of parameters across multiple lines, care should be taken to avoid splitting a parameter declaration in two.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following parameter declaration:
+    /// <code>
+    /// Public Sub DoSomething(ByVal foo As Long, ByVal _ 
+    ///                              bar As Long)
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething(ByVal foo As Long, _ 
+    ///                        ByVal bar As Long)
+    ///     ' ...
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class MultilineParameterInspection : ParseTreeInspectionBase
     {
         public MultilineParameterInspection(RubberduckParserState state)

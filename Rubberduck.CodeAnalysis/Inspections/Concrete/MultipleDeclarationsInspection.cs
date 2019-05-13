@@ -14,6 +14,23 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags declaration statements spanning multiple physical lines of code.
+    /// </summary>
+    /// <why>
+    /// Declaration statements should generally declare a single variable.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following declaration statement:
+    /// <code>
+    /// Dim foo As Long, bar As Long
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Dim foo As Long 
+    /// Dim bar As Long 
+    /// </code>
+    /// </example>
     public sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase
     {
         public MultipleDeclarationsInspection(RubberduckParserState state)

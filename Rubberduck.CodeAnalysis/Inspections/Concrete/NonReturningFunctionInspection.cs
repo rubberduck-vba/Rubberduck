@@ -11,6 +11,30 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about 'Function' and 'Property Get' procedures whose return value is not assigned.
+    /// </summary>
+    /// <why>
+    /// Both 'Function' and 'Property Get' accessors should always return something. Omitting the return assignment is likely a bug.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following non-returning functions:
+    /// <code>
+    /// Public Function GetFoo() As Long
+    ///     Dim foo As Long
+    ///     foo = 42
+    ///     'function will always return 0
+    /// End Function
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Function GetFoo() As Long
+    ///     Dim foo As Long
+    ///     foo = 42
+    ///     GetFoo = foo
+    /// End Function
+    /// </code>
+    /// </example>
     public sealed class NonReturningFunctionInspection : InspectionBase
     {
         public NonReturningFunctionInspection(RubberduckParserState state)

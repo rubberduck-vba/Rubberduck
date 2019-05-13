@@ -13,6 +13,31 @@ using Rubberduck.VBEditor;
 
 namespace Rubberduck.CodeAnalysis.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags 'While...Wend' loops as obsolete.
+    /// </summary>
+    /// <why>
+    /// 'While...Wend' loops were made obsolete when 'Do While...Loop' statements were introduced.
+    /// 'While...Wend' loops cannot be exited early without a GoTo jump; 'Do...Loop' statements can be conditionally exited with 'Exit Do'.
+    /// </why>
+    /// <example>
+    /// This inspection means to flag the following loop block:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     While True
+    ///         ' ...
+    ///     Wend
+    /// End Sub
+    /// </code>
+    /// The following code should not trip this inspection:
+    /// <code>
+    /// Public Sub DoSomething()
+    ///     Do While True
+    ///         ' ...
+    ///     Loop
+    /// End Sub
+    /// </code>
+    /// </example>
     public sealed class ObsoleteWhileWendStatementInspection : ParseTreeInspectionBase
     {
         public ObsoleteWhileWendStatementInspection(RubberduckParserState state)
