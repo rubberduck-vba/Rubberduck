@@ -72,7 +72,8 @@ namespace Rubberduck.UI.UnitTesting
 
             OutcomeFilters = new System.Collections.ObjectModel.ObservableCollection<string>(
                 new[] { _allResultsFilter }
-                    .Concat(Enum.GetNames(typeof(TestOutcome)).Select(s => s.ToString())));
+                    .Concat(Enum.GetNames(typeof(TestOutcome)).Select(s => s.ToString()))
+                    .OrderBy(s => s));
         }
 
         public TestExplorerModel Model { get; }
