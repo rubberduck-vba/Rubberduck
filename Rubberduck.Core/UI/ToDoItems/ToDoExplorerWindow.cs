@@ -19,14 +19,9 @@ namespace Rubberduck.UI.ToDoItems
 
         public ToDoExplorerWindow(ToDoExplorerViewModel viewModel) : this()
         {
-            _viewModel = viewModel;
-            TodoExplorerControl.DataContext = _viewModel;
+            ViewModel = viewModel;
+            TodoExplorerControl.DataContext = ViewModel;
         }
-
-        private readonly ToDoExplorerViewModel _viewModel;
-        public ToDoExplorerViewModel ViewModel
-        {
-            get { return _viewModel; }
-        }
+        public ToDoExplorerViewModel ViewModel { get; }
     }
 }
