@@ -373,7 +373,7 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
     <value>Získali jste odznak "Continuator"!</value>
   </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
-    <value>Nastavení modulu by měly být specifikovány jako první</value>
+    <value>Nastavení modulu by měla být specifikována jako první</value>
   </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Odstranit Parametry</value>
