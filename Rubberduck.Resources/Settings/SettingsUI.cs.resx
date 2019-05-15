@@ -175,7 +175,7 @@
     <value>Rubberduck Nastavení</value>
   </data>
   <data name="PageHeader_AutoCompleteSettings" xml:space="preserve">
-    <value>Nastavení Aplikace</value>
+    <value>Nastavení Automatického Doplňování</value>
   </data>
   <data name="DialogCaption_LoadGeneralSettings" xml:space="preserve">
     <value>Načíst Obecná Nastavení</value>
