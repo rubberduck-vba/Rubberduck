@@ -19,9 +19,10 @@ namespace Rubberduck.Inspections.Concrete
     /// Range.Find methods return a Range object reference that refers to the cell containing the search string;
     /// this object reference will be Nothing if the search didn't turn up any results, and a member call against Nothing will raise run-time error 91.
     /// </why>
+    /// <examples>
     /// <example>
-    /// This inspection means to flag the following example Range.Find member calls:
-    /// <code>
+    /// <text>This inspection means to flag the following example Range.Find member calls:</text>
+    /// <code><![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
     ///     Set foo = Sheet1.Range("A:A").Find("Test") ' foo is Nothing if there are no results
@@ -29,19 +30,22 @@ namespace Rubberduck.Inspections.Concrete
     /// 
     ///     Dim rowIndex As Range
     ///     rowIndex = Sheet1.Range("A:A").Find("Test").Row ' Range.Row member call should be flagged.
-    /// End Sub
+    /// End Sub]]>
     /// </code>
-    /// The following Range.Find calls should not trip this inspection.
-    /// <code>
+    /// </example>
+    /// <example>
+    /// <text>The following Range.Find calls should not trip this inspection.</text>
+    /// <code><![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
     ///     Set foo = Sheet1.Range("A:A").Find("Test")
     ///     If Not foo Is Nothing Then
     ///         MsgBox foo.Address ' Range.Address member call is safe.
     ///     End If
-    /// End Sub
+    /// End Sub]]>
     /// </code>
     /// </example>
+    /// </examples>
     [RequiredLibrary("Excel")]
     public class ExcelMemberMayReturnNothingInspection : MemberAccessMayReturnNothingInspectionBase
     {

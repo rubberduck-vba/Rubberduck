@@ -17,13 +17,13 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// A ThunderCode inspection that locates certain specific instances of line continuations in places we'd never think to put them.
     /// </summary>
     /// <why>
-    /// Andrew "ThunderFrame" Jackson loved to break VBA. This inpection is flagging code we dubbed "ThunderCode", 
-    /// code he would have written to confuse Rubberduck's parser and/or resolver. 
+    /// This inpection is flagging code we dubbed "ThunderCode", 
+    /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// While perfectly legal, these line continuations serve no purpose and should be removed.
     /// </why>
     /// <remarks>
     /// Note that the inspection only checks a subset of possible "evil" line continatuions 
-    /// for both simplicity and performance reasons. Exahustive inspection would likely take too much effort. 
+    /// for both simplicity and performance reasons. Exhaustive inspection would likely take too much effort. 
     /// </remarks>
     public class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase
     {

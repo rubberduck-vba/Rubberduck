@@ -18,24 +18,30 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// The first assignment is likely redundant, since it is being overwritten by the second.
     /// </why>
+    /// <examples>
     /// <example>
-    /// This inspection means to flag the following examples:
+    /// <text>This inspection means to flag the following examples:</text>
     /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
     ///     foo = 12 ' assignment is redundant
     ///     foo = 34 
-    /// End Sub
+    /// End Sub]]>
     /// </code>
-    /// The following code should not trip this inspection:
+    /// </example>
+    /// <example>
+    /// <text>The following code should not trip this inspection:</text>
     /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Dim bar As Long
     ///     bar = 12
     ///     bar = bar + foo ' variable is re-assigned, but the prior assigned value is read at least once first.
-    /// End Sub
+    /// End Sub]]>
     /// </code>
     /// </example>
+    /// </examples>
     public sealed class AssignmentNotUsedInspection : InspectionBase
     {
         private readonly Walker _walker;

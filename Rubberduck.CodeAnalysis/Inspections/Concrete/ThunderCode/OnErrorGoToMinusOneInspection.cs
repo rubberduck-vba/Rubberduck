@@ -17,8 +17,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// A ThunderCode inspection that locates instances of 'On Error GoTo -1' statements.
     /// </summary>
     /// <why>
-    /// Andrew "ThunderFrame" Jackson loved to break VBA. This inpection is flagging code we dubbed "ThunderCode", 
-    /// code he would have written to confuse Rubberduck's parser and/or resolver. 
+    /// This inpection is flagging code we dubbed "ThunderCode", 
+    /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// 'On Error GoTo -1' is poorly documented and uselessly complicates error handling.
     /// </why>
     public class OnErrorGoToMinusOneInspection : ParseTreeInspectionBase

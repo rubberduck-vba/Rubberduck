@@ -17,8 +17,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// A ThunderCode inspection that locates negative line numbers.
     /// </summary>
     /// <why>
-    /// Andrew "ThunderFrame" Jackson loved to break VBA. This inpection is flagging code we dubbed "ThunderCode", 
-    /// code he would have written to confuse Rubberduck's parser and/or resolver. 
+    /// This inpection is flagging code we dubbed "ThunderCode", 
+    /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// The VBE does allow rather strange and unbelievable things to happen.
     /// </why>
     public class NegativeLineNumberInspection : ParseTreeInspectionBase
