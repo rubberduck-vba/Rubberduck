@@ -12,8 +12,8 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
     /// A ThunderCode inspection that locates non-breaking spaces hidden in identifier names.
     /// </summary>
     /// <why>
-    /// Andrew "ThunderFrame" Jackson loved to break VBA. This inpection is flagging code we dubbed "ThunderCode", 
-    /// code he would have written to confuse Rubberduck's parser and/or resolver. 
+    /// This inpection is flagging code we dubbed "ThunderCode", 
+    /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
     /// This inspection may accidentally reveal non-breaking spaces in code copied and pasted from a website.
     /// </why>
     public class NonBreakingSpaceIdentifierInspection : InspectionBase

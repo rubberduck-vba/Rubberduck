@@ -22,24 +22,30 @@ namespace Rubberduck.Inspections.Concrete
     /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
     /// when the active sheet isn't the expected one.
     /// </why>
+    /// <examples>
     /// <example>
-    /// This inspection means to flag the following example unqualified Worksheet.Cells member calls:
+    /// <text>This inspection means to flag the following example unqualified Worksheet.Cells member calls:</text>
     /// <code>
+    /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
     ///     Set foo = Sheet1.Range(Cells(1, 1), Cells(1, 10)) ' Worksheet.Cells implicitly from ActiveSheet; error 1004 if that isn't Sheet1.
-    /// End Sub
+    /// End Sub]]>
     /// </code>
-    /// The following qualified Worksheet.Cells member calls should not trip this inspection.
+    /// </example>
+    /// <example>
+    /// <text>The following qualified Worksheet.Cells member calls should not trip this inspection.</text>
     /// <code>
+    /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
     ///     With Sheet1
     ///         Set foo = .Range(.Cells(1, 1), .Cells(1, 10)) ' all member calls are made against the With block object
     ///     End With
-    /// End Sub
+    /// End Sub]]>
     /// </code>
     /// </example>
+    /// </examples>
     [RequiredLibrary("Excel")]
     public sealed class ImplicitActiveSheetReferenceInspection : InspectionBase
     {

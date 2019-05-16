@@ -27,9 +27,10 @@ namespace Rubberduck.Inspections.Concrete
     /// Trying to compare or assign a <c>Variant/Error</c> to another data type will throw error 13 "type mismatch" at run-time. 
     /// Consider using the early-bound equivalent function instead.
     /// </why>
+    /// <examples>
     /// <example>
-    /// This inspection means to flag the following example late-bound WorksheetFunction calls:
-    /// <code>
+    /// <text>This inspection means to flag the following example late-bound WorksheetFunction calls:</text>
+    /// <code><![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' outputs "Error 2015"
     /// 
@@ -39,10 +40,11 @@ namespace Rubberduck.Inspections.Concrete
     ///     If Application.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then
     ///         ' won't run, error 13 "type mismatch" will be thrown when Variant/Error is compared to an Integer.
     ///     End If
-    /// End Sub
-    /// </code>
-    /// The following early-bound WorksheetFunction calls should not trip this inspection. Note the consistent error, thrown at the same point every time:
-    /// <code>
+    /// End Sub]]></code>
+    /// </example>
+    /// <example>
+    /// <text>The following early-bound WorksheetFunction calls should not trip this inspection. Note the consistent error, thrown at the same point every time:</text>
+    /// <code><![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' throws error 1004
     /// 
@@ -52,9 +54,9 @@ namespace Rubberduck.Inspections.Concrete
     ///     If Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then ' throws error 1004
     ///         ' won't run, error 1004 is thrown when "ABC" is processed by WorksheetFunction.Sum, before it returns.
     ///     End If
-    /// End Sub
-    /// </code>
+    /// End Sub]]></code>
     /// </example>
+    /// </examples>
     [RequiredLibrary("Excel")]
     public class ApplicationWorksheetFunctionInspection : InspectionBase
     {

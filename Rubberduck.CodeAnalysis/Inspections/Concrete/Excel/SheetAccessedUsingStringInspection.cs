@@ -28,22 +28,28 @@ namespace Rubberduck.Inspections.Concrete
     /// <remarks>
     /// Inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
     /// </remarks>
+    /// <examples>
     /// <example>
-    /// This inspection means to flag the following:
+    /// <text>This inspection means to flag the following:</text>
     /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim sheet As Worksheet
     ///     Set sheet = ThisWorkbook.Worksheets("Sheet1") ' Sheet "Sheet1" exists at compile-time
     ///     sheet.Range("A1").Value = 42
-    /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
-    /// Public Sub DoSomething()
-    ///     Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name
-    /// End Sub
+    /// End Sub]]>
     /// </code>
     /// </example>
+    /// <example>
+    /// <text>The following code should not trip this inspection:</text>
+    /// <code>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name
+    /// End Sub]]>
+    /// </code>
+    /// </example>
+    /// </examples>
     [RequiredHost("EXCEL.EXE")]
     [RequiredLibrary("Excel")]
     public class SheetAccessedUsingStringInspection : InspectionBase

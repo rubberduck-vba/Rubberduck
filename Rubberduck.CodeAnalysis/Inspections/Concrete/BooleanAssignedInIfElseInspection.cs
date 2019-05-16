@@ -19,24 +19,30 @@ namespace Rubberduck.Inspections.Concrete
     /// <why>
     /// A Boolean expression never needs to be compared to a Boolean literal in a conditional expression.
     /// </why>
+    /// <examples>
     /// <example>
-    /// This inspection means to flag the following examples:
+    /// <text>This inspection means to flag the following examples:</text>
     /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo = True Then ' foo is known to already be a Boolean value.
     ///         ' ...
     ///     End If
-    /// End Sub
+    /// End Sub]]>
     /// </code>
-    /// The following code should not trip this inspection:
+    /// </example>
+    /// <example>
+    /// <text>The following code should not trip this inspection:</text>
     /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then
     ///         ' ...
     ///     End If
-    /// End Sub
+    /// End Sub]]>
     /// </code>
     /// </example>
+    /// </examples>
     public sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase
     {
         public BooleanAssignedInIfElseInspection(RubberduckParserState state)

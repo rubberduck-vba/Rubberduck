@@ -23,22 +23,28 @@ namespace Rubberduck.Inspections.Concrete
     /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
     /// when the active workbook isn't the expected one.
     /// </why>
+    /// <examples>
     /// <example>
-    /// This inspection means to flag the following example unqualified Workbook.Worksheets member calls:
+    /// <text>This inspection means to flag the following example unqualified Workbook.Worksheets member calls:</text>
     /// <code>
+    /// <![CDATA[
     /// Private Sub Example()
     ///     Dim summarySheet As Worksheet
     ///     Set summarySheet = Worksheets("Summary") ' unqualified Worksheets is implicitly querying the active workbook's Worksheets collection.
-    /// End Sub
+    /// End Sub]]>
     /// </code>
-    /// The following qualified Workbook.Worksheets member calls should not trip this inspection.
+    /// </example>
+    /// <example>
+    /// <text>The following qualified Workbook.Worksheets member calls should not trip this inspection.</text>
     /// <code>
+    /// <![CDATA[
     /// Private Sub Example(ByVal book As Workbook)
     ///     Dim summarySheet As Worksheet
     ///     Set summarySheet = book.Worksheets("Summary")
-    /// End Sub
+    /// End Sub]]>
     /// </code>
     /// </example>
+    /// </examples>
     [RequiredLibrary("Excel")]
     public sealed class ImplicitActiveWorkbookReferenceInspection : InspectionBase
     {
