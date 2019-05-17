@@ -153,6 +153,15 @@
   <data name="MissingComDefaultInterfaceTitle" xml:space="preserve">
     <value>Missing ComDefaultInterface Attribute</value>
   </data>
+  <data name="MissingExampleTag" xml:space="preserve">
+    <value>Missing xml-doc 'example' tag</value>
+  </data>
+  <data name="MissingExampleTagDescription" xml:space="preserve">
+    <value>Inspections xml-doc should have at least one 'example' tag, ideally two. If only one example is provided, website assumes the code example triggers the inspection. If two examples are provided, the second example is assumed to not trigger the inspection. Any further example is assumed to trigger the inspection.</value>
+  </data>
+  <data name="MissingExampleTagMessageFormat" xml:space="preserve">
+    <value>XML documentation of type '{0}' has no &lt;example&gt; tag.</value>
+  </data>
   <data name="MissingGuidDescription" xml:space="preserve">
     <value>COM-visible types must have an explicit Guid attribute. This is required to avoid verisoning problems. Refer to RubberduckGuid constants.</value>
     <comment>An optional longer localizable description of the diagnostic.</comment>
@@ -167,6 +176,33 @@
   <data name="MissingGuidTitle" xml:space="preserve">
     <value>Missing Guid Attribute</value>
     <comment>The title of the diagnostic.</comment>
+  </data>
+  <data name="MissingInspectionReferenceTag" xml:space="preserve">
+    <value>Missing xml-doc 'reference' tag</value>
+  </data>
+  <data name="MissingInspectionReferenceTagDescription" xml:space="preserve">
+    <value>XML documentation for inspections with a [RequiredLibraryAttribute] must include a &lt;reference&gt; tag with a 'name' attribute with the same value as the [RequiredLibraryAttribute]. For example [RequiredLibrary("Excel")] mandates &lt;reference name="Excel" /&gt;.</value>
+  </data>
+  <data name="MissingInspectionReferenceTagMessageFormat" xml:space="preserve">
+    <value>XML documentation for type '{0}' is missing a '&lt;reference name="{1}"&gt;' tag.</value>
+  </data>
+  <data name="MissingInspectionSummaryTag" xml:space="preserve">
+    <value>Missing xml-doc 'summary' tag</value>
+  </data>
+  <data name="MissingInspectionSummaryTagDescription" xml:space="preserve">
+    <value>All inspections must have a short &lt;summary&gt; xml-doc comment describing what the inspection is looking for, that reads comfortably in IntelliSense.</value>
+  </data>
+  <data name="MissingInspectionSummaryTagMessageFormat" xml:space="preserve">
+    <value>XML documentation for type '{0}' is missing a &lt;summary&gt; tag.</value>
+  </data>
+  <data name="MissingInspectionWhyTag" xml:space="preserve">
+    <value>Missing xml-doc 'why' tag</value>
+  </data>
+  <data name="MissingInspectionWhyTagDescription" xml:space="preserve">
+    <value>Inspections xml-doc must have a 'why' tag that contains a paragraph explaining the reasoning behind the inspection.</value>
+  </data>
+  <data name="MissingInspectionWhyTagMessageFormat" xml:space="preserve">
+    <value>XML documentation for type '{0}' is missing a &lt;why&gt; tag.</value>
   </data>
   <data name="MissingInterfaceTypeDescription" xml:space="preserve">
     <value>COM-visible interfaces must have an explicit InterfaceType attribute, typically set to Dual or Dispatch for event interfaces. </value>
@@ -191,5 +227,17 @@
   </data>
   <data name="MissingProgIdTitle" xml:space="preserve">
     <value>Missing ProgId Attribute</value>
+  </data>
+  <data name="MissingRequiredLibAttribute" xml:space="preserve">
+    <value>Missing 'RequiredLibrary' attribute</value>
+  </data>
+  <data name="MissingRequiredLibAttributeDescription" xml:space="preserve">
+    <value>The &lt;reference name="RequiredLibrary" /&gt; tag means to document the presence of a [RequiredLibraryAttribute]. If the attribute is correctly missing, the xml-doc tag should be removed.</value>
+  </data>
+  <data name="MissingRequiredLibAttributeMessageFormat" xml:space="preserve">
+    <value>XML documentation of type '{0}' includes a &lt;reference&gt; tag, but no corresponding [RequiredLibraryAttribute] is decorating the inspection type. Expected: [RequiredLibrary("{1}")].</value>
+  </data>
+  <data name="XmlDocAnalyzerCategory" xml:space="preserve">
+    <value>Project website compatibility</value>
   </data>
 </root>
