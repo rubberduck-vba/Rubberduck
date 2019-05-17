@@ -27,6 +27,7 @@ namespace Rubberduck.Inspections.Concrete
     ///     foo = 42
     /// End Sub
     /// ]]>
+    /// </example>
     /// <example>
     /// <![CDATA[
     /// Public Sub DoSomething(ByRef foo As Long)
