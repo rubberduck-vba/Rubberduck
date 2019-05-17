@@ -18,30 +18,24 @@ namespace Rubberduck.Inspections.Concrete
     /// Mutating the inputs destroys the initial state, and makes the intent ambiguous: if the calling code is meant
     /// to be able to access the modified values, then the parameter should be passed ByRef; the ByVal modifier might be a bug.
     /// </why>
-    /// <examples>
     /// <example>
-    /// <text>This inspection means to flag the following examples:</text>
-    /// <code>
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     foo = foo + 1 ' is the caller supposed to see the updated value?
     ///     Debug.Print foo
-    /// End Sub]]>
-    /// </code>
+    /// End Sub
+    /// ]]>
     /// </example>
     /// <example>
-    /// <text>The following code should not trip this inspection:</text>
-    /// <code>
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Dim bar As Long
     ///     bar = foo
     ///     bar = bar + 1 ' clearly a local copy of the original value.
     ///     Debug.Print bar
-    /// End Sub]]>
-    /// </code>
+    /// End Sub
+    /// ]]>
     /// </example>
-    /// </examples>
     public sealed class AssignedByValParameterInspection : InspectionBase
     {
         public AssignedByValParameterInspection(RubberduckParserState state)

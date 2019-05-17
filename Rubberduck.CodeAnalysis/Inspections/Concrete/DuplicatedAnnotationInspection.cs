@@ -15,23 +15,23 @@ namespace Rubberduck.Inspections.Concrete
     /// Rubberduck annotations should not be specified more than once for a given module, member, variable, or expression.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples:
-    /// <code>
+    /// <![CDATA[
     /// '@Folder("Bar")
     /// '@Folder("Foo")
     ///
     /// Public Sub DoSomething()
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// '@Folder("Foo.Bar")
     ///
     /// Public Sub DoSomething()
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class DuplicatedAnnotationInspection : InspectionBase
     {

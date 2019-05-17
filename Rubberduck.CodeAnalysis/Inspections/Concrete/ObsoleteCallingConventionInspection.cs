@@ -21,18 +21,18 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// then the declaration is using an unsupported (no-op) calling convention on Windows.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following Declare statement:
-    /// <code>
+    /// <![CDATA[
     /// Private Declare Sub Beep CDecl Lib "kernel32" (dwFreq As Any, dwDuration As Any)
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// #If Mac Then
     /// Private Declare Sub Beep CDecl Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// #Else
     /// Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
     /// #EndIf
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase
     {

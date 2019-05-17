@@ -9,20 +9,14 @@ using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Concrete
 {
-    /// <summary>
-    /// Locates instances of member calls made against the result of a Range.Find/FindNext/FindPrevious method, without prior validation.
-    /// </summary>
-    /// <reference>
-    /// This inspection only executes if the Excel type library is referenced.
-    /// </reference>
+    /// <summary>Locates instances of member calls made against the result of a Range.Find/FindNext/FindPrevious method, without prior validation.</summary>
+    /// <reference name="Excel" />
     /// <why>
     /// Range.Find methods return a Range object reference that refers to the cell containing the search string;
     /// this object reference will be Nothing if the search didn't turn up any results, and a member call against Nothing will raise run-time error 91.
     /// </why>
-    /// <examples>
     /// <example>
-    /// <text>This inspection means to flag the following example Range.Find member calls:</text>
-    /// <code><![CDATA[
+    /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
     ///     Set foo = Sheet1.Range("A:A").Find("Test") ' foo is Nothing if there are no results
@@ -30,22 +24,20 @@ namespace Rubberduck.Inspections.Concrete
     /// 
     ///     Dim rowIndex As Range
     ///     rowIndex = Sheet1.Range("A:A").Find("Test").Row ' Range.Row member call should be flagged.
-    /// End Sub]]>
-    /// </code>
+    /// End Sub
+    /// ]]>
     /// </example>
     /// <example>
-    /// <text>The following Range.Find calls should not trip this inspection.</text>
-    /// <code><![CDATA[
+    /// <![CDATA[
     /// Private Sub Example()
     ///     Dim foo As Range
     ///     Set foo = Sheet1.Range("A:A").Find("Test")
     ///     If Not foo Is Nothing Then
     ///         MsgBox foo.Address ' Range.Address member call is safe.
     ///     End If
-    /// End Sub]]>
-    /// </code>
+    /// End Sub
+    /// ]]>
     /// </example>
-    /// </examples>
     [RequiredLibrary("Excel")]
     public class ExcelMemberMayReturnNothingInspection : MemberAccessMayReturnNothingInspectionBase
     {

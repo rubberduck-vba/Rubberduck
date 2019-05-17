@@ -23,18 +23,18 @@ namespace Rubberduck.Inspections.Concrete
     /// Moreover, names suffixed with a number can indicate the need to look into an array, collection, or dictionary data structure.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub CpFrmtRls(ByVal rng1 As Range, ByVal rng2 As Range)
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub CopyFormatRules(ByVal source As Range, ByVal destination As Range)
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class UseMeaningfulNameInspection : InspectionBase
     {

@@ -21,21 +21,21 @@ namespace Rubberduck.Inspections.Concrete
     /// if UserForm controls fail to resolve, references to these controls in code-behind can be flagged as unassigned and undeclared variables.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long ' declared, but not assigned
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long
     ///     value = 42
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class VariableNotAssignedInspection : InspectionBase
     {

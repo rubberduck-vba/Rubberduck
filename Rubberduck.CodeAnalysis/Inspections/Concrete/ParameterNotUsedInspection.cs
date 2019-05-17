@@ -22,21 +22,21 @@ namespace Rubberduck.Inspections.Concrete
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
     /// </warning>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
     ///     Debug.Print foo
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
     ///     Debug.Print foo, bar
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ParameterNotUsedInspection : InspectionBase
     {

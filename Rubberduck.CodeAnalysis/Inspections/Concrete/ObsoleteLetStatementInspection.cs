@@ -20,20 +20,20 @@ namespace Rubberduck.Inspections.Concrete
     /// The legacy syntax is obsolete/redundant; prefer implicit Let-coercion instead.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following statement:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
     ///     Let foo = 42 ' explicit Let is redundant
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
     ///     foo = 42 ' [Let] is implicit
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ObsoleteLetStatementInspection : ParseTreeInspectionBase
     {

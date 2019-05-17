@@ -21,20 +21,20 @@ namespace Rubberduck.Inspections.Concrete
     /// When splitting a long list of parameters across multiple lines, care should be taken to avoid splitting a parameter declaration in two.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following parameter declaration:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, ByVal _ 
     ///                              bar As Long)
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, _ 
     ///                        ByVal bar As Long)
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class MultilineParameterInspection : ParseTreeInspectionBase
     {

@@ -22,23 +22,23 @@ namespace Rubberduck.Inspections.Concrete
     /// This inspection can ensure the consistency of the convention.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething(ByRef foo As Long)
     ///     foo = foo + 17
     ///     Debug.Print foo
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(foo As Long)
     ///     foo = foo + 17
     ///     Debug.Print foo
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class RedundantByRefModifierInspection : ParseTreeInspectionBase
     {

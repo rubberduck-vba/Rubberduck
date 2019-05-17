@@ -20,18 +20,18 @@ namespace Rubberduck.Inspections.Concrete
     /// The legacy syntax is obsolete; prefer 'Err.Raise' instead.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following statement:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Error 5 ' raises run-time error 5
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Err.Raise 5 ' raises run-time error 5
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ObsoleteErrorSyntaxInspection : ParseTreeInspectionBase
     {

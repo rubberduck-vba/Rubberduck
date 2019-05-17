@@ -19,8 +19,7 @@ namespace Rubberduck.Inspections.Concrete
     /// to 'Nothing' and then verifying whether the object 'Is Nothing': it will never be. This behavior is potentially confusing and bug-prone.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim c As New Collection
     ///     Set c = Nothing
@@ -29,9 +28,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     Set c = Nothing
     ///     Debug.Print c Is Nothing ' False
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection and behaves more accordingly with what's expected of an object reference:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim c As Collection
     ///     Set c = New Collection
@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
     ///     Set c = Nothing
     ///     Debug.Print c Is Nothing ' True
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class SelfAssignedDeclarationInspection : InspectionBase
     {

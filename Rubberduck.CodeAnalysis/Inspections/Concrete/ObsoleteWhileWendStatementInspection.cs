@@ -21,22 +21,22 @@ namespace Rubberduck.CodeAnalysis.Inspections.Concrete
     /// 'While...Wend' loops cannot be exited early without a GoTo jump; 'Do...Loop' statements can be conditionally exited with 'Exit Do'.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following loop block:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     While True
     ///         ' ...
     ///     Wend
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Do While True
     ///         ' ...
     ///     Loop
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ObsoleteWhileWendStatementInspection : ParseTreeInspectionBase
     {

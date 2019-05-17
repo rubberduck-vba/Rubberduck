@@ -17,22 +17,22 @@ namespace Rubberduck.Inspections.Concrete
     /// A variable declared without an explicit data type is implicitly a Variant/Empty until it is assigned.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value ' implicit Variant
     ///     value = 42
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim value As Long
     ///     value = 42
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class VariableTypeNotDeclaredInspection : InspectionBase
     {

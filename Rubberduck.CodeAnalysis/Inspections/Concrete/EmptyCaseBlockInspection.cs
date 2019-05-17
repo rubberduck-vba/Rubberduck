@@ -20,8 +20,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Case blocks in VBA do not "fall through"; an empty 'Case' block might be hiding a bug.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Select Case foo
     ///         Case 0 ' empty block
@@ -29,9 +28,10 @@ namespace Rubberduck.Inspections.Concrete
     ///             Debug.Print foo ' does not run if foo is 0.
     ///     End Select
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Select Case foo
     ///         Case 0
@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
     ///             '...code...
     ///     End Select
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyCaseBlockInspection : ParseTreeInspectionBase

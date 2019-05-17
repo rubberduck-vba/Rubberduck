@@ -18,16 +18,16 @@ namespace Rubberduck.Inspections.Concrete
     /// Class design guidelines and best practices generally recommend against write-only properties.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Private internalFoo As Long
     ///
     /// Public Property Let Foo(ByVal value As Long)
     ///     internalFoo = value
     /// End Property
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Private internalFoo As Long
     ///
     /// Public Property Let Foo(ByVal value As Long)
@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Public Property Get Foo() As Long
     ///     Foo = internalFoo
     /// End Property
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class WriteOnlyPropertyInspection : InspectionBase
     {

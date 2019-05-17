@@ -22,34 +22,26 @@ namespace Rubberduck.Inspections.Concrete
     /// Worksheets that exist in ThisWorkbook at compile-time are more reliably programmatically accessed using their CodeName, 
     /// which cannot be altered by the user without accessing the VBE and altering the VBA project.
     /// </why>
-    /// <reference>
-    /// This inspection only executes if the host application is Microsoft Excel.
-    /// </reference>
+    /// <reference name="Excel" />
     /// <remarks>
     /// Inspection only evaluates hard-coded string literals; string-valued expressions evaluating into a sheet name are ignored.
     /// </remarks>
-    /// <examples>
     /// <example>
-    /// <text>This inspection means to flag the following:</text>
-    /// <code>
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim sheet As Worksheet
     ///     Set sheet = ThisWorkbook.Worksheets("Sheet1") ' Sheet "Sheet1" exists at compile-time
     ///     sheet.Range("A1").Value = 42
-    /// End Sub]]>
-    /// </code>
+    /// End Sub
+    /// ]]>
     /// </example>
     /// <example>
-    /// <text>The following code should not trip this inspection:</text>
-    /// <code>
     /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Sheet1.Range("A1").Value = 42 ' TODO rename Sheet1 to meaningful name
-    /// End Sub]]>
-    /// </code>
+    /// End Sub
+    /// ]]>
     /// </example>
-    /// </examples>
     [RequiredHost("EXCEL.EXE")]
     [RequiredLibrary("Excel")]
     public class SheetAccessedUsingStringInspection : InspectionBase

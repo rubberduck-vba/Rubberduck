@@ -18,18 +18,18 @@ namespace Rubberduck.Inspections.Concrete
     /// Often, an object only needs to expose a 'Get' procedure to expose an internal instance field.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples (in a class module):
-    /// <code>
+    /// <![CDATA[
     /// Public Foo As Long
-    /// </code>
-    /// The following code should not trip this inspection (in a class module):
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Private internalFoo As Long
     /// 
     /// Public Property Get Foo() As Long
     ///     Foo = internalFoo
     /// End Property
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class EncapsulatePublicFieldInspection : InspectionBase
     {

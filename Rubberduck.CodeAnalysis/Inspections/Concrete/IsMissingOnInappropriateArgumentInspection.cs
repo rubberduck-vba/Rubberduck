@@ -18,20 +18,20 @@ namespace Rubberduck.Inspections.Concrete
     /// This inspection flags uses that attempt to use 'IsMissing' for other purposes, resulting in conditions that are always False.
     /// </why>
     /// <example>
-    /// This inspection would flag the following IsMissing usage:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long = 0)
     ///     If IsMissing(foo) Then Exit Sub ' condition is always false
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething(Optional ByVal foo As Variant = 0)
     ///     If IsMissing(foo) Then Exit Sub
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public class IsMissingOnInappropriateArgumentInspection : IsMissingInspectionBase
     {

@@ -23,23 +23,23 @@ namespace Rubberduck.Inspections.Concrete
     /// 'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething(ByRef result As Long)
     ///     ' ...
     ///     result = 42
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     /// Public Function DoSomething() As Long
     ///     ' ...
     ///     DoSomething = 42
     /// End Function
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
     {

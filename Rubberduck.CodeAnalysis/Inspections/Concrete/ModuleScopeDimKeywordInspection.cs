@@ -22,18 +22,18 @@ namespace Rubberduck.Inspections.Concrete
     /// restricted to declarations of procedure-scoped local variables, for consistency, since public module variables are declared with the 'Public' keyword.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// Dim foo As Long
     /// ' ...
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     /// Private foo As Long
     /// ' ...
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ModuleScopeDimKeywordInspection : ParseTreeInspectionBase
     {

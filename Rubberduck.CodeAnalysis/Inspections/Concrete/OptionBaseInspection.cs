@@ -22,8 +22,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Because 0 is always the lower array bound in many other programming languages, this option may trip a reader/maintainer with a different background.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// Option Base 1
     /// 
@@ -31,16 +30,17 @@ namespace Rubberduck.Inspections.Concrete
     ///     Dim foo(10) As Long ' implicit lower bound is 1, array has 10 items.
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething()
     ///     Dim foo(10) As Long ' implicit lower bound is 0, array has 11 items.
     ///     Dim bar(1 To 10) As Long ' explicit lower bound removes all ambiguities, Option Base is redundant.
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class OptionBaseInspection : ParseTreeInspectionBase
     {

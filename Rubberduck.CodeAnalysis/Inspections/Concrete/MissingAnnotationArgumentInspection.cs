@@ -21,20 +21,20 @@ namespace Rubberduck.Inspections.Concrete
     /// Some annotations require arguments; if the argument isn't specified, the annotation is nothing more than an obscure comment.
     /// </why>
     /// <example>
-    /// This inspection would flag the following annotations with missing required arguments:
-    /// <code>
+    /// <![CDATA[
     /// '@Folder
     /// '@ModuleDescription
     /// Option Explicit
     /// ' ...
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// '@Folder("MyProject.XYZ")
     /// '@ModuleDescription("This module does XYZ")
     /// Option Explicit
     /// ' ...
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class MissingAnnotationArgumentInspection : ParseTreeInspectionBase
     {

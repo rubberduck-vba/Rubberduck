@@ -87,7 +87,7 @@ namespace RubberduckCodeAnalysis
             CheckWhyTag(context, namedTypeSymbol, xml);
             CheckExampleTag(context, namedTypeSymbol, xml);
 
-            var requiredLibraryAttributes = namedTypeSymbol.GetAttributes().Where(a => a.AttributeClass.Name == "RequiredLibraryAttribute");
+            var requiredLibraryAttributes = namedTypeSymbol.GetAttributes().Where(a => a.AttributeClass.Name == "RequiredLibraryAttribute").ToList();
             CheckReferenceTag(context, namedTypeSymbol, xml, requiredLibraryAttributes);
             CheckRequiredLibAttribute(context, namedTypeSymbol, xml, requiredLibraryAttributes);
         }

@@ -21,22 +21,22 @@ namespace Rubberduck.Inspections.Concrete
     /// inspection may be used to enforce consistently explicit module options.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// Option Base 0
     /// Option Compare Binary
     /// 
     /// Public Sub DoSomething()
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class RedundantOptionInspection : ParseTreeInspectionBase
     {

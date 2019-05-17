@@ -18,22 +18,22 @@ namespace Rubberduck.Inspections.Concrete
     /// then the assignment is implicitly assigning to that object's default member, which may raise run-time error 91 at run-time.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following assignment:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Object
     ///     foo = New Collection
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Object
     ///     Set foo = New Collection
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ObjectVariableNotSetInspection : InspectionBase
     {

@@ -17,18 +17,18 @@ namespace Rubberduck.Inspections.Concrete
     /// Making the Public modifiers explicit can help surface potentially unexpected language defaults.
     /// </why>
     /// <example>
-    /// This inspection would flag the following implicit Public access modifier:
-    /// <code>
+    /// <![CDATA[
     /// Sub DoSomething()
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ImplicitPublicMemberInspection : InspectionBase
     {

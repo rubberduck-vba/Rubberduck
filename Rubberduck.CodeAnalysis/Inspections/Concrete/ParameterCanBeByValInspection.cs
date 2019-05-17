@@ -25,20 +25,20 @@ namespace Rubberduck.Inspections.Concrete
     /// procedure might re-assign these ByRef values and introduce a bug.
     /// </why>
     /// <example>
-    /// This inspection means to flag the 'bar' parameter in this example:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long, bar As Long)
     ///     Debug.Print foo, bar
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     /// Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)
     ///     bar = foo * 2 ' ByRef parameter assignment: passing it ByVal could introduce a bug.
     ///     Debug.Print foo, bar
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ParameterCanBeByValInspection : InspectionBase
     {

@@ -23,24 +23,24 @@ namespace Rubberduck.Inspections.Concrete
     /// this inspection can ensure the consistency of the convention.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
     ///     For i = 1 To 100 ' Step is implicitly 1
     ///         ' ...
     ///     Next
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
     ///     For i = 1 To 100 Step 1 ' explicit 'Step 1' could also be considered redundant.
     ///         ' ...
     ///     Next
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class StepIsNotSpecifiedInspection : ParseTreeInspectionBase
     {

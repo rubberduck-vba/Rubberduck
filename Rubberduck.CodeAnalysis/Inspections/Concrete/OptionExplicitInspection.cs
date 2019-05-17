@@ -22,21 +22,22 @@ namespace Rubberduck.Inspections.Concrete
     /// Omitting this option amounts to refusing the little help the VBE can provide with compile-time validation.
     /// </why>
     /// <example>
-    /// This inspection would flag this module:
-    /// <code>
+    /// <![CDATA[
+    ///
     /// 
     /// Public Sub DoSomething()
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class OptionExplicitInspection : ParseTreeInspectionBase
     {

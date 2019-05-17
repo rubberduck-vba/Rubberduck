@@ -17,16 +17,16 @@ namespace Rubberduck.Inspections.Concrete
     /// The legacy syntax is obsolete; use the 'Public' keyword instead.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following statement:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// Global Foo As Long
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     /// Public Foo As Long
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ObsoleteGlobalInspection : InspectionBase
     {

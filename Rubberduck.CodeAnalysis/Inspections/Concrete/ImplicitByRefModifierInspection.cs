@@ -22,18 +22,17 @@ namespace Rubberduck.Inspections.Concrete
     /// Making the ByRef modifiers explicit can help surface potentially unexpected language defaults.
     /// </why>
     /// <example>
-    /// This inspection would flag the following implicit ByRef parameter:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(foo As Long)
     ///     foo = 42
     /// End Sub
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByRef foo As Long)
     ///     foo = 42
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ImplicitByRefModifierInspection : ParseTreeInspectionBase
     {

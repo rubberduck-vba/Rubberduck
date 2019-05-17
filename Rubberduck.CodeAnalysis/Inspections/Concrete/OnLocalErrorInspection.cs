@@ -21,8 +21,7 @@ namespace Rubberduck.Inspections.Concrete
     /// All errors are "local" - the keyword is redundant/confusing and should be removed.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following loop block:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Local Error GoTo ErrHandler
     ///     ' ...
@@ -30,9 +29,10 @@ namespace Rubberduck.Inspections.Concrete
     /// ErrHandler:
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error GoTo ErrHandler
     ///     ' ...
@@ -40,7 +40,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ErrHandler:
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class OnLocalErrorInspection : ParseTreeInspectionBase
     {
