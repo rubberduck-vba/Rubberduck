@@ -13,6 +13,32 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies empty 'Else' blocks that can be safely removed.
+    /// </summary>
+    /// <why>
+    /// Empty code blocks are redundant, dead code that should be removed. They can also be misleading about their intent:
+    /// an empty block may be signalling an unfinished thought or an oversight.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo Then
+    ///         ' ...
+    ///     Else
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo Then
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyElseBlockInspection : ParseTreeInspectionBase
     {

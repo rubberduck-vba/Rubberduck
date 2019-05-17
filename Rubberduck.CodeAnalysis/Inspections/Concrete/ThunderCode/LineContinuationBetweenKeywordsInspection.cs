@@ -14,10 +14,17 @@ using Rubberduck.VBEditor;
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
     /// <summary>
-    /// Note that the inspection only checks a subset of possible "evil" line continatuions
-    /// for both simplicity and performance reasons. Exahustive inspection would likely take
-    /// too much effort. 
+    /// A ThunderCode inspection that locates certain specific instances of line continuations in places we'd never think to put them.
     /// </summary>
+    /// <why>
+    /// This inpection is flagging code we dubbed "ThunderCode", 
+    /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
+    /// While perfectly legal, these line continuations serve no purpose and should be removed.
+    /// </why>
+    /// <remarks>
+    /// Note that the inspection only checks a subset of possible "evil" line continatuions 
+    /// for both simplicity and performance reasons. Exhaustive inspection would likely take too much effort. 
+    /// </remarks>
     public class LineContinuationBetweenKeywordsInspection : ParseTreeInspectionBase
     {
         public LineContinuationBetweenKeywordsInspection(RubberduckParserState state) : base(state)
@@ -28,10 +35,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
             return Listener.Contexts.Select(c => new QualifiedContextInspectionResult(
-                this,
-                InspectionResults.LineContinuationBetweenKeywordsInspection.
-                    ThunderCodeFormat(),
-                c));
+                this, InspectionResults.LineContinuationBetweenKeywordsInspection.ThunderCodeFormat(), c));
         }
 
         public override IInspectionListener Listener { get; }
@@ -42,10 +46,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 
             public IReadOnlyList<QualifiedContext<ParserRuleContext>> Contexts => _contexts;
 
-            public void ClearContexts()
-            {
-                _contexts.Clear();
-            }
+            public void ClearContexts() => _contexts.Clear();
 
             public QualifiedModuleName CurrentModuleName { get; set; }
 

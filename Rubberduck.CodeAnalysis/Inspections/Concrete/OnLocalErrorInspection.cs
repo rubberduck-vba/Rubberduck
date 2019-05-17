@@ -14,6 +14,34 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags obsolete 'On Local Error' statements.
+    /// </summary>
+    /// <why>
+    /// All errors are "local" - the keyword is redundant/confusing and should be removed.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     On Local Error GoTo ErrHandler
+    ///     ' ...
+    ///     Exit Sub
+    /// ErrHandler:
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     On Error GoTo ErrHandler
+    ///     ' ...
+    ///     Exit Sub
+    /// ErrHandler:
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class OnLocalErrorInspection : ParseTreeInspectionBase
     {
         public OnLocalErrorInspection(RubberduckParserState state)

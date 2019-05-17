@@ -9,4 +9,15 @@ namespace Rubberduck.Parsing.Inspections
     public class CannotAnnotateAttribute : Attribute
     {
     }
+
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
+    public class QuickFixAttribute : Attribute
+    {
+        public QuickFixAttribute(Type quickFixType)
+        {
+            QuickFixType = quickFixType;
+        }
+
+        public Type QuickFixType { get; }
+    }
 }

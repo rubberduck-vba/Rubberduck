@@ -10,6 +10,27 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags uses of a number of specific string-centric but Variant-returning functions in various standard library modules.
+    /// </summary>
+    /// <why>
+    /// Several functions in the standard library take a Variant parameter and return a Variant result, but an equivalent 
+    /// string-returning function taking a string parameter exists and should probably be preferred.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Double)
+    ///     Debug.Print Format(foo, "Currency") ' Strings.Format function returns a Variant.
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Double)
+    ///     Debug.Print Format$(CStr(foo), "Currency") ' Strings.Format$ function returns a String.
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class UntypedFunctionUsageInspection : InspectionBase
     {
         public UntypedFunctionUsageInspection(RubberduckParserState state)

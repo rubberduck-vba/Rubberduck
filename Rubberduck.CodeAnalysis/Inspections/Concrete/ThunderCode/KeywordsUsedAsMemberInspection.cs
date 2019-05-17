@@ -10,6 +10,15 @@ using Rubberduck.Resources.Inspections;
 
 namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
 {
+    /// <summary>
+    /// A ThunderCode inspection that locates instances of various keywords and reserved identifiers used as Type or Enum member names.
+    /// </summary>
+    /// <why>
+    /// This inpection is flagging code we dubbed "ThunderCode", 
+    /// code our friend Andrew Jackson would have written to confuse Rubberduck's parser and/or resolver. 
+    /// While perfectly legal as Type or Enum member names, these identifiers should be avoided: 
+    /// they need to be square-bracketed everywhere they are used.
+    /// </why>
     public class KeywordsUsedAsMemberInspection : InspectionBase
     {
         public KeywordsUsedAsMemberInspection(RubberduckParserState state) : base(state) { }
@@ -30,7 +39,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete.ThunderCode
         }
 
         // MS-VBAL 3.3.5.2 Reserved Identifiers and IDENTIFIER
-        private static IEnumerable<string> ReservedKeywords = new []
+        private static readonly IEnumerable<string> ReservedKeywords = new []
         {
             /*
 Statement-keyword = "Call" / "Case" /"Close" / "Const"/ "Declare" / "DefBool" / "DefByte" / 
@@ -50,19 +59,19 @@ Statement-keyword = "Call" / "Case" /"Close" / "Const"/ "Declare" / "DefBool" / 
             Tokens.Close,
             Tokens.Const,
             Tokens.Declare,
-            "DefBool",
-            "DefByte",
-            "DefCur",
-            "DefDate",
-            "DefDbl",
-            "DefInt",
-            "DefLng",
-            "DefLngLng",
-            "DefLngPtr",
-            "DefObj",
-            "DefSng",
-            "DefStr",
-            "DefVar",
+            Tokens.DefBool,
+            Tokens.DefByte,
+            Tokens.DefCur,
+            Tokens.DefDate,
+            Tokens.DefDbl,
+            Tokens.DefInt,
+            Tokens.DefLng,
+            Tokens.DefLngLng,
+            Tokens.DefLngPtr,
+            Tokens.DefObj,
+            Tokens.DefSng,
+            Tokens.DefStr,
+            Tokens.DefVar,
             Tokens.Dim,
             Tokens.Do,
             Tokens.Else,
@@ -70,8 +79,8 @@ Statement-keyword = "Call" / "Case" /"Close" / "Const"/ "Declare" / "DefBool" / 
             Tokens.End,
             "EndIf",
             Tokens.Enum,
-            "Erase",
-            "Event",
+            Tokens.Erase,
+            Tokens.Event,
             Tokens.Exit,
             Tokens.For,
             Tokens.Friend,
@@ -84,9 +93,9 @@ Statement-keyword = "Call" / "Case" /"Close" / "Const"/ "Declare" / "DefBool" / 
             Tokens.Implements,
             Tokens.Input,
             Tokens.Let,
-            "Lock",
+            Tokens.Lock,
             Tokens.Loop,
-            "LSet",
+            Tokens.LSet,
             Tokens.Next,
             Tokens.On,
             Tokens.Open,
@@ -95,19 +104,19 @@ Statement-keyword = "Call" / "Case" /"Close" / "Const"/ "Declare" / "DefBool" / 
             Tokens.Private,
             Tokens.Public,
             Tokens.Put,
-            "RaiseEvent",
+            Tokens.RaiseEvent,
             Tokens.ReDim,
             Tokens.Resume,
             Tokens.Return,
-            "RSet",
-            "Seek",
+            Tokens.RSet,
+            Tokens.Seek,
             Tokens.Select,
             Tokens.Set,
             Tokens.Static,
             Tokens.Stop,
             Tokens.Sub,
             Tokens.Type,
-            "Unlock",
+            Tokens.Unlock,
             Tokens.Wend,
             Tokens.While,
             Tokens.With,
@@ -127,9 +136,9 @@ rem-keyword = "Rem" marker-keyword = "Any" / "As"/ "ByRef" / "ByVal "/"Case" / "
             Tokens.Each,
             Tokens.In,
             Tokens.New,
-            "Shared",
+            Tokens.Shared,
             Tokens.Until,
-            "WithEvents",
+            Tokens.WithEvents,
             Tokens.Optional,
             Tokens.ParamArray,
             Tokens.Preserve,

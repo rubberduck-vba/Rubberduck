@@ -14,6 +14,27 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Highlights implicit ByRef modifiers in user code.
+    /// </summary>
+    /// <why>
+    /// In modern VB (VB.NET), the implicit modifier is ByVal, as it is in most other programming languages.
+    /// Making the ByRef modifiers explicit can help surface potentially unexpected language defaults.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(foo As Long)
+    ///     foo = 42
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByRef foo As Long)
+    ///     foo = 42
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ImplicitByRefModifierInspection : ParseTreeInspectionBase
     {
         public ImplicitByRefModifierInspection(RubberduckParserState state)
