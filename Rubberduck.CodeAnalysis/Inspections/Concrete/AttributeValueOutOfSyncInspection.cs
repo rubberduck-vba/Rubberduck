@@ -20,30 +20,24 @@ namespace Rubberduck.Inspections.Concrete
     /// Keeping Rubberduck annotation comments in sync with the hidden VB attribute values, surfaces these hidden attributes in the VBE code panes; 
     /// Rubberduck can rewrite the attributes to match the corresponding annotation comment.
     /// </why>
-    /// <examples>
     /// <example>
-    /// <text>This inspection means to flag the following examples (code from an exported module):</text>
-    /// <code>
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
     /// Attribute VB_Description = "bar"
     ///     ' ...
-    /// End Sub]]>
-    /// </code>
+    /// End Sub
+    /// ]]>
     /// </example>
     /// <example>
-    /// <text>The following code should not trip this inspection:</text>
-    /// <code>
     /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
     /// Attribute VB_Description = "foo"
     ///     ' ...
-    /// End Sub]]>
-    /// </code>
+    /// End Sub
+    /// ]]>
     /// </example>
-    /// </examples>
     [CannotAnnotate]
     public sealed class AttributeValueOutOfSyncInspection : InspectionBase
     {

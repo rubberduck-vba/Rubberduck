@@ -8,7 +8,6 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 
@@ -21,24 +20,24 @@ namespace Rubberduck.Inspections.Concrete
     /// Rubberduck is correctly parsing an annotation, but that annotation is illegal in that context.
     /// </why>
     /// <example>
-    /// This inspection would flag the following module annotation decorating a local variable:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
     ///     '@Folder("Module1.DoSomething")
     ///     Dim foo As Long
     /// End Sub
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// '@Folder("Module1.DoSomething")
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
     ///     Dim foo As Long
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class IllegalAnnotationInspection : InspectionBase
     {

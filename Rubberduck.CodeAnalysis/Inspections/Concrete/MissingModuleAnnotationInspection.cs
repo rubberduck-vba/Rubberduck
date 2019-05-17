@@ -22,19 +22,19 @@ namespace Rubberduck.Inspections.Concrete
     /// do not have a Rubberduck annotation corresponding to the hidden VB attribute.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples (code from an exported module):
-    /// <code>
+    /// <![CDATA[
     /// Attribute VB_PredeclaredId = True
     /// Option Explicit
     /// ' ...
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Attribute VB_PredeclaredId = True
     /// '@PredeclaredId
     /// Option Explicit
     /// ' ...
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class MissingModuleAnnotationInspection : InspectionBase
     {

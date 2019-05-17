@@ -21,22 +21,22 @@ namespace Rubberduck.Inspections.Concrete
     /// While a great debugging tool, 'Stop' instructions should not be reachable in production code; this inspection makes it easy to locate them all.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ' ...
     ///     Stop ' halts execution on-the-spot, bringing up the VBE; not very user-friendly!
     ///     '....
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ' ...
     ///     'Stop ' the commented-out statement isn't executable. Could also be simply removed.
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class StopKeywordInspection : ParseTreeInspectionBase
     {

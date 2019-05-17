@@ -20,20 +20,20 @@ namespace Rubberduck.Inspections.Concrete
     /// Unless code is interacting with APIs that require a 16-bit integer, a Long (32-bit integer) should be used instead.
     /// </why>
     /// <example>
-    /// This inspection would flag the following Integer variable:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim rowCount As Integer
     ///     rowCount = Sheet1.Rows.Count ' overflow: maximum 16-bit signed integer value is only 32,767 (2^15-1)!
     /// End Sub
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim rowCount As Long
     ///     rowCount = Sheet1.Rows.Count ' all good: maximum 32-bit signed integer value is 2,147,483,647 (2^31-1)!
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class IntegerDataTypeInspection : InspectionBase
     {

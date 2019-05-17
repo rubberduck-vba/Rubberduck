@@ -17,18 +17,18 @@ namespace Rubberduck.Inspections.Concrete
     /// If the expression yields an object, member calls against that object are late-bound.
     /// </why>
     /// <example>
-    /// This inspection would flag the following call to the GetFoo function:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     [A1].Value = 42
     /// End Sub
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     ActiveSheet.Range("A1").Value = 42
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class HostSpecificExpressionInspection : InspectionBase
     {

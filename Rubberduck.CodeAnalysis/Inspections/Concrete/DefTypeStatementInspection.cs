@@ -21,8 +21,7 @@ namespace Rubberduck.Inspections.Concrete
     /// These declarative statements make the first letter of identifiers determine the data type.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples:
-    /// <code>
+    /// <![CDATA[
     /// DefBool B
     /// DefDbl D
     ///
@@ -30,7 +29,7 @@ namespace Rubberduck.Inspections.Concrete
     ///     Dim bar ' implicit Boolean
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class DefTypeStatementInspection : ParseTreeInspectionBase
     {

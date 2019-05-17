@@ -17,8 +17,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// Marking members as obsolete can help refactoring a legacy code base. This inspection is a tool that makes it easy to locate obsolete member calls.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following statement:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     DoStuff ' member is marked as obsolete
     /// End Sub
@@ -31,9 +30,10 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// Private Sub DoThing()
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     DoThing
     /// End Sub
@@ -46,7 +46,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// Private Sub DoThing()
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ObsoleteMemberUsageInspection : InspectionBase
     {

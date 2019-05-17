@@ -21,23 +21,23 @@ namespace Rubberduck.Inspections.Concrete
     /// an empty block may be signalling an unfinished thought or an oversight.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then
     ///         ' ...
     ///     Else
     ///     End If
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Boolean)
     ///     If foo Then
     ///         ' ...
     ///     End If
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyElseBlockInspection : ParseTreeInspectionBase

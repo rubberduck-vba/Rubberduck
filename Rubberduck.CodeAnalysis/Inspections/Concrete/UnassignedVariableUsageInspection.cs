@@ -25,21 +25,21 @@ namespace Rubberduck.Inspections.Concrete
     /// This inspection may produce false positives when the variable is an array, or if it's passed by reference (ByRef) to a procedure that assigns it.
     /// </remarks>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
     ///     Debug.Print i ' i was never assigned
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim i As Long
     ///     i = 42
     ///     Debug.Print i
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
     public sealed class UnassignedVariableUsageInspection : InspectionBase

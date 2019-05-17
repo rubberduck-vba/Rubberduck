@@ -22,8 +22,7 @@ namespace Rubberduck.Inspections.Concrete
     /// can be confusing if it isn't referenced by any such instruction.
     /// </why>
     /// <example>
-    /// This inspection would flag the following line label:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     /// '    On Error GoTo ErrHandler ' (commented-out On Error statement leaves line label unreferenced)
     ///     ' ...
@@ -31,9 +30,10 @@ namespace Rubberduck.Inspections.Concrete
     /// ErrHandler:
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error GoTo ErrHandler
     ///     ' ...
@@ -41,7 +41,7 @@ namespace Rubberduck.Inspections.Concrete
     /// ErrHandler:
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class LineLabelNotUsedInspection : InspectionBase
     {

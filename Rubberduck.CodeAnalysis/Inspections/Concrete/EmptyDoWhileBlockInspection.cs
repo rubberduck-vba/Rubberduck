@@ -20,22 +20,22 @@ namespace Rubberduck.Inspections.Concrete
     /// Dead code should be removed. A loop without a body is usually redundant.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Do
     ///         ' no executable statement...
     ///     Loop While foo &lt; 100
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Do
     ///         Debug.Print foo
     ///     Loop While foo &lt; 100
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyDoWhileBlockInspection : ParseTreeInspectionBase

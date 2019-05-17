@@ -23,21 +23,21 @@ namespace Rubberduck.Inspections.Concrete
     /// This inspection helps treating 'Resume Next' and 'GoTo 0' as a code block (similar to 'With...End With'), essentially.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error Resume Next ' error handling is never restored in this scope.
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     On Error Resume Next
     ///     ' ...
     ///     On Error GoTo 0
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public class UnhandledOnErrorResumeNextInspection : ParseTreeInspectionBase
     {

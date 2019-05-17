@@ -19,14 +19,14 @@ namespace Rubberduck.Inspections.Concrete
     /// If there is an early-bound alternative way to achieve the same result, it should be preferred.
     /// </why>
     /// <example>
-    /// This inspection would flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     adoConnection.SomeStoredProcedure 42
     /// End Sub
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal adoConnection As ADODB.Connection)
     ///     Dim adoCommand As ADODB.Command
     ///     Set adoCommand.ActiveConnection = adoConnection
@@ -35,7 +35,7 @@ namespace Rubberduck.Inspections.Concrete
     ///     adoCommand.Parameters.Append adocommand.CreateParameter(Value:=42)
     ///     adoCommand.Execute
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class MemberNotOnInterfaceInspection : InspectionBase
     {

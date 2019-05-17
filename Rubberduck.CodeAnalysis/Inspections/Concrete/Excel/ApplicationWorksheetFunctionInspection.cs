@@ -15,22 +15,18 @@ namespace Rubberduck.Inspections.Concrete
     /// <summary>
     /// Warns about late-bound WorksheetFunction calls made against the extended interface of the Application object.
     /// </summary>
-    /// <reference>
-    /// This inspection only executes if the Excel type library is referenced.
-    /// </reference>
+    /// <reference name="Excel" />
     /// <why>
     /// An early-bound, equivalent function likely exists in the object returned by the Application.WorksheetFunction property; 
     /// late-bound member calls will fail at run-time with error 438 if there is a typo (a typo fails to compile for an early-bound member call). 
-    /// Late-bound worksheet functions will return a <c>Variant/Error</c> given invalid inputs; 
+    /// Late-bound worksheet functions will return a Variant/Error given invalid inputs; 
     /// the equivalent early-bound member calls raise a more VB-idiomatic runtime error given the same invalid inputs. 
-    /// A <c>Variant/Error</c> value cannot be coerced into any other data type, be it for assignment or comparison. 
-    /// Trying to compare or assign a <c>Variant/Error</c> to another data type will throw error 13 "type mismatch" at run-time. 
+    /// A Variant/Error value cannot be coerced into any other data type, be it for assignment or comparison. 
+    /// Trying to compare or assign a Variant/Error to another data type will throw error 13 "type mismatch" at run-time. 
     /// Consider using the early-bound equivalent function instead.
     /// </why>
-    /// <examples>
     /// <example>
-    /// <text>This inspection means to flag the following example late-bound WorksheetFunction calls:</text>
-    /// <code><![CDATA[
+    /// <![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.Sum(Array(1, 2, 3), 4, 5, "ABC") ' outputs "Error 2015"
     /// 
@@ -40,11 +36,11 @@ namespace Rubberduck.Inspections.Concrete
     ///     If Application.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then
     ///         ' won't run, error 13 "type mismatch" will be thrown when Variant/Error is compared to an Integer.
     ///     End If
-    /// End Sub]]></code>
+    /// End Sub
+    /// ]]>
     /// </example>
     /// <example>
-    /// <text>The following early-bound WorksheetFunction calls should not trip this inspection. Note the consistent error, thrown at the same point every time:</text>
-    /// <code><![CDATA[
+    /// <![CDATA[
     /// Private Sub Example()
     ///     Debug.Print Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") ' throws error 1004
     /// 
@@ -54,9 +50,9 @@ namespace Rubberduck.Inspections.Concrete
     ///     If Application.WorksheetFunction.Sum(Array(1, 2, 3), 4, 5, "ABC") > 15 Then ' throws error 1004
     ///         ' won't run, error 1004 is thrown when "ABC" is processed by WorksheetFunction.Sum, before it returns.
     ///     End If
-    /// End Sub]]></code>
+    /// End Sub
+    /// ]]>
     /// </example>
-    /// </examples>
     [RequiredLibrary("Excel")]
     public class ApplicationWorksheetFunctionInspection : InspectionBase
     {

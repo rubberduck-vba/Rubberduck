@@ -24,23 +24,23 @@ namespace Rubberduck.Inspections.Concrete
     /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
     /// </warning>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// 
     /// Public Sub DoSomething()
     ///     ' macro is attached to a worksheet Shape.
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     ///
     /// '@Ignore ProcedureNotUsed
     /// Public Sub DoSomething() As Long
     ///     ' macro is attached to a worksheet Shape.
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ProcedureNotUsedInspection : InspectionBase
     {

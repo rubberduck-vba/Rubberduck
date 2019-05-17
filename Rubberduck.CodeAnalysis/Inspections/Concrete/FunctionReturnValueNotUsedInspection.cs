@@ -24,8 +24,7 @@ namespace Rubberduck.Inspections.Concrete
     /// means the function is side-effecting, and thus should probably be a 'Sub' procedure instead.
     /// </why>
     /// <example>
-    /// This inspection would flag the following call to the GetFoo function:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     GetFoo ' return value is not captured
     /// End Sub
@@ -33,9 +32,10 @@ namespace Rubberduck.Inspections.Concrete
     /// Private Function GetFoo() As Long
     ///     GetFoo = 42
     /// End Function
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Long
     ///     foo = GetFoo
@@ -44,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Private Function GetFoo() As Long
     ///     GetFoo = 42
     /// End Function
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class FunctionReturnValueNotUsedInspection : InspectionBase
     {

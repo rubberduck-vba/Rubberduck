@@ -18,18 +18,18 @@ namespace Rubberduck.Inspections.Concrete
     /// string-returning function taking a string parameter exists and should probably be preferred.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format(foo, "Currency") ' Strings.Format function returns a Variant.
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Double)
     ///     Debug.Print Format$(CStr(foo), "Currency") ' Strings.Format$ function returns a String.
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class UntypedFunctionUsageInspection : InspectionBase
     {

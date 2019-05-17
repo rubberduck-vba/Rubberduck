@@ -18,8 +18,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Declaring variables closer to where they are used generally makes the code easier to follow.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following module variable:
-    /// <code>
+    /// <![CDATA[
     /// Option Explicit
     /// Private foo As Long
     ///
@@ -27,9 +26,10 @@ namespace Rubberduck.Inspections.Concrete
     ///     foo = 42
     ///     Debug.Print foo ' module variable is only used in this scope
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Option Explicit
     ///
     /// Public Sub DoSomething()
@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     ///     foo = 42
     ///     Debug.Print foo
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class MoveFieldCloserToUsageInspection : InspectionBase
     {

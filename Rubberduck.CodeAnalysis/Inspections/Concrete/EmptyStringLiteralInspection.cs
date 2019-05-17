@@ -22,22 +22,22 @@ namespace Rubberduck.Inspections.Concrete
     /// but 'vbNullString' is a null string pointer, and doesn't.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As String)
     ///     If foo = "" Then
     ///         ' ...
     ///     End If
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As String)
     ///     If foo = vbNullString Then
     ///         ' ...
     ///     End If
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class EmptyStringLiteralInspection : ParseTreeInspectionBase
     {

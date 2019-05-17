@@ -21,21 +21,21 @@ namespace Rubberduck.Inspections.Concrete
     /// do not have a corresponding VB attribute.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples (code from an exported module):
-    /// <code>
+    /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
     ///     ' ...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// '@Description("foo")
     /// Public Sub DoSomething()
     /// Attribute VB_Description = "foo"
     ///     ' ...
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     [CannotAnnotate]
     public sealed class MissingAttributeInspection : InspectionBase

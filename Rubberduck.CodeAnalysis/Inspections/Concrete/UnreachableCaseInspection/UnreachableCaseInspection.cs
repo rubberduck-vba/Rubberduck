@@ -25,10 +25,7 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     /// <remarks>
     /// Not all unreachable 'Case' blocks may be flagged, depending on expression complexity.
     /// </remarks>
-    /// <examples>
     /// <example>
-    /// <text>This inspection means to locate the following example unreachable 'Case' block:</text>
-    /// <code>
     /// <![CDATA[
     /// Private Sub Example(ByVal value As Long)
     ///     Select Case value
@@ -36,15 +33,14 @@ namespace Rubberduck.Inspections.Concrete.UnreachableCaseInspection
     ///             ' ...
     ///         Case 50 ' unreachable: case is covered by a preceding condition.
     ///             ' ...
-    ///         Case &lt; 100
+    ///         Case Is < 100
     ///             ' ...
-    ///         Case &lt; 0 ' unreachable: case is covered by a preceding condition.
+    ///         Case < 0 ' unreachable: case is covered by a preceding condition.
     ///             ' ...
     ///     End Select
-    /// End Sub]]>
-    /// </code>
+    /// End Sub
+    /// ]]>
     /// </example>
-    /// </examples>
     public sealed class UnreachableCaseInspection : ParseTreeInspectionBase
     {
         private readonly IUnreachableCaseInspectorFactory _unreachableCaseInspectorFactory;

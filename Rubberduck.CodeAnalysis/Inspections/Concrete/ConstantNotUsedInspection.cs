@@ -20,22 +20,22 @@ namespace Rubberduck.Inspections.Concrete
     /// Declarations that are never used should be removed.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following examples:
-    /// <code>
+    /// <![CDATA[
     /// Private Const foo As Long = 42
     ///
     /// Public Sub DoSomething()
     ///     ' no reference to 'foo' anywhere...
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Private Const foo As Long = 42
     ///
     /// Public Sub DoSomething()
     ///     Debug.Print foo
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ConstantNotUsedInspection : InspectionBase
     {

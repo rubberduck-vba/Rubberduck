@@ -21,15 +21,15 @@ namespace Rubberduck.Inspections.Concrete
     /// Declaration statements should generally declare a single variable.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following declaration statement:
-    /// <code>
+    /// <![CDATA[
     /// Dim foo As Long, bar As Long
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Dim foo As Long 
     /// Dim bar As Long 
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class MultipleDeclarationsInspection : ParseTreeInspectionBase
     {

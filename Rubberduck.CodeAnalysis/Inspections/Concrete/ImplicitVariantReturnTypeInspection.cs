@@ -19,18 +19,18 @@ namespace Rubberduck.Inspections.Concrete
     /// All functions return something, whether a type is specified or not. The implicit default is 'Variant'.
     /// </why>
     /// <example>
-    /// This inspection would flag the following implicit Variant function:
-    /// <code>
+    /// <![CDATA[
     /// Public Function GetFoo()
     ///     GetFoo = 42
     /// End Function
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Function GetFoo() As Long
     ///     GetFoo = 42
     /// End Function
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class ImplicitVariantReturnTypeInspection : InspectionBase
     {

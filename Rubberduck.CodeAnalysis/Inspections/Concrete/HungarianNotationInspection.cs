@@ -23,15 +23,19 @@ namespace Rubberduck.Inspections.Concrete
     /// Modern naming conventions in all programming languages heavily discourage the use of Systems Hungarian prefixes. 
     /// </why>
     /// <example>
-    /// This inspection would flag the following names:
-    /// <code>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim bFoo As Boolean, blnFoo As Boolean
     ///     Dim intBar As Long ' which is correct? the int or the Long?
     /// End Sub
-    /// </code>
-    /// The following code would not trip the inspection:
-    /// <code>
+    ///
+    /// Private Function fnlngGetFoo() As Long
+    ///     fnlngGetFoo = 42
+    /// End Function
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// Public Sub DoSomething()
     ///     Dim foo As Boolean, isFoo As Boolean
     ///     Dim bar As long
@@ -40,7 +44,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Private Function GetFoo() As Long
     ///     GetFoo = 42
     /// End Function
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class HungarianNotationInspection : InspectionBase
     {

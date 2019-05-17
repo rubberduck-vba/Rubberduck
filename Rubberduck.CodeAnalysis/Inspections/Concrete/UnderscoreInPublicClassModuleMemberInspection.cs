@@ -16,20 +16,20 @@ namespace Rubberduck.Inspections.Concrete
     /// contains names with underscores, other classes cannot implement it - the code will not compile. Avoid underscores; prefer PascalCase names.
     /// </why>
     /// <example>
-    /// This inspection means to flag the following:
-    /// <code>
+    /// <![CDATA[
     /// '@Interface
     /// 
     /// Public Sub Do_Something() ' underscore in name makes the interface non-implementable.
     /// End Sub
-    /// </code>
-    /// The following code should not trip this inspection:
-    /// <code>
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
     /// '@Interface
     /// 
     /// Public Sub DoSomething() ' PascalCase identifiers are never a problem.
     /// End Sub
-    /// </code>
+    /// ]]>
     /// </example>
     public sealed class UnderscoreInPublicClassModuleMemberInspection : InspectionBase
     {
