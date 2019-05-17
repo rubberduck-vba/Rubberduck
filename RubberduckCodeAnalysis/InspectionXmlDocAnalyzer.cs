@@ -94,7 +94,7 @@ namespace RubberduckCodeAnalysis
 
         private static bool IsInspectionClass(INamedTypeSymbol namedTypeSymbol)
         {
-            return namedTypeSymbol.TypeKind == TypeKind.Class
+            return namedTypeSymbol.TypeKind == TypeKind.Class && !namedTypeSymbol.IsAbstract
                 && namedTypeSymbol.ContainingNamespace.Name.StartsWith("Rubberduck.CodeAnalysis.Inspections.Concrete")
                 && namedTypeSymbol.AllInterfaces.Any(i => i.Name == "IInspection");
         }
