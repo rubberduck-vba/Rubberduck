@@ -527,7 +527,7 @@
             Public Sub DoSomething(ByVal foo As Long)
                 Do
                     ' no executable statement...
-                Loop While foo &lt; 100
+                Loop While foo < 100
             End Sub
             ]]>
             </example>
@@ -536,7 +536,7 @@
             Public Sub DoSomething(ByVal foo As Long)
                 Do
                     Debug.Print foo
-                Loop While foo &lt; 100
+                Loop While foo < 100
             End Sub
             ]]>
             </example>
@@ -698,7 +698,7 @@
             <example>
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
-                While foo &lt; 100
+                While foo < 100
                     'no executable statements... would be an infinite loop if entered
                 Wend
             End Sub
@@ -707,7 +707,7 @@
             <example>
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
-                While foo &lt; 100
+                While foo < 100
                     foo = foo + 1
                 Wend
             End Sub
