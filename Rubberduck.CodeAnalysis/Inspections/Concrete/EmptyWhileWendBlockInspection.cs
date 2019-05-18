@@ -22,7 +22,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <example>
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
-    ///     While foo &lt; 100
+    ///     While foo < 100
     ///         'no executable statements... would be an infinite loop if entered
     ///     Wend
     /// End Sub
@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Concrete
     /// <example>
     /// <![CDATA[
     /// Public Sub DoSomething(ByVal foo As Long)
-    ///     While foo &lt; 100
+    ///     While foo < 100
     ///         foo = foo + 1
     ///     Wend
     /// End Sub
