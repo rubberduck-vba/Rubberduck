@@ -24,7 +24,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Do
     ///         ' no executable statement...
-    ///     Loop While foo &lt; 100
+    ///     Loop While foo < 100
     /// End Sub
     /// ]]>
     /// </example>
@@ -33,7 +33,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Public Sub DoSomething(ByVal foo As Long)
     ///     Do
     ///         Debug.Print foo
-    ///     Loop While foo &lt; 100
+    ///     Loop While foo < 100
     /// End Sub
     /// ]]>
     /// </example>
