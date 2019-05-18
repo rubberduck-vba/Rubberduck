@@ -37,7 +37,7 @@ namespace Rubberduck.Inspections.Concrete
     /// Option Explicit
     ///
     /// '@Ignore ProcedureNotUsed
-    /// Public Sub DoSomething() As Long
+    /// Public Sub DoSomething()
     ///     ' macro is attached to a worksheet Shape.
     /// End Sub
     /// ]]>
