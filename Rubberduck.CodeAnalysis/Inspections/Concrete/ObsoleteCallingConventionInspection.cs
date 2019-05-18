@@ -27,11 +27,7 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// </example>
     /// <example>
     /// <![CDATA[
-    /// #If Mac Then
-    /// Private Declare Sub Beep CDecl Lib "kernel32" (dwFreq As Any, dwDuration As Any)
-    /// #Else
     /// Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
-    /// #EndIf
     /// ]]>
     /// </example>
     public sealed class ObsoleteCallingConventionInspection : ParseTreeInspectionBase
