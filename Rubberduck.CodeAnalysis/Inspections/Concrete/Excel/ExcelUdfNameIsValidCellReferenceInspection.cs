@@ -24,13 +24,13 @@ namespace Rubberduck.Inspections.Inspections.Concrete
     /// <example>
     /// <![CDATA[
     /// Public Function FOO1234()
-    /// End Sub
+    /// End Function
     /// ]]>
     /// </example>
     /// <example>
     /// <![CDATA[
     /// Public Function Foo()
-    /// End Sub
+    /// End Function
     /// ]]>
     /// </example>
     [RequiredLibrary("Excel")]
