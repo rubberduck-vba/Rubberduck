@@ -9,7 +9,7 @@
     <ProjectGuid>{DEF2FB9D-6E62-49D6-8E26-9983AC025768}</ProjectGuid>
   </PropertyGroup>
   <PropertyGroup>
-    <DocumentationFile>..\..\Rubberduck\docs\Rubberduck.CodeAnalysis.xml</DocumentationFile>
+    <DocumentationFile>Rubberduck.CodeAnalysis.xml</DocumentationFile>
   </PropertyGroup>
   <Import Project="..\RubberduckBaseProject.csproj" />
 
