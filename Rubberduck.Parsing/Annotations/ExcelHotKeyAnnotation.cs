@@ -8,12 +8,12 @@ namespace Rubberduck.Parsing.Annotations
 {
     public sealed class ExcelHotKeyAnnotation : FlexibleAttributeValueAnnotationBase
     {
-        public ExcelHotKeyAnnotation(AnnotationType annotationType, QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> attributeValues) :
-            base(annotationType, qualifiedSelection, context, GetHotKeyAttributeValue(attributeValues))
+        public ExcelHotKeyAnnotation(QualifiedSelection qualifiedSelection, VBAParser.AnnotationContext context, IEnumerable<string> parameters) :
+            base(AnnotationType.ExcelHotKey, qualifiedSelection, context, GetHotKeyAttributeValue(parameters))
         { }
 
-        private static IEnumerable<string> GetHotKeyAttributeValue(IEnumerable<string> attributeValues) => 
-            attributeValues.Take(1).Select(StripStringLiteralQuotes).Select(v => v[0] + @"\n14").ToList();
+        private static IEnumerable<string> GetHotKeyAttributeValue(IEnumerable<string> parameters) => 
+            parameters.Take(1).Select(StripStringLiteralQuotes).Select(v => v[0] + @"\n14").ToList();
 
         private static string StripStringLiteralQuotes(string value) =>
             value.StartsWith("\"") && value.EndsWith("\"") && value.Length > 2
