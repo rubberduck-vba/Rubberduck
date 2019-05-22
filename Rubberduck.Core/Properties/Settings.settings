@@ -185,5 +185,14 @@
   &lt;BlockCompletion IsEnabled="false" CompleteOnEnter="false" CompleteOnTab="false" /&gt;
 &lt;/AutoCompleteSettings&gt;</Value>
     </Setting>
+    <Setting Name="ToDoExplorerDefaultColumnOrder" Type="Rubberduck.Settings.ToDoExplorerColumnHeadingsOrder" Scope="Application">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ToDoExplorerColumnHeadingsOrder xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;DescriptionColumnIndex&gt;0&lt;/DescriptionColumnIndex&gt;
+  &lt;ProjectColumnIndex&gt;2&lt;/ProjectColumnIndex&gt;
+  &lt;ModuleColumnIndex&gt;1&lt;/ModuleColumnIndex&gt;
+  &lt;LineNumberColumnIndex&gt;3&lt;/LineNumberColumnIndex&gt;
+&lt;/ToDoExplorerColumnHeadingsOrder&gt;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

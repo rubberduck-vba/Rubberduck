@@ -6,7 +6,7 @@ namespace Rubberduck.SettingsProvider
     public class ConfigurationServiceBase<T> : IConfigurationService<T>
         where T : class, new()
     {
-        private readonly IPersistenceService<T> persister;
+        private readonly IPersistenceService<T> _persister;
         protected readonly IDefaultSettings<T> Defaults;
 
         private readonly object valueLock = new object();
@@ -14,7 +14,7 @@ namespace Rubberduck.SettingsProvider
 
         public ConfigurationServiceBase(IPersistenceService<T> persister, IDefaultSettings<T> defaultSettings)
         {
-            this.persister = persister;
+            this._persister = persister;
             Defaults = defaultSettings;
         }
 
@@ -33,7 +33,7 @@ namespace Rubberduck.SettingsProvider
                 if (CurrentValue == null)
                 {
                     T defaults = ReadDefaults();
-                    T newValue = persister.Load(defaults) ?? defaults;
+                    T newValue = _persister.Load(defaults) ?? defaults;
                     CurrentValue = newValue;
                 }
                 return CurrentValue;
@@ -56,7 +56,7 @@ namespace Rubberduck.SettingsProvider
             {
                 // purge current value
                 CurrentValue = null;
-                persister.Save(settings);
+                _persister.Save(settings);
             }
         }
 

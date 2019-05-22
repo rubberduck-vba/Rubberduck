@@ -20,6 +20,7 @@ using Rubberduck.Interaction.Navigation;
 using Rubberduck.Parsing.UIContext;
 using Rubberduck.VBEditor.Utility;
 using Rubberduck.SettingsProvider;
+using System.Windows.Controls;
 
 namespace Rubberduck.UI.ToDoItems
 {
@@ -88,7 +89,21 @@ namespace Rubberduck.UI.ToDoItems
             Items = CollectionViewSource.GetDefaultView(_items);
             OnPropertyChanged(nameof(Items));
             Grouping = ToDoItemGrouping.Marker;
+
+            _columnHeadingsOrder = _configService.Read().UserSettings.ToDoListSettings.ColumnHeadingsOrder;
         }
+
+        private ToDoExplorerColumnHeadingsOrder _columnHeadingsOrder { get; set; }
+        public void UpdateColumnHeadingsOrder(ObservableCollection<DataGridColumn> columns)
+        {
+            _columnHeadingsOrder.DescriptionColumnIndex = columns[0].DisplayIndex;
+            _columnHeadingsOrder.ProjectColumnIndex = columns[1].DisplayIndex;
+            _columnHeadingsOrder.ModuleColumnIndex = columns[2].DisplayIndex;
+            _columnHeadingsOrder.LineNumberColumnIndex = columns[3].DisplayIndex;
+
+            _configService.Save(_configService.Read());
+        }
+
 
         private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
 

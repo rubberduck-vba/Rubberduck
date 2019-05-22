@@ -61,9 +61,9 @@ namespace Rubberduck.SettingsProvider
                 }
             }
 
-            EnsurePathExists();
+            EnsurePathExists(filePath);
 
-            using (var xml = XmlWriter.Create(FilePath, OutputXmlSettings))
+            using (var xml = XmlWriter.Create(filePath, OutputXmlSettings))
             {
                 doc.WriteTo(xml);
                 Cached = toSerialize;
