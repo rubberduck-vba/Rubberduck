@@ -15,6 +15,27 @@ using static Rubberduck.Parsing.Grammar.VBAParser;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about identifiers that have names that are likely to be too short, disemvoweled, or appended with a numeric suffix.
+    /// </summary>
+    /// <why>
+    /// Meaningful, pronounceable, unabbreviated names read better and leave less room for interpretation. 
+    /// Moreover, names suffixed with a number can indicate the need to look into an array, collection, or dictionary data structure.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub CpFrmtRls(ByVal rng1 As Range, ByVal rng2 As Range)
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub CopyFormatRules(ByVal source As Range, ByVal destination As Range)
+    ///     ' ...
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class UseMeaningfulNameInspection : InspectionBase
     {
         private readonly IConfigurationService<CodeInspectionSettings> _settings;

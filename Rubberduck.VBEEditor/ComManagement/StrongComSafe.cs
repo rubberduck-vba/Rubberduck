@@ -1,7 +1,10 @@
 ﻿using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
 using Rubberduck.VBEditor.SafeComWrappers.Abstract;
+
+#if TRACE_COM_SAFE
+using System.Linq;
+using System.Collections.Generic;
+#endif
 
 namespace Rubberduck.VBEditor.ComManagement
 {
@@ -19,14 +22,14 @@ namespace Rubberduck.VBEditor.ComManagement
                     comWrapper, 
                     key =>
                     {
-#if DEBUG
+#if TRACE_COM_SAFE
                         TraceAdd(comWrapper);
 #endif
                         return 1;
                     }, 
                     (key, value) =>
                     {
-#if DEBUG
+#if TRACE_COM_SAFE
                         TraceUpdate(comWrapper);
 #endif
                         return value;
@@ -42,7 +45,7 @@ namespace Rubberduck.VBEditor.ComManagement
             }
 
             var result = _comWrapperCache.TryRemove(comWrapper, out _);
-#if DEBUG
+#if TRACE_COM_SAFE
             TraceRemove(comWrapper, result);
 #endif
             return result;
@@ -67,7 +70,7 @@ namespace Rubberduck.VBEditor.ComManagement
             _comWrapperCache.Clear();
         }
 
-#if DEBUG
+#if TRACE_COM_SAFE
         protected override IDictionary<int, ISafeComWrapper> GetWrappers()
         {
             return _comWrapperCache.Keys.ToDictionary(GetComWrapperObjectHashCode);

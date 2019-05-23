@@ -14,6 +14,32 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies redundant ByRef modifiers.
+    /// </summary>
+    /// <why>
+    /// Out of convention or preference, explicit ByRef modifiers could be considered redundant since they are the implicit default. 
+    /// This inspection can ensure the consistency of the convention.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByRef foo As Long)
+    ///     foo = foo + 17
+    ///     Debug.Print foo
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Sub DoSomething(foo As Long)
+    ///     foo = foo + 17
+    ///     Debug.Print foo
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class RedundantByRefModifierInspection : ParseTreeInspectionBase
     {
         public RedundantByRefModifierInspection(RubberduckParserState state)

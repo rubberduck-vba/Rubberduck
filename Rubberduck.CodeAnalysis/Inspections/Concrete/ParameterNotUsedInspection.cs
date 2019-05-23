@@ -11,6 +11,33 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies parameter declarations that are not used.
+    /// </summary>
+    /// <why>
+    /// Declarations that are not used anywhere should probably be removed.
+    /// </why>
+    /// <warning>
+    /// Not all unused parameters can/should be removed: ignore any inspection results for 
+    /// event handler procedures and interface members that Rubberduck isn't recognizing as such.
+    /// </warning>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
+    ///     Debug.Print foo
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Sub DoSomething(ByVal foo As Long, ByVal bar As Long)
+    ///     Debug.Print foo, bar
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ParameterNotUsedInspection : InspectionBase
     {
         public ParameterNotUsedInspection(RubberduckParserState state)

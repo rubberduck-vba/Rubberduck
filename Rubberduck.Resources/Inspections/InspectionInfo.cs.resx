@@ -379,4 +379,7 @@ Jestliže může být parametr prázdný, ignorujte výsledek této inspekce; p�
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>I když je tato "funkce" legální, je velmi špatně zdokumentována a dělá něco úplně jiného -- chybový stav je také vyčištěn a ještě k tomu je vypnuto jakékoli řešení chyb. Toto může být nejednoznačné, protože záporný řádek -1 může skončit jako cíl pro nadměrně složité zpracování chyb, které většinou potřebuje refaktorování procedury.</value>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Smyčky 'While...Wend' existují pro zpětnou kompatibilitu a byly nahrazeny zavedením bloků 'Do While...Loop', které podporují příkaz 'Exit Do'. Smyčky 'While...Wend' nelze ukončit jinak než splněním podmínky 'While'.</value>
+  </data>
 </root>

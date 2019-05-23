@@ -264,7 +264,9 @@
                 <Separator />
 
                 <Menu VerticalContentAlignment="Center" Background="Transparent" >
-                    <MenuItem ItemsSource="{StaticResource AddModuleCommands}" VerticalContentAlignment="Center">
+                    <MenuItem ItemsSource="{StaticResource AddModuleCommands}" 
+                              VerticalContentAlignment="Center"
+                              HeaderTemplate="{StaticResource MenuItemHeaderDropdownIndicatorTemplate}">
                         <MenuItem.Header>
                             <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource AddModuleImage}" />
                         </MenuItem.Header>
@@ -340,7 +342,7 @@
                 <Separator />
 
                 <Menu VerticalContentAlignment="Center" Background="Transparent">
-                    <MenuItem>
+                    <MenuItem HeaderTemplate="{StaticResource MenuItemHeaderDropdownIndicatorTemplate}">
                         <MenuItem.Header>
                             <Image Style="{StaticResource ToolbarIconStyle}" Source="{StaticResource FontSizeImage}" />
                         </MenuItem.Header>

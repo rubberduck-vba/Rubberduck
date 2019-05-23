@@ -2202,7 +2202,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The target &apos;{0}&apos;is already a field..
+        ///   Looks up a localized string similar to The target &apos;{0}&apos; is already a field..
         /// </summary>
         public static string IntroduceFieldFailed_TargetIsAlreadyAField {
             get {
@@ -2229,7 +2229,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The target &apos;{0}&apos;is not contained in a method..
+        ///   Looks up a localized string similar to The target &apos;{0}&apos; is not contained in a method..
         /// </summary>
         public static string IntroduceParameterFailed_TargetNotContainedInMethod {
             get {
@@ -2441,7 +2441,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The method using &apos;{0}&apos; already has the declaration &apos;{1}&apos;&apos; of the same name in scope..
+        ///   Looks up a localized string similar to The method using &apos;{0}&apos; already has the declaration &apos;{1}&apos; of the same name in scope..
         /// </summary>
         public static string MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope {
             get {
@@ -3651,7 +3651,7 @@ namespace Rubberduck.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Target control &apos;{0}&apos; not found,.
+        ///   Looks up a localized string similar to Target control &apos;{0}&apos; not found..
         /// </summary>
         public static string RenameFailure_TargetContriolNotFound {
             get {
