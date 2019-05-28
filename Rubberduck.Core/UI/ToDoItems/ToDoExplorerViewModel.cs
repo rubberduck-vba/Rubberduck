@@ -101,9 +101,18 @@ namespace Rubberduck.UI.ToDoItems
             _columnHeadingsOrder.ModuleColumnIndex = columns[2].DisplayIndex;
             _columnHeadingsOrder.LineNumberColumnIndex = columns[3].DisplayIndex;
 
-            _configService.Save(_configService.Read());
+            var userSettings = _configService.Read().UserSettings;
+            userSettings.ToDoListSettings.ColumnHeadingsOrder = _columnHeadingsOrder;
+            _configService.Save(new Configuration(userSettings));
         }
 
+        public void UpdateColumnHeadingsOrderToMatchCachedOrder(ObservableCollection<DataGridColumn> columns)
+        {
+            columns[0].DisplayIndex = _columnHeadingsOrder.DescriptionColumnIndex;
+            columns[1].DisplayIndex = _columnHeadingsOrder.ProjectColumnIndex;
+            columns[2].DisplayIndex = _columnHeadingsOrder.ModuleColumnIndex;
+            columns[3].DisplayIndex = _columnHeadingsOrder.LineNumberColumnIndex;
+        }
 
         private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();
 

@@ -25,7 +25,6 @@ namespace Rubberduck.UI.ToDoItems
 
         private void GroupingGrid_ColumnReordered(object sender, System.Windows.Controls.DataGridColumnEventArgs e)
         {
-            //TODO: Figure out how to keep ViewModel in sync
             ViewModel.UpdateColumnHeadingsOrder(MainGrid.Columns);
         }
     }
