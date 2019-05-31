@@ -10,6 +10,24 @@ using Rubberduck.Parsing.VBA;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates legacy 'Global' declaration statements.
+    /// </summary>
+    /// <why>
+    /// The legacy syntax is obsolete; use the 'Public' keyword instead.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Global Foo As Long
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Foo As Long
+    /// ]]>
+    /// </example>
     public sealed class ObsoleteGlobalInspection : InspectionBase
     {
         public ObsoleteGlobalInspection(RubberduckParserState state)

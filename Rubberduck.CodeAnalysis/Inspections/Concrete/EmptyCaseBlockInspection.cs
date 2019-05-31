@@ -13,6 +13,35 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies empty 'Case' blocks that can be safely removed.
+    /// </summary>
+    /// <why>
+    /// Case blocks in VBA do not "fall through"; an empty 'Case' block might be hiding a bug.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Long)
+    ///     Select Case foo
+    ///         Case 0 ' empty block
+    ///         Case Is > 0
+    ///             Debug.Print foo ' does not run if foo is 0.
+    ///     End Select
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Long)
+    ///     Select Case foo
+    ///         Case 0
+    ///             '...code...
+    ///         Case Is > 0
+    ///             '...code...
+    ///     End Select
+    /// End Sub
+    /// ]]>
+    /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyCaseBlockInspection : ParseTreeInspectionBase
     {

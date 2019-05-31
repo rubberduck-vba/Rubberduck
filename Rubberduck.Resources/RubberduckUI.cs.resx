@@ -373,7 +373,7 @@ Upozornění: Všechna uživatelská nastavení budou ztracena. Váš starý sou
     <value>Získali jste odznak "Continuator"!</value>
   </data>
   <data name="ModuleOptionsNotSpecifiedFirst" xml:space="preserve">
-    <value>Nastavení modulu by měly být specifikovány jako první</value>
+    <value>Nastavení modulu by měla být specifikována jako první</value>
   </data>
   <data name="RemoveParamsDialog_Caption" xml:space="preserve">
     <value>Rubberduck - Odstranit Parametry</value>
@@ -1355,6 +1355,45 @@ End Enum</value>
     <value>Filtr</value>
   </data>
   <data name="MoveCloserToUsageFailure_ReferencingMethodHasSameNameDeclarationInScope" xml:space="preserve">
-    <value>Metoda používající '{0}' má již jinou deklaraci stejného jména v rozsahu.</value>
+    <value>Metoda používající '{0}' má již jinou deklaraci '{1}' stejného jména v rozsahu.</value>
+  </data>
+  <data name="RefactoringFailure_BaseMessage" xml:space="preserve">
+    <value>Refaktorování selhalo.</value>
+  </data>
+  <data name="RefactoringFailure_NoActiveSelection" xml:space="preserve">
+    <value>Neexistuje žádný aktivní výběr.</value>
+  </data>
+  <data name="RefactoringFailure_NoTargetDeclarationForSelection" xml:space="preserve">
+    <value>Vybraný cíl nejde refaktorovat.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNull" xml:space="preserve">
+    <value>Cílová deklarace je 'Null'</value>
+  </data>
+  <data name="ImplementInterfaceFailed_NoImplementsStatementSelected" xml:space="preserve">
+    <value>Nebyl vybrán žádný příkaz implementace.</value>
+  </data>
+  <data name="RenameFailure_TargetContriolNotFound" xml:space="preserve">
+    <value>Cílový control '{0}' nebyl nalezen.</value>
+  </data>
+  <data name="RenameFailure_TargetModuleWithoutCodeModule" xml:space="preserve">
+    <value>Pro cílový modul '{0}' nebyl nalezen žádný kódový modul.</value>
+  </data>
+  <data name="RenameFailure_StandardEventHandler" xml:space="preserve">
+    <value>Cíl '{0}' je standardní ovladač událostí, který nemůže být přejmenován.</value>
+  </data>
+  <data name="RefactoringFailure_TargetNotUserDefined" xml:space="preserve">
+    <value>Cíl není uživatelsky definován.</value>
+  </data>
+  <data name="IntroduceFieldFailed_TargetIsAlreadyAField" xml:space="preserve">
+    <value>Cíl '{0}' je již pole.</value>
+  </data>
+  <data name="IntroduceParameterFailed_TargetNotContainedInMethod" xml:space="preserve">
+    <value>Cíl '{0}' není obsažen v metodě.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType" xml:space="preserve">
+    <value>Deklarace typu cíle '{0}' je '{1}' namísto očekávaného '{2}'.</value>
+  </data>
+  <data name="RefactoringFailure_InvalidDeclarationType_multipleValid" xml:space="preserve">
+    <value>Typ deklarace cíle '{0}' je '{1}' namísto jednoho z očekávaných '{2}'.</value>
   </data>
 </root>

@@ -13,6 +13,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies redundant Boolean expressions in conditionals.
+    /// </summary>
+    /// <why>
+    /// A Boolean expression never needs to be compared to a Boolean literal in a conditional expression.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo = True Then ' foo is known to already be a Boolean value.
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Boolean)
+    ///     If foo Then
+    ///         ' ...
+    ///     End If
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class BooleanAssignedInIfElseInspection : ParseTreeInspectionBase
     {
         public BooleanAssignedInIfElseInspection(RubberduckParserState state)

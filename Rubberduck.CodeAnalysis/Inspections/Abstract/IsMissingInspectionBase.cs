@@ -31,7 +31,7 @@ namespace Rubberduck.Inspections.Inspections.Abstract
 
                 if (isMissing.Count == 0)
                 {
-                    _logger.Trace("No 'IsMissing' Declarations were not found in IsMissingInspectionBase.");
+                    _logger.Trace("No 'IsMissing' Declarations were found in IsMissingInspectionBase.");
                 }
 
                 return isMissing;

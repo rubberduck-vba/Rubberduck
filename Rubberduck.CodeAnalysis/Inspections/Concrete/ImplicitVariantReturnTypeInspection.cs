@@ -12,6 +12,26 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about 'Function' and 'Property Get' procedures that don't have an explicit return type.
+    /// </summary>
+    /// <why>
+    /// All functions return something, whether a type is specified or not. The implicit default is 'Variant'.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Function GetFoo()
+    ///     GetFoo = 42
+    /// End Function
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Function GetFoo() As Long
+    ///     GetFoo = 42
+    /// End Function
+    /// ]]>
+    /// </example>
     public sealed class ImplicitVariantReturnTypeInspection : InspectionBase
     {
         public ImplicitVariantReturnTypeInspection(RubberduckParserState state)

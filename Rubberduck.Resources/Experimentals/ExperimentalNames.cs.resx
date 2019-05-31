@@ -117,17 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PredeclaredClassModule_Caption" xml:space="preserve">
-    <value>Předdeklarovaný modul Třídy (.cls)</value>
-  </data>
-  <data name="PredeclaredClassModule_Name" xml:space="preserve">
-    <value>Předdeklarovaný modul Třídy</value>
-  </data>
-  <data name="PredeclaredClassModule_Description" xml:space="preserve">
-    <value>Přidá modul třídy, který je předdeklarovaný a může být tedy použit bez nutnosti do něj napsat hlavičku.</value>
-  </data>
-  <data name="PredeclaredClassModule_Code" xml:space="preserve">
-    <value></value>
-    <comment>Do not translate</comment>
+  <data name="EmptyBlockInspections" xml:space="preserve">
+    <value>Inspekce označují prázdné bloky, které jsou chráněny booleovským výrazem</value>
   </data>
 </root>
