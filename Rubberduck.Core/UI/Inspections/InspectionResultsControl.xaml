@@ -242,8 +242,6 @@
         </controls:GroupingGrid>
 
         <controls:EmptyUIRefresh Grid.Row="1" Visibility="{Binding Unparsed, Converter={StaticResource BoolToVisibility}}" />
-
-
         <controls:BusyIndicator Grid.Row="1" Width="120" Height="120" Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
 
         <GridSplitter Grid.Row="2" Height="5" ShowsPreview="True" Cursor="SizeNS" HorizontalAlignment="Stretch"/>
