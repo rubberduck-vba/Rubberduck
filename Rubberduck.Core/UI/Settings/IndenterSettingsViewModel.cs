@@ -12,7 +12,7 @@ namespace Rubberduck.UI.Settings
 {
     public sealed class IndenterSettingsViewModel : SettingsViewModelBase<SmartIndenter.IndenterSettings>, ISettingsViewModel<SmartIndenter.IndenterSettings>
     {
-        public IndenterSettingsViewModel(Configuration config, IFilePersistenceService<SmartIndenter.IndenterSettings> service)
+        public IndenterSettingsViewModel(Configuration config, IConfigurationService<SmartIndenter.IndenterSettings> service)
             : base(service)
         {
             _alignCommentsWithCode = config.UserSettings.IndenterSettings.AlignCommentsWithCode;

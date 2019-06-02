@@ -172,10 +172,10 @@ End Sub";
             }
         }
 
-        internal static Mock<IPersistenceService<CodeInspectionSettings>> GetInspectionSettings()
+        internal static Mock<IConfigurationService<CodeInspectionSettings>> GetInspectionSettings()
         {
-            var settings = new Mock<IPersistenceService<CodeInspectionSettings>>();
-            settings.Setup(s => s.Load(It.IsAny<CodeInspectionSettings>(), null))
+            var settings = new Mock<IConfigurationService<CodeInspectionSettings>>();
+            settings.Setup(s => s.Read())
                 .Returns(new CodeInspectionSettings(Enumerable.Empty<CodeInspectionSetting>(), new[]
                 {
                     new WhitelistedIdentifierSetting("sss"),

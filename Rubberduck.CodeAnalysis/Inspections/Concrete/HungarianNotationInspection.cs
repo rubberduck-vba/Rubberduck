@@ -136,9 +136,9 @@ namespace Rubberduck.Inspections.Concrete
 
         #endregion
 
-        private readonly IPersistenceService<CodeInspectionSettings> _settings;
+        private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
-        public HungarianNotationInspection(RubberduckParserState state, IPersistenceService<CodeInspectionSettings> settings)
+        public HungarianNotationInspection(RubberduckParserState state, IConfigurationService<CodeInspectionSettings> settings)
             : base(state)
         {
             _settings = settings;
@@ -146,7 +146,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
+            var settings = _settings.Read();
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToList();
 
             var hungarians = UserDeclarations

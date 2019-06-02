@@ -17,7 +17,7 @@ namespace Rubberduck.UI.Settings
 {
     public sealed class InspectionSettingsViewModel : SettingsViewModelBase<CodeInspectionSettings>, ISettingsViewModel<CodeInspectionSettings>
     {
-        public InspectionSettingsViewModel(Configuration config, IFilePersistenceService<CodeInspectionSettings> service) 
+        public InspectionSettingsViewModel(Configuration config, IConfigurationService<CodeInspectionSettings> service) 
             : base(service)
         {
             InspectionSettings = new ListCollectionView(

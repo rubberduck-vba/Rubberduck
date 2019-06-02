@@ -9,45 +9,41 @@ using System.Xml.Serialization;
 // ReSharper disable StaticMemberInGenericType
 namespace Rubberduck.SettingsProvider
 {
-    internal abstract class XmlPersistenceServiceBase<T> : IFilePersistenceService<T> where T : class, IEquatable<T>, new()
+    internal abstract class XmlPersistenceServiceBase<T> : IPersistenceService<T> where T : class, IEquatable<T>, new()
     {
-        private const string DefaultConfigFile = "rubberduck.config";
-
         protected readonly string RootPath;
-        protected static readonly UTF8Encoding OutputEncoding = new UTF8Encoding(false);        
         protected const string RootElement = "Configuration";
 
         protected static readonly XmlSerializerNamespaces EmptyNamespace = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
-
+        protected static readonly UTF8Encoding OutputEncoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false);        
         protected static readonly XmlWriterSettings OutputXmlSettings = new XmlWriterSettings
         {
             NamespaceHandling = NamespaceHandling.OmitDuplicates,
-            Encoding = new UTF8Encoding(false),
+            Encoding = OutputEncoding,
             Indent = true
         };
-
-        protected T Cached { get; set; }
 
         protected XmlPersistenceServiceBase(IPersistencePathProvider pathProvider)
         {
             RootPath = pathProvider.DataRootPath;
         }
+        
+        protected abstract string FilePath { get; }
 
-        private string _filePath;
-        public virtual string FilePath
+        public T Load(string path = default)
         {
-            get => _filePath ?? Path.Combine(RootPath, DefaultConfigFile);
-            set => _filePath = value;
+            return Read(string.IsNullOrEmpty(path) ? FilePath : path);
         }
 
-        public abstract T Load(T toDeserialize, string nonDefaultFilePath = null);
-
-        public abstract void Save(T toSerialize, string nonDefaultFilePath = null);
-
-        protected static T FailedLoadReturnValue()
+        public void Save(T toSerialize, string path = default)
         {
-            return null;
+            var targetPath = string.IsNullOrEmpty(path) ? FilePath : path;
+            EnsureDirectoryExists(targetPath);
+            Write(toSerialize, targetPath);
         }
+
+        protected abstract T Read(string path);
+        protected abstract void Write(T toSerialize, string path);
 
         protected static XDocument GetConfigurationDoc(string file)
         {
@@ -78,9 +74,8 @@ namespace Rubberduck.SettingsProvider
             return doc.Descendants().FirstOrDefault(e => e.Name.LocalName.Equals(name));
         }
 
-        protected void EnsurePathExists(string nonDefaultFilePath = null)
+        protected void EnsureDirectoryExists(string filePath)
         {
-            var filePath = string.IsNullOrWhiteSpace(nonDefaultFilePath) ? FilePath : nonDefaultFilePath;
             var folder = Path.GetDirectoryName(filePath);
             if (folder != null && !Directory.Exists(folder))
             {

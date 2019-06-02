@@ -38,9 +38,9 @@ namespace Rubberduck.Inspections.Concrete
     /// </example>
     public sealed class UseMeaningfulNameInspection : InspectionBase
     {
-        private readonly IPersistenceService<CodeInspectionSettings> _settings;
+        private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
-        public UseMeaningfulNameInspection(RubberduckParserState state, IPersistenceService<CodeInspectionSettings> settings)
+        public UseMeaningfulNameInspection(RubberduckParserState state, IConfigurationService<CodeInspectionSettings> settings)
             : base(state)
         {
             _settings = settings;
@@ -55,7 +55,7 @@ namespace Rubberduck.Inspections.Concrete
 
         protected override IEnumerable<IInspectionResult> DoGetInspectionResults()
         {
-            var settings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
+            var settings = _settings.Read();
             var whitelistedNames = settings.WhitelistedIdentifiers.Select(s => s.Identifier).ToArray();
 
             var handlers = State.DeclarationFinder.FindEventHandlers();
