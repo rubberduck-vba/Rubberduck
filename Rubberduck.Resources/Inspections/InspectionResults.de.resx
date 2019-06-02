@@ -401,4 +401,10 @@ In Memoriam, 1972-2018</value>
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>Verwendung von 'On Error GoTo -1'</value>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Die 'While...Wend'-Schleife kann als 'Do While...Loop'-Block geschrieben werden.</value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Der Variablen '{0}' vom deklarierten Typ '{1}' wird eine Wert des inkompatiblen Typs '{2}' Set-zugewiesen.</value>
+  </data>
 </root>

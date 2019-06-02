@@ -767,7 +767,6 @@ End Sub";
         [Test]
         [Category("Refactorings")]
         [Category("Move Closer")]
-        [Ignore("For some reason the reference is not recognized by the resolver in this test.")]
         public void MoveCloserToUsageRefactoring_TargetInDifferentProject()
         {
             //Input
@@ -781,12 +780,12 @@ End Sub";
                 @"Public Bar As Boolean";
 
             var vbe = new MockVbeBuilder()
-                .ProjectBuilder("OtherProject", ProjectProtection.Unprotected)
+                .ProjectBuilder("OtherProject", "otherProjectPath",ProjectProtection.Unprotected)
                 .AddComponent("OtherModule", ComponentType.StandardModule, otherModuleInputCode)
                 .AddProjectToVbeBuilder()
                 .ProjectBuilder("TestProject", ProjectProtection.Unprotected)
                 .AddComponent("Module", ComponentType.StandardModule, inputCode)
-                .AddReference("OtherProject", string.Empty,0,0,false,ReferenceKind.Project)
+                .AddReference("OtherProject", "otherProjectPath", 0,0,false,ReferenceKind.Project)
                 .AddProjectToVbeBuilder()
                 .Build()
                 .Object;

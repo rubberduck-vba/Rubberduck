@@ -363,4 +363,10 @@
   <data name="MissingModuleAnnotationInspection" xml:space="preserve">
     <value>Fehlende Modulannotation</value>
   </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Set-Zuweisung mit nicht kompatiblem Objekttyp</value>
+  </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Verwendung der veralteten 'While...Wend'-Anweisung</value>
+  </data>
 </root>

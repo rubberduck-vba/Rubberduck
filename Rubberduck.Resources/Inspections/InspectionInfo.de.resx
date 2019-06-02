@@ -379,4 +379,10 @@ Falls der Parameter 'null' sein kann, bitte dieses Auftreten ignorieren. 'null' 
   <data name="OnErrorGoToMinusOneInspection" xml:space="preserve">
     <value>Hierbei handelt es sich um ein schlecht dokumentiertes Feature: Im Normallfall wird der Fehlerspeicher geleert und jegliche Fehlerbehandlung deaktiviert. Sollte allerdings -1 als Zeilennummer vorhanden sein, kann diese als Marker der zu verwendenden Fehlerbehandlung interpretiert werden.</value>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>'While..Wend'-Schleifen existieren um Rückwärtskompatibilität zu älteren BASIC Versionen zu gewährleisten. Als Ersatz wurden 'Do While...Loop'-Blöcke eingeführt, welche durch die 'Exist Do'-Anweisung verlassen werden können. Eine 'While...Wend'-Schleife kann ausschließlich durch Erfüllen der Whilebedingung verlassen werden. </value>
+  </data>
+  <data name="SetAssignmentWithIncompatibleObjectTypeInspection" xml:space="preserve">
+    <value>Der VBA-Compiler gibt keinen Fehler aus, wenn ein Objekt einer Variables Set-zugewiesen wird mit einem inkompatiblen Objecttype, d.h. deren Type weder identisch, ein Subtyp noch ein Supertyp ist. In fast allen Fällen führt dies zu einem Laufzeitfehler, der schwerer zu entdecken ist und auf einen Programmierfehler hinweist. In allen anderen Fällen kann der Quallcode so geändert werden, dass er ausschließlich Zuweisungen zwischen kompatiblen deklarierten Typen verwendet.</value>
+  </data>
 </root>

@@ -65,6 +65,68 @@
             ]]>
             </example>
         </member>
+        <member name="M:Rubberduck.CodeAnalysis.Inspections.Concrete.SetAssignmentWithIncompatibleObjectTypeInspection.#ctor(Rubberduck.Parsing.VBA.RubberduckParserState)">
+             <summary>
+             Locates assignments to object variables for which the RHS does not have a compatible declared type. 
+             </summary>
+             <why>
+             The VBA compiler does not check whether different object types are compatible. Instead there is a runtime error whenever the types are incompatible.
+             </why>
+             <example>
+             <![CDATA[
+             IInterface:
+            
+             Public Sub DoSomething()
+             End Sub
+            
+             ------------------------------
+             Class1:
+            
+            'No Implements IInterface
+             
+             Public Sub DoSomething()
+             End Sub
+            
+             ------------------------------
+             Module1:
+             
+             Public Sub DoIt()
+                 Dim cls As Class1
+                 Dim intrfc As IInterface
+            
+                 Set cls = New Class1
+                 Set intrfc = cls 
+             End Sub
+             ]]>
+             </example>
+             <example>
+             <![CDATA[
+             IInterface:
+            
+             Public Sub DoSomething()
+             End Sub
+            
+             ------------------------------
+             Class1:
+            
+             Implements IInterface
+             
+             Private Sub IInterface_DoSomething()
+             End Sub
+            
+             ------------------------------
+             Module1:
+             
+             Public Sub DoIt()
+                 Dim cls As Class1
+                 Dim intrfc As IInterface
+            
+                 Set cls = New Class1
+                 Set intrfc = cls 
+             End Sub
+             ]]>
+             </example>
+        </member>
         <member name="M:Rubberduck.CodeAnalysis.Settings.CodeInspectionSetting.#ctor">
             <Summary>
             Default constructor required for XML serialization.
@@ -147,13 +209,13 @@
             <example>
             <![CDATA[
             Public Function FOO1234()
-            End Sub
+            End Function
             ]]>
             </example>
             <example>
             <![CDATA[
             Public Function Foo()
-            End Sub
+            End Function
             ]]>
             </example>
         </member>
@@ -198,11 +260,7 @@
             </example>
             <example>
             <![CDATA[
-            #If Mac Then
-            Private Declare Sub Beep CDecl Lib "kernel32" (dwFreq As Any, dwDuration As Any)
-            #Else
             Private Declare Sub Beep Lib "kernel32" (dwFreq As Any, dwDuration As Any)
-            #EndIf
             ]]>
             </example>
         </member>
@@ -531,7 +589,7 @@
             Public Sub DoSomething(ByVal foo As Long)
                 Do
                     ' no executable statement...
-                Loop While foo &lt; 100
+                Loop While foo < 100
             End Sub
             ]]>
             </example>
@@ -540,7 +598,7 @@
             Public Sub DoSomething(ByVal foo As Long)
                 Do
                     Debug.Print foo
-                Loop While foo &lt; 100
+                Loop While foo < 100
             End Sub
             ]]>
             </example>
@@ -702,7 +760,7 @@
             <example>
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
-                While foo &lt; 100
+                While foo < 100
                     'no executable statements... would be an infinite loop if entered
                 Wend
             End Sub
@@ -711,7 +769,7 @@
             <example>
             <![CDATA[
             Public Sub DoSomething(ByVal foo As Long)
-                While foo &lt; 100
+                While foo < 100
                     foo = foo + 1
                 Wend
             End Sub
@@ -1021,7 +1079,29 @@
             ]]>
             </example>
         </member>
-        <!-- Badly formed XML comment ignored for member "T:Rubberduck.Inspections.Concrete.ImplicitByRefModifierInspection" -->
+        <member name="T:Rubberduck.Inspections.Concrete.ImplicitByRefModifierInspection">
+            <summary>
+            Highlights implicit ByRef modifiers in user code.
+            </summary>
+            <why>
+            In modern VB (VB.NET), the implicit modifier is ByVal, as it is in most other programming languages.
+            Making the ByRef modifiers explicit can help surface potentially unexpected language defaults.
+            </why>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(foo As Long)
+                foo = 42
+            End Sub
+            ]]>
+            </example>
+            <example>
+            <![CDATA[
+            Public Sub DoSomething(ByRef foo As Long)
+                foo = 42
+            End Sub
+            ]]>
+            </example>
+        </member>
         <member name="T:Rubberduck.Inspections.Concrete.ImplicitDefaultMemberAssignmentInspection">
             <summary>
             Identifies implicit default member calls.
@@ -1815,7 +1895,7 @@
              Option Explicit
             
              '@Ignore ProcedureNotUsed
-             Public Sub DoSomething() As Long
+             Public Sub DoSomething()
                  ' macro is attached to a worksheet Shape.
              End Sub
              ]]>

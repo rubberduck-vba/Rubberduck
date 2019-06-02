@@ -448,7 +448,7 @@ namespace Rubberduck.Parsing.Symbols
         public string IdentifierName { get; }
 
         /// <summary>
-        /// Gets the name of the declared type.
+        /// Gets the name of the declared type as specified in code.
         /// </summary>
         /// <remarks>
         /// This value is <c>null</c> if not applicable, 
@@ -467,6 +467,15 @@ namespace Rubberduck.Parsing.Symbols
                 return AsTypeName.Replace("(", "").Replace(")", "").Trim();
             }
         }
+
+        /// <summary>
+        /// Gets the fully qualified name of the declared type.
+        /// </summary>
+        /// <remarks>
+        /// This value is <c>null</c> if not applicable, 
+        /// and <c>Variant</c> if applicable but unspecified.
+        /// </remarks>
+        public string FullAsTypeName => AsTypeDeclaration?.QualifiedModuleName.ToString() ?? AsTypeName;
 
         public bool AsTypeIsBaseType => string.IsNullOrWhiteSpace(AsTypeName) || SymbolList.BaseTypes.Contains(AsTypeName.ToUpperInvariant());
 
