@@ -833,7 +833,7 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             => ppTI = GetSafeRefTypeInfo(hRef);
         void ComTypes.ITypeInfo.GetContainingTypeLib(out ComTypes.ITypeLib ppTLB, out int pIndex)
         {
-            ppTLB = _containerTypeLib;
+            ppTLB = _containerTypeLib ?? throw new NotImplementedComException();
             pIndex = _containerTypeLibIndex;
         }
         void ComTypes.ITypeInfo.GetTypeAttr(out IntPtr ppTypeAttr)
@@ -883,5 +883,13 @@ namespace Rubberduck.VBEditor.ComManagement.TypeLibs
             => target_ITypeInfo.ReleaseFuncDesc(pFuncDesc);
         void ComTypes.ITypeInfo.ReleaseVarDesc(IntPtr pVarDesc)
             => target_ITypeInfo.ReleaseVarDesc(pVarDesc);
+    }
+
+    public class NotImplementedComException : COMException
+    {
+        public NotImplementedComException()
+        {
+            HResult = unchecked ((int)0x80004001);
+        }
     }
 }

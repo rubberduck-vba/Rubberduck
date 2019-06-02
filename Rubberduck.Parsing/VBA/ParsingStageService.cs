@@ -16,13 +16,15 @@ namespace Rubberduck.Parsing.VBA
         private readonly IParseRunner _parseRunner;
         private readonly IDeclarationResolveRunner _declarationResolver;
         private readonly IReferenceResolveRunner _referenceResolver;
+        private readonly IUserComProjectSynchronizer _userComProjectSynchronizer;
 
         public ParsingStageService(
             ICOMReferenceSynchronizer comSynchronizer,
             IBuiltInDeclarationLoader builtInDeclarationLoader,
             IParseRunner parseRunner,
             IDeclarationResolveRunner declarationResolver,
-            IReferenceResolveRunner referenceResolver)
+            IReferenceResolveRunner referenceResolver,
+            IUserComProjectSynchronizer userComProjectSynchronizer)
         {
             if(comSynchronizer == null)
             {
@@ -44,12 +46,17 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(referenceResolver));
             }
+            if (userComProjectSynchronizer == null)
+            {
+                throw new ArgumentNullException(nameof(userComProjectSynchronizer));
+            }
 
             _comSynchronizer = comSynchronizer;
             _builtInDeclarationLoader = builtInDeclarationLoader;
             _parseRunner = parseRunner;
             _declarationResolver = declarationResolver;
             _referenceResolver = referenceResolver;
+            _userComProjectSynchronizer = userComProjectSynchronizer;
         }
 
         public bool LastLoadOfBuiltInDeclarationsLoadedDeclarations => _builtInDeclarationLoader.LastLoadOfBuiltInDeclarationsLoadedDeclarations;
@@ -90,6 +97,16 @@ namespace Rubberduck.Parsing.VBA
         public void SyncComReferences(CancellationToken token)
         {
             _comSynchronizer.SyncComReferences(token);
+        }
+
+        public bool LastSyncOfUserComProjectsLoadedDeclarations =>
+            _userComProjectSynchronizer.LastSyncOfUserComProjectsLoadedDeclarations;
+
+        public IReadOnlyCollection<string> UserProjectIdsUnloaded => _userComProjectSynchronizer.UserProjectIdsUnloaded;
+
+        public void SyncUserComProjects()
+        {
+            _userComProjectSynchronizer.SyncUserComProjects();
         }
     }
 }
