@@ -14,7 +14,7 @@ namespace Rubberduck.SettingsProvider
 
         public ConfigurationServiceBase(IPersistenceService<T> persister, IDefaultSettings<T> defaultSettings)
         {
-            this._persister = persister;
+            _persister = persister;
             Defaults = defaultSettings;
         }
 
@@ -33,7 +33,7 @@ namespace Rubberduck.SettingsProvider
                 if (CurrentValue == null)
                 {
                     T defaults = ReadDefaults();
-                    T newValue = persister.Load() ?? defaults;
+                    T newValue = _persister.Load() ?? defaults;
                     CurrentValue = newValue;
                 }
                 return CurrentValue;
@@ -68,7 +68,7 @@ namespace Rubberduck.SettingsProvider
 
         public virtual T Import(string path)
         {
-            T loaded = persister.Load(path);
+            T loaded = _persister.Load(path);
             Save(loaded);
             return Read();
         }
@@ -76,7 +76,7 @@ namespace Rubberduck.SettingsProvider
         public virtual void Export(string path)
         {
             T current = Read();
-            persister.Save(current, path);
+            _persister.Save(current, path);
         }
     }
 }
