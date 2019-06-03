@@ -23,10 +23,10 @@ namespace Rubberduck.UI.Controls
                 var newValue = (string)e.NewValue;
                 switch (e.Property.Name)
                 {
-                    case "Text":
+                    case nameof(Text):
                         control.Text = newValue;
                         break;
-                    case "Hint":
+                    case nameof(Hint):
                         control.Hint = newValue;
                         break;
                 }
