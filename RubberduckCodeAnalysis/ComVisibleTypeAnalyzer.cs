@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace RubberduckCodeAnalysis
 {
+
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class ComVisibleTypeAnalyzer : DiagnosticAnalyzer
     {

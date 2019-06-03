@@ -13,7 +13,12 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
-
+    /// <summary>
+    /// Flags empty code modules.
+    /// </summary>
+    /// <why>
+    /// An empty module does not need to exist and can be safely removed.
+    /// </why>
     public sealed class EmptyModuleInspection : InspectionBase
     {
         private readonly EmptyModuleVisitor _emptyModuleVisitor;

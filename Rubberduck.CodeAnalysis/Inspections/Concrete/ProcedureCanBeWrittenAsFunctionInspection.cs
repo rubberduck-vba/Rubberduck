@@ -15,6 +15,32 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns about 'Sub' procedures that could be refactored into a 'Function'.
+    /// </summary>
+    /// <why>
+    /// Idiomatic VB code uses 'Function' procedures to return a single value. If the procedure isn't side-effecting, consider writing is as a
+    /// 'Function' rather than a 'Sub' the returns a result through a 'ByRef' parameter.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething(ByRef result As Long)
+    ///     ' ...
+    ///     result = 42
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Function DoSomething() As Long
+    ///     ' ...
+    ///     DoSomething = 42
+    /// End Function
+    /// ]]>
+    /// </example>
     public sealed class ProcedureCanBeWrittenAsFunctionInspection : ParseTreeInspectionBase
     {
         public ProcedureCanBeWrittenAsFunctionInspection(RubberduckParserState state)

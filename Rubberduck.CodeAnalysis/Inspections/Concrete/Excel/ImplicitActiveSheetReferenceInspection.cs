@@ -10,6 +10,34 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Locates unqualified Worksheet.Range/Cells/Columns/Rows member calls that implicitly refer to ActiveSheet.
+    /// </summary>
+    /// <reference name="Excel" />
+    /// <why>
+    /// Implicit references to the active worksheet rarely mean to be working with *whatever worksheet is currently active*. 
+    /// By explicitly qualifying these member calls with a specific Worksheet object, the assumptions are removed, the code
+    /// is more robust, and will be less likely to throw run-time error 1004 or produce unexpected results
+    /// when the active sheet isn't the expected one.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Private Sub Example()
+    ///     Dim foo As Range
+    ///     Set foo = Sheet1.Range(Cells(1, 1), Cells(1, 10)) ' Worksheet.Cells implicitly from ActiveSheet; error 1004 if that isn't Sheet1.
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Private Sub Example()
+    ///     Dim foo As Range
+    ///     With Sheet1
+    ///         Set foo = .Range(.Cells(1, 1), .Cells(1, 10)) ' all member calls are made against the With block object
+    ///     End With
+    /// End Sub
+    /// ]]>
+    /// </example>
     [RequiredLibrary("Excel")]
     public sealed class ImplicitActiveSheetReferenceInspection : InspectionBase
     {

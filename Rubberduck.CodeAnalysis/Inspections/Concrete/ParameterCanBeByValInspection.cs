@@ -16,6 +16,30 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags parameters that are passed by reference (ByRef), but could be passed by value (ByVal).
+    /// </summary>
+    /// <why>
+    /// Explicitly specifying a ByVal modifier on a parameter makes the intent explicit: this parameter is not meant to be assigned. In contrast, 
+    /// a parameter that is passed by reference (implicitly, or explicitly ByRef) makes it ambiguous from the calling code's standpoint, whether the 
+    /// procedure might re-assign these ByRef values and introduce a bug.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Long, bar As Long)
+    ///     Debug.Print foo, bar
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// Public Sub DoSomething(ByVal foo As long, ByRef bar As Long)
+    ///     bar = foo * 2 ' ByRef parameter assignment: passing it ByVal could introduce a bug.
+    ///     Debug.Print foo, bar
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class ParameterCanBeByValInspection : InspectionBase
     {
         public ParameterCanBeByValInspection(RubberduckParserState state)

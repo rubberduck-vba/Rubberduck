@@ -205,7 +205,7 @@
     <value>Rubberduck nebyl schopen zpracovat výsledky volání.</value>
   </data>
   <data name="Prerequisite_EarlyBindingReferenceMissing" xml:space="preserve">
-    <value>Reference, které Rubberduck potřebuje pro early-binding testy, nemůžou být vyřešeny. Je možné, že jsou poškozeny.</value>
+    <value>Reference, které Rubberduck potřebuje pro testy časných-vazeb, nemůžou být vyřešeny. Je možné, že jsou poškozeny.</value>
   </data>
   <data name="TestRunner_ComException" xml:space="preserve">
     <value>Při běhu testů se vyskytla neočekávaná COM výjimka.</value>

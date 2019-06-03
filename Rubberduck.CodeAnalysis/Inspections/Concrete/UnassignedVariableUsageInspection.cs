@@ -14,6 +14,33 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Warns when a variable is referenced prior to being assigned.
+    /// </summary>
+    /// <why>
+    /// An uninitialized variable is being read, but since it's never assigned, the only value ever read would be the data type's default initial value. 
+    /// Reading a variable that was never written to in any code path (especially if Option Explicit isn't specified), is likely to be a bug.
+    /// </why>
+    /// <remarks>
+    /// This inspection may produce false positives when the variable is an array, or if it's passed by reference (ByRef) to a procedure that assigns it.
+    /// </remarks>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     Debug.Print i ' i was never assigned
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething()
+    ///     Dim i As Long
+    ///     i = 42
+    ///     Debug.Print i
+    /// End Sub
+    /// ]]>
+    /// </example>
     [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
     public sealed class UnassignedVariableUsageInspection : InspectionBase
     {

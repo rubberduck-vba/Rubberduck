@@ -13,6 +13,32 @@ using Rubberduck.Inspections.Inspections.Extensions;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Identifies empty 'For...Next' blocks that can be safely removed.
+    /// </summary>
+    /// <why>
+    /// Dead code should be removed. A loop without a body is usually redundant.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Long)
+    ///     Dim i As Long
+    ///     For i = 0 To foo
+    ///         ' no executable statement...
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// Public Sub DoSomething(ByVal foo As Long)
+    ///     Dim i As Long
+    ///     For i = 0 To foo
+    ///         Debug.Print i
+    ///     Next
+    /// End Sub
+    /// ]]>
+    /// </example>
     [Experimental(nameof(ExperimentalNames.EmptyBlockInspections))]
     internal class EmptyForLoopBlockInspection : ParseTreeInspectionBase
     {

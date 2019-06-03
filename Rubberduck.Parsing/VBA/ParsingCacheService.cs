@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Rubberduck.Parsing.ComReflection;
 using Rubberduck.Parsing.PreProcessing;
 using Rubberduck.Parsing.VBA.DeclarationCaching;
+using Rubberduck.Parsing.VBA.DeclarationResolving;
 using Rubberduck.Parsing.VBA.ReferenceManagement;
 using Rubberduck.VBEditor;
 
@@ -15,13 +17,17 @@ namespace Rubberduck.Parsing.VBA
         private readonly IReferenceRemover _referenceRemover;
         private readonly ISupertypeClearer _supertypeClearer;
         private readonly ICompilationArgumentsCache _compilationArgumentsCache;
+        private readonly IUserComProjectRepository _userComProjectRepository;
+        private readonly IProjectsToResolveFromComProjectSelector _projectsToResolveFromComProjectSelector;
 
         public ParsingCacheService(
             IDeclarationFinderProvider declarationFinderProvider,
             IModuleToModuleReferenceManager moduleToModuleReferenceManager,
             IReferenceRemover referenceRemover,
             ISupertypeClearer supertypeClearer,
-            ICompilationArgumentsCache compilationArgumentsCache)
+            ICompilationArgumentsCache compilationArgumentsCache,
+            IUserComProjectRepository userComProjectRepository,
+            IProjectsToResolveFromComProjectSelector projectsToResolveFromComProjectSelector)
         {
             if(declarationFinderProvider == null)
             {
@@ -43,11 +49,21 @@ namespace Rubberduck.Parsing.VBA
             {
                 throw new ArgumentNullException(nameof(compilationArgumentsCache));
             }
+            if (userComProjectRepository == null)
+            {
+                throw new ArgumentNullException(nameof(userComProjectRepository));
+            }
+            if (projectsToResolveFromComProjectSelector == null)
+            {
+                throw new ArgumentNullException(nameof(projectsToResolveFromComProjectSelector));
+            }
             _declarationFinderProvider = declarationFinderProvider;
             _moduleToModuleReferenceManager = moduleToModuleReferenceManager;
             _referenceRemover = referenceRemover;
             _supertypeClearer = supertypeClearer;
             _compilationArgumentsCache = compilationArgumentsCache;
+            _userComProjectRepository = userComProjectRepository;
+            _projectsToResolveFromComProjectSelector = projectsToResolveFromComProjectSelector;
         }
 
         public DeclarationFinder DeclarationFinder => _declarationFinderProvider.DeclarationFinder;
@@ -163,6 +179,34 @@ namespace Rubberduck.Parsing.VBA
         public void RemoveCompilationArgumentsFromCache(IEnumerable<string> projectIds)
         {
             _compilationArgumentsCache.RemoveCompilationArgumentsFromCache(projectIds);
+        }
+
+        public ComProject UserProject(string projectId)
+        {
+            return _userComProjectRepository.UserProject(projectId);
+        }
+
+        public IReadOnlyDictionary<string, ComProject> UserProjects()
+        {
+            return _userComProjectRepository.UserProjects();
+        }
+
+        public void RefreshUserComProjects(IReadOnlyCollection<string> projectIdsToReload)
+        {
+            _userComProjectRepository.RefreshUserComProjects(projectIdsToReload);
+        }
+
+        public IReadOnlyCollection<string> ProjectsToResolveFromComProjects =>
+            _projectsToResolveFromComProjectSelector.ProjectsToResolveFromComProjects;
+
+        public void RefreshProjectsToResolveFromComProjectSelector()
+        {
+            _projectsToResolveFromComProjectSelector.RefreshProjectsToResolveFromComProjectSelector();
+        }
+
+        public bool ToBeResolvedFromComProject(string projectId)
+        {
+            return _projectsToResolveFromComProjectSelector.ToBeResolvedFromComProject(projectId);
         }
     }
 }

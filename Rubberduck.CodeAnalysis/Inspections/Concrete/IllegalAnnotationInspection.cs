@@ -8,12 +8,37 @@ using Rubberduck.Parsing.Inspections.Abstract;
 using Rubberduck.Parsing.Symbols;
 using Rubberduck.Resources.Inspections;
 using Rubberduck.Parsing.VBA;
-using Rubberduck.Parsing.VBA.DeclarationCaching;
 using Rubberduck.Parsing.VBA.Extensions;
 using Rubberduck.VBEditor.SafeComWrappers;
 
 namespace Rubberduck.Inspections.Concrete
 {
+    /// <summary>
+    /// Flags invalid Rubberduck annotation comments.
+    /// </summary>
+    /// <why>
+    /// Rubberduck is correctly parsing an annotation, but that annotation is illegal in that context.
+    /// </why>
+    /// <example>
+    /// <![CDATA[
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     '@Folder("Module1.DoSomething")
+    ///     Dim foo As Long
+    /// End Sub
+    /// ]]>
+    /// </example>
+    /// <example>
+    /// <![CDATA[
+    /// '@Folder("Module1.DoSomething")
+    /// Option Explicit
+    /// 
+    /// Public Sub DoSomething()
+    ///     Dim foo As Long
+    /// End Sub
+    /// ]]>
+    /// </example>
     public sealed class IllegalAnnotationInspection : InspectionBase
     {
         public IllegalAnnotationInspection(RubberduckParserState state)

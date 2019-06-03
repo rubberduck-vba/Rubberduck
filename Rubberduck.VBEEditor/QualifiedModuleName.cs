@@ -36,6 +36,15 @@ namespace Rubberduck.VBEditor
             return new QualifiedModuleName(reference).ProjectId;
         }
 
+        /// <summary>
+        /// Gets the standard projectId for a locked user projects.
+        /// Do not use this overload for unlocked user projects.
+        /// </summary>
+        public static string GetProjectId(string projectName, string projectPath)
+        {
+            return new QualifiedModuleName(projectName, projectPath, projectName).ProjectId;
+        }
+
         public static int GetContentHash(IVBComponent component)
         {
             return component?.ContentHash() ?? 0;
@@ -80,11 +89,11 @@ namespace Rubberduck.VBEditor
         /// Creates a QualifiedModuleName for a built-in declaration.
         /// Do not use this overload for user declarations.
         /// </summary>
-        public QualifiedModuleName(string projectName, string projectPath, string componentName)
+        public QualifiedModuleName(string projectName, string projectPath, string componentName, string projectId = null)
         {
             _projectName = projectName;
             ProjectPath = projectPath;
-            ProjectId = "External" + $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
+            ProjectId = projectId ?? "External" + $"{_projectName};{ProjectPath}".GetHashCode().ToString(CultureInfo.InvariantCulture);
             _componentName = componentName;
             ComponentType = ComponentType.ComComponent;
         }

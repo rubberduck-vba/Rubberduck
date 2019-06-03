@@ -9,7 +9,7 @@ namespace Rubberduck.UI.Settings
 {
     public sealed class UnitTestSettingsViewModel : SettingsViewModelBase<Rubberduck.UnitTesting.Settings.UnitTestSettings>, ISettingsViewModel<Rubberduck.UnitTesting.Settings.UnitTestSettings>
     {
-        public UnitTestSettingsViewModel(Configuration config, IFilePersistenceService<Rubberduck.UnitTesting.Settings.UnitTestSettings> service) 
+        public UnitTestSettingsViewModel(Configuration config, IConfigurationService<Rubberduck.UnitTesting.Settings.UnitTestSettings> service) 
             : base(service)
         {
             BindingMode = config.UserSettings.UnitTestSettings.BindingMode;

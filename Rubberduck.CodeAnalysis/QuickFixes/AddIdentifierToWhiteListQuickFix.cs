@@ -10,9 +10,9 @@ namespace Rubberduck.Inspections.QuickFixes
 {
     public sealed class AddIdentifierToWhiteListQuickFix : QuickFixBase
     {
-        private readonly IPersistenceService<CodeInspectionSettings> _settings;
+        private readonly IConfigurationService<CodeInspectionSettings> _settings;
 
-        public AddIdentifierToWhiteListQuickFix(IPersistenceService<CodeInspectionSettings> settings)
+        public AddIdentifierToWhiteListQuickFix(IConfigurationService<CodeInspectionSettings> settings)
             : base(typeof(HungarianNotationInspection), typeof(UseMeaningfulNameInspection))
         {
             _settings = settings;
@@ -21,7 +21,7 @@ namespace Rubberduck.Inspections.QuickFixes
         //The rewriteSession is optional since it is not used in this particular quickfix.
         public override void Fix(IInspectionResult result, IRewriteSession rewriteSession = null)
         {
-            var inspectionSettings = _settings.Load(new CodeInspectionSettings()) ?? new CodeInspectionSettings();
+            var inspectionSettings = _settings.Read();
             var whitelist = inspectionSettings.WhitelistedIdentifiers;
             inspectionSettings.WhitelistedIdentifiers =
                 whitelist.Concat(new[] { new WhitelistedIdentifierSetting(result.Target.IdentifierName) }).ToArray();

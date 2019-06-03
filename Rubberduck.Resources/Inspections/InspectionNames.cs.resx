@@ -378,4 +378,7 @@
   <data name="KeywordsUsedAsMemberInspection" xml:space="preserve">
     <value>ThunderCode 1</value>
   </data>
+  <data name="ObsoleteWhileWendStatementInspection" xml:space="preserve">
+    <value>Použití zastaralého příkazu 'While...Wend'</value>
+  </data>
 </root>
