@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 using System.Xml.Serialization;
 
 namespace Rubberduck.Settings
@@ -8,7 +9,7 @@ namespace Rubberduck.Settings
     internal interface IToDoListSettings
     {
         ToDoMarker[] ToDoMarkers { get; set; }
-        ToDoExplorerColumnHeadingsOrder ColumnHeadingsOrder { get; set; }
+        ToDoExplorerColumns ColumnHeaderInformation { get; set; }
     }
 
     [XmlType(AnonymousType = true)]
@@ -27,7 +28,7 @@ namespace Rubberduck.Settings
             }
         }
 
-        public ToDoExplorerColumnHeadingsOrder ColumnHeadingsOrder { get; set; }
+        public ToDoExplorerColumns ColumnHeaderInformation { get; set; }
 
         /// <Summary>
         /// Default constructor required for XML serialization.
@@ -36,48 +37,70 @@ namespace Rubberduck.Settings
         {
         }
 
-        public ToDoListSettings(IEnumerable<ToDoMarker> defaultMarkers, ToDoExplorerColumnHeadingsOrder columnHeadingsOrder)
+        public ToDoListSettings(IEnumerable<ToDoMarker> defaultMarkers, ToDoExplorerColumns columnHeadings)
         {
             _markers = defaultMarkers;
-            ColumnHeadingsOrder = columnHeadingsOrder;
+            ColumnHeaderInformation = columnHeadings;
         }
 
         public bool Equals(ToDoListSettings other)
         {
             return other != null 
                 && ToDoMarkers.SequenceEqual(other.ToDoMarkers)
-                && ColumnHeadingsOrder.Equals(other.ColumnHeadingsOrder);
+                && ColumnHeaderInformation.Equals(other.ColumnHeaderInformation);
         }
     }
 
-    public class ToDoExplorerColumnHeadingsOrder : IEquatable<ToDoExplorerColumnHeadingsOrder>
+    public class ToDoExplorerColumns : IEquatable<ToDoExplorerColumns>
     {
-        public int DescriptionColumnIndex { get; set; }
-        public int ProjectColumnIndex { get; set; }
-        public int ModuleColumnIndex { get; set; }
-        public int LineNumberColumnIndex { get; set; }
+        public ToDoExplorerColumn DescriptionColumn { get; set; }
+        public ToDoExplorerColumn ProjectColumn { get; set; }
+        public ToDoExplorerColumn ModuleColumn { get; set; }
+        public ToDoExplorerColumn LineNumberColumn { get; set; }
 
         /// <Summary>
         /// Default constructor required for XML serialization.
         /// </Summary>
-        public ToDoExplorerColumnHeadingsOrder()
+        public ToDoExplorerColumns()
         {
         }
 
-        public ToDoExplorerColumnHeadingsOrder(int descriptionColumnIndex = 0, int projectColumnIndex = 1, int moduleColumnIndex = 2, int lineNumberColumnIndex = 3)
+        public ToDoExplorerColumns(ToDoExplorerColumn descriptionColumn, ToDoExplorerColumn projectColumn, ToDoExplorerColumn moduleColumn, ToDoExplorerColumn lineNumberColumn)
         {
-            DescriptionColumnIndex = descriptionColumnIndex;
-            ProjectColumnIndex = projectColumnIndex;
-            ModuleColumnIndex = moduleColumnIndex;
-            LineNumberColumnIndex = lineNumberColumnIndex;
+            DescriptionColumn = descriptionColumn;
+            ProjectColumn = projectColumn;
+            ModuleColumn = moduleColumn;
+            LineNumberColumn = lineNumberColumn;
         }
 
-        public bool Equals(ToDoExplorerColumnHeadingsOrder other)
+        public bool Equals(ToDoExplorerColumns other)
         {
-            return DescriptionColumnIndex == other.DescriptionColumnIndex
-                && ProjectColumnIndex == other.ProjectColumnIndex
-                && ModuleColumnIndex == other.ModuleColumnIndex
-                && LineNumberColumnIndex == other.LineNumberColumnIndex;
+            return DescriptionColumn == other.DescriptionColumn 
+                && ProjectColumn == other.ProjectColumn
+                && ModuleColumn == other.ModuleColumn
+                && LineNumberColumn == other.LineNumberColumn;
         }
+    }
+
+    public class ToDoExplorerColumn
+    {
+        public int DisplayIndex { get; set; }
+        [XmlElement(Type = typeof(DataGridLength))]
+        public DataGridLength Width { get; set; }
+
+        /// <Summary>
+        /// Default constructor required for XML serialization.
+        /// </Summary>
+        public ToDoExplorerColumn()
+        {
+        }
+
+        public ToDoExplorerColumn(int displayIndex, DataGridLength width)
+        {
+            DisplayIndex = displayIndex;
+            Width = width;
+        }
+
+        //TODO override equality checks
     }
 }

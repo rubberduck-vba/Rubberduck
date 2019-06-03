@@ -21,7 +21,7 @@ namespace Rubberduck.UI.ToDoItems
         {
             ViewModel = viewModel;
             TodoExplorerControl.DataContext = ViewModel;
-            viewModel.UpdateColumnHeadingsOrderToMatchCachedOrder(TodoExplorerControl.MainGrid.Columns);
+            viewModel.UpdateColumnHeaderInformationToMatchCached(TodoExplorerControl.MainGrid.Columns);
         }
         public ToDoExplorerViewModel ViewModel { get; }
     }

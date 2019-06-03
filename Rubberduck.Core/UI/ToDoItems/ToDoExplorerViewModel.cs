@@ -90,28 +90,39 @@ namespace Rubberduck.UI.ToDoItems
             OnPropertyChanged(nameof(Items));
             Grouping = ToDoItemGrouping.Marker;
 
-            _columnHeadingsOrder = _configService.Read().UserSettings.ToDoListSettings.ColumnHeadingsOrder;
+            var toDoListSettings = _configService.Read().UserSettings.ToDoListSettings;
+            _columnHeaderInformation = toDoListSettings.ColumnHeaderInformation ?? new DefaultSettings<ToDoExplorerColumns, Properties.Settings>().Default;
         }
 
-        private ToDoExplorerColumnHeadingsOrder _columnHeadingsOrder { get; set; }
-        public void UpdateColumnHeadingsOrder(ObservableCollection<DataGridColumn> columns)
+        private ToDoExplorerColumns _columnHeaderInformation { get; set; }
+        public void UpdateColumnHeaderInformation(ObservableCollection<DataGridColumn> columns)
         {
-            _columnHeadingsOrder.DescriptionColumnIndex = columns[0].DisplayIndex;
-            _columnHeadingsOrder.ProjectColumnIndex = columns[1].DisplayIndex;
-            _columnHeadingsOrder.ModuleColumnIndex = columns[2].DisplayIndex;
-            _columnHeadingsOrder.LineNumberColumnIndex = columns[3].DisplayIndex;
+            _columnHeaderInformation.DescriptionColumn.DisplayIndex = columns[0].DisplayIndex;
+            _columnHeaderInformation.ProjectColumn.DisplayIndex = columns[1].DisplayIndex;
+            _columnHeaderInformation.ModuleColumn.DisplayIndex = columns[2].DisplayIndex;
+            _columnHeaderInformation.LineNumberColumn.DisplayIndex = columns[3].DisplayIndex;
+
+            _columnHeaderInformation.DescriptionColumn.Width = columns[0].Width;
+            _columnHeaderInformation.ProjectColumn.Width = columns[1].Width;
+            _columnHeaderInformation.ModuleColumn.Width = columns[2].Width;
+            _columnHeaderInformation.LineNumberColumn.Width = columns[3].Width;
 
             var userSettings = _configService.Read().UserSettings;
-            userSettings.ToDoListSettings.ColumnHeadingsOrder = _columnHeadingsOrder;
+            userSettings.ToDoListSettings.ColumnHeaderInformation = _columnHeaderInformation;
             _configService.Save(new Configuration(userSettings));
         }
 
-        public void UpdateColumnHeadingsOrderToMatchCachedOrder(ObservableCollection<DataGridColumn> columns)
+        public void UpdateColumnHeaderInformationToMatchCached(ObservableCollection<DataGridColumn> columns)
         {
-            columns[0].DisplayIndex = _columnHeadingsOrder.DescriptionColumnIndex;
-            columns[1].DisplayIndex = _columnHeadingsOrder.ProjectColumnIndex;
-            columns[2].DisplayIndex = _columnHeadingsOrder.ModuleColumnIndex;
-            columns[3].DisplayIndex = _columnHeadingsOrder.LineNumberColumnIndex;
+            columns[0].DisplayIndex = _columnHeaderInformation.DescriptionColumn.DisplayIndex;
+            columns[1].DisplayIndex = _columnHeaderInformation.ProjectColumn.DisplayIndex;
+            columns[2].DisplayIndex = _columnHeaderInformation.ModuleColumn.DisplayIndex;
+            columns[3].DisplayIndex = _columnHeaderInformation.LineNumberColumn.DisplayIndex;
+
+            columns[0].Width = _columnHeaderInformation.DescriptionColumn.Width;
+            columns[1].Width = _columnHeaderInformation.ProjectColumn.Width;
+            columns[2].Width = _columnHeaderInformation.ModuleColumn.Width;
+            columns[3].Width = _columnHeaderInformation.LineNumberColumn.Width;
         }
 
         private readonly ObservableCollection<ToDoItem> _items = new ObservableCollection<ToDoItem>();

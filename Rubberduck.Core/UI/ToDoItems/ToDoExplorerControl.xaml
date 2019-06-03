@@ -318,7 +318,7 @@
                                CanUserReorderColumns="True"
                                ColumnReordered="GroupingGrid_ColumnReordered">
             <controls:GroupingGrid.Columns>
-                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description, Mode=OneTime}" Width="{Binding DescriptionColumnWidth, FallbackValue=*}"
+                <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.ToDoExplorer.ToDoExplorerUI, Key=TodoExplorer_Description}" Binding="{Binding Description, Mode=OneTime}" Width="*"
                                     DisplayIndex="{Binding DescriptionColumnIndex, Mode=TwoWay, FallbackValue=0}" />
                 <DataGridTextColumn Header="{Resx ResxName=Rubberduck.Resources.RubberduckUI, Key=ProjectName}" Binding="{Binding Selection.QualifiedName.ProjectName, Mode=OneTime}" Width="75"
                                     DisplayIndex="{Binding ProjectColumnIndex, Mode=TwoWay, FallbackValue=1}" />
