@@ -82,7 +82,7 @@ namespace Rubberduck.Settings
         }
     }
 
-    public class ToDoExplorerColumn
+    public class ToDoExplorerColumn : IEquatable<ToDoExplorerColumn>
     {
         public int DisplayIndex { get; set; }
         [XmlElement(Type = typeof(DataGridLength))]
@@ -101,6 +101,10 @@ namespace Rubberduck.Settings
             Width = width;
         }
 
-        //TODO override equality checks
+        public bool Equals(ToDoExplorerColumn other)
+        {
+            return DisplayIndex == other.DisplayIndex
+                && Width == other.Width;
+        }
     }
 }
